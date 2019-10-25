@@ -7,7 +7,8 @@
 		<span class="select-text" @click="handleClick">{{defaultText}}</span>
 		<div class="option-list-wrap dropdown-option-wrap " data-simplebar>
 			<ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
-				<li v-for="(item, key) in optionList" :key="key" v-bind:data-id="item[0]" @click="handleSelect">{{item[1]}}</li>
+				<li v-for="(item, key) in optionList" :key="key" v-bind:data-id="item[0]" @click="handleSelect">
+					{{item[1]}}</li>
 			</ul>
 			<ul class="option-list dropdown-option-list" v-else>
 				<li v-for="(item ,key) in optionList" v-bind:data-id="item[0]" @click="handleSelect" :key="key">
@@ -73,7 +74,7 @@
 				}
 
 				e.target.parentNode.classList.toggle("dropdown-open");
-				var simplebarScrollTop = e.target.parentNode.querySelector(".simplebar-content-wrapper");
+				let simplebarScrollTop = e.target.parentNode.querySelector(".simplebar-content-wrapper");
 				simplebarScrollTop.scrollTop = 0;
 				let dropdownList = document.querySelectorAll(".dropdown-open");
 				for (let i = 0; i < dropdownList.length; ++i) {
@@ -98,15 +99,17 @@
 							minwidth_style.setAttribute("style", "left: 0 !important");
 						}
 					}
-					 setTimeout(() => {
+					setTimeout(() => {
 						let dropdown_list_child = dropdown_list.childNodes[1];
-						let optionlist_height = parseInt(window.getComputedStyle(optionlist).getPropertyValue("height"));
-						let dropdown_list_height = parseInt(window.getComputedStyle(dropdown_list_child).getPropertyValue("height"));
+						let optionlist_height = parseInt(window.getComputedStyle(optionlist).getPropertyValue(
+							"height"));
+						let dropdown_list_height = parseInt(window.getComputedStyle(dropdown_list_child)
+							.getPropertyValue("height"));
 						let minheight_style = dropdown_list.querySelector(".dropdown-option-wrap");
-						if (dropdown_list_height > optionlist_height){
+						if (dropdown_list_height > optionlist_height) {
 							minheight_style.setAttribute("style", "overflow-x:hidden");
 						}
-					},500);
+					}, 500);
 				}
 			}
 		},
@@ -115,7 +118,7 @@
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-			setTimeout( () => {
+			setTimeout(() => {
 				let selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {
 					for (let i = 0; i < selectDropdown.length; i++) {

@@ -99,10 +99,42 @@ export default async(langList, defautLang) => {
             } else {
                 store.commit('newsBanner', '');
             }
-            if (response.data.data.news_banner_text) {
+            if (response.data.data.news_banner_text && response.data.data.news_banner_text.translations) {
                 store.commit('newsBannerText', response.data.data.news_banner_text);
             } else {
                 store.commit('newsBannerText', '');
+            }
+
+            if (response.data.data.story_banner) {
+                store.commit('storyBanner', response.data.data.story_banner);
+            } else {
+                store.commit('storyBanner', '');
+            }
+            if (response.data.data.story_banner_text) {
+                store.commit('storyBannerText', response.data.data.story_banner_text);
+            } else {
+                store.commit('storyBannerText', '');
+            }
+            if (response.data.data.story_dashboard_text) {
+                store.commit('storyDashboardText', response.data.data.story_dashboard_text);
+            } else {
+                store.commit('storyDashboardText', '');
+            }
+            if (response.data.data.slide_interval) {
+                store.commit('slideInterval', response.data.data.slide_interval);
+            } else {
+                store.commit('slideInterval', '');
+            }
+            if (response.data.data.slide_effect) {
+                store.commit('slideEffect', response.data.data.slide_effect);
+            } else {
+                store.commit('slideEffect', '');
+            }
+
+            if (response.data.data.cookie_policy_text) {
+                store.commit('cookiePolicyText', response.data.data.cookie_policy_text);
+            } else {
+                store.commit('cookiePolicyText', '');
             }
 
         })

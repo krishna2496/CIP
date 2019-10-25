@@ -9,7 +9,7 @@
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{languageData.label.add_your_skills}}</h5>
                 </template>
-                <b-alert show letiant="danger" dismissible v-model="showErrorDiv">
+                <b-alert show variant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
                 <div class="multiselect-options">
@@ -47,9 +47,6 @@
     </div>
 </template>
 <script>
-    import {
-        setTimeout
-    } from "timers";
     import store from "../store";
 
     export default {
@@ -73,9 +70,7 @@
                 resetButtonDisable:true
             };
         },
-        mounted() {
-            let skillModel = this.$refs.skillModal;
-        },
+
         methods: {
             handleclick() {
                 let fromListGroup = document.querySelectorAll(".fromlist-group li");
@@ -84,8 +79,8 @@
                 }
             },
             showSkillModal: function () {
-                let filteredObj = this.toList.filter((toItem, toIndex) => {
-                    let filteredObj = this.fromList.filter( (fromItem, fromIndex) => {
+                this.toList.filter((toItem) => {
+                    this.fromList.filter( (fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
                             this.fromList.splice(fromIndex, 1);
                         }

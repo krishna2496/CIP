@@ -95,7 +95,7 @@
         <footer>
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
-        <back-to-top bottom="34px" right="40px" :title="languageData.label.back_to_top">
+        <back-to-top bottom="50px" right="40px" :title="languageData.label.back_to_top">
             <i class="icon-wrap">
                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
                     alt="Down Arrow" />
@@ -114,7 +114,6 @@
     import ListView from "../components/MissionListView";
     import AppCustomDropdown from "../components/AppCustomDropdown";
     import AppCustomChip from "../components/AppCustomChip";
-    import axios from "axios";
     import store from '../store';
     import {
         missionListing,
@@ -122,7 +121,7 @@
         searchUser
     } from '../services/service';
     import constants from '../constant';
-import { setTimeout } from 'timers';
+    import { setTimeout } from 'timers';
 
     export default {
         components: {
@@ -255,8 +254,6 @@ import { setTimeout } from 'timers';
                         let sortBy = store.state.sortBy;
                         
                         setTimeout(() => {
-                            let labelString = 'label.'
-                            let sortByValue = labelString.concat(sortBy);
                             this.sortByDefault = this.languageData.label[sortBy];
                         }, 200);
                     }
@@ -266,18 +263,19 @@ import { setTimeout } from 'timers';
 
             async missionFilter() {
 
-                await missionFilterListing().then(response => {
+                await missionFilterListing().then(() => {
                     this.getMissions();
                 });
             },
 
             pageChange(page) {
                 //Change pagination
-                window.scrollTo({
-                    'behavior': 'smooth',
-                    'left': 0,
-                    'top': 0
-                }, 0);
+                setTimeout(() => {
+                    window.scrollTo({
+                        'behavior': 'smooth',
+                        'top': 0
+                    }, 0);
+                });
                 this.currentPage = page;
                 this.getMissions();
             },

@@ -35,25 +35,16 @@
 				</div>
 			</b-container>
 		</main>
-		<footer>
-			<PrimaryFooter></PrimaryFooter>
-		</footer>
 	</div>
 </template>
 
 <script>
 	import store from "../store";
 	export default {
-		components: {
-			ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
-			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
-		},
-
+		components: {},
 		name: "404",
-
 		data() {
 			return {
-				// bgImg: require("@/assets/images/404-img.png")
 				bgImg: store.state.imagePath + '/assets/images/404-img.png',
 				languageData: []
 			};

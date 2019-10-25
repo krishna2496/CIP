@@ -18,7 +18,6 @@
 </template>
 
 <script>
-	import Vue from "vue";
 	import store from '../store';
 	export default {
 		name: "AppCheckboxDropdown",
@@ -65,7 +64,7 @@
 				}
 
 				e.target.parentNode.classList.toggle("dropdown-open");
-				var simplebarScrollTop = e.target.parentNode.querySelector(".simplebar-content-wrapper");
+				let simplebarScrollTop = e.target.parentNode.querySelector(".simplebar-content-wrapper");
 				simplebarScrollTop.scrollTop = 0;
 				let dropdownList = document.querySelectorAll(".dropdown-open");
 				for (let i = 0; i < dropdownList.length; ++i) {
@@ -97,7 +96,7 @@
 			items: function (val) {
 				this.$emit("updateCall", val.join(','));
 			},
-			selectedItem: function (val) {
+			selectedItem: function () {
 				this.items = this.selectedItem;
 			},
 		},

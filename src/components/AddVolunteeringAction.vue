@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer @hidden="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
@@ -164,14 +163,7 @@
     import AppCustomDropdown from "../components/CustomFieldDropdown";
     import {
         required,
-        maxLength,
-        email,
-        sameAs,
-        minLength,
-        between,
-        helpers,
         numeric,
-        requiredIf,
         minValue
     } from 'vuelidate/lib/validators';
     import FileUpload from 'vue-upload-component';
@@ -256,7 +248,8 @@
 
                 files.filter((data, index) => {
                     let fileName = data.name.split('.');
-                    if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
+                    fileName = fileName[fileName.length - 1].toLowerCase()
+                    if (!allowedFileTypes.includes(fileName)) {
                         this.fileError = this.languageData.errors.invalid_file_type
                         error = true
                     } else {
@@ -325,14 +318,12 @@
                 let fileData = []
                 let file = this.fileArray;
                 if (file) {
-                    file.filter((fileItem, fileIndex) => {
+                    file.filter((fileItem) => {
                         fileData.push(fileItem.file);
                         formData.append('documents[]', fileItem.file);
                     })
                 }
                 let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('YYYY-MM-DD');
-                let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
-                let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
                 formData.append('mission_id', this.timeEntryDefaultData.missionId);
                 formData.append('date_volunteered', volunteeredDate);
                 formData.append('day_volunteered', this.timeEntryDefaultData.workDay);

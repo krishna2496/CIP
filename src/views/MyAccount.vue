@@ -7,7 +7,7 @@
             <b-container>
                 <b-row class="dashboard-tab-content" v-if="errorPage && pageLoaded">
                     <b-col xl="12" lg="12" md="12">
-                        <b-alert show letiant="danger">
+                        <b-alert show variant="danger">
                             {{errorPageMessage}}
                         </b-alert>
                     </b-col>
@@ -19,7 +19,6 @@
                                 <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded}">
                                     <div class="content-loader"></div>
                                 </div>
-
                                 <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
                                     accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
                                         upload: '<h1>Bummer!</h1>',
@@ -76,7 +75,7 @@
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group>
-                                        <label for>{{languageData.label.name}}*</label>
+                                        <label for>{{languageData.label.first_name}}*</label>
                                         <b-form-input id type="text" v-model.trim="profile.firstName"
                                             :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }"
                                             @keypress="alphaNumeric($event)"
@@ -107,14 +106,14 @@
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
-                                <b-col md="6">
+                                <!-- <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.manager}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.managerName"
                                             :placeholder="languageData.placeholder.manager" maxlength="16">
                                         </b-form-input>
                                     </b-form-group>
-                                </b-col>
+                                </b-col> -->
                                 <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.title}}</label>
@@ -141,9 +140,9 @@
                                         <div v-if="submitted && !$v.profile.profileText.required"
                                             class="invalid-feedback">
                                             {{ languageData.errors.my_profile_required }}</div>
-                                        <div v-if="submitted && !$v.profile.profileText.maxLength && $v.profile.profileText.required"
+                                        <!-- <div v-if="submitted && !$v.profile.profileText.maxLength && $v.profile.profileText.required"
                                             class="invalid-feedback">
-                                            {{ languageData.errors.my_profile_max_length }}</div>
+                                            {{ languageData.errors.my_profile_max_length }}</div> -->
                                     </b-form-group>
                                 </b-col>
                                 <b-col md="12">
@@ -156,9 +155,9 @@
                                         <div v-if="submitted && !$v.profile.whyiVolunteer.required"
                                             class="invalid-feedback">
                                             {{ languageData.errors.why_i_volunteer_required }}</div>
-                                        <div v-if="submitted && !$v.profile.whyiVolunteer.maxLength && $v.profile.whyiVolunteer.required"
+                                        <!-- <div v-if="submitted && !$v.profile.whyiVolunteer.maxLength && $v.profile.whyiVolunteer.required"
                                             class="invalid-feedback">
-                                            {{ languageData.errors.why_i_volunteer_max_length }}</div>
+                                            {{ languageData.errors.why_i_volunteer_max_length }}</div> -->
                                     </b-form-group>
                                 </b-col>
                             </b-row>
@@ -261,7 +260,7 @@
                                 </b-col>
                                 <b-col cols="12" v-if="isSkillDisplay">
                                     <div class="btn-wrapper">
-                                        <b-button class="btn-bordersecondary" @click="handleSubmit">
+                                        <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
                                             {{languageData.label.save}}
                                         </b-button>
                                     </div>
@@ -276,7 +275,7 @@
                         <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                         <h5 class="modal-title">{{languageData.label.change_password}}</h5>
                     </template>
-                    <b-alert show :letiant="classletiant" dismissible v-model="showErrorDiv">
+                    <b-alert show :variant="classletiant" dismissible v-model="showErrorDiv">
                         {{ message }}
                     </b-alert>
                     <form action class="form-wrap">
@@ -340,12 +339,10 @@
     import PictureInput from '../components/vue-picture-input'
     import {
         getUserDetail,
-        saveProfile,
         changeUserPassword,
         changeProfilePicture,
         changeCity,
         saveUserProfile,
-        saveSkill,
         loadLocaleMessages,
         country,
         skill,
@@ -354,11 +351,8 @@
     import {
         required,
         maxLength,
-        email,
         sameAs,
-        minLength,
-        between,
-        helpers
+        minLength
     } from 'vuelidate/lib/validators';
     import constants from '../constant';
 
@@ -415,7 +409,6 @@
                     firstName: "",
                     lastName: "",
                     employeeId: "",
-                    managerName: "",
                     profileText: "",
                     title: "",
                     whyiVolunteer: "",
@@ -481,12 +474,10 @@
                     required
                 },
                 profileText: {
-                    required,
-                    maxLength: maxLength(255)
+                    required
                 },
                 whyiVolunteer: {
-                    required,
-                    maxLength: maxLength(255)
+                    required
                 },
                 linkedInUrl: {
                     validLinkedInUrl(linkedInUrl) {
@@ -625,7 +616,6 @@
                             this.profile.firstName = this.userData.first_name,
                             this.profile.lastName = this.userData.last_name,
                             this.profile.employeeId = this.userData.employee_id,
-                            this.profile.managerName = this.userData.manager_name,
                             this.profile.profileText = this.userData.profile_text,
                             this.profile.title = this.userData.title,
                             this.profile.whyiVolunteer = this.userData.why_i_volunteer,
@@ -754,8 +744,8 @@
                         }
                     });
                 }
-                let filteredObj = this.userSkillList.filter((toItem, toIndex) => {
-                    let filteredObj = this.skillListing.filter((fromItem, fromIndex) => {
+                this.userSkillList.filter((toItem) => {
+                    this.skillListing.filter((fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
                             this.skillListing.splice(fromIndex, 1);
                         }
@@ -774,7 +764,7 @@
                 this.returnCustomFeildData = data;
             },
             //submit form
-            handleSubmit(e) {
+            handleSubmit() {
 
                 this.submitted = true;
                 this.$v.$touch();
@@ -795,22 +785,20 @@
                     return
                 }
 
-                let returnData = {};
                 this.saveProfileData.first_name = this.profile.firstName,
-                    this.saveProfileData.last_name = this.profile.lastName,
-                    this.saveProfileData.title = this.profile.title,
-                    this.saveProfileData.timezone_id = this.profile.time,
-                    this.saveProfileData.language_id = this.profile.language,
-                    this.saveProfileData.availability_id = this.profile.availability,
-                    this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
-                    this.saveProfileData.employee_id = this.profile.employeeId,
-                    this.saveProfileData.department = this.profile.department,
-                    this.saveProfileData.manager_name = this.profile.managerName,
-                    this.saveProfileData.city_id = this.profile.city,
-                    this.saveProfileData.country_id = this.profile.country,
-                    this.saveProfileData.profile_text = this.profile.profileText,
-                    this.saveProfileData.linked_in_url = this.profile.linkedInUrl,
-                    this.saveProfileData.custom_fields = []
+                this.saveProfileData.last_name = this.profile.lastName,
+                this.saveProfileData.title = this.profile.title,
+                this.saveProfileData.timezone_id = this.profile.time,
+                this.saveProfileData.language_id = this.profile.language,
+                this.saveProfileData.availability_id = this.profile.availability,
+                this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
+                this.saveProfileData.employee_id = this.profile.employeeId,
+                this.saveProfileData.department = this.profile.department,
+                this.saveProfileData.city_id = this.profile.city,
+                this.saveProfileData.country_id = this.profile.country,
+                this.saveProfileData.profile_text = this.profile.profileText,
+                this.saveProfileData.linked_in_url = this.profile.linkedInUrl,
+                this.saveProfileData.custom_fields = []
                 this.saveProfileData.skills = []
 
                 Object.keys(this.returnCustomFeildData).map((key) => {
@@ -841,10 +829,9 @@
                     } else {
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
-                        this.getUserProfileDetail().then(getResponse => {
-                            // this.isShownComponent = false;
+                        this.getUserProfileDetail().then(() => {
                             this.showPage = true;
-                            loadLocaleMessages(this.profile.languageCode).then(langaugeResponse => {
+                            loadLocaleMessages(this.profile.languageCode).then(() => {
                                 this.languageData = JSON.parse(store.state.languageLabel);
                                 this.makeToast("success", response.message);
                                 this.isShownComponent = true;
@@ -921,11 +908,11 @@
                     });
                 }
             },
-            makeToast(letiant = null, message) {
+            makeToast(variant = null, message) {
                 this.$bvToast.toast(message, {
-                    letiant: letiant,
+                    variant: variant,
                     solid: true,
-                    autoHideDelay: 1000
+                    autoHideDelay: 3000
                 })
             },
             alphaNumeric(evt) {

@@ -46,13 +46,11 @@
 <script>
 	import store from '../store';
 	import moment from 'moment'
-	import DatePicker from "vue2-datepicker";
 	import AppCustomDropdown from "../components/AppCustomDropdownToolTip";
-
+	
 	export default {
 		name: "VolunteeringTimesheetHeader",
 		components: {
-			DatePicker,
 			AppCustomDropdown
 		},
 		props: {
@@ -147,7 +145,6 @@
 			},
 			getWeekDayNameOfMonth(month, year) {
 				//stating date of week	
-				let _this = this
 				let start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
 				
 				this.weekNameArray = []

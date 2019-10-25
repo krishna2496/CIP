@@ -48,6 +48,14 @@ a {
       }
     }
   }
+  &.btn-borderprimary {
+    &:not(.icon-btn) {
+      span {
+        position: relative;
+        top: 3px;
+      }
+    }
+  }
 }
 .btn {
   text-align: center;
@@ -866,7 +874,14 @@ label {
             > div {
               overflow: hidden;
               text-overflow: ellipsis;
-              white-space: nowrap;
+			  white-space: nowrap;
+			  span {
+			  	font-size: 12px;
+			  	line-height: 16px;
+			  	display: inline-block;
+			  	vertical-align: middle;
+			  	color: $gray-primary;
+			  }
             }
           }
 
@@ -1368,9 +1383,13 @@ label {
 }
 
 span {
-  &.error-message {
-    color: $error;
-  }
+	&.error-message {
+		color: $error;
+		display: block;
+		width: 100%;
+		font-size: 80%;
+		line-height: 24px;
+	}
 }
 
 /*select2 Dropdwon*/
@@ -1476,4 +1495,46 @@ span {
   }
 }
 
-
+.ckeditor {
+    textarea{
+        resize: none;
+    }
+  .cke_top {
+    background: $gray-bg;
+    border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -ms-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-bottom-color: $control-border;
+  }
+  .cke_inner {
+    border-color: $control-border;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+  }
+  .cke_reset {
+    border-color: $control-border;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+  }
+  .cke_bottom {
+    border-radius: 0 0 3px 3px;
+    -webkit-border-radius: 0 0 3px 3px;
+    -ms-border-radius: 0 0 3px 3px;
+    -moz-border-radius: 0 0 3px 3px;
+    background: $gray-bg;
+    border-color: $control-border;
+  }
+  .cke_resizer {
+    display: none;
+  }
+  &.is-invalid {
+    ~ .invalid-feedback {
+      display: block;
+    }
+  }
+}
