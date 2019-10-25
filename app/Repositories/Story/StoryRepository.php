@@ -294,7 +294,8 @@ class StoryRepository implements StoryInterface
             'title',
             'description',
             'status',
-            'published_at'
+            'published_at',
+            'created_at'
         )->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);

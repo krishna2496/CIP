@@ -429,7 +429,8 @@ class StoryController extends Controller
             trans("general.export_story_headings.STORY_DESCRIPTION"),
             trans("general.export_story_headings.STORY_STATUS"),
             trans("general.export_story_headings.MISSION_TITLE"),
-            trans("general.export_story_headings.PUBLISHED_DATE"),
+            trans("general.export_story_headings.CREATED_DATE"),
+            trans("general.export_story_headings.PUBLISHED_DATE")
         ];
         
         $excel->setHeadlines($headings);
@@ -439,6 +440,7 @@ class StoryController extends Controller
                 strip_tags($story->description),
                 $story->status,
                 $story->mission->missionLanguage[0]->title,
+                $story->created_at,
                 $story->published_at
             ]);
         }
