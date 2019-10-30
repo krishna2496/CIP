@@ -302,12 +302,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Story\StoryController@publishedStories']);
-        
+
     /* Export all Story Data */
     $router->get('/app/story/export', ['as' => 'app.story.export',
          'middleware' => 'localization|tenant.connection|jwt.auth',
          'uses' => 'App\Story\StoryController@exportStories']);
-        
+
     /* Copy declined story */
     $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copystory',
         'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -322,7 +322,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@update']);
-        
+
     /* Fetch story details */
     $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
      'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -356,7 +356,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@destroy']);
-        
+
     /* Export user mission comments */
     $router->get('/app/dashboard/comments/export', [
         'middleware' => 'tenant.connection|jwt.auth',
@@ -386,7 +386,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/message/send', ['as' => 'app.message.send',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Message\MessageController@sendMessage']);
-            
+
     /* Get User's message Listing*/
     $router->get('/app/messages', ['as' => 'app.message.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
@@ -416,7 +416,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/notifications/clear', ['as' => 'app.user-notifications.clear',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
-        
+
     /* Fetch notification settings */
     $router->get('/app/notifications', ['as' => 'app.notifications',
         'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -564,7 +564,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission theme data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/themes', 'middleware' => 'auth.tenant.admin|localization|JsonApiMiddleware'],
+        ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\MissionTheme\MissionThemeController@index']);
@@ -729,7 +729,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             $router->post('/send', ['as' => 'message.send','middleware' => ['JsonApiMiddleware'],
             'uses' => 'Admin\Message\MessageController@sendMessage']);
-            
+
             $router->delete('/{messageId}', ['as' => 'message.destroy',
                 'uses' => 'Admin\Message\MessageController@destroy']);
 
