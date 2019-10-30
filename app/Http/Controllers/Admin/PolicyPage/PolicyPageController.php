@@ -12,6 +12,7 @@ use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserActivityLogEvent;
 
 //!  Policy Page Controller
 /*!
@@ -29,18 +30,28 @@ class PolicyPageController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\PolicyPage\PolicyPageRepository $policyPageRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(PolicyPageRepository $policyPageRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        PolicyPageRepository $policyPageRepository,
+        ResponseHelper $responseHelper,
+        Request $request
+    ) {
         $this->policyPageRepository = $policyPageRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -111,6 +122,18 @@ class PolicyPageController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_CREATED');
         $apiData = ['page_id' => $policyPage['page_id']];
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.POLICY_PAGE'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $policyPage['page_id']
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -199,6 +222,18 @@ class PolicyPageController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_UPDATED');
             $apiData = ['page_id' => $id];
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.POLICY_PAGE'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -222,6 +257,18 @@ class PolicyPageController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.POLICY_PAGE'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

@@ -9,6 +9,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionRatingController extends Controller
 {
@@ -73,6 +74,17 @@ class MissionRatingController extends Controller
         $apiMessage = ($missionRating->wasRecentlyCreated) ? trans('messages.success.MESSAGE_RATING_ADDED')
         : trans('messages.success.MESSAGE_RATING_UPDATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.RATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $request->mission_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

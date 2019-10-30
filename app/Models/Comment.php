@@ -37,7 +37,8 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $visible = ['comment_id', 'comment', 'created_at', 'user', 'approval_status'];
+    protected $visible = ['comment_id', 'comment', 'created_at', 'user', 'approval_status',
+    'published', 'declined', 'pending' , 'missionLanguage', 'mission_id', 'title', 'mission'];
     
     /**
      * Get the user that has comment.
@@ -47,5 +48,15 @@ class Comment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Get the mission that has comment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function mission(): BelongsTo
+    {
+        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
 }

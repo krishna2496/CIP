@@ -172,4 +172,21 @@ interface MissionInterface
      * @return null|Collection
      */
     public function getMissionType(int $id): ?Collection;
+    
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array;
+    
+    /** Get mission title
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
 }

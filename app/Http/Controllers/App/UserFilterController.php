@@ -106,7 +106,9 @@ class UserFilterController extends Controller
         $filterData = [];
 
         // Get data of user's filter
-        $filterTagArray = [];
+        $filterTagArray = $filterData = [];
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
         $filters = $this->filters->userFilter($request);
         if ($filters !== null) {
             $filterData = $filters->toArray();
