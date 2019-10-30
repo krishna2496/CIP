@@ -17,15 +17,15 @@ class ResponseHelper
     public function success(string $apiStatus = '', string $apiMessage = '', array $apiData = []): JsonResponse
     {
         $response['status'] = $apiStatus;
-        
-        if (!empty($apiData)) {
+
+//        if (!empty($apiData)) {
             $response['data'] = $apiData;
-        }
+//        }
 
         if ($apiMessage) {
             $response['message'] = $apiMessage;
         }
-       
+
         return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
     }
 
@@ -45,11 +45,12 @@ class ResponseHelper
         array $metaData = []
     ): JsonResponse {
         $response['status'] = $apiStatus;
+        $response['data'] = [];
 
         // Check response data have pagination or not? Pagination response parameter sets
         if ($apiData->count()) {
             $apiData->appends(['perPage' => $apiData->perPage()]);
-            
+
             $response['data'] = $apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $apiData->total(),
@@ -93,7 +94,7 @@ class ResponseHelper
         }
         $response['message'] = $customErrorMessage;
         $data["errors"][] = $response;
-       
+
         return response()->json($data, $statusCode, [], JSON_NUMERIC_CHECK);
     }
 }
