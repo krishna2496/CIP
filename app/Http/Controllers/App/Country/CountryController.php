@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\App\Country;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;

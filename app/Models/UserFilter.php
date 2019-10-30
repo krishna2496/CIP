@@ -20,7 +20,7 @@ class UserFilter extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'user_filter_id';
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -46,7 +46,7 @@ class UserFilter extends Model
     {
         $this->attributes['filters'] = serialize($value);
     }
-    
+
     /**
      * Get an attribute from the model.
      *

@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
+use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
 
 class MissionApplicationController extends Controller
 {
@@ -125,6 +127,25 @@ class MissionApplicationController extends Controller
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.MISSION_APPLICATION_STATUS_CHANGED'),
+            config('constants.activity_log_user_types.API'),
+            $request->header('php-auth-user'),
+            get_class($this),
+            $request->toArray(),
+            null,
+            $applicationId
+        ));
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.MISSION_APPLICATION');
+        $entityId = $applicationId;
+        $action = config('constants.notification_actions.'.$request->approval_status);
+        $userId = $application->user_id;
+        
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
         
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }

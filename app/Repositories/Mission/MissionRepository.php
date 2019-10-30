@@ -142,7 +142,9 @@ class MissionRepository implements MissionInterface
                     'title' => $value['title'],
                     'short_description' => (isset($value['short_description'])) ? $value['short_description'] : null,
                     'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
-                    'objective' => $value['objective']
+                    'objective' => $value['objective'],
+                    'custom_information' => (array_key_exists('custom_information', $value))
+                    ? $value['custom_information'] : null
                 );
 
             $this->modelsService->missionLanguage->create($missionLanguage);
@@ -253,7 +255,11 @@ class MissionRepository implements MissionInterface
                                         'short_description' => (isset($value['short_description'])) ?
                                         $value['short_description'] : null,
                                         'description' => ($value['section']),
-                                        'objective' => $value['objective']);
+                                        'objective' => $value['objective']
+                                        );
+                if (array_key_exists('custom_information', $value)) {
+                    $missionLanguage['custom_information'] = $value['custom_information'];
+                }
 
                 $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
                 'language_id' => $language->language_id], $missionLanguage);
@@ -358,9 +364,9 @@ class MissionRepository implements MissionInterface
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }]);
-		
-		if ($request->has('search') && $request->has('search') !== '') {
-			$searchString = $request->search;
+        
+        if ($request->has('search') && $request->has('search') !== '') {
+            $searchString = $request->search;
             $missionQuery->where(function ($query) use ($searchString) {
                 $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($searchString) {
                     $missionLanguageQuery->where('title', 'like', '%' . $searchString . '%');
@@ -371,7 +377,7 @@ class MissionRepository implements MissionInterface
                 });
             });
         }
-		
+        
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $missionQuery->orderBy('mission_id', $orderDirection);
@@ -420,7 +426,8 @@ class MissionRepository implements MissionInterface
                     'language_id',
                     'title',
                     'short_description',
-                    'objective'
+                    'objective',
+                    'custom_information'
                 );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
@@ -921,7 +928,8 @@ class MissionRepository implements MissionInterface
                     'title',
                     'short_description',
                     'objective',
-                    'description'
+                    'description',
+                    'custom_information'
                 );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
@@ -1062,5 +1070,79 @@ class MissionRepository implements MissionInterface
         return $this->modelsService->mission->select('mission_type', 'city_id')
         ->where('mission_id', $id)
         ->get();
+    }
+
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        $userId = $request->auth->user_id;
+        $missionLists = array();
+
+        $missionData = $this->modelsService->mission->select('mission.mission_id', 'city_id')
+        ->whereHas('missionApplication', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        })
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])->get();
+
+        foreach ($missionData->toArray() as $key => $value) {
+            $missionLists[$key]['mission_id'] = $value['mission_id'];
+            $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
+        }
+      
+        return $missionLists;
+    }
+
+    /** Get mission title
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
+    {
+        $languageData = $this->modelsService->missionLanguage->select('title')
+        ->where(['mission_id' => $missionId, 'language_id' => $languageId])
+        ->get();
+        if ($languageData->count() > 0) {
+            return $languageData[0]->title;
+        } else {
+            $defaultTenantLanguageData = $this->modelsService->missionLanguage
+                ->select('title')
+                ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
+                ->get();
+            return $defaultTenantLanguageData[0]->title;
+        }
+    }
+
+    /**
+     * Check user has any relation with mission or not, based on availability or skill
+     * @param int $missionId
+     * @param int $userId
+     * @return int
+     */
+    public function checkIsMissionRelatedToUser(int $missionId, int $userId): int
+    {
+        return $this->modelsService->mission
+            ->where('mission_id', $missionId)
+            ->where(function ($query) use ($userId) {
+                $query->whereHas('missionSkill.skilledUsers', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+                $query->OrWhereHas('availableUsers', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+            })
+            ->count();
     }
 }

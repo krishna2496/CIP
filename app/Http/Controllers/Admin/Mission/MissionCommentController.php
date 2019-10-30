@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Mission\MissionRepository;
 use Validator;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionCommentController extends Controller
 {
@@ -35,21 +37,29 @@ class MissionCommentController extends Controller
     private $missionRepository;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
         MissionCommentRepository $missionCommentRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->missionRepository = $missionRepository;
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -127,7 +137,6 @@ class MissionCommentController extends Controller
      */
     public function update(Request $request, int $missionId, int $commentId): JsonResponse
     {
-        
         // First find mission
         try {
             $mission = $this->missionRepository->find($missionId);
@@ -162,6 +171,26 @@ class MissionCommentController extends Controller
             $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
+
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+            $entityId = $commentId;
+            $action = config('constants.notification_actions.'.$request->approval_status);
+            $userId = $apiData->user_id;
+
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_COMMENTS'),
+                config('constants.activity_log_actions.COMMENT_UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $commentId
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -192,17 +221,39 @@ class MissionCommentController extends Controller
 
         // Get comment and delete it.
         try {
-            $apiData = $this->missionCommentRepository->deleteComment($commentId);
-
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
+            $commentDetails = $this->missionCommentRepository->getCommentById($commentId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
         }
+
+        $apiData = $this->missionCommentRepository->deleteComment($commentId);
+
+        $apiStatus = Response::HTTP_NO_CONTENT;
+        $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
+        
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+        $entityId = $commentId;
+        $action = config('constants.notification_actions.DELETED');
+        $userId = $commentDetails->user->user_id;
+
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION_COMMENTS'),
+            config('constants.activity_log_actions.DELETED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            null,
+            null,
+            $commentId
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
