@@ -18,9 +18,9 @@ class ResponseHelper
     {
         $response['status'] = $apiStatus;
 
-//        if (!empty($apiData)) {
+        if (!empty($apiData)) {
             $response['data'] = $apiData;
-//        }
+        }
 
         if ($apiMessage) {
             $response['message'] = $apiMessage;
