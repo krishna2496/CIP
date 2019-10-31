@@ -65,7 +65,7 @@ $router->get(
     '/applications/details',
     [
         'middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\Mission\MissionApplicationController@missionApplicationDetails'
+        'uses' => 'Admin\Mission\MissionApplicationController@getMissionApplicationDetails'
     ]
 );
 

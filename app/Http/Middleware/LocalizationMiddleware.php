@@ -21,7 +21,7 @@ class LocalizationMiddleware
     {
         $this->languageHelper = $languageHelper;
     }
-    
+
     /**
      * Handle an incoming request.
      *
@@ -33,14 +33,13 @@ class LocalizationMiddleware
     {
         // Set localization to config locale
         config(['app.locale' => $request->header('X-localization')]);
-
         // Get tenant language base on localization or default language of tenant from database
         $language = $this->languageHelper->checkTenantLanguage($request);
-        
+
         // set laravel localization
         app('translator')->setLocale($language->code);
         config(['app.locale' => $language->code]);
-        
+
         // continue request
         return $next($request);
     }
