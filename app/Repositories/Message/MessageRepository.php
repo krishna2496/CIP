@@ -97,6 +97,11 @@ class MessageRepository implements MessageInterface
                 }
             )->orderBy('created_at', 'desc');
 
+        if ($request->has('search') && $request->has('search') !== '') {
+            $userMessageQuery->where(function ($query) use ($request) {
+                $query->orWhere('subject', 'like', '%' . $request->input('search') . '%');
+            });
+        }
         return $userMessageQuery->paginate($request->perPage);
     }
 

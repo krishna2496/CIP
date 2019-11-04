@@ -167,19 +167,22 @@ class MissionCommentController extends Controller
 
         // Now find comments from that mission
         try {
+            $comment = $this->missionCommentRepository->getComment($commentId);
             $data['approval_status'] = $request->approval_status;
             $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
 
-            // Send notification to user
-            $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
-            $entityId = $commentId;
-            $action = config('constants.notification_actions.'.$request->approval_status);
-            $userId = $apiData->user_id;
+            if ($comment->approval_status !== $request->approval_status) {
+                // Send notification to user
+                $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+                $entityId = $commentId;
+                $action = config('constants.notification_actions.'.$request->approval_status);
+                $userId = $apiData->user_id;
 
-            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-
+                event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+            }
+            
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION_COMMENTS'),

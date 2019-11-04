@@ -58,7 +58,7 @@ class NewsCategoryController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $newsCategoryDetails = $this->newsCategoryRepository->getNewsCategoryDetails($request);
+        $newsCategoryDetails = $this->newsCategoryRepository->getNewsCategoryList($request);
         
         // Set response data
         $apiStatus = Response::HTTP_OK;
