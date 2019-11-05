@@ -1008,4 +1008,30 @@ class AppUserTest extends TestCase
         $user->delete();
         $userCustomField->delete();
     }
+
+    /**
+     * @test
+     *
+     * Save cookie agreement date
+     *
+     * @return void
+     */
+    public function it_should_save_cookie_agreement_date()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+      
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/accept-cookie-agreement', [], ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure(
+            [
+                "status",
+                "message"
+            ]
+        );
+        $user->delete();
+    }
 }

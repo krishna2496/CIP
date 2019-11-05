@@ -438,6 +438,7 @@ class AppNotificationTest extends TestCase
                 ]
             ]
         ];
+
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
@@ -545,8 +546,8 @@ class AppNotificationTest extends TestCase
         ->seeStatusCode(201);
 
         // Submit timesheet for approval
-        $timesheet = App\Models\Timesheet::where("mission_id", $mission->mission_id)->first();
-        $timeMissionTimesheet = App\Models\Timesheet::where("mission_id", $timeMissionId)->first();
+        $timesheet = App\Models\Timesheet::where("mission_id", $mission->mission_id)->orderBy('timesheet_id', 'DESC')->first();
+        $timeMissionTimesheet = App\Models\Timesheet::where("mission_id", $timeMissionId)->orderBy('timesheet_id', 'DESC')->first();
         $params = [
             'timesheet_entries' => [
                 [
@@ -557,6 +558,8 @@ class AppNotificationTest extends TestCase
                 ]
             ]
         ];
+
+
         DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200);
@@ -584,6 +587,11 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
         $this->get('app/notifications', ['token' => $token])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/notifications', ['token' => $token, 'X-localization' => 'test'])
         ->seeStatusCode(200);
 
         $user->delete();

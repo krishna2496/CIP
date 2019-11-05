@@ -462,33 +462,6 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Get user timesheet total goal actions data
-     *
-     * @param int $userId
-     * @param int $year
-     * @return null|array
-     */
-    public function getTotalGoalActions(int $userId, int $year): ?array
-    {
-        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
-
-        $missionQuery = $this->mission->select('mission.*');
-        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
-        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
-        $missionQuery->where('mission_type', config('constants.mission_type.GOAL'));
-        $missionQuery->withCount([
-            'timesheet AS action' => function ($query) use ($userId, $statusArray, $year) {
-                $query->select(DB::raw("SUM(action) as action"));
-                $query->where('user_id', $userId);
-                $query->whereYear('date_volunteered', $year);
-                $query->whereIn('status_id', $statusArray);
-            }
-        ]);
-        return $missionQuery->get()->toArray();
-    }
-
-    /**
      * Get user timesheet total hours data
      *
      * @param int $userId

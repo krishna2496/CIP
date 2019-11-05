@@ -262,7 +262,7 @@ class NewsTest extends TestCase
             array_push($newsIdsArray, $news->news_id); 
         } 
 
-        $this->get('news', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('news?order=desc&search='.$newsLanguage->title, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
         News::whereIn('news_id', $newsIdsArray)->delete();

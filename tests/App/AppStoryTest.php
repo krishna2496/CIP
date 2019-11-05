@@ -3677,8 +3677,21 @@ class AppStoryTest extends TestCase
         $this->get('app/story/'.rand(1000000, 50000000), ['token' => $token])
         ->seeStatusCode(404);
 
+        //If story is published, other user can see story
+        $newUser = factory(\App\User::class)->make();
+        $newUser->setConnection($connection);
+        $newUser->save();
+        $token = Helpers::getJwtToken($newUser->user_id, env('DEFAULT_TENANT'));
+
+        DB::setDefaultConnection('mysql');
+        $story->update(['status' => config('constants.story_status.PUBLISHED')]);
+        // If story is declined or published
+        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        ->seeStatusCode(200);
+
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
+        $newUser->delete();
         $mission->delete();
         $story->delete();
     }

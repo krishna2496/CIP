@@ -117,15 +117,6 @@ interface TimesheetInterface
     public function getTotalHours(int $userId, int $year, int $month): ?array;
 
     /**
-     * Get user timesheet total goal actions data
-     *
-     * @param int $userId
-     * @param int $year
-     * @return null|array
-     */
-    public function getTotalGoalActions(int $userId, int $year): ?array;
-
-    /**
      * Get user timesheet total hours data
      *
      * @param int $userId
