@@ -20,6 +20,7 @@ class CreateStoryMediaTable extends Migration
             $table->text('path');
             $table->timestamps();
             $table->softDeletes();
+            
             $table->foreign('story_id')->references('story_id')->on('story')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }

@@ -21,6 +21,7 @@ class CreateTimesheetDocumentTable extends Migration
             $table->string('document_path', 255);
             $table->timestamps();
             $table->softDeletes();
+            
             $table->foreign('timesheet_id')->references('timesheet_id')->on('timesheet')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
