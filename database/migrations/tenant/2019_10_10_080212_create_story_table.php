@@ -23,6 +23,7 @@ class CreateStoryTable extends Migration
             $table->dateTime('published_at')->default(\DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamps();
             $table->softDeletes();
+            
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
 

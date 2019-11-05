@@ -22,13 +22,13 @@ class CreateUserTable extends Migration
             $table->string('password', 255);
             $table->string('avatar', 128)->nullable(); 
             $table->unsignedBigInteger('timezone_id');
-            $table->unsignedInteger('language_id'); //FK 
+            $table->unsignedInteger('language_id');
             $table->unsignedBigInteger('availability_id');
             $table->text('why_i_volunteer');
             $table->string('employee_id', 16); 
             $table->string('department', 16)->nullable();
-            $table->unsignedBigInteger('city_id'); // FK cities id
-            $table->unsignedBigInteger('country_id');//FK countries id
+            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('country_id');
             $table->text('profile_text');
             $table->string('linked_in_url', 255)->nullable();
             $table->string('title', 255)->nullable();

@@ -17,7 +17,8 @@ class CreateNotificationTable extends Migration
             $table->bigIncrements('notification_id');
             $table->unsignedBigInteger('notification_type_id');
             $table->unsignedBigInteger('user_id');
-            $table->enum('action', ['CREATED','APPROVED','REJECTED','PUBLISHED','PENDING','DECLINED','INVITE','AUTOMATICALLY_APPROVED','SUBMIT_FOR_APPROVAL','DELETED','REFUSED','PUBLISHED_FOR_APPLYING']);
+            $table->enum('action', ['CREATED','APPROVED','REJECTED','PUBLISHED','PENDING','DECLINED','INVITE','AUTOMATICALLY_APPROVED','SUBMIT_FOR_APPROVAL','DELETED','REFUSED','PUBLISHED_FOR_APPLYING'])
+            ->nullable();
             $table->unsignedBigInteger('entity_id')->nullable();
             $table->enum('is_read',['0','1'])->default('0')->comment('0: Unread, 1: Read');
             $table->timestamps();
