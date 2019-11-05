@@ -152,23 +152,29 @@ class MissionApplicationController extends Controller
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
+    /**
+     * @param Request $request
+     * @param MissionApplicationQuery $missionApplicationQuery
+     * @return JsonResponse
+     */
     public function getMissionApplicationDetails(Request $request, MissionApplicationQuery $missionApplicationQuery)
     {
-        $filters = $request->get('filters');
+        $filters = $request->get('filters', []);
         $search = $request->get('search');
-        $order = $request->get('order');
-        $limit = $request->get('limit');
+        $order = $request->get('order', []);
+        $limit = $request->get('limit', []);
 
-        $applicationList = $missionApplicationQuery->run([]);
+        $applicationList = $missionApplicationQuery->run([
+            'filters' => $filters,
+            'search' => $search,
+            'order' => $order,
+            'limit' => $limit
+        ]);
 
-        return new JsonResponse($applicationList);
-
-
-//        return $this->responseHelper->successWithPagination(
-//            Response::HTTP_OK,
-//            (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
-//                : trans('messages.success.MESSAGE_NO_RECORD_FOUND'),
-//
-//        )
+        return $this->responseHelper->successWithPagination(
+            Response::HTTP_OK,
+            '',
+            $applicationList
+        );
     }
 }
