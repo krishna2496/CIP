@@ -3613,6 +3613,13 @@ class AppTimesheetTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet', ['token' => $token])
         ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+
+        // It will return all users list
+        $this->get('/app/user/missions', ['token' => $token])
+        ->seeStatusCode(200);
+
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();

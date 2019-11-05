@@ -778,6 +778,28 @@ class AppNotificationTest extends TestCase
         $this->post('app/notification/read-unread/'.rand(10000000, 50000000), [], ['token' => $token])
         ->seeStatusCode(404);
 
+        // Update notification settings
+        DB::setDefaultConnection('mysql');
+        $notificationTypeArray = [];
+
+        foreach ($notificationTypes as $notificationType) {
+            $notificationTypeArray[] = ["notification_type_id" => $notificationType['notification_type_id'], "value" => 0];
+        }
+
+        $params = [
+            "settings" => $notificationTypeArray
+        ];
+
+        // Save user notification settings
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/user-notification-settings/update', $params, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
         $user->delete();
         $mission->delete();
     }

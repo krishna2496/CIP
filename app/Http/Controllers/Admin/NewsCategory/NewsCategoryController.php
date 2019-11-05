@@ -62,8 +62,8 @@ class NewsCategoryController extends Controller
         
         // Set response data
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($newsCategoryDetails->isEmpty()) ?
-        trans('messages.custom_error_message.ERROR_NEWS_CATEGORIES_NOT_FOUND')
+        $apiMessage =
+        ($newsCategoryDetails->isEmpty()) ? trans('messages.custom_error_message.ERROR_NEWS_CATEGORIES_NOT_FOUND')
         : trans('messages.success.MESSAGE_NEWS_CATEGORY_LISTING');
         
         return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $newsCategoryDetails);
