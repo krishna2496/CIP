@@ -54,11 +54,11 @@ class TenantBackgroundJobsJob extends Job
     public function handle()
     {
         try {
-//            $this->tenant->update(
-//                [
-//                    'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
-//                ]
-//            );
+            $this->tenant->update(
+                [
+                    'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
+                ]
+            );
 
             // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
@@ -69,10 +69,10 @@ class TenantBackgroundJobsJob extends Job
 
             // Copy local default_theme folder
             dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenant->name));
-            
+
             // Create assets folder for tenant on AWS s3 bucket
             dispatch(new CreateFolderInS3BucketJob($this->tenant));
-            
+
             // Compile CSS file and upload on s3
             dispatch(new CompileScssFiles($this->tenant));
 
@@ -82,7 +82,6 @@ class TenantBackgroundJobsJob extends Job
                 ]
             );
         } catch (\Exception $e) {
-        	var_dump($e->getMessage());die();
             $this->tenant->update(
                 [
                     'background_process_status' => config('constants.background_process_status.FAILED')
@@ -98,7 +97,6 @@ class TenantBackgroundJobsJob extends Job
      */
     public function failed(\Exception $exception)
     {
-    	var_dump($exception->getMessage());die();
         $this->tenant->update(['background_process_status' => config('constants.background_process_status.FAILED')]);
         $this->sendEmailNotification();
     }
