@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStoryMediaTable extends Migration
+class CreateStoryInviteTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateStoryMediaTable extends Migration
      */
     public function up()
     {
-        Schema::create('story_media', function (Blueprint $table) {
-            $table->bigIncrements('story_media_id')->unsigned();
+        Schema::create('story_invite', function (Blueprint $table) {
+            $table->bigIncrements('story_invite_id');
             $table->unsignedBigInteger('story_id');
-            $table->string('type', 8);
-            $table->text('path');
+            $table->unsignedBigInteger('from_user_id');
+            $table->unsignedBigInteger('to_user_id');
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->foreign('story_id')->references('story_id')->on('story')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('from_user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('to_user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -32,6 +34,6 @@ class CreateStoryMediaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('story_media');
+        Schema::dropIfExists('story_invite');
     }
 }

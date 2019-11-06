@@ -121,5 +121,8 @@ $router->group(
             ['as' => 'tenants.delete-tenantlanguage-data',
             'uses' => 'TenantLanguageController@destroy']
         );
+        // Fetch activity logs
+        $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'ActivityLogController@index']);
     }
 );
