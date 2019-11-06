@@ -40,7 +40,6 @@ trait MissionTransformable
                 config('constants.TIMEZONE')
             )->setTimezone($timezone)->toDateTimeString();
         }
-
         if (isset($mission['timeMission'])) {
             $mission['application_deadline'] = isset($mission['timeMission']['application_deadline']) ? Carbon::parse(
                 $mission['timeMission']['application_deadline'],
@@ -62,13 +61,13 @@ trait MissionTransformable
                 Carbon::parse(
                     $mission['timeMission']['application_start_time'],
                     config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toTimeString() : null;
+                )->setTimezone($timezone)->toDateTimeString() : null;
             
             $mission['application_end_time'] = isset($mission['timeMission']['application_end_time']) ?
                 Carbon::parse(
                     $mission['timeMission']['application_end_time'],
                     config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toTimeString() : null;
+                )->setTimezone($timezone)->toDateTimeString() : null;
         }
         unset($mission['goalMission']);
         unset($mission['timeMission']);
@@ -114,7 +113,9 @@ trait MissionTransformable
         unset($mission['missionLanguage']);
         // Check for apply in mission validity
         $mission['set_view_detail'] = 0;
-        $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+
+        $todayDate = Carbon::parse(date(config("constants.DB_DATE_FORMAT")));
+        $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
        
         if (($mission['user_application_count'] > 0) ||
@@ -128,7 +129,7 @@ trait MissionTransformable
          ($mission['application_deadline'] <= $today)) {
             $mission['set_view_detail'] = 1;
         }
-
+        
         if ((isset($mission['application_start_date']) && ($mission['application_start_date'] !== null)) &&
          (isset($mission['application_end_date']) && ($mission['application_end_date'] !== null)) &&
          ($mission['application_end_date'] <= $today)) {

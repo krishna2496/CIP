@@ -353,6 +353,8 @@ class ThemeTest extends TestCase
             ]
         ];
 
+        DB::setDefaultConnection('mysql');
+
         $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
         DB::setDefaultConnection('mysql');
 
