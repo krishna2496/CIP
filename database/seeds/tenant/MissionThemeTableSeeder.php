@@ -18,12 +18,6 @@ class MissionThemeTableSeeder extends Seeder
                 'translations' => 'a:2:{i:0;a:2:{s:4:"lang";s:2:"en";s:5:"title";s:11:"Environment";}i:1;a:2:{s:4:"lang";s:2:"fr";s:5:"title";s:13:"Environnement";}}',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
-            ],
-            [
-                'theme_name' => 'Education',
-                'translations' => 'a:2:{i:0;a:2:{s:4:"lang";s:2:"en";s:5:"title";s:9:"Education";}i:1;a:2:{s:4:"lang";s:2:"fr";s:5:"title";s:10:"Ã‰ducation";}}',
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
             ]
         ];
     
