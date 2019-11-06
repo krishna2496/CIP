@@ -15,7 +15,7 @@ class CreateTableTenantOption extends Migration
     {
         Schema::create('tenant_option', function (Blueprint $table) {
             $table->bigIncrements('tenant_option_id')->unsigned();
-            $table->string('option_name',256);
+            $table->string('option_name', 256);
             $table->text('option_value')->nullable();
             $table->timestamps();
             $table->softDeletes();

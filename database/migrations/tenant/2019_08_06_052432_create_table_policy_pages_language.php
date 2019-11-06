@@ -18,7 +18,7 @@ class CreateTablePolicyPagesLanguage extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->unsignedBigInteger('page_id');
             $table->integer('language_id');
-            $table->string('title',255);
+            $table->string('title', 255);
             $table->text('description');
             $table->timestamps();
             $table->softDeletes();

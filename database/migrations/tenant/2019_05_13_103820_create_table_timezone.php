@@ -15,9 +15,9 @@ class CreateTableTimezone extends Migration
     {
         Schema::create('timezone', function (Blueprint $table) {
             $table->bigIncrements('timezone_id')->unsinged();
-            $table->string('timezone',255);
-            $table->string('offset',255);
-            $table->enum('status',['0','1'])->default(1);
+            $table->string('timezone', 255);
+            $table->string('offset', 255);
+            $table->enum('status', ['0','1'])->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
