@@ -4,15 +4,13 @@ namespace App\Jobs;
 
 use App\Models\Tenant;
 use Queue;
-use App\Traits\SendEmailTrait;
 use App\Jobs\TenantDefaultLanguageJob;
 use App\Jobs\TenantMigrationJob;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\EmailHelper;
 
 class TenantBackgroundJobsJob extends Job
 {
-    use SendEmailTrait;
-
     /**
      * @var App\Models\Tenant
      */
@@ -33,6 +31,11 @@ class TenantBackgroundJobsJob extends Job
     public $timeout = 0;
 
     /**
+     * @var App\Helpers\EmailHelper
+     */
+    private $emailHelper;
+
+    /**
      * Create a new job instance.
      * @param App\Models\Tenant $tenant
      * @return void
@@ -40,6 +43,7 @@ class TenantBackgroundJobsJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
+        $this->emailHelper = new EmailHelper();
     }
 
     /**
@@ -63,13 +67,13 @@ class TenantBackgroundJobsJob extends Job
         
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($this->tenant));
-		
+        
             // Copy local default_theme folder
-			dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenant->name));
+            dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenant->name));
             
             // Create assets folder for tenant on AWS s3 bucket
-			dispatch(new CreateFolderInS3BucketJob($this->tenant));
-			
+            dispatch(new CreateFolderInS3BucketJob($this->tenant));
+            
             // Compile CSS file and upload on s3
             dispatch(new CompileScssFiles($this->tenant));
 
@@ -79,7 +83,6 @@ class TenantBackgroundJobsJob extends Job
                 ]
             );
         } catch (\Exception $e) {
-            Log::info('Exception in tenant background job execution '. $e);
             $this->tenant->update(
                 [
                     'background_process_status' => config('constants.background_process_status.FAILED')
@@ -90,14 +93,13 @@ class TenantBackgroundJobsJob extends Job
 
     /**
      * The job failed to process.
-     *
      * @param  Exception  $exception
      * @return void
      */
     public function failed(\Exception $exception)
     {
         $this->tenant->update(['background_process_status' => config('constants.background_process_status.FAILED')]);
-        $this->sendEmailNotification(true);
+        $this->sendEmailNotification();
     }
 
     /**
@@ -105,11 +107,11 @@ class TenantBackgroundJobsJob extends Job
      * @param bool $isFail
      * @return void
      */
-    public function sendEmailNotification(bool $isFail = false)
+    public function sendEmailNotification()
     {
-        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
         $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
-        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".trans('messages.email_text.FAILED')
+        ." <br>";
 
         $data = array(
             'message'=> $message,
@@ -118,16 +120,12 @@ class TenantBackgroundJobsJob extends Job
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
         $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
-        $params['subject'] = ($isFail)
-        ?
-        trans("messages.email_text.ERROR"). " : " .trans('messages.email_text.ON_BACKGROUND_JOBS'). " "
-        . $this->tenant->name . " " .trans("messages.email_text.TENANT")
-        :
-        trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.ON_BACKGROUND_JOBS'). " "
-        . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
+        $params['subject'] = trans("messages.email_text.ERROR"). " : "
+        .trans('messages.email_text.ON_BACKGROUND_JOBS')." ". $this->tenant->name . " "
+        .trans("messages.email_text.TENANT");
 
         $params['data'] = $data;
 
-        $this->sendEmail($params);
+        $this->emailHelper->sendEmail($params);
     }
 }

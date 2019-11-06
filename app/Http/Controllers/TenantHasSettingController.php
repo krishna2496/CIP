@@ -15,6 +15,7 @@ use App\Models\TenantHasSetting;
 use Validator;
 use App\Helpers\DatabaseHelper;
 use DB;
+use App\Events\ActivityLogEvent;
 
 class TenantHasSettingController extends Controller
 {
@@ -84,8 +85,6 @@ class TenantHasSettingController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -125,10 +124,13 @@ class TenantHasSettingController extends Controller
 
             // Store settings in admin tenant setting
             foreach ($request->settings as $value) {
+                $tenantSettingId = $value['tenant_setting_id'];
                 if ($value['value'] == 1) {
                     DB::table('tenant_setting')->updateOrInsert(['setting_id' => $value['tenant_setting_id']]);
+                    $activityLogStatus = config('constants.activity_log_actions.ENABLED');
                 } else {
                     DB::table('tenant_setting')->where(['setting_id' => $value['tenant_setting_id']])->delete();
+                    $activityLogStatus = config('constants.activity_log_actions.DISABLED');
                 }
             }
             
@@ -140,22 +142,22 @@ class TenantHasSettingController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');
+
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.TENANT_SETTINGS'),
+                $activityLogStatus,
+                get_class($this),
+                $request->toArray(),
+                $tenantSettingId
+            ));
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

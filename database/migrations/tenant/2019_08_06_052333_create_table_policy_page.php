@@ -15,7 +15,7 @@ class CreateTablePolicyPage extends Migration
     {
         Schema::create('policy_page', function (Blueprint $table) {
             $table->bigIncrements('page_id')->unsigned();
-            $table->string('slug',255);
+            $table->string('slug', 255);
             $table->enum('status',['1', '0'])->default(1);
             $table->timestamps();
             $table->softDeletes();

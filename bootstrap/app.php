@@ -85,8 +85,9 @@ $app->singleton(
 
 $app->routeMiddleware([
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
-    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class
-    //'auth' => App\Http\Middleware\Authenticate::class,
+    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
+    'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class,
+    'RedirectInvalidIps' => App\Http\Middleware\RedirectInvalidIPs::class
 ]);
 
 /*
@@ -102,7 +103,7 @@ $app->routeMiddleware([
 
 $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
 // $app->register(Urameshibr\Providers\FormRequestServiceProvider::class);
 
 /*

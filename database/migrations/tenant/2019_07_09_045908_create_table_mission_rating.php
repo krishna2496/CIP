@@ -17,7 +17,7 @@ class CreateTableMissionRating extends Migration
             $table->bigIncrements('mission_rating_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('mission_id');
-            $table->enum('rating', ['1','2','3','4','5']);
+            $table->float('rating');
             $table->timestamps();
             $table->softDeletes();
 
