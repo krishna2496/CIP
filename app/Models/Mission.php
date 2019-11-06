@@ -266,12 +266,12 @@ class Mission extends Model
     /**
      * Set start date attribute on the model.
      *
-     * @param  string $value
+     * @param $value
      * @return void
      */
-    public function setStartDateAttribute(string $value): void
+    public function setStartDateAttribute($value): void
     {
-        $this->attributes['start_date'] = ($value !== null) ?
+        $this->attributes['start_date'] = (($value !== null) && strlen(trim($value)) > 0) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
@@ -291,12 +291,12 @@ class Mission extends Model
     /**
      * Set end date attribute on the model.
      *
-     * @param string $value
+     * @param $value
      * @return void
      */
-    public function setEndDateAttribute(string $value): void
+    public function setEndDateAttribute($value): void
     {
-        $this->attributes['end_date'] = ($value !== null) ?
+        $this->attributes['end_date'] = ($value !== null && strlen(trim($value)) > 0) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
