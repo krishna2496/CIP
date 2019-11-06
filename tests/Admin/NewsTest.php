@@ -269,6 +269,10 @@ class NewsTest extends TestCase
         $this->get('news', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
+        DB::setDefaultConnection('mysql');
+        $this->get('news?order=test&search='.$newsLanguage->title, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400);
+
         News::whereIn('news_id', $newsIdsArray)->delete();
     }
 

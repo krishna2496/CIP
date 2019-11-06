@@ -869,6 +869,10 @@ class MissionTest extends TestCase
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         DB::setDefaultConnection('mysql');
 
+        $params = [
+            "publication_status" => config("constants.publication_status.PUBLISHED_FOR_APPLYING"),
+        ];
+
         $this->patch("missions/".$mission[0]['mission_id'], $params,
         ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)

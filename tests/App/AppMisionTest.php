@@ -3207,4 +3207,104 @@ class AppMissionTest extends TestCase
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
+
+    /**
+     * @test
+     *
+     * Get mission volunteers by mission id
+     *
+     * @return void
+     */
+    public function it_should_return_mission_volunteers_by_mission_id()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [  
+                    [  
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [  
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [],
+            "media_videos"=> [],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => []
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
+
+        DB::setDefaultConnection('mysql');
+      
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'motivation' => str_random(10),
+            'availability_id' => 1
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/application', $params, ['token' => $token])
+        ->seeStatusCode(201);
+        App\Models\MissionApplication::where("mission_id", $mission->mission_id)
+        ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('app/mission/'.$mission->mission_id.'/volunteers', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+                
+        $user->delete();
+    }
 }

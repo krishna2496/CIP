@@ -2,17 +2,9 @@
 namespace App\Transformations;
 
 use App\Models\News;
-use App\Helpers\Helpers;
 
 trait NewsTransformable
 {
-    private $helpers;
-
-    public function __construct(Helpers $helpers)
-    {
-        $this->helpers = $helpers;
-    }
-
     /**
      * Get transformed news
      *
