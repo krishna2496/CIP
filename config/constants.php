@@ -23,6 +23,7 @@
             'ERROR_LANGUAGE_NOT_ACTIVE' => '200102',
             'ERROR_TENANT_LANGUAGE_NOT_FOUND' => '200103',
             'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => '200104',
+            'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '200106',
         ],
         'background_process_status' => [
             'PENDING' => '0',

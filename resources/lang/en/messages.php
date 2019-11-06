@@ -28,6 +28,7 @@ return [
         'MESSAGE_TENANT_LANGUAGE_UPDATED' => 'Tenant language updated sucessfully',
         'MESSAGE_TENANT_LANGUAGE_LISTING' => 'Tenant language listed sucessfully',
         'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Tenant language deleted sucessfully',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'No activity logs found'
     ],
     
     /**

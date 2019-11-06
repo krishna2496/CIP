@@ -15,7 +15,7 @@ class CreateTableMissionTheme extends Migration
     {
         Schema::create('mission_theme', function (Blueprint $table) {
             $table->bigIncrements('mission_theme_id')->unsigned();
-            $table->string('theme_name',255);
+            $table->string('theme_name', 255);
             $table->text('translations');
             $table->timestamps();
             $table->softDeletes();
