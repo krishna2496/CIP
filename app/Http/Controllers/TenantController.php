@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use InvalidArgumentException;
+use Aws\S3\Exception\S3Exception;
+use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
+use Queue;
+use App\Events\ActivityLogEvent;
+use App\Helpers\Helpers;
 
 class TenantController extends Controller
 {
@@ -26,20 +31,28 @@ class TenantController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new Tenant controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         TenantRepository $tenantRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -52,10 +65,15 @@ class TenantController extends Controller
     {
         try {
             $tenantList = $this->tenantRepository->tenantList($request);
-            
-            $responseMessage = (count($tenantList) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') :
+            $paginatedData = $this->helpers->paginationTransform(
+                $tenantList,
+                $request->except(['page','perPage']),
+                $request->url()
+            );
+            $apiData = $paginatedData;
+            $responseMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') :
             trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            return $this->responseHelper->successWithPagination($tenantList, Response::HTTP_OK, $responseMessage);
+            return $this->responseHelper->successWithPagination($apiData, Response::HTTP_OK, $responseMessage);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -92,6 +110,15 @@ class TenantController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiData = ['tenant_id' => $tenant->tenant_id];
         $apiMessage =  trans('messages.success.MESSAGE_TENANT_CREATED');
+
+        // Make activity log
+        event(new ActivityLogEvent(
+            config('constants.activity_log_types.TENANT'),
+            config('constants.activity_log_actions.CREATED'),
+            get_class($this),
+            $request->toArray(),
+            $tenant->tenant_id
+        ));
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -152,6 +179,15 @@ class TenantController extends Controller
             $apiData = ['tenant_id' => $id];
             $apiMessage = trans('messages.success.MESSAGE_TENANT_UPDATED');
 
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.TENANT'),
+                config('constants.activity_log_actions.UPDATED'),
+                get_class($this),
+                $request->toArray(),
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -175,6 +211,15 @@ class TenantController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_DELETED');
+
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.TENANT'),
+                config('constants.activity_log_actions.DELETED'),
+                get_class($this),
+                [],
+                $id
+            ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {

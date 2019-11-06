@@ -16,9 +16,9 @@ class CreateTableSkill extends Migration
     {
         Schema::create('skill', function (Blueprint $table) {
             $table->bigIncrements('skill_id')->unsigned();
-            $table->string('skill_name',64);
+            $table->string('skill_name', 64);
             $table->text('translations');
-            $table->integer('parent_skill');
+            $table->unsignedBigInteger('parent_skill');
             $table->timestamps();
             $table->softDeletes();
         });
