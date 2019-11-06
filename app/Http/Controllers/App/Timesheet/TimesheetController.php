@@ -210,7 +210,6 @@ class TimesheetController extends Controller
                 // Remove extra params
                 $request->request->remove('action');
                 break;
-            default:
         }
         
         // Check start dates and end dates of mission

@@ -72,7 +72,7 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "city_id" => 1,
         "country_id" => 233,
         "start_date" => "2019-05-15 10:40:00",
-        "end_date" => "2019-10-15 10:40:00",
+        "end_date" => "2022-10-15 10:40:00",
         "total_seats" => rand(1, 1000),        
         "mission_type" => config("constants.mission_type.GOAL"),
         "publication_status" => config("constants.publication_status.APPROVED"),
