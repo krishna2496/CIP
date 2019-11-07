@@ -43,4 +43,12 @@ interface MissionCommentInterface
      * @return bool
      */
     public function deleteUsersComment(int $commentId, int $userId): bool;
+
+    /**
+     * Get comment detail
+     *
+     * @param int $commentId
+     * @return App\Models\Comment
+     */
+    public function getCommentDetail(int $commentId): Comment;
 }
