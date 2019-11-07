@@ -21,7 +21,7 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
- $app->withFacades();
+$app->withFacades();
 
 $app->withEloquent();
 
@@ -78,7 +78,7 @@ $app->routeMiddleware([
  * cross origin api call support
  */
 $app->register(Barryvdh\Cors\ServiceProvider::class);
- 
+
 $app->configure('app'); //default authentication
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
