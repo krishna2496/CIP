@@ -229,7 +229,10 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(200);
-
+        
+        DB::setDefaultConnection('tenant');
+        App\Models\Mission::whereNull("deleted_at")->delete();
+        
         // Create goal mission
         $params = [
             "organisation" => [
@@ -296,7 +299,7 @@ class AppNotificationTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
@@ -739,7 +742,7 @@ class AppNotificationTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
@@ -943,7 +946,7 @@ class AppNotificationTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
