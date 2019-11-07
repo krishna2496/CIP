@@ -58,4 +58,12 @@ interface MessageInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getUnreadMessageCount(int $userId): Collection;
+
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessageDetail(int $messageId): Message;
 }
