@@ -48,7 +48,7 @@
                     </div>
                     <!-- Tabing grid view and list view start -->
                     
-                    <b-tabs class="view-tab">
+                    <b-tabs class="view-tab" v-model="tabNumber">
                     
                         <!-- grid view -->
                         <b-tab class="grid-tab-content">
@@ -171,7 +171,9 @@
                     "exploreMissionParams": "",
                     "tags": [],
                     "sortBy": "",
+                    "currentView" : 0
                 },
+                tabNumber : 0,
                 tags: "",
                 sortByFilterSet: true,
                 userList: [],
@@ -222,6 +224,7 @@
                 filter.exploreMissionType = store.state.exploreMissionType
                 filter.exploreMissionParams = store.state.exploreMissionParams
                 filter.sortBy = store.state.sortBy
+                filter.currentView = this.tabNumber
                 filter.addLoader = parmas
                 await missionListing(filter).then(response => {
                     if (response.data) {
@@ -264,6 +267,7 @@
             async missionFilter() {
 
                 await missionFilterListing().then(() => {
+                    this.tabNumber = store.state.currentView
                     this.getMissions();
                 });
             },
@@ -283,22 +287,23 @@
             searchMissions(searchParams, filterParmas) {
 
                 this.filterData.search = searchParams;
-                if (store.state.exploreMissionType == '') {
+                // if (store.state.exploreMissionType == '') {
                     this.filterData.countryId = filterParmas.countryId;
-                } else {
-                    this.filterData.countryId = '';
-                }
+                // } else {
+                //     this.filterData.countryId = '';
+                // }
 
-                if (store.state.exploreMissionType == '') {
+                // if (store.state.exploreMissionType == '') {
                     this.filterData.cityId = filterParmas.cityId;
-                } else {
-                    this.filterData.cityId = '';
-                }
+                // } else {
+                //     this.filterData.cityId = '';
+                // }
 
                 this.filterData.themeId = filterParmas.themeId;
                 this.filterData.skillId = filterParmas.skillId;
                 this.filterData.tags = filterParmas.tags;
                 this.filterData.sortBy = '';
+                this.filterData.currentView = this.tabNumber;
                 if (store.state.sortBy != null) {
                     this.filterData.sortBy = store.state.sortBy;
                 }
@@ -315,24 +320,24 @@
                 let filteExplore = {};
                 filteExplore.exploreMissionType = '';
                 filteExplore.exploreMissionParams = '';
-                this.search = '';
-                this.filterData.search = '';
-                this.filterData.countryId = '';
-                this.filterData.cityId = '';
-                this.filterData.themeId = '';
-                this.filterData.skillId = '';
-                this.filterData.tags = '';
-                this.filterData.sortBy = '';
-                this.sortByDefault = this.languageData.label.sort_by;
+                // this.search = '';
+                // this.filterData.search = '';
+                // this.filterData.countryId = '';
+                // this.filterData.cityId = '';
+                // this.filterData.themeId = '';
+                // this.filterData.skillId = '';
+                // this.filterData.tags = '';
+                // this.filterData.sortBy = '';
+                // this.sortByDefault = this.languageData.label.sort_by;
                 if (filters.parmasType) {
                     filteExplore.exploreMissionType = filters.parmasType;
                 }
                 if (filters.parmas) {
                     filteExplore.exploreMissionParams = filters.parmas;
                 }
-                store.commit('userFilter', this.filterData)
+                // store.commit('userFilter', this.filterData)
                 store.commit('exploreFilter', filteExplore);
-                this.$refs.secondaryHeader.changeSearch();
+                // this.$refs.secondaryHeader.changeSearch();
                 this.getMissions();
             },
             changeTag(data) {
@@ -355,25 +360,22 @@
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
+            let filteExplore = {};
             if (this.$route.params.searchParamsType) {
-                let filteExplore = {};
-                filteExplore.exploreMissionParams = '';
                 filteExplore.exploreMissionType = this.$route.params.searchParamsType;
                 if (this.$route.params.searchParams) {
                     filteExplore.exploreMissionParams = this.$route.params.searchParams;
                 }
                 store.commit('exploreFilter', filteExplore);
-                store.commit('clearFilter')
-                this.getMissions();
 
-            } else {
-                let filteExplore = {};
-                filteExplore.exploreMissionType = '';
-                filteExplore.exploreMissionParams = '';
+            } 
+                // let filteExplore = {};
+                // filteExplore.exploreMissionType = '';
+                // filteExplore.exploreMissionParams = '';
                 store.commit('exploreFilter', filteExplore);
                 // Mission listing
                 this.missionFilter();
-            }
+            
             
             this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
             this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
@@ -381,6 +383,7 @@
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
             this.defaultCountry = store.state.defaultCountryId
+             this.activeView = 'listView'
             searchUser().then(response => {
                 this.userList = response;
             });

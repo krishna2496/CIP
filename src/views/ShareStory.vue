@@ -42,7 +42,7 @@
                                 <b-row>
                                     <b-col md="12">
                                         <label for>{{languageData.label.my_story}}*</label>
-                                        <vue-ckeditor :config="config"  v-model="story.myStory"
+                                        <vue-ckeditor :config="config" v-model="story.myStory"
                                             :class="{ 'is-invalid': submitted && $v.story.myStory.$error }"
                                             :placeholder="languageData.placeholder.story_detail" />
                                         <div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
@@ -114,24 +114,16 @@
 
                             </div>
                         </div>
-                        <!-- <div class="btn-row">
-							<b-button class="btn-borderprimary" 
-								v-bind:class="{disabled:previewButtonEnable}" @click="previewStory(storyId)"><span>{{languageData.label.preview}}
-								</span></b-button>
-							<b-button class="btn-bordersecondary"
-								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
-								@click="saveStory('save')">{{languageData.label.save}}</b-button>
-							<b-button class="btn-bordersecondary btn-submit"
-								v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
-								@click="saveStory('submit')">{{languageData.label.submit}}</b-button>
-						</div> -->
                     </b-col>
                 </b-row>
                 <div class="btn-row">
-                    <b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
+                    <b-button class="btn-borderprimary" @click="openConfirmModal">{{languageData.label.cancel}}
                     </b-button>
-                    <b-button class="btn-borderprimary" v-bind:class="{disabled:previewButtonEnable}"
+                    <!-- <b-button class="btn-borderprimary" v-bind:class="{disabled:previewButtonEnable}"
                         @click="previewStory(storyId)"><span>{{languageData.label.preview}}
+                        </span></b-button> -->
+                    <b-button class="btn-borderprimary" @click="saveStory('preview')">
+                        <span>{{languageData.label.preview}}
                         </span></b-button>
                     <b-button class="btn-bordersecondary btn-save"
                         v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}" @click="saveStory('save')">
@@ -213,16 +205,18 @@
                 duplicateYoutubeUrlError: false,
                 config: {
                     toolbar: [
-                        ['Source','-','NewPage','DocProps','Preview','Print','-','Templates'],
-                        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo'],
-                        ['Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat'],
-                        ['NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv',
-                        '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl'],
-                        [ 'Link','Unlink','Anchor' ],
-                        ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ],
-                        ['Styles','Format','Font','FontSize'],
-                        [ 'TextColor','BGColor'],
-                        ['Maximize', 'ShowBlocks','-','About' ]
+                        ['Source', '-', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'],
+                        ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+                        ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+                        ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
+                            '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr',
+                            'BidiRtl'
+                        ],
+                        ['Link', 'Unlink', 'Anchor'],
+                        ['Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'],
+                        ['Styles', 'Format', 'Font', 'FontSize'],
+                        ['TextColor', 'BGColor'],
+                        ['Maximize', 'ShowBlocks', '-', 'About']
                     ]
                 }
             }
@@ -279,7 +273,10 @@
                 this.isLoaderActive = true
                 if (params == 'save') {
                     this.saveButtonAjaxCall = true
-                    this.submitStoryDetail();
+                    this.submitStoryDetail(params);
+                } else if (params == 'preview') {
+                    this.saveButtonAjaxCall = true
+                    this.submitStoryDetail(params);
                 } else {
                     this.submitStory();
                 }
@@ -419,7 +416,7 @@
                 })
             },
 
-            submitStoryDetail() {
+            submitStoryDetail(params) {
                 const formData = new FormData();
                 this.message = null;
                 this.showDismissibleAlert = false
@@ -439,29 +436,50 @@
                 }
                 if (this.storyId == '') {
                     submitStory(formData).then(response => {
-                        this.showDismissibleAlert = true
+                        
                         if (response.error === true) {
+                            this.showDismissibleAlert = true
                             this.classVariant = 'danger'
                             //set error msg
                             this.message = response.message
                         } else {
                             this.storyId = response.data
-                            if (this.storyId != '') {
-                                this.previewButtonEnable = false
-                                this.submitButtonEnable = false
-                                this.getStoryDetail();
+                            if (params == "preview" && this.storyId != '') {
+                                    let routeData = this.$router.resolve({
+                                        path: "/story-preview" + '/' + this.storyId
+                                    });
+                                    window.open(routeData.href, '_blank');
+                                    this.isLoaderActive = false
+                                    this.saveButtonAjaxCall = false
+                                    return false;
                             } else {
-                                this.previewButtonEnable = true
-                                this.submitButtonEnable = true
+                                this.showDismissibleAlert = true
+                                if (this.storyId != '') {
+                                    this.previewButtonEnable = false
+                                    this.submitButtonEnable = false
+                                    this.getStoryDetail();
+                                } else {
+                                    this.previewButtonEnable = true
+                                    this.submitButtonEnable = true
+                                }
+                                this.classVariant = 'success'
+                                //set error msg
+                                this.message = response.message
                             }
-                            this.classVariant = 'success'
-                            //set error msg
-                            this.message = response.message
                         }
                         this.isLoaderActive = false
                         this.saveButtonAjaxCall = false
                     })
                 } else {
+                    if (params == "preview" && this.storyId != '') {
+                        let routeData = this.$router.resolve({
+                            path: "/story-preview" + '/' + this.storyId
+                        });
+                        window.open(routeData.href, '_blank');
+                        this.isLoaderActive = false
+                        this.saveButtonAjaxCall = false
+                        return false;
+                    }
                     if (this.story.videoUrl == '') {
                         formData.append('story_videos', '');
                     }
@@ -563,6 +581,25 @@
                         this.isLoaderActive = false
                     } else {
                         this.$router.push('/404');
+                    }
+                })
+            },
+
+            openConfirmModal() {
+                this.$bvModal.msgBoxConfirm(this.languageData.label.cancle_story, {
+                        buttonSize: 'md',
+                        okTitle: this.languageData.label.yes,
+                        cancelTitle: this.languageData.label.no,
+                        centered: true,
+                        size: 'md',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        headerClass: 'p-2 border-bottom-0',
+                        footerClass: 'p-2 border-top-0',
+                        centered: true
+                }).then(value => {
+                    if(value == true) {
+                        this.cancleShareStory()
                     }
                 })
             }

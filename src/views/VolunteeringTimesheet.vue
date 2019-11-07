@@ -552,22 +552,23 @@
                 let returnData = [];
                 this.isCurrentDate = false;
                 let missionEndDate = timeSheetArray.end_date
-                let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
-                let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
-                let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+                let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD HH::mm::ss")
+                let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss");
+                let endDate = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss");
+               
                 let disableEndDate = '';
                 if (endDate > disablefuterDate) {
                     disableEndDate = disablefuterDate
                 } else {
                     disableEndDate = endDate
                 }
-              
+
                 let timeArray = timeSheetArray.timesheet;
                 let currentTimeSheetYear = '';
                 let currentTimeSheetMonth = '';
                 let currentDate = ''
                 let currentDataArray = []
-
+                let now = moment().format("YYYY-MM-DD")
                 if (timeSheetType == 'time') {
                     currentDataArray = this.volunteeringHoursWeeks
 
@@ -589,7 +590,11 @@
                     }
                     
                     currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
-                    
+                    if(now == currentDate) {
+                        currentDate = moment().format("YYYY-MM-DD HH:mm:ss")
+                    } else {
+                        currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD HH::mm:ss");
+                    }
                 } else {
                     currentDataArray = this.volunteeringGoalWeeks
 
@@ -609,7 +614,12 @@
                         goalDate = Math.floor(date)
                     }
 
-                     currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
+                    currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
+                    if(now == currentDate) {
+                        currentDate = moment().format("YYYY-MM-DD HH:mm:ss")
+                    } else {
+                        currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD HH::mm:ss");
+                    }
                 }
 
                 timeArray.filter((timeSheetItem) => {
@@ -637,7 +647,6 @@
                 if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
                     returnData.push("disabled")
                 }
-
                 if (currentDate > disableEndDate) {
                     returnData.push("disabled")
                 }

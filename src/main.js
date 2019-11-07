@@ -44,9 +44,9 @@ let entryUrl = null;
 router.beforeEach(async(to, from, next) => {
     // if from path is (/) then we need to call custom css call and wait for its reponse    
     if ((from.path == '/' && to.path == '/') || from.path == '/') {
-        document.body.classList.add("loader-enable");
+        // document.body.classList.add("loader-enable");
         await customCss().then(() => {
-            document.body.classList.remove("loader-enable");
+            // document.body.classList.remove("loader-enable");
         });
     }
     if (store.state.isLoggedIn) {

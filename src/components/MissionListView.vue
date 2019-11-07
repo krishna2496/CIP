@@ -493,8 +493,8 @@
                 })
             },
             getAppliedStatus(missionDetail) {
-                let currentDate = moment().format("YYYY-MM-DD");
-                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD HH::mm:ss");
                 let checkEndDateExist = true;
                 if(missionDetail.end_date != '' && missionDetail.end_date != null) {
                     if(currentDate > missionEndDate) {
@@ -506,8 +506,8 @@
                 }
             },
             getClosedStatus(missionDetail) {
-                let currentDate = moment().format("YYYY-MM-DD");
-                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD HH::mm:ss");
                 if(missionDetail.end_date != '' && missionDetail.end_date != null) {
                     if(currentDate > missionEndDate) {
                         return true;

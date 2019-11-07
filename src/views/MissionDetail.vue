@@ -289,6 +289,7 @@
 										</div>
 									</b-list-group-item>
 								</b-list-group>
+								
 								<div class="btn-wrap group-btns">
 									<b-button class="btn-borderprimary icon-btn" @click="handleModal(missionId)"
 										v-if="isInviteCollegueDisplay">
@@ -320,27 +321,28 @@
 											</svg>
 										</i>
 									</b-button>
-
-									<b-button class="btn-bordersecondary icon-btn" v-else :disabled="disableApply"
-										@click="applyForMission(missionDetail.mission_id)">
-										<span>
-											{{ applyButton }}
-										</span>
-										<i>
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
-												height="15">
-												<g id="Main Content">
-													<g id="1">
-														<g id="Button">
-															<path id="Forma 1 copy 12" class="shp0"
-																d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+								
+									<div v-else>
+										<b-button class="btn-bordersecondary icon-btn" v-if="!hideApply" :disabled="disableApply"
+											@click="applyForMission(missionDetail.mission_id)">
+											<span>
+												{{ applyButton }}
+											</span>
+											<i>
+												<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
+													height="15">
+													<g id="Main Content">
+														<g id="1">
+															<g id="Button">
+																<path id="Forma 1 copy 12" class="shp0"
+																	d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+															</g>
 														</g>
 													</g>
-												</g>
-											</svg>
-										</i>
-									</b-button>
-
+												</svg>
+											</i>
+										</b-button>
+									</div>
 								</div>
 							</div>
 						</b-col>
@@ -533,6 +535,7 @@
 						<b-col xl="4" lg="5" class="platform-details-right">
 							<div class="info-block">
 								<h2 class="title-with-border"><span>{{ languageData.label.information }}</span></h2>
+								
 								<div class="table-wrap">
 									<div class="table-row" v-if="isSkillDispaly">
 										<span class="label-col">{{languageData.label.skills}}</span>
@@ -560,6 +563,12 @@
 											<em v-else class="volunteery-counter"> {{ languageData.label.volunteers}}
 												)</em>
 										</span>
+									</div>
+									<div v-if="customInformation.length > 0">
+										<div class="table-row" v-for="(data,index) in customInformation" :key=index>
+											<span class="label-col">{{data.title}}</span>
+											<span class="detail-col">{{data.description}}</span>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -692,6 +701,7 @@
 				recentVolunterLoader: true,
 				missionDetail: [],
 				disableApply: false,
+				hideApply : false,
 				missionDocument: [],
 				relatedMissionlLoader: true,
 				isShownMediaComponent: false,
@@ -746,7 +756,8 @@
 					disabledFutureDates: '',
 					missionName: '',
 					action: ''
-				}
+				},
+				customInformation : []
 			};
 		},
 		mounted() {
@@ -771,6 +782,10 @@
 				tabsEvent.currentTarget.className += " active";
 			}
 
+			if (!window.location.origin) {
+  				window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+			}
+			
 			let currentUrl = (((window.location.origin).split('.')));
 
 			if (currentUrl[0]) {
@@ -1004,6 +1019,20 @@
 									this.missionAddedToFavoriteByUser = true;
 								}
 
+								let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+
+								if(response.data[0].end_date != '' && response.data[0].end_date != null) {
+									let missionEndDate = moment(response.data[0].end_date).format("YYYY-MM-DD HH::mm:ss");
+									if(currentDate > missionEndDate) {
+										this.hideApply = true
+									}
+								}
+								if(response.data[0].application_deadline != '' && response.data[0].application_deadline != null) {
+									let missionDeadline = moment(response.data[0].application_deadline).format("YYYY-MM-DD HH::mm:ss");
+									if(currentDate > missionDeadline) {
+										this.hideApply = true
+									}
+								}
 
 								if (response.data[0].user_application_status ==
 									constants.AUTOMATICALLY_APPROVED || response.data[0].user_application_status ==
@@ -1019,6 +1048,9 @@
 								}
 
 								this.missionDocument = response.data[0].mission_document
+								if(response.data[0].custom_information != null) {
+									this.customInformation = response.data[0].custom_information;s
+								}
 							} else {
 								this.$router.push('/404');
 							}
@@ -1217,6 +1249,8 @@
 				this.isQuickAccessFilterDisplay = false
 				this.relatedMissionsDisplay = false
 				this.timeSheetId = false
+				this.hideApply = false,
+				this.customInformation = []
 				this.getMissionDetail();
 				this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT + "social-sharing/" + this.domainName + "/" + this
 					.missionId + "/" + store.state.defaultLanguageId;

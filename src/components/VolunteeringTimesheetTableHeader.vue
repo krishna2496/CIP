@@ -120,7 +120,14 @@
 		mounted() {
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
-			for (let index = currentYear; index > (currentYear - 5); index--) {
+			let yearDiff  = 5;
+			if(store.state.timesheetInitialYear && store.state.timesheetInitialYear != '') {
+				let lastYear = store.state.timesheetInitialYear;
+				if((currentYear - lastYear) +1 > 0) { 
+					yearDiff = (currentYear - lastYear) +1;
+				}
+			}
+			for (let index = currentYear; index > (currentYear - yearDiff); index--) {
 				yearsList.push([index, index]);
 			}
 			this.yearListing = yearsList;

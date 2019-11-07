@@ -348,8 +348,9 @@
 								// chart js
 								var lineChartRefs = this.$refs.lineChartRefs;
 								var lineContent = lineChartRefs.getContext("2d");
+							
 								lineChartRefs.height = 350;
-								new Chart(lineContent, {
+								let chartConfig = {
 									type: "line",
 									data: {
 										labels: this.chartdata,
@@ -400,7 +401,8 @@
 											}]
 										}
 									}
-								});
+								}
+								new Chart(lineContent,chartConfig);
 							}
 						}
 					}
