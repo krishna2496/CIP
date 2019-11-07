@@ -48,7 +48,9 @@ export default new Vuex.Store({
         slideEffect: localStorage.getItem('slideEffect'),
         cookieAgreementDate: localStorage.getItem('cookieAgreementDate'),
         cookiePolicyText: localStorage.getItem('cookiePolicyText'),
-        email: localStorage.getItem('email')
+        email: localStorage.getItem('email'),
+        currentView: localStorage.getItem('currentView'),
+        timesheetInitialYear: localStorage.getItem('timesheetInitialYear')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -121,21 +123,28 @@ export default new Vuex.Store({
         },
         // User filter data
         userFilter(state, filters) {
-
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
             localStorage.setItem('cityId', filters.cityId)
             localStorage.setItem('themeId', filters.themeId)
             localStorage.setItem('skillId', filters.skillId)
             localStorage.setItem('tags', JSON.stringify(filters.tags))
-            localStorage.setItem('sortBy', filters.sortBy),
-                state.search = filters.search
+            localStorage.setItem('sortBy', filters.sortBy)
+            if (filters.currentView) {
+                localStorage.setItem('currentView', filters.currentView)
+                state.currentView = filters.currentView
+            } else {
+                localStorage.setItem('currentView', 0)
+                state.currentView = 0
+            }
+            state.search = filters.search
             state.countryId = filters.countryId
             state.cityId = filters.cityId
             state.themeId = filters.themeId
             state.skillId = filters.skillId
             state.tags = JSON.stringify(filters.tags)
             state.sortBy = filters.sortBy
+
         },
 
         // Explore data
@@ -283,6 +292,10 @@ export default new Vuex.Store({
         cookiePolicyText(state, data) {
             localStorage.setItem('cookiePolicyText', JSON.stringify(data))
             state.cookiePolicyText = JSON.stringify(data)
+        },
+        timesheetInitialYear(state, data) {
+            localStorage.setItem('timesheetInitialYear', data)
+            state.timesheetInitialYear = data
         }
     },
     getters: {},

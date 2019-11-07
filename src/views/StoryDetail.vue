@@ -19,7 +19,7 @@
 								</div>
 							</div>
 							<b-row class="thumb-slider" v-if="storyDetailList.storyMedia && storyDetailList.storyMedia.length > 0">
-								<b-col xl="10" class="left-col">
+								<b-col :xl="columnWidth" class="left-col">
 									<div class="gallery-top" 
 										v-bind:class="{
 											'gallery-top' : true,
@@ -37,7 +37,7 @@
 										</div>
 									</div>
 								</b-col>
-								<b-col xl="2" class="right-col" >
+								<b-col xl="2" class="right-col" v-if="storyDetailList.storyMedia && storyDetailList.storyMedia.length > 1">
 									<slick ref="slick" :options="slickOptions" class="gallery-thumbs">
 										
 											<div 
@@ -229,7 +229,8 @@
 					
 				},
 				storyDetailList: null,
-				userList:[]
+				userList:[],
+				columnWidth : 10
 			};
 		},
 		mounted() {},
@@ -296,8 +297,6 @@
 				}
 			},
 
-			
-
 			getEmbededPath(media) {
 				if (media.type == 'video') {
 					let videoPath = media.path;
@@ -338,6 +337,10 @@
 								}
 							})
 						}
+						if(this.storyDetailList.storyMedia.length < 2) {
+							this.columnWidth = 12
+						}
+
 						this.storyDetailList.storyMedia  = mediaType
 						this.isContentLoaded = true
 						
@@ -349,6 +352,7 @@
 					}
 				})
 			},
+			
 			searchUsers() {
 				searchUser().then(userResponse => {
 					this.userList = userResponse;

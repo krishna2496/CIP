@@ -30,16 +30,16 @@ export default async(data) => {
         url = url + "&sort_by=" + data.sortBy
     }
 
-    if (data.exploreMissionType != '') {
+    if (data.exploreMissionType != '' && data.exploreMissionType != undefined) {
         url = url + "&explore_mission_type=" + data.exploreMissionType
     }
 
-    if (data.exploreMissionParams != '') {
+    if (data.exploreMissionParams != '' && data.exploreMissionParams != undefined) {
         url = url + "&explore_mission_params=" + data.exploreMissionParams
     }
-    // if (store.state.clearFilterSet == "") {
-    //     document.body.classList.add("loader-enable");
-    // }
+
+    url = url + "&current_view=" + data.currentView
+
     await axios({
             url: url,
             method: 'get',
@@ -60,6 +60,8 @@ export default async(data) => {
                 filterData.skillId = response.data.meta_data.filters.skill_id;
                 filterData.tags = response.data.meta_data.filters.tags;
                 filterData.sortBy = response.data.meta_data.filters.sort_by;
+                // filterData.currentView = parseInt(response.data.data.filters.current_view);
+
                 store.commit('userFilter', filterData)
             } else {
                 let filterData = {};
@@ -70,6 +72,7 @@ export default async(data) => {
                 filterData.skillId = '';
                 filterData.tags = '';
                 filterData.sortBy = '';
+                filterData.currentView = '';
                 store.commit('userFilter', filterData)
             }
             if (store.state.clearFilterSet == "") {

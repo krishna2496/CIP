@@ -388,10 +388,10 @@
                     if (this.$route.params.searchParams) {
                         this.filterData['parmas'] = this.$route.params.searchParams;
                     }
-                    async () => {
-                        await eventBus.$emit('clearAllFilters');
-                    }
-                    eventBus.$emit('setDefaultText');
+                    // async () => {
+                    //     await eventBus.$emit('clearAllFilters');
+                    // }
+                    // eventBus.$emit('setDefaultText');
                     this.$emit('exploreMisison', this.filterData);
                     let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
@@ -546,7 +546,10 @@
                         let classVariant = 'success'
                         if (response.error == true) {
                             classVariant = 'danger'
+                        } else {
+                            this.cancelsetting()
                         }
+                        
                         this.makeToast(classVariant, response.message)
                     })
                 },

@@ -37,7 +37,7 @@
 
             </b-row>
 
-            <b-modal ref="contactModal" :modal-class="'contact-modal'" hide-footer centered>
+            <b-modal @hidden="hideModal" ref="contactModal" :modal-class="'contact-modal'" hide-footer centered>
                 <template slot="modal-header" slot-scope="{ close }">
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{ languageData.label.contact_us }}</h5>
@@ -226,7 +226,7 @@
                     return items.slug
                 }
             },
-
+            
             clickHandler() {
                 this.$emit('cmsListing', this.$route.params.slug);
             },
@@ -282,6 +282,9 @@
                     if(response.error == false) {
                         this.classVariant = 'success';
                         this.message = response.message
+                        setTimeout(() => {
+                            this.$refs.contactModal.hide()
+                        }, 800);
                     } else {
                         this.classVariant = 'danger';
                         this.message = response.message
@@ -289,7 +292,14 @@
                         this.contactUs.message =  ''
                     }
                 })
-            }
+            },
+            hideModal() {
+				this.showDismissibleAlert = false
+				this.submitted = false;
+				this.$v.$reset();
+				this.contactUs.message = '';
+				this.contactUs.subject = '';
+			},
         },
         updated() {
             this.footerAdj();
