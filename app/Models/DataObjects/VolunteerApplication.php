@@ -5,6 +5,11 @@ namespace App\Models\DataObjects;
 class VolunteerApplication implements \JsonSerializable
 {
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var string
      */
     private $applicationDate;
@@ -102,6 +107,14 @@ class VolunteerApplication implements \JsonSerializable
         $this->applicationDate = $applicationDate;
         $this->applicationStatus = $applicationStatus;
         $this->missionId = $missionId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     /**
@@ -238,6 +251,14 @@ class VolunteerApplication implements \JsonSerializable
     public function getMissionThemeId(): int
     {
         return $this->missionThemeId;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     /**
@@ -386,6 +407,7 @@ class VolunteerApplication implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->id,
             'applicationDate' => $this->applicationDate,
             'applicantMotivation' => $this->applicantMotivation,
             'applicationStatus' => $this->applicationStatus,

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 class MissionApplicationQuery implements QueryableInterface
 {
     const ALLOWED_SORTABLE_FIELDS = [
+        'applicationId' => 'ma.mission_application_id',
         'applicantFirstName' => 'u.first_name',
         'applicantLastName' => 'u.last_name',
         'applicantEmail' => 'u.email',
@@ -77,6 +78,7 @@ class MissionApplicationQuery implements QueryableInterface
         $applications = DB::table('mission_application AS ma')
             ->select([
                 DB::raw('count(distinct mission_application_id) AS total'),
+                'ma.mission_application_id as id',
                 'ma.applied_at as applicationDate',
                 'ma.motivation as applicantMotivation',
                 'ma.approval_status as applicationStatus',
