@@ -1220,6 +1220,7 @@ class AppStoryTest extends TestCase
             'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
         ];
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
         $this->patch('app/story/'.$story->story_id, $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([

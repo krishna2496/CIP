@@ -189,6 +189,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get history of total hours spent on specific theme        
+        \DB::setDefaultConnection('mysql');
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
         ->seeStatusCode(200)
@@ -564,6 +566,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get history of total hours spent on specific skill        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        \DB::setDefaultConnection('mysql');
         $response = $this->get(route('app.volunteer.history.skill'), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -866,6 +869,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Total history hours for all goal missions
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        \DB::setDefaultConnection('mysql');
         
         $response = $this->get(route('app.volunteer.history.goal-mission'), ['token' => $token])
         ->seeStatusCode(200)
@@ -884,6 +888,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ]
         );
         
+        \DB::setDefaultConnection('mysql');
+
         // Export total history hours for all goal missions
         $response = $this->get(route('app.volunteer.history.goal-mission.export'), ['token' => $token])
         ->seeStatusCode(200);
