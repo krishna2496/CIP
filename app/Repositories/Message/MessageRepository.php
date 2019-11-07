@@ -134,6 +134,7 @@ class MessageRepository implements MessageInterface
     {
         return $this->message->findOrFail($messageId);
     }
+
     /**
      * Read message.
      *
@@ -164,5 +165,16 @@ class MessageRepository implements MessageInterface
             'user_id' => $userId
         ])->get();
         return $messageUnreadCount;
+    }
+
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessageDetail(int $messageId): Message
+    {
+        return $this->message->withTrashed()->find($messageId);
     }
 }

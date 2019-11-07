@@ -452,4 +452,15 @@ class StoryRepository implements StoryInterface
     {
         return $this->storyMedia->where('story_id', $storyId)->get();
     }
+
+    /**
+     * Get story detail.
+     *
+     * @param int $storyId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getStoryDetail(int $storyId): Collection
+    {
+        return $this->story->withTrashed()->where('story_id', $storyId)->get();
+    }
 }
