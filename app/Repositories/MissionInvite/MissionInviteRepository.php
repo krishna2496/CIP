@@ -59,4 +59,37 @@ class MissionInviteRepository implements MissionInviteInterface
         return $this->missionInvite
         ->create(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId]);
     }
+
+    /**
+     * Get user id
+     *
+     * @param int $inviteId
+     * @return int
+     */
+    public function getUserId(int $inviteId): int
+    {
+        return $this->missionInvite->getUserId($inviteId);
+    }
+
+    /**
+     * Get mission id
+     *
+     * @param int $inviteId
+     * @return int
+     */
+    public function getMissionId(int $inviteId): int
+    {
+        return $this->missionInvite->getMissionId($inviteId);
+    }
+
+    /**
+     * Get mission details
+     *
+     * @param int $inviteId
+     * @return App\Models\MissionInvite
+     */
+    public function getDetails(int $inviteId): MissionInvite
+    {
+        return $this->missionInvite->getDetails($inviteId);
+    }
 }

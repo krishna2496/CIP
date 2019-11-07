@@ -3,7 +3,6 @@ namespace App\Helpers;
 
 use Illuminate\Http\Request;
 use DB;
-use PDOException;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Helpers\Helpers;
 use Illuminate\Support\Collection;
@@ -18,6 +17,11 @@ class LanguageHelper
     private $helpers;
 
     /**
+     * @var DB
+     */
+    private $db;
+
+    /**
      * Create a new helper instance.
      *
      * @param App\Helpers\Helpers $helpers
@@ -26,6 +30,7 @@ class LanguageHelper
     public function __construct(Helpers $helpers)
     {
         $this->helpers = $helpers;
+        $this->db = app()->make('db');
     }
 
     /**
@@ -36,18 +41,14 @@ class LanguageHelper
      */
     public function getLanguages(Request $request): Collection
     {
-        try {
-            // Connect master database to get language details
-            $this->helpers->switchDatabaseConnection('mysql', $request);
-            $languages = DB::table('language')->whereNull('deleted_at')->get();
-            
-            // Connect tenant database
-            $this->helpers->switchDatabaseConnection('tenant', $request);
+        // Connect master database to get language details
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $languages = $this->db->table('language')->whereNull('deleted_at')->get();
+        
+        // Connect tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
 
-            return $languages;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        return $languages;
     }
 
     /**
@@ -58,31 +59,20 @@ class LanguageHelper
      */
     public function getTenantLanguages(Request $request)
     {
-        try {
-            $tenant = $this->helpers->getTenantDetail($request);
-            // Connect master database to get language details
-            $this->helpers->switchDatabaseConnection('mysql', $request);
-            
-            $tenantLanguages = DB::table('tenant_language')
-            ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
-            ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->get();
+        $tenant = $this->helpers->getTenantDetail($request);
+        // Connect master database to get language details
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+        
+        $tenantLanguages = $this->db->table('tenant_language')
+        ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+        ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->get();
 
-            // Connect tenant database
-            $this->helpers->switchDatabaseConnection('tenant', $request);
-            
-            return $tenantLanguages;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Connect tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+        
+        return $tenantLanguages;
     }
     
     /**
@@ -93,29 +83,18 @@ class LanguageHelper
      */
     public function validateLanguageId(Request $request)
     {
-        try {
-            $tenant = $this->helpers->getTenantDetail($request);
-            // Connect master database to get language details
-            $this->helpers->switchDatabaseConnection('mysql', $request);
-            
-            $tenantLanguage = DB::table('tenant_language')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->where('language_id', $request->language_id);
-  
-            // Connect tenant database
-            $this->helpers->switchDatabaseConnection('tenant', $request);
-            
-            return ($tenantLanguage->count() > 0) ? true : false;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $tenant = $this->helpers->getTenantDetail($request);
+        // Connect master database to get language details
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+        
+        $tenantLanguage = $this->db->table('tenant_language')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->where('language_id', $request->language_id);
+
+        // Connect tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+        
+        return ($tenantLanguage->count() > 0) ? true : false;
     }
 
     /**
@@ -126,29 +105,20 @@ class LanguageHelper
      */
     public function getTenantLanguageList(Request $request)
     {
-        try {
-            $tenant = $this->helpers->getTenantDetail($request);
-            // Connect master database to get language details
-            $this->helpers->switchDatabaseConnection('mysql', $request);
+        $tenant = $this->helpers->getTenantDetail($request);
+        // Connect master database to get language details
+        $this->helpers->switchDatabaseConnection('mysql', $request);
 
-            $tenantLanguages = DB::table('tenant_language')
-            ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
-            ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->pluck('language.name', 'language.language_id');
+        $tenantLanguages = $this->db->table('tenant_language')
+        ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+        ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->pluck('language.name', 'language.language_id');
 
-            // Connect tenant database
-            $this->helpers->switchDatabaseConnection('tenant', $request);
-            
-            return $tenantLanguages;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Connect tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+        
+        return $tenantLanguages;
     }
 
     /**
@@ -163,7 +133,7 @@ class LanguageHelper
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql', $request);
 
-        $tenantLanguagesCodes = DB::table('tenant_language')
+        $tenantLanguagesCodes = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
@@ -172,5 +142,87 @@ class LanguageHelper
         $this->helpers->switchDatabaseConnection('tenant', $request);
 
         return $tenantLanguagesCodes;
+    }
+    
+    /**
+     * Get language id from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
+    public function getLanguageId(Request $request): int
+    {
+        $languages = $this->getTenantLanguages($request);
+        return $languages->where('code', config('app.locale'))->first()->language_id;
+    }
+
+    /**
+     * Get language details from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return null|Object
+     */
+    public function getLanguageDetails(Request $request): ?Object
+    {
+        $languages = $this->getTenantLanguages($request);
+        $languageCode = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : $this->getDefaultTenantLanguage($request);
+        
+        $language = $languages->where('code', $languageCode)->first();
+        return (!is_null($language)) ? $language : $this->getDefaultTenantLanguage($request);
+    }
+
+    /**
+     * Get language id from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Object
+     */
+    public function getDefaultTenantLanguage(Request $request): Object
+    {
+        $languages = $this->getTenantLanguages($request);
+        return $languages->where('default', 1)->first();
+    }
+
+    /**
+     * Get language details for localization
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Object
+     */
+    public function checkTenantLanguage(Request $request): Object
+    {
+        // Get tenant name from front user's request
+        if (is_null($request->header('php-auth-user')) || $request->header('php-auth-user') === '') {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } else { // Get tenant name from front admin's request
+            $tenantDetails = DB::table('api_user')
+            ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
+            ->where('api_key', base64_encode($request->header('php-auth-user')))
+            ->where('api_user.status', '1')
+            ->where('tenant.status', '1')
+            ->whereNull('api_user.deleted_at')
+            ->whereNull('tenant.deleted_at')
+            ->first();
+            $tenantName = $tenantDetails->name;
+        }
+
+        // Get tenant details from tenant name
+        $tenant = DB::table('tenant')->where('name', $tenantName)->first();
+
+        // Connect master database to get language details
+        $tenantLanguagesQuery = DB::table('tenant_language')
+        ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+        ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->get();
+
+        $language = $tenantLanguagesQuery->where('code', config('app.locale'))->first();
+
+        // If localization language not found then use tenant default language
+        if (is_null($language)) {
+            $language = $tenantLanguagesQuery->where('default', 1)->first();
+        }
+        return $language;
     }
 }

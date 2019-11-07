@@ -29,7 +29,7 @@ class MissionTheme extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_theme_id', 'theme_name', 'translations'];
+    protected $visible = ['mission_theme_id', 'theme_name', 'translations', 'total_minutes'];
 
     /**
      * The attributes that are mass assignable.
@@ -37,16 +37,6 @@ class MissionTheme extends Model
      * @var array
      */
     protected $fillable = ['theme_name', 'translations'];
-
-    /**
-     * Get the mission that has theme
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function mission(): HasMany
-    {
-        return $this->hasMany(Mission::class, 'mission_theme_id', 'theme_id');
-    }
 
     /**
      * Set translations attribute on the model.
@@ -67,7 +57,11 @@ class MissionTheme extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        return unserialize($value);
+        $data = @unserialize($value);
+        if (empty($value)) {
+            $value = array();
+        }
+        return ($data !== false) ? unserialize($value): $value;
     }
 
     /**

@@ -43,11 +43,11 @@ class UserSkill extends Model
      *
      * @param  int  $userId
      * @param  int  $skillId
-     * @return bool
+     * @return self
      */
-    public function linkUserSkill(int $userId, int $skillId): bool
+    public function linkUserSkill(int $userId, int $skillId): self
     {
-        return static::firstOrNew(array('user_id' => $userId, 'skill_id' => $skillId, 'deleted_at' => null))->save();
+        return static::firstOrCreate(array('user_id' => $userId, 'skill_id' => $skillId, 'deleted_at' => null));
     }
 
     /**
@@ -70,17 +70,6 @@ class UserSkill extends Model
     public function skill(): BelongsTo
     {
         return $this->belongsTo(Skill::class, 'skill_id', 'skill_id');
-    }
-
-    /**
-     * Find the specified resource.
-     *
-     * @param  int  $userId
-     * @return Skill
-     */
-    public function find(int $userId): Skill
-    {
-        return static::with('skill')->find($userId);
     }
 
     /**

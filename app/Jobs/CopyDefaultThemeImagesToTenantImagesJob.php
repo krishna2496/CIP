@@ -16,7 +16,7 @@ class CopyDefaultThemeImagesToTenantImagesJob extends Job
 
     /**
      * Create a new job instance.
-     * 
+     *
      * @param string $tenantName
      * @return void
      */

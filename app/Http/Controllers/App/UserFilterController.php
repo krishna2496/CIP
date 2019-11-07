@@ -11,8 +11,8 @@ use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use PDOException;
 use App\Helpers\ResponseHelper;
+use App\Helpers\LanguageHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
 class UserFilterController extends Controller
@@ -44,6 +44,11 @@ class UserFilterController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
      * @var App\Repositories\Country\CountryRepository
      */
     private $countryRepository;
@@ -56,10 +61,12 @@ class UserFilterController extends Controller
     /**
      * Create a new controller instance.
      *
+     *
      * @param App\Repositories\UserFilter\UserFilterRepository $filters
      * @param App\Repositories\MissionTheme\MissionThemeRepository $theme
      * @param App\Repositories\Skill\SkillRepository $skill
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helper
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param App\Repositories\City\CityRepository $cityRepository
@@ -70,12 +77,14 @@ class UserFilterController extends Controller
         MissionThemeRepository $theme,
         SkillRepository $skill,
         ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper,
         Helpers $helper,
         CountryRepository $countryRepository,
         CityRepository $cityRepository
     ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
         $this->theme = $theme;
         $this->skill = $skill;
         $this->helper = $helper;
@@ -86,78 +95,76 @@ class UserFilterController extends Controller
     /**
      * Display listing of user filter
      *
+     *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request):JsonResponse
     {
-        try {
-            // Get data of user's filter
-            $filterTagArray = [];
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $filters = $this->filters->userFilter($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
+        $filterData = [];
+
+        // Get data of user's filter
+        $filterTagArray = $filterData = [];
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $filters = $this->filters->userFilter($request);
+        if ($filters !== null) {
             $filterData = $filters->toArray();
+        }
 
-            if (!empty($filterData["filters"])) {
-                if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
-                    $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
-                    if ($countryTag["name"]) {
-                        $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
+        if (!empty($filterData["filters"])) {
+            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
+                $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
+                if ($countryTag["name"]) {
+                    $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
+                }
+            }
+
+            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
+                $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
+                if ($cityTag) {
+                    foreach ($cityTag as $key => $value) {
+                        $filterTagArray["city"][$key] = $value;
                     }
                 }
+            }
 
-                if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
-                    $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
-                    if ($cityTag) {
-                        foreach ($cityTag as $key => $value) {
-                            $filterTagArray["city"][$key] = $value;
-                        }
-                    }
-                }
-
-                if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
-                    $themeTag = $this->theme->missionThemeList($request, $filterData["filters"]["theme_id"]);
-                    
-                    if ($themeTag) {
-                        foreach ($themeTag as $value) {
-                            if ($value->translations) {
-                                $arrayKey = array_search($language, array_column($value->translations, 'lang'));
-                                if ($arrayKey  !== '') {
-                                    $filterTagArray["theme"][$value->mission_theme_id] =
-                                    $value->translations[$arrayKey]['title'];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
-                    $skillTag = $this->skill->skillList($request, $filterData["filters"]["skill_id"]);
-                    if ($skillTag) {
-                        foreach ($skillTag as $value) {
-                            if ($value->translations) {
-                                $arrayKey = array_search($language, array_column($value->translations, 'lang'));
-                                if ($arrayKey  !== '') {
-                                    $filterTagArray["skill"][$value->skill_id] =
-                                    $value->translations[$arrayKey]['title'];
-                                }
+            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
+                $themeTag = $this->theme->missionThemeList($request, $filterData["filters"]["theme_id"]);
+                
+                if ($themeTag) {
+                    foreach ($themeTag as $value) {
+                        if ($value->translations) {
+                            $arrayKey = array_search($languageCode, array_column($value->translations, 'lang'));
+                            if ($arrayKey  !== '') {
+                                $filterTagArray["theme"][$value->mission_theme_id] =
+                                $value->translations[$arrayKey]['title'];
                             }
                         }
                     }
                 }
             }
-            
-            $filterData["filters"]["tags"] = $filterTagArray;
-            $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success($apiStatus, '', $filterData);
-        } catch (\PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+
+            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] !== "") {
+                $skillTag = $this->skill->skillList($request, $filterData["filters"]["skill_id"]);
+                if ($skillTag) {
+                    foreach ($skillTag as $value) {
+                        if ($value->translations) {
+                            $arrayKey = array_search($languageCode, array_column($value->translations, 'lang'));
+                            if ($arrayKey  !== '') {
+                                $filterTagArray["skill"][$value->skill_id] =
+                                $value->translations[$arrayKey]['title'];
+                            }
+                        }
+                    }
+                }
+            }
         }
+        
+        $filterData["filters"]["tags"] = $filterTagArray;
+        $apiStatus = Response::HTTP_OK;
+        return $this->responseHelper->success($apiStatus, '', $filterData);
     }
 }

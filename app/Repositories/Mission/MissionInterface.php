@@ -7,6 +7,7 @@ use App\Models\Mission;
 use App\Models\FavouriteMission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\MissionApplication;
 
 interface MissionInterface
 {
@@ -82,21 +83,19 @@ interface MissionInterface
      * Display listing of related mission.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection;
+    public function getRelatedMissions(Request $request, int $missionId): Collection;
 
     /**
      * Get mission detail.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection;
+    public function getMissionDetail(Request $request, int $missionId): Collection;
 
     /**
      * Display a listing of mission.
@@ -111,10 +110,9 @@ interface MissionInterface
      *
      * @param Illuminate\Http\Request $request
      * @param Array $userFilterData
-     * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator;
+    public function getMissions(Request $request, array $userFilterData): LengthAwarePaginator;
 
     /**
      * Display a Explore mission data.
@@ -149,4 +147,46 @@ interface MissionInterface
      * @return bool
      */
     public function checkMissionApplicationDeadline(int $missionId): bool;
+
+    /** Get mission application details by mission id, user id and status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param string $status
+     * @return MissionApplication
+     */
+    public function getMissionApplication(int $missionId, int $userId, string $status): MissionApplication;
+    
+    /**
+     * Get Mission data for timesheet
+     *
+     * @param int $id
+     * @return App\Models\Mission
+     */
+    public function getTimesheetMissionData(int $id): Mission;
+    
+    /**
+     * Get Mission type
+     *
+     * @param int $id
+     * @return null|Collection
+     */
+    public function getMissionType(int $id): ?Collection;
+    
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array;
+    
+    /** Get mission title
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
 }

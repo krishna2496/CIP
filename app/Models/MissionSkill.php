@@ -7,6 +7,7 @@ use App\Models\Skill;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MissionSkill extends Model
 {
@@ -31,24 +32,14 @@ class MissionSkill extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_skill_id', 'skill_id,', 'mission_id', 'skill', 'mission_count'];
-
+    protected $visible = ['mission_skill_id', 'skill_id', 'mission_id', 'skill', 'mission_count',
+    'total_minutes', 'skill_name','translations'];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['mission_skill_id','skill_id', 'mission_id'];
-
-    /**
-     * Get the skill associated with the mission skill.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function skill(): HasOne
-    {
-        return $this->hasOne(Skill::class, 'skill_id', 'skill_id');
-    }
 
     /**
      * Get the mission associated with the mission skill.
@@ -58,6 +49,16 @@ class MissionSkill extends Model
     public function mission(): HasOne
     {
         return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get the skill associated with the mission skill.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function skill(): HasOne
+    {
+        return $this->hasOne(Skill::class, 'skill_id', 'skill_id');
     }
     
     /**
@@ -69,9 +70,17 @@ class MissionSkill extends Model
      */
     public function linkMissionSkill(int $missionId, int $skillId)
     {
-        if (Skill::find($skillId)) {
-            return static::firstOrNew(array('mission_id' => $missionId, 'skill_id' => $skillId, 'deleted_at' => null))
+        return static::firstOrNew(array('mission_id' => $missionId, 'skill_id' => $skillId, 'deleted_at' => null))
             ->save();
-        }
+    }
+    
+    /**
+     * Get user skills based on mission's skills
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function skilledUsers(): HasMany
+    {
+        return $this->hasMany('App\Models\UserSkill', 'skill_id', 'skill_id');
     }
 }

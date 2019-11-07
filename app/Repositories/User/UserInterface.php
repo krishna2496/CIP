@@ -63,18 +63,18 @@ interface UserInterface
      *
      * @param array $request
      * @param int $id
-     * @return bool
+     * @return array
      */
-    public function linkSkill(array $request, int $id): bool;
+    public function linkSkill(array $request, int $id): array;
 
     /**
      * Remove the specified resource from storage
      *
      * @param array $request
      * @param int $id
-     * @return bool
+     * @return array
      */
-    public function unlinkSkill(array $request, int $id): bool;
+    public function unlinkSkill(array $request, int $id): array;
 
     /**
      * List all the users
@@ -115,7 +115,39 @@ interface UserInterface
      * @param int $id
      * @param string $password
      *
-     * @return bool
+     * @return boolw
      */
     public function changePassword(int $id, string $password): bool;
+    
+    /**
+     * Get user's detail by email
+     *
+     * @param string $email
+     * @return null||App/User
+     */
+    public function findUserByEmail(string $email): ?User;
+
+    /**
+     * Get user goal hours
+     *
+     * @param int $userId
+     * @return null|int
+     */
+    public function getUserHoursGoal(int $userId): ?int;
+
+    /**
+     * Update cookie agreement date
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function updateCookieAgreement(int $userId): bool;
+    
+    /**
+     * Get timezone from user id
+     *
+     * @param int $userId
+     * @return string
+     */
+    public function getUserTimezone(int $userId): string;
 }

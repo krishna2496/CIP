@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     /*
      * constants to use any where in system
      */
@@ -18,9 +18,16 @@ return [
     'RELATED_MISSION_LIMIT' => '3',
     'MISSION_MEDIA_LIMIT' => '20',
     'SKILL_LIMIT' => '15',
+    'TIMESHEET_DOCUMENT_SIZE_LIMIT' => '4096',
+    'TIMESHEET_DATE_FORMAT' => 'Y-m-d',
+    'NEWS_SHORT_DESCRIPTION_WORD_LIMIT' => 10,
+    'STORY_IMAGE_SIZE_LIMIT' => '4096',
+    'STORY_MAX_IMAGE_LIMIT' => 20,
+    'STORY_MAX_VIDEO_LIMIT' => 20,
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+    'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
@@ -36,7 +43,10 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
-	'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'PER_PAGE_MAX' => '50',
+    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
+    
     /*
      * User custom field types
      */
@@ -85,10 +95,30 @@ return [
     ],
 
     /*
+     * Day volunteered types
+     */
+    'day_volunteered' => [
+        'WORKDAY' => 'WORKDAY',
+        'HOLIDAY' => 'HOLIDAY',
+        'WEEKEND' => 'WEEKEND'
+    ],
+
+    /*
      * Image types
      */
     'image_types' => [
-        'PNG' => 'png'
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
+    ],
+
+    /*
+     * Story image types
+     */
+    'story_image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
     ],
 
     /*
@@ -121,6 +151,22 @@ return [
         'TXT' => 'txt'
     ],
 
+    
+    /*
+     * Timesheet document types
+     */
+    'timesheet_document_types' => [
+        'DOC' => 'doc',
+        'DOCX' => 'docx',
+        'XLS' => 'xls',
+        'XLSX' => 'xlsx',
+        'CSV' => 'csv',
+        'PNG' => 'png',
+        'PDF' => 'pdf',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg'
+    ],
+
     /*
      * Application status
      */
@@ -128,6 +174,105 @@ return [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'PENDING' => 'PENDING',
         'REFUSED' => 'REFUSED'
+    ],
+
+    /*
+     * Timesheet status
+     */
+    'timesheet_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    /*
+     * Timesheet status
+     */
+    'timesheet_status_id' => [
+        'PENDING' => '1',
+        'APPROVED' => '2',
+        'DECLINED' => '3',
+        'AUTOMATICALLY_APPROVED' => '4',
+        'SUBMIT_FOR_APPROVAL' => '5'
+    ],
+
+    'ALLOW_TIMESHEET_ENTRY' => 2,
+    
+    /**
+     * Export timesheet file names
+     */
+    'export_timesheet_file_names' => [
+        'PENDING_TIME_MISSION_ENTRIES_XLSX' => 'Pending_Time_Mission_Entries.xlsx',
+        'PENTIND_GOAL_MISSION_ENTRIES_XLSX' => 'Pending_Goal_Mission_Entries.xlsx',
+        'TIME_MISSION_HISTORY_XLSX' => 'Time_Mission_History.xlsx',
+        'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
+    ],
+
+    /*
+     * News status
+     */
+    'news_status' => [
+        'PUBLISHED' => 'PUBLISHED',
+        'UNPUBLISHED' => 'UNPUBLISHED'
+    ],
+        
+        
+    /*
+     * Story status
+     */
+    'story_status' => [
+        'DRAFT' => 'DRAFT',
+        'PENDING' => 'PENDING',
+        'PUBLISHED' => 'PUBLISHED',
+        'DECLINED' => 'DECLINED'
+    ],
+
+    /**
+     * Export story file names
+     */
+    'export_story_file_names' => [
+        'STORY_XLSX' => 'Stories.xlsx',
+    ],
+
+    /**
+     * Export mission comments file names
+     */
+    'export_mission_comment_file_names' => [
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
+    ],
+        
+    /*
+     * Folder name s3
+     */
+    'folder_name' => [
+        'timesheet' => 'timesheet',
+        'story' => 'story'
+    ],
+
+    /*
+     * Story status
+     */
+    'story_status' => [
+        'DRAFT' => 'DRAFT',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED'
+    ],
+
+    /*
+     * send message froms
+     */
+    'message' => [
+        'read' => '1',
+        'unread' => '0',
+        'anonymous' => '1',
+        'not_anonymous' => '0',
+        'send_message_from' => [
+            'user' => 1,
+            'admin' => 2,
+        ]
     ],
 
     /*
@@ -141,14 +286,26 @@ return [
         'MY-STORIES' => 'My stories',
         'NEW_STORIES_HOURS' => 'New stories hours',
         'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages'
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story',
+        'MISSION_APPLICATION' => 'Mission Application',
+        'NEW_NEWS' => 'New News'
     ],
     
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
     /*
      * Tenant settings
      */
     'tenant_settings' => [
-        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague'
+        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
+        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved'
     ],
     
     'TOP_THEME' => "top_themes",
@@ -195,6 +352,7 @@ return [
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
         'ERROR_INVALID_IMAGE_URL' => '100017',
         'ERROR_SLIDER_NOT_FOUND' => '100018',
+        'ERROR_INVALID_EXTENSION_OF_FILE' => '100020',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',
@@ -207,6 +365,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => '210009',
         'ERROR_IN_TOKEN_DECODE' => '210010',
         'ERROR_TOKEN_NOT_PROVIDED' => '210012',
+        'ERROR_INVALID_EMAIL_OR_PASSWORD' => '210013',
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
         'ERROR_MISSION_NOT_FOUND' => '400003',
@@ -233,6 +392,41 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => '400028',
         'ERROR_COMMENT_NOT_FOUND' => '400029',
         'ERROR_SKILL_LIMIT' => '400030',
+        'ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY' => '400031',
+        'ERROR_INVALID_ACTION' => '400032',
+        'TIMESHEET_NOT_FOUND' => '400033',
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => '400034',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => '400035',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => '400036',
+        'ERROR_MISSION_STARTDATE' => '400037',
+        'ERROR_MISSION_ENDDATE' => '400038',
+        'MISSION_APPLICATION_NOT_APPROVED' => '400039',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => '400040',
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
+        'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
+        'ERROR_UNAUTHORIZED_USER' => '400043',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
+        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
+        'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
+        'ERROR_NEWS_REQUIRED_FIELDS_EMPTY' => '500003',
+        'ERROR_NEWS_NOT_FOUND' => '500004',
+
+        'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
+        'ERROR_STORY_NOT_FOUND' => '700002',
+        'ERROR_PUBLISHED_STORY_NOT_FOUND' => '700003',
+        'ERROR_COPY_DECLINED_STORY' => '700004',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700005',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
+        'ERROR_STORY_IMAGE_DELETE' => '700007',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
+        'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+                              
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
+
+        'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -262,8 +456,139 @@ return [
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
-        
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
+        'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
+    ],
+
+    /**
+     * Notification types
+     */
+    'notification_type_keys' => [
+        'RECOMMENDED_MISSIONS' => 'recommended_missions',
+        'VOLUNTEERING_HOURS' => 'volunteering_hours',
+        'VOLUNTEERING_GOALS' => 'volunteering_goals',
+        'MY_COMMENTS' => 'my_comments',
+        'MY_STORIES' => 'my_stories',
+        'NEW_MISSIONS' => 'new_missions',
+        'NEW_MESSAGES' => 'new_messages',
+        'RECOMMENDED_STORY' => 'recommended_story',
+        'MISSION_APPLICATION' => 'mission_application',
+        'NEW_NEWS' => 'new_news'
+    ],
+
+    /**
+     * Notification actions
+     */
+    'notification_actions' => [
+        'CREATED' => 'CREATED',
+        'APPROVED' => 'APPROVED',
+        'REJECTED' => 'REJECTED',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'INVITE' => 'INVITE',
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'DELETED' => 'DELETED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING'
+    ],
+
+    /**
+     * Notification type icons
+     */
+    'notification_icons' => [
+        'APPROVED' => 'approve-ic.png',
+        'DECLINED' => 'warning.png',
+        'NEW' => 'circle-plus.png',
+    ],
+    
+    'notification_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED' => 'PUBLISHED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    'activity_log_types' => [
+        'AUTH' => 'AUTH',
+        'USERS' => 'USERS',
+        'MISSION' => 'MISSION',
+        'COMMENT' => 'COMMENT',
+        'MESSAGE' => 'MESSAGE',
+        'USERS_CUSTOM_FIELD' => 'USERS_CUSTOM_FIELD',
+        'USER_PROFILE' => 'USER_PROFILE',
+        'USER_PROFILE_IMAGE' => 'USER_PROFILE_IMAGE',
+        'NEWS_CATEGORY' => 'NEWS_CATEGORY',
+        'NEWS' => 'NEWS',
+        'VOLUNTEERING_TIMESHEET' => 'VOLUNTEERING_TIMESHEET',
+        'VOLUNTEERING_TIMESHEET_DOCUMENT' => 'VOLUNTEERING_TIMESHEET_DOCUMENT',
+        'SLIDER' => 'SLIDER',
+        'STYLE_IMAGE' => 'STYLE_IMAGE',
+        'STYLE' => 'STYLE',
+        'TENANT_OPTION' => 'TENANT_OPTION',
+        'TENANT_SETTINGS' => 'TENANT_SETTINGS',
+        'FOOTER_PAGE' => 'FOOTER_PAGE',
+        'POLICY_PAGE' => 'POLICY_PAGE',
+        'MISSION_THEME' => 'MISSION_THEME',
+        'SKILL' => 'SKILL',
+        'USER_SKILL' => 'USER_SKILL',
+        'USER_COOKIE_AGREEMENT' => 'USER_COOKIE_AGREEMENT',
+        'GOAL_TIMESHEET' => 'GOAL_TIMESHEET',
+        'TIME_TIMESHEET' => 'TIME_TIMESHEET',
+        'TIME_MISSION_TIMESHEET' => 'TIME_MISSION_TIMESHEET',
+        'GOAL_MISSION_TIMESHEET' => 'GOAL_MISSION_TIMESHEET',
+        'STORY' => 'STORY',
+        'MISSION_COMMENTS' => 'MISSION_COMMENTS',
+        'STORY_IMAGE' => 'STORY_IMAGE',
+        'STORY_VISITOR' => 'STORY_VISITOR',
+        'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
+        'NOTIFICATION' => 'NOTIFICATION'
+    ],
+
+    'activity_log_actions' => [
+        'CREATED' => 'CREATED',
+        'UPDATED' => 'UPDATED',
+        'DELETED' => 'DELETED',
+        'INVITED' => 'INVITED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'APPROVED' => 'APPROVED',
+        'DECLINED' => 'DECLINED',
+        'LOGIN' => 'LOGIN',
+        'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
+        'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
+        'RATED' => 'RATED',
+        'COMMENT_ADDED' => 'COMMENT_ADDED',
+        'COMMENT_UPDATED' => 'COMMENT_UPDATED',
+        'COMMENT_DELETED' => 'COMMENT_DELETED',
+        'MISSION_APPLICATION_CREATED' => 'MISSION_APPLICATION_CREATED',
+        'MISSION_APPLICATION_STATUS_CHANGED' => 'MISSION_APPLICATION_STATUS_CHANGED',
+        'PASSWORD_RESET_REQUEST' => 'PASSWORD_RESET_REQUEST',
+        'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
+        'PASSWORD_RESET' => 'PASSWORD_RESET',
+        'LINKED' => 'LINKED',
+        'UNLINKED' => 'UNLINKED',
+        'ACCEPTED' => 'ACCEPTED',
+        'EXPORT' => 'EXPORT',
+        'COPIED' => 'COPIED',
+        'COUNTED' => 'COUNTED',
+        'READ' => 'READ',
+        'ACTIVATED' => 'ACTIVATED',
+        'DEACTIVATED' => 'DEACTIVATED',
+        'CLEAR_ALL' => 'CLEAR_ALL',
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
+    ],
+
+    'activity_log_user_types' => [
+        'API' => 'API',
+        'REGULAR' => 'REGULAR'
     ]
+
+
 ];

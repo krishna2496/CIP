@@ -23,7 +23,6 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'why_i_volunteer' => str_random(10),
         'employee_id' => str_random(10),
         'department' => str_random(10),
-        'manager_name' => str_random(10),
         'city_id' => 1,
         'country_id' => 233,
         'profile_text' => str_random(10),
@@ -53,9 +52,17 @@ $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $f
     ];
 });
 
-$factory->define(App\Models\TenantOption::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Slider::class, function (Faker\Generator $faker) {
     return [
-        'option_name' => 'slider'
+        'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+        'sort_order' => '1',
+        'translations' =>  [
+            [
+                'lang' => 'en',
+                'slider_title' => str_random(20),
+                'slider_description' => str_random(200)
+            ]
+        ],
     ];
 });
 
@@ -107,12 +114,100 @@ $factory->define(App\Models\PolicyPage::class, function (Faker\Generator $faker)
 
 $factory->define(App\Models\TenantSetting::class, function (Faker\Generator $faker) {
     return [
-        'setting_id' => 1
+        'setting_id' => 2
     ];
 });
 
 $factory->define(App\Models\TenantActivatedSetting::class, function (Faker\Generator $faker) {
     return [
         'tenant_setting_id' => 114
+    ];
+});
+
+$factory->define(App\Models\TimesheetDocument::class, function (Faker\Generator $faker) {
+    return [
+        'document_name' => 'volunteer9.png',
+        'document_path' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+        'document_type' => 'png'
+    ];
+});
+
+$factory->define(App\Models\UserSkill::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'skill_id' => 1
+    ];
+});
+
+$factory->define(App\Models\City::class, function (Faker\Generator $faker) {
+    return [
+        'country_id' => 1,
+        'name' => 'test'
+    ];
+});
+
+$factory->define(App\Models\UserNotification::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'notification_type_id' => 1
+    ];
+});
+
+$factory->define(App\Models\MissionLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => 1,
+        'language_id' => 1,
+        'title' => 'mission title',
+        'short_description' => str_random(10),
+        'objective' => str_random(10),
+        'description' => [
+            [
+                'title' => str_random(10),
+                'description' => str_random(100)
+            ]            
+        ]
+    ];
+});
+
+$factory->define(App\Models\UserFilter::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'filters' => 'a:6:{s:6:"search";s:0:"";s:10:"country_id";s:3:"233";s:7:"city_id";s:0:"";s:8:"theme_id";s:0:"";s:8:"skill_id";s:0:"";s:7:"sort_by";s:0:"";}'
+    ];
+});
+
+$factory->define(App\Models\MissionSkill::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => 1,
+        'skill_id' => 1
+    ];
+});
+
+$factory->define(App\Models\News::class, function (Faker\Generator $faker) {
+    return [
+        "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
+        "user_name" => str_random('5'),
+        "user_title" => strtoupper(str_random('3')),
+        "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
+        "status" => "PUBLISHED"
+    ];
+});
+
+$factory->define(App\Models\NewsLanguage::class, function (Faker\Generator $faker) {
+    return [
+        "news_id" => null,
+        "language_id" => 1,
+        "title" => strtoupper(str_random('3')),
+        "description" => "We have collected the following information: job title, contact information, including email address, demographic information such as zip code, preferences and interests, other information"
+    ];
+});
+
+$factory->define(App\Models\NewsToCategory::class, function (Faker\Generator $faker) {
+    \DB::setDefaultConnection('tenant');
+    $newsCategoryId = App\Models\NewsCategory::all()->random(1)->first()->news_category_id;
+    \DB::setDefaultConnection('mysql');
+    return [
+        "news_id" => 1,
+        "news_category_id" => $newsCategoryId
     ];
 });

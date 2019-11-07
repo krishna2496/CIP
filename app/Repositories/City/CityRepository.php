@@ -2,7 +2,6 @@
 namespace App\Repositories\City;
 
 use App\Repositories\City\CityInterface;
-use Illuminate\Http\Request;
 use App\Models\City;
 use App\Models\Country;
 use Illuminate\Support\Collection;
@@ -41,7 +40,7 @@ class CityRepository implements CityInterface
     public function cityList(int $countryId): Collection
     {
         $this->country->findOrFail($countryId);
-        return $this->city->where('country_id', $countryId)->pluck('name', 'city_id');
+        return $this->city->orderBy('name')->where('country_id', $countryId)->pluck('name', 'city_id');
     }
 
     /**

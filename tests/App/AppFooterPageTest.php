@@ -16,7 +16,7 @@ class AppFooterPageTest extends TestCase
         $footer_page->setConnection($connection);
         $footer_page->save();
 
-        $this->get(route('cms.detail'), [])
+        $this->get(route('app.cms.detail'), [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -49,7 +49,7 @@ class AppFooterPageTest extends TestCase
      */
     public function it_should_return_no_footer_page_found()
     {
-        $this->get(route("cms.detail"), [])
+        $this->get(route("app.cms.detail"), [])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -71,7 +71,7 @@ class AppFooterPageTest extends TestCase
         $footer_page->setConnection($connection);
         $footer_page->save();
 
-        $this->get(route('cms.detail'), [])
+        $this->get(route('app.cms.listing'), [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -80,13 +80,7 @@ class AppFooterPageTest extends TestCase
                     "page_id",
                     "slug",
                     "status",
-                    "pages" => [
-                        "*" => [
-                            "page_id",
-                            "language_id",
-                            "title"
-                        ]
-                    ]
+                    "pages"
                 ]
             ],
             "message"
@@ -118,13 +112,7 @@ class AppFooterPageTest extends TestCase
                 "page_id",
                 "slug",
                 "status",
-                "pages" => [
-                    "*" => [
-                        "page_id",
-                        "language_id",
-                        "title"
-                    ]
-                ]
+                "pages"
             ],
             "message"
         ]);
@@ -197,6 +185,45 @@ class AppFooterPageTest extends TestCase
               "errors" => [
                   [
                     "status",
+                    "message"
+                  ]
+              ]
+        ]);
+    }
+    
+    /**
+     * @test
+     *
+     * No footer_page found
+     *
+     * @return void
+     */
+    public function it_should_return_no_footer_page_list_found()
+    {
+        $this->get(route("app.cms.listing"), [])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error on get footer page listing
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_on_footer_page_listing()
+    {
+        $this->get('app/cms/listing?order=test', [])
+          ->seeStatusCode(400)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "type",
                     "message"
                   ]
               ]

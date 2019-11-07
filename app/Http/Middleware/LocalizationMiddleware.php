@@ -2,9 +2,26 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Helpers\LanguageHelper;
 
 class LocalizationMiddleware
 {
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
+     * Create a new localization middleware instance.
+     *
+     * @param App\Helpers\LanguageHelper $languageHelper
+     * @return void
+     */
+    public function __construct(LanguageHelper $languageHelper)
+    {
+        $this->languageHelper = $languageHelper;
+    }
+    
     /**
      * Handle an incoming request.
      *
@@ -14,16 +31,17 @@ class LocalizationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        try {
-            // Check header request and determine localizaton
-            $local = ($request->hasHeader('X-localization')) ? $request->header('X-localization') :
-            env('TENANT_DEFAULT_LANGUAGE_CODE');
-            // set laravel localization
-            config(['app.locale' => $local]);
-            // continue request
-            return $next($request);
-        } catch (\Exception $e) {
-            throw new \Exception();
-        }
+        // Set localization to config locale
+        config(['app.locale' => $request->header('X-localization')]);
+
+        // Get tenant language base on localization or default language of tenant from database
+        $language = $this->languageHelper->checkTenantLanguage($request);
+        
+        // set laravel localization
+        app('translator')->setLocale($language->code);
+        config(['app.locale' => $language->code]);
+        
+        // continue request
+        return $next($request);
     }
 }

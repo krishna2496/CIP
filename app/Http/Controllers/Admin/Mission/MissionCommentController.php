@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin\Mission;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Helpers\ResponseHelper;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
@@ -16,6 +14,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Mission\MissionRepository;
 use Validator;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionCommentController extends Controller
 {
@@ -37,35 +37,45 @@ class MissionCommentController extends Controller
     private $missionRepository;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
         MissionCommentRepository $missionCommentRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->missionRepository = $missionRepository;
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
      * Get listing of tenant's comments
      *
      * @param int $missionId
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(int $missionId): JsonResponse
+    public function index(int $missionId, Request $request): JsonResponse
     {
         try {
             $apiData = $this->missionCommentRepository->getComments(
                 $missionId,
-                config("constants.comment_approval_status")
+                config("constants.comment_approval_status"),
+                $request
             );
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($apiData->count()) ?
@@ -82,8 +92,6 @@ class MissionCommentController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -111,18 +119,11 @@ class MissionCommentController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -136,7 +137,6 @@ class MissionCommentController extends Controller
      */
     public function update(Request $request, int $missionId, int $commentId): JsonResponse
     {
-        
         // First find mission
         try {
             $mission = $this->missionRepository->find($missionId);
@@ -171,19 +171,32 @@ class MissionCommentController extends Controller
             $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
+
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+            $entityId = $commentId;
+            $action = config('constants.notification_actions.'.$request->approval_status);
+            $userId = $apiData->user_id;
+
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_COMMENTS'),
+                config('constants.activity_log_actions.COMMENT_UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $commentId
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -208,24 +221,39 @@ class MissionCommentController extends Controller
 
         // Get comment and delete it.
         try {
-            $apiData = $this->missionCommentRepository->deleteComment($commentId);
-
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
+            $commentDetails = $this->missionCommentRepository->getCommentById($commentId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        $apiData = $this->missionCommentRepository->deleteComment($commentId);
+
+        $apiStatus = Response::HTTP_NO_CONTENT;
+        $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
+        
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+        $entityId = $commentId;
+        $action = config('constants.notification_actions.DELETED');
+        $userId = $commentDetails->user->user_id;
+
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION_COMMENTS'),
+            config('constants.activity_log_actions.DELETED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            null,
+            null,
+            $commentId
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

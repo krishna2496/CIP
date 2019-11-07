@@ -12,6 +12,7 @@ use App\Helpers\Helpers;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
 
 class SliderController extends Controller
 {
@@ -37,24 +38,32 @@ class SliderController extends Controller
     private $s3helper;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Slider\SliderRepository $sliderRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         SliderRepository $sliderRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        Request $request
     ) {
         $this->sliderRepository = $sliderRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->userApiKey =$request->header('php-auth-user');
     }
 
     /**
@@ -102,34 +111,31 @@ class SliderController extends Controller
                 // Upload slider image on S3 server
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 $imageUrl = "";
-                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
-                    $request->merge(['url' => $imageUrl]);
-                    
-                    // Create new slider
-                    $slider = $this->sliderRepository->storeSlider($request->toArray());
+                $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+                $request->merge(['url' => $imageUrl]);
+                
+                // Create new slider
+                $slider = $this->sliderRepository->storeSlider($request->toArray());
 
-                    // Set response data
-					$apiData = ['slider_id' => $slider->slider_id];
-                    $apiStatus = Response::HTTP_CREATED;
-                    $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
-                    return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-                } else {
-                    // Response error unable to upload file on S3
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                        trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
-                    );
-                }
+                // Set response data
+                $apiData = ['slider_id' => $slider->slider_id];
+                $apiStatus = Response::HTTP_CREATED;
+                $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
+
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.SLIDER'),
+                    config('constants.activity_log_actions.CREATED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $slider->slider_id
+                ));
+
+                return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
             }
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\ErrorException $e) {
             // Response error unable to upload file on S3
             return $this->responseHelper->error(
@@ -138,8 +144,6 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
                 trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -179,17 +183,8 @@ class SliderController extends Controller
             
             if (isset($request->url)) {
                 $imageUrl = "";
-                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
-                    $request->merge(['url' => $imageUrl]);
-                } else {
-                    // Response error unable to upload file on S3
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                        trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
-                    );
-                }
+                $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+                $request->merge(['url' => $imageUrl]);
             }
 
             // Update slider
@@ -198,14 +193,20 @@ class SliderController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_SLIDER_UPDATED_SUCCESS');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.SLIDER'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
@@ -219,8 +220,6 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
                 trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -232,26 +231,12 @@ class SliderController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            $slider = $this->sliderRepository->getSliders();
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($slider->isEmpty()) ? trans('messages.success.MESSAGE_NO_SLIDER_FOUND') :
-             trans('messages.success.MESSAGE_SLIDERS_LIST');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $slider->toArray());
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $slider = $this->sliderRepository->getSliders();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($slider->isEmpty()) ? trans('messages.success.MESSAGE_NO_SLIDER_FOUND') :
+            trans('messages.success.MESSAGE_SLIDERS_LIST');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $slider->toArray());
     }
 
     /**
@@ -268,14 +253,25 @@ class SliderController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_SLIDER_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.SLIDER'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SLIDER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

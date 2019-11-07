@@ -5,10 +5,7 @@ use App\Repositories\TenantOption\TenantOptionInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Validator;
-use PDOException;
-use DB;
 use App\Models\TenantOption;
-use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionRepository implements TenantOptionInterface
@@ -30,36 +27,41 @@ class TenantOptionRepository implements TenantOptionInterface
     {
         $this->tenantOption = $tenantOption;
     }
-    
-    /**
-    * Get a listing of slider.
-    *
-    * @return Illuminate\Database\Eloquent\Collection
-    */
-    public function getAllSlider()
-    {
-        return $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->get();
-    }
 
     /**
      * Update style settings.
      *
      * @param  Illuminate\Http\Request $request
-     * @return void
+     * @return Array
      */
-    public function updateStyleSettings(Request $request)
+    public function updateStyleSettings(Request $request): Array
     {
+        $tenantIdArray = array();
+
         if ($request->primary_color !== '') {
             $styleData['option_name'] = 'primary_color';
             $styleData['option_value'] = $request->primary_color;
             $this->tenantOption->addOrUpdateColor($styleData);
+            $tenantOptionData = $this->getOptionValue($styleData['option_name']);
+
+            if (!empty($tenantOptionData) && !empty($request->primary_color)) {
+                array_push($tenantIdArray, $tenantOptionData[0]->tenant_option_id);
+            }
         }
 
         if ($request->secondary_color !== '') {
             $styleData['option_name'] = 'secondary_color';
             $styleData['option_value'] = $request->secondary_color;
             $this->tenantOption->addOrUpdateColor($styleData);
+
+            $tenantOptionData = $this->getOptionValue($styleData['option_name']);
+            
+            if (!empty($tenantOptionData) && !empty($request->secondary_color)) {
+                array_push($tenantIdArray, $tenantOptionData[0]->tenant_option_id);
+            }
         }
+
+        return $tenantIdArray;
     }
 
     /**
@@ -113,5 +115,16 @@ class TenantOptionRepository implements TenantOptionInterface
     public function getOptionValue(string $data): ?Collection
     {
         return $this->tenantOption->whereOption_name($data)->get();
+    }
+
+    /**
+     * Get option value by option name
+     *
+     * @param String $data
+     * @return null|int
+     */
+    public function getOptionValueFromOptionName(string $data): ?int
+    {
+        return $this->tenantOption->whereOption_name($data)->first()->option_value;
     }
 }

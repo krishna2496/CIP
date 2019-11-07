@@ -50,11 +50,12 @@ interface FooterPageInterface
     public function delete(int $id): bool;
 
     /**
-    * Get a listing of resource.
-    *
-    * @return Illuminate\Support\Collection
-    */
-    public function getPageList(): Collection;
+     * Get a listing of resource.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
+    public function getPageList(Request $request): Collection;
 
     /**
     * Get a listing of resource.
@@ -65,8 +66,9 @@ interface FooterPageInterface
 
     /**
     * Get a listing of resource.
-    *
+    * @param Illuminate\Http\Request $request
+    * @param string $slug
     * @return App\Models\FooterPage
     */
-    public function getPageDetail($slug): FooterPage;
+    public function getPageDetail(Request $request, string $slug): FooterPage;
 }

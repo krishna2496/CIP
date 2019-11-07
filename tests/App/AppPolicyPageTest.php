@@ -21,7 +21,7 @@ class AppPolicyPageTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -53,7 +53,7 @@ class AppPolicyPageTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing', ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -83,7 +83,7 @@ class AppPolicyPageTest extends TestCase
         $user->save();
         
         $slug = $policyPage->slug;
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/'.$slug, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -92,13 +92,7 @@ class AppPolicyPageTest extends TestCase
                 "page_id",
                 "slug",
                 "status",
-                "pages" => [
-                    "*" => [
-                        "page_id",
-                        "language_id",
-                        "title"
-                    ]
-                ]
+                "pages"
             ],
             "message"
         ]);
@@ -122,7 +116,7 @@ class AppPolicyPageTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/'.$slug, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -153,8 +147,73 @@ class AppPolicyPageTest extends TestCase
         $policyPage->setConnection($connection);
         $policyPage->save();
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data" => [
+                "*" => [
+                    "page_id",
+                    "slug",
+                    "status",
+                    "pages"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();
+        $policyPage->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error on get policy page listing
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_on_policy_page_listing()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();        
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('/app/policy/listing?order=test', ['token' => $token])
+          ->seeStatusCode(500)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "type",
+                    "message"
+                  ]
+              ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get policy page list
+     *
+     * @return void
+     */
+    public function it_should_return_policy_page_list_with_other_language()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('/app/policy/listing', ['token' => $token, 'X-localization' => 'fr'])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",

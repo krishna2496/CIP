@@ -39,16 +39,6 @@ class MissionDocument extends Model
     protected $visible = ['mission_document_id', 'document_name', 'document_type', 'document_path'];
 
     /**
-     * Get the mission that has documents.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
      * Store/update specified resource.
      *
      * @param  array $condition

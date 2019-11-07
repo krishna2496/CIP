@@ -12,6 +12,7 @@ use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
+use InvalidArgumentException;
 
 class FooterPageController extends Controller
 {
@@ -42,13 +43,14 @@ class FooterPageController extends Controller
     /**
      * Display a listing of CMS pages.
      *
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
             // Get data for parent table
-            $pageList = $this->footerPageRepository->getPageList();
+            $pageList = $this->footerPageRepository->getPageList($request);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
@@ -59,40 +61,30 @@ class FooterPageController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  string  $slug
+     * @param Illuminate\Http\Request $request
+     * @param string $slug
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $slug): JsonResponse
+    public function show(Request $request, string $slug): JsonResponse
     {
         try {
             // Get data for parent table
-            $footerPage = $this->footerPageRepository->getPageDetail($slug);
+            $footerPage = $this->footerPageRepository->getPageDetail($request, $slug);
           
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_DATA_FOUND_FOR_SLUG'),
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND_FOR_SLUG')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -103,27 +95,13 @@ class FooterPageController extends Controller
      */
     public function cmsList(): JsonResponse
     {
-        try {
-            // Get data for parent table
-            $pageDetailList = $this->footerPageRepository->getPageDetailList();
-            $apiStatus = Response::HTTP_OK;
-            // Check data found or not
-            if ($pageDetailList->count() == 0) {
-                // Set response data
-                $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return $this->responseHelper->success($apiStatus, $apiMessage);
-            }
-            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $pageDetailList->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Get data for parent table
+        $pageDetailList = $this->footerPageRepository->getPageDetailList();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($pageDetailList->isEmpty()) ? trans('messages.success.MESSAGE_NO_DATA_FOUND') :
+        trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $pageDetailList->toArray());
     }
 }

@@ -24,21 +24,6 @@ trait RestExceptionHandlerTrait
     }
 
     /**
-     * Returns json response for generic bad request.
-     *
-     * @param string $message
-     */
-    protected function badRequest(string $message = 'Bad request')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_BAD_REQUEST,
-            Response::$statusTexts[Response::HTTP_BAD_REQUEST],
-            '',
-            $message
-        );
-    }
-
-    /**
      * Returns json response for Eloquent model not found exception.
      *
      * @param string $customErrorCode
@@ -73,23 +58,6 @@ trait RestExceptionHandlerTrait
     }
     
     /**
-     * Returns json response for Query exception
-     *
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function PDO(string $customErrorCode = '', string $message = 'Database operational error')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_BAD_GATEWAY,
-            Response::$statusTexts[Response::HTTP_BAD_GATEWAY],
-            $customErrorCode,
-            $message
-        );
-    }
-    
-    /**
      * Returns json response for Methos not allowed http exception
      *
      * @param string $message
@@ -108,71 +76,19 @@ trait RestExceptionHandlerTrait
     /**
      * Returns json response for internal server error.
      *
-     * @param string $customErrorCode
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function internaServerError(string $customErrorCode = '', string $message = 'Internal server error')
+    protected function internalServerError(string $message = 'Internal server error')
     {
         return $this->jsonResponse(
             Response::HTTP_INTERNAL_SERVER_ERROR,
             Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
-            $customErrorCode,
-            $message
-        );
-    }
-
-    /**
-     * Returns json response for file download error.
-     *
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function fileDownloadError(string $customErrorCode = '', string $message = 'Failed to download files')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            $customErrorCode,
-            $message
-        );
-    }
-
-    /**
-     * Returns json response for failed to compile scss files
-     *
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function parserError(string $customErrorCode = '', string $message = 'Failed to compile SCSS files')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            $customErrorCode,
+            '',
             $message
         );
     }
     
-    /**
-     * Returns json response for failed to perform S3 opration
-     *
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function s3Exception(string $customErrorCode = '', string $message = 'S3 exception')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            $customErrorCode,
-            $message
-        );
-    }
-
     /**
      * Returns json response for bucket not found on s3
      *

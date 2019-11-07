@@ -5,9 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Mission;
-use App\User;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionApplication extends Model
@@ -49,27 +46,7 @@ class MissionApplication extends Model
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
     'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar'];
-
-    /**
-     * Defined relation for the mission table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
-     * Defined relation for the user table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
-
+  
     /**
      * Find listing of a resource.
      *
@@ -79,17 +56,26 @@ class MissionApplication extends Model
      */
     public function find(Request $request, int $missionId): LengthAwarePaginator
     {
-        $applicationQuery = $this;
+        $applicationQuery = $this->leftjoin('mission', 'mission.mission_id', '=', 'mission_application.mission_id');
 
         if ($request->has('search')) {
             $applicationQuery = $applicationQuery->where('motivation', 'like', '%' . $request->input('search') . '%');
         }
-        if ($request->has('order')) {
+        if ($request->has('status') && $request->input('status') !== '') {
+            $applicationQuery = $applicationQuery->where('approval_status', strtoupper($request->status));
+        }
+        if ($request->has('user_id') && $request->input('user_id') !== '') {
+            $applicationQuery = $applicationQuery->where('user_id', $request->user_id);
+        }
+        if ($request->has('type') && $request->input('type') !== '') {
+            $applicationQuery = $applicationQuery->where('mission.mission_type', strtoupper($request->type));
+        }
+        if ($request->has('order') && $request->input('order') !== '') {
             $orderDirection = $request->input('order', 'asc');
             $applicationQuery = $applicationQuery->orderBy('mission_application_id', $orderDirection);
         }
 
-        $missionApplication = $applicationQuery->where('mission_id', $missionId)
+        $missionApplication = $applicationQuery->where('mission_application.mission_id', $missionId)
                 ->paginate($request->perPage);
         return $missionApplication;
     }
@@ -104,7 +90,6 @@ class MissionApplication extends Model
     public function findDetail(int $missionId, int $applicationId): array
     {
         $applicationQuery = $this;
-        $applicationQuery = $applicationQuery->orderBy('mission_application_id', 'asc');
 
         $missionApplication = $applicationQuery->where(
             ['mission_id' => $missionId, 'mission_application_id' => $applicationId]
@@ -142,5 +127,39 @@ class MissionApplication extends Model
         ->orderBy('mission_application.mission_application_id', 'desc')
         ->paginate($request->perPage);
         return $missionVolunteers;
+    }
+
+    /**
+     * Get mission application count
+     *
+     * @param int $userId
+     * @param int $year
+     * @param int $month
+     * @return int
+     */
+    public function missionApplicationCount(int $userId, int $year, int $month): int
+    {
+        return $this->where(['user_id' => $userId])
+        ->whereYear('applied_at', $year)
+        ->whereMonth('applied_at', $month)
+        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'))
+        ->count();
+    }
+
+    /**
+     * Get mission application count
+     *
+     * @param int $userId
+     * @param int $year
+     * @param int $month
+     * @return int
+     */
+    public function pendingApplicationCount(int $userId, int $year, int $month): int
+    {
+        return $this->where(['user_id' => $userId])
+        ->whereYear('applied_at', $year)
+        ->whereMonth('applied_at', $month)
+        ->where('approval_status', config('constants.application_status.PENDING'))
+        ->count();
     }
 }

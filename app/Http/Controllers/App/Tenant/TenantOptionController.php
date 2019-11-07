@@ -14,7 +14,6 @@ use App\Repositories\Slider\SliderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use Validator;
 
@@ -80,61 +79,40 @@ class TenantOptionController extends Controller
     {
         $data = $optionData = $slider = array();
 
-        try {
-            // Find custom data
-            $data = $this->tenantOptionRepository->getOptions();
-            
-            if ($data) {
-                foreach ($data as $key => $value) {
-                    $optionData[$value->option_name] = $value->option_value;
-                }
+        // Find custom data
+        $data = $this->tenantOptionRepository->getOptions();
+        
+        if ($data) {
+            foreach ($data as $key => $value) {
+                $optionData[$value->option_name] = $value->option_value;
             }
-            // For slider
-            $sliderData = array();
-            $sliders = $this->sliderRepository->getAllSliders();
-            foreach ($sliders as $key => $value) {
-                $value['slider_detail']['translations'] = $value['translations'];
-                unset($value['translations']);
-                $sliderData[] = $value;
-            }
-            $optionData['sliders'] = $sliderData;
-
-            $tenantLanguages = $this->languageHelper->getTenantLanguages($request);
-
-            if ($tenantLanguages->count() > 0) {
-                foreach ($tenantLanguages as $key => $value) {
-                    if ($value->default == 1) {
-                        $optionData['defaultLanguage'] = strtoupper($value->code);
-                        $optionData['defaultLanguageId'] = $value->language_id;
-                    }
-                    $optionData['language'][$value->language_id] = strtoupper($value->code);
-                }
-            }
-
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTIONS_LIST');
-            
-            return $this->responseHelper->success($apiStatus, '', $optionData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        // For slider
+        $sliderData = array();
+        $sliders = $this->sliderRepository->getAllSliders();
+        foreach ($sliders as $key => $value) {
+            $value['slider_detail']['translations'] = $value['translations'];
+            unset($value['translations']);
+            $sliderData[] = $value;
+        }
+        $optionData['sliders'] = $sliderData;
+
+        $tenantLanguages = $this->languageHelper->getTenantLanguages($request);
+
+        if ($tenantLanguages->count() > 0) {
+            foreach ($tenantLanguages as $key => $value) {
+                if ($value->default === "1") {
+                    $optionData['defaultLanguage'] = strtoupper($value->code);
+                    $optionData['defaultLanguageId'] = $value->language_id;
+                }
+                $optionData['language'][$value->language_id] = strtoupper($value->code);
+            }
+        }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTIONS_LIST');
+        
+        return $this->responseHelper->success($apiStatus, '', $optionData);
     }
 
     /**
@@ -146,31 +124,15 @@ class TenantOptionController extends Controller
     {
         $tenantCustomCss = '';
         // find custom css
-        try {
-            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
-            if ($tenantOptions) {
-                $tenantCustomCss = $tenantOptions->option_value;
-            }
-
-            $apiData = ['custom_css' => $tenantCustomCss];
-            $apiStatus = Response::HTTP_OK;
-
-            return $this->responseHelper->success($apiStatus, '', $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
+        if ($tenantOptions) {
+            $tenantCustomCss = $tenantOptions->option_value;
         }
+
+        $apiData = ['custom_css' => $tenantCustomCss];
+        $apiStatus = Response::HTTP_OK;
+
+        return $this->responseHelper->success($apiStatus, '', $apiData);
     }
     
     /**
@@ -200,21 +162,12 @@ class TenantOptionController extends Controller
         }
         
         // Fetch tenant option value
-        try {
-            $tenantOptionDetail = $this->tenantOptionRepository->getOptionValue($request->option_name);
-            $apiMessage = ($tenantOptionDetail->isEmpty())
-            ? trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
-            : trans('messages.success.MESSAGE_TENANT_OPTION_FOUND');
-            $apiStatus = Response::HTTP_OK;
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $tenantOptionDetail = $this->tenantOptionRepository->getOptionValue($request->option_name);
+        $apiMessage = ($tenantOptionDetail->isEmpty())
+        ? trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+        : trans('messages.success.MESSAGE_TENANT_OPTION_FOUND');
+        $apiStatus = Response::HTTP_OK;
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
     }
 }

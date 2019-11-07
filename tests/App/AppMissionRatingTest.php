@@ -26,7 +26,7 @@ class AppMissionRatingTest extends TestCase
                 'rating' => rand(1, 5)
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/rating', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -59,7 +59,7 @@ class AppMissionRatingTest extends TestCase
                 'rating' => rand(1, 5)
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/rating', $params, ['token' => $token]);
         DB::setDefaultConnection('mysql');
         $this->post('app/mission/rating', $params, ['token' => $token])
@@ -91,7 +91,7 @@ class AppMissionRatingTest extends TestCase
                 'rating' => rand(1, 5)
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/rating', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -129,7 +129,7 @@ class AppMissionRatingTest extends TestCase
                 'rating' => 0.2
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/rating', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -168,7 +168,7 @@ class AppMissionRatingTest extends TestCase
                 'rating' => 5.5
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/rating', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([

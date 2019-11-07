@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\App\Country;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -45,21 +44,12 @@ class CountryController extends Controller
     */
     public function index() : JsonResponse
     {
-        try {
-            $countryList = $this->countryRepository->countryList();
-            $apiData = $countryList->toArray();
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_COUNTRY_LISTING') :
-            trans('messages.success.MESSAGE_NO_COUNTRY_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $countryList = $this->countryRepository->countryList();
+        $apiData = $countryList->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ?
+        trans('messages.success.MESSAGE_COUNTRY_LISTING') :
+        trans('messages.success.MESSAGE_NO_COUNTRY_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

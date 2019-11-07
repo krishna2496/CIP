@@ -5,8 +5,6 @@ use Closure;
 
 class PaginationMiddleware
 {
-    private $perPageMax=10;
-   
     /**
      * Handle an incoming request.
      *
@@ -16,8 +14,9 @@ class PaginationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->perPage > $this->perPageMax || !is_numeric($request->perPage) && isset($request->perPage)) {
-            $request->perPage = $this->perPageMax;
+        if ($request->perPage > config('constants.PER_PAGE_MAX')
+        || !is_numeric($request->perPage) && isset($request->perPage)) {
+            $request->perPage = config('constants.PER_PAGE_MAX');
         }
         $request->merge(['perPage' => $request->get('perPage', config('constants.PER_PAGE_LIMIT'))]);
         return $next($request);

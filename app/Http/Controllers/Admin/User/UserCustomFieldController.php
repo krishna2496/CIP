@@ -10,10 +10,10 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
 use Validator;
-use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
+use App\Events\User\UserActivityLogEvent;
 
 class UserCustomFieldController extends Controller
 {
@@ -31,16 +31,26 @@ class UserCustomFieldController extends Controller
     private $responseHelper;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(UserCustomFieldRepository $userCustomFieldRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        UserCustomFieldRepository $userCustomFieldRepository,
+        ResponseHelper $responseHelper,
+        Request $request
+    ) {
         $this->userCustomFieldRepository = $userCustomFieldRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -64,8 +74,6 @@ class UserCustomFieldController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -77,55 +85,51 @@ class UserCustomFieldController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->toArray(),
-                ["name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
-                "type" => ['required',
-                    Rule::in(config('constants.custom_field_types'))],
-                "is_mandatory" => "required|boolean",
-                "translations" => "required",
-                "translations.*.lang" => "max:2",
-                "translations.*.values" => Rule::requiredIf(
-                    $request->type == config('constants.custom_field_types.DROP-DOWN') ||
-                    $request->type == config('constants.custom_field_types.RADIO')
-                ),
-                ]
-            );
-            // If post parameter have any missing parameter
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Create new user custom field record
-            $customField = $this->userCustomFieldRepository->store($request->toArray());
-            
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
-            $apiData = ['field_id' => $customField['field_id']];
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
+        // Server side validataions
+        $validator = Validator::make(
+            $request->toArray(),
+            ["name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
+            "type" => ['required',
+                Rule::in(config('constants.custom_field_types'))],
+            "is_mandatory" => "required|boolean",
+            "translations" => "required",
+            "translations.*.lang" => "max:2",
+            "translations.*.values" => Rule::requiredIf(
+                $request->type === config('constants.custom_field_types.DROP-DOWN') ||
+                $request->type === config('constants.custom_field_types.RADIO')
+            ),
+            ]
+        );
+        // If post parameter have any missing parameter
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
+                $validator->errors()->first()
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        // Create new user custom field record
+        $customField = $this->userCustomFieldRepository->store($request->toArray());
+        
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
+        $apiData = ['field_id' => $customField['field_id']];
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $customField['field_id']
+        ));
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -138,7 +142,7 @@ class UserCustomFieldController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
-            // Server side validataions
+            // Server side validations
             $validator = Validator::make(
                 $request->toArray(),
                 ["name" => [
@@ -153,8 +157,8 @@ class UserCustomFieldController extends Controller
                     Rule::in(config('constants.custom_field_types'))],
                 "translations.*.lang" => "max:2",
                 "translations.*.values" =>
-                Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
-                    || $request->type == config('constants.custom_field_types.RADIO')),
+                Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
+                    || $request->type === config('constants.custom_field_types.RADIO')),
                 ]
             );
             // If post parameter have any missing parameter
@@ -173,26 +177,25 @@ class UserCustomFieldController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_UPDATED');
             $apiData = ['field_id' => $customField['field_id']];
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $customField['field_id']
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -217,8 +220,6 @@ class UserCustomFieldController extends Controller
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -236,14 +237,25 @@ class UserCustomFieldController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

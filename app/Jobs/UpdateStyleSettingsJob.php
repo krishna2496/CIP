@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
+use App\Jobs\DownloadAssestFromLocalDefaultThemeToLocalStorageJob;
+use App\Jobs\CompileScssFiles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 class UpdateStyleSettingsJob extends Job
 {
@@ -26,11 +27,11 @@ class UpdateStyleSettingsJob extends Job
 
     /**
      * Create a new job instance.
-     * 
+     *
      * @param string $tenantName
      * @param array $options
      * @param string $fileName
-     * 
+     *
      * @return void
      */
     public function __construct(string $tenantName, array $options, string $fileName = '')
@@ -59,9 +60,8 @@ class UpdateStyleSettingsJob extends Job
         if (!Storage::disk('local')->exists($this->tenantName)) { // Else download files from S3 to local
             // Create new job that will take tenantName, options, and uploaded file path as an argument.
             // Dispatch job, that will store in master database
-            dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenantName));
+            dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenantName));
         }
-
         // Second compile SCSS files and upload generated CSS file on S3
         $this->compileLocalScss();
     }
@@ -84,25 +84,21 @@ class UpdateStyleSettingsJob extends Job
         $importScss = '@import "_variables";';
         
         // Color set & other file || Color set & no file
-        if ((isset($this->options['primary_color']) && $this->options['isVariableScss'] == 0)) {
+        if ((isset($this->options['primary_color']) && $this->options['isVariableScss'] === 0)) {
             $importScss .= '$primary: '.$this->options['primary_color'].';';
         }
 
-        try {
-            $importScss .= '@import "_assets";
-            $assetUrl: "'.$assetUrl.'";                        
-            @import "../../../../../node_modules/bootstrap/scss/bootstrap";
-            @import "../../../../../node_modules/bootstrap-vue/src/index";
-            @import "custom";';
+        $importScss .= '@import "_assets";
+        $assetUrl: "'.$assetUrl.'";                        
+        @import "../../../../../node_modules/bootstrap/scss/bootstrap";
+        @import "../../../../../node_modules/bootstrap-vue/src/index";
+        @import "custom";';
 
-            $css = $scss->compile($importScss);
-        
-            // Put compiled css file into local storage
-            if (Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css)) {
-                    Storage::disk('s3')->put($this->tenantName.'\assets\css\style.css', Storage::disk('local')->get($this->tenantName.'\assets\css\style.css'));
-            } 
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $css = $scss->compile($importScss);
+    
+        // Put compiled css file into local storage
+        if (Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css)) {
+                Storage::disk('s3')->put($this->tenantName.'\assets\css\style.css', Storage::disk('local')->get($this->tenantName.'\assets\css\style.css'));
+        } 
     }
 }

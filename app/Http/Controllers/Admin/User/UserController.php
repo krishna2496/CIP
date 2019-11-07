@@ -9,13 +9,13 @@ use App\Repositories\User\UserRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
 use InvalidArgumentException;
-use PDOException;
 use Illuminate\Validation\Rule;
 use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
+use App\Events\User\UserActivityLogEvent;
 
 class UserController extends Controller
 {
@@ -34,22 +34,39 @@ class UserController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $languageHelper
+     * @param App\Helpers\Helpers $helpers
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers,
+        Request $request
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -73,8 +90,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -86,89 +101,86 @@ class UserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                ["first_name" => "required|max:16",
-                "last_name" => "required|max:16",
-                "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-                "password" => "required|min:8",
-                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "language_id" => "required|int",
-                "city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "integer|required|exists:country,country_id,deleted_at,NULL",
-                "profile_text" => "required",
-                "employee_id" => "max:16|
-                unique:user,employee_id,NULL,user_id,deleted_at,NULL",
-                "department" => "max:16",
-                "manager_name" => "max:16",
-                "linked_in_url" => "url"
-                ]
-            );
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            ["first_name" => "required|max:16",
+            "last_name" => "required|max:16",
+            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
+            "password" => "required|min:8",
+            "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
+            "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "language_id" => "required|int",
+            "city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "integer|required|exists:country,country_id,deleted_at,NULL",
+            "profile_text" => "required",
+            "employee_id" => "max:16|
+            unique:user,employee_id,NULL,user_id,deleted_at,NULL",
+            "department" => "max:16",
+            "linked_in_url" => "url|valid_linkedin_url",
+            "why_i_volunteer" => "required",
+            ]
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Check language id
-            if (!$this->languageHelper->validateLanguageId($request)) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                    trans(
-                        'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
-                    )
-                );
-            }
-            
-            
-            // Create new user
-            $user = $this->userRepository->store($request->all());
-
-            // Set response data
-            $apiData = ['user_id' => $user->user_id];
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
             );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        // Check language id
+        if (!$this->languageHelper->validateLanguageId($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+            );
+        }
+        
+        
+        // Create new user
+        $user = $this->userRepository->store($request->all());
+
+        // Set response data
+        $apiData = ['user_id' => $user->user_id];
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USERS'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $user->user_id
+        ));
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
      * Display the specified user detail.
      *
+     * @param \Illuminate\Http\Request $request
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         try {
             $userDetail = $this->userRepository->find($id);
                 
             $apiData = $userDetail->toArray();
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
+            $this->helpers->getUserDefaultProfileImage($tenantName);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
@@ -178,8 +190,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -210,8 +220,8 @@ class UserController extends Controller
                     "max:16",
                     Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
                 "department" => "sometimes|required|max:16",
-                "manager_name" => "sometimes|required|max:16",
-                "linked_in_url" => "url",
+                "linked_in_url" => "url|valid_linkedin_url",
+                "why_i_volunteer" => "sometimes|required",
                 "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
                 "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
@@ -235,9 +245,7 @@ class UserController extends Controller
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                         config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                        trans(
-                            'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
-                        )
+                        trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
                     );
                 }
             }
@@ -250,21 +258,24 @@ class UserController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
             
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USERS'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $user->user_id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -282,14 +293,25 @@ class UserController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
+           
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USERS'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -317,27 +339,30 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-
-            $this->userRepository->linkSkill($request->toArray(), $id);
-
+            $linkedSkills = $this->userRepository->linkSkill($request->toArray(), $id);
+            
+            foreach ($linkedSkills as $linkedSkill) {
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.USER_SKILL'),
+                    config('constants.activity_log_actions.LINKED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $linkedSkill['skill_id']
+                ));
+            }
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -345,10 +370,10 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int $userId
      * @return Illuminate\Http\JsonResponse
      */
-    public function unlinkSkill(Request $request, int $id): JsonResponse
+    public function unlinkSkill(Request $request, int $userId): JsonResponse
     {
         try {
             // Server side validataions
@@ -367,7 +392,21 @@ class UserController extends Controller
                 );
             }
 
-            $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
+            $unlinkedIds = $this->userRepository->unlinkSkill($request->toArray(), $userId);
+
+            foreach ($unlinkedIds as $unlinkedId) {
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.USER_SKILL'),
+                    config('constants.activity_log_actions.UNLINKED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $unlinkedId['skill_id']
+                ));
+            }
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
@@ -378,15 +417,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -411,8 +441,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

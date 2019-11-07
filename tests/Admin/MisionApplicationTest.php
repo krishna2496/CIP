@@ -22,17 +22,18 @@ class MissionApplicationTest extends TestCase
         $user->save();
 
         $missionApplication = new App\Models\MissionApplication();
-
+        $motivation = str_random(10);
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
         $missionApplication->availability_id = 1;
-        $missionApplication->motivation = str_random(10);
+        $missionApplication->motivation = $motivation;
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save(); 
         
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC',
+        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
         $missionApplication->delete(); 
         $user->delete(); 
@@ -220,5 +221,180 @@ class MissionApplicationTest extends TestCase
             ]
         ]); 
         $missionApplication->delete();
+        $user->delete(); 
+        $mission->delete();
+    }
+
+    /**
+    * @test
+    *
+    * Return error for invalid argument for get all mission applications
+    *
+    * @return void
+    */
+    public function it_should_return_error_for_invalid_argument_for_mission_applications()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+        $motivation = str_random(10);
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = 1;
+        $missionApplication->motivation = $motivation;
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
+        
+        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=test',
+        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $missionApplication->delete(); 
+        $user->delete(); 
+        $mission->delete(); 
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid status on update mission api
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_status_on_update_mission_application()
+    {
+        $params = [
+                    "approval_status" => "test",
+                ];
+
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = 1;
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save();  
+
+        $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        $missionApplication->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error on update mission api
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_application_id_on_update_mission_application()
+    {
+        $params = [
+                    "approval_status" => "AUTOMATICALLY_APPROVED",
+                ];
+
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
+        $this->patch('/missions/'.$mission->mission_id.'/applications/'.rand(1000000, 2000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        $user->delete(); 
+        $mission->delete();
+    }
+
+    /**
+    * @test
+    *
+    * Get all mission applications
+    *
+    * @return void
+    */
+    public function it_should_return_mission_applications_with_search()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $status = config('constants.application_status.PENDING');
+        $missionApplication = new App\Models\MissionApplication();
+        $motivation = str_random(10);
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = 1;
+        $missionApplication->motivation = $motivation;
+        $missionApplication->approval_status = $status;
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
+        
+        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC&status='.$status.'&user_id='.$user->user_id.'&type='.config("constants.mission_type.GOAL"),
+        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        $missionApplication->delete(); 
+        $user->delete(); 
+        $mission->delete(); 
     }
 }

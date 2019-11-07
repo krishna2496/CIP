@@ -11,18 +11,18 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use Validator;
-use PDOException;
-use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
-use App\Jobs\CreateFolderInS3BucketJob;
+use App\Jobs\DownloadAssestFromLocalDefaultThemeToLocalStorageJob;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Jobs\ResetStyleSettingsJob;
 use App\Jobs\UpdateStyleSettingsJob;
+use App\Services\CustomStyling\CustomStylingService;
+use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
+use App\Events\User\UserActivityLogEvent;
 
 class TenantOptionsController extends Controller
 {
@@ -46,7 +46,12 @@ class TenantOptionsController extends Controller
      * @var App\Helpers\S3Helper
      */
     private $s3helper;
-    
+
+    /**
+     * @var App\Services\CustomStyling\CustomStylingService
+     */
+    private $customStylingService;
+
     /**
      * Create a new controller instance.
      *
@@ -54,18 +59,24 @@ class TenantOptionsController extends Controller
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
+     * @param  App\Services\CustomStyling\CustomStylingService $customStylingService
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        CustomStylingService $customStylingService,
+        Request $request
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->customStylingService = $customStylingService;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -76,20 +87,15 @@ class TenantOptionsController extends Controller
      */
     public function resetStyleSettings(Request $request): JsonResponse
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+    
+        // Database connection with master database
+        $this->helpers->switchDatabaseConnection('mysql', $request);
         
-			// Database connection with master database
-			$this->helpers->switchDatabaseConnection('mysql', $request);
-			
-			// Dispatch job, that will store in master database
-			dispatch(new ResetStyleSettingsJob($tenantName));
-		} catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
-        }
+        // Dispatch job, that will store in master database
+        dispatch(new ResetStyleSettingsJob($tenantName));
+
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
         
@@ -118,103 +124,36 @@ class TenantOptionsController extends Controller
                 trans('messages.custom_error_message.ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING')
             );
         }
+
+        $updatedTenantOptionIds = $this->tenantOptionRepository->updateStyleSettings($request);
+
+        if (!empty($updatedTenantOptionIds)) {
+            $requestArray = $request->toArray();
+            foreach ($updatedTenantOptionIds as $tenantOptionId) {
+                $requestArray['custom_scss_file'] = '';
+                // Make activity log for tenant option primary key or secondary key
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.STYLE'),
+                    config('constants.activity_log_actions.UPDATED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $requestArray,
+                    null,
+                    $tenantOptionId
+                ));
+            }
+        }
         
-        try {
-            $this->tenantOptionRepository->updateStyleSettings($request);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\ErrorException $e) {
-            return $this->internaServerError(
-                config('constants.error_codes.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'),
-                trans(
-                    'messages.custom_error_message.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
-        }
-
-        $file = $request->file('custom_scss_file');
-
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        
         if ($request->hasFile('custom_scss_file')) {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->toArray(),
-                [
-                    "custom_scss_file_name" => "required"
-                ]
-            );
-
-            // If post parameter have any missing parameter
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            // If request parameter have any error
-            if ($file->getClientOriginalExtension() !== "scss") {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
-                    trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION')
-                );
-            }
-            
-            if ($file->isValid()) {
-                $fileName = $request->custom_scss_file_name;
-
-                /* Check user uploading custom style variable file,
-                then we need to make it as high priority instead of passed colors. */
-                if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
-                    $isVariableScss = 1;
-                }
-                // Need to get list SCSS files from S3 server and match name with passed file name
-                $allSCSSFiles = $this->s3helper->getAllScssFiles($tenantName);
-                // if it is not exist then need to throw error
-                if (array_search($fileName, array_column($allSCSSFiles['scss_files'], 'scss_file_name')) === false) {
-                    // Error: Return like uploaded file name doesn't match with structure.
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE'),
-                        trans('messages.custom_error_message.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
-                    );
-                }
-                // Need to upload file on S3 and that function will return uploaded file URL.
-                $file = $request->file('custom_scss_file');
-                
-                $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
-                config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
-                
-                if (!Storage::disk('s3')->put($filePath, file_get_contents($file))) {
-                    // Throw exception file not uploaded successfully
-                    throw new FileUploadException(
-                        trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_FILE_ON_S3'),
-                        config('constants.error_codes.ERROR_WHILE_UPLOADING_FILE_ON_S3')
-                    );
-                }
+            $response = $this->customStylingService->uploadImage($request);
+            if (!is_null($response)) {
+                return $response;
             }
         }
-
         $options['isVariableScss'] = $isVariableScss;
         
         if (isset($request->primary_color) && $request->primary_color!='') {
@@ -226,7 +165,27 @@ class TenantOptionsController extends Controller
         
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
+
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+
+        if (!empty($fileName)) {
+            $requestArray = $request->toArray();
+            $requestArray['custom_scss_file'] = $filePath;
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STYLE'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $requestArray,
+                null,
+                null
+            ));
+        }
+        
 
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
@@ -234,6 +193,7 @@ class TenantOptionsController extends Controller
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -245,19 +205,15 @@ class TenantOptionsController extends Controller
      */
     public function downloadStyleFiles(Request $request): JsonResponse
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
+        
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
@@ -280,8 +236,7 @@ class TenantOptionsController extends Controller
      */
     public function updateImage(Request $request): JsonResponse
     {
-        $validFileTypesArray = ['jpeg','jpg','svg','png'];
-
+        $validFileTypesArray = ['image/jpeg','image/svg+xml','image/png'];
         // Server side validataions
         $validator = Validator::make(
             $request->toArray(),
@@ -302,9 +257,16 @@ class TenantOptionsController extends Controller
 
         $file = $request->file('image_file');
         $fileName = $request->image_name;
-
+        $fileNameExtension = substr(strrchr($fileName, '.'), 1);
+        
+        $validateResponse = $this->customStylingService->checkFileValidations($request);
+        if (!is_null($validateResponse)) {
+            return $validateResponse;
+        }
+       
         // If request parameter have any error
-        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray)) {
+        if (!in_array($file->getMimeType(), $validFileTypesArray) &&
+        $fileNameExtension === $file->getClientOriginalExtension()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -318,36 +280,50 @@ class TenantOptionsController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
+        // request array to make activity log
+        $requestArray = $request->toArray();
+
         if (Storage::disk('s3')->exists($tenantName)) {
-            if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
-                throw new FileNotFoundException(
-                    trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
-                    config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
-                );
+            $response = $this->customStylingService->uploadFileOnS3($request);
+            if (!is_null($response)) {
+                return $response;
             }
             // Upload file on s3
-            if (!Storage::disk('s3')->put(
+            Storage::disk('s3')->put(
                 '/'.$tenantName.'/assets/images/'.$fileName,
-                file_get_contents($file->getRealPath())
-            )) {
-                throw new FileUploadException(
-                    trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
-                    config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
-                );
-            }
+                file_get_contents(
+                    $file->getRealPath()
+                ),
+                [
+                    'mimetype' => $file->getMimeType()
+                ]
+            );
+            $requestArray['image_file'] = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
+                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/assets/images/'.$fileName;
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
                 config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
             );
         }
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.STYLE_IMAGE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $requestArray,
+            null,
+            null
+        ));
                   
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = "Image uploaded successfully";
+        $apiMessage = trans('messages.success.MESSAGE_IMAGE_UPLOADED_SUCCESSFULLY');
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
     
@@ -378,31 +354,29 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-        try {
-            $data = $request->toArray();
-            $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
-            : $request->option_value;
+        
+        $data = $request->toArray();
+        $data['option_value'] =
+        (gettype($request->option_value)=="array") ? serialize($request->option_value) :
+        $request->option_value;
 
-            $tenantOption = $this->tenantOptionRepository->store($data);
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $tenantOption = $this->tenantOptionRepository->store($data);
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.TENANT_OPTION'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $tenantOption->tenant_option_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
@@ -436,21 +410,31 @@ class TenantOptionsController extends Controller
             
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
-            $updateData['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
-            : $request->option_value;
+            $updateData['option_value'] = (gettype($request->option_value)=="array")
+            ? serialize($request->option_value) : $request->option_value;
             $tenantOption->update($updateData);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
             
+             // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.TENANT_OPTION'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $tenantOption->tenant_option_id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -462,28 +446,11 @@ class TenantOptionsController extends Controller
      */
     public function resetAssetsImages(Request $request): JsonResponse
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
-        try {
-            // Copy default theme folder to tenant folder on s3
-            dispatch(new CopyDefaultThemeImagesToTenantImagesJob($tenantName));
-        } catch (S3Exception $e) {
-            return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILED_TO_RESET_ASSET_IMAGE'),
-                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_ASSET_IMAGE')
-            );
-        } catch (BucketNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_ASSET_IMAGE'));
-        }
+        // Copy default theme folder to tenant folder on s3
+        dispatch(new CopyDefaultThemeImagesToTenantImagesJob($tenantName));
 
         // Set response data
         $apiStatus = Response::HTTP_OK;

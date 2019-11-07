@@ -2,15 +2,8 @@
 namespace App\Repositories\TenantSetting;
 
 use App\Repositories\TenantSetting\TenantSettingInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use App\Helpers\ResponseHelper;
 use App\Models\TenantSetting;
-use Illuminate\Http\Request;
-use PDOException;
-use Validator;
-use DB;
 
 class TenantSettingRepository implements TenantSettingInterface
 {
@@ -45,17 +38,6 @@ class TenantSettingRepository implements TenantSettingInterface
         $setting = $this->tenantSetting->findOrFail($settingId);
         $setting->update($data);
         return $setting;
-    }
-
-    /**
-     * Get all tenant's settings data
-     *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Pagination\LengthAwarePaginator
-     */
-    public function getAllSettings(Request $request): LengthAwarePaginator
-    {
-        return $this->tenantSetting->paginate($request->perPage);
     }
 
     /**
