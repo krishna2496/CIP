@@ -1111,7 +1111,7 @@ class MissionRepository implements MissionInterface
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->modelsService->missionLanguage->select('title')
+        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
         ->where(['mission_id' => $missionId, 'language_id' => $languageId])
         ->get();
         if ($languageData->count() > 0) {
