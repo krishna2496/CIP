@@ -94,7 +94,7 @@ class LanguageController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                'name' => 'required',
+                'name' => 'required|regex:/^[a-zA-Z]+$/u|unique:language,name,NULL,language_id,deleted_at,NULL',
                 'code'  => 'required|max:2|unique:language,code,NULL,language_id,deleted_at,NULL',
                 'status'  => 'required|in:1,0'
             ]
