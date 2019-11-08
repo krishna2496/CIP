@@ -176,4 +176,15 @@ class MissionCommentRepository implements MissionCommentInterface
     {
         return $this->comment->with('user')->findOrFail($commentId);
     }
+
+    /**
+     * Get comment detail
+     *
+     * @param int $commentId
+     * @return App\Models\Comment
+     */
+    public function getCommentDetail(int $commentId): Comment
+    {
+        return $this->comment->withTrashed()->find($commentId);
+    }
 }
