@@ -193,7 +193,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
 
-        return $this->mission->select('mission.mission_id')
+        $timesheetQuery = $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
@@ -209,8 +209,14 @@ class TimesheetRepository implements TimesheetInterface
             if ($request->has('status') && $request->input('status') !== '') {
                 $query->where('status_id', strtoupper($request->status));
             }
-        }])
-        ->get();
+        }]);
+
+        if ($request->has('type') && $request->input('type') !== '' &&
+        in_array(strtoupper($request->input('type')), config('constants.mission_type'))) {
+            $timesheetQuery->where('mission_type', strtoupper($request->input('type')));
+        }
+
+        return $timesheetQuery->get();
     }
 
     /**
