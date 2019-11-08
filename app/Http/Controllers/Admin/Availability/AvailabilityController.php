@@ -96,18 +96,6 @@ class AvailabilityController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_CREATED');
         
-        // Make activity log
-        // event(new UserActivityLogEvent(
-        //     config('constants.activity_log_types.SKILL'),
-        //     config('constants.activity_log_actions.CREATED'),
-        //     config('constants.activity_log_user_types.API'),
-        //     $this->userApiKey,
-        //     get_class($this),
-        //     $request->toArray(),
-        //     null,
-        //     $skill->skill_id
-        // ));
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -154,18 +142,6 @@ class AvailabilityController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_UPDATED');
             
-            // // Make activity log
-            // event(new UserActivityLogEvent(
-            //     config('constants.activity_log_types.SKILL'),
-            //     config('constants.activity_log_actions.UPDATED'),
-            //     config('constants.activity_log_user_types.API'),
-            //     $this->userApiKey,
-            //     get_class($this),
-            //     $request->toArray(),
-            //     null,
-            //     $skill->skill_id
-            // ));
-
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -214,18 +190,6 @@ class AvailabilityController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_DELETED');
 
-            // Make activity log
-            // event(new UserActivityLogEvent(
-            //     config('constants.activity_log_types.SKILL'),
-            //     config('constants.activity_log_actions.DELETED'),
-            //     config('constants.activity_log_user_types.API'),
-            //     $this->userApiKey,
-            //     get_class($this),
-            //     null,
-            //     null,
-            //     $id
-            // ));
-            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
