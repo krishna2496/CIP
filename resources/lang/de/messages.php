@@ -136,7 +136,12 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'DE: Notification listed successfully',
         'MESSAGE_READ_SUCCESSFULLY' => 'DE: Message read successfully',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'DE: Activity logs listed successfully',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'DE: No activity logs found'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'DE: No activity logs found',
+        'MESSAGE_AVAILABILITY_LISTING' => 'DE: Availability listed successfully',
+        'MESSAGE_AVAILABILITY_CREATED' => 'DE: Availability created successfully',
+        'MESSAGE_AVAILABILITY_DELETED' => 'DE: Availability deleted successfully',
+        'MESSAGE_AVAILABILITY_UPDATED' => 'DE: Availability updated successfully',
+        'MESSAGE_AVAILABILITY_FOUND' => 'DE: Availability found successfully',
     ],
 
 
@@ -267,5 +272,8 @@ return [
 
         // For notification module
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
+
+        // For availability module
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availabilty does not found in system',
     ]
 ];

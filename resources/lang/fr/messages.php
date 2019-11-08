@@ -166,7 +166,12 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message lu avec succès',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_AVAILABILITY_LISTING' => 'Disponibilité listée avec succès',
+        'MESSAGE_AVAILABILITY_CREATED' => 'Disponibilité créée avec succès',
+        'MESSAGE_AVAILABILITY_DELETED' => 'Disponibilité supprimée avec succès',
+        'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
+        'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
     ],
 
         
@@ -310,5 +315,8 @@ return [
 
         // For notification module
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification non trouvée dans le système',
+
+        // For availability module
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
     ]
 ];
