@@ -50,7 +50,7 @@ export default new Vuex.Store({
         cookiePolicyText: localStorage.getItem('cookiePolicyText'),
         email: localStorage.getItem('email'),
         currentView: localStorage.getItem('currentView'),
-        timesheetInitialYear: localStorage.getItem('timesheetInitialYear')
+        timesheetFromYear: localStorage.getItem('timesheetFromYear')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -293,9 +293,9 @@ export default new Vuex.Store({
             localStorage.setItem('cookiePolicyText', JSON.stringify(data))
             state.cookiePolicyText = JSON.stringify(data)
         },
-        timesheetInitialYear(state, data) {
-            localStorage.setItem('timesheetInitialYear', data)
-            state.timesheetInitialYear = data
+        timesheetFromYear(state, data) {
+            localStorage.setItem('timesheetFromYear', data)
+            state.timesheetFromYear = data
         }
     },
     getters: {},

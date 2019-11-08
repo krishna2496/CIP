@@ -9,6 +9,7 @@ export default async(data) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
+    document.body.classList.add("loader-enable");
     await axios({
             url: process.env.VUE_APP_API_ENDPOINT + "app/login",
             data,
@@ -17,10 +18,16 @@ export default async(data) => {
                 'X-localization': defaultLanguage
             }
         }).then((response) => {
+
             //Store login data in local storage
             store.commit('loginUser', response.data.data)
+            setTimeout(() => {
+                document.body.classList.remove("loader-enable");
+            }, 700)
+
         })
         .catch(error => {
+            document.body.classList.remove("loader-enable");
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;

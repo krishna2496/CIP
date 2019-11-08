@@ -212,7 +212,7 @@
 }
 
 .mission-row {
-	border-bottom: 1px solid $border-color;
+	border-bottom: 1px solid $primary-border-color;
 	margin-bottom: 30px;
 
 	&:last-of-type {
@@ -291,7 +291,7 @@ body {
 	&.status-label {
 		background: transparent;
 		color: $black-primary;
-		border: 1px solid $border-color;
+		border: 1px solid $primary-border-color;
 		border-radius: 50px;
 		white-space: nowrap;
 		text-overflow: ellipsis;
