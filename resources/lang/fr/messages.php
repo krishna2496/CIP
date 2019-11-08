@@ -18,14 +18,16 @@ return [
         'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'La clé secrète de l\'utilisateur de l\'API a été mise à jour avec succès',
         'MESSAGE_ALL_SETTING_LISTING' => 'Tous les paramètres listés avec succès',
         'MESSAGE_LANGUAGE_FOUND' => 'Langue trouvée avec succès',
-        'MESSAGE_LANGUAGE_LISTING' => 'Langue listée avec succès',
-        'MESSAGE_LANGUAGE_CREATED' => 'Langue créée avec succès',
+        'MESSAGE_LANGUAGE_LISTING' => 'Langues listées avec succès',
+        'MESSAGE_LANGUAGE_CREATED' => 'Langue ajoutée avec succès',
         'MESSAGE_LANGUAGE_UPDATED' => 'Détails de la langue mis à jour avec succès',
         'MESSAGE_NEWS_DELETED' => 'Langue supprimée avec succès',
-        'MESSAGE_TENANT_LANGUAGE_ADDED' => 'Langue du locataire ajoutée avec succès',
-        'MESSAGE_TENANT_LANGUAGE_LISTING' => 'Langue du locataire répertoriée avec succès',
-        'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Langue du locataire supprimée avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_TENANT_LANGUAGE_ADDED' => 'Langue locataire ajoutée avec succès',
+        'MESSAGE_TENANT_LANGUAGE_UPDATED' => 'Langue du locataire mise à jour avec succès',
+        'MESSAGE_TENANT_LANGUAGE_LISTING' => 'Langues locataires répertoriées avec succès',
+        'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Langue locataire supprimée avec succès',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
     ],
     
     /**
