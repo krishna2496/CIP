@@ -142,7 +142,7 @@ class MissionRepository implements MissionInterface
                     'title' => $value['title'],
                     'short_description' => (isset($value['short_description'])) ? $value['short_description'] : null,
                     'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
-                    'objective' => $value['objective'],
+                    'objective' =>  (isset($value['objective'])) ? $value['objective'] : null,
                     'custom_information' => (array_key_exists('custom_information', $value))
                     ? $value['custom_information'] : null
                 );
@@ -1111,7 +1111,7 @@ class MissionRepository implements MissionInterface
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->modelsService->missionLanguage->select('title')
+        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
         ->where(['mission_id' => $missionId, 'language_id' => $languageId])
         ->get();
         if ($languageData->count() > 0) {

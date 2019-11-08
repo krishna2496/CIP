@@ -151,4 +151,12 @@ interface TimesheetInterface
      * @return null|array
      */
     public function getUsersTotalHours(int $year, int $month): ?array;
+
+    /**
+     * Get details of timesheet from timesheetId
+     *
+     * @param int $timesheetId
+     * @return App\Models\Timesheet
+     */
+    public function getDetailOfTimesheetEntry(int $timesheetId): Timesheet;
 }

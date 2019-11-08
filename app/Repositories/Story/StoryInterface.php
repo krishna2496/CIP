@@ -173,4 +173,12 @@ interface StoryInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getStoryMedia(int $storyId): Collection;
+
+    /**
+     * Get story detail.
+     *
+     * @param int $storyId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getStoryDetail(int $storyId): Collection;
 }
