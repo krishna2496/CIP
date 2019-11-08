@@ -107,7 +107,7 @@ class StoryController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.STORY_ADDED_SUCESSFULLY');
+        $apiMessage = trans('messages.success.STORY_ADDED_SUCCESSFULLY');
         $apiData = ['story_id' => $storyData->story_id];
 
         // get the story media data for log
@@ -498,7 +498,7 @@ class StoryController extends Controller
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
+            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCCESSFULLY');
             $apiData = ['story_id' => $storyData->story_id];
 
             //Make activity log
