@@ -15,7 +15,7 @@
 
   .table-outer {
     padding: 20px 20px 30px;
-    border: 1px solid $border-color;
+    border: 1px solid $primary-border-color;
     @extend .message_shadow;
     height: 100%;
     display: flex;
@@ -63,7 +63,7 @@
       tr {
         td,
         th {
-          border-color: $border-color;
+          border-color: $primary-border-color;
           @include md-max {
             white-space: nowrap;
           }
@@ -73,7 +73,7 @@
         }
         &:last-child {
           td {
-            border-bottom: 1px solid $border-color;
+            border-bottom: 1px solid $primary-border-color;
           }
         }
         .action-col {
@@ -388,7 +388,7 @@
       left: 0;
     }
     .picker-btn {
-      border: 1px solid $border-color;
+      border: 1px solid $primary-border-color;
       padding: 9px !important;
       margin-right: 8px;
       &.disabled {
@@ -451,7 +451,7 @@
       position: relative;
       padding: 1px 3px 4px 5px;
       @include border-radius(3px);
-      border: 1px solid $border-color;
+      border: 1px solid $primary-border-color;
       img {
         height: 22px;
         width: 22px;
@@ -487,7 +487,7 @@
       span {
         cursor: pointer;
         color: $gray-primary;
-        border: 1px solid $border-color;
+        border: 1px solid $primary-border-color;
         padding: 3px 9px;
         &:first-child {
           border-radius: 3px 0 0 3px;
@@ -510,7 +510,7 @@
     .picker-btn-wrap {
       &:not(.table-action-btn) {
         display: inline-flex;
-        border: 1px solid $border-color;
+        border: 1px solid $primary-border-color;
         @include border-radius(3px);
         span {
           padding: 3px 11px;

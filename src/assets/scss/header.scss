@@ -43,12 +43,12 @@ header {
 
 .top-header {
     padding: 6px 0;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid $primary-border-color;
     @include md-max {
         .small-header & {
             border: none;
             .open-search & {
-                border-bottom: 1px solid $border-color;
+                border-bottom: 1px solid $primary-border-color;
             }
         }
     }
@@ -352,7 +352,7 @@ header {
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
-                background-color: $border-color;
+                background-color: $primary-border-color;
                 @include md-max {
                     margin: 0;
                 }
@@ -371,7 +371,7 @@ header {
             min-width: 137px;
             padding: 5px 0;
             margin: 4px 0 0;
-            border: 1px solid $border-color;
+            border: 1px solid $primary-border-color;
             @extend .navdropdown_shadow;
             border-radius: 3px;
         }
@@ -430,7 +430,7 @@ header {
                         position: absolute;
                         content: "";
                         left: 0;
-                        bottom: -27px;
+                        bottom: -10px;
                         width: 100%;
                         height: 3px;
                         background: $black;
@@ -450,7 +450,7 @@ header {
             }
             .dropdown-menu {
                 top: 90%;
-                border: 1px solid $border-color;
+                border: 1px solid $primary-border-color;
                 width: 195px;
                 padding: 5px 0;
                 margin-top: 0;
@@ -485,7 +485,7 @@ header {
                 background: #fff;
                 z-index: 1;
                 left: 100%;
-                border: 1px solid $border-color;
+                border: 1px solid $primary-border-color;
                 display: none;
                 top: -6px;
                 width: 165px;
@@ -533,7 +533,7 @@ header {
     &.notification-popover {
         margin: 0;
         border-radius: 3px;
-        border-color: $border-color;
+        border-color: $primary-border-color;
         @extend .navdropdown_shadow;
         width: 100%;
         max-width: 100%;
@@ -648,7 +648,7 @@ header {
                     padding: 20px 50px 20px 56px;
                     display: flex;
                     align-items: center;
-                    border-bottom: 1px solid $border-color;
+                    border-bottom: 1px solid $primary-border-color;
                     border-radius: 0;
                     border-left: 3px solid transparent;
                     cursor: pointer;
@@ -723,7 +723,7 @@ header {
                 border-bottom: 1px solid $control-border;
                 padding: 5px 15px;
                 color: $gray-primary;
-                background: $border-color;
+                background: $primary-border-color;
             }
         }
         .notification-clear {
@@ -781,7 +781,7 @@ header {
             }
             .setting-bar {
                 padding: 6px 15px;
-                background: $border-color;
+                background: $primary-border-color;
                 font-size: 14px;
                 color: $gray-primary;
                 p {
@@ -801,7 +801,7 @@ header {
                 justify-content: center;
                 align-items: center;
                 padding: 19px 0;
-                border-top: 1px solid $border-color;
+                border-top: 1px solid $primary-border-color;
                 @media(max-height: 400px) {
                     padding: 10px 0;
                 }
@@ -907,7 +907,7 @@ header {
                     >li {
                         padding: 0 15px 0 25px;
                         >a {
-                            border-bottom: 1px solid $border-color;
+                            border-bottom: 1px solid $primary-border-color;
                             padding: 5px 15px 7px 0;
                             background: transparent !important;
                             &:hover {
@@ -1025,7 +1025,7 @@ header {
         z-index: 2;
     }
     &:before {
-        background-color: $border-color;
+        background-color: $primary-border-color;
         z-index: 1;
         width: 100%;
     }
@@ -1206,7 +1206,7 @@ header {
             height: 100%;
             padding: 0;
             border: none;
-            border-left: 1px solid $border-color;
+            border-left: 1px solid $primary-border-color;
             border-radius: 0;
             @include md-max {
                 width: 100%;
@@ -1217,7 +1217,7 @@ header {
                 flex: 0 0 100%!important;
             }
             &:last-child {
-                border-right: 1px solid $border-color;
+                border-right: 1px solid $primary-border-color;
                 @include md-max {
                     border-right: none;
                 }

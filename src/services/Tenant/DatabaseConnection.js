@@ -137,10 +137,10 @@ export default async(langList, defautLang) => {
                 store.commit('cookiePolicyText', '');
             }
 
-            if (response.data.data.timesheet_initial_year) {
-                store.commit('timesheetInitialYear', parseInt(response.data.data.timesheet_initial_year));
+            if (response.data.data.timesheet_from_year) {
+                store.commit('timesheetFromYear', parseInt(response.data.data.timesheet_from_year));
             } else {
-                store.commit('timesheetInitialYear', '');
+                store.commit('timesheetFromYear', '');
             }
 
         })

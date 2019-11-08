@@ -121,8 +121,8 @@
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
 			let yearDiff  = 5;
-			if(store.state.timesheetInitialYear && store.state.timesheetInitialYear != '') {
-				let lastYear = store.state.timesheetInitialYear;
+			if(store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+				let lastYear = store.state.timesheetFromYear;
 				if((currentYear - lastYear) +1 > 0) { 
 					yearDiff = (currentYear - lastYear) +1;
 				}
