@@ -750,6 +750,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\ActivityLog\ActivityLogController@index']);
         }
     );
+
+    /* Get availability */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get availability */
+            $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Availability\AvailabilityController@index']);
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------

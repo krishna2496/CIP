@@ -166,7 +166,8 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message lu avec succès',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_AVAILABILITY_LISTING' => 'Disponibilité listée avec succès',
     ],
 
         

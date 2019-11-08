@@ -174,7 +174,8 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification listed successfully',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message read successfully',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Activity logs listed successfully',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'No activity logs found'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'No activity logs found',
+        'MESSAGE_AVAILABILITY_LISTING' => 'Availability listed successfully',
     ],
 
         
