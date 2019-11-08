@@ -55,7 +55,7 @@ class MissionInvite extends Model
      */
     public function getDetails(int $inviteId): MissionInvite
     {
-        return $this->with(['toUser', 'fromUser', 'mission', 'mission.missionLanguage'])
+        return $this->withTrashed()->with(['toUser', 'fromUser', 'mission', 'mission.missionLanguage'])
         ->where('mission_invite_id', $inviteId)->first();
     }
 
@@ -66,7 +66,7 @@ class MissionInvite extends Model
      */
     public function toUser(): HasOne
     {
-        return $this->hasOne(User::class, 'user_id', 'to_user_id');
+        return $this->hasOne(User::class, 'user_id', 'to_user_id')->withTrashed();
     }
 
     /**
@@ -76,7 +76,7 @@ class MissionInvite extends Model
      */
     public function fromUser(): HasOne
     {
-        return $this->hasOne(User::class, 'user_id', 'from_user_id');
+        return $this->hasOne(User::class, 'user_id', 'from_user_id')->withTrashed();
     }
 
     /**
@@ -86,6 +86,6 @@ class MissionInvite extends Model
      */
     public function mission(): HasOne
     {
-        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+        return $this->hasOne(Mission::class, 'mission_id', 'mission_id')->withTrashed();
     }
 }
