@@ -398,7 +398,7 @@ class NotificationService
         $response['notification_string'] = trans('general.notification.VOLUNTEERING_REQUEST')." ".$status." ".
         trans('general.notification.FOR_THIS_MISSION')." ".$missionName;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = '/mission-detail/'.$notification->entity_id;
+        $response['link'] = '/mission-detail/'.$missionId;
         return $response;
     }
 }
