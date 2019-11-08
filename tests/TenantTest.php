@@ -313,4 +313,63 @@ class TenantTest extends TestCase
         $this->delete(route("tenants.destroy", ["tenant_id" => $tenantId]), [], [])
         ->seeStatusCode(204);
     }
+
+    /**
+     * @test
+     * 
+     * It should return an error on run backgound process
+     * @return void
+     */
+    public function it_return_error_on_run_tenant_create_background_process()
+    {
+        $params = [
+            'name' => 'optimy'.rand(500, 1000),
+            'sponsor_id' => '456123'
+        ];
+        
+        $tenant = $this->post("tenants", $params, [])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'data' => [
+                'tenant_id',
+            ],
+            'message',
+            'status',
+        ]);
+
+        $tenantId = $tenant->response->getData()->data->tenant_id;
+        
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}` 
+        DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        DB::purge('tenant');
+        // Set configuration options for the newly create tenant
+        \Illuminate\Support\Facades\Config::set(
+            'database.connections.tenant',
+            array(
+                'driver'    => 'mysql',
+                'host'      => env('DB_HOST'),
+                'database'  => 'ci_tenant_'.$tenantId,
+                'username'  => env('DB_USERNAME'),
+                'password'  => env('DB_PASSWORD'),
+            )
+        );
+        // Set default connection with newly created database
+        DB::setDefaultConnection('tenant');
+        DB::connection('tenant')->getPdo();
+        
+        DB::statement("CREATE TABLE IF NOT EXISTS `user` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            PRIMARY KEY (`id`)
+          )");
+
+        DB::setDefaultConnection('mysql');
+        
+        $this->get("/tenant/runBackgroundProcess/".$tenantId, [])
+        ->seeStatusCode(500);
+
+        DB::setDefaultConnection('mysql');
+        $this->delete(route("tenants.destroy", ["tenant_id" => $tenantId]), [], [])
+        ->seeStatusCode(204);
+    }
 }
