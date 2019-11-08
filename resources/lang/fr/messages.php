@@ -26,7 +26,8 @@ return [
         'MESSAGE_TENANT_LANGUAGE_UPDATED' => 'Langue du locataire mise à jour avec succès',
         'MESSAGE_TENANT_LANGUAGE_LISTING' => 'Langues locataires répertoriées avec succès',
         'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Langue locataire supprimée avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
     ],
     
     /**
