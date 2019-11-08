@@ -134,9 +134,9 @@ return [
         'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
         'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
         'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
-        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found successfully',
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
-        'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
+        'STORY_ADDED_SUCCESSFULLY' => 'Histoire ajoutée avec succès',
         'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
         'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
         'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
@@ -147,10 +147,10 @@ return [
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
         
         'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
-        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
-        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'message envoyé avec succès',
         'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages envoyés avec succès',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
@@ -166,7 +166,12 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message lu avec succès',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_AVAILABILITY_LISTING' => 'Disponibilité listée avec succès',
+        'MESSAGE_AVAILABILITY_CREATED' => 'Disponibilité créée avec succès',
+        'MESSAGE_AVAILABILITY_DELETED' => 'Disponibilité supprimée avec succès',
+        'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
+        'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
     ],
 
         
@@ -310,5 +315,8 @@ return [
 
         // For notification module
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification non trouvée dans le système',
+
+        // For availability module
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
     ]
 ];
