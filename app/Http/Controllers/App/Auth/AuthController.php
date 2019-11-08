@@ -171,7 +171,7 @@ class AuthController extends Controller
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
-            $request->toArray(),
+            null,
             $userDetail->user_id
         ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
