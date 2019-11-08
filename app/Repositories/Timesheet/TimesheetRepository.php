@@ -579,4 +579,15 @@ class TimesheetRepository implements TimesheetInterface
         return $this->timesheetDocument->where('timesheet_id', $timesheetId)
                 ->orderBy('timesheet_document_id', 'DESC')->take($documentCount)->get();
     }
+
+    /**
+     * Get details of timesheet from timesheetId
+     *
+     * @param int $timesheetId
+     * @return App\Models\Timesheet
+     */
+    public function getDetailOfTimesheetEntry(int $timesheetId): Timesheet
+    {
+        return $this->timesheet->withTrashed()->with(['timesheetStatus'])->where('timesheet_id', $timesheetId)->first();
+    }
 }

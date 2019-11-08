@@ -236,15 +236,7 @@ class MissionCommentController extends Controller
 
         $apiStatus = Response::HTTP_NO_CONTENT;
         $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-        
-        // Send notification to user
-        $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
-        $entityId = $commentId;
-        $action = config('constants.notification_actions.DELETED');
-        $userId = $commentDetails->user->user_id;
-
-        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-
+       
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION_COMMENTS'),
