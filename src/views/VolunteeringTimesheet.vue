@@ -332,6 +332,7 @@
                 timeSheetGoalCurrentDate :  moment().week(),
                 timeSheetStartDate : '',
                 timeSheetEndDate : '',
+                userTimezone : ''
             };
         },
         updated() {
@@ -591,7 +592,7 @@
                     
                     currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
                     if(now == currentDate) {
-                        currentDate = moment().format("YYYY-MM-DD HH:mm:ss")
+                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                     } else {
                         currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD HH::mm:ss");
                     }
@@ -616,7 +617,7 @@
 
                     currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
                     if(now == currentDate) {
-                        currentDate = moment().format("YYYY-MM-DD HH:mm:ss")
+                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                     } else {
                         currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD HH::mm:ss");
                     }
@@ -1195,6 +1196,7 @@
             this.defaultMinutes = this.languageData.placeholder.spent_minutes
             this.timeRequestLabel = this.languageData.label.hours_requests
             this.goalRequestLabel = this.languageData.label.goals_requests
+            this.userTimezone = store.state.userTimezone
             this.getVolunteerHoursData();
             this.isShownComponent = true;
             setTimeout(() => {

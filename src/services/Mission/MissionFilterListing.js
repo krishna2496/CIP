@@ -25,9 +25,7 @@ export default async() => {
                 filterData.skillId = response.data.data.filters.skill_id;
                 filterData.tags = response.data.data.filters.tags;
                 filterData.sortBy = response.data.data.filters.sort_by;
-
-                // filterData.currentView = parseInt(response.data.data.filters.current_view);
-                filterData.currentView = 0
+                filterData.currentView = parseInt(response.data.data.filters.current_view);
                 store.commit('userFilter', filterData)
             } else {
                 let filterData = {};

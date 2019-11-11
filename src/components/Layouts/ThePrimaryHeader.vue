@@ -122,6 +122,11 @@
                                     <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
                                 </i>
                             </b-nav-item>
+                            <b-nav-item right>
+                                <b-button class="btn-bordersecondary btn-save" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+                                        {{languageData.label.submit_new_mission}}
+                                </b-button>
+                            </b-nav-item>
                             <b-nav-item right class="notification-menu" id="notifyPopoverWrap"
                                 v-if="this.$store.state.isLoggedIn">
                                 <button id="notificationPopover" class="btn-notification"
@@ -320,7 +325,9 @@
                     },
                     notificationCount: 0,
                     totalNotificationCount: 0,
-                    isNotificationLoaded: false
+                    isNotificationLoaded: false,
+                    submitNewMissionUrl:'' ,
+                    isSubmitNewMissionSet:true
                 };
             },
             mounted() {
@@ -388,10 +395,10 @@
                     if (this.$route.params.searchParams) {
                         this.filterData['parmas'] = this.$route.params.searchParams;
                     }
-                    // async () => {
-                    //     await eventBus.$emit('clearAllFilters');
-                    // }
-                    // eventBus.$emit('setDefaultText');
+                    async () => {
+                        await eventBus.$emit('clearAllFilters');
+                    }
+                    eventBus.$emit('setDefaultText');
                     this.$emit('exploreMisison', this.filterData);
                     let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
@@ -589,10 +596,17 @@
                     } else {
                         return this.languageData.label.mark_as_un_read
                     }
-                }
+                },
+                submitNewMission() {
+                    if(this.submitNewMissionUrl != '') {
+                        window.open(this.submitNewMissionUrl, '_self');
+                    }
+			    }
             },
             created() {
                 this.languageData = JSON.parse(store.state.languageLabel);
+                this.submitNewMissionUrl = store.state.submitNewMissionUrl
+                this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
                 setTimeout(function () {
                     let body = document.querySelector("body");
                     let notification_btn = document.querySelector(".btn-notification");

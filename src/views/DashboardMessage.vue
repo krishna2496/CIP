@@ -35,7 +35,7 @@
 								
 								<ul class="message-box" v-if="messageList.length > 0">
 									<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
-										<b-button :title="languageData.label.delete" class="delete-btn">
+										<b-button :title="languageData.label.delete" class="delete-btn" v-if="message.sent_from != 1">
 											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" v-on:click="deleteMessage($event,message.messageId)" alt="delete" />
 										</b-button>
 										<div class="title-wrap">
@@ -272,7 +272,8 @@
 										'date' : data.created_at,
 										'text' : data.message,
 										'messageId' : data.message_id,
-										'is_read' : data.is_read 
+										'is_read' : data.is_read,
+										'sent_from' : data.sent_from
 									})
 									if(response.pagination) {
 										this.pagination.currentPage = response.pagination.current_page

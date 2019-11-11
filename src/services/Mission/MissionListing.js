@@ -51,6 +51,7 @@ export default async(data) => {
         .then((response) => {
             responseData = response.data;
             // Set filter data
+
             if (response.data.meta_data.filters) {
                 let filterData = {};
                 filterData.search = response.data.meta_data.filters.search;
@@ -60,8 +61,7 @@ export default async(data) => {
                 filterData.skillId = response.data.meta_data.filters.skill_id;
                 filterData.tags = response.data.meta_data.filters.tags;
                 filterData.sortBy = response.data.meta_data.filters.sort_by;
-                // filterData.currentView = parseInt(response.data.data.filters.current_view);
-
+                filterData.currentView = parseInt(response.data.meta_data.filters.current_view);
                 store.commit('userFilter', filterData)
             } else {
                 let filterData = {};

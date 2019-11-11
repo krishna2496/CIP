@@ -17,8 +17,10 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
+import 'moment-timezone';
 import customCss from './services/CustomCss'
 
+import 'vue-search-select/dist/VueSearchSelect.css'
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
 Vue.config.productionTip = false;
