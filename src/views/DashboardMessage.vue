@@ -228,6 +228,7 @@
 						this.contactUs.subject =  ''
 						this.submitted = false;
 						this.$v.$reset();
+						this.getMessageListing()
 						setTimeout(() => {
 							this.$refs.sendMessageModal.hide();
 							
@@ -265,7 +266,11 @@
 									if(data.is_anonymous == 1) {
 										name = this.languageData.label.anonymous_user
 									} else {
-										name = data.admin_name
+										if(data.sent_from == 1) {
+											name = data.first_name+' '+data.last_name
+										} else {
+											name = data.admin_name
+										}
 									}
 									this.messageList.push({
 										'person' : name,
