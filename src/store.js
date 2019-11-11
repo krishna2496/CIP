@@ -50,7 +50,9 @@ export default new Vuex.Store({
         cookiePolicyText: localStorage.getItem('cookiePolicyText'),
         email: localStorage.getItem('email'),
         currentView: localStorage.getItem('currentView'),
-        timesheetFromYear: localStorage.getItem('timesheetFromYear')
+        timesheetFromYear: localStorage.getItem('timesheetFromYear'),
+        submitNewMissionUrl: localStorage.getItem('submitNewMissionUrl'),
+        userTimezone: localStorage.getItem('userTimezone')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -64,6 +66,8 @@ export default new Vuex.Store({
             localStorage.setItem('defaultCountryId', data.country_id)
             localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
             localStorage.setItem('email', data.email)
+            localStorage.setItem('userTimezone', data.timezone)
+
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -73,6 +77,7 @@ export default new Vuex.Store({
             state.defaultCountryId = data.country_id;
             state.cookieAgreementDate = data.cookie_agreement_date;
             state.email = data.email;
+            state.userTimezone = data.timezone;
         },
         // Remove login data in state and local storage
         logoutUser(state) {
@@ -296,6 +301,14 @@ export default new Vuex.Store({
         timesheetFromYear(state, data) {
             localStorage.setItem('timesheetFromYear', data)
             state.timesheetFromYear = data
+        },
+        submitNewMissionUrl(state, data) {
+            localStorage.setItem('submitNewMissionUrl', data)
+            state.submitNewMissionUrl = data
+        },
+        changeCurrentView(state, data) {
+            localStorage.setItem('currentView', data)
+            state.currentView = data
         }
     },
     getters: {},

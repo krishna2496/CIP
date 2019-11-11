@@ -266,13 +266,13 @@
                 this.cityList = [];
                 this.themeList = [];
                 this.skillList = [];
-                // let filters = {};
-                // filters.exploreMissionType = '';
-                // filters.exploreMissionParams = '';
-                // store.commit("exploreFilter", filters);
-                // this.$router.push({
-                //     name: 'home'
-                // })
+                let filters = {};
+                filters.exploreMissionType = '';
+                filters.exploreMissionParams = '';
+                store.commit("exploreFilter", filters);
+                this.$router.push({
+                    name: 'home'
+                })
                 await filterList(this.selectedfilterParams).then(response => {
                     if (response) {
                         if (response.city) {
@@ -303,13 +303,13 @@
                     this.selectedfilterParams.skillId = '';
                     this.themeList = [];
                     this.skillList = [];
-                    // let filters = {};
-                    // filters.exploreMissionType = '';
-                    // filters.exploreMissionParams = '';
-                    // store.commit("exploreFilter", filters);
-                    // this.$router.push({
-                    //     name: 'home'
-                    // })
+                    let filters = {};
+                    filters.exploreMissionType = '';
+                    filters.exploreMissionParams = '';
+                    store.commit("exploreFilter", filters);
+                    this.$router.push({
+                        name: 'home'
+                    })
                     await filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.themes) {
@@ -335,13 +335,13 @@
                     this.selectedfilterParams.skillId = '';
                     this.skillList = [];
                     this.selectedSkill = [];
-                    // let filters = {};
-                    // filters.exploreMissionType = '';
-                    // filters.exploreMissionParams = '';
-                    // store.commit("exploreFilter", filters);
-                    // this.$router.push({
-                    //     name: 'home'
-                    // })
+                    let filters = {};
+                    filters.exploreMissionType = '';
+                    filters.exploreMissionParams = '';
+                    store.commit("exploreFilter", filters);
+                    this.$router.push({
+                        name: 'home'
+                    })
                     await filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.skill) {
@@ -358,13 +358,13 @@
             async changeSkill(skill) {
                 if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange) {
                     this.selectedfilterParams.skillId = skill;
-                    // let filters = {};
-                    // filters.exploreMissionType = '';
-                    // filters.exploreMissionParams = '';
-                    // store.commit("exploreFilter", filters);
-                    // this.$router.push({
-                    //     name: 'home'
-                    // })
+                    let filters = {};
+                    filters.exploreMissionType = '';
+                    filters.exploreMissionParams = '';
+                    store.commit("exploreFilter", filters);
+                    this.$router.push({
+                        name: 'home'
+                    })
                     this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 }
             },

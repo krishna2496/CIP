@@ -98,12 +98,13 @@
                                 <div class="inner-chart-col">
                                     <div class="chart-title">
                                         <h5>{{languageData.label.hours_per_month}}</h5>
-                                        <v-select :options="missionTitle" @input="updateMissionTitle"
-                                            v-model="defaultMissionModel" :placeholder="defaultMissionTitle">
-                                            <span slot="no-options" @click="$refs.select.open = true">
-												{{languageData.label.no_matching_options}}
-                                            </span>
-                                        </v-select>
+                                       
+                                        <model-select :options="missionTitle"
+                                            v-model="defaultMissionModel"
+                                            :placeholder="defaultMissionTitle"
+                                             @input="updateMissionTitle"
+                                            >
+                                        </model-select>
                                     </div>
                                     <div
                                         v-bind:class="{ 'content-loader-wrap': true, 'loader-active': hoursMonthActive}">
@@ -130,9 +131,10 @@
     import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
     import AppCustomDropdown from "../components/AppCustomDropdown";
     import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
+    import { ModelSelect } from 'vue-search-select'
     import store from '../store';
     import Chart from "chart.js";
-    import vSelect from "vue-select";
+
     import {
         storyMissionListing,
         myDashboard,
@@ -144,8 +146,8 @@
             AppCustomDropdown,
             TheSecondaryFooter,
             DashboardBreadcrumb,
-            vSelect
-        },
+            ModelSelect
+           },
 
         name: "Dashboard",
 
@@ -241,8 +243,8 @@
 
             },
             updateMissionTitle(value) {
-                this.defaultMissionModel = value.label;
-                this.filterData.mission_id = value.selectedId
+                this.defaultMissionModel = value;
+                this.filterData.mission_id = value
                 this.getDashboardData(this.filterData, 'graph')
             },
             handleActive() {},
@@ -259,13 +261,12 @@
                                 // array[index][1] = data.title
                                 // array[index] = data.title
                                 array.push({
-                                    'label': data.title,
-                                    'selectedId': data.mission_id
+                                    'text': data.title,
+                                    'value': data.mission_id
                                 })
                                 this.missionIdArray[index] = data.mission_id
                             })
                             this.missionTitle = array
-                            // console.log(this.missionTitle);
                         }
                     }
                 })

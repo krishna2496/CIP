@@ -51,7 +51,7 @@
                     <b-tabs class="view-tab" v-model="tabNumber">
                     
                         <!-- grid view -->
-                        <b-tab class="grid-tab-content">
+                        <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
                             <template slot="title">
                                 <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
                                     :title="languageData.label.grid_view" v-if="missionList.length > 0">
@@ -66,7 +66,7 @@
                                 v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
                         </b-tab>
                         <!-- list view -->
-                        <b-tab class="list-tab-content">
+                        <b-tab class="list-tab-content" @click="changeCurrentView(1)">
                             <template slot="title">
                                 <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
                                     :title="languageData.label.list_view" v-if="missionList.length > 0">
@@ -271,6 +271,12 @@
                     this.getMissions();
                 });
             },
+            changeCurrentView(number) {
+                alert(number)
+                this.tabNumber = number
+                store.commit('changeCurrentView' ,number)
+                this.getMissions();
+            },
 
             pageChange(page) {
                 //Change pagination
@@ -287,17 +293,17 @@
             searchMissions(searchParams, filterParmas) {
 
                 this.filterData.search = searchParams;
-                // if (store.state.exploreMissionType == '') {
+                if (store.state.exploreMissionType == '') {
                     this.filterData.countryId = filterParmas.countryId;
-                // } else {
-                //     this.filterData.countryId = '';
-                // }
+                } else {
+                    this.filterData.countryId = '';
+                }
 
-                // if (store.state.exploreMissionType == '') {
+                if (store.state.exploreMissionType == '') {
                     this.filterData.cityId = filterParmas.cityId;
-                // } else {
-                //     this.filterData.cityId = '';
-                // }
+                } else {
+                    this.filterData.cityId = '';
+                }
 
                 this.filterData.themeId = filterParmas.themeId;
                 this.filterData.skillId = filterParmas.skillId;
@@ -320,24 +326,24 @@
                 let filteExplore = {};
                 filteExplore.exploreMissionType = '';
                 filteExplore.exploreMissionParams = '';
-                // this.search = '';
-                // this.filterData.search = '';
-                // this.filterData.countryId = '';
-                // this.filterData.cityId = '';
-                // this.filterData.themeId = '';
-                // this.filterData.skillId = '';
-                // this.filterData.tags = '';
-                // this.filterData.sortBy = '';
-                // this.sortByDefault = this.languageData.label.sort_by;
+                this.search = '';
+                this.filterData.search = '';
+                this.filterData.countryId = '';
+                this.filterData.cityId = '';
+                this.filterData.themeId = '';
+                this.filterData.skillId = '';
+                this.filterData.tags = '';
+                this.filterData.sortBy = '';
+                this.sortByDefault = this.languageData.label.sort_by;
                 if (filters.parmasType) {
                     filteExplore.exploreMissionType = filters.parmasType;
                 }
                 if (filters.parmas) {
                     filteExplore.exploreMissionParams = filters.parmas;
                 }
-                // store.commit('userFilter', this.filterData)
+                store.commit('userFilter', this.filterData)
                 store.commit('exploreFilter', filteExplore);
-                // this.$refs.secondaryHeader.changeSearch();
+                this.$refs.secondaryHeader.changeSearch();
                 this.getMissions();
             },
             changeTag(data) {
@@ -358,23 +364,29 @@
             }
         },
         created() {
-            this.languageData = JSON.parse(store.state.languageLabel);
+           this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
-            let filteExplore = {};
+
             if (this.$route.params.searchParamsType) {
+                let filteExplore = {};
+                filteExplore.exploreMissionParams = '';
                 filteExplore.exploreMissionType = this.$route.params.searchParamsType;
                 if (this.$route.params.searchParams) {
                     filteExplore.exploreMissionParams = this.$route.params.searchParams;
                 }
                 store.commit('exploreFilter', filteExplore);
+                store.commit('clearFilter')
+                this.getMissions();
 
-            } 
-                // let filteExplore = {};
-                // filteExplore.exploreMissionType = '';
-                // filteExplore.exploreMissionParams = '';
+            } else {
+
+                let filteExplore = {};
+                filteExplore.exploreMissionType = '';
+                filteExplore.exploreMissionParams = '';
                 store.commit('exploreFilter', filteExplore);
                 // Mission listing
                 this.missionFilter();
+            }
             
             
             this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)

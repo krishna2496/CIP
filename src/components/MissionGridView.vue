@@ -281,8 +281,8 @@
 	</div>
 	<div class="no-data-found" v-else>
 		<h2 class="text-center">{{noRecordFound()}}</h2>
-		<div class="btn-wrap" v-if="isSubmitNewMissionSet">
-			<b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
+		<div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+			<b-button class="btn-bordersecondary icon-btn">
 				<span>{{ languageData.label.submit_new_mission }}</span>
 				<i>
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -342,7 +342,8 @@
 				isInviteCollegueDisplay: true,
 				isStarRatingDisplay: true,
 				isSubmitNewMissionSet: true,
-				isThemeSet: true
+				isThemeSet: true,
+				submitNewMissionUrl : ''
 			};
 		},
 		computed: {
@@ -549,6 +550,11 @@
 					solid: true,
 					autoHideDelay: 1000
 				});
+			},
+			submitNewMission() {
+				if(this.submitNewMissionUrl != '') {
+					 window.open(this.submitNewMissionUrl, '_self');
+				}
 			}
 		},
 		created() {

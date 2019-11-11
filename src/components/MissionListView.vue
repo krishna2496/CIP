@@ -255,8 +255,8 @@
     </div>
     <div class="no-data-found" v-else>
         <h2 class="text-center">{{noRecordFound()}}</h2>
-        <div class="btn-wrap" v-if="isSubmitNewMissionSet">
-            <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
+        <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+            <b-button  class="btn-bordersecondary icon-btn">
                 <span>{{ languageData.label.submit_new_mission }}</span>
                 <i>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -316,6 +316,7 @@
                 isQuickAccessSet: true,
                 isSubmitNewMissionSet: true,
                 isThemeSet: true,
+                submitNewMissionUrl:''
             };
         },
         computed: {
@@ -513,7 +514,12 @@
                         return true;
                     }
                 }
-            }
+            },
+            submitNewMission() {
+				if(this.submitNewMissionUrl != '') {
+					 window.open(this.submitNewMissionUrl, '_self');
+				}
+			}
         },
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
@@ -522,6 +528,7 @@
             this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
             this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+            this.submitNewMissionUrl = store.state.submitNewMissionUrl
         }
     };
 </script>
