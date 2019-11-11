@@ -53,6 +53,6 @@ class ActivityLog extends Model
     public function getObjectValueAttribute(string $value = null): array
     {
         $data = @unserialize($value);
-        return ($data !== false) ? unserialize($value): $value;
+        return ($data !== false && !is_null($value)) ? unserialize($value): array();
     }
 }
