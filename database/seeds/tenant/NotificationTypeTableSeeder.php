@@ -14,46 +14,55 @@ class NotificationTypeTableSeeder extends Seeder
     {
         $items = [            
             [                
-                "notification_type" => "Recommended missions",
+                "notification_type" => "recommended_missions",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "Volunteering hours",
+                "notification_type" => "volunteering_hours",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "Volunteering goals",
+                "notification_type" => "volunteering_goals",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "My comments",
+                "notification_type" => "my_comments",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "My stories",
+                "notification_type" => "my_stories",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "New stories hours",
+                "notification_type" => "new_missionss",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "New missions",
+                "notification_type" => "new_messages",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "New messages",
+                "notification_type" => "recommended_story",
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ],
+            [                
+                "notification_type" => "mission_application",
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ],
+            [                
+                "notification_type" => "new_news",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
-           
         ];
     
         foreach ($items as $item) {            
