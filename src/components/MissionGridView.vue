@@ -362,8 +362,7 @@
 			}
 		},
 		methods: {
-			// Submit new mission
-			submitNewMission() {},
+
 			hideModal() {
 				this.autoSuggestPlaceholder = ""
 				this.submitDisable  = true
@@ -567,6 +566,7 @@
 				constants.USER_CAN_SUBMIT_MISSION
 			);
 			this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+			this.submitNewMissionUrl = store.state.submitNewMissionUrl
 		}
 	};
 </script>

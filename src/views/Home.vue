@@ -272,7 +272,6 @@
                 });
             },
             changeCurrentView(number) {
-                alert(number)
                 this.tabNumber = number
                 store.commit('changeCurrentView' ,number)
                 this.getMissions();
