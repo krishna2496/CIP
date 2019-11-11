@@ -270,6 +270,7 @@ return [
         'anonymous' => '1',
         'not_anonymous' => '0',
         'send_message_from' => [
+            'all' => 0,
             'user' => 1,
             'admin' => 2,
         ]
