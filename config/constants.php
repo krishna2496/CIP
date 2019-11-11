@@ -20,6 +20,7 @@ return [
     'SKILL_LIMIT' => '15',
     'TIMESHEET_DOCUMENT_SIZE_LIMIT' => '4096',
     'TIMESHEET_DATE_FORMAT' => 'Y-m-d',
+    'TIMESHEET_DATE_TIME_FORMAT' => 'Y-m-d H:i:s',
     'NEWS_SHORT_DESCRIPTION_WORD_LIMIT' => 10,
     'STORY_IMAGE_SIZE_LIMIT' => '4096',
     'STORY_MAX_IMAGE_LIMIT' => 20,
@@ -270,6 +271,7 @@ return [
         'anonymous' => '1',
         'not_anonymous' => '0',
         'send_message_from' => [
+            'all' => 0,
             'user' => 1,
             'admin' => 2,
         ]
@@ -551,7 +553,8 @@ return [
         'STORY_IMAGE' => 'STORY_IMAGE',
         'STORY_VISITOR' => 'STORY_VISITOR',
         'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
-        'NOTIFICATION' => 'NOTIFICATION'
+        'NOTIFICATION' => 'NOTIFICATION',
+        'AVAILABILITY' => 'AVAILABILITY'
     ],
 
     'activity_log_actions' => [
