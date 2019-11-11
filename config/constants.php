@@ -552,7 +552,8 @@ return [
         'STORY_IMAGE' => 'STORY_IMAGE',
         'STORY_VISITOR' => 'STORY_VISITOR',
         'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
-        'NOTIFICATION' => 'NOTIFICATION'
+        'NOTIFICATION' => 'NOTIFICATION',
+        'AVAILABILITY' => 'AVAILABILITY'
     ],
 
     'activity_log_actions' => [
