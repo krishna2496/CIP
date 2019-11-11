@@ -40,6 +40,7 @@
 										</b-button>
 										<div class="title-wrap">
 											<h3>{{message.person }}</h3>
+											<span v-if="message.sent_from == 1"><b-badge href="#" variant="secondary">{{languageData.label.sent}}</b-badge> &nbsp;&nbsp;</span>
 											<span class="date-detail">{{message.date | formatDateTime}}</span>
 										</div>
 										<p>{{message.text}}</p>
@@ -263,13 +264,16 @@
 								let data = response.data.message_data
 								data.filter((data,index) => {
 									let name = ''
+									let isRead = ''
 									if(data.is_anonymous == 1) {
 										name = this.languageData.label.anonymous_user
 									} else {
 										if(data.sent_from == 1) {
 											name = data.first_name+' '+data.last_name
+											isRead = 1;
 										} else {
 											name = data.admin_name
+											isRead = data.is_read;
 										}
 									}
 									this.messageList.push({
@@ -277,7 +281,7 @@
 										'date' : data.created_at,
 										'text' : data.message,
 										'messageId' : data.message_id,
-										'is_read' : data.is_read,
+										'is_read' : isRead,
 										'sent_from' : data.sent_from
 									})
 									if(response.pagination) {
