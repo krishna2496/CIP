@@ -21,7 +21,8 @@ class AvailabilityRepository implements AvailabilityInterface
      * @param App\Models\Availability $availability
      * @return void
      */
-    public function __construct(Availability $availability) {
+    public function __construct(Availability $availability)
+    {
         $this->availability = $availability;
     }
 
@@ -31,8 +32,20 @@ class AvailabilityRepository implements AvailabilityInterface
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getAvailabilityList(Request $request): LengthAwarePaginator {
-        return $this->availability->paginate($request->perPage);
+    public function getAvailabilityList(Request $request): LengthAwarePaginator
+    {
+        $availabilityQuery = $this->availability->select('availability_id', 'type', 'translations');
+        if ($request->has('search')) {
+            $availabilityQuery->where(function ($query) use ($request) {
+                $query->orWhere('type', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $availabilityQuery->orderBy('availability_id', $orderDirection);
+        }
+        return $availabilityQuery->paginate($request->perPage);
     }
 
     /**
