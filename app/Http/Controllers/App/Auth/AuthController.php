@@ -126,7 +126,7 @@ class AuthController extends Controller
         }
         
         // Fetch user by email address
-        $userDetail = $user->where('email', $this->request->input('email'))->first();
+        $userDetail = $user->with('timezone')->where('email', $this->request->input('email'))->first();
 
         if (!$userDetail) {
             return $this->responseHelper->error(
@@ -159,6 +159,8 @@ class AuthController extends Controller
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
                                          $userDetail->cookie_agreement_date : '';
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
+        $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone !="") ?
+        $userDetail->timezone['timezone'] : '';
         
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
