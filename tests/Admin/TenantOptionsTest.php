@@ -810,4 +810,21 @@ class TenantOptionsTest extends TestCase
         Storage::disk('s3')->deleteDirectory($tenant->name);
     }
     
+    /**
+    * @test
+    *
+    * Update style
+    *
+    * @return void
+    */
+    public function tenant_option_testing_it_should_update_secondary_color()
+    {
+        $params = [
+            'primary_color' => "#ccc",            
+            'secondary_color' => "#000"
+        ];
+
+        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+    }
 }
