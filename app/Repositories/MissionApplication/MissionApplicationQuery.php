@@ -121,13 +121,13 @@ class MissionApplicationQuery implements QueryableInterface
                     $query->orWhere($column, 'like', '%'. $search .'%');
                 }
             })
-            ->groupBy('ms.mission_id', 'us.user_id')
-            ->when($order, function (Builder $query) use ($order) {
-                $query->orderBy($order['orderBy'], $order['orderDir']);
-            })
+            ->groupBy('m.mission_id', 'u.user_id')
             ->when($limit, function (Builder $query) use ($limit) {
                 $query->offset($limit['offset']);
                 $query->limit($limit['limit']);
+            })
+            ->when($order, function (Builder $query) use ($order) {
+                $query->orderBy($order['orderBy'], $order['orderDir']);
             })
             ->get();
 
