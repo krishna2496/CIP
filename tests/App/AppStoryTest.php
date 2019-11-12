@@ -72,11 +72,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -215,11 +215,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -320,11 +320,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -419,11 +419,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -524,11 +524,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -634,11 +634,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -740,11 +740,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -842,11 +842,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -948,11 +948,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -982,6 +982,12 @@ class AppStoryTest extends TestCase
 
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
 
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => ''
+        ];
         DB::setDefaultConnection('mysql');
         $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(200);        
@@ -1057,11 +1063,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1181,11 +1187,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1305,11 +1311,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1423,11 +1429,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1538,11 +1544,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1659,11 +1665,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1777,11 +1783,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -1896,11 +1902,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2014,11 +2020,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2122,11 +2128,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2242,11 +2248,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2352,11 +2358,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2471,11 +2477,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2603,11 +2609,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2711,11 +2717,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2820,11 +2826,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2971,11 +2977,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -3081,11 +3087,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -3236,11 +3242,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -3253,9 +3259,10 @@ class AppStoryTest extends TestCase
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
         DB::setDefaultConnection('mysql');
     
+        $title = str_random(10);
         $params = [
             'mission_id' => $mission->mission_id,
-            'title' => str_random(10),
+            'title' => $title,
             'description' => str_random(50),
             'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
         ];
@@ -3273,7 +3280,7 @@ class AppStoryTest extends TestCase
         
         DB::setDefaultConnection('mysql');
 
-        $this->get('app/story/list', ['token' => $token])
+        $this->get('app/story/list?search='.$title."&status=".config('constants.story_status.PUBLISHED')."&mission_id=".$mission->mission_id, ['token' => $token])
         ->seeStatusCode(200);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -3371,11 +3378,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -3506,11 +3513,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -3630,11 +3637,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -3677,8 +3684,21 @@ class AppStoryTest extends TestCase
         $this->get('app/story/'.rand(1000000, 50000000), ['token' => $token])
         ->seeStatusCode(404);
 
+        //If story is published, other user can see story
+        $newUser = factory(\App\User::class)->make();
+        $newUser->setConnection($connection);
+        $newUser->save();
+        $token = Helpers::getJwtToken($newUser->user_id, env('DEFAULT_TENANT'));
+
+        DB::setDefaultConnection('mysql');
+        $story->update(['status' => config('constants.story_status.PUBLISHED')]);
+        // If story is declined or published
+        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        ->seeStatusCode(200);
+
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
+        $newUser->delete();
         $mission->delete();
         $story->delete();
     }
@@ -3748,11 +3768,11 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,

@@ -31,6 +31,7 @@ trait MessageTransformable
                 'last_name' => !empty($message->user) ? $message->user->last_name : null,
                 'created_at' => Carbon::parse($message->created_at, config('constants.TIMEZONE'))
                 ->setTimezone($timezone)->toDateTimeString(),
+                'sent_from' => $message->sent_from
             ];
         }
         

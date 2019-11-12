@@ -81,5 +81,4 @@ class Availability extends Model
     {
         return static::findOrFail($id)->delete();
     }
-    
 }

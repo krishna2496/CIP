@@ -42,6 +42,9 @@ class AppNewsTest extends TestCase
         \DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));        
         $response = $this->get('app/news', ['token' => $token])->seeStatusCode(200);
+
+        \DB::setDefaultConnection('mysql');
+        $response = $this->get('app/news?order=test', ['token' => $token])->seeStatusCode(400);
         
         News::whereIn('news_id', $newsIdsArray)->delete();
     }

@@ -644,6 +644,7 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config("constants.publication_status")["APPROVED"]
                 );
+
                 if ($request->has('search') && $request->input('search') !== '') {
                     $missionQuery->where(function ($query) use ($request) {
                         $query->with('missionLanguage');
@@ -657,6 +658,30 @@ class MissionRepository implements MissionInterface
                             ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
                         });
                     });
+                }
+
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $missionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $missionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where(
+                                    'name',
+                                    'like',
+                                    '%'.$request->input('explore_mission_params').'%'
+                                );
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $missionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
                 }
                 $missionQuery->with(['country'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
@@ -683,6 +708,26 @@ class MissionRepository implements MissionInterface
                         });
                     });
                 }
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $missionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $missionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where('name', 'like', '%'.$request->input('explore_mission_params').'%');
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $missionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
+                }
+
                 $missionQuery->with(['city'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
@@ -710,6 +755,29 @@ class MissionRepository implements MissionInterface
                             ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
                         });
                     });
+                }
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $missionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $missionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where(
+                                    'name',
+                                    'like',
+                                    '%' . $request->input('explore_mission_params') . '%'
+                                );
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $missionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
                 }
                 $missionQuery->with(['missionTheme'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
@@ -741,12 +809,12 @@ class MissionRepository implements MissionInterface
                             });
                         });
                     }
-                    
+
                     $query->where(
                         'publication_status',
                         config("constants.publication_status")["APPROVED"]
                     );
-                    
+
                     if ($request->has('country_id') && $request->input('country_id') !== '') {
                         $query->where("mission.country_id", $request->input('country_id'));
                     }
@@ -755,6 +823,30 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->has('theme_id') && $request->input('theme_id') !== '') {
                         $query->whereIn("mission.theme_id", explode(",", $request->input('theme_id')));
+                    }
+
+                    if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                        if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                            $query->where("mission.theme_id", $request->input('explore_mission_params'));
+                        }
+                        if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                            $query->where(function ($query) use ($request) {
+                                $query->wherehas('country', function ($countryQuery) use ($request) {
+                                    $countryQuery->where(
+                                        'name',
+                                        'like',
+                                        '%' . $request->input('explore_mission_params') . '%'
+                                    );
+                                });
+                            });
+                        }
+                        if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                            $query->where(
+                                'organisation_name',
+                                'like',
+                                '%' . $request->input('explore_mission_params') . '%'
+                            );
+                        }
                     }
                 });
 

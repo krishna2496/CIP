@@ -82,8 +82,6 @@ class ExportCSV
 
         fclose($csv);
 
-        if (\file_exists($this->path)) {
-            return $this->path.'/'.$this->fileName;
-        }
+        return (\file_exists($this->path)) ? $this->path.'/'.$this->fileName : '';
     }
 }
