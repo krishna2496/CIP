@@ -27,14 +27,25 @@ class NewsCategoryRepository implements NewsCategoryInterface
     }
    
     /**
-     * Display news category details.
+     * Display news category list.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getNewsCategoryDetails(Request $request): LengthAwarePaginator
+    public function getNewsCategoryList(Request $request): LengthAwarePaginator
     {
-        return $this->newsCategory->paginate($request->perPage);
+        $newsCategoryQuery = $this->newsCategory->select('news_category_id', 'category_name', 'translations');
+        if ($request->has('search') && $request->has('search') !== '') {
+            $newsCategoryQuery->where(function ($query) use ($request) {
+                $query->orWhere('category_name', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $newsCategoryQuery->orderBy('news_category_id', $orderDirection);
+        }
+        return $newsCategoryQuery->paginate($request->perPage);
     }
 
     /**

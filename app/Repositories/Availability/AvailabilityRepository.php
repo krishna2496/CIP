@@ -21,7 +21,8 @@ class AvailabilityRepository implements AvailabilityInterface
      * @param App\Models\Availability $availability
      * @return void
      */
-    public function __construct(Availability $availability) {
+    public function __construct(Availability $availability)
+    {
         $this->availability = $availability;
     }
 
@@ -31,7 +32,8 @@ class AvailabilityRepository implements AvailabilityInterface
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getAvailabilityList(Request $request): LengthAwarePaginator {
+    public function getAvailabilityList(Request $request): LengthAwarePaginator
+    {
         return $this->availability->paginate($request->perPage);
     }
 

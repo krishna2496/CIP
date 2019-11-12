@@ -769,9 +769,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->patch('/entities/availability/{availabilityId}', ['as' => 'availability.update',
                 'uses' => 'Admin\Availability\AvailabilityController@update']);
                 
-            $router->get('/entities/availability/{availabilityId}',
-            ['uses' => 'Admin\Availability\AvailabilityController@show']);    
-
+            $router->get(
+                '/entities/availability/{availabilityId}',
+                ['uses' => 'Admin\Availability\AvailabilityController@show']
+            );
         }
     );
 /*

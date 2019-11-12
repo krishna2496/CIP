@@ -155,7 +155,7 @@ class AvailabilityController extends Controller
                 );
             }
             
-            // Update availability details            
+            // Update availability details
             $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
        
             // Set response data

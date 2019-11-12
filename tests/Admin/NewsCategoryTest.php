@@ -22,7 +22,7 @@ class NewsCategoryTest extends TestCase
         News::whereNull('deleted_at')->delete();
 
         \DB::setDefaultConnection('mysql');        
-        $this->get('news/category', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('news/category?search=&order=desc', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',

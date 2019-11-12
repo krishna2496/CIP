@@ -84,16 +84,6 @@ class Story extends Model
         return static::where(['story_id' => $storyId,
         'user_id' => $userId])->firstOrFail()->delete();
     }
-
-    /**
-     * Get the story visitor record associated with the story.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function storyVisitor(): HasMany
-    {
-        return $this->hasMany(StoryVisitor::class, 'story_id', 'story_id');
-    }
     
     /**
      * Get story title
