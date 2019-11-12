@@ -292,17 +292,17 @@
             searchMissions(searchParams, filterParmas) {
 
                 this.filterData.search = searchParams;
-                if (store.state.exploreMissionType == '') {
+                // if (store.state.exploreMissionType == '') {
                     this.filterData.countryId = filterParmas.countryId;
-                } else {
-                    this.filterData.countryId = '';
-                }
+                // } else {
+                //     this.filterData.countryId = '';
+                // }
 
-                if (store.state.exploreMissionType == '') {
+                // if (store.state.exploreMissionType == '') {
                     this.filterData.cityId = filterParmas.cityId;
-                } else {
-                    this.filterData.cityId = '';
-                }
+                // } else {
+                //     this.filterData.cityId = '';
+                // }
 
                 this.filterData.themeId = filterParmas.themeId;
                 this.filterData.skillId = filterParmas.skillId;
@@ -340,6 +340,7 @@
                 if (filters.parmas) {
                     filteExplore.exploreMissionParams = filters.parmas;
                 }
+                
                 store.commit('userFilter', this.filterData)
                 store.commit('exploreFilter', filteExplore);
                 this.$refs.secondaryHeader.changeSearch();
@@ -375,6 +376,7 @@
                 }
                 store.commit('exploreFilter', filteExplore);
                 store.commit('clearFilter')
+              
                 this.getMissions();
 
             } else {
