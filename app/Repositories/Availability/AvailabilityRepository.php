@@ -34,7 +34,18 @@ class AvailabilityRepository implements AvailabilityInterface
      */
     public function getAvailabilityList(Request $request): LengthAwarePaginator
     {
-        return $this->availability->paginate($request->perPage);
+        $availabilityQuery = $this->availability->select('availability_id', 'type', 'translations');
+        if ($request->has('search')) {
+            $availabilityQuery->where(function ($query) use ($request) {
+                $query->orWhere('type', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $availabilityQuery->orderBy('availability_id', $orderDirection);
+        }
+        return $availabilityQuery->paginate($request->perPage);
     }
 
     /**
