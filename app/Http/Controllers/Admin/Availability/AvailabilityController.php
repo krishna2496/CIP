@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
@@ -57,15 +58,22 @@ class AvailabilityController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // Get availability lists
-        $availabilityLists = $this->availabilityRepository->getAvailabilityList($request);
+        try {
+            // Get availability lists
+            $availabilityLists = $this->availabilityRepository->getAvailabilityList($request);
 
-        // Set response data
-        $apiData = $availabilityLists;
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($availabilityLists->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-            : trans('messages.success.MESSAGE_AVAILABILITY_LISTING');
-        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+            // Set response data
+            $apiData = $availabilityLists;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = ($availabilityLists->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+                : trans('messages.success.MESSAGE_AVAILABILITY_LISTING');
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        }
     }
     
     /**
@@ -155,7 +163,7 @@ class AvailabilityController extends Controller
                 );
             }
             
-            // Update availability details            
+            // Update availability details
             $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
        
             // Set response data

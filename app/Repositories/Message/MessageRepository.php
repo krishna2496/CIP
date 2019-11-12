@@ -92,7 +92,7 @@ class MessageRepository implements MessageInterface
         }]);
         if (config('constants.message.send_message_from.all') !== $sentFrom) {
             $userMessageQuery->where('sent_from', $sentFrom);
-        } 
+        }
         $userMessageQuery->when(
             $userIds,
             function ($query, $userIds) {

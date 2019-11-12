@@ -50,8 +50,12 @@ class MissionController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
-    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper, Request $request, LanguageHelper $languageHelper)
-    {
+    public function __construct(
+        MissionRepository $missionRepository,
+        ResponseHelper $responseHelper,
+        Request $request,
+        LanguageHelper $languageHelper
+    ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
@@ -143,8 +147,7 @@ class MissionController extends Controller
         $apiData = ['mission_id' => $mission->mission_id];
 
         // Send notification to user if mission publication status is PUBLISHED
-        if (
-            $mission->publication_status === config('constants.publication_status.APPROVED') ||
+        if ($mission->publication_status === config('constants.publication_status.APPROVED') ||
             $mission->publication_status === config('constants.publication_status.PUBLISHED_FOR_APPLYING')
         ) {
             // Send notification to all users
@@ -246,7 +249,7 @@ class MissionController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
-
+           
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION'),
@@ -258,14 +261,12 @@ class MissionController extends Controller
                 null,
                 $id
             ));
-
+            
             // Send notification to user if mission publication status is PUBLISHED
-            if (($request->publication_status !== $missionDetails->publication_status)
-                &&
-                (
-                    $request->publication_status === config('constants.publication_status.APPROVED') ||
-                    $request->publication_status === config('constants.publication_status.PUBLISHED_FOR_APPLYING')
-                )
+            $approved = config('constants.publication_status.APPROVED');
+            $publishedForApplying = config('constants.publication_status.PUBLISHED_FOR_APPLYING');
+            if ((($request->publication_status !== $missionDetails->publication_status) &&
+            ($request->publication_status === $approved || $request->publication_status === $publishedForApplying))
             ) {
                 // Send notification to all users
                 $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
@@ -274,7 +275,7 @@ class MissionController extends Controller
 
                 event(new UserNotificationEvent($notificationType, $entityId, $action));
             }
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
