@@ -15,6 +15,10 @@ use App\Transformations\MessageTransformable;
 use App\Repositories\User\UserRepository;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Message controller
+/*!
+This controller is responsible for handling message send, read, get messages and delete operations.
+ */
 class MessageController extends Controller
 {
     use RestExceptionHandlerTrait,MessageTransformable;

@@ -18,6 +18,11 @@ use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Story controller
+/*!
+This controller is responsible for handling story store, update, delete, copy, delete story image,
+user story listing, published story listing and export operations.
+ */
 class StoryController extends Controller
 {
     use RestExceptionHandlerTrait,StoryTransformable;

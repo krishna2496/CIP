@@ -23,6 +23,11 @@ use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 
+//!  User controller
+/*!
+This controller is responsible for handling user listing, show, save cookie agreement and
+upload profile image operations.
+ */
 class UserController extends Controller
 {
     use RestExceptionHandlerTrait, UserTransformable;

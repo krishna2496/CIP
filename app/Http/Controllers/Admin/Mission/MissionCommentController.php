@@ -17,6 +17,10 @@ use Illuminate\Validation\Rule;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Mission comment controller
+/*!
+This controller is responsible for handling mission comment listing, show, update and delete operations.
+ */
 class MissionCommentController extends Controller
 {
     use RestExceptionHandlerTrait;

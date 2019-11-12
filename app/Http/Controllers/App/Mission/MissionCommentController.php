@@ -18,6 +18,10 @@ use App\Helpers\ExportCSV;
 use App\Events\User\UserActivityLogEvent;
 use Carbon\Carbon;
 
+//!  Mission comment controller
+/*!
+This controller is responsible for handling mission comment apply to mission and get volunteer list operations.
+ */
 class MissionCommentController extends Controller
 {
     use RestExceptionHandlerTrait;

@@ -24,6 +24,11 @@ use App\Services\CustomStyling\CustomStylingService;
 use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Tenant options controller
+/*!
+This controller is responsible for handling tenant options store, update, download assets,
+reset style, update style and update image operations.
+ */
 class TenantOptionsController extends Controller
 {
     use RestExceptionHandlerTrait;

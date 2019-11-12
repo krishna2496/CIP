@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\User\UserRepository;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Auth controller
+/*!
+This controller is responsible for handling authenticate, change password and reset password operations.
+ */
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;

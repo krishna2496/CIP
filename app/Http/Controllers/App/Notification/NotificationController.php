@@ -19,6 +19,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Notification controller
+/*!
+This controller is responsible for handling notification listing, read/unread and clear all operations.
+ */
 class NotificationController extends Controller
 {
     use RestExceptionHandlerTrait;

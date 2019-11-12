@@ -13,6 +13,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Availability controller
+/*!
+This controller is responsible for handling availability store, update, listing, show and delete operations.
+ */
 class AvailabilityController extends Controller
 {
     use RestExceptionHandlerTrait;

@@ -14,6 +14,10 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
+//!  News category controller
+/*!
+This controller is responsible for handling news category listing, show, store, update and delete operations.
+ */
 class NewsCategoryController extends Controller
 {
     use RestExceptionHandlerTrait;

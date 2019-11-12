@@ -18,6 +18,10 @@ use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 
+//!  Mission controller
+/*!
+This controller is responsible for handling mission listing, show, store, update and delete operations.
+ */
 class MissionController extends Controller
 {
     use RestExceptionHandlerTrait;

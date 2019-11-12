@@ -15,6 +15,10 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use App\Events\User\UserActivityLogEvent;
 
+//!  User custom field controller
+/*!
+This controller is responsible for handling user custom field listing, show, store, update and delete operations.
+ */
 class UserCustomFieldController extends Controller
 {
     use RestExceptionHandlerTrait;

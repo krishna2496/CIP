@@ -14,6 +14,10 @@ use App\Repositories\MissionApplication\MissionApplicationRepository;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Services\Dashboard\DashboardService;
 
+//!  Dashboard controller
+/*!
+This controller is responsible for handling dashboard statistics listing operation.
+ */
 class DashboardController extends Controller
 {
     use RestExceptionHandlerTrait;
