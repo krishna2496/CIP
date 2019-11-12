@@ -102,29 +102,29 @@ return [
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'DE: News category deleted successfully',
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'DE: News category created successfully',
         'MESSAGE_NEWS_CATEGORY_UPDATED' => 'DE: News category updated successfully',
-        'MESSAGE_NEWS_CREATED' => 'DE: News created sucessfully',
+        'MESSAGE_NEWS_CREATED' => 'DE: News created successfully',
         'MESSAGE_NEWS_DELETED' => 'DE: News deleted successfully',
-        'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',
-        'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
-        'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
-        'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
+        'MESSAGE_NEWS_LISTING' => 'DE: News listed successfully',
+        'MESSAGE_NEWS_UPDATED' => 'DE: News updated successfully',
+        'STORY_ADDED_SUCCESSFULLY' => 'DE: Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'DE: Story deleted successfully',
         'MESSAGE_STORIES_ENTRIES_LISTING' => 'DE: Story entries listed successfully',
         'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'DE: No story entries found',
         'MESSAGE_STORY_STATUS_UPDATED' => 'DE: Story status updated successfully',
-        'MESSAGE_STORY_FOUND' => 'DE: Story found sucessfully',
+        'MESSAGE_STORY_FOUND' => 'DE: Story found successfully',
         'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No stories found',
         'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
         'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
-        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'DE: Story submitted successfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted successfully',
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'DE: No mission comments found',
 		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'DE: Message sent successfully',
         'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'DE: Messages sent successfully',
-        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',     
+        'MESSAGE_STORY_VISITOR_ADDED_SUCCESSFULLY' => 'DE: Story visitor added successfully',     
          // For contact form module
         'MESSAGE_USER_MESSAGE_DELETED' => 'DE: Message deleted successfully',
-        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
+        'CONTACT_FORM_ADDED_SUCCESSFULLY' => 'DE: Your feedback added successfully.',
         'MESSAGE_INVITED_FOR_STORY' => 'DE: User invited to story successfully',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
@@ -136,7 +136,12 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'DE: Notification listed successfully',
         'MESSAGE_READ_SUCCESSFULLY' => 'DE: Message read successfully',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'DE: Activity logs listed successfully',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'DE: No activity logs found'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'DE: No activity logs found',
+        'MESSAGE_AVAILABILITY_LISTING' => 'DE: Availability listed successfully',
+        'MESSAGE_AVAILABILITY_CREATED' => 'DE: Availability created successfully',
+        'MESSAGE_AVAILABILITY_DELETED' => 'DE: Availability deleted successfully',
+        'MESSAGE_AVAILABILITY_UPDATED' => 'DE: Availability updated successfully',
+        'MESSAGE_AVAILABILITY_FOUND' => 'DE: Availability found successfully',
     ],
 
 
@@ -267,5 +272,8 @@ return [
 
         // For notification module
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
+
+        // For availability module
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availabilty does not found in system',
     ]
 ];

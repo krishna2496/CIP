@@ -142,9 +142,9 @@ class MissionRepository implements MissionInterface
                     'title' => $value['title'],
                     'short_description' => (isset($value['short_description'])) ? $value['short_description'] : null,
                     'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
-                    'objective' => $value['objective'],
-                    'custom_information' =>
-                    (array_key_exists('custom_information', $value)) ? $value['custom_information'] : null
+                    'objective' =>  (isset($value['objective'])) ? $value['objective'] : null,
+                    'custom_information' => (array_key_exists('custom_information', $value))
+                    ? $value['custom_information'] : null
                 );
 
             $this->modelsService->missionLanguage->create($missionLanguage);
