@@ -380,29 +380,6 @@ class ThemeTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_api_key()
-    {
-        $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode('test'.':'.env('API_SECRET'))])
-        ->seeStatusCode(401)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'code',
-                    'message'
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * @test
-     *
-     * Return error for invalid API keys 
-     *
-     * @return void
-     */
     public function it_should_return_error_for_invalid_api_key_and_secret_key()
     {
         $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode(':'.env('API_SECRET'))])

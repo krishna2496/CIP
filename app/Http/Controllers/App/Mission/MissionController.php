@@ -518,8 +518,11 @@ class MissionController extends Controller
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $missionData = $this->missionRepository->getRelatedMissions($request, $missionId);
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-            $mission = $missionData->map(function (Mission $mission)
- use ($languageId, $defaultTenantLanguageId, $timezone) {
+            $mission = $missionData->map(function (Mission $mission) use (
+                $languageId,
+                $defaultTenantLanguageId,
+                $timezone
+            ) {
                 return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone);
             })->all();
 
@@ -594,23 +597,14 @@ class MissionController extends Controller
      */
     public function getUserMissions(Request $request): JsonResponse
     {
-        try {
-            $missionLists = $this->missionRepository->getUserMissions($request);
-   
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiData = $missionLists;
-            $apiMessage = (empty($apiData)) ? trans('messages.custom_error_message.ERROR_USER_MISSIONS_NOT_FOUND')
-            : trans('messages.success.MESSAGE_MISSION_LISTING');
+        $missionLists = $this->missionRepository->getUserMissions($request);
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiData = $missionLists;
+        $apiMessage = (empty($apiData)) ? trans('messages.custom_error_message.ERROR_USER_MISSIONS_NOT_FOUND')
+        : trans('messages.success.MESSAGE_MISSION_LISTING');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }
