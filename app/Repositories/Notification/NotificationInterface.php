@@ -16,14 +16,6 @@ interface NotificationInterface
     public function getNotificationTypeID(string $type): int;
 
     /**
-     * Send notification
-     *
-     * @param array $notificationData
-     * @return App\Models\Notification
-     */
-    public function createNotification(array $notificationData): Notification;
-    
-    /**
      * Check if user notification is enabled or not
      *
      * @param int $userId

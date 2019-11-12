@@ -229,7 +229,10 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(200);
-
+        
+        DB::setDefaultConnection('tenant');
+        App\Models\Mission::whereNull("deleted_at")->delete();
+        
         // Create goal mission
         $params = [
             "organisation" => [
@@ -293,11 +296,11 @@ class AppNotificationTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -438,6 +441,7 @@ class AppNotificationTest extends TestCase
                 ]
             ]
         ];
+
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
@@ -545,8 +549,8 @@ class AppNotificationTest extends TestCase
         ->seeStatusCode(201);
 
         // Submit timesheet for approval
-        $timesheet = App\Models\Timesheet::where("mission_id", $mission->mission_id)->first();
-        $timeMissionTimesheet = App\Models\Timesheet::where("mission_id", $timeMissionId)->first();
+        $timesheet = App\Models\Timesheet::where("mission_id", $mission->mission_id)->orderBy('timesheet_id', 'DESC')->first();
+        $timeMissionTimesheet = App\Models\Timesheet::where("mission_id", $timeMissionId)->orderBy('timesheet_id', 'DESC')->first();
         $params = [
             'timesheet_entries' => [
                 [
@@ -557,6 +561,8 @@ class AppNotificationTest extends TestCase
                 ]
             ]
         ];
+
+
         DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200);
@@ -584,6 +590,11 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
         $this->get('app/notifications', ['token' => $token])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/notifications', ['token' => $token, 'X-localization' => 'test'])
         ->seeStatusCode(200);
 
         $user->delete();
@@ -728,11 +739,11 @@ class AppNotificationTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -769,6 +780,28 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->post('app/notification/read-unread/'.rand(10000000, 50000000), [], ['token' => $token])
         ->seeStatusCode(404);
+
+        // Update notification settings
+        DB::setDefaultConnection('mysql');
+        $notificationTypeArray = [];
+
+        foreach ($notificationTypes as $notificationType) {
+            $notificationTypeArray[] = ["notification_type_id" => $notificationType['notification_type_id'], "value" => 0];
+        }
+
+        $params = [
+            "settings" => $notificationTypeArray
+        ];
+
+        // Save user notification settings
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/user-notification-settings/update', $params, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
 
         $user->delete();
         $mission->delete();
@@ -910,11 +943,11 @@ class AppNotificationTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,

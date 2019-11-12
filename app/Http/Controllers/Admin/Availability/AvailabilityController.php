@@ -10,7 +10,9 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use InvalidArgumentException;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserActivityLogEvent;
 
 class AvailabilityController extends Controller
 {
@@ -26,18 +28,26 @@ class AvailabilityController extends Controller
     private $responseHelper;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new availability controller instance
      *
      * @param App\Repositories\Availability\AvailabilityRepository;
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         AvailabilityRepository $availabilityRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->availabilityRepository = $availabilityRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -48,15 +58,22 @@ class AvailabilityController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // Get availability lists
-        $availabilityLists = $this->availabilityRepository->getAvailabilityList($request);
+        try {
+            // Get availability lists
+            $availabilityLists = $this->availabilityRepository->getAvailabilityList($request);
 
-        // Set response data
-        $apiData = $availabilityLists;
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($availabilityLists->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-            : trans('messages.success.MESSAGE_AVAILABILITY_LISTING');
-        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+            // Set response data
+            $apiData = $availabilityLists;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = ($availabilityLists->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+                : trans('messages.success.MESSAGE_AVAILABILITY_LISTING');
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        }
     }
     
     /**
@@ -96,6 +113,18 @@ class AvailabilityController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_CREATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AVAILABILITY'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $availability->availability_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -134,7 +163,7 @@ class AvailabilityController extends Controller
                 );
             }
             
-            // Update availability details            
+            // Update availability details
             $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
        
             // Set response data
@@ -142,6 +171,18 @@ class AvailabilityController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_UPDATED');
             
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.AVAILABILITY'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $availability->availability_id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -190,6 +231,18 @@ class AvailabilityController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_DELETED');
 
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.AVAILABILITY'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $availabilityId
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

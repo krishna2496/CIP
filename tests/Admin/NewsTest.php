@@ -262,8 +262,16 @@ class NewsTest extends TestCase
             array_push($newsIdsArray, $news->news_id); 
         } 
 
+        $this->get('news?order=desc&search='.$newsLanguage->title, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
         $this->get('news', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('news?order=test&search='.$newsLanguage->title, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400);
 
         News::whereIn('news_id', $newsIdsArray)->delete();
     }
@@ -311,6 +319,20 @@ class NewsTest extends TestCase
         // Going to update details
         $params["user_name"] = str_random('5');
         $params["user_title"] = strtoupper(str_random('3'));
+        $params["news_content"] = [
+            "translations" => [
+                [  
+                    "lang" => "en",
+                    "title" => "english_".str_random('10'),
+                    "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
+                ],
+                [
+                    "lang" => "fr",
+                    "title" => "french_".str_random('10'),
+                    "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
+                ]
+            ]
+        ];
         
         DB::setDefaultConnection('mysql');
         $response = $this->patch('news/'.$newsId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])

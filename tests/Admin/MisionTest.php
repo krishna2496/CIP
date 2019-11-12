@@ -57,6 +57,16 @@ class MissionTest extends TestCase
                                     "title" => str_random(10),
                                     "description" => str_random(100),
                                 ]
+                            ],
+                            "custom_information" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
                             ]
                         ],
                         [
@@ -95,11 +105,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
                     "theme_id" => 1,
                     "availability_id" => 1,
@@ -138,11 +148,11 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
                     "theme_id" => 1,
                     "availability_id" => 1
@@ -187,6 +197,16 @@ class MissionTest extends TestCase
                     "title" => str_random(10),
                     "short_description" => $description,
                     "objective" => str_random(20),
+                    "custom_information" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ],
                     "section" => [
                         [
                             "title" => str_random(10),
@@ -203,6 +223,16 @@ class MissionTest extends TestCase
                     "title" => str_random(10),
                     "short_description" => $description,
                     "objective" => str_random(20),
+                    "custom_information" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ],
                     "section" => [
                         [
                             "title" => str_random(10),
@@ -230,11 +260,11 @@ class MissionTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -282,6 +312,16 @@ class MissionTest extends TestCase
                             "title" => str_random(10),
                             "short_description" => str_random(20),
                             "objective" => str_random(20),
+                            "custom_information" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ],
                             "section" => [
                                 [
                                     "title" => str_random(10),
@@ -333,11 +373,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.TIME"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "application_start_date" => "2019-05-15 10:40:00",
                     "application_end_date" => "2020-05-15 10:40:00",
                     "application_start_time" => "2019-05-15 10:40:00",
@@ -498,11 +538,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
                     "goal_objective" => "",
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.DRAFT"),
                     "theme_id" => 1,
                     "availability_id" => 1
@@ -726,11 +766,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
                     "theme_id" => 1,
                     "availability_id" => 1
@@ -824,11 +864,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.TIME"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "application_start_date" => "2019-05-15 10:40:00",
                     "application_end_date" => "2020-05-15 10:40:00",
                     "application_start_time" => "2019-05-15 10:40:00",
@@ -848,6 +888,10 @@ class MissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         DB::setDefaultConnection('mysql');
+
+        $params = [
+            "publication_status" => config("constants.publication_status.PUBLISHED_FOR_APPLYING"),
+        ];
 
         $this->patch("missions/".$mission[0]['mission_id'], $params,
         ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -935,11 +979,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
                     "theme_id" => 1,
                     "availability_id" => 1,
@@ -1038,11 +1082,11 @@ class MissionTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "application_start_date" => "2019-05-15 10:40:00",
             "application_end_date" => "2020-05-15 10:40:00",
             "application_start_time" => "2019-05-15 10:40:00",
@@ -1125,11 +1169,11 @@ class MissionTest extends TestCase
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
+                    "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.TIME"),
                     "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
+                    "total_seats" => rand(10, 1000),
+                    "application_deadline" => "2022-07-28 11:40:00",
                     "application_start_date" => "2019-05-15 10:40:00",
                     "application_end_date" => "2020-05-15 10:40:00",
                     "application_start_time" => "2019-05-15 10:40:00",

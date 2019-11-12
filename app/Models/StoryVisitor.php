@@ -36,24 +36,4 @@ class StoryVisitor extends Model
      * @var array
      */
     protected $fillable = ['user_id', 'story_id'];
-
-    /**
-     * Defined has one relation for the user table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class, 'user_id', 'user_id');
-    }
-
-    /**
-     * Defined has one relation for the story table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function story(): HasOne
-    {
-        return $this->hasOne(Story::class, 'story_id', 'story_id');
-    }
 }
