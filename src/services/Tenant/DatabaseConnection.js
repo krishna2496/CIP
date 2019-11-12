@@ -143,8 +143,8 @@ export default async(langList, defautLang) => {
                 store.commit('timesheetFromYear', '');
             }
 
-            if (response.data.data.submit_new_mision_url) {
-                store.commit('submitNewMissionUrl', response.data.data.submit_new_mision_url);
+            if (response.data.data.submit_new_mission_url) {
+                store.commit('submitNewMissionUrl', response.data.data.submit_new_mission_url);
             } else {
                 store.commit('submitNewMissionUrl', '');
             }
