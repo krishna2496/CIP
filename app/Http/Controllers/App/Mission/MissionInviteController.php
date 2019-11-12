@@ -198,6 +198,7 @@ class MissionInviteController extends Controller
             );
             
             $data = array(
+                'missionUrl' => url("/mission-detail/".$request->mission_id),
                 'missionName'=> $missionName,
                 'fromUserName'=> $fromUserName,
                 'colleagueLanguage'=> $colleagueLanguage

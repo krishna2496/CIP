@@ -191,6 +191,7 @@ class StoryInviteController extends Controller
             $storyName = $this->storyInviteRepository->getStoryName($request->story_id);
             
             $data = array(
+                'storyUrl'=> url("/story-detail/".$request->story_id),
                 'storyName'=> $storyName,
                 'fromUserName'=> $fromUserName,
                 'colleagueLanguage'=> $colleagueLanguage

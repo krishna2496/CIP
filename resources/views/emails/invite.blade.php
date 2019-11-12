@@ -48,7 +48,9 @@
 							<table width="500" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF" style="background:#FFFFFF;" class="inner-table">
 								<tr>
 									<td>
-										<img src="{{ $data['logo'] }}" height="50" width="150"  alt="Logo" />
+										<a href="{{ $data['logo'] }}">
+											<img src="{{ $data['logo'] }}" height="50" width="150"  alt="Logo" />
+										</a>
 									</td>
 								</tr>
 								<tr>
@@ -68,7 +70,7 @@
 								
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:20px; line-height: 36px;" class="title_text">
-										{{ trans('mail.recommonded_mission.MISSION', [], $data['colleagueLanguage']) }}  {{ $data['missionName'] }} <br/>
+										{{ trans('mail.recommonded_mission.MISSION', [], $data['colleagueLanguage']) }} <a href="{{ $data['missionUrl'] }}"> {{ $data['missionName'] }} </a><br/>
 									</td>
 								</tr>
 								
