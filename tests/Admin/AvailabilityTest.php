@@ -9,7 +9,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_create_availability()
+    public function it_should_create_availability()
     {
         $availabilityType = str_random(10);
         $params = [        
@@ -38,7 +38,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_error_if_type_is_blank()
+    public function it_should_return_error_if_type_is_blank()
     {
         $params = [        
             "type" => "",
@@ -71,7 +71,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_all_availability_for_admin()
+    public function it_should_return_all_availability_for_admin()
     {
         $availabilityType = str_random(10);
         $params = [        
@@ -103,7 +103,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_a_availability_for_admin_by_availability_id()
+    public function it_should_return_a_availability_for_admin_by_availability_id()
     {
         $availabilityType = str_random(10);
         $params = [        
@@ -147,7 +147,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_error_if_availability_id_is_wrong()
+    public function it_should_return_error_if_availability_id_is_wrong()
     {
         $this->get('entities/availability/'.rand(1000000,2000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
@@ -170,7 +170,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_update_availability()
+    public function it_should_update_availability()
     {
         $availabilityType = str_random(10);
         $params = [        
@@ -210,7 +210,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_error_for_update_availability_blank_type()
+    public function it_should_return_error_for_update_availability_blank_type()
     {
         $availabilityType = str_random(10);
         $params = [        
@@ -255,7 +255,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_error_for_wrong_availability_id()
+    public function it_should_return_error_for_wrong_availability_id()
     {   
         $params = [        
             "type" => str_random(20),
@@ -288,7 +288,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_delete_availability()
+    public function it_should_delete_availability()
     {
         $availabilityType = str_random(10);
         $params = [        
@@ -318,7 +318,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_error_for_delete_availability_for_invalid_availability_id()
+    public function it_should_return_error_for_delete_availability_for_invalid_availability_id()
     {   
         $this->delete('entities/availability/'.rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
@@ -341,7 +341,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function availability_test_it_should_return_invalid_argument_error_for_get_all_availability_for_admin()
+    public function it_should_return_invalid_argument_error_for_get_all_availability_for_admin()
     {
         $availabilityType = str_random(10);
         $params = [        

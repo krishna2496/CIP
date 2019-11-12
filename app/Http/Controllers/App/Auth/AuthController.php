@@ -322,6 +322,7 @@ class AuthController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
