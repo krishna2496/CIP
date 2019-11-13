@@ -26,6 +26,8 @@ class CreateActivityLogTable extends Migration
             $table->string('user_value', 255);            
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

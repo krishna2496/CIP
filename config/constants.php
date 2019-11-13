@@ -23,7 +23,9 @@
             'ERROR_LANGUAGE_NOT_ACTIVE' => '200102',
             'ERROR_TENANT_LANGUAGE_NOT_FOUND' => '200103',
             'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => '200104',
+            'ERROR_MIGRATION_CHANGES_FILE_FIELDS_EMPTY' => '200105',
             'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '200106',
+            'ERROR_NOT_VALID_EXTENSION' => '200107'
         ],
         'background_process_status' => [
             'PENDING' => '0',
@@ -60,5 +62,10 @@
         'language_status' => [
             'ACTIVE' => '1',
             'INACTIVE' => '0'
-        ]
+        ],
+        'migration_file_type' => [
+            'migration' => 'migration',
+            'seeder' => 'seeder'
+        ],
+        'EMAIL_TEMPLATE_MIGRATION_NOTIFICATION' => 'migration-notification',
     ];
