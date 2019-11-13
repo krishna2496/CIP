@@ -1819,6 +1819,17 @@ main {
     right: 0;
     .page-item {
         display: none;
+        &:nth-last-child(2),
+        &:nth-child(2) {
+            &.disabled {
+                span,
+                .page-link {
+                    &:after {
+                        opacity: 0.4;
+                    }
+                }
+            }
+        }
         &:nth-last-child(2) {
             display: block;
             position: absolute;
