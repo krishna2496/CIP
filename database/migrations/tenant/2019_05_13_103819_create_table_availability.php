@@ -16,6 +16,7 @@ class CreateTableAvailability extends Migration
         Schema::create('availability', function (Blueprint $table) {
             $table->bigIncrements('availability_id')->unsinged();
             $table->string('type',255);
+            $table->text('translations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

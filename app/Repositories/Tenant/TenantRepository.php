@@ -119,4 +119,14 @@ class TenantRepository implements TenantInterface
         }
         return $query->get();
     }
+
+    /**
+     * Get pending tenant list to execute their background process
+     * @param int $tenantId
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getAllTenants(): ?Collection
+    {
+        return $this->tenant->where('status', '1')->get();
+    }
 }
