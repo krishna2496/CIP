@@ -264,8 +264,8 @@ class MissionCommentController extends Controller
         foreach ($userMissionComments['comments'] as $comment) {
             $comment = $comment->toArray();
             $excel->appendRow([
-                $comment['title'],
-                $comment['comment'],
+                strip_tags(preg_replace('~[\r\n]+~', '', $comment['title'])),
+                strip_tags(preg_replace('~[\r\n]+~', '', $comment['comment'])),
                 $comment['approval_status'],
                 $comment['created_at']
             ]);
