@@ -412,7 +412,7 @@ class UserController extends Controller
 
         // Set response data
         $apiData = ['user_id' => $userId];
-        $apiStatus = Response::HTTP_OK;
+        $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
         
         // Make activity log
