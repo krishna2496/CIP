@@ -275,7 +275,8 @@
 		"cancle_story" : "Are you sure that you want to cancle this story ?",
 		"yes": "Yes",
 		"no" : "No",
-		"delete_story" : "Are you sure that you want to delete this story ?"
+        "delete_story" : "Are you sure that you want to delete this story ?",
+        "sent" : "Sent"
     },
 
     "placeholder": {
@@ -368,11 +369,11 @@
     },
 
     "export_timesheet_file_names": {
-        "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xlsx",
-        "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xlsx",
-        "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xlsx",
-        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx",
-        "MY_STORIES_XLSX": "My_Stories_Listing.xlsx",
-		"COMMENT_LISTING_XLSX" : "mission_comments.xlsx"
+        "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
+        "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",
+        "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xls",
+        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xls",
+        "MY_STORIES_XLSX": "My_Stories_Listing.xls",
+		"COMMENT_LISTING_XLSX" : "mission_comments.xls"
     }
 }
