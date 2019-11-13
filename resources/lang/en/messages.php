@@ -30,6 +30,8 @@ return [
         'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Tenant language deleted successfully',
         'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'No activity logs found',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Activity logs listed successfully',
+        'MESSAGE_MIGRATION_FILE_UPLOADED_SUCCESSFULLY' => 'Migration / Seeder file uploaded successfully',
+        'MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.'
     ],
     
     /**
@@ -54,6 +56,7 @@ return [
         'ERROR_LANGUAGE_NOT_ACTIVE' => 'Selected language is not active',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Tenant language not found in the system',
         'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Atleast one default language is required',
+        'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'Invalid file extension'
     ],
     'email_text' => [
         'ERROR' => 'Error',
