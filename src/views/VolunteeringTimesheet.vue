@@ -619,7 +619,7 @@
                     if(now == currentDate) {
                         currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                     } else {
-                        currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD HH::mm:ss");
+                        currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD HH::mm:ss");
                     }
                 }
 
