@@ -404,6 +404,11 @@ class AppNotificationTest extends TestCase
         $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+        
         // Add news
         DB::setDefaultConnection('tenant');
         $params = [
@@ -411,7 +416,7 @@ class AppNotificationTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => \App\Models\NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -588,6 +593,7 @@ class AppNotificationTest extends TestCase
         $toUser->delete();
         $mission->delete();
         $notification->delete();
+        $newsCategory->delete();
     }
 
     /**
