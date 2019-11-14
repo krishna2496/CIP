@@ -22,8 +22,7 @@ class S3Helper
     {
         set_time_limit(0);
         $context = stream_context_create(array('http'=> array(
-            'timeout' => 1200,
-            'ignore_errors' => true,
+            'timeout' => 1200
         )));
         $disk = Storage::disk('s3');
         $disk->put(
@@ -117,8 +116,7 @@ class S3Helper
     {
         set_time_limit(0);
         $context = stream_context_create(array('http'=> array(
-            'timeout' => 1200,
-            'ignore_errors' => true,
+            'timeout' => 1200
         )));
         
         $disk = Storage::disk('s3');

@@ -269,14 +269,16 @@
 		"yesterday": "Yesterday",
         "older": "Older",
 		"mission_application": "Mission application",
-        "new_news": "News update",
+        "new_news": "News",
         "mark_as_read": "Mark as read",
         "mark_as_un_read": "Mark as unread",
 		"cancle_story" : "Are you sure that you want to cancle this story ?",
 		"yes": "Yes",
 		"no" : "No",
         "delete_story" : "Are you sure that you want to delete this story ?",
-        "sent" : "Sent"
+        "sent" : "Sent",
+        "not_volunteered_text" : "You haven't volunteered to any mission so you can not create story.",
+        "all_missions" : "All missions"        
     },
 
     "placeholder": {
