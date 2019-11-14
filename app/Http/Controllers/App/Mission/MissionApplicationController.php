@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\App\Mission;
 
 use App\Http\Controllers\Controller;
+use Bschmitt\Amqp\Amqp;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -17,22 +18,22 @@ use App\Helpers\Helpers;
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;
-    
+
     /**
      * @var MissionApplicationRepository
      */
     private $missionApplicationRepository;
-    
+
     /**
      * @var MissionRepository
      */
     private $missionRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -130,11 +131,24 @@ class MissionApplicationController extends Controller
             $request->auth->user_id
         );
 
+        // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
+        // NEED to get these data from the new $missionApplication, but create() function is not coded yet.
+        $missionForOptimy = [
+            'tenant_id' => 1,
+            'mission_application_id' => 1,
+            'user_id' => 1,
+            'mission_id' => 1,
+            'sponsor_frontend_id' => 1,
+            'applied_at' => date("Y-m-d H:i:s"),
+            'approval_status' => 'pending'
+        ];
+        (new Amqp)->publish('volunteerApplications', json_encode($missionForOptimy) , ['queue' => 'volunteerApplications']);
+
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION'),
@@ -160,11 +174,11 @@ class MissionApplicationController extends Controller
     {
         try {
             $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
-            
+
             // Get default user avatar
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
-            
+
             foreach ($missionVolunteers as $volunteers) {
                 if (!isset($volunteers->avatar)) {
                     $volunteers->avatar = $defaultAvatar;
@@ -176,7 +190,7 @@ class MissionApplicationController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (count($missionVolunteers) > 0) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
             : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
-            
+
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
