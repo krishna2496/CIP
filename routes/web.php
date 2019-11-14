@@ -124,5 +124,8 @@ $router->group(
         // Fetch activity logs
         $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'ActivityLogController@index']);
+
+        // Uload Migration/Seeder files
+        $router->post('/migration', ['uses' => 'MigrationController@store']);
     }
 );

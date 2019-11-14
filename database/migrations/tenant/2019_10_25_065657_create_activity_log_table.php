@@ -21,11 +21,13 @@ class CreateActivityLogTable extends Migration
             $table->bigInteger('object_id')->nullable();
             $table->text('object_value')->nullable();
             $table->dateTime('date')->useCurrent();
-            $table->bigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->enum('user_type', ['API', 'REGULAR']);
             $table->string('user_value', 255);            
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

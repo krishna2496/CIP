@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
 use App\Events\ActivityLogEvent;
+use Illuminate\Validation\Rule;
 
 class LanguageController extends Controller
 {
@@ -142,7 +143,11 @@ class LanguageController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    'name' => 'sometimes|required',
+                    "name" => [
+						"sometimes",
+						"required",
+						"regex:/^[a-zA-Z]+$/u",
+						Rule::unique('language')->ignore($languageId, 'language_id,deleted_at,NULL')],
                     'code'  => 'sometimes|required|max:2|required|unique:language,code,'.
                     $languageId .',language_id,deleted_at,NULL',
                     'status'  => 'sometimes|required|in:1,0'
