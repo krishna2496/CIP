@@ -62,10 +62,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -205,10 +202,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -310,10 +304,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -409,10 +400,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -514,10 +502,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -624,10 +609,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -730,10 +712,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -832,10 +811,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -938,10 +914,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1053,10 +1026,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1177,10 +1147,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1301,10 +1268,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1419,10 +1383,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1534,10 +1495,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1655,10 +1613,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1773,10 +1728,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1892,10 +1844,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2010,10 +1959,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2118,10 +2064,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2238,10 +2181,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2348,10 +2288,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2467,10 +2404,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2599,10 +2533,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2707,10 +2638,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2816,10 +2744,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -2967,10 +2892,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -3077,10 +2999,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -3232,10 +3151,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -3368,10 +3284,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -3503,10 +3416,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -3627,10 +3537,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -3758,10 +3665,7 @@ class AppStoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
