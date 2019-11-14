@@ -211,3 +211,15 @@ $factory->define(App\Models\NewsToCategory::class, function (Faker\Generator $fa
         "news_category_id" => $newsCategoryId
     ];
 });
+
+$factory->define(App\Models\NewsCategory::class, function (Faker\Generator $faker) {
+    return [
+        'category_name' => str_random(10),
+        'translations' =>  [
+            [
+                'lang' => 'en',
+                'title' => str_random(20)
+            ]
+        ],
+    ];
+});

@@ -151,11 +151,11 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Get mission application count.
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|int
      */
-    public function missionApplicationCount(int $userId, int $year, int $month): ?int
+    public function missionApplicationCount(int $userId, $year, $month): ?int
     {
         return $this->missionApplication->missionApplicationCount($userId, $year, $month);
     }
@@ -164,31 +164,36 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Get organization count.
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|array
      */
-    public function organizationCount(int $userId, int $year, int $month): ?array
+    public function organizationCount(int $userId, $year, $month): ?array
     {
-        return $this->mission
+        $countQuery = $this->mission
         ->leftJoin('mission_application', 'mission_application.mission_id', '=', 'mission.mission_id')
         ->where(['mission_application.user_id' => $userId])
         ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
-        ->whereYear('applied_at', $year)
-        ->whereMonth('applied_at', $month)
-        ->groupBy('mission.organisation_id')
-        ->get()->toArray();
+        ->groupBy('mission.organisation_id');
+
+        if (isset($year) && $year != '') {
+            $countQuery->whereYear('applied_at', $year);
+            if (isset($month) && $month != '') {
+                $countQuery->whereMonth('applied_at', $month);
+            }
+        }
+        return $countQuery->get()->toArray();
     }
 
     /**
      * Get pending application count.
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|int
      */
-    public function pendingApplicationCount(int $userId, int $year, int $month): ?int
+    public function pendingApplicationCount(int $userId, $year, $month): ?int
     {
         return $this->missionApplication->pendingApplicationCount($userId, $year, $month);
     }
