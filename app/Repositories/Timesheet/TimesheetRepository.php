@@ -443,11 +443,11 @@ class TimesheetRepository implements TimesheetInterface
      * Get user timesheet total hours data
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|array
      */
-    public function getTotalHours(int $userId, int $year, int $month): ?array
+    public function getTotalHours(int $userId, $year, $month): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -459,8 +459,12 @@ class TimesheetRepository implements TimesheetInterface
             'timesheet AS total_minutes' => function ($query) use ($userId, $statusArray, $year, $month) {
                 $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
                 $query->where('user_id', $userId);
-                $query->whereYear('date_volunteered', $year);
-                $query->whereMonth('date_volunteered', $month);
+                if (isset($year) && $year != '') {
+                    $query->whereYear('date_volunteered', $year);
+                    if (isset($month) && $month != '') {
+                        $query->whereMonth('date_volunteered', $month);
+                    }
+                }
                 $query->whereIn('status_id', $statusArray);
             }
         ]);
@@ -471,10 +475,10 @@ class TimesheetRepository implements TimesheetInterface
      * Get user timesheet total hours data
      *
      * @param int $userId
-     * @param int $year
+     * @param $year
      * @return null|array
      */
-    public function getTotalHoursForYear(int $userId, int $year): ?array
+    public function getTotalHoursForYear(int $userId, $year): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -486,7 +490,9 @@ class TimesheetRepository implements TimesheetInterface
             'timesheet AS total_minutes' => function ($query) use ($userId, $statusArray, $year) {
                 $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
                 $query->where('user_id', $userId);
-                $query->whereYear('date_volunteered', $year);
+                if (isset($year) && $year != '') {
+                    $query->whereYear('date_volunteered', $year);
+                }
                 $query->whereIn('status_id', $statusArray);
             }
         ]);
@@ -497,10 +503,10 @@ class TimesheetRepository implements TimesheetInterface
      * Get user timesheet total hours data
      *
      * @param int $userId
-     * @param int $year
+     * @param $year
      * @return null|array
      */
-    public function getTotalHoursbyMonth(int $userId, int $year, $missionId): ?array
+    public function getTotalHoursbyMonth(int $userId, $year, $missionId): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -540,11 +546,11 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Get all user's timesheet total hours data
      *
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|array
      */
-    public function getUsersTotalHours(int $year, int $month): ?array
+    public function getUsersTotalHours($year, $month): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -554,8 +560,13 @@ class TimesheetRepository implements TimesheetInterface
         sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
         $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
         ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
-        $timesheetQuery->whereYear('date_volunteered', $year);
-        $timesheetQuery->whereMonth('date_volunteered', $month);
+
+        if (isset($year) && $year != '') {
+            $timesheetQuery->whereYear('date_volunteered', $year);
+            if (isset($month) && $month != '') {
+                $timesheetQuery->whereMonth('date_volunteered', $month);
+            }
+        }
         $timesheetQuery->whereIn('status_id', $statusArray);
         $timesheetQuery->orderBy(DB::raw("total_minutes"), "DESC");
         $timesheetQuery->groupBy(DB::raw("user_id"));

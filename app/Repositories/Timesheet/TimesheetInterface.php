@@ -110,11 +110,11 @@ interface TimesheetInterface
      * Get user timesheet total hours data
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|array
      */
-    public function getTotalHours(int $userId, int $year, int $month): ?array;
+    public function getTotalHours(int $userId, $year, $month): ?array;
 
     /**
      * Get user timesheet total hours data
@@ -129,19 +129,19 @@ interface TimesheetInterface
      * Get user timesheet total hours data
      *
      * @param int $userId
-     * @param int $year
+     * @param $year
      * @return null|array
      */
-    public function getTotalHoursbyMonth(int $userId, int $year, $missionId): ?array;
+    public function getTotalHoursbyMonth(int $userId, $year, $missionId): ?array;
 
     /**
      * Get all user's timesheet total hours data
      *
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|array
      */
-    public function getUsersTotalHours(int $year, int $month): ?array;
+    public function getUsersTotalHours($year, $month): ?array;
 
     /**
      * Get details of timesheet from timesheetId
