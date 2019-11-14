@@ -64,12 +64,7 @@ class MigrationSeederChangesController extends Controller
      * @return Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
-    {
-        $seederFiles = Storage::disk('seeder')->allFiles();
-
-        foreach ($seederFiles as $file) {
-            
-        }
+    {        
         $validator = Validator::make(
             $request->toArray(),
             [
@@ -164,16 +159,17 @@ class MigrationSeederChangesController extends Controller
         $tenants = $this->tenantRepository->getAllTenants();
 
         // Get all uploaded seeder files
-        $seederFiles = 'test';
+        $seederFiles = Storage::disk('seeder')->allFiles();
         
         if ($tenants->count() > 0) {
             foreach ($tenants as $tenant) {
                 // Create connection of tenant one by one
                 if ($this->createConnection($tenant->tenant_id) !== 0) {
-                    // Get all files list from seeder table of tenant's database
                     try {
-                        // Run migration command to apply migration change
-                        Artisan::call('migrate --path=database/migrations/tenant');
+                        foreach ($seederFiles as $file) {
+                            // Check seeder file is exist in databse or not
+                            Artisan::call('db:seed --class=');
+                        }
                     } catch (\Exception $e) {
                         // Failed then send mail to admin
                         $this->sendFailerMail($tenant);
