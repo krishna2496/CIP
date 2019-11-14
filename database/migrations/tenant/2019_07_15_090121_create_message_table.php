@@ -13,11 +13,11 @@ class CreateMessageTable extends Migration
      */
     public function up()
     {
-        Schema::create('message', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->bigIncrements('message_id');
             $table->unsignedBigInteger('user_id');
             $table->tinyInteger('sent_from')->comment('1 : User, 2 : Admin');
-            $table->string('admin_name', 255);
+            $table->string('admin_name', 255)->nullable();
             $table->string('subject', 255);            
             $table->text('message');
             $table->enum('is_read', ['0', '1'])->default(0)->comment('0: Unread, 1 : Read');
@@ -37,6 +37,6 @@ class CreateMessageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('message');
+        Schema::dropIfExists('messages');
     }
 }
