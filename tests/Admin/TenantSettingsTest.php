@@ -15,14 +15,6 @@ class TenantSettingsTest extends TestCase
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
-            "data" => [
-               "*" => [
-                    "tenant_setting_id",
-                    "title",
-                    "description",
-                    "key"
-                ]
-            ],
             "message"
         ]);
     }

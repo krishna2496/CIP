@@ -1025,7 +1025,7 @@ class AppUserTest extends TestCase
       
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/accept-cookie-agreement', [], ['token' => $token])
-        ->seeStatusCode(200)
+        ->seeStatusCode(201)
         ->seeJsonStructure(
             [
                 "status",

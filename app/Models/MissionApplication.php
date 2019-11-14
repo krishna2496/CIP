@@ -133,33 +133,42 @@ class MissionApplication extends Model
      * Get mission application count
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return int
      */
-    public function missionApplicationCount(int $userId, int $year, int $month): int
+    public function missionApplicationCount(int $userId, $year, $month): int
     {
-        return $this->where(['user_id' => $userId])
-        ->whereYear('applied_at', $year)
-        ->whereMonth('applied_at', $month)
-        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'))
-        ->count();
+        $countQuery = $this->where(['user_id' => $userId])
+        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'));
+        if (isset($year) && $year != '') {
+            $countQuery->whereYear('applied_at', $year);
+            if (isset($month) && $month != '') {
+                $countQuery->whereMonth('applied_at', $month);
+            }
+        }
+        return $countQuery->count();
     }
 
     /**
      * Get mission application count
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return int
      */
-    public function pendingApplicationCount(int $userId, int $year, int $month): int
+    public function pendingApplicationCount(int $userId, $year, $month): int
     {
-        return $this->where(['user_id' => $userId])
-        ->whereYear('applied_at', $year)
-        ->whereMonth('applied_at', $month)
-        ->where('approval_status', config('constants.application_status.PENDING'))
-        ->count();
+        $countQuery = $this->where(['user_id' => $userId])
+        ->where('approval_status', config('constants.application_status.PENDING'));
+        
+        if (isset($year) && $year != '') {
+            $countQuery->whereYear('applied_at', $year);
+            if (isset($month) && $month != '') {
+                $countQuery->whereMonth('applied_at', $month);
+            }
+        }
+        return $countQuery->count();
     }
 }

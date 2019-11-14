@@ -91,10 +91,11 @@ class DashboardController extends Controller
     public function index(Request $request): JsonResponse
     {
         $userId = $request->auth->user_id;
-        $year = ((!is_null($request->year)) && ($request->year != "")) ? $request->year : (int) date('Y');
-        $month = ((!is_null($request->month)) && ($request->month != "")) ? $request->month : (int) date('m');
+        $year = ((!is_null($request->year)) && ($request->year != "")) ? $request->year : '';
+        $month = ((!is_null($request->month)) && ($request->month != "")) ? $request->month : '';
         $missionId = $request->mission_id ?? null;
         $totalHours = $totalGoals = 0;
+        $currentYear = ($year != '') ? $year : (int) date('Y');
 
         $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
         $pendingApplicationCount = $this->missionApplicationRepository->pendingApplicationCount($userId, $year, $month);
@@ -109,7 +110,7 @@ class DashboardController extends Controller
         $allUsersTimesheetData = $this->timesheetRepository->getUsersTotalHours($year, $month);
         $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
         // For dashboard chart : Hours per month
-        $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $year, $missionId);
+        $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $currentYear, $missionId);
 
         // For total hours
         foreach ($timesheetData as $timesheet) {
