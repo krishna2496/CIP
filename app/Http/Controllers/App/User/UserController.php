@@ -305,7 +305,7 @@ class UserController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                    trans('messages.custom_error_message.SKILL_LIMIT')
+                    trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
                 );
             }
         }

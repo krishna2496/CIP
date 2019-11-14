@@ -3600,14 +3600,7 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $this->post('app/timesheet', $params, ['token' => $token])
-          ->seeStatusCode(201)
-          ->seeJsonStructure([
-            'status',
-            'data' => [
-                "timesheet_id"
-            ],
-            'message',
-        ]);
+        ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -3616,7 +3609,7 @@ class AppTimesheetTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        // It will return all users list
+        // It will return all users mission list
         $this->get('/app/user/missions', ['token' => $token])
         ->seeStatusCode(200);
 
