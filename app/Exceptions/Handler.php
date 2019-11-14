@@ -45,8 +45,7 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function render($request, Exception $exception)
-    {
-        dd($exception);
+    {        
         return $this->internalServerError();
     }
 }
