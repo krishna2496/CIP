@@ -4,6 +4,7 @@ namespace App\Jobs;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use App\Helpers\DatabaseHelper;
 use App\Models\Tenant;
 use DB;
@@ -67,6 +68,18 @@ class TenantMigrationJob extends Job
 
         // Call artisan command to run database seeder for default values
         Artisan::call('db:seed');
+
+        // Fetch uploaded files from seeder folder and run one by one
+        $seederFiles = Storage::disk('seeder')->allFiles();
+        
+        foreach ($seederFiles as $file) {
+            $seederClassName = explode(".", $file)[0];
+            Artisan::call("db:seed --class=$seederClassName");
+            DB::table('seeders')->insert([
+                'seeder' => $file
+            ]);
+        }
+        
         
         // Disconnect and reconnect with default database
         DB::disconnect('tenant');

@@ -22,7 +22,7 @@ class CreateTableTimesheet extends Migration
             $table->integer('action');                        
             $table->date('date_volunteered');
             $table->enum('day_volunteered', ['WORKDAY','HOLIDAY','WEEKEND']);
-            $table->text('note')->nullable();
+            $table->text('notes')->nullable();
             $table->unsignedBigInteger('status_id')->default(1);
             $table->timestamps();
             $table->softDeletes();

@@ -39,7 +39,7 @@ class NotificationTypeTableSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ],
             [                
-                "notification_type" => "new_missionss",
+                "notification_type" => "new_missions",
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
