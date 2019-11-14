@@ -202,6 +202,7 @@ return [
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
         'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
+        'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
         
                 
         // Custom error code for CMS Module - 300000 - 309999
@@ -232,7 +233,7 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'Mission comment creation failed. Please check input parameters',
-        'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
+        'ERROR_SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
@@ -260,7 +261,7 @@ return [
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         
-        // Custom erro code for other errors - 800000 - 809999
+        // Custom error code for other errors - 800000 - 809999
         'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => "An error has occured, while updating colors in database",
         'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => "File is failed to download from S3 to local",
         'ERROR_WHILE_COMPILING_SCSS_FILES' => 'An error has occured, while compiling SCSS files to update SCSS changes',
@@ -301,13 +302,13 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry, either mission application not found or not approved',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
 
-        // For News module
+        // Custom error code for news module - 500000 - 509999
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
         'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'News not found in the system',
         'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user',
 
-        // For story module
+        // Custom error code for news module -  700001 - 709999
         'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
         'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Published story not found in the system',
         'ERROR_COPY_DECLINED_STORY' => 'You can only create copy of declined story',
@@ -320,7 +321,7 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => 'User is already invited for this story',
 
-        // For notification module
+        // Custom error code for news module - 600000 - 609999
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification not found in the system',
 
         // For availability module
