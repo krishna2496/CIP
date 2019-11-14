@@ -279,9 +279,14 @@ class NewsTest extends TestCase
             $news->setConnection($connection);
             $news->save();
 
+            $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+            $newsCategory->setConnection($connection);
+            $newsCategory->save();
+            
             $newsToCategory = factory(\App\Models\NewsToCategory::class)->make();
             $newsToCategory->setConnection($connection);
             $newsToCategory->news_id = $news->news_id;
+            $newsToCategory->news_category_id = $newsCategory->news_category_id;
             $newsToCategory->save();
 
             $newsLanguage = factory(\App\Models\NewsLanguage::class)->make();
