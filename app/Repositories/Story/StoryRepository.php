@@ -179,7 +179,7 @@ class StoryRepository implements StoryInterface
                     'title'
                 )->where('language_id', $languageId);
             },
-        ]);
+        ])->whereHas('mission');
 
         if ($request->has('search') && $request->has('search') !== '') {
             $userStoryQuery->where(function ($query) use ($request) {
