@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\SeederChanges\SeederChangesRepository;
 use App\Repositories\Tenant\TenantRepository;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
@@ -14,7 +15,7 @@ use App\Models\Tenant;
 use Validator;
 use DB;
 
-class MigrationController extends Controller
+class SeederController extends Controller
 {
     /**
      * @var App\Repositories\Tenant\TenantRepository
@@ -32,18 +33,26 @@ class MigrationController extends Controller
     private $emailHelper;
 
     /**
+     * @var App\Repositories\SeederChanges\SeederChangesRepository
+     */
+    private $migrationChangesRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param App\Repositories\SeederChanges\SeederChangesRepository
      * @return void
      */
     public function __construct(
         TenantRepository $tenantRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        SeederChangesRepository $migrationChangesRepository
     ) {
         $this->responseHelper = $responseHelper;
         $this->tenantRepository = $tenantRepository;
+        $this->migrationChangesRepository = $migrationChangesRepository;
         $this->emailHelper = new EmailHelper();
     }
 
@@ -58,7 +67,6 @@ class MigrationController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                'type' => 'required|in:'.implode(',', config('constants.migration_file_type')),
                 'migration_file' => 'required'
             ]
         );
@@ -83,11 +91,17 @@ class MigrationController extends Controller
             );
         }
 
+        $fileName = $request->migration_file->getClientOriginalName();
+        $fileType = config('constants.migration_file_type.migration');
+
         $request->migration_file->move(
             'database/migrations/tenant/',
             $request->migration_file->getClientOriginalName()
         );
         
+        // Store file details on master table
+        $this->migrationChangesRepository->storeDetails($fileName, $fileType);
+
         // Run migration
         $this->run();
 

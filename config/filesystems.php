@@ -66,6 +66,10 @@ return [
              ],
         ],
 
+        'seeder' => [
+            'driver' => 'local',
+            'root' => base_path('database/seeds/tenant/uploaded')
+        ]
     ],
 
 ];
