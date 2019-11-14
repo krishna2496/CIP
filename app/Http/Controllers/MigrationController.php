@@ -14,6 +14,11 @@ use App\Models\Tenant;
 use Validator;
 use DB;
 
+//! Migration controller
+/*!
+This controller is responsible for handling migration store, send notifications
+and create connection operations.
+ */
 class MigrationController extends Controller
 {
     /**

@@ -13,6 +13,10 @@ use InvalidArgumentException;
 use Validator;
 use App\Events\ActivityLogEvent;
 
+//!  Tenant language controller
+/*!
+This controller is responsible for handling tenant language store/update, listing and delete operations.
+ */
 class TenantLanguageController extends Controller
 {
     use RestExceptionHandlerTrait;
