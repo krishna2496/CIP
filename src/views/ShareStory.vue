@@ -6,6 +6,8 @@
         <main>
             <b-container>
                 <h1>{{languageData.label.share_your_story}}</h1>
+                
+                <b-alert show variant="warning" v-if="pageLoaded && missionTitle.length == 0">{{languageData.label.not_volunteered_text}}</b-alert>
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
                 <b-row class="story-form-wrap">
                     <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
@@ -203,6 +205,7 @@
                 fileArray: [],
                 isLoaderActive: false,
                 duplicateYoutubeUrlError: false,
+                pageLoaded : false,
                 config: {
                     toolbar: [
                         ['Source', '-', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'],
@@ -409,6 +412,7 @@
                             this.missionTitle = array
                         }
                     }
+                    this.pageLoaded = true
                     if (this.$route.params.storyId) {
                         this.storyId = this.$route.params.storyId;
                         this.getStoryDetail();
@@ -612,6 +616,7 @@
             }
             this.defaultMissionTitle = this.languageData.label.mission_title
             this.missionListing();
+            
         },
         updated() {}
     };
