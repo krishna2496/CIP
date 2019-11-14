@@ -157,6 +157,13 @@ class AppInviteColleagueTest extends TestCase
         $missionLanguage->mission_id = $mission->mission_id;
         $missionLanguage->save();
 
+        DB::setDefaultConnection('tenant');
+        
+        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+
+        DB::setDefaultConnection('mysql');
+
         $params = [
             'mission_id' => $mission->mission_id,
             'to_user_id' => $toUser->user_id
@@ -176,6 +183,8 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
     }
 
     /**
@@ -202,8 +211,9 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('tenant');
         $settings = App\Models\TenantSetting::where(['setting_id' =>27])->get();
-        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $settings[0]['tenant_setting_id']])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
+        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+
         DB::setDefaultConnection('mysql');
 
         $params = [
@@ -225,8 +235,8 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
     }
 
     /**
@@ -429,6 +439,9 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('tenant');
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+
+        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
         DB::setDefaultConnection('mysql');
     
         $params = [
@@ -464,6 +477,8 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
     }
 
     /**
@@ -490,11 +505,10 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('tenant');
         $settings = App\Models\TenantSetting::where(['setting_id' =>27])->get();
-        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $settings[0]['tenant_setting_id']])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
-        DB::setDefaultConnection('mysql');
+        
+        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
 
-        DB::setDefaultConnection('tenant');
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
     
@@ -531,7 +545,7 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => 27])->delete();  
     }
 }

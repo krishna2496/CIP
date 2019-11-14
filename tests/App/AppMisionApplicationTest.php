@@ -20,7 +20,9 @@ class AppMisionApplicationTest extends TestCase
         $user->save();
        
         $params = [
-                'mission_id' => rand(1000000, 20000000)
+                'mission_id' => rand(1000000, 20000000),
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
@@ -68,7 +70,9 @@ class AppMisionApplicationTest extends TestCase
         $missionApplication->save();
         
         $params = [
-                'mission_id' => $mission->mission_id
+                'mission_id' => $mission->mission_id,
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
@@ -147,7 +151,9 @@ class AppMisionApplicationTest extends TestCase
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
         $params = [
-                'mission_id' => $mission[0]['mission_id']
+                'mission_id' => $mission[0]['mission_id'],
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));

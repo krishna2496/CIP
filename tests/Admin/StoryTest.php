@@ -62,15 +62,8 @@ class StoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -192,15 +185,8 @@ class StoryTest extends TestCase
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
