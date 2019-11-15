@@ -113,7 +113,9 @@ class MigrationSeederChangesController extends Controller
                 'database/seeds/tenant/uploaded/',
                 $request->migration_file->getClientOriginalName()
             );
+            putenv("COMPOSER_HOME=/usr/bin/composer");
             exec('composer dump-autoload');
+
             // Run seeder
             $this->runSeeder();
         }
