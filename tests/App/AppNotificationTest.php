@@ -579,11 +579,11 @@ class AppNotificationTest extends TestCase
         $this->get('app/notifications', ['token' => $token])
         ->seeStatusCode(200);
 
-        DB::setDefaultConnection('mysql');
-        $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/notifications', ['token' => $token])
-        ->seeStatusCode(200);
         
+        DB::setDefaultConnection('mysql');
+        $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
+        $this->seeStatusCode(200);
+
         $user->delete();
         $toUser->delete();
         $mission->delete();
