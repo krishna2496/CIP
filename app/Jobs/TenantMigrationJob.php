@@ -72,6 +72,7 @@ class TenantMigrationJob extends Job
         // Fetch uploaded files from seeder folder and run one by one
         $seederFiles = Storage::disk('seeder')->allFiles();
         
+        // @codeCoverageIgnoreStart
         foreach ($seederFiles as $file) {
             $seederClassName = explode(".", $file)[0];
             Artisan::call("db:seed --class=$seederClassName");
@@ -79,7 +80,7 @@ class TenantMigrationJob extends Job
                 'seeder' => $file
             ]);
         }
-        
+        // @codeCoverageIgnoreEnd
         
         // Disconnect and reconnect with default database
         DB::disconnect('tenant');

@@ -36,16 +36,4 @@ class Language extends Model
      * @var array
      */
     protected $visible = ['language_id', 'name', 'code', 'status'];
-    
-    /**
-     * Check language status.
-     *
-     * @param  int $id
-     * @param  string $status
-     * @return null|Collection
-     */
-    public function checkStatus(int $id, string $status): ?Collection
-    {
-        return $this->where(['language_id' => $id, 'status' => $status])->get();
-    }
 }
