@@ -11,14 +11,17 @@ export default async(filterData) => {
 
     if (filterData.year != '' && filterData.year != null && filterData.year != 0) {
         url = url + "?year=" + parseInt(filterData.year)
-    }
-
-    if (filterData.month != '' && filterData.month != null && filterData.month != 0 && filterData.year != 0) {
-        url = url + "&month=" + filterData.month
+        if (filterData.month != '' && filterData.month != null && filterData.month != 0) {
+            url = url + "&month=" + filterData.month
+        }
     }
 
     if (filterData.mission_id != '' && filterData.mission_id != null && filterData.mission_id != 0) {
-        url = url + "&mission_id=" + filterData.mission_id
+        if (filterData.year == '' || filterData.year == null || filterData.year == 0) {
+            url = url + "?mission_id=" + filterData.mission_id
+        } else {
+            url = url + "&mission_id=" + filterData.mission_id
+        }
     }
 
     await axios({
