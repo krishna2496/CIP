@@ -268,13 +268,14 @@
         "new_news": "Nouvelles",
         "mark_as_read": "Marquer comme lu",
         "mark_as_un_read": "marquer comme non lu",
-		"cancle_story" : "Êtes-vous sûr de vouloir annuler cette histoire? ?",
+		"cancel_story" : "Êtes-vous sûr de vouloir annuler cette histoire? ?",
 		"yes": "Oui",
 		"no" : "Non",
         "delete_story" : "Êtes-vous sûr de vouloir supprimer cette histoire? ?",
         "sent" : "Envoyée",
         "not_volunteered_text" : "Vous ne vous êtes pas porté volontaire pour une mission, vous ne pouvez donc pas créer d'histoire.",
-        "all_missions" : "Toutes les missions"
+        "all_missions" : "Toutes les missions",
+        "all": "toute"
     },
 
     "placeholder": {
