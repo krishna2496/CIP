@@ -17,6 +17,7 @@ class SeederChangesRepository implements SeederChangesInterface
 
     /**
      * Create a new Tenant has setting repository instance.
+     * @codeCoverageIgnore
      *
      * @param  App\Models\MigrationSeederFiles $migrationSeederFiles
      * @return void
@@ -28,6 +29,7 @@ class SeederChangesRepository implements SeederChangesInterface
 
     /**
      * Store file details in database
+     * @codeCoverageIgnore
      *
      * @param string $fileName
      * @param string $type

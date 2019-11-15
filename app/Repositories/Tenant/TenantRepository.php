@@ -122,6 +122,8 @@ class TenantRepository implements TenantInterface
 
     /**
      * Get pending tenant list to execute their background process
+     * @codeCoverageIgnore
+     * 
      * @param int $tenantId
      * @return null|Illuminate\Support\Collection
      */
