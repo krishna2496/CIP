@@ -11,9 +11,11 @@ use App\Repositories\Mission\MissionRepository;
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Support\Facades\Log;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\Helpers;
+use DB;
 
 class MissionApplicationController extends Controller
 {
@@ -131,16 +133,27 @@ class MissionApplicationController extends Controller
             $request->auth->user_id
         );
 
+
         // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
-        // NEED to get these data from the new $missionApplication, but create() function is not coded yet.
+        // THIS IS REALLY DIRTY CODE, but we have no choice for the moment for getting the tenant_id.
+        // A service who will implement that will be truly appreciated:
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $db = app()->make('db');
+        $apiUser = $db->table('api_user')
+            ->where('api_key', base64_encode($request->header('php-auth-user')))
+            ->where('status', '1')
+            ->whereNull('deleted_at')
+            ->first();
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+        //END DIRTY CODE
+
         $missionForOptimy = [
-            'tenant_id' => 1,
-            'mission_application_id' => 1,
-            'user_id' => 1,
-            'mission_id' => 1,
-            'sponsor_frontend_id' => 1,
-            'applied_at' => date("Y-m-d H:i:s"),
-            'approval_status' => 'pending'
+            'tenant_id' => $apiUser->tenant_id,
+            'mission_application_id' => $missionApplication->mission_application_id,
+            'user_id' => $missionApplication->user_id,
+            'mission_id' => $missionApplication->mission_id,
+            'applied_at' => $missionApplication->applied_at,
+            'approval_status' => $missionApplication->approval_status
         ];
         (new Amqp)->publish('volunteerApplications', json_encode($missionForOptimy) , ['queue' => 'volunteerApplications']);
 
