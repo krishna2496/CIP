@@ -108,6 +108,8 @@ class MigrationSeederChangesController extends Controller
             );
             // Run migration
             $this->runMigration();
+
+            $apiMessage = trans('messages.success.MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY');
         } else {
             $request->migration_file->move(
                 'database/seeds/tenant/uploaded/',
@@ -118,10 +120,12 @@ class MigrationSeederChangesController extends Controller
 
             // Run seeder
             $this->runSeeder();
+            
+            $apiMessage = trans('messages.success.MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY');
         }
         
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY');
+        
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
