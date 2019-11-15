@@ -2168,6 +2168,47 @@ class AppMissionTest extends TestCase
             "status",
             "data"
         ]);
+
+        // &explore_mission_type=themes&explore_mission_params=1
+
+        // For theme filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=theme&explore_mission_params=1', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+        
+        $countryName = App\Models\Country::where("country_id", $mission->country_id)->first()->name;
+
+        // For country filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=country&explore_mission_params='.$countryName, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+
+        // For organization filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=organization&explore_mission_params='.$mission->organisation_name, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+
+        // For theme filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=themes&explore_mission_params=1', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }

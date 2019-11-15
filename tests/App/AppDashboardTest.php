@@ -18,7 +18,7 @@ class AppDashboardTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/dashboard', ['token' => $token])
+        $this->get('app/dashboard?year='.date('Y')."&month=".date('m'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",

@@ -1000,5 +1000,9 @@ class UserTest extends TestCase
 
         $this->get("logs?users=1", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?type=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
     }
 }
