@@ -19,8 +19,8 @@ import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import 'moment-timezone';
 import customCss from './services/CustomCss'
-
 import 'vue-search-select/dist/VueSearchSelect.css'
+
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
 Vue.config.productionTip = false;
@@ -40,15 +40,16 @@ export const eventBus = new Vue();
 interceptorsSetup();
 let entryUrl = null;
 
-
-
 // check requirment of authentication for path
 router.beforeEach(async(to, from, next) => {
-    // if from path is (/) then we need to call custom css call and wait for its reponse    
+    // if from path is (/) then we need to call custom css call and wait for its reponse 
+    if (to.path == '/') {
+        document.body.classList.add("loader-enable");
+    }
     if ((from.path == '/' && to.path == '/') || from.path == '/') {
         // document.body.classList.add("loader-enable");
         await customCss().then(() => {
-            // document.body.classList.remove("loader-enable");
+            document.body.classList.remove("loader-enable");
         });
     }
     if (store.state.isLoggedIn) {

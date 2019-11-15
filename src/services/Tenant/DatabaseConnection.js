@@ -148,8 +148,6 @@ export default async(langList, defautLang) => {
                 store.commit('submitNewMissionUrl', '');
             }
 
-
-
         })
         .catch(function() {
 

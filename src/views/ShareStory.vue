@@ -5,9 +5,11 @@
         </header>
         <main>
             <b-container>
+
                 <h1>{{languageData.label.share_your_story}}</h1>
-                
-                <b-alert show variant="warning" v-if="pageLoaded && missionTitle.length == 0">{{languageData.label.not_volunteered_text}}</b-alert>
+
+                <b-alert show variant="warning" v-if="pageLoaded && missionTitle.length == 0">
+                    {{languageData.label.not_volunteered_text}}</b-alert>
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
                 <b-row class="story-form-wrap">
                     <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
@@ -15,7 +17,7 @@
                     </div>
                     <b-col xl="8" lg="7" class="left-col">
                         <div class="story-form">
-                            <b-form>
+                            <b-form autocomplete="on">
                                 <b-form-group>
                                     <label for>{{languageData.label.my_story_title}}*</label>
                                     <b-form-input id v-model.trim="story.title"
@@ -119,7 +121,7 @@
                     </b-col>
                 </b-row>
                 <div class="btn-row">
-                    <b-button class="btn-borderprimary" @click="openConfirmModal">{{languageData.label.cancel}}
+                    <b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
                     </b-button>
                     <!-- <b-button class="btn-borderprimary" v-bind:class="{disabled:previewButtonEnable}"
                         @click="previewStory(storyId)"><span>{{languageData.label.preview}}
@@ -165,6 +167,7 @@
         deleteStoryImage
     } from "../services/service";
     import VueCkeditor from 'vue-ckeditor2'
+import { setTimeout } from 'timers';
     export default {
         components: {
             ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
@@ -176,6 +179,7 @@
         },
         data() {
             return {
+                formChange: 0,
                 languageData: [],
                 isStoryDisplay: true,
                 submitted: false,
@@ -205,7 +209,7 @@
                 fileArray: [],
                 isLoaderActive: false,
                 duplicateYoutubeUrlError: false,
-                pageLoaded : false,
+                pageLoaded: false,
                 config: {
                     toolbar: [
                         ['Source', '-', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'],
@@ -222,6 +226,7 @@
                         ['Maximize', 'ShowBlocks', '-', 'About']
                     ]
                 }
+               
             }
         },
         validations: {
@@ -292,6 +297,7 @@
             submitStory() {
                 this.submitButtonAjaxCall = true;
                 updateStoryStatus(this.storyId).then(response => {
+                    this.formChange = 0;
                     this.showDismissibleAlert = true
                     if (response.error === true) {
                         this.classVariant = 'danger'
@@ -438,24 +444,25 @@
                     let videoUrl = this.story.videoUrl.split('\n').join(',');
                     formData.append('story_videos', videoUrl);
                 }
+                
                 if (this.storyId == '') {
                     submitStory(formData).then(response => {
-                        
                         if (response.error === true) {
                             this.showDismissibleAlert = true
                             this.classVariant = 'danger'
                             //set error msg
                             this.message = response.message
                         } else {
+                            this.formChange = 0;
                             this.storyId = response.data
                             if (params == "preview" && this.storyId != '') {
-                                    let routeData = this.$router.resolve({
-                                        path: "/story-preview" + '/' + this.storyId
-                                    });
-                                    window.open(routeData.href, '_blank');
-                                    this.isLoaderActive = false
-                                    this.saveButtonAjaxCall = false
-                                    return false;
+                                let routeData = this.$router.resolve({
+                                    path: "/story-preview" + '/' + this.storyId
+                                });
+                                window.open(routeData.href, '_blank');
+                                this.isLoaderActive = false
+                                this.saveButtonAjaxCall = false
+                                return false;
                             } else {
                                 this.showDismissibleAlert = true
                                 if (this.storyId != '') {
@@ -476,6 +483,7 @@
                     })
                 } else {
                     if (params == "preview" && this.storyId != '') {
+                        this.formChange = 0;
                         let routeData = this.$router.resolve({
                             path: "/story-preview" + '/' + this.storyId
                         });
@@ -495,6 +503,7 @@
                             //set error msg
                             this.message = response.message
                         } else {
+                            this.formChange = 0;
                             if (this.storyId != '') {
                                 this.previewButtonEnable = false
                                 this.submitButtonEnable = false
@@ -583,6 +592,10 @@
                         }
                         this.previewButtonEnable = false
                         this.isLoaderActive = false
+                        setTimeout(() => {
+                            this.formChange = 0;
+                        },500)
+                        
                     } else {
                         this.$router.push('/404');
                     }
@@ -590,7 +603,28 @@
             },
 
             openConfirmModal() {
-                this.$bvModal.msgBoxConfirm(this.languageData.label.cancle_story, {
+                this.$bvModal.msgBoxConfirm(this.languageData.label.cance_story, {
+                    buttonSize: 'md',
+                    okTitle: this.languageData.label.yes,
+                    cancelTitle: this.languageData.label.no,
+                    centered: true,
+                    size: 'md',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    headerClass: 'p-2 border-bottom-0',
+                    footerClass: 'p-2 border-top-0',
+                    centered: true
+                }).then(value => {
+                    if (value == true) {
+                        this.cancleShareStory()
+                    }
+                })
+            }
+            
+        },
+        beforeRouteLeave (to, from, next) {
+            if(this.formChange != 0) {
+                this.$bvModal.msgBoxConfirm(this.languageData.label.cancel_story, {
                         buttonSize: 'md',
                         okTitle: this.languageData.label.yes,
                         cancelTitle: this.languageData.label.no,
@@ -602,10 +636,14 @@
                         footerClass: 'p-2 border-top-0',
                         centered: true
                 }).then(value => {
-                    if(value == true) {
-                        this.cancleShareStory()
+                    if (value == true) {
+                        next()
+                    } else {
+                        next(false)
                     }
                 })
+            } else {
+                 next();
             }
         },
         created() {
@@ -616,7 +654,14 @@
             }
             this.defaultMissionTitle = this.languageData.label.mission_title
             this.missionListing();
-            
+        },
+        watch: {
+            story: {
+                handler: function(val, oldVal) {
+                    this.formChange = 1;
+                },
+                deep: true
+            },
         },
         updated() {}
     };

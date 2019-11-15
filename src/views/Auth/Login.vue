@@ -164,5 +164,8 @@ export default {
             }
         }
     },
+    beforeCreate() {
+        document.body.classList.remove("loader-enable");
+    }
 };
 </script>

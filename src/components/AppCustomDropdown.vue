@@ -1,7 +1,8 @@
 <template>
 	<div v-if="optionList != null && optionList.length > 0" v-bind:class="{
         'custom-dropdown' :true,
-        'select-dropdown':true
+        'select-dropdown':true,
+		'no-list-item' : noListItem
       }">
 		<span class="select-text"  @click="handleClick">{{defaultText}}</span>
 		<div class="option-list-wrap dropdown-option-wrap " data-simplebar>
@@ -24,7 +25,11 @@
 		props: {
 			optionList: Array,
 			defaultText: String,
-			translationEnable: String
+			translationEnable: String,
+			noListItem: {
+				type: Boolean,
+				default: false
+			},
 		},
 		data() {
 			return {
