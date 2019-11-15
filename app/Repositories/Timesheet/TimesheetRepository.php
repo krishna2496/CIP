@@ -514,6 +514,7 @@ class TimesheetRepository implements TimesheetInterface
         $missionQuery = $this->timesheet
         ->select(DB::raw("MONTH(date_volunteered) as month,
         sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+        $missionQuery->whereHas('mission');
         $missionQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
         ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
         $missionQuery->where('user_id', $userId);
@@ -558,6 +559,7 @@ class TimesheetRepository implements TimesheetInterface
         $timesheetQuery = $this->timesheet
         ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
         sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+        $timesheetQuery->whereHas('mission');
         $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
         ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
 
