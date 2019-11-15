@@ -127,17 +127,6 @@ class MessageRepository implements MessageInterface
     }
     
     /**
-     * Get message detail
-     *
-     * @param int $messageId
-     * @return App\Models\Message
-     */
-    public function getMessage(int $messageId): Message
-    {
-        return $this->message->findOrFail($messageId);
-    }
-
-    /**
      * Read message.
      *
      * @param int $messageId
