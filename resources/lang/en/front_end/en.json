@@ -272,13 +272,14 @@
         "new_news": "News",
         "mark_as_read": "Mark as read",
         "mark_as_un_read": "Mark as unread",
-		"cancle_story" : "Are you sure that you want to cancle this story ?",
+		"cancel_story" : "Are you sure that you want to cancel this story ?",
 		"yes": "Yes",
 		"no" : "No",
         "delete_story" : "Are you sure that you want to delete this story ?",
         "sent" : "Sent",
         "not_volunteered_text" : "You haven't volunteered to any mission so you can not create story.",
-        "all_missions" : "All missions"        
+        "all_missions" : "All missions",
+        "all": "All"
     },
 
     "placeholder": {
