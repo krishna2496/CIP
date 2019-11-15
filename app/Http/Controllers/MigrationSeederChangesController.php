@@ -40,7 +40,8 @@ class MigrationSeederChangesController extends Controller
 
     /**
      * Create a new controller instance.
-     *
+     * @codeCoverageIgnore
+     * 
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param App\Repositories\MigrationSeederChanges\MigrationSeederChangesRepository
@@ -59,6 +60,7 @@ class MigrationSeederChangesController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @codeCoverageIgnore
      *
      * @param  \Illuminate\Http\Request  $request
      * @return Illuminate\Http\JsonResponse
@@ -124,6 +126,7 @@ class MigrationSeederChangesController extends Controller
     
     /**
      * Run uploaded migration file
+     * @codeCoverageIgnore
      *
      * @return void
      */
@@ -153,6 +156,7 @@ class MigrationSeederChangesController extends Controller
 
     /**
      * Run uploaded seeder file
+     * @codeCoverageIgnore
      *
      * @return void
      */
@@ -206,6 +210,7 @@ class MigrationSeederChangesController extends Controller
 
     /**
      * Send email notification to admin
+     * @codeCoverageIgnore
      *
      * @param App\Models\Tenant $tenant
      * @param string $type
@@ -239,6 +244,7 @@ class MigrationSeederChangesController extends Controller
 
     /**
      * Create connection with tenant's database
+     * @codeCoverageIgnore
      *
      * @param int $tenantId
      * @return int
