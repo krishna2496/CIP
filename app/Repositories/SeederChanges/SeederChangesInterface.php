@@ -1,12 +1,12 @@
 <?php
-namespace App\Repositories\MigrationChanges;
+namespace App\Repositories\SeederChanges;
 
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\MigrationSeederFiles;
 
-interface MigrationChangesInterface
+interface SeederChangesInterface
 {
     /**
      * Store file details in database
