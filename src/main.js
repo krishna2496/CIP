@@ -45,6 +45,9 @@ router.beforeEach(async(to, from, next) => {
     // if from path is (/) then we need to call custom css call and wait for its reponse 
     if (to.path == '/') {
         document.body.classList.add("loader-enable");
+        setTimeout(() => {
+            document.body.classList.remove("loader-enable");
+        }, 700)
     }
     if ((from.path == '/' && to.path == '/') || from.path == '/') {
         // document.body.classList.add("loader-enable");
@@ -75,7 +78,13 @@ router.beforeEach(async(to, from, next) => {
     }
     next();
 });
-
+router.afterEach((to) => {
+    if (to.path == '/') {
+        setTimeout(() => {
+            document.body.classList.remove("loader-enable");
+        }, 500)
+    }
+})
 Vue.filter('formatDate', (value) => {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
