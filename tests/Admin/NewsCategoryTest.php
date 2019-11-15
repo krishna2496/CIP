@@ -60,7 +60,6 @@ class NewsCategoryTest extends TestCase
         ->seeStatusCode(201);
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
 
-        NewsCategory::where('news_category_id', $newsCategoryId)->delete();
 
         // Validation error for category name, it must required
         $params = [
@@ -135,6 +134,8 @@ class NewsCategoryTest extends TestCase
 
         $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
+        NewsCategory::where('news_category_id', $newsCategoryId)->delete();
+
     }
 
     /**

@@ -203,12 +203,9 @@ $factory->define(App\Models\NewsLanguage::class, function (Faker\Generator $fake
 });
 
 $factory->define(App\Models\NewsToCategory::class, function (Faker\Generator $faker) {
-    \DB::setDefaultConnection('tenant');
-    $newsCategoryId = App\Models\NewsCategory::all()->random(1)->first()->news_category_id;
-    \DB::setDefaultConnection('mysql');
     return [
         "news_id" => 1,
-        "news_category_id" => $newsCategoryId
+        "news_category_id" => 1
     ];
 });
 
