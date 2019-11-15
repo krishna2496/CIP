@@ -97,7 +97,7 @@ class LanguageTest extends TestCase
      */
     public function it_should_create_language()
     {
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -154,7 +154,7 @@ class LanguageTest extends TestCase
         $language = Language::get()->random();
 
         $params = [        
-            "name" => str_random(10),
+            "name" => $this->randomString(10),
             "code" => $language->code,
             "status" => "1"
         ];
@@ -183,8 +183,8 @@ class LanguageTest extends TestCase
     public function it_should_return_validation_error_if_code_is_invalid_for_create_language()
     {
         $params = [        
-            "name" => str_random(10),
-            "code" => str_random(10),
+            "name" => $this->randomString(10),
+            "code" => $this->randomString(10),
             "status" => "1"
         ];
 
@@ -212,7 +212,7 @@ class LanguageTest extends TestCase
     public function it_should_return_validation_error_if_status_is_invalid_for_create_language()
     {
         $params = [        
-            "name" => str_random(10),
+            "name" => $this->randomString(10),
             "code" => str_random(2),
             "status" => rand(1000, 5000)
         ];
@@ -240,7 +240,7 @@ class LanguageTest extends TestCase
      */
     public function it_should_edit_language()
     {
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -278,7 +278,7 @@ class LanguageTest extends TestCase
      */
     public function it_should_return_validation_error_for__edit_language()
     {
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -326,7 +326,7 @@ class LanguageTest extends TestCase
     public function it_should_return_validation_error_if_code_is_already_taken_for_edit_language()
     {
         $language = Language::get()->random();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -374,7 +374,7 @@ class LanguageTest extends TestCase
     public function it_should_return_validation_error_if_code_is_invalid_for_edit_language()
     {
         $language = Language::get()->random();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -392,7 +392,7 @@ class LanguageTest extends TestCase
 
         $params = [        
             "name" => $languageName,
-            "code" => str_random(10),
+            "code" => $this->randomString(10),
             "status" => "1"
         ];
 
@@ -421,7 +421,7 @@ class LanguageTest extends TestCase
      */
     public function it_should_return_validation_error_if_status_is_invalid_for_edit_language()
     {
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -468,7 +468,7 @@ class LanguageTest extends TestCase
     public function it_should_return_validation_error_if_language_id_is_invalid_for_edit_language()
     {
         $languageId = rand(10000000, 50000000);
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
 
         $params = [        
             "name" => $languageName,
@@ -499,7 +499,7 @@ class LanguageTest extends TestCase
      */
     public function it_shoud_delete_language()
     {
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -543,7 +543,7 @@ class LanguageTest extends TestCase
     public function it_should_create_tenant_language()
     {
         $tenant = factory(Tenant::class)->create();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -617,7 +617,7 @@ class LanguageTest extends TestCase
     public function it_should_return_invalid_default_data__error_on_create_tenant_language()
     {
         $tenant = factory(Tenant::class)->create();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -665,7 +665,7 @@ class LanguageTest extends TestCase
      */
     public function it_should_return_invalid_tenant_id_error_on_create_tenant_language()
     {
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -775,7 +775,7 @@ class LanguageTest extends TestCase
     public function it_should_return_tenant_languages()
     {
         $tenant = factory(Tenant::class)->create();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -850,7 +850,7 @@ class LanguageTest extends TestCase
     public function it_should_return_invalid_argument_error_on_get_tenant_languages()
     {
         $tenant = factory(Tenant::class)->create();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -897,7 +897,7 @@ class LanguageTest extends TestCase
     public function it_should_delete_tenant_language()
     {
         $tenant = factory(Tenant::class)->create();
-        $languageName = str_random(10);
+        $languageName = $this->randomString(10);
         $params = [        
             "name" => $languageName,
             "code" => str_random(2),
@@ -947,5 +947,16 @@ class LanguageTest extends TestCase
 
         TenantLanguage::where("language_id", $languageId)->delete();
         $tenant->delete();
+    }
+
+    function randomString($length = 6) {
+        $str = "";
+        $characters = array_merge(range('A','Z'), range('a','z'));
+        $max = count($characters) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $rand = mt_rand(0, $max);
+            $str .= $characters[$rand];
+        }
+        return $str;
     }
 }
