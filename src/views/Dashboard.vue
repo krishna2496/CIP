@@ -16,6 +16,7 @@
                             <AppCustomDropdown :optionList="yearList" @updateCall="updateYear"
                                 :defaultText="defaultYear" translationEnable="false" />
                             <AppCustomDropdown :optionList="monthList" @updateCall="updateMonth"
+                                :noListItem="noListItem"
                                 :defaultText="defaultMonth" translationEnable="true" class="month-dropdown" />
                         </div>
                     </div>
@@ -164,7 +165,9 @@
                 yearList: [],
                 missionTitle: [],
                 missionIdArray: [],
+                noListItem:true,
                 monthList: [
+                    ["0","all"],
                     ["01", "january"],
                     ["02", "february"],
                     ["03", "march"],
@@ -215,13 +218,14 @@
                 chartMaxValue: 0,
                 hoursMonthActive: false,
                 goalHourPart: 10,
-                defaultMissionModel: '',
+                defaultMissionModel: 0,
                 barChartCanvas: null
             };
         },
         mounted() {
             var currentYear = new Date().getFullYear();
             var yearsListing = [];
+            yearsListing.push([0, this.languageData.label.all])
             for (var index = currentYear; index > (currentYear - 5); index--) {
                 yearsListing.push([index, index]);
             }
@@ -230,8 +234,16 @@
         },
         methods: {
             updateYear(value) {
+                
                 this.defaultYear = value.selectedVal;
                 this.filterData.year = value.selectedId
+                if( value.selectedId == 0) {
+                    this.noListItem = true
+                    this.defaultMonth = this.languageData.label.all;
+                    this.filterData.month = 0
+                } else {
+                    this.noListItem = false
+                }
                 var barChartRefs = this.$refs.barChartRefs;
                 this.getDashboardData(this.filterData, 'dashboad')
             },
@@ -252,6 +264,10 @@
                 storyMissionListing().then(response => {
                     // missionTitle
                     var array = [];
+                    array.push({
+                        'text': this.languageData.label.all_missions,
+                        'value': 0
+                    })
                     if (response.error == false) {
                         let missionArray = response.data
                         if (missionArray) {
@@ -260,6 +276,7 @@
                                 // array[index][0] = data.mission_id
                                 // array[index][1] = data.title
                                 // array[index] = data.title
+                               
                                 array.push({
                                     'text': data.title,
                                     'value': data.mission_id
@@ -446,14 +463,18 @@
             this.defaultMissionTitle = this.languageData.label.mission_title
             let currentYear = new Date().getFullYear()
             let currentMonth = moment().format('MM')
-            this.defaultYear = currentYear.toString();
-            this.monthList.filter((data, index) => {
-                if (data[0] == currentMonth) {
-                    this.defaultMonth = data[1]
-                }
-            })
-            this.filterData.year = currentYear
-            this.filterData.month = currentMonth
+            // this.defaultYear = currentYear.toString();
+            this.defaultYear = this.languageData.label.all;
+            // this.monthList.filter((data, index) => {
+            //     if (data[0] == currentMonth) {
+            //         this.defaultMonth = data[1]
+            //     }
+            // })
+            this.defaultMonth = this.languageData.label.all;
+            // this.filterData.year = currentYear
+            // this.filterData.month = currentMonth
+            this.filterData.year = 0
+            this.filterData.month = 0
             this.missionListing()
             this.getDashboardData(this.filterData, 'dashboad')
             window.addEventListener('resize', () => {

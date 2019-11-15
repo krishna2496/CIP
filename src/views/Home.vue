@@ -364,7 +364,7 @@
             }
         },
         created() {
-           this.languageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
 
             if (this.$route.params.searchParamsType) {
