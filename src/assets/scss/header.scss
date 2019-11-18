@@ -488,7 +488,7 @@ header {
                 border: 1px solid $primary-border-color;
                 display: none;
                 top: -6px;
-                width: 165px;
+                width: 230px;
                 padding: 5px 0;
                 border-radius: 3px;
                 @extend .navdropdown_shadow;
@@ -764,12 +764,15 @@ header {
         .notification-setting {
             flex-direction: column;
             display: none;
-            height: 400px;
+            height: 100%;
             margin-top: -48px;
             position: relative;
             z-index: 3;
             background: $white;
-            @media(max-height: 400px) {
+            @include xxxs-max {
+                height: 450px;
+            }
+            @media(max-height: 550px) {
                 height: calc(100vh - 65px);
             }
             .setting-header {
