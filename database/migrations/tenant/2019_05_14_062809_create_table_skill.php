@@ -18,7 +18,7 @@ class CreateTableSkill extends Migration
             $table->bigIncrements('skill_id')->unsigned();
             $table->string('skill_name', 64);
             $table->text('translations');
-            $table->unsignedBigInteger('parent_skill');
+            $table->bigInteger('parent_skill');
             $table->timestamps();
             $table->softDeletes();
         });
