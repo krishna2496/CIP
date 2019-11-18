@@ -178,7 +178,7 @@
                                             {{ mission.end_date | formatDate }}</span>
                                     </div>
                                 </div>
-                                <div class="detail-column skill-col">
+                                <div class="detail-column skill-col" v-if="mission.skill && isSkillDisplay">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/skill-ic.svg'" alt="user">
                                     </i>
@@ -334,7 +334,8 @@
                 isQuickAccessSet: true,
                 isSubmitNewMissionSet: true,
                 isThemeSet: true,
-                submitNewMissionUrl: ''
+                submitNewMissionUrl: '',
+                isSkillDisplay: true
             };
         },
         computed: {
@@ -562,6 +563,7 @@
             this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
             this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
             this.submitNewMissionUrl = store.state.submitNewMissionUrl
+            this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         }
     };
 
