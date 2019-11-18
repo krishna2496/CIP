@@ -96,7 +96,7 @@ return [
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
         'MESSAGE_FOOTER_PAGE_FOUND' => 'DE: Footer page found successfully',
-        'MESSAGE_TENANT_OPTION_CREATED' => 'Image uploaded successfully',
+        'MESSAGE_IMAGE_UPLOADED_SUCCESSFULLY' => 'DE: Image uploaded successfully',
         'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'DE: Dashboard statistics listed successfully',
         'MESSAGE_NEWS_CATEGORY_LISTING' => 'DE: News category listed successfully',
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'DE: News category deleted successfully',
