@@ -21,13 +21,13 @@ class AvailabilityTableSeeder extends Seeder
             ],
             [
                 "type" => "Weekend only",
-                "translations" => 'a:1:{i:0;a:2:{s:4:"lang";s:2:"en";s:5:"title";s:12:"Weekend only";}}',
+                "translations" => 'a:2:{i:0;a:2:{s:4:"lang";s:2:"en";s:5:"title";s:12:"Weekend only";}i:1;a:2:{s:4:"lang";s:2:"fr";s:5:"title";s:15:"Fr Weekend only";}}',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [
                 "type" => "Work Week only",
-                "translations" => 'a:1:{i:0;a:2:{s:4:"lang";s:2:"en";s:5:"title";s:14:"Work Week only";}}',
+                "translations" => 'a:2:{i:0;a:2:{s:4:"lang";s:2:"en";s:5:"title";s:14:"Work Week only";}i:1;a:2:{s:4:"lang";s:2:"fr";s:5:"title";s:17:"Fr Work Week only";}}',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
