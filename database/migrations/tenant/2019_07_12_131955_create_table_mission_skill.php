@@ -17,7 +17,8 @@ class CreateTableMissionSkill extends Migration
             $table->bigIncrements('mission_skill_id');
             $table->unsignedBigInteger('skill_id');
             $table->unsignedBigInteger('mission_id');
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
 
             $table->foreign('skill_id')->references('skill_id')->on('skill')->onDelete('CASCADE')->onUpdate('CASCADE');
