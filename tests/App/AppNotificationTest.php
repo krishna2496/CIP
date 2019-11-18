@@ -184,6 +184,9 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray
         ];
 
+        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+
         // Save user notification settings
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -554,7 +557,6 @@ class AppNotificationTest extends TestCase
             ]
         ];
 
-
         DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200);
@@ -578,8 +580,9 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->get('app/notifications', ['token' => $token])
         ->seeStatusCode(200);
-
-        
+                
+        // Get notification of to user
+        $token = Helpers::getJwtToken($toUser->user_id , env('DEFAULT_TENANT'));        
         DB::setDefaultConnection('mysql');
         $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
         $this->seeStatusCode(200);
@@ -589,6 +592,8 @@ class AppNotificationTest extends TestCase
         $mission->delete();
         $notification->delete();
         $newsCategory->delete();
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
     }
 
     /**
