@@ -184,7 +184,13 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray
         ];
 
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        // Get setting id from master table
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+
+        DB::setDefaultConnection('tenant');
+        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
         App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
 
         // Save user notification settings
@@ -407,6 +413,7 @@ class AppNotificationTest extends TestCase
         $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
+        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
         $newsCategory = factory(\App\Models\NewsCategory::class)->make();
         $newsCategory->setConnection($connection);
@@ -593,7 +600,7 @@ class AppNotificationTest extends TestCase
         $notification->delete();
         $newsCategory->delete();
         App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
+        App\Models\TenantSetting::where(['setting_id' => $settings[0]->tenant_setting_id])->delete();
     }
 
     /**
