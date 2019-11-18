@@ -65,11 +65,11 @@ class MissionApplicationQuery implements QueryableInterface
             if (array_key_exists($filterKey, self::IN_COLUMN_MAPPINGS) && !empty($values)) {
                 $inClauses[] = [self::IN_COLUMN_MAPPINGS[$filterKey], $values];
             } elseif (array_key_exists($filterKey, self::RANGE_COLUMN_MAPPINGS)) {
-                if (!is_null($values['from'])) {
+                if (isset($values['from']) && !is_null($values['from'])) {
                     $whereClauses[] = [self::RANGE_COLUMN_MAPPINGS[$filterKey], '>=', $values['from']];
                 }
 
-                if (!is_null($values['to'])) {
+                if (isset($values['to']) && !is_null($values['to'])) {
                     $whereClauses[] = [self::RANGE_COLUMN_MAPPINGS[$filterKey], '<=', $values['to']];
                 }
             }
