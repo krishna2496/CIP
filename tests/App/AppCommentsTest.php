@@ -244,6 +244,11 @@ class AppCommentsTest extends TestCase
      */
     public function it_should_add_auto_approve_comment()
     {
+        // Get setting id from master table
+        DB::setDefaultConnection('mysql');
+        $missionCommentAutoApproved = config('constants.tenant_settings.MISSION_COMMENT_AUTO_APPROVED');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$missionCommentAutoApproved'"); 
+        
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
@@ -252,10 +257,10 @@ class AppCommentsTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-
+        
         $setting = factory(\App\Models\TenantSetting::class)->make();
         $setting->setConnection($connection);
-        $setting->setting_id = 24;
+        $setting->setting_id = $settings[0]->tenant_setting_id;
         $setting->save();
 
         $activatedSetting = factory(\App\Models\TenantActivatedSetting::class)->make();
@@ -277,6 +282,8 @@ class AppCommentsTest extends TestCase
         ]);
         $user->delete();
         $mission->delete();
+        $activatedSetting->delete();
+        $setting->delete();
     }
 
     /**
