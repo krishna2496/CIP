@@ -11,7 +11,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_validate_user_before_invite()
+    public function it_should_INVITE_validate_user_before_invite()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -50,7 +50,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_validate_mission_before_invite()
+    public function it_should_INVITE_validate_mission_before_invite()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -84,7 +84,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_user_already_invited_for_mission()
+    public function it_should_INVITE_return_error_if_user_already_invited_for_mission()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -132,7 +132,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_invite_user_to_a_mission_and_send_notification()
+    public function it_should_INVITE_invite_user_to_a_mission_and_send_notification()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -157,9 +157,12 @@ class AppInviteColleagueTest extends TestCase
         $missionLanguage->mission_id = $mission->mission_id;
         $missionLanguage->save();
 
-        DB::setDefaultConnection('tenant');
-        
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+
+        DB::setDefaultConnection('tenant');        
+        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
         App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
 
         DB::setDefaultConnection('mysql');
@@ -184,7 +187,7 @@ class AppInviteColleagueTest extends TestCase
         $toUser->delete();
         $mission->delete();
         App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
+        App\Models\TenantSetting::where(['setting_id' => $settings[0]->tenant_setting_id])->delete();
     }
 
     /**
@@ -194,7 +197,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_invite_user_to_a_mission()
+    public function it_should_INVITE_invite_user_to_a_mission()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -209,11 +212,6 @@ class AppInviteColleagueTest extends TestCase
         $toUser->setConnection($connection);
         $toUser->save();
 
-        DB::setDefaultConnection('tenant');
-        $settings = App\Models\TenantSetting::where(['setting_id' =>27])->get();
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
-
         DB::setDefaultConnection('mysql');
 
         $params = [
@@ -235,8 +233,6 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
-        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
     }
 
     /**
@@ -246,7 +242,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_validate_user_before_invite_for_story()
+    public function it_should_INVITE_validate_user_before_invite_for_story()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -303,7 +299,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_validate_story_id_before_invite_for_story()
+    public function it_should_INVITE_validate_story_id_before_invite_for_story()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -337,7 +333,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_user_already_invited_for_story()
+    public function it_should_INVITE_return_error_if_user_already_invited_for_story()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -411,7 +407,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_invite_user_to_a_story_and_send_notification()
+    public function it_should_INVITE_invite_user_to_a_story_and_send_notification()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -440,7 +436,12 @@ class AppInviteColleagueTest extends TestCase
         DB::setDefaultConnection('tenant');
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+
+        DB::setDefaultConnection('tenant');
+        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
         App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
         DB::setDefaultConnection('mysql');
     
@@ -478,7 +479,7 @@ class AppInviteColleagueTest extends TestCase
         $toUser->delete();
         $mission->delete();
         App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
+        App\Models\TenantSetting::where(['setting_id' => $settings[0]->tenant_setting_id])->delete();
     }
 
     /**
@@ -488,7 +489,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_invite_user_to_a_story()
+    public function it_should_INVITE_invite_user_to_a_story()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -502,14 +503,10 @@ class AppInviteColleagueTest extends TestCase
         $toUser = factory(\App\User::class)->make();
         $toUser->setConnection($connection);
         $toUser->save();
-
-        DB::setDefaultConnection('tenant');
-        $settings = App\Models\TenantSetting::where(['setting_id' =>27])->get();
         
-        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
-
+        DB::setDefaultConnection('tenant');
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        
         DB::setDefaultConnection('mysql');
     
         $params = [
@@ -545,7 +542,5 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
-        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
-        App\Models\TenantSetting::where(['setting_id' => 27])->delete();  
     }
 }

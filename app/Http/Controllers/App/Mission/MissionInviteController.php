@@ -220,9 +220,6 @@ class MissionInviteController extends Controller
             )->option_value;
             dispatch(new AppMailerJob($params));
         }
-
-        
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }
