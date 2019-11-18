@@ -322,7 +322,9 @@ class MissionRepository implements MissionInterface
             'missionLanguage',
             'timeMission',
             'goalMission'
-        )->findOrFail($id);
+        )->with(['missionSkill' => function ($query) {
+            $query->with('mission', 'skill');
+        }])->findOrFail($id);
     }
     
     /**
