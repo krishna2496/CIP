@@ -184,6 +184,15 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray
         ];
 
+        // Get setting id from master table
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+
+        DB::setDefaultConnection('tenant');
+        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+
         // Save user notification settings
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -404,6 +413,7 @@ class AppNotificationTest extends TestCase
         $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
+        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
         $newsCategory = factory(\App\Models\NewsCategory::class)->make();
         $newsCategory->setConnection($connection);
@@ -554,7 +564,6 @@ class AppNotificationTest extends TestCase
             ]
         ];
 
-
         DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200);
@@ -578,8 +587,9 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->get('app/notifications', ['token' => $token])
         ->seeStatusCode(200);
-
-        
+                
+        // Get notification of to user
+        $token = Helpers::getJwtToken($toUser->user_id , env('DEFAULT_TENANT'));        
         DB::setDefaultConnection('mysql');
         $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
         $this->seeStatusCode(200);
@@ -589,6 +599,8 @@ class AppNotificationTest extends TestCase
         $mission->delete();
         $notification->delete();
         $newsCategory->delete();
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => $settings[0]->tenant_setting_id])->delete();
     }
 
     /**
