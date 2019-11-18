@@ -11,7 +11,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_validate_user_before_invite()
+    public function it_should_validate_user_before_invite()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -50,7 +50,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_validate_mission_before_invite()
+    public function it_should_validate_mission_before_invite()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -84,7 +84,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_return_error_if_user_already_invited_for_mission()
+    public function it_should_return_error_if_user_already_invited_for_mission()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -132,7 +132,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_invite_user_to_a_mission_and_send_notification()
+    public function it_should_invite_user_to_a_mission_and_send_notification()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -197,7 +197,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_invite_user_to_a_mission()
+    public function it_should_invite_user_to_a_mission()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -242,7 +242,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_validate_user_before_invite_for_story()
+    public function it_should_validate_user_before_invite_for_story()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -299,7 +299,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_validate_story_id_before_invite_for_story()
+    public function it_should_validate_story_id_before_invite_for_story()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -333,7 +333,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_return_error_if_user_already_invited_for_story()
+    public function it_should_return_error_if_user_already_invited_for_story()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -407,7 +407,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_invite_user_to_a_story_and_send_notification()
+    public function it_should_invite_user_to_a_story_and_send_notification()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -489,7 +489,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_INVITE_invite_user_to_a_story()
+    public function it_should_invite_user_to_a_story()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -506,7 +506,7 @@ class AppInviteColleagueTest extends TestCase
         
         DB::setDefaultConnection('tenant');
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
-        
+
         DB::setDefaultConnection('mysql');
     
         $params = [
