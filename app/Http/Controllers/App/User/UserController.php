@@ -325,8 +325,10 @@ class UserController extends Controller
         }
 
         // Update user skills
-        $this->userRepository->deleteSkills($id);
-        $this->userRepository->linkSkill($request->toArray(), $id);
+        if (!empty($request->skills)) {
+            $this->userRepository->deleteSkills($id);
+            $this->userRepository->linkSkill($request->toArray(), $id);
+        }
 
         // Set response data
         $apiData = ['user_id' => $user->user_id];
