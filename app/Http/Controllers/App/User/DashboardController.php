@@ -107,11 +107,11 @@ class DashboardController extends Controller
         $organizationCount = $this->missionApplicationRepository->organizationCount($userId, $year, $month);
         $goalHours = $this->userRepository->getUserHoursGoal($userId);
         $tenantGoalHours = $this->tenantOptionRepository->getOptionValueFromOptionName('default_user_hours_goal');
+        $tenantGoalHours = $tenantGoalHours->option_value ?? config('constants.DEFAULT_USER_HOURS_GOAL');
         $allUsersTimesheetData = $this->timesheetRepository->getUsersTotalHours($year, $month);
         $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
         // For dashboard chart : Hours per month
         $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $currentYear, $missionId);
-
         // For total hours
         foreach ($timesheetData as $timesheet) {
             $totalHours += $timesheet['total_minutes'];

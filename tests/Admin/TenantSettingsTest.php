@@ -28,6 +28,12 @@ class TenantSettingsTest extends TestCase
      */
     public function tenant_settings_it_should_update_tenant_settings()
     {
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        DB::setDefaultConnection('tenant');        
+        $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
+        
         DB::setDefaultConnection('tenant');
         $settingId = \App\Models\TenantSetting::get()->random()->tenant_setting_id;
         DB::setDefaultConnection('mysql');
@@ -42,6 +48,7 @@ class TenantSettingsTest extends TestCase
             'message',
             'status'
         ]);
+        $tenantSetting->delete();
     }
 
     /**
@@ -53,6 +60,12 @@ class TenantSettingsTest extends TestCase
      */
     public function tenant_settings_it_should_return_error_if_user_enter_wrong_value()
     {
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        DB::setDefaultConnection('tenant');        
+        $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
+
         DB::setDefaultConnection('tenant');
         $settingId = \App\Models\TenantSetting::get()->random()->tenant_setting_id;
         DB::setDefaultConnection('mysql');
@@ -73,6 +86,7 @@ class TenantSettingsTest extends TestCase
                 ]
             ]
         ]);
+        $tenantSetting->delete();
     }
 
     /**
@@ -112,6 +126,12 @@ class TenantSettingsTest extends TestCase
      */
     public function tenant_settings_it_should_return_error_if_user_enter_blank_value()
     {
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        DB::setDefaultConnection('tenant');        
+        $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
+
         DB::setDefaultConnection('tenant');
         $settingId = \App\Models\TenantSetting::get()->random()->tenant_setting_id;
         DB::setDefaultConnection('mysql');
@@ -132,6 +152,7 @@ class TenantSettingsTest extends TestCase
                 ]
             ]
         ]);
+        $tenantSetting->delete();
     }
 
     /**
