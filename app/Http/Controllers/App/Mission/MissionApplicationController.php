@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\Helpers;
-use DB;
 
 class MissionApplicationController extends Controller
 {
@@ -137,18 +136,16 @@ class MissionApplicationController extends Controller
         // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
         // THIS IS REALLY DIRTY CODE, but we have no choice for the moment for getting the tenant_id.
         // A service who will implement that will be truly appreciated:
+        $domain = $this->helpers->getSubDomainFromRequest($request);
         $this->helpers->switchDatabaseConnection('mysql', $request);
         $db = app()->make('db');
-        $apiUser = $db->table('api_user')
-            ->where('api_key', base64_encode($request->header('php-auth-user')))
-            ->where('status', '1')
-            ->whereNull('deleted_at')
-            ->first();
+        $tenant = $db->table('tenant')->select('tenant_id')
+                     ->where('name', $domain)->whereNull('deleted_at')->first();
         $this->helpers->switchDatabaseConnection('tenant', $request);
         //END DIRTY CODE
 
         $missionForOptimy = [
-            'tenant_id' => $apiUser->tenant_id,
+            'tenant_id' => $tenant->tenant_id,
             'mission_application_id' => $missionApplication->mission_application_id,
             'user_id' => $missionApplication->user_id,
             'mission_id' => $missionApplication->mission_id,
