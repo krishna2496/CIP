@@ -220,27 +220,31 @@ class MissionRepository implements MissionInterface
         $mission->update($request->toArray());
 
         // update goal_mission details
-        if ($request->mission_type === config('constants.mission_type.GOAL')) {
+        if ($mission->mission_type === config('constants.mission_type.GOAL')) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
             $mission->goalMission()->update($goalMissionArray);
         }
         // update into time_mission details
-        if ($request->mission_type === config('constants.mission_type.TIME')) {
+        if ($mission->mission_type === config('constants.mission_type.TIME')) {
             $missionDetail = $mission->timeMission()->first();
             if (!is_null($missionDetail)) {
-                $missionDetail->application_deadline = (isset($request->application_deadline))
-                ? $request->application_deadline : null;
-                $missionDetail->application_start_date = (isset($request->application_start_date))
-                ? $request->application_start_date : null;
-                $missionDetail->application_end_date = (isset($request->application_end_date))
-                ? $request->application_end_date : null;
-                $missionDetail->application_start_time = (isset($request->application_start_time))
-                ? $request->application_start_time : null;
-                $missionDetail->application_end_time = (isset($request->application_end_time))
-                ? $request->application_end_time : null;
-
+                if ((isset($request->application_deadline))) {
+                    $missionDetail->application_deadline = $request->application_deadline;
+                }
+                if ((isset($request->application_start_date))) {
+                    $missionDetail->application_start_date = $request->application_start_date;
+                }
+                if ((isset($request->application_end_date))) {
+                    $missionDetail->application_end_date = $request->application_end_date;
+                }
+                if ((isset($request->application_start_time))) {
+                    $missionDetail->application_start_time = $request->application_start_time;
+                }
+                if ((isset($request->application_end_time))) {
+                    $missionDetail->application_end_time = $request->application_end_time;
+                }
                 $missionDetail->save();
             }
         }
