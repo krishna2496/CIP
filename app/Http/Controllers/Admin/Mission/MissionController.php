@@ -227,6 +227,10 @@ class MissionController extends Controller
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
+                "media_images.*.media_path" => "required_with:media_images|valid_media_path",
+                "media_videos.*.media_name" => "sometimes|required",
+                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
+                "documents.*.document_path" => "required_with:documents|valid_document_path",
             ]
         );
         
