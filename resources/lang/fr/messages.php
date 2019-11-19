@@ -45,7 +45,7 @@ return [
         'FAILED_TO_CREATE_FOLDER_ON_S3' => 'Erreur lors de la création du dossier sur le compartiment S3',
         'ERROR_API_USER_NOT_FOUND' => 'Utilisateur API introuvable',
         'ERROR_OCCURRED' => 'Une erreur est survenue',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Fichier Boostrap SCSS introuvable lors de la compilation des fichiers SCSS',
+        'ERROR_BOOTSTRAP_SCSS_NOT_FOUND' => 'Fichier Bootstrap SCSS introuvable lors de la compilation des fichiers SCSS',
         'ERROR_INVALID_JSON' => 'Format Json invalide',
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Erreur lors du stockage de CSS compilé au niveau local',
         'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Erreur lors du téléchargement du fichier CSS compilé vers S3',

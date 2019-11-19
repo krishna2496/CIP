@@ -47,7 +47,7 @@ return [
         'FAILED_TO_CREATE_FOLDER_ON_S3' => 'Error while creating folder on S3 bucket',
         'ERROR_API_USER_NOT_FOUND' => 'API user not found',
         'ERROR_OCCURRED' => 'An error has occured',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
+        'ERROR_BOOTSTRAP_SCSS_NOT_FOUND' => 'Bootstrap SCSS file not found while compiling SCSS files',
         'ERROR_INVALID_JSON' => 'Format Json invalid',
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Error while storing compiled CSS to local',
         'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Error while uploading compiled CSS to S3',
