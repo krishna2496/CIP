@@ -18,7 +18,7 @@ class MissionApplicationQuery implements QueryableInterface
         'missionName' => 'ml.title',
         'country' => 'c.name',
         'city' => 'ci.name',
-        'missionType' => 'm.mission_type',
+        'missionTypes' => 'm.mission_type',
         'applicationDate' => 'ma.applied_at',
     ];
 
@@ -38,6 +38,7 @@ class MissionApplicationQuery implements QueryableInterface
         'applicantSkills' => 'us.skill_id',
         'missionThemes' => 'm.theme_id',
         'applicationIds' => 'ma.mission_application_id',
+        'missionTypes' => 'm.mission_type',
 //        'cities' => 'ci.name',
     ];
 
