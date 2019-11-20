@@ -55,7 +55,8 @@ class CreateFolderInS3BucketJob extends Job
         Storage::disk('s3')->makeDirectory($this->tenant->name);
 
         // Copy default_theme folder which is already present on S3
-        $files = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'));
+        $files = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME').
+        '/'.env('AWS_S3_ASSETS_FOLDER_NAME'));
         // Fetched files copy to created s3 folder
         foreach ($files as $key => $file) {
             // Remove default_theme path from file URL

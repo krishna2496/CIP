@@ -17,7 +17,8 @@ class CreateTableCity extends Migration
             $table->bigIncrements('city_id')->unsinged();
             $table->string('name',255);
             $table->unsignedBigInteger('country_id');
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
 
             // Relation defined between  cities(country_id) with countries(id)
