@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
 {
+    const FILTER_APPLICATION_IDS    = 'applicationIds';
+    const FILTER_APPLICANT_SKILLS   = 'applicationSkills';
+    const FILTER_MISSION_SKILLS     = 'missionSkills';
+
     const ALLOWED_SORTABLE_FIELDS = [
         'applicationId' => 'ma.mission_application_id',
         'applicantFirstName' => 'u.first_name',
@@ -87,14 +91,18 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.missionSkill',
                 'mission.country',
             ])
+            ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
+                Log::error('test ', $filters);
+                $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
+            })
             ->whereHas('user.skills', function($query) use ($filters) {
-                $query->when(isset($filters['applicantSkills']), function($query) use ($filters) {
-                    $query->whereIn('user_skill_id', $filters['applicantSkills']);
+                $query->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
+                    $query->whereIn('user_skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
                 });
             })
             ->whereHas('mission.missionSkill', function($query) use ($filters) {
-                $query->when(isset($filters['missionSkills']), function($query) use ($filters) {
-                    $query->whereIn('mission_skill_id', $filters['missionSkills']);
+                $query->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
+                    $query->whereIn('mission_skill_id', $filters[self::FILTER_MISSION_SKILLS]);
                 });
             })
             ->when($limit, function ($query) use ($limit) {
