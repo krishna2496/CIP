@@ -146,7 +146,7 @@ class MissionMediaRepository implements MissionMediaInterface
         foreach ($mediaVideos as $value) {
             $missionMedia = array('mission_id' => $id,
                                   'media_name' => $value['media_name'],
-                                  'media_type' => '',
+                                  'media_type' => 'mp4',
                                   'media_path' => $value['media_path']);
 
             $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,

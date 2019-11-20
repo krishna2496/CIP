@@ -71,7 +71,7 @@ class TenantActivatedSettingController extends Controller
         if ($tenantSettings->count() &&  $getTenantSettings->count()) {
             foreach ($tenantSettings as $settingKey => $tenantSetting) {
                 $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id === $tenantSetting->settings->setting_id;
+                    return $value->tenant_setting_id === $tenantSetting->settings->tenant_setting_id;
                 });
                 $tenantSettingData[$settingKey]['key'] = $getTenantSettings[$index]->key;
                 $tenantSettingData[$settingKey]['tenant_setting_id'] = $getTenantSettings[$index]
