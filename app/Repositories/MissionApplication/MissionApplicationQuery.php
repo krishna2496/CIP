@@ -92,6 +92,11 @@ class MissionApplicationQuery implements QueryableInterface
                     $query->whereIn('user_skill_id', $filters['applicantSkills']);
                 });
             })
+            ->whereHas('mission.missionSkill', function($query) use ($filters) {
+                $query->when(isset($filters['missionSkills']), function($query) use ($filters) {
+                    $query->whereIn('mission_skill_id', $filters['missionSkills']);
+                });
+            })
             ->when($limit, function ($query) use ($limit) {
                 $query->offset($limit['offset']);
                 $query->limit($limit['limit']);
