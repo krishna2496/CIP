@@ -16,7 +16,8 @@ class CreateNotificationTypeTable extends Migration
         Schema::create('notification_type', function (Blueprint $table) {
             $table->bigIncrements('notification_type_id');
             $table->string('notification_type', 255);    
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
         });
     }
