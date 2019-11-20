@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 class MissionApplicationQuery implements QueryableInterface
 {
     const FILTER_APPLICATION_IDS    = 'applicationIds';
+    const FILTER_APPLICATION_DATE   = 'applicationDate';
     const FILTER_APPLICANT_SKILLS   = 'applicationSkills';
     const FILTER_MISSION_SKILLS     = 'missionSkills';
     const FILTER_MISSION_THEMES     = 'missionThemes';
@@ -95,6 +96,12 @@ class MissionApplicationQuery implements QueryableInterface
             ])
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
                 $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
+            })
+            ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function($query) use ($filters) {
+                $query->where('applied_at', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
+            })
+            ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function($query) use ($filters) {
+                $query->where('applied_at', '<=', $filters[self::FILTER_APPLICATION_DATE]['to']);
             })
             ->whereHas('user.skills', function($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
