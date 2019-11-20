@@ -2464,7 +2464,7 @@
 		  }
 	},
 	"/app/accept-cookie-agreement": {
-		"patch": {
+		"post": {
 			"operationId": "GET_team4-cip-api-accept-cookie-agreement",
 			"summary": "App - Accept cookie agreement (Milestone - 4)",
 			"description": "Store agreement date to db when user accepts cookie agreement policy after logged in",
@@ -3963,7 +3963,7 @@
         }
       }
     },
-	"/timesheet/{userId}?status={status}": {
+	"/timesheet/{userId}?status={status}&type={type}": {
       "get": {
         "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",
         "summary": "Admin - Fetch user's timesheet data (Milestone - 3)",
@@ -3994,6 +3994,14 @@
             "name": "status",
             "in": "path",
 			"description":"Status must have an integer value: 1 => PENDING, 2 => APPROVED, 3 => DECLINED, 4 => AUTOMATICALLY_APPROVED, 5 => SUBMIT_FOR_APPROVAL",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "type",
+            "in": "path",
+			"description":"Type should be either time or goal",
             "required": false,
             "type": "string",
             "default": ""
@@ -6047,7 +6055,7 @@
 	"/message/read/{messageId}": {
 		"post": {
 			"operationId": "POST_team4-cip-api-read-unread-admin-message",
-			"summary": "Admin - Read/unread message from admin (Milestone - 4)",
+			"summary": "Admin - Read message from admin (Milestone - 4)",
 			"tags":[  
 				   "Messages"
 				],
@@ -6206,7 +6214,7 @@
 	"/app/message/read/{messageId}": {
 		"post": {
 			"operationId": "POST_team4-cip-api-read-unread-user-message",
-			"summary": "App - Read/unread message (Milestone - 4)",
+			"summary": "App - Read message (Milestone - 4)",
 			"tags":[  
 				   "Messages"
 				],
@@ -6516,7 +6524,24 @@
                     "organisation_name": {
                       "type": "string",
 					  "description": "Name of organisation"
-                    }
+                    },
+					"organisation_detail": {
+					  "type": "array",
+					  "description": "Organisation detail.",
+					  "items": {
+						"type": "object",
+						"properties": {
+						  "lang": {
+							"type": "string",
+							"description": "Language code e.g. en, fr, de etc."
+						  },
+						  "detail": {
+							"type": "string",
+							"description": "Organisation detail"
+						  },
+						}
+					  }
+					}
                   }
                 },
                 "location": {
