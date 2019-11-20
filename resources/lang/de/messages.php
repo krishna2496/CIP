@@ -198,12 +198,11 @@ return [
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'DE: API key and Secret key are required',
-        'ERROR_EMAIL_NOT_EXIST' => 'DE: Email address does not exist in the system',
+        'ERROR_EMAIL_NOT_EXIST' => 'DE: If your email exists in the system, you will receive an email instruction on how to reset your password',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'DE: Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'DE: Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'DE: Something went wrong while sending reset password link',
         'ERROR_INVALID_DETAIL' => 'DE: Invalid reset password token or email address',
-        'ERROR_INVALID_PASSWORD' => 'DE: Invalid password',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'DE: Tenant domain does not found',
         'ERROR_TOKEN_EXPIRED' => 'DE: Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'DE: An error while decoding token',

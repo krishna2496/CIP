@@ -230,12 +230,11 @@ return [
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'Clé API et clé secrète requises',
-        'ERROR_EMAIL_NOT_EXIST' => 'L\'adresse email n\'existe pas dans le système',
+        'ERROR_EMAIL_NOT_EXIST' => 'Si votre email existe dans le système, vous recevrez un email expliquant comment réinitialiser votre mot de passe',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Le lien de réinitialisation du mot de passe a expiré ou n\'est pas valide',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Données d\'entrée non valides',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Une erreur s\'est produite lors de l\'envoi du lien de réinitialisation du mot de passe.',
         'ERROR_INVALID_DETAIL' => 'Mot de passe de réinitialisation ou adresse électronique non valide',
-        'ERROR_INVALID_PASSWORD' => 'Mot de passe incorrect',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Domaine locataire non trouvé',
         'ERROR_TOKEN_EXPIRED' => 'Le jeton fourni a expiré',
         'ERROR_IN_TOKEN_DECODE' => 'Une erreur lors du décodage du jeton',
