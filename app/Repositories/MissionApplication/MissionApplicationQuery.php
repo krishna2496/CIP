@@ -92,7 +92,6 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.country',
             ])
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
-                Log::error('test ', $filters);
                 $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
             })
             ->whereHas('user.skills', function($query) use ($filters) {
