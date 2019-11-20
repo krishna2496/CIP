@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'info@optimy.com'),
+        'name' => env('MAIL_FROM_NAME', 'Optimy'),
     ],
 
     /*
@@ -137,6 +137,6 @@ return [
       'allow_self_signed' => true,
       'verify_peer' => false,
       'verify_peer_name' => false,
-   ],
-],
+      ],
+    ],
 ];
