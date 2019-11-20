@@ -132,7 +132,6 @@ class SkillController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
-
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
