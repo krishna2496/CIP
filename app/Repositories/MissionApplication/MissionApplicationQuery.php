@@ -15,6 +15,7 @@ class MissionApplicationQuery implements QueryableInterface
     const FILTER_APPLICATION_IDS    = 'applicationIds';
     const FILTER_APPLICANT_SKILLS   = 'applicationSkills';
     const FILTER_MISSION_SKILLS     = 'missionSkills';
+    const FILTER_MISSION_THEMES     = 'missionThemes';
     const FILTER_MISSION_TYPES      = 'missionTypes';
 
     const ALLOWED_SORTABLE_FIELDS = [
@@ -101,6 +102,9 @@ class MissionApplicationQuery implements QueryableInterface
                 });
             })
             ->whereHas('mission', function($query) use ($filters) {
+                $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
+                    $query->whereIn('theme_id', $filters[self::FILTER_MISSION_THEMES]);
+                });
                 $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
                     $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
                 });
