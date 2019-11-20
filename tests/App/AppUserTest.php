@@ -18,11 +18,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $newUser = factory(\App\User::class)->make();
-        $newUser->setConnection($connection);
-        $newUser->save();
-
-        $token = Helpers::getJwtToken($newUser->user_id, env('DEFAULT_TENANT'));
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -30,7 +26,6 @@ class AppUserTest extends TestCase
             "message"
         ]);
         $user->delete();
-        $newUser->delete();
     }
 
     /**
