@@ -3,6 +3,7 @@
 namespace App\Repositories\MissionApplication;
 
 use App\Models\DataObjects\VolunteerApplication;
+use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -75,6 +76,25 @@ class MissionApplicationQuery implements QueryableInterface
                 }
             }
         }
+
+        $query = MissionApplication::query();
+        $applications = $query
+            ->with([
+                'user:user_id,first_name,last_name,avatar,email',
+                'user.skills',
+                'mission',
+                'mission.missionLanguage',
+                'mission.missionSkill',
+                'mission.country',
+            ])
+            ->when($limit, function ($query) use ($limit) {
+                $query->offset($limit['offset']);
+                $query->limit($limit['limit']);
+            })
+            ->get();
+
+        $total = $applications->count() > 0 ? $applications->first()->total : 0;
+        return new LengthAwarePaginator($applications, $total, $limit['limit'], $limit['offset']);
 
         $applications = DB::table('mission_application AS ma')
             ->select([

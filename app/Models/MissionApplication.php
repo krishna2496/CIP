@@ -45,8 +45,8 @@ class MissionApplication extends Model
      * @var array
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
-    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar'];
-  
+    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar', 'mission'];
+
     /**
      * Find listing of a resource.
      *
@@ -127,6 +127,22 @@ class MissionApplication extends Model
         ->orderBy('mission_application.mission_application_id', 'desc')
         ->paginate($request->perPage);
         return $missionVolunteers;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function mission()
+    {
+        return $this->belongsTo('App\Models\Mission', 'mission_application_id', 'mission_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'user_id');
     }
 
     /**
