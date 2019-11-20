@@ -152,6 +152,7 @@ trait StoryTransformable
             $storyData['user_id'] = $story->user_id;
             $storyData['first_name'] = $story->user->first_name;
             $storyData['last_name'] = $story->user->last_name;
+            $storyData['linked_in_url'] = $story->user->linked_in_url ?? '';
             $storyData['avatar'] = !empty($story->user->avatar) ? $story->user->avatar : $defaultAvatar;
             $storyData['profile_text'] = $story->user->profile_text;
             $storyData['why_i_volunteer'] = $story->user->why_i_volunteer;
