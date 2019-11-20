@@ -125,7 +125,7 @@ $router->group(
         $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'ActivityLogController@index']);
 
-        // Uload Migration files
+        // Upload Migration files
         $router->post('/migration', ['uses' => 'MigrationSeederChangesController@store']);
     }
 );

@@ -144,10 +144,10 @@ class LanguageController extends Controller
                 $request->toArray(),
                 [
                     "name" => [
-						"sometimes",
-						"required",
-						"regex:/^[a-zA-Z]+$/u",
-						Rule::unique('language')->ignore($languageId, 'language_id,deleted_at,NULL')],
+                        "sometimes",
+                        "required",
+                        "regex:/^[a-zA-Z]+$/u",
+                        Rule::unique('language')->ignore($languageId, 'language_id,deleted_at,NULL')],
                     'code'  => 'sometimes|required|max:2|required|unique:language,code,'.
                     $languageId .',language_id,deleted_at,NULL',
                     'status'  => 'sometimes|required|in:1,0'
