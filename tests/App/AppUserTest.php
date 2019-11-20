@@ -29,8 +29,8 @@ class AppUserTest extends TestCase
             "status",
             "message"
         ]);
-        $user->delete();
         $newUser->delete();
+        $user->delete();
     }
 
     /**
