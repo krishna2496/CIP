@@ -167,7 +167,7 @@
         }
       }
 	},
-    "/tenants/{tenantId}/api_users/": {
+	"/tenants/{tenantId}/api_users/": {
       "post": {
         "operationId": "POST_team4-cip-admin-api-tenants-create-api-user",
         "summary": "Create API User",
@@ -491,6 +491,8 @@
 			],
 			"parameters": [
 			  {
+				"name": "languageId",
+				"in": "path",
 				"description":"language id to get details",
 				"required":true,
 				"type":"integer",
@@ -528,11 +530,13 @@
 			],
 			"parameters": [
 			  {
+				"name": "languageId",
+				"in": "path",
 				"description":"language id to get details",
 				"required":true,
 				"type":"integer",
 				"format":"int64"
-			  }
+			  },
 			],
 			"responses": {
 				"400":{  
@@ -554,11 +558,13 @@
 			],
 			"parameters": [
 			  {
-				"description":"language id to delete",
+				"name": "languageId",
+				"in": "path",
+				"description":"language id to get details",
 				"required":true,
 				"type":"integer",
 				"format":"int64"
-			  }
+			  },
 			],
 			"responses": {
 				"400":{  
@@ -582,12 +588,6 @@
 			  "application/json"
 			],
 			"parameters": [
-			  {
-				"description":"language id to get details",
-				"required":true,
-				"type":"integer",
-				"format":"int64"
-			  },
 			  {
 				"name": "body",
 				"in": "body",
@@ -618,6 +618,16 @@
 			"consumes": [
 			  "multipart/form-data"
 			],
+			"parameters": [
+			  {
+				"name": "tenantId",
+				"description":"Tenant ID",
+				"in": "path",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  }
+			],
 			"responses": {
 				"500":{  
 				  "description":"Internal server error"
@@ -629,8 +639,8 @@
       },
 	},
 	"/tenants/tenant-language/{tenantLanguageId}/": {
-		"post": {
-			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
+		"delete": {
+			"operationId": "POST_team4-cip-admin-remove-tenant-language",
 			"summary": "Remove tenant language",
 			"description": "This endpoint will remove language from a tenant",
 			"tags":[  
@@ -658,6 +668,42 @@
 				}
 			}
       },
+	},
+	"/tenants/migration/": { 
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-tenants-run-migration",
+			"summary": "Database migration and seeder on tenant database",
+			"description": "This endpoint will make database related changes to all tenant database.",
+			"tags":[  
+				   "Tenant migration"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {  
+				  "name": "migration_file",
+				  "description": "It should be a laravel php file for migration or seeder class",
+				  "in": "formData",
+				  "required": true,
+				  "type": "file"
+			  },
+			  {
+				"name": "type",
+                "in": "formData",
+			    "required": true,
+			    "type": "string",
+				"description": "If you are adding migration changes then select migration. If you want to add data then select seeder",
+				"enum": ["migration","seeder"],
+				
+              },
+			],
+			"responses": {
+				"422":{  
+					"description":"Invalid input"
+				}
+			}
+		  }
 	}
   },
   "definitions": {
