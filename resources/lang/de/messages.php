@@ -176,7 +176,6 @@ return [
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'DE: Invalid application data or missing parameter',
         'ERROR_INVALID_MISSION_DATA' => 'DE: Invalid mission data or missing parameter',
         'ERROR_MISSION_NOT_FOUND' => 'DE: Requested mission does not exist',
-        'ERROR_MISSION_DELETION' => 'DE: Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'DE: Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'DE: Mission does not found in system',
         'ERROR_THEME_INVALID_DATA' => 'DE: Mission theme creation failed. Please check input parameters',
@@ -191,8 +190,6 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
-        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
-        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         
         // Custom error code for Tenant Authorization - 210000 - 219999

@@ -109,7 +109,7 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->create($missionData);
 
         // Entry into goal_mission table
-        if ($request->mission_type === config('constants.mission_type.GOAL')) {
+        if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
@@ -220,7 +220,7 @@ class MissionRepository implements MissionInterface
         $mission->update($request->toArray());
 
         // update goal_mission details
-        if ($mission->mission_type === config('constants.mission_type.GOAL')) {
+        if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
