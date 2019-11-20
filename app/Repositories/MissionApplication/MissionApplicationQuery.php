@@ -15,6 +15,7 @@ class MissionApplicationQuery implements QueryableInterface
     const FILTER_APPLICATION_IDS    = 'applicationIds';
     const FILTER_APPLICANT_SKILLS   = 'applicationSkills';
     const FILTER_MISSION_SKILLS     = 'missionSkills';
+    const FILTER_MISSION_TYPES      = 'missionTypes';
 
     const ALLOWED_SORTABLE_FIELDS = [
         'applicationId' => 'ma.mission_application_id',
@@ -97,6 +98,11 @@ class MissionApplicationQuery implements QueryableInterface
             ->whereHas('user.skills', function($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
                     $query->whereIn('user_skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
+                });
+            })
+            ->whereHas('mission', function($query) use ($filters) {
+                $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
+                    $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
                 });
             })
             ->whereHas('mission.missionSkill', function($query) use ($filters) {
