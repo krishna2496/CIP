@@ -8,6 +8,7 @@ use App\Repositories\Core\QueryableInterface;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
 {
@@ -40,7 +41,6 @@ class MissionApplicationQuery implements QueryableInterface
         'missionThemes' => 'm.theme_id',
         'applicationIds' => 'ma.mission_application_id',
         'missionTypes' => 'm.mission_type',
-//        'cities' => 'ci.name',
     ];
 
     const RANGE_COLUMN_MAPPINGS = [
@@ -87,6 +87,11 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.missionSkill',
                 'mission.country',
             ])
+            ->whereHas('user.skills', function($query) use ($filters) {
+                $query->when(isset($filters['applicantSkills']), function($query) use ($filters) {
+                    $query->whereIn('user_skill_id', $filters['applicantSkills']);
+                });
+            })
             ->when($limit, function ($query) use ($limit) {
                 $query->offset($limit['offset']);
                 $query->limit($limit['limit']);
