@@ -89,7 +89,7 @@ class MessageController extends Controller
         $apiMessage = (count($request->user_ids) > 1) ?
             trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY') :
             trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
-        $apiData = [];
+        $apiData = ['message_ids' => $messageIds];
 
         // Send notification to all users
         foreach ($messageIds as $message) {
