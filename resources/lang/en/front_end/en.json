@@ -106,7 +106,7 @@
         "availability": "Availability",
         "my_skills": "My skills",
         "add_skills": "Add skills",
-        "add_your_skills": "Add your Skills",
+        "add_your_skills": "Add your skills",
         "language": "Language",
         "timezone": "Timezone",
         "address_information": "Address information",
@@ -279,7 +279,9 @@
         "sent" : "Sent",
         "not_volunteered_text" : "You haven't volunteered to any mission so you can not create story.",
         "all_missions" : "All missions",
-        "all": "All"
+        "all": "All",
+        "delete_message": "Are you sure you want to delete this message?",
+        "delete_comment": "Are you sure you want to delete this comment?"
     },
 
     "placeholder": {
@@ -312,7 +314,8 @@
         "story_detail": "Enter your stories",
         "video_url": "Enter your video url",
  	 	"subject": "Enter your subject",
-        "message": "Enter your message"
+        "message": "Enter your message",
+        "search_user": "Search by name or email address"
     },
 
     "errors": {
