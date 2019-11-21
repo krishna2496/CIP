@@ -93,6 +93,7 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.missionLanguage',
                 'mission.missionSkill',
                 'mission.country',
+                'mission.city',
             ])
             // Filter by application ID
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
@@ -127,6 +128,28 @@ class MissionApplicationQuery implements QueryableInterface
                 $query->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
                     $query->whereIn('mission_skill_id', $filters[self::FILTER_MISSION_SKILLS]);
                 });
+            })
+            // Search
+            ->when(!empty($search), function($query) use ($search) {
+                $query
+                    ->whereHas('user', function($query) use ($search) {
+                        $query
+                            ->where('first_name', 'like', "%${search}%")
+                            ->orWhere('last_name', 'like', "%${search}%")
+                            ->orWhere('email', 'like', "%${search}%");
+                    })
+                    ->orwhereHas('mission.missionLanguage', function($query) use ($search) {
+                        $query
+                            ->where('title', 'like', "%${search}%");
+                    })
+                    ->orwhereHas('mission.city', function($query) use ($search) {
+                        $query
+                            ->where('name', 'like', "%${search}%");
+                    })
+                    ->orwhereHas('mission.country', function($query) use ($search) {
+                        $query
+                            ->where('name', 'like', "%${search}%");
+                    });
             })
             // Pagination
             ->when($limit, function ($query) use ($limit) {
