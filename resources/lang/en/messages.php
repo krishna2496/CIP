@@ -252,37 +252,21 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'An error has occurred',
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         
         // Custom error code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => "An error has occured, while updating colors in database",
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => "File is failed to download from S3 to local",
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'An error has occured, while compiling SCSS files to update SCSS changes',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'An error has occured, while storing compiled css file to local storage',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'No files found to upload on S3 bucket',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Failed to upload files on S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'Failed to reset styling settings',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Default theme folder not found on server',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'No assets file found on S3 for tenant',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'No files found on S3 assets folder for this tenant',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
         'ERROR_SETTING_FOUND' => 'Setting not found',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Image file not found on S3 server',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
         'ERROR_COUNTRY_NOT_FOUND' => 'Requested country does not exist',
         'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload image on S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
-        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'File path is not valid for this image',
 
         //For timesheet module
@@ -305,7 +289,6 @@ return [
 
         // Custom error code for news module -  700001 - 709999
         'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
-        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Published story not found in the system',
         'ERROR_COPY_DECLINED_STORY' => 'You can only create copy of declined story',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'You cannot update published or declined story',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',
