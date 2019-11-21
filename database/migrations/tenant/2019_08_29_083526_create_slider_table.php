@@ -18,7 +18,8 @@ class CreateSliderTable extends Migration
             $table->string('url',512);
             $table->text('translations');
             $table->integer('sort_order')->length(1)->default(0);
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
         });
     }

@@ -4,21 +4,19 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableSkill extends Migration
+class CreateTableMigrationAndSeederFiles extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    
     public function up()
     {
-        Schema::create('skill', function (Blueprint $table) {
-            $table->bigIncrements('skill_id')->unsigned();
-            $table->string('skill_name', 64);
-            $table->text('translations');
-            $table->bigInteger('parent_skill');
+        Schema::create('migration_seeder_files', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('file_name', 255);
+            $table->enum('type', ['seeder', 'migration']);            
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +29,6 @@ class CreateTableSkill extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('skill');
+        Schema::dropIfExists('migration_seeder_files');
     }
 }
