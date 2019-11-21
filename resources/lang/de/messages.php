@@ -209,30 +209,16 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'DE: An error has occurred',
         'ERROR_INVALID_JSON' => 'DE: Invalid Json format',
         
         // Custom erro code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'DE: An error has occured, while updating colors in database',
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => 'DE: File is failed to download from S3 to local',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'DE: An error has occured, while compiling SCSS files to update SCSS changes',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'DE: An error has occured, while storing compiled css file to local storage',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'DE: No files found to upload on s3 bucket',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'DE: Failed to upload files on S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'DE: Failed to reset styling settings',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'DE: Default theme folder not found on server',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'DE: No assets file found on S3 for tenant',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'DE: Tenant asset folder not found',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'DE: No files found on S3 assets folder for this tenant',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'DE: Boostrap SCSS file not found while compiling SCSS files',
         'ERROR_SETTING_FOUND' => 'DE: Setting not found',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'DE: Image file not found on S3 server',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'DE: An error while uploading image on S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
         'ERROR_SLIDER_NOT_FOUND' => 'DE: Slider not found',
 
         //For timesheet module
@@ -255,7 +241,6 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
-        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'DE: Published story not found in the system',
         'ERROR_DECLINED_STORY_NOT_FOUND' => 'DE: You can not copy story, due to this is not declined story',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
