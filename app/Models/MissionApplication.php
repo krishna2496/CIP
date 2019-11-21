@@ -134,7 +134,7 @@ class MissionApplication extends Model
      */
     public function mission()
     {
-        return $this->belongsTo('App\Models\Mission', 'mission_application_id', 'mission_id');
+        return $this->belongsTo('App\Models\Mission', 'mission_id', 'mission_id');
     }
 
     /**
