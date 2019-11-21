@@ -18,6 +18,10 @@ use Queue;
 use App\Events\ActivityLogEvent;
 use App\Helpers\Helpers;
 
+//!  Tenant controller
+/*!
+This controller is responsible for handling tenant store, update, listing, show and delete operations.
+ */
 class TenantController extends Controller
 {
     use RestExceptionHandlerTrait;
