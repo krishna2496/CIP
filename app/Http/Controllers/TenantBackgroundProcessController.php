@@ -7,6 +7,10 @@ use App\Repositories\Tenant\TenantRepository;
 use App\Jobs\TenantBackgroundJobsJob;
 use App\Traits\RestExceptionHandlerTrait;
 
+//!  Tenantbackgroundprocess controller
+/*!
+This controller is responsible for handling tenant create background operation.
+ */
 class TenantBackgroundProcessController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -27,18 +31,19 @@ class TenantBackgroundProcessController extends Controller
         $this->tenantRepository = $tenantRepository;
     }
     
-
-    public function runBackgroundProcess()
+    /**
+     * Cron Job : Run tenant's background jobs for tenant create
+     *
+     * @param  int $tenantId
+     * @return void
+     */
+    public function runBackgroundProcess($tenantId = null)
     {
-        try {
-            $tenants = $this->tenantRepository->getPendingTenantsForProcess();
-            if ($tenants->count()) {
-                foreach ($tenants as $tenant) {
-                    dispatch(new TenantBackgroundJobsJob($tenant));
-                }
+        $tenants = $this->tenantRepository->getPendingTenantsForProcess($tenantId);
+        if ($tenants->count()) {
+            foreach ($tenants as $tenant) {
+                dispatch(new TenantBackgroundJobsJob($tenant));
             }
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

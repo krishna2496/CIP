@@ -1,23 +1,22 @@
 <?php
-namespace App\Traits;
+namespace App\Helpers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Log;
 
-trait SendEmailTrait
+class EmailHelper
 {
     /**
      * Send email
      *
-     * @param array $param
-     * @return void
+     * @param  array $params
+     * @return boolean
      */
-    protected function sendEmail(array $params)
+    public function sendEmail(array $params)
     {
         Mail::to($params['to'])->send(new AppMailer($params));
         Log::info('Mail sent to '. $params['to']. 'with subject :' . $params['subject']);
+        return true;
     }
 }

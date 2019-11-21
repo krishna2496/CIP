@@ -22,5 +22,9 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="TENANT_DATABASE" value="ci_tenant_1000"/>
+        <env name="DEFAULT_TENANT" value="test96"/>
+        <env name="DEFAULT_TENANT_ID" value="96"/>
+        <env name="VALID_IP_FOR_SECURE_API" value="127.0.0.1"/>
     </php>
 </phpunit>

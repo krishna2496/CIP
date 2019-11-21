@@ -260,6 +260,8 @@ class ApiUserTest extends TestCase
         // Delete api user for tenant                                
         $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
         ->seeStatusCode(204);
+
+        $this->assertEquals(true, $tenant->delete());
     }
 
     /**

@@ -10,3 +10,4 @@ Homestead.yaml
 /public/uploads
 composer.lock
 /node_modules
+/storage/reports

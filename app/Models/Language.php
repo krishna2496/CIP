@@ -1,7 +1,9 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Collection;
 
 class Language extends Model
 {
@@ -27,4 +29,23 @@ class Language extends Model
      * @var array
      */
     protected $fillable = ['name','code','status'];
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['language_id', 'name', 'code', 'status'];
+    
+    /**
+     * Check language status.
+     *
+     * @param  int $id
+     * @param  string $status
+     * @return null|Collection
+     */
+    public function checkStatus(int $id, string $status): ?Collection
+    {
+        return $this->where(['language_id' => $id, 'status' => $status])->get();
+    }
 }

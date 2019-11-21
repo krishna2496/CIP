@@ -10,7 +10,12 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Repositories\ApiUser\ApiUserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Tenant\TenantRepository;
+use App\Events\ActivityLogEvent;
 
+//! Api user controller
+/*!
+This controller is responsible for handling api user create, renew, listing and delete operations.
+ */
 class ApiUserController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -59,24 +64,29 @@ class ApiUserController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         }
+        
+        $apiKeys['api_key'] = str_random(16);
+        $apiKeys['api_secret'] = str_random(16);
+        $apiUser = $this->apiUserRepository->store($tenantId, $apiKeys);
+        
+        $response['api_user_id'] = $apiUser->api_user_id;
+        $response['api_key'] = $apiUser->api_key;
+        $response['api_secret'] = $apiKeys['api_secret'];
+        
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_API_USER_CREATED_SUCCESSFULLY');
 
-        try {
-            $apiKeys['api_key'] = str_random(16);
-            $apiKeys['api_secret'] = str_random(16);
-            $apiUser = $this->apiUserRepository->store($tenantId, $apiKeys);
-            
-            $response['api_user_id'] = $apiUser->api_user_id;
-            $response['api_key'] = $apiUser->api_key;
-            $response['api_secret'] = $apiKeys['api_secret'];
-            
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_API_USER_CREATED_SUCCESSFULLY');
+        // Make activity log
+        event(new ActivityLogEvent(
+            config('constants.activity_log_types.API_USER'),
+            config('constants.activity_log_actions.CREATED'),
+            get_class($this),
+            [],
+            $apiUser->api_user_id
+        ));
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $response);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        return $this->responseHelper->success($apiStatus, $apiMessage, $response);
     }
 
     /**
@@ -95,8 +105,6 @@ class ApiUserController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         try {
@@ -113,14 +121,21 @@ class ApiUserController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_API_USER_UPDATED_SUCCESSFULLY');
 
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.API_USER_KEY_RENEW'),
+                config('constants.activity_log_actions.UPDATED'),
+                get_class($this),
+                [],
+                $apiUserId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $response);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_API_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -149,14 +164,21 @@ class ApiUserController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_API_USER_DELETED');
 
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.API_USER'),
+                config('constants.activity_log_actions.DELETED'),
+                get_class($this),
+                [],
+                $apiUserId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_API_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -182,8 +204,6 @@ class ApiUserController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -218,8 +238,6 @@ class ApiUserController extends Controller
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_API_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

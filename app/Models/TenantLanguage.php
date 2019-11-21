@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Language;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -42,7 +43,7 @@ class TenantLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['language_id', 'default'];
+    protected $visible = ['language_id', 'default', 'language', 'name', 'code', 'tenant_language_id'];
 
     /**
     * Define a one-to-one relationship.
@@ -53,12 +54,28 @@ class TenantLanguage extends Model
     {
         return $this->hasOne(Language::class, 'language_id', 'language_id');
     }
+     
     /**
-     * Get the language code from language.
-     * @return string
+     * Store/Update tenant language details.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return App\Models\TenanLanguage
      */
-    public function getLanguageCodeAttribute(): string
+    public function createOrUpdate(array $condition, array $data): TenantLanguage
     {
-        return $this->language->code;
+        return static::updateOrCreate($condition, $data);
+    }
+
+    /**
+     * Reset tenant default language.
+     *
+     * @param  int  $tenantId
+     * @return bool
+     */
+    public function resetDefaultTenantLanguage(int $tenantId)
+    {
+        return static::where(['tenant_id' => $tenantId, 'default' => config('constants.language_status.ACTIVE')])
+        ->update(['default'=> config('constants.language_status.INACTIVE')]);
     }
 }
