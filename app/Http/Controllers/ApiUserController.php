@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Tenant\TenantRepository;
 use App\Events\ActivityLogEvent;
 
+//! Api user controller
+/*!
+This controller is responsible for handling api user create, renew, listing and delete operations.
+ */
 class ApiUserController extends Controller
 {
     use RestExceptionHandlerTrait;
