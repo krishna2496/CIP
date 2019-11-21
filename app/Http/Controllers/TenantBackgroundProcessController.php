@@ -7,6 +7,10 @@ use App\Repositories\Tenant\TenantRepository;
 use App\Jobs\TenantBackgroundJobsJob;
 use App\Traits\RestExceptionHandlerTrait;
 
+//!  Tenantbackgroundprocess controller
+/*!
+This controller is responsible for handling tenant create background operation.
+ */
 class TenantBackgroundProcessController extends Controller
 {
     use RestExceptionHandlerTrait;

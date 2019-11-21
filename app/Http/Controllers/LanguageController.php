@@ -15,6 +15,10 @@ use Validator;
 use App\Events\ActivityLogEvent;
 use Illuminate\Validation\Rule;
 
+//! Language controller
+/*!
+This controller is responsible for handling language store, update, listing, show and delete operations.
+ */
 class LanguageController extends Controller
 {
     use RestExceptionHandlerTrait;

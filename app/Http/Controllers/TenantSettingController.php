@@ -8,6 +8,10 @@ use App\Repositories\TenantSetting\TenantSettingRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
+//!  Tenant setting controller
+/*!
+This controller is responsible for handling tenant setting listing operation.
+ */
 class TenantSettingController extends Controller
 {
     use RestExceptionHandlerTrait;
