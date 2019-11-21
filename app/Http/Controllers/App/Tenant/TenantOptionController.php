@@ -17,6 +17,11 @@ use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use Validator;
 
+//!  Tenant option controller
+/*!
+This controller is responsible for handling tenant option listing, custom css listing
+and get tenant option value operations.
+ */
 class TenantOptionController extends Controller
 {
     use RestExceptionHandlerTrait;

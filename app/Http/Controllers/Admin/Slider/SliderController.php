@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Slider controller
+/*!
+This controller is responsible for handling slider listing, store, update and delete operations.
+ */
 class SliderController extends Controller
 {
     use RestExceptionHandlerTrait;

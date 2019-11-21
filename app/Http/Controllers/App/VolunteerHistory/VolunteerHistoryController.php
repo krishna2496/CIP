@@ -16,6 +16,10 @@ use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Volunteerhistory controller
+/*!
+This controller is responsible for handling volunteerhistory theme, goal, time history and export operations.
+ */
 class VolunteerHistoryController extends Controller
 {
     use RestExceptionHandlerTrait;

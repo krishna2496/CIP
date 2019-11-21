@@ -176,7 +176,6 @@ return [
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'DE: Invalid application data or missing parameter',
         'ERROR_INVALID_MISSION_DATA' => 'DE: Invalid mission data or missing parameter',
         'ERROR_MISSION_NOT_FOUND' => 'DE: Requested mission does not exist',
-        'ERROR_MISSION_DELETION' => 'DE: Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'DE: Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'DE: Mission does not found in system',
         'ERROR_THEME_INVALID_DATA' => 'DE: Mission theme creation failed. Please check input parameters',
@@ -191,19 +190,16 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
-        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
-        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'DE: API key and Secret key are required',
-        'ERROR_EMAIL_NOT_EXIST' => 'DE: Email address does not exist in the system',
+        'ERROR_EMAIL_NOT_EXIST' => 'DE: If your email exists in the system, you will receive an email instruction on how to reset your password',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'DE: Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'DE: Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'DE: Something went wrong while sending reset password link',
         'ERROR_INVALID_DETAIL' => 'DE: Invalid reset password token or email address',
-        'ERROR_INVALID_PASSWORD' => 'DE: Invalid password',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'DE: Tenant domain does not found',
         'ERROR_TOKEN_EXPIRED' => 'DE: Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'DE: An error while decoding token',
@@ -213,30 +209,16 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'DE: An error has occurred',
         'ERROR_INVALID_JSON' => 'DE: Invalid Json format',
         
         // Custom erro code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'DE: An error has occured, while updating colors in database',
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => 'DE: File is failed to download from S3 to local',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'DE: An error has occured, while compiling SCSS files to update SCSS changes',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'DE: An error has occured, while storing compiled css file to local storage',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'DE: No files found to upload on s3 bucket',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'DE: Failed to upload files on S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'DE: Failed to reset styling settings',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'DE: Default theme folder not found on server',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'DE: No assets file found on S3 for tenant',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'DE: Tenant asset folder not found',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'DE: No files found on S3 assets folder for this tenant',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'DE: Boostrap SCSS file not found while compiling SCSS files',
         'ERROR_SETTING_FOUND' => 'DE: Setting not found',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'DE: Image file not found on S3 server',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'DE: An error while uploading image on S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
         'ERROR_SLIDER_NOT_FOUND' => 'DE: Slider not found',
 
         //For timesheet module
@@ -259,7 +241,6 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
-        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'DE: Published story not found in the system',
         'ERROR_DECLINED_STORY_NOT_FOUND' => 'DE: You can not copy story, due to this is not declined story',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',

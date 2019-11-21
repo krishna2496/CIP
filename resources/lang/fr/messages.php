@@ -207,7 +207,6 @@ return [
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Données d\'application non valides ou paramètre manquant',
         'ERROR_INVALID_MISSION_DATA' => 'Données de mission non valides ou paramètre manquant',
         'ERROR_MISSION_NOT_FOUND' => 'La mission demandée n\'existe pas',
-        'ERROR_MISSION_DELETION' => 'La suppression de la mission a échoué',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'La création de mission a échoué. Veuillez vérifier les paramètres d\'entrée',
         'ERROR_NO_MISSION_FOUND' => 'La mission ne se trouve pas dans le système',
         'ERROR_THEME_INVALID_DATA' => 'La création du thème de la mission a échoué. Veuillez vérifier les paramètres d\'entrée',
@@ -221,8 +220,6 @@ return [
         'ERROR_MISSION_RATING_INVALID_DATA' => 'La création de la note de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'La création de commentaire de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'ERROR_SKILL_LIMIT' => 'Désolé, vous ne pouvez pas ajouter plus de '. config('constants.SKILL_LIMIT').' compétences',
-        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Données de média de mission non valides',
-        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
@@ -230,12 +227,11 @@ return [
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'Clé API et clé secrète requises',
-        'ERROR_EMAIL_NOT_EXIST' => 'L\'adresse email n\'existe pas dans le système',
+        'ERROR_EMAIL_NOT_EXIST' => 'Si votre email existe dans le système, vous recevrez un email expliquant comment réinitialiser votre mot de passe',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Le lien de réinitialisation du mot de passe a expiré ou n\'est pas valide',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Données d\'entrée non valides',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Une erreur s\'est produite lors de l\'envoi du lien de réinitialisation du mot de passe.',
         'ERROR_INVALID_DETAIL' => 'Mot de passe de réinitialisation ou adresse électronique non valide',
-        'ERROR_INVALID_PASSWORD' => 'Mot de passe incorrect',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Domaine locataire non trouvé',
         'ERROR_TOKEN_EXPIRED' => 'Le jeton fourni a expiré',
         'ERROR_IN_TOKEN_DECODE' => 'Une erreur lors du décodage du jeton',
@@ -244,36 +240,20 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'Une erreur est survenue',
         'ERROR_INVALID_JSON' => 'Format Json invalide',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Erreur Interne du Serveur',
         
         // Custom erro code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'Une erreur est survenue lors de la mise à jour des couleurs dans la base de données.',
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => 'Échec du téléchargement du fichier de S3 au local',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Une erreur s\'est produite lors de la compilation des fichiers SCSS pour mettre à jour les modifications SCSS.',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Une erreur est survenue lors du stockage du fichier CSS compilé sur le stockage local.',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'Aucun fichier trouvé à télécharger sur le compartiment s3',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'Échec de la réinitialisation des paramètres de style',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Dossier de thème par défaut introuvable sur le serveur',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'Aucun fichier d\'actif trouvé sur S3 pour le locataire',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Dossier du locataire non trouvé',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'Aucun fichier trouvé dans le dossier des actifs S3 pour ce locataire',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Fichier SCSS d\'amorçage introuvable lors de la compilation des fichiers SCSS',
         'ERROR_SETTING_FOUND' => 'Paramètre non trouvé',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Fichier image introuvable sur le serveur S3',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'Une erreur lors du téléchargement de l\'image sur S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'Une erreur lors du téléchargement de l\'image de S3 sur le serveur',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Fichier d\'entrée invalide',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif',
         'ERROR_COUNTRY_NOT_FOUND' => 'Le pays demandé n\'existe pas',
         'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
-        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
 
@@ -301,7 +281,6 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
-        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
         'ERROR_COPY_DECLINED_STORY' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
     
