@@ -275,7 +275,9 @@
         "sent" : "Envoyée",
         "not_volunteered_text" : "Vous ne vous êtes pas porté volontaire pour une mission, vous ne pouvez donc pas créer d'histoire.",
         "all_missions" : "Toutes les missions",
-        "all": "toute"
+        "all": "toute",
+        "delete_message": "Êtes-vous sûr de vouloir supprimer ce message?",
+        "delete_comment": "Êtes-vous sûr de vouloir supprimer ce commentaire?"
     },
 
     "placeholder": {
@@ -308,7 +310,8 @@
         "story_detail": "Entrez vos histoires",
         "video_url": "Entrez votre URL de vidéo",
         "subject_required": "Entrez le numéro de téléphone",
-        "message": "Entrez le message"
+        "message": "Entrez le message",
+        "search_user": "Recherche par mot clé ou adresse email"
     },
 
     "errors": {
