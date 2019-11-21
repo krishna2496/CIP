@@ -101,6 +101,7 @@
                 } else {
                     this.toList = this.toList;
                 }
+                this.resetButtonDisable = true
             },
             // Add to list
             addToList(id) {

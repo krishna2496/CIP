@@ -139,7 +139,6 @@ Vue.mixin({
     methods: {
         settingEnabled(key) {
             let settingArray = JSON.parse(store.state.tenantSetting)
-
             if (settingArray != null) {
                 if (settingArray.indexOf(key) !== -1) {
                     return true;

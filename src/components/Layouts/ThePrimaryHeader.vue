@@ -85,6 +85,9 @@
                                             {{languageData.label.random}}
                                         </router-link>
                                     </li>
+									<li class="btn-save-outer">
+										<b-button class="btn-bordersecondary btn-save"  v-if="isSubmitNewMissionSet" @click="submitNewMission">{{languageData.label.submit_new_mission}}</b-button>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
@@ -122,8 +125,8 @@
                                     <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
                                 </i>
                             </b-nav-item>
-                            <b-nav-item right>
-                                <b-button class="btn-bordersecondary btn-save" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+                            <b-nav-item right class="btn-save-menu"  v-if="isSubmitNewMissionSet" @click="submitNewMission">
+                                <b-button class="btn-bordersecondary btn-save">
                                         {{languageData.label.submit_new_mission}}
                                 </b-button>
                             </b-nav-item>

@@ -44,6 +44,7 @@
                                                 <b-tr v-for="(timeItem,key) in timeMissionData" v-bind:key="key">
                                                     <b-td class="mission-col">
                                                         <a target="_blank"
+                                                            class="table-link"
                                                             :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
                                                     </b-td>
                                                     <b-td :mission-id="timeItem.mission_id" :date="key+1"
@@ -118,6 +119,7 @@
                                                 <b-tr v-for="(timeItem,key) in goalMissionData" v-bind:key="key">
                                                     <b-td class="mission-col">
                                                         <a target="_blank"
+                                                            class="table-link"
                                                             :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
                                                     </b-td>
                                                     <b-td :mission-id="timeItem.mission_id" :date="key+1"
@@ -645,6 +647,7 @@
                         }
                     }
                 });
+            
                 if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
                     returnData.push("disabled")
                 }
