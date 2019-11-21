@@ -94,33 +94,41 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.missionSkill',
                 'mission.country',
             ])
+            // Filter by application ID
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
                 $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
             })
+            // Filter by application start date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function($query) use ($filters) {
                 $query->where('applied_at', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
             })
+            // Filter by application end date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function($query) use ($filters) {
                 $query->where('applied_at', '<=', $filters[self::FILTER_APPLICATION_DATE]['to']);
             })
+            ->whereHas('mission', function($query) use ($filters) {
+                // Filter by mission theme
+                $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
+                    $query->whereIn('theme_id', $filters[self::FILTER_MISSION_THEMES]);
+                });
+                // Filter by mission type
+                $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
+                    $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
+                });
+            })
+            // Filter by applicant skills
             ->whereHas('user.skills', function($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
                     $query->whereIn('user_skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
                 });
             })
-            ->whereHas('mission', function($query) use ($filters) {
-                $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
-                    $query->whereIn('theme_id', $filters[self::FILTER_MISSION_THEMES]);
-                });
-                $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
-                    $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
-                });
-            })
+            // Filter by mission skill
             ->whereHas('mission.missionSkill', function($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
                     $query->whereIn('mission_skill_id', $filters[self::FILTER_MISSION_SKILLS]);
                 });
             })
+            // Pagination
             ->when($limit, function ($query) use ($limit) {
                 $query->offset($limit['offset']);
                 $query->limit($limit['limit']);
