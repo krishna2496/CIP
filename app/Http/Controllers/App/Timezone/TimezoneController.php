@@ -10,6 +10,10 @@ use App\Repositories\Timezone\TimezoneRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 
+//!  Timezone controller
+/*!
+This controller is responsible for handling timezone listing operation.
+ */
 class TimezoneController extends Controller
 {
     use RestExceptionHandlerTrait;

@@ -10,6 +10,10 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+//!  City controller
+/*!
+This controller is responsible for handling city listing operation.
+ */
 class CityController extends Controller
 {
     use RestExceptionHandlerTrait;

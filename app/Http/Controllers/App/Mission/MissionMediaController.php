@@ -11,6 +11,10 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+//!  Mission media controller
+/*!
+This controller is responsible for handling mission media listing operation.
+ */
 class MissionMediaController extends Controller
 {
     use RestExceptionHandlerTrait;

@@ -22,6 +22,10 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Timesheet controller
+/*!
+This controller is responsible for handling timesheet store/update, export, submit and show operations.
+ */
 class TimesheetController extends Controller
 {
     use RestExceptionHandlerTrait;

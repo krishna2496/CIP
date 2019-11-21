@@ -19,9 +19,9 @@ use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 use App\Events\User\UserNotificationEvent;
 
-//!  News Controller
+//!  News controller
 /*!
-This controller is responsible for handling news store, update, listing, show and delete operation.
+This controller is responsible for handling news listing, show, store, update and delete operations.
  */
 class NewsController extends Controller
 {
