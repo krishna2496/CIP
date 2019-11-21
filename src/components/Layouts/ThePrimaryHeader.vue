@@ -101,12 +101,12 @@
                                 </router-link>
                             </li>
 
-                            <li class="has-menu" v-if="isPolicyDisplay && policyPage.length > 0">
+                            <li class="has-menu" v-show="isPolicyDisplay && policyPage.length > 0">
                                 <a href="Javascript:void(0)"
                                     :title='languageData.label.policy'>{{ languageData.label.policy}}
                                 </a>
                                 <i class="collapse-toggle"></i>
-                                <ul class="dropdown-menu" v-if="policyPage.length > 0">
+                                <ul class="dropdown-menu" v-show="policyPage.length > 0">
                                     <li v-for="(item, key) in policyPage" v-bind:key=key>
                                         <router-link :to="{ path: '/policy/'+item.slug}" v-if="item.pages[0]"
                                             @click.native="menuBarclickHandler">
@@ -138,7 +138,7 @@
                                         <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'"
                                             alt="Notification Icon" />
                                     </i>
-                                    <b-badge v-if="notificationCount != 0">{{notificationCount}}</b-badge>
+                                    <b-badge v-show="notificationCount != 0">{{notificationCount}}</b-badge>
                                 </button>
                             </b-nav-item>
                             <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
@@ -312,7 +312,9 @@
                     filterData: [],
                     topOrganization: [],
                     languageData: [],
-                    policyPage: [],
+                    policyPage: [
+                        'policy_page'
+                    ],
                     isThemeDisplay: true,
                     isStoryDisplay: true,
                     isNewsDisplay: true,
@@ -445,7 +447,13 @@
                 async getPolicyPage() {
                     await policy().then(response => {
                         if (response.error == false) {
-                            this.policyPage = response.data;
+                            if(response.data.length > 0) {
+                                this.policyPage = response.data;
+                            } else {
+                                this.policyPage = [];
+                            }
+                        } else {
+                            this.policyPage = [];
                         }
                     });
                 },
