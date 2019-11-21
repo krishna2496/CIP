@@ -138,6 +138,7 @@ class AvailabilityController extends Controller
     public function update(Request $request, int $availabilityId): JsonResponse
     {
         try {
+            $this->availabilityRepository->find($availabilityId);
             // Server side validations
             $validator = Validator::make(
                 $request->all(),
