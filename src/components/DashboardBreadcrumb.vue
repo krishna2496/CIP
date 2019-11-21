@@ -28,6 +28,7 @@
 		data() {
 			return {
 				isStoryDisplay: true,
+				isCommentDisplay : true,
 				languageData: [],
 				items: [{
 						id: 1,
@@ -73,13 +74,18 @@
 				}
 			});
 			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
-			
+			this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.items[0].name = this.languageData.label.dashboard
 			this.items[1].name = this.languageData.label.volunteering_history
 			this.items[2].name = this.languageData.label.volunteering_timesheet
 			this.items[3].name = this.languageData.label.messages
-			this.items[4].name = this.languageData.label.comment_history
+			if(!this.isCommentDisplay) {
+				this.items.splice(4,1)
+			} else {
+				this.items[4].name = this.languageData.label.comment_history
+			}
+			
 			if(!this.isStoryDisplay) {
 				this.items.splice(5,1)
 			} else {

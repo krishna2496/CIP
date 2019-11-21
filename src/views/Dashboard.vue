@@ -22,7 +22,7 @@
                     </div>
                     <div class="inner-content-wrap">
                         <b-list-group class="status-bar">
-                            <b-list-group-item>
+                            <b-list-group-item v-if="isTotalVolunteeredHourDisplay">
                                 <div class="list-item">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/clock-ic.svg'" alt />
@@ -135,7 +135,7 @@
     import { ModelSelect } from 'vue-search-select'
     import store from '../store';
     import Chart from "chart.js";
-
+    import constants from '../constant';
     import {
         storyMissionListing,
         myDashboard,
@@ -219,7 +219,8 @@
                 hoursMonthActive: false,
                 goalHourPart: 10,
                 defaultMissionModel: 0,
-                barChartCanvas: null
+                barChartCanvas: null,
+                isTotalVolunteeredHourDisplay : true
             };
         },
         mounted() {
@@ -461,6 +462,7 @@
             this.defaultYear = this.languageData.label.years
             this.defaultMonth = this.languageData.label.month
             this.defaultMissionTitle = this.languageData.label.mission_title
+            this.isTotalVolunteeredHourDisplay = this.settingEnabled(constants.TOTAL_HOURS_VOLUNTEERED)
             let currentYear = new Date().getFullYear()
             let currentMonth = moment().format('MM')
             // this.defaultYear = currentYear.toString();

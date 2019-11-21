@@ -23,7 +23,7 @@ export default Object.freeze({
     POLICIES_ENABLED: "policies_enabled",
     SORTING_MISSIONS: "sorting_missions",
     QUICK_ACCESS_FILTERS: "quick_access_filters",
-    Total_HOURS_VOLUNTEERED: "total_hours_volunteered_in_platform",
+    TOTAL_HOURS_VOLUNTEERED: "total_hours_volunteered_in_platform",
     Total_MISSIONS_IN_PLATEFORM: "total_missions_in_platform",
     TIME_CREDIT_MISSION: "time_credit_mission",
     USER_CAN_SUBMIT_MISSION: "user_can_submit_mission",

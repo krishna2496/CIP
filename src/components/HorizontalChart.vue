@@ -71,7 +71,8 @@
                             xAxes: [{
                                 ticks: {
                                     fontColor: this.fontColor,
-                                    fontSize: 14
+                                    fontSize: 14,
+                                    beginAtZero: true
                                 }
                             }]
                         }

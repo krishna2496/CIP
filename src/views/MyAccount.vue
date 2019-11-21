@@ -32,7 +32,7 @@
 
                                 <b-list-group-item
                                     v-if="userData.linked_in_url != null && userData.linked_in_url != ''  ">
-                                    <b-link :href="userData.linked_in_url" target="_blank" title="linked in"
+                                    <b-link :href="userData.linked_in_url" target="_blank" :title="languageData.label.linked_in"
                                         class="linkedin-link">
                                         <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-blue.svg'"
                                             class="normal-img" alt="linkedin img" />
@@ -654,7 +654,8 @@
                         this.skillListing = [];
                         this.userSkillList = [];
                         this.resetUserSkillList = [];
-
+                        store.commit("saveCurrentSkill", null)
+                        store.commit("saveCurrentFromSkill", null)
                         country().then(responseData => {
                             if (responseData.error == false) {
                                 this.countryList = responseData.data

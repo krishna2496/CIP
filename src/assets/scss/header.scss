@@ -410,7 +410,23 @@ header {
                 }
             }
         }
-    }
+	}
+	.btn-save-menu {
+		@include sm-max{
+			display: none;
+		}
+	}
+	.btn-save-outer{
+		display: none;
+		margin: 20px;
+		@include sm-max{
+			display: block;
+			.btn-save {
+				min-width: 100%;
+				width: 100%;
+			}
+		}
+	}
 }
 
 .menu-wrap {

@@ -705,6 +705,12 @@
 							&.skill-col {
 								max-width: 24%;
 								flex: 0 0 24%;
+
+								.icon-wrap {
+									height: 35px;
+									width: 35px;
+									flex: 0 0 35px;
+								}
 							}
 
 							&.progress-block {

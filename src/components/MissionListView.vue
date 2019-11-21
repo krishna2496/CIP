@@ -449,7 +449,7 @@
             },
             // Open auto suggest modal
             handleModal(missionId) {
-                this.autoSuggestPlaceholder = this.languageData.label.search_user
+                this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
                 this.showErrorDiv = false;
                 this.message = null;
                 this.$refs.userDetailModal.show();

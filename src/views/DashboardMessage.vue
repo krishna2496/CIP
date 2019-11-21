@@ -318,19 +318,35 @@
 
 			deleteMessage(event ,messageId) {
 				event.stopPropagation();
-				this.isLoaderActive = true
-				deleteMessage(messageId).then(response => {
-					let variant = 'success'
-					let message = '';
-					if(response.error == true) {
-						variant = 'danger';
-						this.isLoaderActive = false
-						message = response.message
-					} else {
-						message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
-						this.getMessageListing();
-					}
-					this.makeToast(variant,message)
+				this.$bvModal.msgBoxConfirm(this.languageData.label.delete_message, {
+                        buttonSize: 'md',
+                        okTitle: this.languageData.label.yes,
+                        cancelTitle: this.languageData.label.no,
+                        centered: true,
+                        size: 'md',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        headerClass: 'p-2 border-bottom-0',
+                        footerClass: 'p-2 border-top-0',
+                        centered: true
+                    })
+                    .then(value => {
+						if (value == true) {	
+							this.isLoaderActive = true
+							deleteMessage(messageId).then(response => {
+								let variant = 'success'
+								let message = '';
+								if(response.error == true) {
+									variant = 'danger';
+									this.isLoaderActive = false
+									message = response.message
+								} else {
+									message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
+									this.getMessageListing();
+								}
+								this.makeToast(variant,message)
+							})
+						}
 				})
 			},
 

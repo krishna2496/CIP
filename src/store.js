@@ -217,12 +217,18 @@ export default new Vuex.Store({
             state.cityId = data.city
         },
         saveCurrentSkill(state, data) {
-            // state.currentSkill = data;
-            localStorage.setItem('currentSkill', JSON.stringify(data))
+            if (data !== null) {
+                localStorage.setItem('currentSkill', JSON.stringify(data))
+            } else {
+                localStorage.removeItem('currentSkill')
+            }
         },
         saveCurrentFromSkill(state, data) {
-            // state.currentSkill = data;
-            localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            if (data !== null) {
+                localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            } else {
+                localStorage.removeItem('currentFromSkill')
+            }
         },
         clearFilter(state) {
             let tag = []

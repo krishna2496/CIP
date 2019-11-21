@@ -903,7 +903,7 @@
 			},
 			// Open auto suggest modal
 			handleModal(missionId) {
-				this.autoSuggestPlaceholder = this.languageData.label.search_user
+				this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
 				this.showErrorDiv = false;
 				this.message = null;
 				this.$refs.userDetailModal.show();
@@ -1049,7 +1049,7 @@
 
 								this.missionDocument = response.data[0].mission_document
 								if(response.data[0].custom_information != null) {
-									this.customInformation = response.data[0].custom_information;s
+									this.customInformation = response.data[0].custom_information;
 								}
 							} else {
 								this.$router.push('/404');
