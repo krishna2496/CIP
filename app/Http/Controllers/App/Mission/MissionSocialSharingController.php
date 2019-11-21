@@ -10,6 +10,10 @@ use Illuminate\View\View;
 use App\Repositories\Mission\MissionRepository;
 use App\Exceptions\TenantDomainNotFoundException;
 
+//!  Mission social sharing controller
+/*!
+This controller is responsible for handling mission social sharing set metadata operation.
+ */
 class MissionSocialSharingController extends Controller
 {
     

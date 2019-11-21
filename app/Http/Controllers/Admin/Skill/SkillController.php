@@ -14,6 +14,10 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Skill controller
+/*!
+This controller is responsible for handling skill listing, show, store, update and delete operations.
+ */
 class SkillController extends Controller
 {
     use RestExceptionHandlerTrait;

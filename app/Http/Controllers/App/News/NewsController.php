@@ -15,9 +15,9 @@ use App\Transformations\NewsTransformable;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 
-//!  News Controller
+//!  News controller
 /*!
-This controller is responsible for handling news show and listing operation.
+This controller is responsible for handling news show and listing operations.
  */
 class NewsController extends Controller
 {

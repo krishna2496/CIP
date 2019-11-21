@@ -15,6 +15,10 @@ use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
+//!  User filter controller
+/*!
+This controller is responsible for handling user filter listing operation.
+ */
 class UserFilterController extends Controller
 {
     use RestExceptionHandlerTrait;

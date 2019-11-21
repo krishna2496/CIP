@@ -15,6 +15,10 @@ use InvalidArgumentException;
 use Validator;
 use App\Helpers\Helpers;
 
+//!  Tenant settings controller
+/*!
+This controller is responsible for handling tenant settings listing and update operations.
+ */
 class TenantSettingsController extends Controller
 {
     use RestExceptionHandlerTrait;
