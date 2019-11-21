@@ -19,6 +19,10 @@ use App\Helpers\Helpers;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Story controller
+/*!
+This controller is responsible for handling story listing and update operations.
+ */
 class StoryController extends Controller
 {
     use RestExceptionHandlerTrait, StoryTransformable;

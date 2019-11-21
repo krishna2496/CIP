@@ -240,36 +240,20 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'Une erreur est survenue',
         'ERROR_INVALID_JSON' => 'Format Json invalide',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Erreur Interne du Serveur',
         
         // Custom erro code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'Une erreur est survenue lors de la mise à jour des couleurs dans la base de données.',
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => 'Échec du téléchargement du fichier de S3 au local',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Une erreur s\'est produite lors de la compilation des fichiers SCSS pour mettre à jour les modifications SCSS.',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Une erreur est survenue lors du stockage du fichier CSS compilé sur le stockage local.',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'Aucun fichier trouvé à télécharger sur le compartiment s3',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'Échec de la réinitialisation des paramètres de style',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Dossier de thème par défaut introuvable sur le serveur',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'Aucun fichier d\'actif trouvé sur S3 pour le locataire',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Dossier du locataire non trouvé',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'Aucun fichier trouvé dans le dossier des actifs S3 pour ce locataire',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Fichier SCSS d\'amorçage introuvable lors de la compilation des fichiers SCSS',
         'ERROR_SETTING_FOUND' => 'Paramètre non trouvé',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Fichier image introuvable sur le serveur S3',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'Une erreur lors du téléchargement de l\'image sur S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'Une erreur lors du téléchargement de l\'image de S3 sur le serveur',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Fichier d\'entrée invalide',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif',
         'ERROR_COUNTRY_NOT_FOUND' => 'Le pays demandé n\'existe pas',
         'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
-        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
 
@@ -297,7 +281,6 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
-        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
         'ERROR_COPY_DECLINED_STORY' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
     

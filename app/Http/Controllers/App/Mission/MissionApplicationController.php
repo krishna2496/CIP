@@ -14,6 +14,10 @@ use Validator;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\Helpers;
 
+//!  Mission application controller
+/*!
+This controller is responsible for handling mission application apply to mission and get volunteer list operations.
+ */
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;

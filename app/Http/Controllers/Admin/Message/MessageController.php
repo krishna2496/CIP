@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Message controller
+/*!
+This controller is responsible for handling message read, send, listing and delete operations.
+ */
 class MessageController extends Controller
 {
     use RestExceptionHandlerTrait,MessageTransformable;
