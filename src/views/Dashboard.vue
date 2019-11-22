@@ -113,7 +113,7 @@
                                         <div class="content-loader"></div>
                                     </div>
                                     
-                                    <div class="line-chart" v-if="isChartDataFound">sdfdsf
+                                    <div class="line-chart" v-if="isChartDataFound">
                                         <canvas ref="barChartRefs"></canvas>
                                     </div>
 
@@ -421,11 +421,9 @@ import { setTimeout } from 'timers';
                                     if(this.isChartDataFound) {
                                     setTimeout(()=> {
                                         var barChartRefs = this.$refs.barChartRefs;
-                                        console.log(barChartRefs)
                                         var lineContent = barChartRefs.getContext("2d");
                                         barChartRefs.height = 350;
-                                        console.log(barChartRefs)
-                                    
+                                        
                                         let chartConfig = {
                                             type: "bar",
                                             data: {
