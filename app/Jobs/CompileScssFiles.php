@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Tenant;
