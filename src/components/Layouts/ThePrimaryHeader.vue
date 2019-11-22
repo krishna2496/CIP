@@ -85,10 +85,7 @@
                                             {{languageData.label.random}}
                                         </router-link>
                                     </li>
-									<li class="btn-save-outer">
-										<b-button class="btn-bordersecondary btn-save"  v-if="isSubmitNewMissionSet" @click="submitNewMission">{{languageData.label.submit_new_mission}}</b-button>
-                                    </li>
-                                </ul>
+								</ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
                                 <router-link :to="{ path: '/stories'}">
@@ -115,7 +112,9 @@
                                     </li>
                                 </ul>
                             </li>
-
+	                        <li class="btn-save-outer">
+                                <b-button class="btn-bordersecondary btn-save"  v-if="isSubmitNewMissionSet" @click="submitNewMission">{{languageData.label.submit_new_mission}}</b-button>
+                            </li>
                         </ul>
                     </div>
                     <div class="header-right ml-auto">
@@ -313,7 +312,7 @@
                     topOrganization: [],
                     languageData: [],
                     policyPage: [
-                        'policy_page'
+                         {"pages": [ { "language_id": 1, "title": "Volunteering Policy" } ] }
                     ],
                     isThemeDisplay: true,
                     isStoryDisplay: true,
@@ -620,6 +619,9 @@
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.submitNewMissionUrl = store.state.submitNewMissionUrl
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
+                if(!store.state.isLoggedIn) {
+                    this.isSubmitNewMissionSet = false
+                }
                 setTimeout(function () {
                     let body = document.querySelector("body");
                     let notification_btn = document.querySelector(".btn-notification");

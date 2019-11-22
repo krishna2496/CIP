@@ -165,6 +165,10 @@
             if (store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
                 this.isCookieHidden = false;
             }
+            if(!store.state.isLoggedIn) {
+                this.isCookieHidden = true;
+                this.contactUsDisplay = false
+            }
             this.langList = JSON.parse(store.state.listOfLanguage)
             this.defautLang = store.state.defaultLanguage
             setTimeout(() => {
