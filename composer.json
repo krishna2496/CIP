@@ -11,8 +11,8 @@
         "illuminate/mail": "^5.8",
         "illuminate/notifications": "^5.8",
         "laravel/lumen-framework": "5.8.*",
-        "league/flysystem-aws-s3-v3": "~1.0",
         "scssphp/scssphp": "^1.0",
+        "league/flysystem-aws-s3-v3": "~1.0",
         "vlucas/phpdotenv": "^3.3"
     },
     "require-dev": {
