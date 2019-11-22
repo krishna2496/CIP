@@ -99,8 +99,9 @@
                                 <div class="inner-chart-col">
                                     <div class="chart-title">
                                         <h5>{{languageData.label.hours_per_month}}</h5>
-                                       
-                                        <model-select :options="missionTitle"
+                                        <model-select 
+                                            v-if="missionFilterDisplay"
+                                            :options="missionTitle"
                                             v-model="defaultMissionModel"
                                             :placeholder="defaultMissionTitle"
                                              @input="updateMissionTitle"
@@ -111,9 +112,20 @@
                                         v-bind:class="{ 'content-loader-wrap': true, 'loader-active': hoursMonthActive}">
                                         <div class="content-loader"></div>
                                     </div>
-                                    <div class="line-chart">
+                                    
+                                    <div class="line-chart" v-if="isChartDataFound">sdfdsf
                                         <canvas ref="barChartRefs"></canvas>
                                     </div>
+
+									<!-- Start new chart structure -->
+									<div class="line-chart hidden-chart" v-if="!isChartDataFound">
+										<!-- <canvas ref="barChartRefs"></canvas> -->
+									</div>
+									<div class="has-no-chart"  v-if="!isChartDataFound">
+										<p>{{languageData.label.no_data}}</p>
+									</div>
+									<!-- End new chart structure -->
+
                                 </div>
                             </b-col>
                         </b-row>
@@ -141,6 +153,7 @@
         myDashboard,
     } from "../services/service";
     import moment from 'moment'
+import { setTimeout } from 'timers';
     export default {
         components: {
             ThePrimaryHeader,
@@ -220,7 +233,9 @@
                 goalHourPart: 10,
                 defaultMissionModel: 0,
                 barChartCanvas: null,
-                isTotalVolunteeredHourDisplay : true
+                isTotalVolunteeredHourDisplay : true,
+                isChartDataFound : true,
+                missionFilterDisplay: false
             };
         },
         mounted() {
@@ -295,7 +310,10 @@
                 } else {
                     this.hoursMonthActive = true;
                 }
+
                 myDashboard(filterData).then(response => {
+                    this.isChartDataFound = true
+                    this.missionFilterDisplay = false
                     if (response.error == false) {
                         this.xvalues = [0]
                         this.max = 0
@@ -356,15 +374,25 @@
                                 let chartMaxValue = {
                                     totalMaxValue: 0
                                 };
+                                let dataFlag = 0
                                 chartData.filter((data, index) => {
-                                    if (data.total_hours && data.total_hours != '') {
+                                    
+                                    if (data.total_hours && data.total_hours != '' && data.total_hours != 0) {
                                         chartMaxValue.totalMaxValue = chartMaxValue.totalMaxValue + data
                                             .total_hours
                                         chartList[data.month] = data.total_hours
+                                        dataFlag = 1;
+                                        this.missionFilterDisplay = true
                                     } else {
                                         chartList[data.month] = 0
                                     }
                                 })
+                                if(dataFlag != 1) {
+                                    this.isChartDataFound = false
+                                }
+                                if(filterData.mission_id != 0 && filterData.mission_id != '') {
+                                    this.missionFilterDisplay = true
+                                }
                                 let yearLable = (this.filterData.year.toString()).slice(2, this.filterData.year
                                     .toString().length)
                                 chartList.filter((data, index) => {
@@ -385,69 +413,76 @@
                                     this.chartStep = step
                                     this.chartMaxValue = step * 4
                                 }
-
-                                // chart js
-                                if (this.barChartCanvas != null) {
-                                    this.barChartCanvas.destroy();
-                                }
-                                var barChartRefs = this.$refs.barChartRefs;
-                                var lineContent = barChartRefs.getContext("2d");
-                                barChartRefs.height = 350;
-                                let chartConfig = {
-                                    type: "bar",
-                                    data: {
-                                        labels: this.chartdata,
-                                        datasets: [{
-                                            data: this.chartHourdata,
-                                            backgroundColor: "#b2cc9d",
-                                            borderColor: "#4b6d30",
-                                            pointBackgroundColor: "#4b6d30"
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: false,
-                                        legend: {
-                                            display: false
-                                        },
-                                        scales: {
-                                            xAxes: [{
-                                                gridLines: {
+                                
+                                    // chart js
+                                    if (this.barChartCanvas != null) {
+                                        this.barChartCanvas.destroy();
+                                    }
+                                    if(this.isChartDataFound) {
+                                    setTimeout(()=> {
+                                        var barChartRefs = this.$refs.barChartRefs;
+                                        console.log(barChartRefs)
+                                        var lineContent = barChartRefs.getContext("2d");
+                                        barChartRefs.height = 350;
+                                        console.log(barChartRefs)
+                                    
+                                        let chartConfig = {
+                                            type: "bar",
+                                            data: {
+                                                labels: this.chartdata,
+                                                datasets: [{
+                                                    data: this.chartHourdata,
+                                                    backgroundColor: "#b2cc9d",
+                                                    borderColor: "#4b6d30",
+                                                    pointBackgroundColor: "#4b6d30"
+                                                }]
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                maintainAspectRatio: false,
+                                                legend: {
                                                     display: false
                                                 },
-                                                ticks: {
-                                                    fontColor: "#414141",
-                                                    fontSize: 14
-                                                },
-                                                scaleLabel: {
-                                                    display: true,
-                                                    labelString: this.languageData.label.month,
-                                                    fontSize: 16,
-                                                    fontColor: "#414141"
+                                                scales: {
+                                                    xAxes: [{
+                                                        gridLines: {
+                                                            display: false
+                                                        },
+                                                        ticks: {
+                                                            fontColor: "#414141",
+                                                            fontSize: 14
+                                                        },
+                                                        scaleLabel: {
+                                                            display: true,
+                                                            labelString: this.languageData.label.month,
+                                                            fontSize: 16,
+                                                            fontColor: "#414141"
+                                                        }
+                                                    }],
+                                                    yAxes: [{
+                                                        stacked: true,
+                                                        ticks: {
+                                                            max: this.chartMaxValue,
+                                                            min: 0,
+                                                            stepSize: this.chartStep,
+                                                            fontColor: "#414141",
+                                                            fontSize: 14
+                                                        },
+                                                        scaleLabel: {
+                                                            display: true,
+                                                            labelString: this.languageData.label.hours,
+                                                            fontSize: 16,
+                                                            fontColor: "#414141"
+                                                        }
+                                                    }]
                                                 }
-                                            }],
-                                            yAxes: [{
-                                                stacked: true,
-                                                ticks: {
-                                                    max: this.chartMaxValue,
-                                                    min: 0,
-                                                    stepSize: this.chartStep,
-                                                    fontColor: "#414141",
-                                                    fontSize: 14
-                                                },
-                                                scaleLabel: {
-                                                    display: true,
-                                                    labelString: this.languageData.label.hours,
-                                                    fontSize: 16,
-                                                    fontColor: "#414141"
-                                                }
-                                            }]
+                                            }
                                         }
+                                        this.barChartCanvas = new Chart(lineContent, chartConfig);
+                                    },500)
                                     }
                                 }
-                                this.barChartCanvas = new Chart(lineContent, chartConfig);
-
-                            }
+                            
                         }
                     }
 
