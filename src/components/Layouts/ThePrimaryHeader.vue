@@ -312,7 +312,7 @@
                     topOrganization: [],
                     languageData: [],
                     policyPage: [
-                        'policy_page'
+                         {"pages": [ { "language_id": 1, "title": "Volunteering Policy" } ] }
                     ],
                     isThemeDisplay: true,
                     isStoryDisplay: true,
