@@ -167,6 +167,7 @@
             }
             if(!store.state.isLoggedIn) {
                 this.isCookieHidden = true;
+                this.contactUsDisplay = false
             }
             this.langList = JSON.parse(store.state.listOfLanguage)
             this.defautLang = store.state.defaultLanguage

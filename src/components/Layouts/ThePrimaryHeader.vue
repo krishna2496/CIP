@@ -619,6 +619,9 @@
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.submitNewMissionUrl = store.state.submitNewMissionUrl
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
+                if(!store.state.isLoggedIn) {
+                    this.isSubmitNewMissionSet = false
+                }
                 setTimeout(function () {
                     let body = document.querySelector("body");
                     let notification_btn = document.querySelector(".btn-notification");
