@@ -358,7 +358,7 @@
 									<li><a href="javascript:void(0)" data-id="organization" class="tablinks">
 											{{ languageData.label.organisation }}</a></li>
 
-									<li @click="missionComments"><a href="javascript:void(0)" data-id="comments"
+									<li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
 											class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
 										</a></li>
 								</ul>
@@ -459,7 +459,7 @@
 										</b-collapse>
 									</div>
 									<div class="tabs" v-if="isCommentDisplay">
-										<div class="tab-title" @click="missionComments">
+										<div class="tab-title" @click="missionComments('0')">
 											<h3 v-b-toggle.comments>{{ languageData.label.comment }}</h3>
 										</div>
 										<b-collapse id="comments" accordion="my-accordion" role="tabpanel"
@@ -1097,9 +1097,13 @@
 				return skills;
 			},
 
-			missionComments() {
+			missionComments(commentStatus) {
 				this.loadMoreComment = true;
 				let commentData = {};
+				if(commentStatus == '0') {
+					this.missionComment = []
+					this.page = 1
+				}
 				commentData.missionId = this.$route.params.misisonId;
 				commentData.page = this.page;
 				missionComments(commentData).then(response => {
@@ -1149,7 +1153,7 @@
 							this.postComment = false,
 							this.loadMoreComment = false,
 							this.page = 1;
-						this.missionComments();
+						this.missionComments('0');
 						this.$v.$reset();
 					}
 					this.postComment = false;
@@ -1164,7 +1168,7 @@
 					let simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
 					simplebarWrapper.scrollTop = simplebarHeight;
 				}, 100);
-				this.missionComments();
+				this.missionComments('1');
 			}
 		},
 		created() {
