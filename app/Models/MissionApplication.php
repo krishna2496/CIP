@@ -4,10 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\Mission;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class MissionApplication extends Model
 {
@@ -48,16 +45,6 @@ class MissionApplication extends Model
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
     'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar', 'mission'];
-
-    /**
-     * Get the timesheet mission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function mission(): HasOne
-    {
-        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
-    }
 
     /**
      * Find listing of a resource.
@@ -146,7 +133,7 @@ class MissionApplication extends Model
      */
     public function mission()
     {
-        return $this->belongsTo('App\Models\Mission', 'mission_id', 'mission_id');
+        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
 
     /**
@@ -190,7 +177,7 @@ class MissionApplication extends Model
     {
         $countQuery = $this->whereHas('mission')->where(['user_id' => $userId])
         ->where('approval_status', config('constants.application_status.PENDING'));
-        
+
         if (isset($year) && $year != '') {
             $countQuery->whereYear('applied_at', $year);
             if (isset($month) && $month != '') {
