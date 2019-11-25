@@ -9,6 +9,10 @@ use App\Repositories\Country\CountryRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 
+//!  Country controller
+/*!
+This controller is responsible for handling country listing operation.
+ */
 class CountryController extends Controller
 {
     use RestExceptionHandlerTrait;

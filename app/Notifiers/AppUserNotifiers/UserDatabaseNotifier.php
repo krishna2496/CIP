@@ -29,9 +29,7 @@ class UserDatabaseNotifier
         $data['entity_id'] = $entityId;
         $data['action'] = $action;
         $data['user_id'] = $userId;
-        if ($user->notification()->create($data)) {
-            return true;
-        }
-        return false;
+        
+        return ($user->notification()->create($data)) ? true : false;
     }
 }

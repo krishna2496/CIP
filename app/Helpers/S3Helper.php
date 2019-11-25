@@ -20,12 +20,16 @@ class S3Helper
      */
     public function uploadFileOnS3Bucket(string $url, string $tenantName): string
     {
+        set_time_limit(0);
+        $context = stream_context_create(array('http'=> array(
+            'timeout' => 1200
+        )));
         $disk = Storage::disk('s3');
         $disk->put(
             $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'
             .config('constants.AWS_S3_IMAGES_FOLDER_NAME')
             .'/'.basename($url),
-            file_get_contents($url)
+            file_get_contents($url, false, $context)
         );
         $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
             .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME')
@@ -110,22 +114,24 @@ class S3Helper
      */
     public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, string $folderName): string
     {
-        try {
-            $disk = Storage::disk('s3');
-            $fileName = pathinfo($file->getClientOriginalName())['filename'] . '_' . time();
-            $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-            $documentName = $fileName . '.' . $fileExtension;
-            $documentPath = $tenantName . '/users/' . $userId . '/'.$folderName.'/' . $documentName;
-            $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
-            . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
+        set_time_limit(0);
+        $context = stream_context_create(array('http'=> array(
+            'timeout' => 1200
+        )));
+        
+        $disk = Storage::disk('s3');
+        $fileName = preg_replace(
+            "/[^A-Za-z0-9\-]/",
+            "",
+            pathinfo($file->getClientOriginalName())['filename'] . '_' . time()
+        );
+        $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
+        $documentName = $fileName . '.' . $fileExtension;
+        $documentPath = $tenantName . '/users/' . $userId . '/'.$folderName.'/' . $documentName;
+        $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+        . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 
-            if ($disk->put($documentPath, file_get_contents($file))) {
-                return $pathInS3;
-            } else {
-                return 0;
-            }
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $disk->put($documentPath, @file_get_contents($file, false, $context));
+        return $pathInS3;
     }
 }

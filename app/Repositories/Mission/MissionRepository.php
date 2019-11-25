@@ -109,7 +109,7 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->create($missionData);
 
         // Entry into goal_mission table
-        if ($request->mission_type === config('constants.mission_type.GOAL')) {
+        if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
@@ -142,7 +142,7 @@ class MissionRepository implements MissionInterface
                     'title' => $value['title'],
                     'short_description' => (isset($value['short_description'])) ? $value['short_description'] : null,
                     'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
-                    'objective' => $value['objective'],
+                    'objective' =>  (isset($value['objective'])) ? $value['objective'] : null,
                     'custom_information' => (array_key_exists('custom_information', $value))
                     ? $value['custom_information'] : null
                 );
@@ -220,27 +220,31 @@ class MissionRepository implements MissionInterface
         $mission->update($request->toArray());
 
         // update goal_mission details
-        if ($request->mission_type === config('constants.mission_type.GOAL')) {
+        if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
             $mission->goalMission()->update($goalMissionArray);
         }
         // update into time_mission details
-        if ($request->mission_type === config('constants.mission_type.TIME')) {
+        if ($mission->mission_type === config('constants.mission_type.TIME')) {
             $missionDetail = $mission->timeMission()->first();
             if (!is_null($missionDetail)) {
-                $missionDetail->application_deadline = (isset($request->application_deadline))
-                ? $request->application_deadline : null;
-                $missionDetail->application_start_date = (isset($request->application_start_date))
-                ? $request->application_start_date : null;
-                $missionDetail->application_end_date = (isset($request->application_end_date))
-                ? $request->application_end_date : null;
-                $missionDetail->application_start_time = (isset($request->application_start_time))
-                ? $request->application_start_time : null;
-                $missionDetail->application_end_time = (isset($request->application_end_time))
-                ? $request->application_end_time : null;
-
+                if ((isset($request->application_deadline))) {
+                    $missionDetail->application_deadline = $request->application_deadline;
+                }
+                if ((isset($request->application_start_date))) {
+                    $missionDetail->application_start_date = $request->application_start_date;
+                }
+                if ((isset($request->application_end_date))) {
+                    $missionDetail->application_end_date = $request->application_end_date;
+                }
+                if ((isset($request->application_start_time))) {
+                    $missionDetail->application_start_time = $request->application_start_time;
+                }
+                if ((isset($request->application_end_time))) {
+                    $missionDetail->application_end_time = $request->application_end_time;
+                }
                 $missionDetail->save();
             }
         }
@@ -322,7 +326,9 @@ class MissionRepository implements MissionInterface
             'missionLanguage',
             'timeMission',
             'goalMission'
-        )->findOrFail($id);
+        )->with(['missionSkill' => function ($query) {
+            $query->with('mission', 'skill');
+        }])->findOrFail($id);
     }
     
     /**
@@ -644,6 +650,7 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config("constants.publication_status")["APPROVED"]
                 );
+
                 if ($request->has('search') && $request->input('search') !== '') {
                     $missionQuery->where(function ($query) use ($request) {
                         $query->with('missionLanguage');
@@ -657,6 +664,30 @@ class MissionRepository implements MissionInterface
                             ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
                         });
                     });
+                }
+
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $missionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $missionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where(
+                                    'name',
+                                    'like',
+                                    '%'.$request->input('explore_mission_params').'%'
+                                );
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $missionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
                 }
                 $missionQuery->with(['country'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
@@ -683,6 +714,26 @@ class MissionRepository implements MissionInterface
                         });
                     });
                 }
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $missionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $missionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where('name', 'like', '%'.$request->input('explore_mission_params').'%');
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $missionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
+                }
+
                 $missionQuery->with(['city'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
@@ -710,6 +761,29 @@ class MissionRepository implements MissionInterface
                             ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
                         });
                     });
+                }
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $missionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $missionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where(
+                                    'name',
+                                    'like',
+                                    '%' . $request->input('explore_mission_params') . '%'
+                                );
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $missionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
                 }
                 $missionQuery->with(['missionTheme'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
@@ -741,12 +815,12 @@ class MissionRepository implements MissionInterface
                             });
                         });
                     }
-                    
+
                     $query->where(
                         'publication_status',
                         config("constants.publication_status")["APPROVED"]
                     );
-                    
+
                     if ($request->has('country_id') && $request->input('country_id') !== '') {
                         $query->where("mission.country_id", $request->input('country_id'));
                     }
@@ -755,6 +829,30 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->has('theme_id') && $request->input('theme_id') !== '') {
                         $query->whereIn("mission.theme_id", explode(",", $request->input('theme_id')));
+                    }
+
+                    if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                        if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                            $query->where("mission.theme_id", $request->input('explore_mission_params'));
+                        }
+                        if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                            $query->where(function ($query) use ($request) {
+                                $query->wherehas('country', function ($countryQuery) use ($request) {
+                                    $countryQuery->where(
+                                        'name',
+                                        'like',
+                                        '%' . $request->input('explore_mission_params') . '%'
+                                    );
+                                });
+                            });
+                        }
+                        if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                            $query->where(
+                                'organisation_name',
+                                'like',
+                                '%' . $request->input('explore_mission_params') . '%'
+                            );
+                        }
                     }
                 });
 
@@ -1111,7 +1209,7 @@ class MissionRepository implements MissionInterface
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->modelsService->missionLanguage->select('title')
+        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
         ->where(['mission_id' => $missionId, 'language_id' => $languageId])
         ->get();
         if ($languageData->count() > 0) {

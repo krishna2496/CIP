@@ -20,7 +20,9 @@ class AppMisionApplicationTest extends TestCase
         $user->save();
        
         $params = [
-                'mission_id' => rand(1000000, 20000000)
+                'mission_id' => rand(1000000, 20000000),
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
@@ -68,7 +70,9 @@ class AppMisionApplicationTest extends TestCase
         $missionApplication->save();
         
         $params = [
-                'mission_id' => $mission->mission_id
+                'mission_id' => $mission->mission_id,
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
@@ -135,7 +139,7 @@ class AppMisionApplicationTest extends TestCase
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2019-07-25 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
@@ -147,7 +151,9 @@ class AppMisionApplicationTest extends TestCase
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
         $params = [
-                'mission_id' => $mission[0]['mission_id']
+                'mission_id' => $mission[0]['mission_id'],
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -373,7 +379,7 @@ class AppMisionApplicationTest extends TestCase
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2019-07-25 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,

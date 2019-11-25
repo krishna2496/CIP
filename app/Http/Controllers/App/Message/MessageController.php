@@ -15,6 +15,10 @@ use App\Transformations\MessageTransformable;
 use App\Repositories\User\UserRepository;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Message controller
+/*!
+This controller is responsible for handling message send, read, get messages and delete operations.
+ */
 class MessageController extends Controller
 {
     use RestExceptionHandlerTrait,MessageTransformable;
@@ -110,7 +114,7 @@ class MessageController extends Controller
     {
         $userMessages = $this->messageRepository->getUserMessages(
             $request,
-            config('constants.message.send_message_from.admin'),
+            config('constants.message.send_message_from.all'),
             [$request->auth->user_id]
         );
         

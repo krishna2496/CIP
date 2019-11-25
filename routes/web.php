@@ -684,6 +684,31 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\ActivityLog\ActivityLogController@index']);
         }
     );
+
+    /* Availability management */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get availability */
+            $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Availability\AvailabilityController@index']);
+
+            /* Store availability */
+            $router->post('/entities/availability', ['as' => 'availability.store',
+                'uses' => 'Admin\Availability\AvailabilityController@store']);
+            
+            $router->delete('/entities/availability/{availabilityId}', ['as' => 'availability.destroy',
+                'uses' => 'Admin\Availability\AvailabilityController@destroy']);
+            
+            $router->patch('/entities/availability/{availabilityId}', ['as' => 'availability.update',
+                'uses' => 'Admin\Availability\AvailabilityController@update']);
+                
+            $router->get(
+                '/entities/availability/{availabilityId}',
+                ['uses' => 'Admin\Availability\AvailabilityController@show']
+            );
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------

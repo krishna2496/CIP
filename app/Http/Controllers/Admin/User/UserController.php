@@ -17,6 +17,11 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 
+//!  User controller
+/*!
+This controller is responsible for handling user listing, show, store, update, delete,
+link skill, unlink skill and user skill listing operations.
+ */
 class UserController extends Controller
 {
     use RestExceptionHandlerTrait;

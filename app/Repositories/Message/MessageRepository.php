@@ -89,14 +89,16 @@ class MessageRepository implements MessageInterface
     ): LengthAwarePaginator {
         $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
             $query->select('user_id', 'first_name', 'last_name');
-        }])->where('sent_from', $sentFrom)
-            ->when(
-                $userIds,
-                function ($query, $userIds) {
-                    return $query->whereIn('user_id', $userIds);
-                }
-            )->orderBy('created_at', 'desc');
-
+        }]);
+        if (config('constants.message.send_message_from.all') !== $sentFrom) {
+            $userMessageQuery->where('sent_from', $sentFrom);
+        }
+        $userMessageQuery->when(
+            $userIds,
+            function ($query, $userIds) {
+                return $query->whereIn('user_id', $userIds);
+            }
+        )->orderBy('created_at', 'desc');
         return $userMessageQuery->paginate($request->perPage);
     }
 
@@ -124,16 +126,6 @@ class MessageRepository implements MessageInterface
         )->firstOrFail()->delete();
     }
     
-    /**
-     * Get message detail
-     *
-     * @param int $messageId
-     * @return App\Models\Message
-     */
-    public function getMessage(int $messageId): Message
-    {
-        return $this->message->findOrFail($messageId);
-    }
     /**
      * Read message.
      *
@@ -164,5 +156,16 @@ class MessageRepository implements MessageInterface
             'user_id' => $userId
         ])->get();
         return $messageUnreadCount;
+    }
+
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessageDetail(int $messageId): Message
+    {
+        return $this->message->withTrashed()->find($messageId);
     }
 }

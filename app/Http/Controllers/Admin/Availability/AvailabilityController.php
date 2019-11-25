@@ -1,31 +1,31 @@
 <?php
-namespace App\Http\Controllers\Admin\NewsCategory;
+namespace App\Http\Controllers\Admin\Availability;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Repositories\Availability\AvailabilityRepository;
+use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use App\Repositories\NewsCategory\NewsCategoryRepository;
-use App\Helpers\ResponseHelper;
-use App\Traits\RestExceptionHandlerTrait;
+use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use Validator;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
-//!  News category controller
+//!  Availability controller
 /*!
-This controller is responsible for handling news category listing, show, store, update and delete operations.
+This controller is responsible for handling availability store, update, listing, show and delete operations.
  */
-class NewsCategoryController extends Controller
+class AvailabilityController extends Controller
 {
     use RestExceptionHandlerTrait;
     /**
-     * @var App\Repositories\NewsCategory\NewsCategoryRepository
+     * @var App\Repositories\Availability\AvailabilityRepository;
      */
-    private $newsCategoryRepository;
-    
+    private $availabilityRepository;
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -35,46 +35,53 @@ class NewsCategoryController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
     /**
-     * Create a new controller instance.
+     * Create a new availability controller instance
      *
-     * @param App\Repositories\NewsCategory\NewsCategoryRepository $newsCategoryRepository
+     * @param App\Repositories\Availability\AvailabilityRepository;
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
-        NewsCategoryRepository $newsCategoryRepository,
+        AvailabilityRepository $availabilityRepository,
         ResponseHelper $responseHelper,
         Request $request
     ) {
-        $this->newsCategoryRepository = $newsCategoryRepository;
+        $this->availabilityRepository = $availabilityRepository;
         $this->responseHelper = $responseHelper;
-        $this->userApiKey =$request->header('php-auth-user');
+        $this->userApiKey = $request->header('php-auth-user');
     }
-    
+
     /**
-     * Display news category lists.
+     * Display a listing of availability.
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        $newsCategoryDetails = $this->newsCategoryRepository->getNewsCategoryList($request);
-        
-        // Set response data
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage =
-        ($newsCategoryDetails->isEmpty()) ? trans('messages.custom_error_message.ERROR_NEWS_CATEGORIES_NOT_FOUND')
-        : trans('messages.success.MESSAGE_NEWS_CATEGORY_LISTING');
-        
-        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $newsCategoryDetails);
-    }
+        try {
+            // Get availability lists
+            $availabilityLists = $this->availabilityRepository->getAvailabilityList($request);
 
+            // Set response data
+            $apiData = $availabilityLists;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = ($availabilityLists->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+                : trans('messages.success.MESSAGE_AVAILABILITY_LISTING');
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        }
+    }
+    
     /**
-     * Store a newly created news category in database.
+     * Store a newly created availability.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -85,11 +92,10 @@ class NewsCategoryController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "category_name" => "required|max:255|
-                unique:news_category,category_name,NULL,news_category_id,deleted_at,NULL",
+                "type" => "required|max:64|unique:availability,type,NULL,availability_id,deleted_at,NULL",
                 "translations" => "required",
                 "translations.*.lang" => "required_with:translations|max:2",
-                "translations.*.title" => "required_with:translations"
+                "translations.*.title" => "required_with:translations|max:255"
             ]
         );
 
@@ -98,155 +104,155 @@ class NewsCategoryController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_NEWS_CATEGORY_INVALID_DATA'),
+                config('constants.error_codes.ERROR_AVAILABILITY_INVALID_DATA'),
                 $validator->errors()->first()
             );
         }
         
-        // Create news category
-        $newsCategory = $this->newsCategoryRepository->store($request->all());
+        // Create new availability
+        $availability = $this->availabilityRepository->store($request->all());
 
         // Set response data
-        $apiData = ['news_category_id' => $newsCategory->news_category_id];
+        $apiData = ['availability_id' => $availability->availability_id];
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_CREATED');
+        $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_CREATED');
         
         // Make activity log
         event(new UserActivityLogEvent(
-            config('constants.activity_log_types.NEWS_CATEGORY'),
+            config('constants.activity_log_types.AVAILABILITY'),
             config('constants.activity_log_actions.CREATED'),
             config('constants.activity_log_user_types.API'),
             $this->userApiKey,
             get_class($this),
             $request->toArray(),
             null,
-            $newsCategory->news_category_id
+            $availability->availability_id
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
-     * Update news category in database.
+     * Update availability details.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $newsCategoryId
+     * @param int $availabilityId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $newsCategoryId): JsonResponse
+    public function update(Request $request, int $availabilityId): JsonResponse
     {
         try {
+            $this->availabilityRepository->find($availabilityId);
             // Server side validations
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "category_name" => [
-                        "max:255",
+                    "type" => [
                         "sometimes",
                         "required",
-                        Rule::unique('news_category')->ignore($newsCategoryId, 'news_category_id,deleted_at,NULL')
+                        Rule::unique('availability')->ignore($availabilityId, 'availability_id,deleted_at,NULL')
                     ],
                     "translations" => "sometimes|required",
                     "translations.*.lang" => "required_with:translations|max:2",
-                    "translations.*.title" => "required_with:translations"
+                    "translations.*.title" => "required_with:translations|max:255"
                 ]
             );
-            
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_NEWS_CATEGORY_INVALID_DATA'),
+                    config('constants.error_codes.ERROR_AVAILABILITY_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
-         
-            // Update news category
-            $newsCategory = $this->newsCategoryRepository->update($request->toArray(), $newsCategoryId);
-
+            
+            // Update availability details
+            $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
+       
             // Set response data
-            $apiData = ['news_category_id' => $newsCategory->news_category_id];
+            $apiData = ['availability_id' => $availability->availability_id];
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_UPDATED');
+            $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_UPDATED');
             
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.NEWS_CATEGORY'),
+                config('constants.activity_log_types.AVAILABILITY'),
                 config('constants.activity_log_actions.UPDATED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
                 $request->toArray(),
                 null,
-                $newsCategory->news_category_id
+                $availability->availability_id
             ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NEWS_CATEGORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
+                config('constants.error_codes.ERROR_AVAILABILITY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_AVAILABILITY_NOT_FOUND')
             );
         }
     }
 
     /**
-     * Display news category details.
+     * Display availability detail.
      *
-     * @param int $newsCategoryId
+     * @param int $availabilityId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $newsCategoryId): JsonResponse
+    public function show(int $availabilityId): JsonResponse
     {
         try {
-            $newsCategoryDetail = $this->newsCategoryRepository->find($newsCategoryId);
-                
-            $apiData = $newsCategoryDetail->toArray();
+            $availability = $this->availabilityRepository->find($availabilityId);
+            
+            $apiData = $availability->toArray();
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_FOUND');
+            $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_FOUND');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NEWS_CATEGORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
+                config('constants.error_codes.ERROR_AVAILABILITY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_AVAILABILITY_NOT_FOUND')
             );
         }
     }
 
     /**
-     * Remove news category from database.
+     * Remove the specified resource from storage.
      *
-     * @param int $newsCategoryId
+     * @param int $availabilityId
      * @return Illuminate\Http\JsonResponse
      */
-    public function destroy(int $newsCategoryId): JsonResponse
+    public function destroy(int $availabilityId): JsonResponse
     {
         try {
-            $newsCategory = $this->newsCategoryRepository->delete($newsCategoryId);
+            $availability = $this->availabilityRepository->delete($availabilityId);
             
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_DELETED');
+            $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_DELETED');
 
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.NEWS_CATEGORY'),
+                config('constants.activity_log_types.AVAILABILITY'),
                 config('constants.activity_log_actions.DELETED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
                 [],
                 null,
-                $newsCategoryId
+                $availabilityId
             ));
-
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NEWS_CATEGORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
+                config('constants.error_codes.ERROR_AVAILABILITY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_AVAILABILITY_NOT_FOUND')
             );
         }
     }

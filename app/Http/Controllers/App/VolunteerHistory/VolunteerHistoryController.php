@@ -16,6 +16,10 @@ use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Volunteerhistory controller
+/*!
+This controller is responsible for handling volunteerhistory theme, goal, time history and export operations.
+ */
 class VolunteerHistoryController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -191,8 +195,8 @@ class VolunteerHistoryController extends Controller
 
             foreach ($goalMissionList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->action
                 ]);
             }
@@ -251,8 +255,8 @@ class VolunteerHistoryController extends Controller
 
             foreach ($timeRequestList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->time,
                     $mission->hours
                 ]);

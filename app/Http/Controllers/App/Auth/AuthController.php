@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\User\UserRepository;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Auth controller
+/*!
+This controller is responsible for handling authenticate, change password and reset password operations.
+ */
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -126,7 +130,7 @@ class AuthController extends Controller
         }
         
         // Fetch user by email address
-        $userDetail = $user->where('email', $this->request->input('email'))->first();
+        $userDetail = $user->with('timezone')->where('email', $this->request->input('email'))->first();
 
         if (!$userDetail) {
             return $this->responseHelper->error(
@@ -159,6 +163,8 @@ class AuthController extends Controller
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
                                          $userDetail->cookie_agreement_date : '';
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
+        $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone !="") ?
+        $userDetail->timezone['timezone'] : '';
         
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
@@ -171,7 +177,7 @@ class AuthController extends Controller
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
-            $request->toArray(),
+            null,
             $userDetail->user_id
         ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -320,6 +326,7 @@ class AuthController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),

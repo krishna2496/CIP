@@ -106,11 +106,6 @@ class CustomStylingService
         if ($file->isValid()) {
             $fileName = $request->custom_scss_file_name;
 
-            /* Check user uploading custom style variable file,
-            then we need to make it as high priority instead of passed colors. */
-            if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
-                $isVariableScss = 1;
-            }
             // if it is not exist then need to throw error
             if (!Storage::disk('s3')->exists($tenantName.'/assets/scss/'.$fileName)) {
                 // Error: Return like uploaded file name doesn't match with structure.

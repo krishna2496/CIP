@@ -132,12 +132,10 @@ class Helpers
      */
     public function getUserTimeZoneDate(string $date): string
     {
-        if (config('constants.TIMEZONE') !== '' && $date !== null) {
-            if (!($date instanceof Carbon)) {
-                $date = Carbon::parse($date);
-            }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
+        if (!($date instanceof Carbon)) {
+            $date = Carbon::parse($date);
         }
+        return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
     }
 
     /**

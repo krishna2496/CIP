@@ -24,6 +24,11 @@ use App\Services\CustomStyling\CustomStylingService;
 use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Tenant options controller
+/*!
+This controller is responsible for handling tenant options store, update, download assets,
+reset style, update style and update image operations.
+ */
 class TenantOptionsController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -153,7 +158,18 @@ class TenantOptionsController extends Controller
             if (!is_null($response)) {
                 return $response;
             }
+
+            $fileName = $request->custom_scss_file_name;
+            $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
+                config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
+                
+            /* Check user uploading custom style variable file,
+            then we need to make it as high priority instead of passed colors. */
+            if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
+                $isVariableScss = 1;
+            }
         }
+
         $options['isVariableScss'] = $isVariableScss;
         
         if (isset($request->primary_color) && $request->primary_color!='') {
@@ -165,7 +181,6 @@ class TenantOptionsController extends Controller
         
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
-
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
         $this->helpers->switchDatabaseConnection('tenant', $request);
 
@@ -185,7 +200,6 @@ class TenantOptionsController extends Controller
                 null
             ));
         }
-        
 
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
@@ -417,7 +431,7 @@ class TenantOptionsController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
             
-             // Make activity log
+            // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.TENANT_OPTION'),
                 config('constants.activity_log_actions.UPDATED'),

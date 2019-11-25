@@ -179,9 +179,31 @@ class StoryRepository implements StoryInterface
                     'title'
                 )->where('language_id', $languageId);
             },
-        ])->when($userId, function ($query, $userId) {
+        ])->whereHas('mission');
+
+        if ($request->has('search') && $request->has('search') !== '') {
+            $userStoryQuery->where(function ($query) use ($request) {
+                $query->orWhere('title', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('description', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+
+        if ($request->has('status') && $request->input('status') !== "") {
+            $userStoryQuery->where(function ($query) use ($request) {
+                $query->where('status', $request->input('status'));
+            });
+        }
+
+        if ($request->has('mission_id') && $request->input('mission_id') !== "") {
+            $userStoryQuery->where(function ($query) use ($request) {
+                $query->where('mission_id', $request->input('mission_id'));
+            });
+        }
+
+        $userStoryQuery->when($userId, function ($query, $userId) {
             return $query->where('user_id', $userId);
-        })->when($status, function ($query, $status) {
+        });
+        $userStoryQuery->when($status, function ($query, $status) {
             return $query->where('status', $status);
         });
         return $userStoryQuery->paginate($request->perPage);
@@ -451,5 +473,16 @@ class StoryRepository implements StoryInterface
     public function getStoryMedia(int $storyId): Collection
     {
         return $this->storyMedia->where('story_id', $storyId)->get();
+    }
+
+    /**
+     * Get story detail.
+     *
+     * @param int $storyId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getStoryDetail(int $storyId): Collection
+    {
+        return $this->story->withTrashed()->where('story_id', $storyId)->get();
     }
 }
