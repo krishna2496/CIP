@@ -16,6 +16,10 @@ use Illuminate\Http\JsonResponse;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Timesheet controller
+/*!
+This controller is responsible for handling timesheet listing and update operations.
+ */
 class TimesheetController extends Controller
 {
     use RestExceptionHandlerTrait;

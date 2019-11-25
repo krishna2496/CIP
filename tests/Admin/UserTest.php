@@ -972,4 +972,37 @@ class UserTest extends TestCase
         $this->get('users/', [])
           ->seeStatusCode(401);
     }
+
+    /**
+     * @test
+     *
+     * Returns activity logs
+     *
+     * @return void
+     */
+    public function it_should_return_activity_logs()
+    {
+        $this->get("logs?from_date=".date('Y-m-d')."&to_date=".date('Y-m-d'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?type=".config("constants.activity_log_types.AUTH"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?action=".config("constants.activity_log_actions.CREATED"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?user_type=".config("constants.activity_log_user_types.API"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?users=1", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?type=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
 }

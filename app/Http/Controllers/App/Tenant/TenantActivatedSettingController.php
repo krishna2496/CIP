@@ -14,6 +14,10 @@ use App\Models\TenantActivatedSetting;
 use Validator;
 use App\Helpers\Helpers;
 
+//!  Tenant activated setting controller
+/*!
+This controller is responsible for handling tenant activated setting listing operation.
+ */
 class TenantActivatedSettingController extends Controller
 {
     use RestExceptionHandlerTrait;

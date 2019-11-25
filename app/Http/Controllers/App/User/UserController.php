@@ -23,6 +23,11 @@ use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 
+//!  User controller
+/*!
+This controller is responsible for handling user listing, show, save cookie agreement and
+upload profile image operations.
+ */
 class UserController extends Controller
 {
     use RestExceptionHandlerTrait, UserTransformable;
@@ -272,7 +277,7 @@ class UserController extends Controller
             "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-            'skills' => 'sometimes|required|array',
+            'skills' => 'array',
             'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
         );
 
@@ -305,7 +310,7 @@ class UserController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                    trans('messages.custom_error_message.SKILL_LIMIT')
+                    trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
                 );
             }
         }
@@ -325,8 +330,10 @@ class UserController extends Controller
         }
 
         // Update user skills
-        $this->userRepository->deleteSkills($id);
-        $this->userRepository->linkSkill($request->toArray(), $id);
+        if (!empty($request->skills)) {
+            $this->userRepository->deleteSkills($id);
+            $this->userRepository->linkSkill($request->toArray(), $id);
+        }
 
         // Set response data
         $apiData = ['user_id' => $user->user_id];
@@ -412,7 +419,7 @@ class UserController extends Controller
 
         // Set response data
         $apiData = ['user_id' => $userId];
-        $apiStatus = Response::HTTP_OK;
+        $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
         
         // Make activity log

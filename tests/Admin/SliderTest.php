@@ -46,6 +46,8 @@ class SliderTest extends TestCase
     {
         DB::setDefaultConnection('tenant');
         App\Models\Slider::whereNotNull('slider_id')->delete();
+        DB::setDefaultConnection('mysql');
+
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
             'sort_order' => "1",        

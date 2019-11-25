@@ -18,6 +18,11 @@ use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Story controller
+/*!
+This controller is responsible for handling story store, update, delete, copy, delete story image,
+user story listing, published story listing and export operations.
+ */
 class StoryController extends Controller
 {
     use RestExceptionHandlerTrait,StoryTransformable;
@@ -107,7 +112,7 @@ class StoryController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.STORY_ADDED_SUCESSFULLY');
+        $apiMessage = trans('messages.success.STORY_ADDED_SUCCESSFULLY');
         $apiData = ['story_id' => $storyData->story_id];
 
         // get the story media data for log
@@ -436,10 +441,10 @@ class StoryController extends Controller
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
-                $story->title,
-                strip_tags($story->description),
+                strip_tags(preg_replace('~[\r\n]+~', '', $story->title)),
+                strip_tags(preg_replace('~[\r\n]+~', '', $story->description)),
                 $story->status,
-                $story->mission->missionLanguage[0]->title,
+                strip_tags(preg_replace('~[\r\n]+~', '', $story->mission->missionLanguage[0]->title)),
                 $story->created_at,
                 $story->published_at
             ]);
@@ -498,7 +503,7 @@ class StoryController extends Controller
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
+            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCCESSFULLY');
             $apiData = ['story_id' => $storyData->story_id];
 
             //Make activity log

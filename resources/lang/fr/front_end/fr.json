@@ -24,7 +24,7 @@
         "volunteered": "Fait du bénévolat",
         "back_to_top": "retour au sommet",
         "search": "Chercher",
-        "mission": "mission",
+        "mission": "Mission",
         "explore": "Explorer",
         "clear_all": "Tout effacer",
         "sort_by": "Trier par",
@@ -69,14 +69,14 @@
         "date": "Date",
         "organisation": "Organisation",
         "apply_now": "Apply now",
-        "recommend_to_co_worker": "Recommend to a Co-Worker",
+        "recommend_to_co_worker": "Recommander à un collègue",
         "information": "Information",
-        "days": "Days",
-        "rating": "Rating",
-        "recent_volunteers": "Recent Volunteers",
-        "comment": "Comments",
-        "read_more_comments": "Read more comments",
-        "post_comment": "Post comment",
+        "days": "Journées",
+        "rating": "Évaluation",
+        "recent_volunteers": "Bénévoles récents",
+        "comment": "commentaires",
+        "read_more_comments": "Lire plus de commentaires",
+        "post_comment": "Poster un commentaire",
         "comments": "commentaires",
         "documents": "Les documents",
         "read_more_comment": "Lire plus de commentaire",
@@ -134,7 +134,7 @@
         "total_hours": "Heures totales",
         "hours": "Heures",
         "minutes": "Minutes",
-        "date_volunteered": "Date Volunteered",
+        "date_volunteered": "Date de bénévolat",
         "notes": "Remarques",
         "volunteering_goals": "Objectifs de bénévolat",
         "hours_requests": "Heures de demandes",
@@ -251,8 +251,8 @@
         "new": "Nouvelle",
         "send_us_a_message": "Envoie-nous un message",
         "email": "Email",
-        "phone": "Phone",
-        "subject": "Subject",
+        "phone": "Téléphone",
+        "subject": "Matière",
         "anonymous_user": "Utilisateur anonyme",
         "recommended_missions": "Missions recommandées",
         "my_comments": "Mes commentaires",
@@ -265,9 +265,20 @@
 		"yesterday": "Hier",
         "older": "Plus âgée",
 		"mission_application": "Application de la mission",
-        "new_news": "Nouvelles informations",
+        "new_news": "Nouvelles",
         "mark_as_read": "Marquer comme lu",
-        "mark_as_un_read": "marquer comme non lu"
+        "mark_as_un_read": "marquer comme non lu",
+		"cancel_story" : "Êtes-vous sûr de vouloir annuler cette histoire? ?",
+		"yes": "Oui",
+		"no" : "Non",
+        "delete_story" : "Êtes-vous sûr de vouloir supprimer cette histoire? ?",
+        "sent" : "Envoyée",
+        "not_volunteered_text" : "Vous ne vous êtes pas porté volontaire pour une mission, vous ne pouvez donc pas créer d'histoire.",
+        "all_missions" : "Toutes les missions",
+        "all": "toute",
+        "delete_message": "Êtes-vous sûr de vouloir supprimer ce message?",
+        "delete_comment": "Êtes-vous sûr de vouloir supprimer ce commentaire?",
+        "no_data": "Pas de données"
     },
 
     "placeholder": {
@@ -300,7 +311,8 @@
         "story_detail": "Entrez vos histoires",
         "video_url": "Entrez votre URL de vidéo",
         "subject_required": "Entrez le numéro de téléphone",
-        "message": "Entrez le message"
+        "message": "Entrez le message",
+        "search_user": "Recherche par mot clé ou adresse email"
     },
 
     "errors": {
@@ -359,11 +371,11 @@
     },
 
     "export_timesheet_file_names": {
-        "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xlsx",
-        "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xlsx",
-        "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xlsx",
-        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx",
-        "MY_STORIES_XLSX": "My_Stories_Listing.xlsx",
-        "COMMENT_LISTING_XLSX": "Comment_listing.xlsx"
+        "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
+        "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",
+        "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xls",
+        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xls",
+        "MY_STORIES_XLSX": "My_Stories_Listing.xls",
+        "COMMENT_LISTING_XLSX": "Comment_listing.xls"
     }
 }

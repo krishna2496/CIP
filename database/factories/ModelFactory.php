@@ -45,9 +45,11 @@ $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $f
         'type' => $typeArray[$randomTypes],
         'is_mandatory' => 1,
         'translations' => [
-            'lang' => "en",
-            'name' => str_random(10),
-            'values' => "[".'1:'.rand(1, 5).",".'2:'.rand(5, 10)."]"
+            [
+                'lang' => "en",
+                'name' => str_random(10),
+                'values' => "[".'1:'.rand(1, 5).",".'2:'.rand(5, 10)."]"                
+            ]
         ]
     ];
 });
@@ -72,8 +74,8 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "city_id" => 1,
         "country_id" => 233,
         "start_date" => "2019-05-15 10:40:00",
-        "end_date" => "2019-10-15 10:40:00",
-        "total_seats" => rand(1, 1000),        
+        "end_date" => "2022-10-15 10:40:00",
+        "total_seats" => rand(10, 1000),        
         "mission_type" => config("constants.mission_type.GOAL"),
         "publication_status" => config("constants.publication_status.APPROVED"),
         "organisation_id" => 1,
@@ -203,11 +205,20 @@ $factory->define(App\Models\NewsLanguage::class, function (Faker\Generator $fake
 });
 
 $factory->define(App\Models\NewsToCategory::class, function (Faker\Generator $faker) {
-    \DB::setDefaultConnection('tenant');
-    $newsCategoryId = App\Models\NewsCategory::all()->random(1)->first()->news_category_id;
-    \DB::setDefaultConnection('mysql');
     return [
         "news_id" => 1,
-        "news_category_id" => $newsCategoryId
+        "news_category_id" => 1
+    ];
+});
+
+$factory->define(App\Models\NewsCategory::class, function (Faker\Generator $faker) {
+    return [
+        'category_name' => str_random(10),
+        'translations' =>  [
+            [
+                'lang' => 'en',
+                'title' => str_random(20)
+            ]
+        ],
     ];
 });

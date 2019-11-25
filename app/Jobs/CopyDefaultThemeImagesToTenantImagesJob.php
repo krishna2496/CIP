@@ -25,35 +25,28 @@ class CopyDefaultThemeImagesToTenantImagesJob extends Job
         $this->tenantName = $tenantName;
     }
 
-     /**
-     * Execute the job.
-     *
-     * @return void
-     */
+    /**
+    * Execute the job.
+    *
+    * @return void
+    */
     public function handle()
     {
         // Copy default theme folder
-        if (Storage::disk('s3')->exists(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'))) {
-            $allFiles = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'));
+        $allFiles = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'));
 
-            foreach ($allFiles as $key => $file) {
-                // Only scss and css copy
-                if (strpos($file, "/images")) {
-                    $sourcePath = str_replace(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'), '', $file);
-                    // Delete if folder is already there
-                    if (Storage::disk('s3')->exists($this->tenantName . '/' . $sourcePath)) {
-                        // Delete existing one
-                        Storage::disk('s3')->delete($this->tenantName . '/' . $sourcePath);
-                    }
-                    // copy and paste file into tenant's folders
-                    Storage::disk('s3')->copy($file, $this->tenantName . '/' . $sourcePath);
+        foreach ($allFiles as $key => $file) {
+            // Only scss and css copy
+            if (strpos($file, "/images")) {
+                $sourcePath = str_replace(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'), '', $file);
+                // Delete if folder is already there
+                if (Storage::disk('s3')->exists($this->tenantName . '/' . $sourcePath)) {
+                    // Delete existing one
+                    Storage::disk('s3')->delete($this->tenantName . '/' . $sourcePath);
                 }
+                // copy and paste file into tenant's folders
+                Storage::disk('s3')->copy($file, $this->tenantName . '/' . $sourcePath);
             }
-        } else {
-            throw new BucketNotFoundException(
-                trans('messages.custom_error_message.ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND'),
-                config('constants.error_codes.ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND')
-            );
         }
     }
 }

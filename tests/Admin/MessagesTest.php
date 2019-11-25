@@ -208,9 +208,10 @@ class MessagesTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+        $subject = str_random('50');
 
         $params = [
-            'subject' => str_random('50'),
+            'subject' => $subject,
             'message' => str_random('100')
         ];
 
@@ -230,7 +231,7 @@ class MessagesTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $this->get('message/list', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('message/list?search='.$subject, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
         
         \DB::setDefaultConnection('mysql');

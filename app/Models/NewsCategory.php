@@ -36,10 +36,6 @@ class NewsCategory extends Model
      */
     protected $fillable = ['category_name', 'translations'];
 
-    public function news()
-    {
-        return $this->hasMany(\App\Models\NewsToCategory::class, 'news_category_id', 'news_category_id');
-    }
     /**
      * Set translations attribute on the model.
      *
@@ -60,10 +56,7 @@ class NewsCategory extends Model
     public function getTranslationsAttribute(string $value): array
     {
         $data = @unserialize($value);
-        if ($data !== false) {
-            return unserialize($value);
-        }
-        return [];
+        return ($data !== false) ? unserialize($value) : [];
     }
 
     /**

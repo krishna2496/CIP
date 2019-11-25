@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 
+//!  FooterPage controller
+/*!
+This controller is responsible for handling footerpage listing and show operations.
+ */
 class FooterPageController extends Controller
 {
     use RestExceptionHandlerTrait;

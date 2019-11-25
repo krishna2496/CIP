@@ -17,6 +17,10 @@ use InvalidArgumentException;
 use App\Events\User\UserActivityLogEvent;
 use App\Events\User\UserNotificationEvent;
 
+//!  Mission application controller
+/*!
+This controller is responsible for handling mission application listing, update and show operations.
+ */
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;

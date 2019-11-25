@@ -11,6 +11,10 @@ use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Mission rating controller
+/*!
+This controller is responsible for handling mission rating store operation.
+ */
 class MissionRatingController extends Controller
 {
     use RestExceptionHandlerTrait;

@@ -22,6 +22,10 @@ use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Story invite controller
+/*!
+This controller is responsible for handling story invite operations.
+ */
 class StoryInviteController extends Controller
 {
     use RestExceptionHandlerTrait;

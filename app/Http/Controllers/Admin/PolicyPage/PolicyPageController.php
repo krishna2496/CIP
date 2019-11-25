@@ -14,10 +14,10 @@ use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
-//!  Policy Page Controller
+//!  Policypage controller
 /*!
-  This controller is responsible for handling policy pages, store, update and delete operation including a trait.
-*/
+This controller is responsible for handling policypage listing, show, store, update and delete operations.
+ */
 class PolicyPageController extends Controller
 {
     use RestExceptionHandlerTrait;

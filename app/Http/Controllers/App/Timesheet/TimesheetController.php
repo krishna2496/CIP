@@ -22,6 +22,10 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Timesheet controller
+/*!
+This controller is responsible for handling timesheet store/update, export, submit and show operations.
+ */
 class TimesheetController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -154,6 +158,15 @@ class TimesheetController extends Controller
             config('constants.TIMESHEET_DATE_FORMAT')
         );
 
+        $dateVolunteeredCurrentTime = $this->helpers->changeDateFormat(
+            $request->date_volunteered." ".date("H:i:s"),
+            config('constants.TIMESHEET_DATE_TIME_FORMAT')
+        );
+
+        $dateVolunteeredCurrentTime = Carbon::parse($dateVolunteeredCurrentTime)
+        ->setTimezone(config('constants.TIMEZONE'))
+        ->format(config('constants.DB_DATE_TIME_FORMAT'));
+
         $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
         config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
@@ -210,7 +223,6 @@ class TimesheetController extends Controller
                 // Remove extra params
                 $request->request->remove('action');
                 break;
-            default:
         }
         
         // Check start dates and end dates of mission
@@ -230,28 +242,27 @@ class TimesheetController extends Controller
                 if ($timesheetMissionData->end_date) {
                     $missionEndDate = $this->helpers->changeDateFormat(
                         $timesheetMissionData->end_date,
-                        config('constants.TIMESHEET_DATE_FORMAT')
+                        config('constants.TIMESHEET_DATE_TIME_FORMAT')
                     );
                    
-                    if ($dateVolunteered > $missionEndDate) {
+                    if ($dateVolunteeredCurrentTime > $missionEndDate) {
                         $endDate = Carbon::createFromFormat(
-                            config('constants.TIMESHEET_DATE_FORMAT'),
+                            config('constants.TIMESHEET_DATE_TIME_FORMAT'),
                             $missionEndDate
                         );
             
                         // Fetch tenant options value
                         $tenantOptionData = $this->tenantOptionRepository
                         ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
-
+                        
                         $extraWeeks = isset($tenantOptionData[0]['option_value'])
-                        ? intval($tenantOptionData[0]['option_value'])
-                        : config('constants.ALLOW_TIMESHEET_ENTRY');
+                        ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
 
                         // Count records
                         if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
                             // Add weeks to mission end date
                             $timeentryEndDate = $endDate->addWeeks($extraWeeks);
-                            if ($dateVolunteered > $timeentryEndDate) {
+                            if ($dateVolunteeredCurrentTime > $timeentryEndDate) {
                                 return $this->responseHelper->error(
                                     Response::HTTP_UNPROCESSABLE_ENTITY,
                                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -514,8 +525,8 @@ class TimesheetController extends Controller
 
             foreach ($timeRequestList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->time,
                     $mission->hours
                 ]);
@@ -570,8 +581,8 @@ class TimesheetController extends Controller
 
             foreach ($goalRequestList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->action
                 ]);
             }

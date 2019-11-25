@@ -23,6 +23,10 @@ use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Mission invite controller
+/*!
+This controller is responsible for handling mission invite operation.
+ */
 class MissionInviteController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -220,9 +224,6 @@ class MissionInviteController extends Controller
             )->option_value;
             dispatch(new AppMailerJob($params));
         }
-
-        
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }
