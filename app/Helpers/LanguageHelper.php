@@ -68,6 +68,7 @@ class LanguageHelper
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
         ->whereNull('tenant_language.deleted_at')
+		->whereNull('language.deleted_at')
         ->get();
 
         // Connect tenant database
