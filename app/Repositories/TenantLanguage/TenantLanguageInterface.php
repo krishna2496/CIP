@@ -41,4 +41,12 @@ interface TenantLanguageInterface
      * @return bool
      */
     public function checkDefaultLanguageSettings(int $tenantId, int $languageId): bool;
+
+    /**
+     * Get language detail.
+     *
+     * @param  int  $id
+     * @return App\Models\TenantLanguage
+     */
+    public function find(int $id): TenantLanguage;
 }

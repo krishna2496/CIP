@@ -47,7 +47,8 @@ return [
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée dans le système',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Langue du locataire introuvable dans le système',
         'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Au moins une langue par défaut est requise',
-        'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'extension de fichier invalide'
+        'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'extension de fichier invalide',
+        'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'Vous ne pouvez pas supprimer la langue du locataire par défaut',
     ]
     
 ];
