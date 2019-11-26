@@ -131,8 +131,7 @@
                             </b-nav-item>
                             <b-nav-item right class="notification-menu" id="notifyPopoverWrap"
                                 v-if="this.$store.state.isLoggedIn">
-                                <button id="notificationPopover" class="btn-notification"
-                                    @click="getNotificationSettingListing">
+                                <button id="notificationPopover" class="btn-notification">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'"
                                             alt="Notification Icon" />
@@ -357,6 +356,7 @@
                 showsetting() {
                     let popoverBody = document.querySelector(".popover-body");
                     popoverBody.classList.toggle("show-setting");
+                    this.getNotificationSettingListing()
                 },
                 cancelsetting() {
                     this.selectedNotification = []
