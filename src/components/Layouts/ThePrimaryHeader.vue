@@ -158,7 +158,7 @@
                             @show="onPopoverShow" ref="notficationPopover" triggers="click">
                             <template slot="title">
                                 <b-button class="btn-setting" :title="languageData.label.notification_settings"
-                                    @click="showsetting ">
+                                    @click="showsetting">
                                     <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
                                         alt="Setting icon">
 
