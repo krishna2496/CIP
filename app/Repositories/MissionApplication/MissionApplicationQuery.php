@@ -14,7 +14,7 @@ class MissionApplicationQuery implements QueryableInterface
 {
     const FILTER_APPLICATION_IDS    = 'applicationIds';
     const FILTER_APPLICATION_DATE   = 'applicationDate';
-    const FILTER_APPLICANT_SKILLS   = 'applicationSkills';
+    const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
     const FILTER_MISSION_SKILLS     = 'missionSkills';
     const FILTER_MISSION_THEMES     = 'missionThemes';
     const FILTER_MISSION_TYPES      = 'missionTypes';
