@@ -131,7 +131,8 @@
                             </b-nav-item>
                             <b-nav-item right class="notification-menu" id="notifyPopoverWrap"
                                 v-if="this.$store.state.isLoggedIn">
-                                <button id="notificationPopover" class="btn-notification">
+                                <button id="notificationPopover" class="btn-notification"
+                                    @click="getNotificationSettingListing">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'"
                                             alt="Notification Icon" />
@@ -517,31 +518,33 @@
                     })
                 },
                 getNotificationSettingListing() {
-
+                   
                     if (this.totalNotificationCount <= 0) {
                         setTimeout(() => {
                             let popoverBody = document.querySelector(".popover-body");
                             popoverBody.classList.add("clear-item");
+                            this.notificationSettingId = []
+                            this.selectedNotification = []
+                            this.isNotificationAjaxCall = true;
+                            notificationSettingListing().then(response => {
+                                this.isNotificationAjaxCall = false;
+                                if (response.error == false) {
+                                    if (response.data) {
+                                        this.notificationSettingList = response.data
+                                        this.notificationSettingList.filter((data, index) => {
+                                            data.notification_type = this.languageData.label[data
+                                                .notification_type]
+                                            this.notificationSettingId.push(data.notification_type_id);
+                                            if (data.is_active == 1) {
+                                                this.selectedNotification.push(data.notification_type_id)
+                                            }
+                                        })
+                                    }
+                                }
+                            })
                         }, 100)
 
                     }
-                    this.isNotificationAjaxCall = true;
-                    notificationSettingListing().then(response => {
-                        this.isNotificationAjaxCall = false;
-                        if (response.error == false) {
-                            if (response.data) {
-                                this.notificationSettingList = response.data
-                                this.notificationSettingList.filter((data, index) => {
-                                    data.notification_type = this.languageData.label[data
-                                        .notification_type]
-                                    this.notificationSettingId.push(data.notification_type_id);
-                                    if (data.is_active == 1) {
-                                        this.selectedNotification.push(data.notification_type_id)
-                                    }
-                                })
-                            }
-                        }
-                    })
                 },
                 saveNotificationSetting() {
                     let data = {
