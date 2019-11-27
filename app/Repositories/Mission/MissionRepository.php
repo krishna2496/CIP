@@ -1258,8 +1258,12 @@ class MissionRepository implements MissionInterface
     {
         $mission = $this->modelsService->mission->select('publication_status')
         ->where('mission_id', $missionId)->get();
+        $missionStatus = array(
+            config('constants.publication_status.APPROVED'),
+            config('constants.publication_status.PUBLISHED_FOR_APPLYING')
+        );
         if (isset($mission[0]['publication_status'])
-        && ($mission[0]['publication_status'] === config('constants.publication_status.APPROVED'))) {
+        && (in_array($mission[0]['publication_status'], $missionStatus))) {
             return true;
         }
         return false;
