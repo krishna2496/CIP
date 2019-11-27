@@ -174,5 +174,6 @@ return [
         'mission_detail.*.custom_information' => 'custom information',
         'mission_detail.*.custom_information.*.title' => 'title',
         'mission_detail.*.custom_information.*.description' => 'description',
+        'mission_detail.*.title' => 'title',
     ],
 ];
