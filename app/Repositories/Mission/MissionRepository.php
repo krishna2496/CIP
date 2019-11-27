@@ -1247,4 +1247,21 @@ class MissionRepository implements MissionInterface
             })
             ->count();
     }
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool
+    {
+        $mission = $this->modelsService->mission->select('publication_status')
+        ->where('mission_id', $missionId)->get();
+        if (isset($mission[0]['publication_status'])
+        && ($mission[0]['publication_status'] === config('constants.publication_status.APPROVED'))) {
+            return true;
+        }
+        return false;
+    }
 }

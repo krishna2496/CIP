@@ -189,4 +189,12 @@ interface MissionInterface
      * @return string
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool;
 }
