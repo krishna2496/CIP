@@ -318,7 +318,8 @@ class StoryRepository implements StoryInterface
             'status',
             'published_at',
             'created_at'
-        )->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
+        )->whereHas('mission')
+        ->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
         }])->where('user_id', $userId);
@@ -458,7 +459,7 @@ class StoryRepository implements StoryInterface
      */
     public function getUserStoriesStatusCounts(int $userId): Story
     {
-        return $this->story->selectRaw("COUNT(CASE WHEN status = 'DRAFT' THEN 1 END) AS draft,
+        return $this->story->whereHas('mission')->selectRaw("COUNT(CASE WHEN status = 'DRAFT' THEN 1 END) AS draft,
         COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending,
         COUNT(CASE WHEN status = 'PUBLISHED' THEN 1 END) AS published,
         COUNT(CASE WHEN status = 'DECLINED' THEN 1 END) AS declined")->where('user_id', $userId)->first();
