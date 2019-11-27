@@ -259,7 +259,7 @@ class MissionRepository implements MissionInterface
                                         'short_description' => (isset($value['short_description'])) ?
                                         $value['short_description'] : null,
                                         'description' => ($value['section']),
-                                        'objective' => $value['objective']
+                                        'objective' => $value['objective'] ?? null
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
