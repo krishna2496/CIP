@@ -112,7 +112,7 @@
                             <span>{{languageData.label.recommend_to_co_worker}}</span>
                         </b-button>
                         <b-link :to="{ path: '/mission-detail/'+storyDetailList.mission_id}"
-                            v-if="storyDetailList.mission_id != ''" class="btn-bordersecondary icon-btn btn">
+                            v-if="storyDetailList.mission_id != '' && storyDetailList.open_mission_status == 1" class="btn-bordersecondary icon-btn btn">
                             <span>{{languageData.label.open_mission}}</span>
                             <i>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
