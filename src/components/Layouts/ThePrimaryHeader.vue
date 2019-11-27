@@ -355,8 +355,11 @@
                     })
                 },
                 showsetting() {
-                    let popoverBody = document.querySelector(".popover-body");
+                    setTimeout(() => {
+                        let popoverBody = document.querySelector(".popover-body");
                     popoverBody.classList.toggle("show-setting");
+                    },150);
+                    
                     this.getNotificationSettingListing()
                 },
                 cancelsetting() {
@@ -518,11 +521,11 @@
                     })
                 },
                 getNotificationSettingListing() {
-                   
-                    if (this.totalNotificationCount <= 0) {
                         setTimeout(() => {
-                            let popoverBody = document.querySelector(".popover-body");
-                            popoverBody.classList.add("clear-item");
+                            if (this.totalNotificationCount <= 0) {
+                                let popoverBody = document.querySelector(".popover-body");
+                                popoverBody.classList.add("clear-item");
+                            }
                             this.notificationSettingId = []
                             this.selectedNotification = []
                             this.isNotificationAjaxCall = true;
@@ -543,8 +546,6 @@
                                 }
                             })
                         }, 100)
-
-                    }
                 },
                 saveNotificationSetting() {
                     let data = {
