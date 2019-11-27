@@ -255,14 +255,18 @@ class MissionRepository implements MissionInterface
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
                                         'language_id' => $language->language_id,
-                                        'title' => $value['title'],
                                         'short_description' => (isset($value['short_description'])) ?
                                         $value['short_description'] : null,
-                                        'description' => ($value['section']),
-                                        'objective' => $value['objective']
+                                        'objective' => $value['objective'] ?? null
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
+                }
+                if (array_key_exists('title', $value)) {
+                    $missionLanguage['title'] = $value['title'];
+                }
+                if (array_key_exists('section', $value)) {
+                    $missionLanguage['description'] = $value['section'];
                 }
 
                 $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
