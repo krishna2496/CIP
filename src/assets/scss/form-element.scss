@@ -905,17 +905,24 @@ label {
 
 						img {
 							display: inline-flex;
-							width: 25px;
-							height: 25px;
+							width: 38px;
+							height: 38px;
 							margin-right: 15px;
 							border-radius: 100%;
+							@include sm-max{
+								width: 32px;
+								height: 32px;
+							}
 						}
 
 						>div {
 							overflow: hidden;
 							text-overflow: ellipsis;
 							white-space: nowrap;
-
+							font-size: 17px;
+							@include sm-max{
+								font-size: 15px;
+							}
 							span {
 								font-size: 12px;
 								line-height: 16px;

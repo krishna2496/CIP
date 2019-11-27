@@ -709,8 +709,8 @@ header {
                     .status {
                         position: absolute;
                         right: 15px;
-                        width: 12px;
-                        height: 12px;
+                        width: 14px;
+                        height: 14px;
                         background: $primary;
                         border-radius: 50%;
                         top: 25px;
@@ -726,8 +726,8 @@ header {
                                 content: "";
                                 background: url($assetUrl+"/white-check-ic.svg") no-repeat center center;
                                 background-size: 8px;
-                                height: 12px;
-                                width: 12px;
+                                height: 14px;
+                                width: 14px;
                             }
                         }
                     }
