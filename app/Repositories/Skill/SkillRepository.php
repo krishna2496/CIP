@@ -67,6 +67,7 @@ class SkillRepository implements SkillInterface
      */
     public function store(array $request): Skill
     {
+        $request['parent_skill'] = $request['parent_skill'] ?? 0;
         return $this->skill->create($request);
     }
 
