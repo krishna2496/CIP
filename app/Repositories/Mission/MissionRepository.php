@@ -255,14 +255,18 @@ class MissionRepository implements MissionInterface
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
                                         'language_id' => $language->language_id,
-                                        'title' => $value['title'],
                                         'short_description' => (isset($value['short_description'])) ?
                                         $value['short_description'] : null,
-                                        'description' => ($value['section']),
                                         'objective' => $value['objective'] ?? null
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
+                }
+                if (array_key_exists('title', $value)) {
+                    $missionLanguage['title'] = $value['title'];
+                }
+                if (array_key_exists('section', $value)) {
+                    $missionLanguage['description'] = $value['section'];
                 }
 
                 $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
@@ -1242,5 +1246,26 @@ class MissionRepository implements MissionInterface
                 });
             })
             ->count();
+    }
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool
+    {
+        $mission = $this->modelsService->mission->select('publication_status')
+        ->where('mission_id', $missionId)->get();
+        $missionStatus = array(
+            config('constants.publication_status.APPROVED'),
+            config('constants.publication_status.PUBLISHED_FOR_APPLYING')
+        );
+        if (isset($mission[0]['publication_status'])
+        && (in_array($mission[0]['publication_status'], $missionStatus))) {
+            return true;
+        }
+        return false;
     }
 }

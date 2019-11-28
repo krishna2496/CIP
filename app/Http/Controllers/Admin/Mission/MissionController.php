@@ -114,7 +114,8 @@ class MissionController extends Controller
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
                 "organisation" => "required",
-                "organisation.organisation_id" => "integer",
+                "organisation.organisation_id" => "required|integer",
+                "organisation.organisation_name" => "required",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
@@ -216,7 +217,7 @@ class MissionController extends Controller
                 "location.city_id" => "required_with:location|integer|exists:city,city_id,deleted_at,NULL",
                 "location.country_code" => "required_with:location|exists:country,ISO",
                 "mission_detail.*.lang" => "required_with:mission_detail|max:2",
-                "mission_detail.*.title" => "required_with:mission_detail",
+                "mission_detail.*.title" => "sometimes|required",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
@@ -235,6 +236,8 @@ class MissionController extends Controller
                 "media_videos.*.media_name" => "sometimes|required",
                 "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
                 "documents.*.document_path" => "required_with:documents|valid_document_path",
+                "organisation.organisation_id" => "sometimes|required|integer",
+                "organisation.organisation_name" => "sometimes|required",
             ]
         );
         
