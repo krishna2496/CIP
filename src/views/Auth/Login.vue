@@ -59,7 +59,7 @@ import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from '../../components/AppCustomDropdown';
 import { required, email } from 'vuelidate/lib/validators';
 import store from '../../store';
-import {loadLocaleMessages,login,databaseConnection,tenantSetting} from '../../services/service';
+import {loadLocaleMessages,login,databaseConnection,tenantSetting,policy} from '../../services/service';
 import constants from '../../constant';
 
 export default {
@@ -139,6 +139,17 @@ export default {
                     this.message = response.message
                 } else {
                     //redirect to landing page
+                    policy().then(response => {
+                        if (response.error == false) {
+                            if(response.data.length > 0) {
+                                store.commit('policyPage',response.data)
+                            } else {
+                                store.commit('policyPage',null)
+                            }
+                        } else {
+                            store.commit('policyPage',null)
+                        }
+                    });
                     this.$router.replace({
                         name: "home"
                     });
