@@ -429,8 +429,6 @@
                         if (this.topOrganization != null && this.topOrganization.length > 0) {
                             this.topOrganizationClass = 'has-submenu';
                         }
-                        // Call get policy service
-                        // this.getPolicyPage();
                     });
                 },
 
