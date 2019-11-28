@@ -311,9 +311,7 @@
                     filterData: [],
                     topOrganization: [],
                     languageData: [],
-                    policyPage: [
-                         {"pages": [ { "language_id": 1, "title": "Volunteering Policy" } ] }
-                    ],
+                    policyPage: [],
                     isThemeDisplay: true,
                     isStoryDisplay: true,
                     isNewsDisplay: true,
@@ -431,8 +429,6 @@
                         if (this.topOrganization != null && this.topOrganization.length > 0) {
                             this.topOrganizationClass = 'has-submenu';
                         }
-                        // Call get policy service
-                        this.getPolicyPage();
                     });
                 },
 
@@ -445,20 +441,6 @@
                             location.reload()
                         }, 15)
                     }
-                },
-
-                async getPolicyPage() {
-                    await policy().then(response => {
-                        if (response.error == false) {
-                            if(response.data.length > 0) {
-                                this.policyPage = response.data;
-                            } else {
-                                this.policyPage = [];
-                            }
-                        } else {
-                            this.policyPage = [];
-                        }
-                    });
                 },
 
                 getNotificationListing() {
@@ -625,6 +607,9 @@
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
                 if(!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
+                }
+                if(JSON.parse(store.state.policyPage) != null) {
+                    this.policyPage = JSON.parse(store.state.policyPage)
                 }
                 setTimeout(function () {
                     let body = document.querySelector("body");
