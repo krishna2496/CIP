@@ -27,7 +27,7 @@
                                         <a href="Javascript:void(0)">{{ languageData.label.top_themes}}</a>
                                         <i class="collapse-toggle"></i>
                                         <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
-                                            <li v-for="(items, key) in topTheme" v-bind:key=key>
+                                            <li v-for="(items, key) in topTheme" v-bind:key=key class="no-dropdown">
                                                 <router-link :to="{ path: '/home/themes/'+items.id}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
@@ -39,7 +39,7 @@
                                         <a href="Javascript:void(0)">{{languageData.label.top_country}}</a>
                                         <i class="collapse-toggle"></i>
                                         <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
-                                            <li v-for="(items, key) in topCountry" v-bind:key=key>
+                                            <li v-for="(items, key) in topCountry" v-bind:key=key class="no-dropdown">
                                                 <router-link
                                                     :to="{ path: '/home/country/'+items.title.toLowerCase().trim()}"
                                                     @click.native="menuBarclickHandler">
@@ -53,7 +53,8 @@
                                         <i class="collapse-toggle"></i>
                                         <ul class="subdropdown-menu"
                                             v-if="topOrganization != null && topOrganization.length > 0">
-                                            <li v-for="(items, key) in topOrganization" v-bind:key=key>
+                                            <li v-for="(items, key) in topOrganization" v-bind:key=key
+                                                class="no-dropdown">
                                                 <router-link :to="{ path: '/home/organization/'+items.title}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
@@ -85,7 +86,7 @@
                                             {{languageData.label.random}}
                                         </router-link>
                                     </li>
-								</ul>
+                                </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
                                 <router-link :to="{ path: '/stories'}">
@@ -104,7 +105,7 @@
                                 </a>
                                 <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu" v-show="policyPage.length > 0">
-                                    <li v-for="(item, key) in policyPage" v-bind:key=key>
+                                    <li v-for="(item, key) in policyPage" v-bind:key=key class="no-dropdown">
                                         <router-link :to="{ path: '/policy/'+item.slug}" v-if="item.pages[0]"
                                             @click.native="menuBarclickHandler">
                                             {{item.pages[0].title}}
@@ -112,8 +113,9 @@
                                     </li>
                                 </ul>
                             </li>
-	                        <li class="btn-save-outer">
-                                <b-button class="btn-bordersecondary btn-save"  v-if="isSubmitNewMissionSet" @click="submitNewMission">{{languageData.label.submit_new_mission}}</b-button>
+                            <li class="btn-save-outer">
+                                <b-button class="btn-bordersecondary btn-save" v-if="isSubmitNewMissionSet"
+                                    @click="submitNewMission">{{languageData.label.submit_new_mission}}</b-button>
                             </li>
                         </ul>
                     </div>
@@ -124,9 +126,10 @@
                                     <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
                                 </i>
                             </b-nav-item>
-                            <b-nav-item right class="btn-save-menu"  v-if="isSubmitNewMissionSet" @click="submitNewMission">
+                            <b-nav-item right class="btn-save-menu" v-if="isSubmitNewMissionSet"
+                                @click="submitNewMission">
                                 <b-button class="btn-bordersecondary btn-save">
-                                        {{languageData.label.submit_new_mission}}
+                                    {{languageData.label.submit_new_mission}}
                                 </b-button>
                             </b-nav-item>
                             <b-nav-item right class="notification-menu" id="notifyPopoverWrap"
@@ -171,42 +174,42 @@
                             </template>
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
-                                    <b-list-group-item v-if="notificationListing.today.length > 0"
-                                        v-bind:class="{
-                                        'read-item':item.is_read == 1 ,
-                                        'unread-item' : item.is_read == 0
-                                    }" v-for="(item,index) in notificationListing.today" :key=index>
-                                    <div  v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
-                                        <i v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
-                                            <img :src="item.icon" alt />
-                                        </i>
-                                        <p>
-                                            {{item.notification_string}}
-                                        </p>
-                                      
-                                    </div>
-                                    <span v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" class="status"
+                                    <b-list-group-item v-if="notificationListing.today.length > 0" v-bind:class="{
+            'read-item':item.is_read == 1 ,
+            'unread-item' : item.is_read == 0
+        }" v-for="(item,index) in notificationListing.today" :key=index>
+                                        <div v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
+                                            <i
+                                                v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
+                                                <img :src="item.icon" alt />
+                                            </i>
+                                            <p>
+                                                {{item.notification_string}}
+                                            </p>
+
+                                        </div>
+                                        <span v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" class="status"
                                             v-on:click="readUnreadItem($event, item.is_read, item.notification_id)">
-                                    </span>
-                                        
+                                        </span>
+
                                     </b-list-group-item>
                                 </b-list-group>
                                 <div class="slot-title" v-show="notificationListing.yesterday.length">
                                     <span>{{languageData.label.yesterday}}</span>
                                 </div>
                                 <b-list-group v-show="notificationListing.yesterday.length > 0">
-                                    <b-list-group-item
-                                        v-bind:class="{
-                                        'read-item':item.is_read == 1 ,
-                                        'unread-item' : item.is_read == 0
-                                    }" v-for="(item,index) in notificationListing.yesterday" :key=index>
-                                        <div  v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
-                                        <i v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
-                                            <img :src="item.icon" alt />
-                                        </i>
-                                        <p>
-                                            {{item.notification_string}}
-                                        </p>
+                                    <b-list-group-item v-bind:class="{
+    'read-item':item.is_read == 1 ,
+    'unread-item' : item.is_read == 0
+}" v-for="(item,index) in notificationListing.yesterday" :key=index>
+                                        <div v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
+                                            <i
+                                                v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
+                                                <img :src="item.icon" alt />
+                                            </i>
+                                            <p>
+                                                {{item.notification_string}}
+                                            </p>
                                         </div>
                                         <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)"
                                             v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
@@ -216,19 +219,19 @@
                                     <span>{{languageData.label.older}}</span>
                                 </div>
                                 <b-list-group v-show="notificationListing.older">
-                                    <b-list-group-item
-                                        v-bind:class="{
-                                        'read-item':item.is_read == 1 ,
-                                        'unread-item' : item.is_read == 0
-                                    }" v-for="(item,index) in notificationListing.older" :key=index>
-                                    <div v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
-                                        <i  v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
-                                            <img :src="item.icon" alt />
-                                        </i>
-                                        <p>
-                                            {{item.notification_string}}
-                                        </p>
-                                    </div>
+                                    <b-list-group-item v-bind:class="{
+    'read-item':item.is_read == 1 ,
+    'unread-item' : item.is_read == 0
+}" v-for="(item,index) in notificationListing.older" :key=index>
+                                        <div v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
+                                            <i
+                                                v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
+                                                <img :src="item.icon" alt />
+                                            </i>
+                                            <p>
+                                                {{item.notification_string}}
+                                            </p>
+                                        </div>
                                         <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)"
                                             v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
@@ -328,8 +331,8 @@
                     notificationCount: 0,
                     totalNotificationCount: 0,
                     isNotificationLoaded: false,
-                    submitNewMissionUrl:'' ,
-                    isSubmitNewMissionSet:true
+                    submitNewMissionUrl: '',
+                    isSubmitNewMissionSet: true
                 };
             },
             mounted() {
@@ -355,9 +358,9 @@
                 showsetting() {
                     setTimeout(() => {
                         let popoverBody = document.querySelector(".popover-body");
-                    popoverBody.classList.toggle("show-setting");
-                    },150);
-                    
+                        popoverBody.classList.toggle("show-setting");
+                    }, 150);
+
                     this.getNotificationSettingListing()
                 },
                 cancelsetting() {
@@ -405,7 +408,7 @@
                     // async () => {
                     //     await eventBus.$emit('clearAllFilters');
                     // }
-                    
+
                     eventBus.$emit('setDefaultText');
                     this.$emit('exploreMisison', this.filterData);
                     let body = document.querySelectorAll("body, html");
@@ -503,31 +506,33 @@
                     })
                 },
                 getNotificationSettingListing() {
-                        setTimeout(() => {
-                            if (this.totalNotificationCount <= 0) {
-                                let popoverBody = document.querySelector(".popover-body");
-                                popoverBody.classList.add("clear-item");
-                            }
-                            this.notificationSettingId = []
-                            this.selectedNotification = []
-                            this.isNotificationAjaxCall = true;
-                            notificationSettingListing().then(response => {
-                                this.isNotificationAjaxCall = false;
-                                if (response.error == false) {
-                                    if (response.data) {
-                                        this.notificationSettingList = response.data
-                                        this.notificationSettingList.filter((data, index) => {
-                                            data.notification_type = this.languageData.label[data
-                                                .notification_type]
-                                            this.notificationSettingId.push(data.notification_type_id);
-                                            if (data.is_active == 1) {
-                                                this.selectedNotification.push(data.notification_type_id)
-                                            }
-                                        })
-                                    }
+                    setTimeout(() => {
+                        if (this.totalNotificationCount <= 0) {
+                            let popoverBody = document.querySelector(".popover-body");
+                            popoverBody.classList.add("clear-item");
+                        }
+                        this.notificationSettingId = []
+                        this.selectedNotification = []
+                        this.isNotificationAjaxCall = true;
+                        notificationSettingListing().then(response => {
+                            this.isNotificationAjaxCall = false;
+                            if (response.error == false) {
+                                if (response.data) {
+                                    this.notificationSettingList = response.data
+                                    this.notificationSettingList.filter((data, index) => {
+                                        data.notification_type = this.languageData.label[data
+                                            .notification_type]
+                                        this.notificationSettingId.push(data
+                                            .notification_type_id);
+                                        if (data.is_active == 1) {
+                                            this.selectedNotification.push(data
+                                                .notification_type_id)
+                                        }
+                                    })
                                 }
-                            })
-                        }, 100)
+                            }
+                        })
+                    }, 100)
                 },
                 saveNotificationSetting() {
                     let data = {
@@ -554,7 +559,7 @@
                         } else {
                             this.cancelsetting()
                         }
-                        
+
                         this.makeToast(classVariant, response.message)
                     })
                 },
@@ -596,19 +601,19 @@
                     }
                 },
                 submitNewMission() {
-                    if(this.submitNewMissionUrl != '') {
+                    if (this.submitNewMissionUrl != '') {
                         window.open(this.submitNewMissionUrl, '_self');
                     }
-			    }
+                }
             },
             created() {
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.submitNewMissionUrl = store.state.submitNewMissionUrl
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
-                if(!store.state.isLoggedIn) {
+                if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
                 }
-                if(JSON.parse(store.state.policyPage) != null) {
+                if (JSON.parse(store.state.policyPage) != null) {
                     this.policyPage = JSON.parse(store.state.policyPage)
                 }
                 setTimeout(function () {
@@ -629,11 +634,11 @@
                             e.stopPropagation();
                         });
                     }
-                    var notifyStatus = document.querySelectorAll(".status");
+                    let notifyStatus = document.querySelectorAll(".status");
                     notifyStatus.forEach(function (statusEvent) {
                         statusEvent.addEventListener("mouseover", function () {
                             setTimeout(function () {
-                                var tooltip = document.querySelector(".tooltip");
+                                let tooltip = document.querySelector(".tooltip");
                                 tooltip.classList.add("notify-tooltip");
                             });
                         });
@@ -641,10 +646,10 @@
 
 
 
-                    let hasmenuIcon = document.querySelectorAll(".menu-wrap li .collapse-toggle");
-                    for (let i = 0; i < hasmenuIcon.length; ++i) {
-                        let iconValue = hasmenuIcon[i];
-                        iconValue.addEventListener("click", function (e) {
+                    let hasmenuList = document.querySelectorAll(".menu-wrap li");
+                    for (let i = 0; i < hasmenuList.length; ++i) {
+                        let anchorValue = hasmenuList[i].firstChild;
+                        anchorValue.addEventListener("click", function (e) {
                             if (screen.width < 992) {
                                 e.stopPropagation();
                                 let parentList = e.target.parentNode;
@@ -660,7 +665,8 @@
                                         siblingList[j].classList.remove("active");
                                     } else {
                                         let childList = parentList.getElementsByClassName(
-                                        "has-submenu");
+                                            "has-submenu"
+                                        );
                                         for (let k = 0; k < childList.length; ++k) {
                                             childList[k].classList.remove("active");
                                         }
@@ -669,13 +675,13 @@
                             }
                         });
                     }
-                    let hasmenuList = document.querySelectorAll(".menu-wrap li");
+                    let noMenuList = document.querySelectorAll(".menu-wrap li.no-dropdown");
                     let removeActive = document.querySelector(".navbar-toggler");
                     let breadcrumbDropdown = document.querySelector(
                         ".breadcrumb-dropdown-wrap"
                     );
-                    for (let i = 0; i < hasmenuList.length; i++) {
-                        let anchor_val = hasmenuList[i].firstChild;
+                    for (let i = 0; i < noMenuList.length; i++) {
+                        let anchor_val = noMenuList[i].firstChild;
                         anchor_val.addEventListener("click", function (e) {
                             if (screen.width < 992) {
                                 let body = document.querySelectorAll("body, html");
