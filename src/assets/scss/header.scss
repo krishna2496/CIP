@@ -160,7 +160,8 @@ header {
                 vertical-align: middle;
                 display: inline-flex;
                 align-items: center;
-                justify-content: center;
+				justify-content: center;
+				z-index: -1;
                 @include md-min {
                     top: 50%;
                     @include transformY(-50%);
@@ -362,7 +363,7 @@ header {
                 color: $black-primary;
                 vertical-align: middle;
                 font-size: 15px;
-                @include md-max {
+                @include lg-max {
                     display: none;
                 }
             }
@@ -430,7 +431,10 @@ header {
 }
 
 .menu-wrap {
-    padding-left: 60px;
+	padding-left: 60px;
+	@include lg-max{
+		padding-left: 25px;
+	}
     >ul {
         display: flex;
         list-style: none;
