@@ -4,6 +4,7 @@ namespace App\Repositories\Timesheet;
 
 use DB;
 use App\Models\Mission;
+use App\Models\MissionLanguage;
 use App\Models\Timesheet;
 use App\Models\TimesheetDocument;
 use Illuminate\Http\Request;
@@ -25,6 +26,11 @@ class TimesheetRepository implements TimesheetInterface
      * @var App\Models\Mission
      */
     private $mission;
+
+    /**
+     * @var App\Models\MissionLanguage
+     */
+    private $missionLanguage;
 
     /**
      * @var App\Models\TimesheetDocument
@@ -56,6 +62,7 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param  App\Models\Timesheet $timesheet
      * @param  App\Models\Mission $mission
+     * @param  App\Models\MissionLanguage $missionLanguage
      * @param  App\Models\TimesheetDocument $timesheetDocument
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -66,6 +73,7 @@ class TimesheetRepository implements TimesheetInterface
     public function __construct(
         Timesheet $timesheet,
         Mission $mission,
+        MissionLanguage $missionLanguage,
         TimesheetDocument $timesheetDocument,
         Helpers $helpers,
         LanguageHelper $languageHelper,
@@ -74,6 +82,7 @@ class TimesheetRepository implements TimesheetInterface
     ) {
         $this->timesheet = $timesheet;
         $this->mission = $mission;
+        $this->missionLanguage = $missionLanguage;
         $this->timesheetDocument = $timesheetDocument;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
@@ -123,10 +132,19 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getAllTimesheetEntries(Request $request): array
     {
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
         foreach ($timeMissionEntries as $value) {
             if ($value->missionLanguage) {
-                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                if (isset($value->missionLanguage[0])) {
+                    $missionTitle = $value->missionLanguage[0]->title;
+                } else {
+                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
+                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
+                    ->get();
+                    $missionTitle = $defaultLanguageMissionData[0]->title;
+                }
+                $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
             $value->setAppends([]);
@@ -135,7 +153,15 @@ class TimesheetRepository implements TimesheetInterface
         $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
         foreach ($goalMissionEntries as $value) {
             if ($value->missionLanguage) {
-                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                if (isset($value->missionLanguage[0])) {
+                    $missionTitle = $value->missionLanguage[0]->title;
+                } else {
+                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
+                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
+                    ->get();
+                    $missionTitle = $defaultLanguageMissionData[0]->title;
+                }
+                $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
             $value->setAppends([]);
