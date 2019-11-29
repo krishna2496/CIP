@@ -1183,6 +1183,7 @@ class MissionRepository implements MissionInterface
     public function getUserMissions(Request $request): ?array
     {
         $languageId = $this->languageHelper->getLanguageId($request);
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1195,12 +1196,18 @@ class MissionRepository implements MissionInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])->get();
-
+        
         foreach ($missionData->toArray() as $key => $value) {
+            if (!empty($value['mission_language'])) {
+                $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
+            } else {
+                $defaultTenantLanguageData = $this->modelsService->missionLanguage->select('title')
+                ->where(['mission_id' => $value['mission_id'], 'language_id' => $defaultTenantLanguage->language_id])
+                ->get();
+                $missionLists[$key]['title'] = $defaultTenantLanguageData[0]->title;
+            }
             $missionLists[$key]['mission_id'] = $value['mission_id'];
-            $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
         }
-      
         return $missionLists;
     }
 
