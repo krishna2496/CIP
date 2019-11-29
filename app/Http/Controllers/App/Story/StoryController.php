@@ -17,6 +17,7 @@ use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\Mission\MissionRepository;
 
 //!  Story controller
 /*!
@@ -50,6 +51,11 @@ class StoryController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
+
+    /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
+    private $missionRepository;
     
     /**
      * Create a new Story controller instance
@@ -59,6 +65,7 @@ class StoryController extends Controller
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @return void
      */
     public function __construct(
@@ -66,13 +73,15 @@ class StoryController extends Controller
         StoryVisitorRepository $storyVisitorRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        MissionRepository $missionRepository
     ) {
         $this->storyRepository = $storyRepository;
         $this->storyVisitorRepository = $storyVisitorRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
+        $this->missionRepository = $missionRepository;
     }
        
     /**
@@ -343,6 +352,10 @@ class StoryController extends Controller
         // Transform story details
         $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount, $defaultAvatar);
         
+        // Check mission status
+        $missionStatus = $this->missionRepository->checkMissionStatus($storyTransformedData['mission_id']);
+        $storyTransformedData['open_mission_button'] = ($missionStatus) ? "1" : "0";
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
 

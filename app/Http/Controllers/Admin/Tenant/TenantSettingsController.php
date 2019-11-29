@@ -77,7 +77,7 @@ class TenantSettingsController extends Controller
                     return $value->tenant_setting_id === $tenantSetting->setting_id;
                 });
                 
-                $tenantSettingData[$index]['tenant_setting_id'] = $adminTenantSettings[$index]
+                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSetting
                 ->tenant_setting_id;
                 $tenantSettingData[$index]['key'] = $adminTenantSettings[$index]->key;
                 $tenantSettingData[$index]['description'] = $adminTenantSettings[$index]
