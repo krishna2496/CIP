@@ -223,7 +223,7 @@ import { setTimeout } from 'timers';
                         ['Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'],
                         ['Styles', 'Format', 'Font', 'FontSize'],
                         ['TextColor', 'BGColor'],
-                        ['Maximize', 'ShowBlocks', '-', 'About']
+                        ['Maximize', 'ShowBlocks']
                     ]
                 }
                
