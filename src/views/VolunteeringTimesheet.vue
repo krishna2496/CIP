@@ -449,24 +449,40 @@
                 }
 
                 if (timeArray.timesheet) {
+                    let latestDate = date-1
+                    let latestMonth = 0
                     let timeSheetArray = timeArray.timesheet;
                     this.currentTimeData.missionName = timeArray.title
                     let months = '';
                     let dates = '';
                     if(timeSheetType == "time") {
-                        if(Math.floor(this.volunteeringHoursCurrentMonth) < 10) {
-                            months = ("0" + Math.floor(this.volunteeringHoursCurrentMonth)).slice(-2);
+                        let timeMonthIndex = ''
+                        this.volunteeringHoursWeeks.filter((data,index) => {
+                            if(data == latestDate) {
+                                timeMonthIndex = index
+                            }
+                        })
+                        latestMonth = this.volunteeringHoursMonthArray[timeMonthIndex]
+                        if(Math.floor(latestMonth) < 10) {
+                            months = ("0" + Math.floor(latestMonth)).slice(-2);
                             dates = ("0" + Math.floor(date)).slice(-2);
                         } else {
-                            months = Math.floor(this.volunteeringHoursCurrentMonth)
+                            months = Math.floor(latestMonth)
                             dates = Math.floor(date)
                         }
                     } else {
-                        if(Math.floor(this.volunteeringGoalCurrentMonth) < 10) {
-                            months = ("0" + Math.floor(this.volunteeringGoalCurrentMonth)).slice(-2);
+                        let goalMonthIndex = ''
+                        this.volunteeringGoalWeeks.filter((data,index) => {
+                            if(data == latestDate) {
+                                goalMonthIndex = index
+                            }
+                        })
+                        latestMonth = this.volunteeringGoalMonthArray[goalMonthIndex]
+                        if(Math.floor(latestMonth) < 10) {
+                            months = ("0" + Math.floor(latestMonth)).slice(-2);
                             dates = ("0" + Math.floor(date)).slice(-2);
                         } else {
-                            months = Math.floor(this.volunteeringGoalCurrentMonth)
+                            months = Math.floor(latestMonth)
                             dates = Math.floor(date)
                         }
                     }
@@ -581,22 +597,24 @@
                             currentTimeSheetYear = parseInt(this.volunteeringHoursYearArray[index])
                         }
                     })
-                   
+                  
                     let timeMonth = '';
                     let timeDate = '';
-                    if(Math.floor(this.volunteeringHoursCurrentMonth) < 10) {
-                        timeMonth = ("0" + Math.floor(this.volunteeringHoursCurrentMonth)).slice(-2);
+                    
+                    if(Math.floor(currentTimeSheetMonth) < 10) {
+                        timeMonth = ("0" + Math.floor(currentTimeSheetMonth)).slice(-2);
                         timeDate = ("0" + Math.floor(date)).slice(-2);
                     } else {
-                        timeMonth = Math.floor(this.volunteeringHoursCurrentMonth)
+                        timeMonth = Math.floor(currentTimeSheetMonth)
                         timeDate = Math.floor(date)
                     }
                     
-                    currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
+                    currentDate = moment(currentTimeSheetYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
                     if(now == currentDate) {
                         currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                     } else {
-                        currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD HH::mm:ss");
+                        disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
+                        disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
                     }
                 } else {
                     currentDataArray = this.volunteeringGoalWeeks
@@ -609,19 +627,21 @@
                     })
                     let goalMonth = '';
                     let goalDate = '';
-                    if(Math.floor(this.volunteeringGoalCurrentMonth) < 10) {
-                        goalMonth = ("0" + Math.floor(this.volunteeringGoalCurrentMonth)).slice(-2);
+                    if(Math.floor(currentTimeSheetMonth) < 10) {
+                        goalMonth = ("0" + Math.floor(currentTimeSheetMonth)).slice(-2);
                         goalDate = ("0" + Math.floor(date)).slice(-2);
                     } else {
-                        goalMonth = Math.floor(this.volunteeringGoalCurrentMonth)
+                        goalMonth = Math.floor(currentTimeSheetMonth)
                         goalDate = Math.floor(date)
                     }
 
-                    currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
+                    currentDate = moment(currentTimeSheetYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
                     if(now == currentDate) {
                         currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
+                       
                     } else {
-                        currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD HH::mm:ss");
+                        disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
+                        disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
                     }
                 }
 
@@ -647,11 +667,12 @@
                         }
                     }
                 });
-            
                 if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
+                   
                     returnData.push("disabled")
                 }
                 if (currentDate > disableEndDate) {
+                 
                     returnData.push("disabled")
                 }
 

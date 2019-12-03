@@ -11,7 +11,6 @@
 						:alt="languageData.label.previous" />
 				</button>
 
-				<!-- <span>{{currentWeak}}</span> -->
 				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
 					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
@@ -139,15 +138,15 @@
 		},
 		methods: {
 			goPrevWeek() {
-				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day')
-				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day').week()
-				this.changeMonth(payload);
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'days').startOf('week')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'days').week()
+				this.changeMonth(payload);				
 				this.$root.$emit('bv::hide::tooltip');
 			},
 			goNextWeek() {
-				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
-				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day').week()
-				this.changeMonth(payload);
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'days').startOf('week')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'days').week()
+				this.changeMonth(payload);				
 				this.$root.$emit('bv::hide::tooltip');
 			},
 			getWeekDayNameOfMonth(month, year) {
@@ -173,14 +172,14 @@
 				'month');
 				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
 				'month').week()
-				this.$root.$emit('bv::hide::tooltip');
+				this.$root.$emit('bv::hide::tooltip');				
 				this.changeMonth(payload);
 			},
 			goNext() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf('month');
 				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf(
 				'month').week()
-				this.changeMonth(payload);
+				this.changeMonth(payload);				
 				this.$root.$emit('bv::hide::tooltip');
 			},
 			changeYear(year) {
