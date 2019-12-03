@@ -173,6 +173,7 @@ return [
         'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
         'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Le média de mission a été supprimé avec succès',
+        'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Document de mission supprimé avec succès',
     ],
 
         
@@ -225,6 +226,7 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Le support de mission ne se trouve pas dans le système',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Document de mission non trouvé dans le système',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',

@@ -143,6 +143,7 @@ return [
         'MESSAGE_AVAILABILITY_UPDATED' => 'DE: Availability updated successfully',
         'MESSAGE_AVAILABILITY_FOUND' => 'DE: Availability found successfully',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'DE: Mission media deleted successfully',
+        'MESSAGE_MISSION_DOCUMENT_DELETED' => 'DE: Mission document deleted successfully',
     ],
 
 
@@ -193,6 +194,7 @@ return [
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'DE: Mission media does not found in the system',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'DE: Mission document does not found in the system',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',

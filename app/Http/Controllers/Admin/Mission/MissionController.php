@@ -364,4 +364,38 @@ class MissionController extends Controller
             );
         }
     }
+
+    /**
+     * Remove the mission document from storage.
+     *
+     * @param int $documentId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionDocument(int $documentId): JsonResponse
+    {
+        try {
+            $missionDocumentStatus = $this->missionRepository->deleteMissionDocument($documentId);
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_DOCUMENT_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_DOCUMENT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $documentId
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_DOCUMENT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_DOCUMENT_NOT_FOUND')
+            );
+        }
+    }
 }

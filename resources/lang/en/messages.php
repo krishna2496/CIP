@@ -181,6 +181,7 @@ return [
         'MESSAGE_AVAILABILITY_UPDATED' => 'Availability updated successfully',
         'MESSAGE_AVAILABILITY_FOUND' => 'Availability found successfully',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Mission media deleted successfully',
+        'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Mission document deleted successfully',
     ],
 
         
@@ -237,6 +238,7 @@ return [
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions not found',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Mission media does not found in the system',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Mission document does not found in the system',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',

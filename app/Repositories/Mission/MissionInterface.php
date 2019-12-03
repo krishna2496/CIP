@@ -206,4 +206,13 @@ interface MissionInterface
      * @return bool
      */
     public function deleteMissionMedia(int $mediaId): bool;
+
+    /**
+     * Remove mission document
+     * 
+     * @param int $documentId
+     * 
+     * @return bool
+     */
+    public function deleteMissionDocument(int $documentId): bool;
 }

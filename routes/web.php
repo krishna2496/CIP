@@ -529,6 +529,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
             );
             $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
                'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
+            $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
         }
     );
 
