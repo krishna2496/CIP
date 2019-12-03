@@ -1275,4 +1275,17 @@ class MissionRepository implements MissionInterface
         }
         return false;
     }
+
+    /**
+     * Remove mission media
+     * 
+     * @param int $mediaId
+     * 
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool
+    {
+        $mediaStatus = $this->missionMediaRepository->deleteMedia($mediaId);
+        return $mediaStatus;
+    }
 }

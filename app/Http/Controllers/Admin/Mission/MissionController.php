@@ -330,4 +330,38 @@ class MissionController extends Controller
             );
         }
     }
+
+    /**
+     * Remove the mission media from storage.
+     *
+     * @param int $mediaId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionMedia(int $mediaId): JsonResponse
+    {
+        try {
+            $missionMediaStatus = $this->missionRepository->deleteMissionMedia($mediaId);
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_MEDIA'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $mediaId
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_MEDIA_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_MEDIA_NOT_FOUND')
+            );
+        }
+    }
 }

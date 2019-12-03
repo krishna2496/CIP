@@ -197,4 +197,13 @@ interface MissionInterface
      * @return bool
      */
     public function checkMissionStatus(int $missionId): bool;
+      
+    /**
+     * Remove mission media
+     * 
+     * @param int $mediaId
+     * 
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool;
 }
