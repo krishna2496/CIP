@@ -131,6 +131,9 @@ class MissionController extends Controller
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
+                "media_images.*.sort_order" => "required|integer",
+                "media_videos.*.sort_order" => "required|integer",
+                "documents.*.sort_order" => "required|integer",
             ]
         );
         
@@ -238,6 +241,9 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required_with:documents|valid_document_path",
                 "organisation.organisation_id" => "sometimes|required|integer",
                 "organisation.organisation_name" => "sometimes|required",
+                "media_images.*.sort_order" => "sometimes|required|integer",
+                "media_videos.*.sort_order" => "sometimes|required|integer",
+                "documents.*.sort_order" => "sometimes|required|integer",
             ]
         );
         

@@ -29,14 +29,14 @@ class MissionDocument extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'document_name', 'document_type', 'document_path'];
+    protected $fillable = ['mission_id', 'document_name', 'document_type', 'document_path', 'sort_order'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['mission_document_id', 'document_name', 'document_type', 'document_path'];
+    protected $visible = ['mission_document_id', 'document_name', 'document_type', 'document_path', 'sort_order'];
 
     /**
      * Store/update specified resource.

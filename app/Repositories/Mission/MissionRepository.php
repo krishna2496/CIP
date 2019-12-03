@@ -179,7 +179,8 @@ class MissionRepository implements MissionInterface
                     $missionDocument = array('mission_id' => $mission->mission_id,
                                             'document_name' => basename($filePath),
                                             'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                            'document_path' => $filePath);
+                                            'document_path' => $filePath,
+                                            'sort_order' => $value['sort_order']);
                     $this->modelsService->missionDocument->create($missionDocument);
                     unset($missionDocument);
                 }
@@ -302,6 +303,9 @@ class MissionRepository implements MissionInterface
                     $missionDocument['document_path'] = $filePath;
                     $missionDocument['document_name'] = basename($filePath);
                     $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
+                    if (isset($value['sort_order'])) {
+                        $missionDocument['sort_order'] = $value['sort_order'];
+                    }
                 }
                 
                 $this->modelsService->missionDocument->createOrUpdateDocument(['mission_id' => $id,
@@ -368,11 +372,16 @@ class MissionRepository implements MissionInterface
             'mission.organisation_id',
             'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme',
-        'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
+        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
+        }])
+        ->with(['missionMedia' => function ($query) {
+            $query->orderBy('sort_order');
+        }])
+        ->with(['missionDocument' => function ($query) {
+            $query->orderBy('sort_order');
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -1004,7 +1013,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument', 'timeMission', 'availability'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'availability'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])
@@ -1015,6 +1024,10 @@ class MissionRepository implements MissionInterface
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
+                $query->orderBy('sort_order');
+            }])
+            ->with(['missionDocument' => function ($query) {
+                $query->orderBy('sort_order');
             }])
             ->with(['missionRating'  => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id);
@@ -1072,7 +1085,7 @@ class MissionRepository implements MissionInterface
     {
         // Fetch mission media details
         $missionData = $this->modelsService->mission->findOrFail($missionId);
-        return $missionData->missionMedia()->orderBy('default', 'DESC')
+        return $missionData->missionMedia()->orderBy('sort_order')
         ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
     }
         
