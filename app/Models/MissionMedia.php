@@ -27,14 +27,14 @@ class MissionMedia extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'media_type', 'media_name', 'media_path', 'default'];
+    protected $fillable = ['mission_id', 'media_type', 'media_name', 'media_path', 'default', 'sort_order'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default'];
+    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default', 'sort_order'];
     
     protected $appends = ['video_thumbnail'];
 
