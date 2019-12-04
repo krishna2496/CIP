@@ -59,7 +59,8 @@ class MissionMediaRepository implements MissionMediaInterface
                     'media_name' => basename($filePath),
                     'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
                     'media_path' => $filePath,
-                    'default' => $default
+                    'default' => $default,
+                    'sort_order' => $value['sort_order']
                 );
             $this->missionMedia->create($missionMedia);
             unset($missionMedia);
@@ -86,7 +87,8 @@ class MissionMediaRepository implements MissionMediaInterface
             $missionMedia = array('mission_id' => $missionId,
                                   'media_name' => $value['media_name'],
                                   'media_type' => 'mp4',
-                                  'media_path' => $value['media_path']);
+                                  'media_path' => $value['media_path'],
+                                  'sort_order' => $value['sort_order']);
             $this->missionMedia->create($missionMedia);
             unset($missionMedia);
         }
@@ -118,7 +120,9 @@ class MissionMediaRepository implements MissionMediaInterface
                                   'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
                                   'media_path' => $filePath,
                                   'default' => $default);
-            
+            if (isset($value['sort_order'])) {
+                $missionMedia['sort_order'] = $value['sort_order'];
+            }
             $this->missionMedia->createOrUpdateMedia(['mission_id' => $missionId,
              'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
@@ -149,6 +153,9 @@ class MissionMediaRepository implements MissionMediaInterface
                                   'media_type' => 'mp4',
                                   'media_path' => $value['media_path']);
 
+            if (isset($value['sort_order'])) {
+                $missionMedia['sort_order'] = $value['sort_order'];
+            }
             $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
              'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
