@@ -20,6 +20,7 @@ class CreateTableMissionMedia extends Migration
             $table->string('media_name',64);
             $table->string('media_type',4);
             $table->string('media_path',255);
+            $table->integer('sort_order')->length(11)->default(0);
             $table->enum('status', ['0', '1'])->default(1);
             $table->enum('default', ['0', '1'])->default(0);
             $table->timestamps();

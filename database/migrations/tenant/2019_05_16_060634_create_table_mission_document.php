@@ -19,6 +19,7 @@ class CreateTableMissionDocument extends Migration
             $table->string('document_name',255);
             $table->string('document_type',255);
             $table->string('document_path',255);
+            $table->integer('sort_order')->length(11)->default(0);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
