@@ -179,7 +179,8 @@ class MissionRepository implements MissionInterface
                     $missionDocument = array('mission_id' => $mission->mission_id,
                                             'document_name' => basename($filePath),
                                             'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                            'document_path' => $filePath);
+                                            'document_path' => $filePath,
+                                            'sort_order' => $value['sort_order']);
                     $this->modelsService->missionDocument->create($missionDocument);
                     unset($missionDocument);
                 }
@@ -255,14 +256,18 @@ class MissionRepository implements MissionInterface
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
                                         'language_id' => $language->language_id,
-                                        'title' => $value['title'],
                                         'short_description' => (isset($value['short_description'])) ?
                                         $value['short_description'] : null,
-                                        'description' => ($value['section']),
-                                        'objective' => $value['objective']
+                                        'objective' => $value['objective'] ?? null
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
+                }
+                if (array_key_exists('title', $value)) {
+                    $missionLanguage['title'] = $value['title'];
+                }
+                if (array_key_exists('section', $value)) {
+                    $missionLanguage['description'] = $value['section'];
                 }
 
                 $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
@@ -298,6 +303,9 @@ class MissionRepository implements MissionInterface
                     $missionDocument['document_path'] = $filePath;
                     $missionDocument['document_name'] = basename($filePath);
                     $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
+                    if (isset($value['sort_order'])) {
+                        $missionDocument['sort_order'] = $value['sort_order'];
+                    }
                 }
                 
                 $this->modelsService->missionDocument->createOrUpdateDocument(['mission_id' => $id,
@@ -364,11 +372,16 @@ class MissionRepository implements MissionInterface
             'mission.organisation_id',
             'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme',
-        'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
+        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
+        }])
+        ->with(['missionMedia' => function ($query) {
+            $query->orderBy('sort_order');
+        }])
+        ->with(['missionDocument' => function ($query) {
+            $query->orderBy('sort_order');
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -1000,7 +1013,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument', 'timeMission', 'availability'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'availability'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])
@@ -1011,6 +1024,10 @@ class MissionRepository implements MissionInterface
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
+                $query->orderBy('sort_order');
+            }])
+            ->with(['missionDocument' => function ($query) {
+                $query->orderBy('sort_order');
             }])
             ->with(['missionRating'  => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id);
@@ -1068,7 +1085,7 @@ class MissionRepository implements MissionInterface
     {
         // Fetch mission media details
         $missionData = $this->modelsService->mission->findOrFail($missionId);
-        return $missionData->missionMedia()->orderBy('default', 'DESC')
+        return $missionData->missionMedia()->orderBy('sort_order')
         ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
     }
         
@@ -1179,6 +1196,7 @@ class MissionRepository implements MissionInterface
     public function getUserMissions(Request $request): ?array
     {
         $languageId = $this->languageHelper->getLanguageId($request);
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1191,12 +1209,18 @@ class MissionRepository implements MissionInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])->get();
-
+        
         foreach ($missionData->toArray() as $key => $value) {
+            if (!empty($value['mission_language'])) {
+                $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
+            } else {
+                $defaultTenantLanguageData = $this->modelsService->missionLanguage->select('title')
+                ->where(['mission_id' => $value['mission_id'], 'language_id' => $defaultTenantLanguage->language_id])
+                ->get();
+                $missionLists[$key]['title'] = $defaultTenantLanguageData[0]->title;
+            }
             $missionLists[$key]['mission_id'] = $value['mission_id'];
-            $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
         }
-      
         return $missionLists;
     }
 
@@ -1242,5 +1266,50 @@ class MissionRepository implements MissionInterface
                 });
             })
             ->count();
+    }
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool
+    {
+        $mission = $this->modelsService->mission->select('publication_status')
+        ->where('mission_id', $missionId)->get();
+        $missionStatus = array(
+            config('constants.publication_status.APPROVED'),
+            config('constants.publication_status.PUBLISHED_FOR_APPLYING')
+        );
+        if (isset($mission[0]['publication_status'])
+        && (in_array($mission[0]['publication_status'], $missionStatus))) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Remove mission media
+     * 
+     * @param int $mediaId
+     * 
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool
+    {
+        return $this->missionMediaRepository->deleteMedia($mediaId);        
+    }
+
+    /**
+     * Remove mission document
+     * 
+     * @param int $documentId
+     * 
+     * @return bool
+     */
+    public function deleteMissionDocument(int $documentId): bool
+    {
+        return $this->modelsService->missionDocument->deleteDocument($documentId);
     }
 }

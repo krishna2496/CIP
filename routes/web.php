@@ -505,6 +505,35 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+    /* Set mission data for tenant specific */
+    $router->group(
+        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Mission\MissionController@index']);
+            $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
+            $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
+            $router->patch('/{missionId}', ['as' => 'missions.update',
+                'uses' => 'Admin\Mission\MissionController@update']);
+            $router->delete('/{missionId}', ['as' => 'missions.delete',
+                'uses' => 'Admin\Mission\MissionController@destroy']);
+            $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
+            $router->get(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
+            );
+            $router->patch(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
+            );
+            $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
+            $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+        }
+    );
+
     /* Set skill data for tenant user specific */
     $router->group(
         ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
