@@ -14,1508 +14,1257 @@ class CountryTableSeeder extends Seeder
     {
         $items = [
             [ 
-                'ISO' => 'AD', 
-                'name' => 'Andorra',
+                'ISO' => 'AD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AE', 
-                'name' => 'United Arab Emirates',
+                'ISO' => 'AE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AF', 
-                'name' => 'Afghanistan',
+                'ISO' => 'AF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AG', 
-                'name' => 'Antigua and Barbuda',
+                'ISO' => 'AG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AI', 
-                'name' => 'Anguilla',
+                'ISO' => 'AI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AK', 
-                'name' => 'Alaska',
+                'ISO' => 'AK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AL', 
-                'name' => 'Albania',
+                'ISO' => 'AL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AM', 
-                'name' => 'Armenia',
+                'ISO' => 'AM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AO', 
-                'name' => 'Angola',
+                'ISO' => 'AO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AQ', 
-                'name' => 'Antarctica',
+                'ISO' => 'AQ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AR', 
-                'name' => 'Argentina',
+                'ISO' => 'AR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AS', 
-                'name' => 'American Samoa',
+                'ISO' => 'AS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AT', 
-                'name' => 'Austria',
+                'ISO' => 'AT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AU', 
-                'name' => 'Australia',
+                'ISO' => 'AU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AW', 
-                'name' => 'Aruba',
+                'ISO' => 'AW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AX', 
-                'name' => 'Aland Islands',
+                'ISO' => 'AX',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'AZ', 
-                'name' => 'Azerbaijan',
+                'ISO' => 'AZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BA', 
-                'name' => 'Bosnia and Herzegovina',
+                'ISO' => 'BA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BB', 
-                'name' => 'Barbados',
+                'ISO' => 'BB',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BD', 
-                'name' => 'Bangladesh',
+                'ISO' => 'BD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BE', 
-                'name' => 'Belgium',
+                'ISO' => 'BE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BF', 
-                'name' => 'Burkina-Faso',
+                'ISO' => 'BF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BG', 
-                'name' => 'Bulgaria',
+                'ISO' => 'BG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BH', 
-                'name' => 'Bahrain',
+                'ISO' => 'BH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BI', 
-                'name' => 'Burundi',
+                'ISO' => 'BI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BJ', 
-                'name' => 'Benin',
+                'ISO' => 'BJ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BL', 
-                'name' => 'Saint Barthelemy',
+                'ISO' => 'BL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BM', 
-                'name' => 'Bermuda',
+                'ISO' => 'BM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BN', 
-                'name' => 'Brunei',
+                'ISO' => 'BN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BO', 
-                'name' => 'Bolivia',
+                'ISO' => 'BO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BR', 
-                'name' => 'Brazil',
+                'ISO' => 'BR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BS', 
-                'name' => 'Bahamas',
+                'ISO' => 'BS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BT', 
-                'name' => 'Boutan',
+                'ISO' => 'BT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BV', 
-                'name' => 'Bouvet Island',
+                'ISO' => 'BV',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BW', 
-                'name' => 'Botswana',
+                'ISO' => 'BW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BY', 
-                'name' => 'Belarus',
+                'ISO' => 'BY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'BZ', 
-                'name' => 'Belize',
+                'ISO' => 'BZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CA', 
-                'name' => 'Canada',
+                'ISO' => 'CA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CC', 
-                'name' => 'Cocos Islands',
+                'ISO' => 'CC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CD', 
-                'name' => 'Democratic Republic of Congo (formerly ZaÃ¯re',
+                'ISO' => 'CD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CF', 
-                'name' => 'Central African Republic',
+                'ISO' => 'CF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CG', 
-                'name' => 'Republic of Congo (Brazzaville',
+                'ISO' => 'CG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CH', 
-                'name' => 'Switzerland',
+                'ISO' => 'CH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CI', 
-                'name' => 'Ivory Cost',
+                'ISO' => 'CI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CK', 
-                'name' => 'Cook Islands',
+                'ISO' => 'CK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CL', 
-                'name' => 'Chile',
+                'ISO' => 'CL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CM', 
-                'name' => 'Cameroon',
+                'ISO' => 'CM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CN', 
-                'name' => 'China',
+                'ISO' => 'CN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CO', 
-                'name' => 'Colombia',
+                'ISO' => 'CO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CP', 
-                'name' => 'Islands Clipperton',
+                'ISO' => 'CP',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CR', 
-                'name' => 'Costa Rica',
+                'ISO' => 'CR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CU', 
-                'name' => 'Cuba',
+                'ISO' => 'CU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CV', 
-                'name' => 'Cape Verde',
+                'ISO' => 'CV',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CW', 
-                'name' => 'Curacao',
+                'ISO' => 'CW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CX', 
-                'name' => 'Christmas Island',
+                'ISO' => 'CX',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CY', 
-                'name' => 'Cyprus',
+                'ISO' => 'CY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'CZ', 
-                'name' => 'Czech Republic',
+                'ISO' => 'CZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'DE', 
-                'name' => 'Germany',
+                'ISO' => 'DE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'DJ', 
-                'name' => 'Djibouti',
+                'ISO' => 'DJ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'DK', 
-                'name' => 'Denmark',
+                'ISO' => 'DK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'DM', 
-                'name' => 'Dominica',
+                'ISO' => 'DM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'DO', 
-                'name' => 'Dominican Republic',
+                'ISO' => 'DO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'DZ', 
-                'name' => 'Algeria',
+                'ISO' => 'DZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'EC', 
-                'name' => 'Ecuador',
+                'ISO' => 'EC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'EE', 
-                'name' => 'Estonia',
+                'ISO' => 'EE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'EG', 
-                'name' => 'Egypt',
+                'ISO' => 'EG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'EH', 
-                'name' => 'Western Sahara',
+                'ISO' => 'EH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ER', 
-                'name' => 'Eritrea',
+                'ISO' => 'ER',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ES', 
-                'name' => 'Spain',
+                'ISO' => 'ES',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ET', 
-                'name' => 'Ethiopia',
+                'ISO' => 'ET',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'FI', 
-                'name' => 'Finland',
+                'ISO' => 'FI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'FJ', 
-                'name' => 'Fiji Islands',
+                'ISO' => 'FJ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'FK', 
-                'name' => 'Falkland Islands',
+                'ISO' => 'FK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'FM', 
-                'name' => 'Micronesia',
+                'ISO' => 'FM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'FO', 
-                'name' => 'Faroe Islands',
+                'ISO' => 'FO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'FR', 
-                'name' => 'France',
+                'ISO' => 'FR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GA', 
-                'name' => 'Gabon',
+                'ISO' => 'GA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GB', 
-                'name' => 'United Kingdom',
+                'ISO' => 'GB',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GD', 
-                'name' => 'Grenada',
+                'ISO' => 'GD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GE', 
-                'name' => 'Georgia',
+                'ISO' => 'GE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GF', 
-                'name' => 'Guyana',
+                'ISO' => 'GF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GG', 
-                'name' => 'Guernsey',
+                'ISO' => 'GG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GH', 
-                'name' => 'Ghana',
+                'ISO' => 'GH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GI', 
-                'name' => 'Gibraltar',
+                'ISO' => 'GI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GL', 
-                'name' => 'Greenland',
+                'ISO' => 'GL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GM', 
-                'name' => 'Gambia',
+                'ISO' => 'GM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GN', 
-                'name' => 'Guinea',
+                'ISO' => 'GN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GP', 
-                'name' => 'Guadeloupe',
+                'ISO' => 'GP',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GQ', 
-                'name' => 'Equatorial Guinea',
+                'ISO' => 'GQ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GR', 
-                'name' => 'Greece',
+                'ISO' => 'GR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GS', 
-                'name' => 'Islands South Georgia and South Sandwich',
+                'ISO' => 'GS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GT', 
-                'name' => 'Guatemala',
+                'ISO' => 'GT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GU', 
-                'name' => 'Guam',
+                'ISO' => 'GU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GW', 
-                'name' => 'Guinea-Bissau',
+                'ISO' => 'GW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'GY', 
-                'name' => 'Guyana',
+                'ISO' => 'GY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HI', 
-                'name' => 'Hawaii Islands',
+                'ISO' => 'HI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HK', 
-                'name' => 'Hong Kong',
+                'ISO' => 'HK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HM', 
-                'name' => 'Heard and McDonald Islands',
+                'ISO' => 'HM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HN', 
-                'name' => 'Honduras',
+                'ISO' => 'HN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HR', 
-                'name' => 'Croatia',
+                'ISO' => 'HR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HT', 
-                'name' => 'Haiti',
+                'ISO' => 'HT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'HU', 
-                'name' => 'Hungary',
+                'ISO' => 'HU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ID', 
-                'name' => 'Indonesia',
+                'ISO' => 'ID',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IE', 
-                'name' => 'Ireland',
+                'ISO' => 'IE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IL', 
-                'name' => 'Israel',
+                'ISO' => 'IL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IM', 
-                'name' => 'Isle of Man',
+                'ISO' => 'IM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IN', 
-                'name' => 'India',
+                'ISO' => 'IN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IO', 
-                'name' => 'Territory British Indian Ocean',
+                'ISO' => 'IO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IQ', 
-                'name' => 'Iraq',
+                'ISO' => 'IQ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IR', 
-                'name' => 'Iran',
+                'ISO' => 'IR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IS', 
-                'name' => 'Iceland',
+                'ISO' => 'IS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'IT', 
-                'name' => 'Italy',
+                'ISO' => 'IT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'JE', 
-                'name' => 'Jersey',
+                'ISO' => 'JE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'JM', 
-                'name' => 'Jamaica',
+                'ISO' => 'JM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'JO', 
-                'name' => 'Jordan',
+                'ISO' => 'JO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'JP', 
-                'name' => 'Japan',
+                'ISO' => 'JP',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KE', 
-                'name' => 'Kenya',
+                'ISO' => 'KE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KH', 
-                'name' => 'Cambodia',
+                'ISO' => 'KH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KI', 
-                'name' => 'Kyrgyzstan',
+                'ISO' => 'KI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KM', 
-                'name' => 'Union of Comoros',
+                'ISO' => 'KM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KN', 
-                'name' => 'Saint Kitts and Nevis',
+                'ISO' => 'KN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KP', 
-                'name' => 'North Korea',
+                'ISO' => 'KP',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KR', 
-                'name' => 'South Korea',
+                'ISO' => 'KR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KW', 
-                'name' => 'Kuwait',
+                'ISO' => 'KW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KY', 
-                'name' => 'Cayman Islands',
+                'ISO' => 'KY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'KZ', 
-                'name' => 'Kazakhstan',
+                'ISO' => 'KZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LA', 
-                'name' => 'Laos',
+                'ISO' => 'LA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LB', 
-                'name' => 'Lebanon',
+                'ISO' => 'LB',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LC', 
-                'name' => 'Saint. Lucia',
+                'ISO' => 'LC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LI', 
-                'name' => 'Liechtenstein',
+                'ISO' => 'LI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LK', 
-                'name' => 'Sri Lanka',
+                'ISO' => 'LK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LR', 
-                'name' => 'Liberia',
+                'ISO' => 'LR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LS', 
-                'name' => 'Lesotho',
+                'ISO' => 'LS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LT', 
-                'name' => 'Littuanie',
+                'ISO' => 'LT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LU', 
-                'name' => 'Luxembourg',
+                'ISO' => 'LU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LV', 
-                'name' => 'Latvia',
+                'ISO' => 'LV',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'LY', 
-                'name' => 'Libya',
+                'ISO' => 'LY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MA', 
-                'name' => 'Morocco',
+                'ISO' => 'MA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MC', 
-                'name' => 'Monaco',
+                'ISO' => 'MC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MD', 
-                'name' => 'Moldova',
+                'ISO' => 'MD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ME', 
-                'name' => 'Montenegro',
+                'ISO' => 'ME',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MF', 
-                'name' => 'Saint. Martin',
+                'ISO' => 'MF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MG', 
-                'name' => 'Madagascar',
+                'ISO' => 'MG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MH', 
-                'name' => 'Marshall Islands',
+                'ISO' => 'MH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MK', 
-                'name' => 'Macedonia',
+                'ISO' => 'MK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ML', 
-                'name' => 'Mali',
+                'ISO' => 'ML',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MM', 
-                'name' => 'Myanmar',
+                'ISO' => 'MM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MN', 
-                'name' => 'Mongolia',
+                'ISO' => 'MN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MO', 
-                'name' => 'Macao',
+                'ISO' => 'MO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MP', 
-                'name' => 'North Marianne Islands',
+                'ISO' => 'MP',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MQ', 
-                'name' => 'Martinique',
+                'ISO' => 'MQ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MR', 
-                'name' => 'Mauritania',
+                'ISO' => 'MR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MS', 
-                'name' => 'Montserrat',
+                'ISO' => 'MS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MT', 
-                'name' => 'Malta',
+                'ISO' => 'MT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MU', 
-                'name' => 'Mauritius',
+                'ISO' => 'MU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MV', 
-                'name' => 'Maldives',
+                'ISO' => 'MV',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MW', 
-                'name' => 'Malawi',
+                'ISO' => 'MW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MX', 
-                'name' => 'Mexico',
+                'ISO' => 'MX',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MY', 
-                'name' => 'Malaysia',
+                'ISO' => 'MY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'MZ', 
-                'name' => 'Mozambique',
+                'ISO' => 'MZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NA', 
-                'name' => 'Namibia',
+                'ISO' => 'NA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NC', 
-                'name' => 'New Caledonia',
+                'ISO' => 'NC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NE', 
-                'name' => 'Niger',
+                'ISO' => 'NE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NF', 
-                'name' => 'Norfolk Island',
+                'ISO' => 'NF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NG', 
-                'name' => 'Nigeria',
+                'ISO' => 'NG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NI', 
-                'name' => 'Nicaragua',
+                'ISO' => 'NI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NL', 
-                'name' => 'Netherlands',
+                'ISO' => 'NL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NO', 
-                'name' => 'Norway',
+                'ISO' => 'NO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NP', 
-                'name' => 'Nepal',
+                'ISO' => 'NP',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NR', 
-                'name' => 'Nauru',
+                'ISO' => 'NR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NU', 
-                'name' => 'Niue',
+                'ISO' => 'NU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'NZ', 
-                'name' => 'New Zealand',
+                'ISO' => 'NZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'OM', 
-                'name' => 'Oman',
+                'ISO' => 'OM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PA', 
-                'name' => 'Panama',
+                'ISO' => 'PA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PE', 
-                'name' => 'Peru',
+                'ISO' => 'PE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PF', 
-                'name' => 'French Polynesia',
+                'ISO' => 'PF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PG', 
-                'name' => 'Papua New Guinea',
+                'ISO' => 'PG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PH', 
-                'name' => 'Philippines',
+                'ISO' => 'PH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PK', 
-                'name' => 'Pakistan',
+                'ISO' => 'PK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PL', 
-                'name' => 'Poland',
+                'ISO' => 'PL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PM', 
-                'name' => 'Saint Pierre and Miquelon',
+                'ISO' => 'PM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PN', 
-                'name' => 'Pitcairn Islands',
+                'ISO' => 'PN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PR', 
-                'name' => 'Puerto Rico',
+                'ISO' => 'PR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PS', 
-                'name' => 'Palestine',
+                'ISO' => 'PS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PT', 
-                'name' => 'Portugal',
+                'ISO' => 'PT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PW', 
-                'name' => 'Palau',
+                'ISO' => 'PW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'PY', 
-                'name' => 'Paraguay',
+                'ISO' => 'PY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'QA', 
-                'name' => 'Qatar',
+                'ISO' => 'QA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'RE', 
-                'name' => 'RÃ©union Island',
+                'ISO' => 'RE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'RO', 
-                'name' => 'Romania',
+                'ISO' => 'RO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'RS', 
-                'name' => 'Serbia',
+                'ISO' => 'RS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'RU', 
-                'name' => 'Russia',
+                'ISO' => 'RU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'RW', 
-                'name' => 'Rwanda',
+                'ISO' => 'RW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SA', 
-                'name' => 'Saudi Arabia',
+                'ISO' => 'SA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SB', 
-                'name' => 'Solomon Islands',
+                'ISO' => 'SB',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SC', 
-                'name' => 'Seychelles',
+                'ISO' => 'SC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SD', 
-                'name' => 'Sudan',
+                'ISO' => 'SD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SE', 
-                'name' => 'Sweden',
+                'ISO' => 'SE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SG', 
-                'name' => 'Singapore',
+                'ISO' => 'SG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SH', 
-                'name' => 'Saint. Helena',
+                'ISO' => 'SH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SI', 
-                'name' => 'Slovenia',
+                'ISO' => 'SI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SJ', 
-                'name' => 'Svalbard and Jan Mayen',
+                'ISO' => 'SJ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SK', 
-                'name' => 'Slovakia',
+                'ISO' => 'SK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SL', 
-                'name' => 'Sierra Leone',
+                'ISO' => 'SL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SM', 
-                'name' => 'Saint Marino',
+                'ISO' => 'SM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SN', 
-                'name' => 'Senegal',
+                'ISO' => 'SN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SO', 
-                'name' => 'Somalia',
+                'ISO' => 'SO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SR', 
-                'name' => 'Suriname',
+                'ISO' => 'SR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SS', 
-                'name' => 'Southern Sudan',
+                'ISO' => 'SS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ST', 
-                'name' => 'Sao Tome and Principe',
+                'ISO' => 'ST',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SV', 
-                'name' => 'Salvador',
+                'ISO' => 'SV',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SY', 
-                'name' => 'Syria',
+                'ISO' => 'SY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'SZ', 
-                'name' => 'Swaziland',
+                'ISO' => 'SZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TC', 
-                'name' => 'Turks and Caicos Islands',
+                'ISO' => 'TC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TD', 
-                'name' => 'Chad',
+                'ISO' => 'TD',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TF', 
-                'name' => 'The French Southern and Antarctic Lands',
+                'ISO' => 'TF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TG', 
-                'name' => 'Togo',
+                'ISO' => 'TG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TH', 
-                'name' => 'Thailand',
+                'ISO' => 'TH',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TJ', 
-                'name' => 'Tajikistan',
+                'ISO' => 'TJ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TK', 
-                'name' => 'Tokelau Islands',
+                'ISO' => 'TK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TL', 
-                'name' => 'East Timor',
+                'ISO' => 'TL',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TM', 
-                'name' => 'Turkmenistan',
+                'ISO' => 'TM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TN', 
-                'name' => 'Tunisia',
+                'ISO' => 'TN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TO', 
-                'name' => 'Tonga Islands',
+                'ISO' => 'TO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TR', 
-                'name' => 'Turkey',
+                'ISO' => 'TR',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TT', 
-                'name' => 'Trinidad and Tobago',
+                'ISO' => 'TT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TV', 
-                'name' => 'Tuvalu Islands',
+                'ISO' => 'TV',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TW', 
-                'name' => 'Taiwan',
+                'ISO' => 'TW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'TZ', 
-                'name' => 'Tanzania',
+                'ISO' => 'TZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'UA', 
-                'name' => 'Ukraine',
+                'ISO' => 'UA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'UG', 
-                'name' => 'Uganda',
+                'ISO' => 'UG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'UM', 
-                'name' => 'Minor Outlying Islands U.S',
+                'ISO' => 'UM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'US', 
-                'name' => 'United States',
+                'ISO' => 'US',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'UY', 
-                'name' => 'Uruguay',
+                'ISO' => 'UY',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'UZ', 
-                'name' => 'Uzbekistan',
+                'ISO' => 'UZ',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VA', 
-                'name' => 'Vatican',
+                'ISO' => 'VA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VC', 
-                'name' => 'Saint Vincent and the Grenadines',
+                'ISO' => 'VC',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VE', 
-                'name' => 'Venezuela',
+                'ISO' => 'VE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VG', 
-                'name' => 'British Virgin Islands',
+                'ISO' => 'VG',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VI', 
-                'name' => 'Virgin Islands U.S',
+                'ISO' => 'VI',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VN', 
-                'name' => 'Vietnam',
+                'ISO' => 'VN',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'VU', 
-                'name' => 'Vanuatu',
+                'ISO' => 'VU',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'WF', 
-                'name' => 'Wallis and Futuna',
+                'ISO' => 'WF',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'WS', 
-                'name' => 'Western Samoa',
+                'ISO' => 'WS',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'XK', 
-                'name' => 'Kiribati',
+                'ISO' => 'XK',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'YE', 
-                'name' => 'Yemen',
+                'ISO' => 'YE',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'YT', 
-                'name' => 'Mayotte',
+                'ISO' => 'YT',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ZA', 
-                'name' => 'South Africa',
+                'ISO' => 'ZA',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ZM', 
-                'name' => 'Zambia',
+                'ISO' => 'ZM',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ZO', 
-                'name' => 'Azores',
+                'ISO' => 'ZO',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [ 
-                'ISO' => 'ZW', 
-                'name' => 'Zimbabwe',
+                'ISO' => 'ZW',            
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
