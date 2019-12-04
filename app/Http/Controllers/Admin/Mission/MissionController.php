@@ -346,6 +346,17 @@ class MissionController extends Controller
     public function removeMissionMedia(int $mediaId): JsonResponse
     {
         try {
+            // Fetch mission media details
+            $missionMediaDetails = $this->missionRepository->getMediaDetails($mediaId);
+            if(($missionMediaDetails->count() > 0) && ($missionMediaDetails[0]['default'] == "1")) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED'),
+                    trans('messages.custom_error_message.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED')
+                );
+            }
+                     
             $this->missionRepository->deleteMissionMedia($mediaId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_DELETED');

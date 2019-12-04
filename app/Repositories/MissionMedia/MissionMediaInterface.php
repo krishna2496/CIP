@@ -48,7 +48,15 @@ interface MissionMediaInterface
      * Remove mission media
      *
      * @param int $mediaId
-     * @return void
+     * @return bool
      */
     public function deleteMedia(int $mediaId): bool;
+
+    /**
+     * Get mission media details
+     *
+     * @param int $mediaId
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection;
 }
