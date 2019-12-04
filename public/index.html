@@ -1,17 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>ci_platform</title>
-  </head>
-  <body>
+    <title>Optimy</title>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <script src="//cdn.ckeditor.com/4.6.2/full/ckeditor.js"></script>
+    <style>
+        .loader-enable {
+            overflow: hidden;
+        }
+        
+        .loader-wrap {
+            display: none !important;
+        }
+        
+        .loader-enable .loader-wrap {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader-wrap">
+        <div class="loader"></div>
+    </div>
     <noscript>
-      <strong>We're sorry but ci_platform doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+        <strong>We're sorry but ci_platform doesn't work properly without JavaScript enabled. Please enable it to
+            continue.</strong>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-  </body>
+    <link rel="stylesheet" href="" id="customCss" />
+</body>
+
 </html>
