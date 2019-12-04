@@ -40,7 +40,7 @@ return [
         'MESSAGE_SKILL_LISTING' => 'User skills listed successfully',
         'MESSAGE_THEME_LISTING' => 'Mission theme listed successfully',
         'MESSAGE_CITY_LISTING' => 'City listed successfully',
-        'MESSAGE_COUNTRY_LISTING' => 'Country listed successfully',
+        'MESSAGE_COUNTRY_LISTING' => 'Countries listed successfully',
         'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
         'MESSAGE_PAGE_FOUND' => 'Page found successfully',
         'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listed successfully",
@@ -180,6 +180,7 @@ return [
         'MESSAGE_AVAILABILITY_DELETED' => 'Availability deleted successfully',
         'MESSAGE_AVAILABILITY_UPDATED' => 'Availability updated successfully',
         'MESSAGE_AVAILABILITY_FOUND' => 'Availability found successfully',
+        'MESSAGE_COUNTRY_CREATED' => 'Country created successfully'
     ],
 
         

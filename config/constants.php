@@ -533,7 +533,8 @@ return [
         'STORY_VISITOR' => 'STORY_VISITOR',
         'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
         'NOTIFICATION' => 'NOTIFICATION',
-        'AVAILABILITY' => 'AVAILABILITY'
+        'AVAILABILITY' => 'AVAILABILITY',
+        'COUNTRY' => 'COUNTRY'
     ],
 
     'activity_log_actions' => [

@@ -30,7 +30,7 @@ class CountryRepository implements CountryInterface
     */
     public function countryList(): Collection
     {
-        return $this->country->orderBy('name')->pluck('name', 'country_id');
+        return $this->country->with('translations')->get();
     }
 
     /**
@@ -58,5 +58,11 @@ class CountryRepository implements CountryInterface
                              'name' => $country->name,
                             );
         return $countryData;
+    }
+
+
+    public function store(string $iso): Country
+    {
+        return $this->country->create(['ISO' => $iso]);
     }
 }
