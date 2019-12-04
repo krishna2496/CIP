@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
 
-class AppMisionApplicationTest extends TestCase
+class AppMissionApplicationTest extends TestCase
 {
     /**
      * @test
