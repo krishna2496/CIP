@@ -340,7 +340,7 @@ class MissionController extends Controller
     public function removeMissionMedia(int $mediaId): JsonResponse
     {
         try {
-            $missionMediaStatus = $this->missionRepository->deleteMissionMedia($mediaId);
+            $this->missionRepository->deleteMissionMedia($mediaId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_DELETED');
 
@@ -374,7 +374,7 @@ class MissionController extends Controller
     public function removeMissionDocument(int $documentId): JsonResponse
     {
         try {
-            $missionDocumentStatus = $this->missionRepository->deleteMissionDocument($documentId);
+            $this->missionRepository->deleteMissionDocument($documentId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DOCUMENT_DELETED');
 

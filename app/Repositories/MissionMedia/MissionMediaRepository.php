@@ -163,7 +163,6 @@ class MissionMediaRepository implements MissionMediaInterface
      */
     public function deleteMedia(int $mediaId): bool
     {
-        $mediaStatus = $this->missionMedia->deleteMedia($mediaId);
-        return $mediaStatus;
+        return $this->missionMedia->deleteMedia($mediaId);
     }
 }

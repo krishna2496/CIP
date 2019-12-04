@@ -1285,8 +1285,7 @@ class MissionRepository implements MissionInterface
      */
     public function deleteMissionMedia(int $mediaId): bool
     {
-        $mediaStatus = $this->missionMediaRepository->deleteMedia($mediaId);
-        return $mediaStatus;
+        return $this->missionMediaRepository->deleteMedia($mediaId);        
     }
 
     /**
@@ -1298,7 +1297,6 @@ class MissionRepository implements MissionInterface
      */
     public function deleteMissionDocument(int $documentId): bool
     {
-        $documentStatus = $this->modelsService->missionDocument->deleteDocument($documentId);
-        return $documentStatus;
+        return $this->modelsService->missionDocument->deleteDocument($documentId);
     }
 }
