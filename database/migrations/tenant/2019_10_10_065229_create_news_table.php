@@ -15,11 +15,11 @@ class CreateNewsTable extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->bigIncrements('news_id')->unsigned();
-            $table->string('news_image', 128);
-            $table->enum('status', ['PUBLISHED','UNPUBLISHED']);
-            $table->string('user_name', 16);
-            $table->string('user_title', 16);
-            $table->string('user_thumbnail', 255);
+            $table->string('news_image', 255)->nullable();
+            $table->enum('status', ['PUBLISHED','UNPUBLISHED'])->default('UNPUBLISHED');
+            $table->string('user_name', 64)->nullable();
+            $table->string('user_title', 64)->nullable();
+            $table->string('user_thumbnail', 255)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

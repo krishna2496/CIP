@@ -18,14 +18,18 @@ return [
         'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'La clé secrète de l\'utilisateur de l\'API a été mise à jour avec succès',
         'MESSAGE_ALL_SETTING_LISTING' => 'Tous les paramètres listés avec succès',
         'MESSAGE_LANGUAGE_FOUND' => 'Langue trouvée avec succès',
-        'MESSAGE_LANGUAGE_LISTING' => 'Langue listée avec succès',
-        'MESSAGE_LANGUAGE_CREATED' => 'Langue créée avec succès',
+        'MESSAGE_LANGUAGE_LISTING' => 'Langues listées avec succès',
+        'MESSAGE_LANGUAGE_CREATED' => 'Langue ajoutée avec succès',
         'MESSAGE_LANGUAGE_UPDATED' => 'Détails de la langue mis à jour avec succès',
         'MESSAGE_NEWS_DELETED' => 'Langue supprimée avec succès',
-        'MESSAGE_TENANT_LANGUAGE_ADDED' => 'Langue du locataire ajoutée avec succès',
-        'MESSAGE_TENANT_LANGUAGE_LISTING' => 'Langue du locataire répertoriée avec succès',
-        'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Langue du locataire supprimée avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_TENANT_LANGUAGE_ADDED' => 'Langue locataire ajoutée avec succès',
+        'MESSAGE_TENANT_LANGUAGE_UPDATED' => 'Langue du locataire mise à jour avec succès',
+        'MESSAGE_TENANT_LANGUAGE_LISTING' => 'Langues locataires répertoriées avec succès',
+        'MESSAGE_TENANT_LANGUAGE_DELETED' => 'Langue locataire supprimée avec succès',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
+        'MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY' => 'Les modifications de migration ont été appliquées avec succès sur la base de données client hébergée.',
+        'MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY' => 'Les modifications de migration ont été appliquées avec succès sur la base de données client.'
     ],
     
     /**
@@ -38,18 +42,13 @@ return [
         'ERROR_DATABASE_OPERATIONAL' => 'Erreur opérationnelle de la base de données',
         'ERROR_NO_DATA_FOUND' => 'Aucune donnée disponible',
         'ERROR_INVALID_ARGUMENT' => 'argument invalide',
-        'FAILED_TO_CREATE_FOLDER_ON_S3' => 'Erreur lors de la création du dossier sur le compartiment S3',
         'ERROR_API_USER_NOT_FOUND' => 'Utilisateur API introuvable',
-        'ERROR_OCCURRED' => 'Une erreur est survenue',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Fichier Boostrap SCSS introuvable lors de la compilation des fichiers SCSS',
         'ERROR_INVALID_JSON' => 'Format Json invalide',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Erreur lors du stockage de CSS compilé au niveau local',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Erreur lors du téléchargement du fichier CSS compilé vers S3',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Erreur lors de la compilation des fichiers SCSS',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée dans le système',
-        'ERROR_LANGUAGE_NOT_ACTIVE' => 'La langue sélectionnée n\'est pas active',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Langue du locataire introuvable dans le système',
         'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Au moins une langue par défaut est requise',
+        'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'extension de fichier invalide',
+        'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'Vous ne pouvez pas supprimer la langue du locataire par défaut',
     ]
     
 ];

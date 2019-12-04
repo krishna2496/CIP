@@ -17,6 +17,10 @@ use App\Helpers\DatabaseHelper;
 use DB;
 use App\Events\ActivityLogEvent;
 
+//!  Tenanthassetting controller
+/*!
+This controller is responsible for handling tenanthassetting store/delete and show operations.
+ */
 class TenantHasSettingController extends Controller
 {
     use RestExceptionHandlerTrait;

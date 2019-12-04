@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableAvailability extends Migration
+class CreateSeedersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateTableAvailability extends Migration
      */
     public function up()
     {
-        Schema::create('availability', function (Blueprint $table) {
-            $table->bigIncrements('availability_id')->unsinged();
-            $table->string('type',255);
-            $table->text('translations')->nullable();
+        Schema::create('seeders', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('seeder', 255);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +28,6 @@ class CreateTableAvailability extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('availability');
+        Schema::dropIfExists('seeders');
     }
 }

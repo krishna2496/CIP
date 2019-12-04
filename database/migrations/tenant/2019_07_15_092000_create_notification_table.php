@@ -21,7 +21,8 @@ class CreateNotificationTable extends Migration
             ->nullable();
             $table->unsignedBigInteger('entity_id')->nullable();
             $table->enum('is_read',['0','1'])->default('0')->comment('0: Unread, 1: Read');
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
 
             // Set references with notification_type table

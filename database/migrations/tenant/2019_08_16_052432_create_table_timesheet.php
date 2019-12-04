@@ -19,10 +19,10 @@ class CreateTableTimesheet extends Migration
             $table->unsignedBigInteger('user_id'); // FK users id
             $table->unsignedBigInteger('mission_id');
             $table->time('time')->nullable();
-            $table->integer('action');                        
+            $table->integer('action')->nullable();                        
             $table->date('date_volunteered');
             $table->enum('day_volunteered', ['WORKDAY','HOLIDAY','WEEKEND']);
-            $table->text('note')->nullable();
+            $table->text('notes')->nullable();
             $table->unsignedBigInteger('status_id')->default(1);
             $table->timestamps();
             $table->softDeletes();

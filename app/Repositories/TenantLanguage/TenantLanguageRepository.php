@@ -53,10 +53,17 @@ class TenantLanguageRepository implements TenantLanguageInterface
         // Check tenant is present in the system
         $tenantData = $this->tenant->findOrFail($tenantId);
      
-        $tenantLanguageData = $this->tenantLanguage
+        $tenantLanguageQuery = $this->tenantLanguage
         ->with(['language' => function ($query) {
             $query->select('language_id', 'name', 'code');
-        }])->where('tenant_id', $tenantId)->paginate($request->perPage);
+        }])->whereHas('language');
+       
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $tenantLanguageQuery->orderBy('created_at', $orderDirection);
+        }
+        $tenantLanguageData = $tenantLanguageQuery->where('tenant_id', $tenantId)->paginate($request->perPage);
+
         foreach ($tenantLanguageData as $value) {
             $value->name = $value->language->name;
             $value->code = $value->language->code;
@@ -122,5 +129,16 @@ class TenantLanguageRepository implements TenantLanguageInterface
             ]
         )->get();
         return ($data->count() > 0) ? true : false;
+    }
+
+    /**
+     * Get language detail.
+     *
+     * @param  int  $id
+     * @return App\Models\TenantLanguage
+     */
+    public function find(int $id): TenantLanguage
+    {
+        return $this->tenantLanguage->findOrFail($id);
     }
 }

@@ -13,7 +13,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
 use App\Events\ActivityLogEvent;
+use Illuminate\Validation\Rule;
 
+//! Language controller
+/*!
+This controller is responsible for handling language store, update, listing, show and delete operations.
+ */
 class LanguageController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -94,7 +99,7 @@ class LanguageController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                'name' => 'required',
+                'name' => 'required|regex:/^[a-zA-Z]+$/u|unique:language,name,NULL,language_id,deleted_at,NULL',
                 'code'  => 'required|max:2|unique:language,code,NULL,language_id,deleted_at,NULL',
                 'status'  => 'required|in:1,0'
             ]
@@ -142,7 +147,11 @@ class LanguageController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    'name' => 'sometimes|required',
+                    "name" => [
+                        "sometimes",
+                        "required",
+                        "regex:/^[a-zA-Z]+$/u",
+                        Rule::unique('language')->ignore($languageId, 'language_id,deleted_at,NULL')],
                     'code'  => 'sometimes|required|max:2|required|unique:language,code,'.
                     $languageId .',language_id,deleted_at,NULL',
                     'status'  => 'sometimes|required|in:1,0'
