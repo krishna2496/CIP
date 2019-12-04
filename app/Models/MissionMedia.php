@@ -49,4 +49,15 @@ class MissionMedia extends Model
     {
         return static::updateOrCreate($condition, $data);
     }
+
+    /**
+     * Soft delete the mission media from the database.
+     *
+     * @param int $mediaId
+     * @return bool
+     */
+    public function deleteMedia(int $mediaId): bool
+    {
+        return static::findOrFail($mediaId)->delete();
+    }
 }

@@ -43,4 +43,12 @@ interface MissionMediaInterface
      * @return void
      */
     public function updateMediaVideos(array $mediaVideos, int $missionId): void;
+    
+    /**
+     * Remove mission media
+     *
+     * @param int $mediaId
+     * @return void
+     */
+    public function deleteMedia(int $mediaId): bool;
 }

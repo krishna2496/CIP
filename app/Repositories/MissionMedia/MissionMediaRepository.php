@@ -161,4 +161,15 @@ class MissionMediaRepository implements MissionMediaInterface
             unset($missionMedia);
         }
     }
+
+    /**
+     * Remove mission media
+     *
+     * @param int $mediaId
+     * @return void
+     */
+    public function deleteMedia(int $mediaId): bool
+    {
+        return $this->missionMedia->deleteMedia($mediaId);
+    }
 }

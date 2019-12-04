@@ -49,4 +49,15 @@ class MissionDocument extends Model
     {
         return static::updateOrCreate($condition, $data);
     }
+
+    /**
+     * Soft delete the mission document from the database.
+     *
+     * @param int $documentId
+     * @return bool
+     */
+    public function deleteDocument(int $documentId): bool
+    {
+        return static::findOrFail($documentId)->delete();
+    }
 }
