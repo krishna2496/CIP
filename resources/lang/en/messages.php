@@ -239,6 +239,7 @@ return [
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Mission media does not found in the system',
         'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Mission document does not found in the system',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'Mission default image cannot be deleted. Please set another image as a default image and try again.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',

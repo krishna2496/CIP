@@ -166,10 +166,21 @@ class MissionMediaRepository implements MissionMediaInterface
      * Remove mission media
      *
      * @param int $mediaId
-     * @return void
+     * @return bool
      */
     public function deleteMedia(int $mediaId): bool
     {
         return $this->missionMedia->deleteMedia($mediaId);
+    }
+    
+    /**
+     * Get mission media details
+     *
+     * @param int $mediaId
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection
+    {
+        return $this->missionMedia->where('mission_media_id', $mediaId)->get();
     }
 }

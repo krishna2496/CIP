@@ -1312,4 +1312,16 @@ class MissionRepository implements MissionInterface
     {
         return $this->modelsService->missionDocument->deleteDocument($documentId);
     }
+    
+    /**
+     * Get media details
+     * 
+     * @param int $mediaId
+     * 
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection
+    {
+        return $this->missionMediaRepository->getMediaDetails($mediaId);
+    }
 }

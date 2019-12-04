@@ -227,6 +227,7 @@ return [
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Le support de mission ne se trouve pas dans le système',
         'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Document de mission non trouvé dans le système',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'L\'image par défaut de la mission ne peut pas être supprimée. Veuillez définir une autre image comme image par défaut et réessayer.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
