@@ -326,8 +326,6 @@ class MissionRepository implements MissionInterface
     {
         return $this->modelsService->mission->
         with(
-            'missionMedia',
-            'missionDocument',
             'missionTheme',
             'city',
             'country',
@@ -336,6 +334,11 @@ class MissionRepository implements MissionInterface
             'goalMission'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
+        }])->with(['missionMedia' => function ($query) {
+            $query->orderBy('sort_order');
+        }])
+        ->with(['missionDocument' => function ($query) {
+            $query->orderBy('sort_order');
         }])->findOrFail($id);
     }
     
@@ -1315,9 +1318,9 @@ class MissionRepository implements MissionInterface
     
     /**
      * Get media details
-     * 
+     *
      * @param int $mediaId
-     * 
+     *
      * @return Collection
      */
     public function getMediaDetails(int $mediaId): Collection
