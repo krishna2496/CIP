@@ -106,20 +106,22 @@ class MissionMediaRepository implements MissionMediaInterface
     {
         $isDefault = 0;
         foreach ($mediaImages as $value) {
-            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
-            // Check for default image in mission_media
-            $default = (isset($value['default']) && ($value['default'] !== '')) ? $value['default'] : '0';
-            if ($default === '1') {
-                $isDefault = 1;
-                $media = array('default' => '0');
-                $this->missionMedia->where('mission_id', $missionId)->update($media);
+            $missionMedia = array();
+            if (isset($value['media_path'])) {
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                // Check for default image in mission_media
+                $default = (isset($value['default']) && ($value['default'] !== '')) ? $value['default'] : '0';
+                if ($default === '1') {
+                    $isDefault = 1;
+                    $this->missionMedia->where('mission_id', $missionId)->update(['default' => '0']);
+                }
+                
+                $missionMedia = array('mission_id' => $missionId,
+                                      'media_name' => basename($filePath),
+                                      'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
+                                      'media_path' => $filePath,
+                                      'default' => $default);
             }
-            
-            $missionMedia = array('mission_id' => $missionId,
-                                  'media_name' => basename($filePath),
-                                  'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
-                                  'media_path' => $filePath,
-                                  'default' => $default);
             if (isset($value['sort_order'])) {
                 $missionMedia['sort_order'] = $value['sort_order'];
             }
@@ -148,10 +150,13 @@ class MissionMediaRepository implements MissionMediaInterface
     public function updateMediaVideos(array $mediaVideos, int $id): void
     {
         foreach ($mediaVideos as $value) {
-            $missionMedia = array('mission_id' => $id,
+            $missionMedia = array();
+            if (isset($value['media_path'])) {
+                $missionMedia = array('mission_id' => $id,
                                   'media_name' => $value['media_name'],
                                   'media_type' => 'mp4',
                                   'media_path' => $value['media_path']);
+            }
 
             if (isset($value['sort_order'])) {
                 $missionMedia['sort_order'] = $value['sort_order'];

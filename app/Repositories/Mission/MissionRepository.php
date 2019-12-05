@@ -298,14 +298,14 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             foreach ($request->documents as $value) {
                 $missionDocument = array('mission_id' => $id);
-                if ($value['document_path'] !== '') {
+                if (isset($value['document_path'])) {
                     $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
                     $missionDocument['document_path'] = $filePath;
                     $missionDocument['document_name'] = basename($filePath);
                     $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
-                    if (isset($value['sort_order'])) {
-                        $missionDocument['sort_order'] = $value['sort_order'];
-                    }
+                }
+                if (isset($value['sort_order'])) {
+                    $missionDocument['sort_order'] = $value['sort_order'];
                 }
                 
                 $this->modelsService->missionDocument->createOrUpdateDocument(['mission_id' => $id,
