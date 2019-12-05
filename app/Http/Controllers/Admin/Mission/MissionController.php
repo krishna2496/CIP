@@ -235,10 +235,10 @@ class MissionController extends Controller
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
-                "media_images.*.media_path" => "required_with:media_images|valid_media_path",
+                "media_images.*.media_path" => "sometimes|required|valid_media_path",
                 "media_videos.*.media_name" => "sometimes|required",
-                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
-                "documents.*.document_path" => "required_with:documents|valid_document_path",
+                "media_videos.*.media_path" => "sometimes|required|valid_video_url",
+                "documents.*.document_path" => "sometimes|required|valid_document_path",
                 "organisation.organisation_id" => "sometimes|required|integer",
                 "organisation.organisation_name" => "sometimes|required",
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
@@ -348,7 +348,7 @@ class MissionController extends Controller
         try {
             // Fetch mission media details
             $missionMediaDetails = $this->missionRepository->getMediaDetails($mediaId);
-            if(($missionMediaDetails->count() > 0) && ($missionMediaDetails[0]['default'] == "1")) {
+            if (($missionMediaDetails->count() > 0) && ($missionMediaDetails[0]['default'] == "1")) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

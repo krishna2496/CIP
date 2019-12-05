@@ -3,6 +3,7 @@
 namespace App\Repositories\Timesheet;
 
 use DB;
+use Carbon\Carbon;
 use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\Models\Timesheet;
@@ -14,6 +15,7 @@ use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
 use App\Repositories\Timesheet\TimesheetInterface;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Repositories\User\UserRepository;
 
 class TimesheetRepository implements TimesheetInterface
 {
@@ -58,6 +60,11 @@ class TimesheetRepository implements TimesheetInterface
     private $tenantOptionRepository;
 
     /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
+
+    /**
      * Create a new Timesheet repository instance.
      *
      * @param  App\Models\Timesheet $timesheet
@@ -68,6 +75,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\S3Helper $s3helper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
@@ -78,7 +86,8 @@ class TimesheetRepository implements TimesheetInterface
         Helpers $helpers,
         LanguageHelper $languageHelper,
         S3Helper $s3helper,
-        TenantOptionRepository $tenantOptionRepository
+        TenantOptionRepository $tenantOptionRepository,
+        UserRepository $userRepository
     ) {
         $this->timesheet = $timesheet;
         $this->mission = $mission;
@@ -88,6 +97,7 @@ class TimesheetRepository implements TimesheetInterface
         $this->languageHelper = $languageHelper;
         $this->s3helper = $s3helper;
         $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->userRepository = $userRepository;
     }
     
     /**
@@ -134,6 +144,7 @@ class TimesheetRepository implements TimesheetInterface
     {
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
+        $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         foreach ($timeMissionEntries as $value) {
             if ($value->missionLanguage) {
                 if (isset($value->missionLanguage[0])) {
@@ -146,6 +157,24 @@ class TimesheetRepository implements TimesheetInterface
                 }
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
+            }
+
+            if ($value->timeMission) {
+                $applicationStartTime = isset($value->timeMission->application_start_time) ?
+                Carbon::parse(
+                    $value->timeMission->application_start_time,
+                    config('constants.TIMEZONE')
+                )->setTimezone($timezone)->toDateTimeString() : null;
+
+                $applicationEndTime = isset($value->timeMission->application_end_time) ?
+                Carbon::parse(
+                    $value->timeMission->application_end_time,
+                    config('constants.TIMEZONE')
+                )->setTimezone($timezone)->toDateTimeString() : null;
+
+                $value->setAttribute('application_start_time', $applicationStartTime);
+                $value->setAttribute('application_end_time', $applicationEndTime);
+                unset($value->timeMission);
             }
             $value->setAppends([]);
         }
@@ -165,6 +194,8 @@ class TimesheetRepository implements TimesheetInterface
                 unset($value->missionLanguage);
             }
             $value->setAppends([]);
+            $value->setAttribute('application_start_time', null);
+            $value->setAttribute('application_end_time', null);
         }
 
         $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
@@ -409,8 +440,12 @@ class TimesheetRepository implements TimesheetInterface
         ->with(['missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
-        }])
-        ->with(['timesheet' => function ($query) use ($missionType, $userId) {
+        }]);
+
+        if ($missionType === config('constants.mission_type.TIME')) {
+            $timesheet->with('timeMission');
+        }
+        $timesheet->with(['timesheet' => function ($query) use ($missionType, $userId) {
             $type = ($missionType === config('constants.mission_type.TIME')) ? 'time' : 'action';
             $query->select(
                 'timesheet_id',
