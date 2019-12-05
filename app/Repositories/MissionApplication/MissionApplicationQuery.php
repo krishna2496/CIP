@@ -20,15 +20,22 @@ class MissionApplicationQuery implements QueryableInterface
     const FILTER_MISSION_TYPES      = 'missionTypes';
 
     const ALLOWED_SORTABLE_FIELDS = [
-        'applicationId' => 'mission_application_id',
-        'applicantFirstName' => 'u.first_name',
-        'applicantLastName' => 'u.last_name',
-        'applicantEmail' => 'u.email',
-        'missionName' => 'ml.title',
+        'applicant' => 'user.last_name',
+        'applicantEmail' => 'user.email',
+        'missionType' => 'mission.mission_type',
         'country' => 'c.name',
+        'status' => 'mission_application.approval_status',
         'city' => 'ci.name',
-        'missionTypes' => 'm.mission_type',
-        'applicationDate' => 'applied_at',
+        'applicationDate' => 'mission_application.applied_at',
+        'applicationSkills' => 'applicant_skills',
+        /*
+         * TODO: implement the following sort options (and handle translations)
+         * - mission name
+         * - mission skills
+         * - country name
+         * - city
+         */
+
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -48,6 +55,14 @@ class MissionApplicationQuery implements QueryableInterface
 
         $query = MissionApplication::query();
         $applications = $query
+            ->select([
+                'mission_application.*',
+                'user.last_name',
+                'user.email',
+                'mission.mission_type',
+            ])
+            ->join('user', 'user.user_id', '=', 'mission_application.user_id')
+            ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills',
