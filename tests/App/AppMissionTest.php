@@ -60,16 +60,19 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -266,7 +269,7 @@ class AppMissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_app_mission_detail_by_id()
+    public function it_should_return_detail_by_id()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -327,16 +330,19 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -497,7 +503,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -614,7 +621,7 @@ class AppMissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_app_mission_volunteers_by_mission_id()
+    public function it_should_return_volunteers_by_mission_id()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -841,7 +848,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -932,7 +940,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1023,7 +1032,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1115,7 +1125,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1207,7 +1218,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1299,13 +1311,15 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1397,7 +1411,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1479,7 +1494,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1571,7 +1587,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1663,7 +1680,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1755,7 +1773,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1847,7 +1866,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -1939,7 +1959,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -2031,16 +2052,19 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2129,7 +2153,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -2292,16 +2317,19 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2426,7 +2454,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -2535,7 +2564,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -2640,7 +2670,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -2741,13 +2772,15 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2843,7 +2876,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -2957,7 +2991,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -3092,7 +3127,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
@@ -3189,7 +3225,8 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
