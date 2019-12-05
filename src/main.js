@@ -17,7 +17,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
+import 'moment-timezone';
 import customCss from './services/CustomCss'
+import 'vue-search-select/dist/VueSearchSelect.css'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -38,13 +40,17 @@ export const eventBus = new Vue();
 interceptorsSetup();
 let entryUrl = null;
 
-
-
 // check requirment of authentication for path
 router.beforeEach(async(to, from, next) => {
-    // if from path is (/) then we need to call custom css call and wait for its reponse    
-    if ((from.path == '/' && to.path == '/') || from.path == '/') {
+    // if from path is (/) then we need to call custom css call and wait for its reponse 
+    if (to.path == '/') {
         document.body.classList.add("loader-enable");
+        setTimeout(() => {
+            document.body.classList.remove("loader-enable");
+        }, 700)
+    }
+    if ((from.path == '/' && to.path == '/') || from.path == '/') {
+        // document.body.classList.add("loader-enable");
         await customCss().then(() => {
             document.body.classList.remove("loader-enable");
         });
@@ -72,7 +78,13 @@ router.beforeEach(async(to, from, next) => {
     }
     next();
 });
-
+router.afterEach((to) => {
+    if (to.path == '/') {
+        setTimeout(() => {
+            document.body.classList.remove("loader-enable");
+        }, 500)
+    }
+})
 Vue.filter('formatDate', (value) => {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
@@ -127,7 +139,6 @@ Vue.mixin({
     methods: {
         settingEnabled(key) {
             let settingArray = JSON.parse(store.state.tenantSetting)
-
             if (settingArray != null) {
                 if (settingArray.indexOf(key) !== -1) {
                     return true;

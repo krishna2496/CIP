@@ -9,16 +9,19 @@ export default async(filterData) => {
     }
     let url = process.env.VUE_APP_API_ENDPOINT + "app/dashboard";
 
-    if (filterData.year != '' && filterData.year != null) {
+    if (filterData.year != '' && filterData.year != null && filterData.year != 0) {
         url = url + "?year=" + parseInt(filterData.year)
+        if (filterData.month != '' && filterData.month != null && filterData.month != 0) {
+            url = url + "&month=" + filterData.month
+        }
     }
 
-    if (filterData.month != '' && filterData.month != null) {
-        url = url + "&month=" + filterData.month
-    }
-
-    if (filterData.mission_id != '' && filterData.mission_id != null) {
-        url = url + "&mission_id=" + filterData.mission_id
+    if (filterData.mission_id != '' && filterData.mission_id != null && filterData.mission_id != 0) {
+        if (filterData.year == '' || filterData.year == null || filterData.year == 0) {
+            url = url + "?mission_id=" + filterData.mission_id
+        } else {
+            url = url + "&mission_id=" + filterData.mission_id
+        }
     }
 
     await axios({

@@ -48,7 +48,12 @@ export default new Vuex.Store({
         slideEffect: localStorage.getItem('slideEffect'),
         cookieAgreementDate: localStorage.getItem('cookieAgreementDate'),
         cookiePolicyText: localStorage.getItem('cookiePolicyText'),
-        email: localStorage.getItem('email')
+        email: localStorage.getItem('email'),
+        currentView: localStorage.getItem('currentView'),
+        timesheetFromYear: localStorage.getItem('timesheetFromYear'),
+        submitNewMissionUrl: localStorage.getItem('submitNewMissionUrl'),
+        userTimezone: localStorage.getItem('userTimezone'),
+        policyPage: localStorage.getItem('policyPage')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -62,6 +67,8 @@ export default new Vuex.Store({
             localStorage.setItem('defaultCountryId', data.country_id)
             localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
             localStorage.setItem('email', data.email)
+            localStorage.setItem('userTimezone', data.timezone)
+
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -71,6 +78,7 @@ export default new Vuex.Store({
             state.defaultCountryId = data.country_id;
             state.cookieAgreementDate = data.cookie_agreement_date;
             state.email = data.email;
+            state.userTimezone = data.timezone;
         },
         // Remove login data in state and local storage
         logoutUser(state) {
@@ -80,7 +88,7 @@ export default new Vuex.Store({
             localStorage.removeItem('lastName')
             localStorage.removeItem('avatar')
             localStorage.removeItem('cookieAgreementDate')
-
+            localStorage.removeItem('policyPage')
             state.isLoggedIn = false;
             state.token = null;
             state.userId = null;
@@ -88,6 +96,7 @@ export default new Vuex.Store({
             state.lastName = null;
             state.avatar = null;
             state.cookieAgreementDate = null;
+            state.policyPage = null;
             router.push({
                 name: 'login'
             })
@@ -121,21 +130,28 @@ export default new Vuex.Store({
         },
         // User filter data
         userFilter(state, filters) {
-
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
             localStorage.setItem('cityId', filters.cityId)
             localStorage.setItem('themeId', filters.themeId)
             localStorage.setItem('skillId', filters.skillId)
             localStorage.setItem('tags', JSON.stringify(filters.tags))
-            localStorage.setItem('sortBy', filters.sortBy),
-                state.search = filters.search
+            localStorage.setItem('sortBy', filters.sortBy)
+            if (filters.currentView) {
+                localStorage.setItem('currentView', filters.currentView)
+                state.currentView = filters.currentView
+            } else {
+                localStorage.setItem('currentView', 0)
+                state.currentView = 0
+            }
+            state.search = filters.search
             state.countryId = filters.countryId
             state.cityId = filters.cityId
             state.themeId = filters.themeId
             state.skillId = filters.skillId
             state.tags = JSON.stringify(filters.tags)
             state.sortBy = filters.sortBy
+
         },
 
         // Explore data
@@ -203,12 +219,18 @@ export default new Vuex.Store({
             state.cityId = data.city
         },
         saveCurrentSkill(state, data) {
-            // state.currentSkill = data;
-            localStorage.setItem('currentSkill', JSON.stringify(data))
+            if (data !== null) {
+                localStorage.setItem('currentSkill', JSON.stringify(data))
+            } else {
+                localStorage.removeItem('currentSkill')
+            }
         },
         saveCurrentFromSkill(state, data) {
-            // state.currentSkill = data;
-            localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            if (data !== null) {
+                localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            } else {
+                localStorage.removeItem('currentFromSkill')
+            }
         },
         clearFilter(state) {
             let tag = []
@@ -250,23 +272,23 @@ export default new Vuex.Store({
             state.newsBanner = data
         },
         newsBannerText(state, data) {
-            localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
-            state.newsBannerText = JSON.stringify(data.translations)
+            localStorage.setItem('newsBannerText', JSON.stringify(data))
+            state.newsBannerText = JSON.stringify(data)
         },
         storyBanner(state, data) {
             localStorage.setItem('storyBanner', data)
             state.storyBanner = data
         },
         storyBannerText(state, data) {
-            localStorage.setItem('storyBannerText', JSON.stringify(data.translations))
-            state.storyBannerText = JSON.stringify(data.translations)
+            localStorage.setItem('storyBannerText', JSON.stringify(data))
+            state.storyBannerText = JSON.stringify(data)
         },
         clearFilterClick(state, data) {
             state.clearFilterSet = data
         },
         storyDashboardText(state, data) {
-            localStorage.setItem('storyDashboardText', JSON.stringify(data.translations))
-            state.storyDashboardText = JSON.stringify(data.translations)
+            localStorage.setItem('storyDashboardText', JSON.stringify(data))
+            state.storyDashboardText = JSON.stringify(data)
         },
         slideInterval(state, data) {
             localStorage.setItem('slideInterval', data)
@@ -281,8 +303,29 @@ export default new Vuex.Store({
             state.cookieAgreementDate = 1;
         },
         cookiePolicyText(state, data) {
-            localStorage.setItem('cookiePolicyText', JSON.stringify(data.translations))
-            state.cookiePolicyText = JSON.stringify(data.translations)
+            localStorage.setItem('cookiePolicyText', JSON.stringify(data))
+            state.cookiePolicyText = JSON.stringify(data)
+        },
+        timesheetFromYear(state, data) {
+            localStorage.setItem('timesheetFromYear', data)
+            state.timesheetFromYear = data
+        },
+        submitNewMissionUrl(state, data) {
+            localStorage.setItem('submitNewMissionUrl', data)
+            state.submitNewMissionUrl = data
+        },
+        changeCurrentView(state, data) {
+            localStorage.setItem('currentView', data)
+            state.currentView = data
+        },
+        policyPage(state, data) {
+            if (data != null) {
+                localStorage.setItem('policyPage', JSON.stringify(data))
+                state.policyPage = JSON.stringify(data)
+            } else {
+                localStorage.setItem('policyPage', null)
+                state.policyPage = null
+            }
         }
     },
     getters: {},

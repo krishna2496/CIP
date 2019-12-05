@@ -35,11 +35,12 @@
 								
 								<ul class="message-box" v-if="messageList.length > 0">
 									<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
-										<b-button :title="languageData.label.delete" class="delete-btn">
+										<b-button :title="languageData.label.delete" class="delete-btn" v-if="message.sent_from != 1">
 											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" v-on:click="deleteMessage($event,message.messageId)" alt="delete" />
 										</b-button>
 										<div class="title-wrap">
 											<h3>{{message.person }}</h3>
+											<span v-if="message.sent_from == 1"><b-badge href="#" variant="secondary">{{languageData.label.sent}}</b-badge> &nbsp;&nbsp;</span>
 											<span class="date-detail">{{message.date | formatDateTime}}</span>
 										</div>
 										<p>{{message.text}}</p>
@@ -228,6 +229,7 @@
 						this.contactUs.subject =  ''
 						this.submitted = false;
 						this.$v.$reset();
+						this.getMessageListing()
 						setTimeout(() => {
 							this.$refs.sendMessageModal.hide();
 							
@@ -262,17 +264,25 @@
 								let data = response.data.message_data
 								data.filter((data,index) => {
 									let name = ''
+									let isRead = ''
 									if(data.is_anonymous == 1) {
 										name = this.languageData.label.anonymous_user
 									} else {
-										name = data.admin_name
+										if(data.sent_from == 1) {
+											name = data.first_name+' '+data.last_name
+											isRead = 1;
+										} else {
+											name = data.admin_name
+											isRead = data.is_read;
+										}
 									}
 									this.messageList.push({
 										'person' : name,
 										'date' : data.created_at,
 										'text' : data.message,
 										'messageId' : data.message_id,
-										'is_read' : data.is_read 
+										'is_read' : isRead,
+										'sent_from' : data.sent_from
 									})
 									if(response.pagination) {
 										this.pagination.currentPage = response.pagination.current_page
@@ -308,19 +318,35 @@
 
 			deleteMessage(event ,messageId) {
 				event.stopPropagation();
-				this.isLoaderActive = true
-				deleteMessage(messageId).then(response => {
-					let variant = 'success'
-					let message = '';
-					if(response.error == true) {
-						variant = 'danger';
-						this.isLoaderActive = false
-						message = response.message
-					} else {
-						message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
-						this.getMessageListing();
-					}
-					this.makeToast(variant,message)
+				this.$bvModal.msgBoxConfirm(this.languageData.label.delete_message, {
+                        buttonSize: 'md',
+                        okTitle: this.languageData.label.yes,
+                        cancelTitle: this.languageData.label.no,
+                        centered: true,
+                        size: 'md',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        headerClass: 'p-2 border-bottom-0',
+                        footerClass: 'p-2 border-top-0',
+                        centered: true
+                    })
+                    .then(value => {
+						if (value == true) {	
+							this.isLoaderActive = true
+							deleteMessage(messageId).then(response => {
+								let variant = 'success'
+								let message = '';
+								if(response.error == true) {
+									variant = 'danger';
+									this.isLoaderActive = false
+									message = response.message
+								} else {
+									message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
+									this.getMessageListing();
+								}
+								this.makeToast(variant,message)
+							})
+						}
 				})
 			},
 

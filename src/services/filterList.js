@@ -2,7 +2,6 @@ import axios from 'axios'
 import store from '../store'
 
 export default async(data) => {
-
     let responseData;
     let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
@@ -36,6 +35,22 @@ export default async(data) => {
             url = url + "&search=" + data.search
         } else {
             url = url + "?search=" + data.search
+        }
+    }
+
+    if (data.exploreMissionType != '') {
+        if (data.countryId != '' || data.cityId != '' || data.themeId != '' || data.search != '') {
+            url = url + "&explore_mission_type=" + data.exploreMissionType
+        } else {
+            url = url + "?explore_mission_type=" + data.exploreMissionType
+        }
+    }
+
+    if (data.exploreMissionParams != '') {
+        if (data.countryId != '' || data.cityId != '' || data.themeId != '' || data.search != '' || data.exploreMissionType != '') {
+            url = url + "&explore_mission_params=" + data.exploreMissionParams
+        } else {
+            url = url + "?explore_mission_params=" + data.exploreMissionParams
         }
     }
 

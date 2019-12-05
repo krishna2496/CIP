@@ -5,8 +5,10 @@
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
-                            <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{languageData.label.applied}}</b-alert>
-                            <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{languageData.label.closed}}</b-alert>
+                            <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
+                                {{languageData.label.applied}}</b-alert>
+                            <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
+                                {{languageData.label.closed}}</b-alert>
                             <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                 :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
@@ -28,7 +30,8 @@
                                     :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
                                     @click="favoriteMission(mission.mission_id)">
                                     <i class="normal-img">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24"
+                                            height="21">
                                             <g id="Main Content">
                                                 <g id="1">
                                                     <g id="Image content">
@@ -68,6 +71,35 @@
                     </b-card-header>
 
                     <b-card-body>
+                        <div class="top-content">
+                            <b-list-group>
+                                <b-list-group-item>
+                                    <i class="left-icon">
+                                        <img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
+                                    </i>
+                                    <p class="text-wrap">{{mission.city_name}}</p>
+                                </b-list-group-item>
+                                <b-list-group-item v-if="mission.mission_theme != null && isThemeSet">
+                                    <i class="left-icon">
+                                        <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
+                                    </i>
+                                    <p class="text-wrap">{{getThemeTitle(mission.mission_theme.translations)}}</p>
+                                </b-list-group-item>
+                                <b-list-group-item>
+                                    <i class="left-icon">
+                                        <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
+                                    </i>
+                                    <p class="text-wrap">{{mission.organisation_name}}</p>
+                                </b-list-group-item>
+                            </b-list-group>
+
+                            <div class="ratings" v-if="isStarRatingDisplay">
+                                <star-rating v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd"
+                                    active-color="#F7D341" v-bind:star-size="23" :rating="mission.mission_rating_count"
+                                    :read-only="true">
+                                </star-rating>
+                            </div>
+                        </div>
                         <div class="content-block">
                             <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
                                 class="card-title mb-2">
@@ -78,147 +110,133 @@
                             </b-card-text>
                         </div>
                         <div class="group-wrap">
-                            <div class="rating-with-button">
-                                <div class="group-ratings">
-                                    <span class="group-name">{{mission.organisation_name}}</span>
-                                    <span class="ratings" v-if="isStarRatingDisplay">
-                                        <star-rating v-bind:increment="0.5" v-bind:max-rating="5"
-                                            inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
-                                            :rating="mission.mission_rating_count" :read-only="true">
-                                        </star-rating>
-                                    </span>
-                                </div>
-                                <div class="bottom-block">
-                                    <b-link v-if="mission.set_view_detail == 0"
-                                        @click="applyForMission(mission.mission_id)">
-                                        <b-button class="btn-bordersecondary icon-btn">
-                                            <span>{{ languageData.label.apply }}</span>
-                                            <i>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
-                                                    height="15">
-                                                    <g id="Main Content">
-                                                        <g id="1">
-                                                            <g id="Button">
-                                                                <path id="Forma 1 copy 12" class="shp0"
-                                                                    d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </i>
-                                        </b-button>
-                                    </b-link>
-                                    <b-link v-if="mission.set_view_detail == 1"
-                                        :to="'/mission-detail/' + mission.mission_id">
-                                        <b-button class="btn-bordersecondary icon-btn">
-                                            <span>{{ languageData.label.view_detail }}</span>
-                                            <i>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
-                                                    height="15">
-                                                    <g id="Main Content">
-                                                        <g id="1">
-                                                            <g id="Button">
-                                                                <path id="Forma 1 copy 12" class="shp0"
-                                                                    d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </i>
-                                        </b-button>
-                                    </b-link>
-                                </div>
-                            </div>
                             <div class="group-details">
-                                <div class="top-strip-wrap">
-                                    <div class="top-strip">
-                                        <span>
-                                            <!-- Mission type time -->
-                                            <template v-if="checkMissionTypeTime(mission.mission_type)">
-                                                <template v-if="mission.end_date !== null">
-                                                    {{ languageData.label.from }}
-                                                    {{mission.start_date | formatDate }}
-                                                    {{ languageData.label.until}}
-                                                    {{ mission.end_date | formatDate }}
-                                                </template>
-                                                <template v-else>
-                                                    {{ languageData.label.on_going_opportunities }}
-                                                </template>
-                                            </template>
-                                            <!-- Mission type goal -->
-                                            <template v-else>
-                                                {{mission.objective}}
-                                            </template>
-                                        </span>
+                                <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
+                                    <div class="detail-column">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'"
+                                                alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <span class="title-text mb-1">{{mission.seats_left}}</span>
+                                            <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="group-details-inner">
-                                    <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
-                                        <div class="detail-column info-block">
-                                            <i class="icon-wrap">
-                                                <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'"
-                                                    alt="user">
-                                            </i>
-                                            <div class="text-wrap">
-                                                <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
-                                            </div>
+                                </template>
+                                <template v-else>
+                                    <div class="detail-column">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
+                                                alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <span class="title-text mb-1">{{mission.mission_application_count}}</span>
+                                            <span
+                                                class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
                                         </div>
-                                    </template>
-                                    <template v-else>
-                                        <div class="detail-column info-block">
-                                            <i class="icon-wrap">
-                                                <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
-                                                    alt="user">
-                                            </i>
-                                            <div class="text-wrap">
-                                                <span
-                                                    class="title-text mb-1">{{mission.mission_application_count}}</span>
-                                                <span
-                                                    class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
-                                            </div>
-                                        </div>
-                                    </template>
+                                    </div>
+                                </template>
 
-                                    <template v-if="mission.application_deadline != null ||
+                                <template v-if="mission.application_deadline != null ||
                                         checkMissionTypeTime(mission.mission_type)
                                         ">
-                                        <div class="detail-column info-block"
-                                            v-if="mission.application_deadline != null">
-                                            <i class="icon-wrap">
-                                                <img :src="$store.state.imagePath+'/assets/images/clock.svg'"
-                                                    alt="user">
-                                            </i>
-                                            <div class="text-wrap">
-                                                <span
-                                                    class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
-                                                <span class="subtitle-text">{{ languageData.label.deadline }}</span>
-                                            </div>
+                                    <div class="detail-column info-block" v-if="mission.application_deadline != null">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <span
+                                                class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
+                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
                                         </div>
-                                    </template>
-                                    <template v-else>
-                                        <div class="detail-column progress-block">
-                                            <i class="icon-wrap">
-                                                <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
-                                                    alt="user">
-                                            </i>
-                                            <div class="text-wrap">
-                                                <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"
-                                                    class="mb-2"></b-progress>
-                                                <span class="subtitle-text">
-                                                    {{mission.achieved_goal}} {{ languageData.label.achieved}}
-                                                </span>
-                                            </div>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="detail-column progress-block">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
+                                                alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <b-progress :value="mission.achieved_goal | filterGoal"
+                                                :max="mission.goal_objective" class="mb-2"></b-progress>
+                                            <span class="subtitle-text">
+                                                {{mission.achieved_goal}} {{ languageData.label.achieved}}
+                                            </span>
                                         </div>
-                                    </template>
+                                    </div>
+                                </template>
+
+                                <div class="detail-column calendar-col">
+                                    <i class="icon-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
+                                    </i>
+                                    <div class="text-wrap" v-if="mission.end_date !== null">
+                                        <span class="title-text mb-1">{{ languageData.label.from }}
+                                            {{mission.start_date | formatDate }}</span>
+                                        <span class="title-text">{{ languageData.label.until}}
+                                            {{ mission.end_date | formatDate }}</span>
+                                    </div>
                                 </div>
+                                <div class="detail-column skill-col" v-if="mission.skill && isSkillDisplay">
+                                    <i class="icon-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/skill-ic.svg'" alt="user">
+                                    </i>
+                                    <div class="text-wrap">
+                                        <span class="title-text">{{ languageData.label.skills }}</span>
+                                        <span class="subtitle-text">{{getSkills(mission.skill)}}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="btn-wrap">
+                                <b-link v-if="mission.set_view_detail == 0"
+                                    @click="applyForMission(mission.mission_id)">
+                                    <b-button class="btn-bordersecondary icon-btn">
+                                        <span>{{ languageData.label.apply }}</span>
+                                        <i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
+                                                height="15">
+                                                <g id="Main Content">
+                                                    <g id="1">
+                                                        <g id="Button">
+                                                            <path id="Forma 1 copy 12" class="shp0"
+                                                                d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </i>
+                                    </b-button>
+                                </b-link>
+                                <b-link v-if="mission.set_view_detail == 1"
+                                    :to="'/mission-detail/' + mission.mission_id">
+                                    <b-button class="btn-bordersecondary icon-btn">
+                                        <span>{{ languageData.label.view_detail }}</span>
+                                        <i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
+                                                height="15">
+                                                <g id="Main Content">
+                                                    <g id="1">
+                                                        <g id="Button">
+                                                            <path id="Forma 1 copy 12" class="shp0"
+                                                                d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </i>
+                                    </b-button>
+                                </b-link>
                             </div>
                         </div>
                     </b-card-body>
                 </b-card>
+
             </div>
+
         </div>
-        <b-modal  @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
+        <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                 <h5 class="modal-title">{{languageData.label.search_user}}</h5>
@@ -227,8 +245,8 @@
             <div class="autocomplete-control">
                 <div class="autosuggest-container">
                     <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                        @input="onInputChange" @selected="onSelected"
-                        :get-suggestion-value="getSuggestionValue" :input-props="{
+                        @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
+                        :input-props="{
                         id:'autosuggest__input', 
                         placeholder:autoSuggestPlaceholder,
                         ref:'inputAutoSuggest'
@@ -236,7 +254,7 @@
                         <div slot-scope="{suggestion}">
                             <img :src="suggestion.item.avatar" />
                             <div>
-                                {{suggestion.item.first_name}} {{suggestion.item.last_name}} 
+                                {{suggestion.item.first_name}} {{suggestion.item.last_name}}
                             </div>
                         </div>
                     </VueAutosuggest>
@@ -255,8 +273,8 @@
     </div>
     <div class="no-data-found" v-else>
         <h2 class="text-center">{{noRecordFound()}}</h2>
-        <div class="btn-wrap" v-if="isSubmitNewMissionSet">
-            <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
+        <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+            <b-button class="btn-bordersecondary icon-btn">
                 <span>{{ languageData.label.submit_new_mission }}</span>
                 <i>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -316,6 +334,8 @@
                 isQuickAccessSet: true,
                 isSubmitNewMissionSet: true,
                 isThemeSet: true,
+                submitNewMissionUrl: '',
+                isSkillDisplay: true
             };
         },
         computed: {
@@ -335,12 +355,12 @@
         },
         methods: {
             hideModal() {
-				this.autoSuggestPlaceholder = ""
-				this.submitDisable  = true
-				this.invitedUserId  = ""
-				this.query = ""
-				this.selected = ""
-			},
+                this.autoSuggestPlaceholder = ""
+                this.submitDisable = true
+                this.invitedUserId = ""
+                this.query = ""
+                this.selected = ""
+            },
             noRecordFound() {
                 let defaultLang = (store.state.defaultLanguage).toLowerCase();
                 if (JSON.parse(store.state.missionNotFoundText) != "") {
@@ -364,7 +384,7 @@
             // Get theme title
             getThemeTitle(translations) {
                 if (translations) {
-                    let filteredObj = translations.filter( (item, i) => {
+                    let filteredObj = translations.filter((item, i) => {
                         if (item.lang === store.state.defaultLanguage.toLowerCase()) {
                             return translations[i].title;
                         }
@@ -375,12 +395,12 @@
                 }
             },
             getMediaPath(mediaPath) {
-				if(mediaPath != '') {
-					return mediaPath;
-				} else {
-					return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
-				}
-			},
+                if (mediaPath != '') {
+                    return mediaPath;
+                } else {
+                    return store.state.imagePath + '/assets/images/' + constants.MISSION_DEFAULT_PLACEHOLDER;
+                }
+            },
             // Is default media is video or not
             checkDefaultMediaFormat(mediaType) {
                 return mediaType != constants.YOUTUBE_VIDEO_FORMAT
@@ -415,7 +435,7 @@
             },
             // For selected user id.
             onSelected(item) {
-                if(item) {
+                if (item) {
                     this.selected = item.item;
                     this.submitDisable = false;
                     this.invitedUserId = item.item.user_id;
@@ -429,21 +449,21 @@
             },
             // Open auto suggest modal
             handleModal(missionId) {
-                this.autoSuggestPlaceholder = this.languageData.label.search_user
+                this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
                 this.showErrorDiv = false;
                 this.message = null;
                 this.$refs.userDetailModal.show();
                 this.currentMission = missionId;
                 setTimeout(() => {
-					this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-					var input = document.getElementById("autosuggest__input");
-					input.addEventListener("keyup", (event) => {
-						if (event.keyCode === 13 && !this.submitDisable) {
-							event.preventDefault();
-							this.inviteColleagues()
-						}
-					});
-				}, 100);
+                    this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+                    var input = document.getElementById("autosuggest__input");
+                    input.addEventListener("keyup", (event) => {
+                        if (event.keyCode === 13 && !this.submitDisable) {
+                            event.preventDefault();
+                            this.inviteColleagues()
+                        }
+                    });
+                }, 100);
             },
             // invite collegues api call
             inviteColleagues() {
@@ -493,26 +513,46 @@
                 })
             },
             getAppliedStatus(missionDetail) {
-                let currentDate = moment().format("YYYY-MM-DD");
-                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD HH::mm:ss");
                 let checkEndDateExist = true;
-                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
-                    if(currentDate > missionEndDate) {
+                if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if (currentDate > missionEndDate) {
                         checkEndDateExist = false
                     }
                 }
-                if(missionDetail.user_application_count == 1 && checkEndDateExist) {
+                if (missionDetail.user_application_count == 1 && checkEndDateExist) {
                     return true;
                 }
             },
             getClosedStatus(missionDetail) {
-                let currentDate = moment().format("YYYY-MM-DD");
-                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
-                    if(currentDate > missionEndDate) {
+                let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD HH::mm:ss");
+                if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if (currentDate > missionEndDate) {
                         return true;
                     }
                 }
+            },
+            submitNewMission() {
+                if (this.submitNewMissionUrl != '') {
+                    window.open(this.submitNewMissionUrl, '_self');
+                }
+            },
+            getSkills(skills) {
+                let skillString = '';
+                if(skills) {
+                    skills.filter((data,index) => {
+                        if(data) {
+                            if(skillString != '') {
+                                skillString = skillString + ',' + data.title;
+                            } else {
+                                skillString = data.title;
+                            }
+                        }
+                    })
+                }
+                return skillString
             }
         },
         created() {
@@ -522,6 +562,9 @@
             this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
             this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+            this.submitNewMissionUrl = store.state.submitNewMissionUrl
+            this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         }
     };
+
 </script>

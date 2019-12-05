@@ -1,7 +1,7 @@
 /** primary footer style **/
 .primary-footer {
 	padding: 20px 0 4px;
-	border-top: 1px solid $border-color;
+	border-top: 1px solid $primary-border-color;
 
 	@include md-max {
 		padding: 20px 0 10px;

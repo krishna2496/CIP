@@ -48,10 +48,10 @@
                     </div>
                     <!-- Tabing grid view and list view start -->
                     
-                    <b-tabs class="view-tab">
+                    <b-tabs class="view-tab" v-model="tabNumber">
                     
                         <!-- grid view -->
-                        <b-tab class="grid-tab-content">
+                        <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
                             <template slot="title">
                                 <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
                                     :title="languageData.label.grid_view" v-if="missionList.length > 0">
@@ -66,7 +66,7 @@
                                 v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
                         </b-tab>
                         <!-- list view -->
-                        <b-tab class="list-tab-content">
+                        <b-tab class="list-tab-content" @click="changeCurrentView(1)">
                             <template slot="title">
                                 <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
                                     :title="languageData.label.list_view" v-if="missionList.length > 0">
@@ -171,7 +171,9 @@
                     "exploreMissionParams": "",
                     "tags": [],
                     "sortBy": "",
+                    "currentView" : 0
                 },
+                tabNumber : 0,
                 tags: "",
                 sortByFilterSet: true,
                 userList: [],
@@ -222,6 +224,7 @@
                 filter.exploreMissionType = store.state.exploreMissionType
                 filter.exploreMissionParams = store.state.exploreMissionParams
                 filter.sortBy = store.state.sortBy
+                filter.currentView = this.tabNumber
                 filter.addLoader = parmas
                 await missionListing(filter).then(response => {
                     if (response.data) {
@@ -264,8 +267,14 @@
             async missionFilter() {
 
                 await missionFilterListing().then(() => {
+                    this.tabNumber = store.state.currentView
                     this.getMissions();
                 });
+            },
+            changeCurrentView(number) {
+                this.tabNumber = number
+                store.commit('changeCurrentView' ,number)
+                this.getMissions();
             },
 
             pageChange(page) {
@@ -283,22 +292,23 @@
             searchMissions(searchParams, filterParmas) {
 
                 this.filterData.search = searchParams;
-                if (store.state.exploreMissionType == '') {
+                // if (store.state.exploreMissionType == '') {
                     this.filterData.countryId = filterParmas.countryId;
-                } else {
-                    this.filterData.countryId = '';
-                }
+                // } else {
+                //     this.filterData.countryId = '';
+                // }
 
-                if (store.state.exploreMissionType == '') {
+                // if (store.state.exploreMissionType == '') {
                     this.filterData.cityId = filterParmas.cityId;
-                } else {
-                    this.filterData.cityId = '';
-                }
+                // } else {
+                //     this.filterData.cityId = '';
+                // }
 
                 this.filterData.themeId = filterParmas.themeId;
                 this.filterData.skillId = filterParmas.skillId;
                 this.filterData.tags = filterParmas.tags;
                 this.filterData.sortBy = '';
+                this.filterData.currentView = this.tabNumber;
                 if (store.state.sortBy != null) {
                     this.filterData.sortBy = store.state.sortBy;
                 }
@@ -330,6 +340,7 @@
                 if (filters.parmas) {
                     filteExplore.exploreMissionParams = filters.parmas;
                 }
+                
                 store.commit('userFilter', this.filterData)
                 store.commit('exploreFilter', filteExplore);
                 this.$refs.secondaryHeader.changeSearch();
@@ -355,6 +366,7 @@
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
+
             if (this.$route.params.searchParamsType) {
                 let filteExplore = {};
                 filteExplore.exploreMissionParams = '';
@@ -364,9 +376,11 @@
                 }
                 store.commit('exploreFilter', filteExplore);
                 store.commit('clearFilter')
+              
                 this.getMissions();
 
             } else {
+
                 let filteExplore = {};
                 filteExplore.exploreMissionType = '';
                 filteExplore.exploreMissionParams = '';
@@ -375,12 +389,14 @@
                 this.missionFilter();
             }
             
+            
             this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
             this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
             this.defaultCountry = store.state.defaultCountryId
+             this.activeView = 'listView'
             searchUser().then(response => {
                 this.userList = response;
             });

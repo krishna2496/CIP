@@ -72,7 +72,9 @@
 
 				e.target.parentNode.classList.toggle("dropdown-open");
 				let simplebarScrollTop = e.target.parentNode.querySelector(".simplebar-content-wrapper");
-				simplebarScrollTop.scrollTop = 0;
+				if(simplebarScrollTop) {
+					simplebarScrollTop.scrollTop = 0;
+				}
 				let dropdownList = document.querySelectorAll(".dropdown-open");
 				for (let i = 0; i < dropdownList.length; ++i) {
 					if (dropdownList[i] != e.target.parentNode) {
