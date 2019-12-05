@@ -56,7 +56,7 @@ class TenantLanguageRepository implements TenantLanguageInterface
         $tenantLanguageQuery = $this->tenantLanguage
         ->with(['language' => function ($query) {
             $query->select('language_id', 'name', 'code');
-        }]);
+        }])->whereHas('language');
        
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
@@ -129,5 +129,16 @@ class TenantLanguageRepository implements TenantLanguageInterface
             ]
         )->get();
         return ($data->count() > 0) ? true : false;
+    }
+
+    /**
+     * Get language detail.
+     *
+     * @param  int  $id
+     * @return App\Models\TenantLanguage
+     */
+    public function find(int $id): TenantLanguage
+    {
+        return $this->tenantLanguage->findOrFail($id);
     }
 }

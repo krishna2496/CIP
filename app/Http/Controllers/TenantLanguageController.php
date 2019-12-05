@@ -154,6 +154,15 @@ class TenantLanguageController extends Controller
     public function destroy(int $tenantLanguageId): JsonResponse
     {
         try {
+            $tenantLanguage = $this->tenantLanguageRepository->find($tenantLanguageId);
+            if (!is_null($tenantLanguage) && $tenantLanguage->default == '1') {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_DELETE_DEFAULT_TENANT_LANGUAGE'),
+                    trans('messages.custom_error_message.ERROR_DELETE_DEFAULT_TENANT_LANGUAGE')
+                );
+            }
             $this->tenantLanguageRepository->delete($tenantLanguageId);
 
             // Set response data

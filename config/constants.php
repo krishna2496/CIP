@@ -18,7 +18,9 @@
             'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => '200104',
             'ERROR_MIGRATION_CHANGES_FILE_FIELDS_EMPTY' => '200105',
             'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '200106',
-            'ERROR_NOT_VALID_EXTENSION' => '200107'
+            'ERROR_NOT_VALID_EXTENSION' => '200107',
+            'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => '200108',
+
         ],
         'background_process_status' => [
             'PENDING' => '0',
