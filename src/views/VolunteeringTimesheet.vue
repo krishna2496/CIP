@@ -439,13 +439,34 @@
                 this.currentTimeData.day = date
                 let missionEndDate = timeArray.end_date
                 this.currentTimeData.disabledPastDates = timeArray.start_date
-                let futerDate = moment(this.futureDates).format("YYYY-MM-DD");
-                let endDate = moment(missionEndDate).format("YYYY-MM-DD");
-
+                let futerDate = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss");
+                let endDate = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss");
+                let startTime = moment(timeArray.application_start_time).format("YYYY-MM-DD HH:mm:ss");
+                let endTime = moment(timeArray.application_end_time).format("YYYY-MM-DD HH:mm:ss");
+                let compareEndDates = '';
+                let currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                 if (endDate > futerDate) {
-                    this.currentTimeData.disabledFutureDates = futerDate
+                    this.currentTimeData.disabledFutureDates =  moment(this.futureDates).format("YYYY-MM-DD")
+                    compareEndDates = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss")
                 } else {
-                    this.currentTimeData.disabledFutureDates = endDate
+                    this.currentTimeData.disabledFutureDates = moment(missionEndDate).format("YYYY-MM-DD")
+                    compareEndDates = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss")
+                }
+                
+                if(timeArray.application_end_time != null) {
+                    if (endTime < compareEndDates) {
+                        if(endTime < currentDate) {
+                            this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).subtract(1, 'd');
+                             this.currentTimeData.disabledFutureDates = moment(this.currentTimeData.disabledFutureDates).format("YYYY-MM-DD");
+                        } else {
+                            this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).format("YYYY-MM-DD")
+                        }
+                    }
+                }
+                if(timeArray.application_start_time != null) {
+                    if (startTime > this.currentTimeData.disabledPastDates) {
+                        this.currentTimeData.disabledPastDates = moment(timeArray.application_start_time).format("YYYY-MM-DD")
+                    }
                 }
 
                 if (timeArray.timesheet) {
@@ -490,7 +511,7 @@
                     this.currentTimeData.dateVolunteered = this.volunteeringHoursCurrentYear + '-' + months + '-' + dates
 
                     timeSheetArray.filter( (timeSheetItem) => {
-
+                        
                         if (timeSheetItem.timesheet_status.status == "APPROVED" ||
                             timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
                         ) {
@@ -500,15 +521,15 @@
                         let currentArrayDate = timeSheetItem.date
                         let currentArrayYear = timeSheetItem.year
                         let currentArrayMonth = timeSheetItem.month
-
+                       
                         let currentTimeSheetYear = '';
                         let currentTimeSheetMonth = '';
                         if (timeSheetType == 'time') {
                             currentTimeSheetYear = this.volunteeringHoursCurrentYear;
-                            currentTimeSheetMonth = this.volunteeringHoursCurrentMonth;
+                            currentTimeSheetMonth = latestMonth;
                         } else {
                             currentTimeSheetYear = this.volunteeringGoalCurrentYear;
-                            currentTimeSheetMonth = this.volunteeringGoalCurrentMonth;
+                            currentTimeSheetMonth = latestMonth;
                         }
                         if (currentTimeSheetYear == currentArrayYear) {
                             if (currentTimeSheetMonth == currentArrayMonth) {
@@ -574,7 +595,9 @@
                 let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD HH::mm::ss")
                 let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss");
                 let endDate = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss");
-               
+                let startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD HH::mm::ss");
+                let endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD HH::mm::ss");
+                
                 let disableEndDate = '';
                 if (endDate > disablefuterDate) {
                     disableEndDate = disablefuterDate
@@ -615,6 +638,8 @@
                     } else {
                         disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
                         disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+                        startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD");
+                        endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD");
                     }
                 } else {
                     currentDataArray = this.volunteeringGoalWeeks
@@ -642,6 +667,8 @@
                     } else {
                         disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
                         disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+                        startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD");
+                        endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD");
                     }
                 }
 
@@ -674,6 +701,13 @@
                 if (currentDate > disableEndDate) {
                  
                     returnData.push("disabled")
+                }
+                if (currentDate < startTime && timeSheetArray.application_start_time != null) {
+                   returnData.push("disabled")
+                }
+                         
+                if (currentDate > endTime && timeSheetArray.application_end_time != null) {
+                   returnData.push("disabled")
                 }
 
                 return returnData;
