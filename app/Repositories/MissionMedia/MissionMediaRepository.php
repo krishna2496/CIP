@@ -109,8 +109,7 @@ class MissionMediaRepository implements MissionMediaInterface
             $missionMedia = array();
             if (isset($value['media_path'])) {
                 $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
-                $missionMedia = array('mission_id' => $missionId,
-                                      'media_name' => basename($filePath),
+                $missionMedia = array('media_name' => basename($filePath),
                                       'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
                                       'media_path' => $filePath);
             }
