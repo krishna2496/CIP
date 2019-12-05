@@ -175,11 +175,12 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             if (!empty($request->documents)) {
                 foreach ($request->documents as $value) {
-                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
                     $missionDocument = array('mission_id' => $mission->mission_id,
                                             'document_name' => basename($filePath),
                                             'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                            'document_path' => $filePath);
+                                            'document_path' => $filePath,
+                                            'sort_order' => $value['sort_order']);
                     $this->modelsService->missionDocument->create($missionDocument);
                     unset($missionDocument);
                 }
@@ -297,11 +298,14 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             foreach ($request->documents as $value) {
                 $missionDocument = array('mission_id' => $id);
-                if ($value['document_path'] !== '') {
-                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                if (isset($value['document_path'])) {
+                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
                     $missionDocument['document_path'] = $filePath;
                     $missionDocument['document_name'] = basename($filePath);
                     $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
+                }
+                if (isset($value['sort_order'])) {
+                    $missionDocument['sort_order'] = $value['sort_order'];
                 }
                 
                 $this->modelsService->missionDocument->createOrUpdateDocument(['mission_id' => $id,
@@ -322,8 +326,6 @@ class MissionRepository implements MissionInterface
     {
         return $this->modelsService->mission->
         with(
-            'missionMedia',
-            'missionDocument',
             'missionTheme',
             'city',
             'country',
@@ -332,6 +334,11 @@ class MissionRepository implements MissionInterface
             'goalMission'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
+        }])->with(['missionMedia' => function ($query) {
+            $query->orderBy('sort_order');
+        }])
+        ->with(['missionDocument' => function ($query) {
+            $query->orderBy('sort_order');
         }])->findOrFail($id);
     }
     
@@ -368,11 +375,16 @@ class MissionRepository implements MissionInterface
             'mission.organisation_id',
             'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme',
-        'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
+        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
+        }])
+        ->with(['missionMedia' => function ($query) {
+            $query->orderBy('sort_order');
+        }])
+        ->with(['missionDocument' => function ($query) {
+            $query->orderBy('sort_order');
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -1004,7 +1016,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument', 'timeMission', 'availability'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'availability'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])
@@ -1015,6 +1027,10 @@ class MissionRepository implements MissionInterface
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
+                $query->orderBy('sort_order');
+            }])
+            ->with(['missionDocument' => function ($query) {
+                $query->orderBy('sort_order');
             }])
             ->with(['missionRating'  => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id);
@@ -1072,7 +1088,7 @@ class MissionRepository implements MissionInterface
     {
         // Fetch mission media details
         $missionData = $this->modelsService->mission->findOrFail($missionId);
-        return $missionData->missionMedia()->orderBy('default', 'DESC')
+        return $missionData->missionMedia()->orderBy('sort_order')
         ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
     }
         
@@ -1274,5 +1290,41 @@ class MissionRepository implements MissionInterface
             return true;
         }
         return false;
+    }
+
+    /**
+     * Remove mission media
+     *
+     * @param int $mediaId
+     *
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool
+    {
+        return $this->missionMediaRepository->deleteMedia($mediaId);
+    }
+
+    /**
+     * Remove mission document
+     *
+     * @param int $documentId
+     *
+     * @return bool
+     */
+    public function deleteMissionDocument(int $documentId): bool
+    {
+        return $this->modelsService->missionDocument->deleteDocument($documentId);
+    }
+    
+    /**
+     * Get media details
+     *
+     * @param int $mediaId
+     *
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection
+    {
+        return $this->missionMediaRepository->getMediaDetails($mediaId);
     }
 }

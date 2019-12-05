@@ -32,6 +32,7 @@ return [
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+    'AWS_S3_DOCUMENTS_FOLDER_NAME' => 'documents',
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
@@ -404,6 +405,9 @@ return [
         'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
         'ERROR_UNAUTHORIZED_USER' => '400043',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => '400045',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => '400046',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => '400047',
         
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
@@ -533,7 +537,9 @@ return [
         'STORY_VISITOR' => 'STORY_VISITOR',
         'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
         'NOTIFICATION' => 'NOTIFICATION',
-        'AVAILABILITY' => 'AVAILABILITY'
+        'AVAILABILITY' => 'AVAILABILITY',
+        'MISSION_MEDIA' => 'MISSION_MEDIA',
+        'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
     ],
 
     'activity_log_actions' => [
