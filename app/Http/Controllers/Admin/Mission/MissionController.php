@@ -131,6 +131,9 @@ class MissionController extends Controller
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
+                "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
+                "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
+                "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
             ]
         );
         
@@ -232,12 +235,15 @@ class MissionController extends Controller
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
-                "media_images.*.media_path" => "required_with:media_images|valid_media_path",
+                "media_images.*.media_path" => "sometimes|required|valid_media_path",
                 "media_videos.*.media_name" => "sometimes|required",
-                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
-                "documents.*.document_path" => "required_with:documents|valid_document_path",
+                "media_videos.*.media_path" => "sometimes|required|valid_video_url",
+                "documents.*.document_path" => "sometimes|required|valid_document_path",
                 "organisation.organisation_id" => "sometimes|required|integer",
                 "organisation.organisation_name" => "sometimes|required",
+                "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
+                "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
+                "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
             ]
         );
         
@@ -327,6 +333,85 @@ class MissionController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Remove the mission media from storage.
+     *
+     * @param int $mediaId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionMedia(int $mediaId): JsonResponse
+    {
+        try {
+            // Fetch mission media details
+            $missionMediaDetails = $this->missionRepository->getMediaDetails($mediaId);
+            if (($missionMediaDetails->count() > 0) && ($missionMediaDetails[0]['default'] == "1")) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED'),
+                    trans('messages.custom_error_message.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED')
+                );
+            }
+                     
+            $this->missionRepository->deleteMissionMedia($mediaId);
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_MEDIA'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $mediaId
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_MEDIA_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_MEDIA_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Remove the mission document from storage.
+     *
+     * @param int $documentId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionDocument(int $documentId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionDocument($documentId);
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_DOCUMENT_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_DOCUMENT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $documentId
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_DOCUMENT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_DOCUMENT_NOT_FOUND')
             );
         }
     }
