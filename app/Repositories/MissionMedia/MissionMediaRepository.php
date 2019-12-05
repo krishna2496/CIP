@@ -109,28 +109,28 @@ class MissionMediaRepository implements MissionMediaInterface
             $missionMedia = array();
             if (isset($value['media_path'])) {
                 $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                $missionMedia = array('mission_id' => $missionId,
+                                      'media_name' => basename($filePath),
+                                      'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
+                                      'media_path' => $filePath);
+            }
+            if (isset($value['default'])) {
                 // Check for default image in mission_media
                 $default = (isset($value['default']) && ($value['default'] !== '')) ? $value['default'] : '0';
                 if ($default === '1') {
                     $isDefault = 1;
                     $this->missionMedia->where('mission_id', $missionId)->update(['default' => '0']);
                 }
-                
-                $missionMedia = array('mission_id' => $missionId,
-                                      'media_name' => basename($filePath),
-                                      'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
-                                      'media_path' => $filePath,
-                                      'default' => $default);
+                $missionMedia['default'] = $default;
             }
             if (isset($value['sort_order'])) {
                 $missionMedia['sort_order'] = $value['sort_order'];
             }
             $this->missionMedia->createOrUpdateMedia(['mission_id' => $missionId,
-             'mission_media_id' => $value['media_id']], $missionMedia);
+                'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
         }
-        $defaultData = $this->missionMedia->where('mission_id', $missionId)
-                                    ->where('default', '1')->count();
+        $defaultData = $this->missionMedia->where('mission_id', $missionId)->where('default', '1')->count();
                                     
         if (($isDefault === 0) && ($defaultData === 0)) {
             $mediaData = $this->missionMedia->where('mission_id', $missionId)
