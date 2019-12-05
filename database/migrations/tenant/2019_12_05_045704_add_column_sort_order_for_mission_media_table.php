@@ -13,9 +13,6 @@ class AddColumnSortOrderForMissionMediaTable extends Migration
      */
     public function up()
     {
-        \DB::getDoctrineSchemaManager()
-                ->getDatabasePlatform()
-                ->registerDoctrineTypeMapping('enum', 'string');
         Schema::table('mission_media', function (Blueprint $table) {
             $table->integer('sort_order')->length(11)->default(0)->after('default');
         });
