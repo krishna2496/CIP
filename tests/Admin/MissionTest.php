@@ -1274,6 +1274,10 @@ class MissionTest extends TestCase
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1",
                     "sort_order" => "1"
+                ], [
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "0",
+                    "sort_order" => "1"
                 ]
             ],            
             "documents" => [],
@@ -1294,7 +1298,7 @@ class MissionTest extends TestCase
         ->seeStatusCode(201);
 
         $missionId = json_decode($this->response->getContent())->data->mission_id;
-        $missionMediaId = App\Models\MissionMedia::where("mission_id", $missionId)->first()->mission_media_id;
+        $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '0'])->first()->mission_media_id;
         App\Models\Mission::where("mission_id", "<>", $missionId)->delete();
 
         DB::setDefaultConnection('mysql');
@@ -1305,6 +1309,22 @@ class MissionTest extends TestCase
         // Return error if media not found in system
         $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+
+        $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
+        // Return error if you are trying to delete default mission media
+        DB::setDefaultConnection('mysql');
+        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
                 [
