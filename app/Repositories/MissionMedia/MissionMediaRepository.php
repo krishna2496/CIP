@@ -151,12 +151,12 @@ class MissionMediaRepository implements MissionMediaInterface
         foreach ($mediaVideos as $value) {
             $missionMedia = array();
             if (isset($value['media_path'])) {
-                $missionMedia = array('mission_id' => $id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => 'mp4',
-                                  'media_path' => $value['media_path']);
+                $missionMedia = array('media_type' => 'mp4', 'media_path' => $value['media_path']);
             }
 
+            if (isset($value['media_name'])) {
+                $missionMedia['media_name'] = $value['media_name'];
+            }
             if (isset($value['sort_order'])) {
                 $missionMedia['sort_order'] = $value['sort_order'];
             }
