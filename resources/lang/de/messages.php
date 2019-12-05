@@ -195,6 +195,7 @@ return [
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'DE: Mission media does not found in the system',
         'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'DE: Mission document does not found in the system',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'DE: Mission default image cannot be deleted. Please set another image as a default image and try again.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
