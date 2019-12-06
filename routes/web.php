@@ -690,6 +690,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'cities', 'middleware' => 'localization|auth.tenant.admin'],
         function ($router) {
+            $router->get('/', ['uses' => 'Admin\City\CityController@index']);
             $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity']);
             $router->post('/', ['uses' => 'Admin\City\CityController@store']);
         }

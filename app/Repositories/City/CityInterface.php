@@ -30,4 +30,11 @@ interface CityInterface
      * @return City
      */
     public function store(string $countryId): City;
+
+    /**
+     * Get listing of all city.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function cityLists(): Collection;
 }

@@ -40,7 +40,7 @@ class CityRepository implements CityInterface
     public function cityList(int $countryId): Collection
     {
         $this->country->findOrFail($countryId);
-        return $this->city->orderBy('name')->where('country_id', $countryId)->pluck('name', 'city_id');
+        return $this->city->with('translations')->where('country_id', $countryId)->get();
     }
 
     /**
@@ -70,5 +70,15 @@ class CityRepository implements CityInterface
     public function store(string $countryId): City
     {
         return $this->city->create(['country_id' => $countryId]);
+    }
+
+    /**
+     * Get listing of all city.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function cityLists(): Collection
+    {
+        return $this->city->with(['translations'])->get();
     }
 }

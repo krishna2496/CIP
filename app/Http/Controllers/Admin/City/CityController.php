@@ -154,4 +154,19 @@ class CityController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
+
+    /**
+     * Fetch all city
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function index(): JsonResponse
+    {
+        $cityList = $this->cityRepository->cityLists();
+        $apiData = $cityList->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ? trans('messages.success.MESSAGE_CITY_LISTING')
+        : trans('messages.success.MESSAGE_NO_CITY_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
 }
