@@ -192,7 +192,7 @@ class MissionInviteController extends Controller
             $colleague = $this->userRepository->find($request->to_user_id);
             $colleagueEmail = $colleague->email;
             $colleagueLanguageId = $colleague->language_id;
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $language = $languages->where('language_id', $colleagueLanguageId)->first();
             $colleagueLanguage = $language->code;
             $fromUserName = $this->userRepository->getUserName($request->auth->user_id);

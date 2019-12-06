@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Helpers\ResponseHelper;
 use Validator;
 use App\Traits\RestExceptionHandlerTrait;
@@ -46,24 +47,32 @@ class MissionController extends Controller
     private $languageHelper;
 
     /**
+     * @var App\Repositories\MissionMedia\MissionMediaRepository
+     */
+    private $missionMediaRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param Illuminate\Http\Request $request
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
         ResponseHelper $responseHelper,
         Request $request,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        MissionMediaRepository $missionMediaRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
         $this->languageHelper = $languageHelper;
+        $this->missionMediaRepository = $missionMediaRepository;
     }
 
     /**
@@ -256,7 +265,74 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+        try {
+            if (isset($request->media_images) && count($request->media_images) > 0) {
+                foreach ($request->media_images as $mediaImages) {
+                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== "")) {
+                        $this->missionMediaRepository->find($mediaImages['media_id']);
+                        $mediaImage = $this->missionMediaRepository->checkMediaLink($mediaImages['media_id'], $id);
+                        if (empty($mediaImage)) {
+                            return $this->responseHelper->error(
+                                Response::HTTP_UNPROCESSABLE_ENTITY,
+                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
+                                trans('messages.custom_error_message.ERROR_MEDIA_NOT_LINKED_WITH_MISSION')
+                            );
+                        }
+                    }
+                }
+            }
+
+            if (isset($request->media_videos) && count($request->media_videos) > 0) {
+                foreach ($request->media_videos as $mediaVideos) {
+                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != "")) {
+                        $this->missionMediaRepository->find($mediaVideos['media_id']);
+                        $mediaVideo = $this->missionMediaRepository->checkMediaLink($mediaVideos['media_id'], $id);
+                        if (empty($mediaVideo)) {
+                            return $this->responseHelper->error(
+                                Response::HTTP_UNPROCESSABLE_ENTITY,
+                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
+                                trans('messages.custom_error_message.ERROR_MEDIA_NOT_LINKED_WITH_MISSION')
+                            );
+                        }
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MEDIA_ID_DOSENT_EXIST'),
+                trans('messages.custom_error_message.ERROR_MEDIA_ID_DOSENT_EXIST')
+            );
+        }
+              
+        try {
+            if (isset($request->documents) && count($request->documents) > 0) {
+                foreach ($request->documents as $mediaDocuments) {
+                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== "")) {
+                        $this->missionRepository->findDocument($mediaDocuments['document_id']);
+                        $mediaDocument = $this->missionRepository->checkDocumentLink(
+                            $mediaDocuments['document_id'],
+                            $id
+                        );
+                        if (empty($mediaDocument)) {
+                            return $this->responseHelper->error(
+                                Response::HTTP_UNPROCESSABLE_ENTITY,
+                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
+                                trans('messages.custom_error_message.ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION')
+                            );
+                        }
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_DOCUMENT_ID_DOSENT_EXIST'),
+                trans('messages.custom_error_message.ERROR_DOCUMENT_ID_DOSENT_EXIST')
+            );
+        }
+
         try {
             $language = $this->languageHelper->getDefaultTenantLanguage($request);
             $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);

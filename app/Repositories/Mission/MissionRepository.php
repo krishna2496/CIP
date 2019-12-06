@@ -11,6 +11,7 @@ use App\Models\Mission;
 use App\Models\FavouriteMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
+use App\Models\MissionDocument;
 use App\Repositories\Country\CountryRepository;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -86,7 +87,7 @@ class MissionRepository implements MissionInterface
      */
     public function store(Request $request): Mission
     {
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id,
@@ -198,7 +199,7 @@ class MissionRepository implements MissionInterface
      */
     public function update(Request $request, int $id): Mission
     {
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
         // Set data for update record
         if (isset($request->location['country_code'])) {
             $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
@@ -290,7 +291,7 @@ class MissionRepository implements MissionInterface
             $this->missionMediaRepository->updateMediaImages($request->media_images, $tenantName, $id);
         }
 
-        // Add/Update mission media videos
+    // Add/Update mission media videos
         if (isset($request->media_videos) && count($request->media_videos) > 0) {
             $this->missionMediaRepository->updateMediaVideos($request->media_videos, $id);
         }
@@ -324,7 +325,7 @@ class MissionRepository implements MissionInterface
      */
     public function find(int $id): Mission
     {
-        return $this->modelsService->mission->
+        $mission = $this->modelsService->mission->
         with(
             'missionTheme',
             'city',
@@ -340,6 +341,17 @@ class MissionRepository implements MissionInterface
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
         }])->findOrFail($id);
+        
+        if (isset($mission->missionLanguage)) {
+            $languages = $this->languageHelper->getLanguages();
+            foreach ($mission->missionLanguage as $missionLanguage) {
+                $missionLanguage['code'] = $languages->where(
+                    'language_id',
+                    $missionLanguage->language_id
+                )->first()->code;
+            }
+        }
+        return $mission;
     }
     
     /**
@@ -361,7 +373,7 @@ class MissionRepository implements MissionInterface
      */
     public function missionList(Request $request): LengthAwarePaginator
     {
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
         $missionQuery = $this->modelsService->mission->select(
             'mission.mission_id',
             'mission.theme_id',
@@ -1326,5 +1338,29 @@ class MissionRepository implements MissionInterface
     public function getMediaDetails(int $mediaId): Collection
     {
         return $this->missionMediaRepository->getMediaDetails($mediaId);
+    }
+
+    /**
+     * Get mission media details
+     *
+     * @param int $documentId
+     * @return App\Models\MissionDocument
+     */
+    public function findDocument(int $documentId): MissionDocument
+    {
+        return $this->modelsService->missionDocument->findOrFail($documentId);
+    }
+
+    /**
+     * Get document is linked with mission or not
+     *
+     * @param int $documentId
+     * @return null|array
+     */
+    public function checkDocumentLink(int $documentId, int $missionId): ?array
+    {
+        return $this->modelsService->missionDocument
+        ->where(['mission_document_id' => $documentId, 'mission_id' => $missionId])
+        ->get()->toArray();
     }
 }
