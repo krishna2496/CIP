@@ -444,6 +444,7 @@ return [
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
         'ERROR_AVAILABILITY_NOT_FOUND' => '410002',
+        'ERROR_CITY_INVALID_DATA' => '1200001',        
     ],
 
     /**
@@ -534,7 +535,8 @@ return [
         'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
         'NOTIFICATION' => 'NOTIFICATION',
         'AVAILABILITY' => 'AVAILABILITY',
-        'COUNTRY' => 'COUNTRY'
+        'COUNTRY' => 'COUNTRY',
+        'CITY' => 'CITY' 
     ],
 
     'activity_log_actions' => [

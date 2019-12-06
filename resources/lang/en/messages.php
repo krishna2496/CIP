@@ -180,7 +180,8 @@ return [
         'MESSAGE_AVAILABILITY_DELETED' => 'Availability deleted successfully',
         'MESSAGE_AVAILABILITY_UPDATED' => 'Availability updated successfully',
         'MESSAGE_AVAILABILITY_FOUND' => 'Availability found successfully',
-        'MESSAGE_COUNTRY_CREATED' => 'Country created successfully'
+        'MESSAGE_COUNTRY_CREATED' => 'Country created successfully',
+        'MESSAGE_CITY_CREATED' => 'City created successfully',
     ],
 
         

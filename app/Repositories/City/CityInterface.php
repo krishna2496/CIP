@@ -3,6 +3,7 @@ namespace App\Repositories\City;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Models\City;
 
 interface CityInterface
 {
@@ -21,4 +22,12 @@ interface CityInterface
      * @return array
      */
     public function getCity(string $cityId) : array;
+
+    /**
+     * Store city data
+     *
+     * @param string $countryId
+     * @return City
+     */
+    public function store(string $countryId): City;
 }

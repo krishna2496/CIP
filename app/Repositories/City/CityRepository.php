@@ -60,4 +60,15 @@ class CityRepository implements CityInterface
         }
         return $cityData;
     }
+    
+    /**
+     * Store city data
+     *
+     * @param string $countryId
+     * @return City
+     */
+    public function store(string $countryId): City
+    {
+        return $this->city->create(['country_id' => $countryId]);
+    }
 }

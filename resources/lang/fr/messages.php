@@ -172,7 +172,8 @@ return [
         'MESSAGE_AVAILABILITY_DELETED' => 'Disponibilité supprimée avec succès',
         'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
         'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
-        'MESSAGE_COUNTRY_CREATED' => 'Pays créé avec succès'
+        'MESSAGE_COUNTRY_CREATED' => 'Pays créé avec succès',
+        'MESSAGE_CITY_CREATED' => 'Une ville créée avec succès',
     ],
 
         
