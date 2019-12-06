@@ -614,7 +614,7 @@ class LanguageTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_invalid_default_data__error_on_create_tenant_language()
+    public function it_should_return_invalid_default_data_error_on_create_tenant_language()
     {
         $tenant = factory(Tenant::class)->create();
         $languageName = $this->randomString(10);
@@ -916,7 +916,7 @@ class LanguageTest extends TestCase
         $params = [        
             "tenant_id" => $tenant->tenant_id,
             "language_id" => $languageId,
-            "default" => "1"
+            "default" => "0"
         ];
 
         $response = $this->post("tenants/tenant-language", $params, [])
@@ -945,6 +945,55 @@ class LanguageTest extends TestCase
             ]
         ]);
 
+        TenantLanguage::where("language_id", $languageId)->delete();
+        $tenant->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if delete tenant language set as default
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_delete_default_tenant_language()
+    {
+        $tenant = factory(Tenant::class)->create();
+        $languageName = $this->randomString(10);
+        $params = [        
+            "name" => $languageName,
+            "code" => str_random(2),
+            "status" => "1"
+        ];
+
+        $response = $this->post("tenants/language", $params, [])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+
+        $languageId = json_decode($response->response->getContent())->data->language_id;
+        
+        $params = [        
+            "tenant_id" => $tenant->tenant_id,
+            "language_id" => $languageId,
+            "default" => "1"
+        ];
+
+        $response = $this->post("tenants/tenant-language", $params, [])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+
+        $tenantLanguageId = json_decode($response->response->getContent())->data->tenant_language_id;
+        // Return error if tenant language set as default 
+        $this->delete("tenants/tenant-language/".$tenantLanguageId, [], [])
+        ->seeStatusCode(422);
+
+        Language::where("language_id", $languageId)->delete();
         TenantLanguage::where("language_id", $languageId)->delete();
         $tenant->delete();
     }
