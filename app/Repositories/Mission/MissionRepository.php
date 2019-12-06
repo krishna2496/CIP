@@ -1352,15 +1352,16 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Get document is linked with mission or not
+     * Check document is linked with mission or not
      *
      * @param int $documentId
-     * @return null|array
+     * @return bool
      */
-    public function checkDocumentLink(int $documentId, int $missionId): ?array
+    public function isDocumentLinkedToMission(int $documentId, int $missionId): bool
     {
-        return $this->modelsService->missionDocument
+        $document = $this->modelsService->missionDocument
         ->where(['mission_document_id' => $documentId, 'mission_id' => $missionId])
-        ->get()->toArray();
+        ->first();
+        return ($document === null) ? false : true;
     }
 }

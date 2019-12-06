@@ -200,14 +200,14 @@ class MissionMediaRepository implements MissionMediaInterface
     }
 
     /**
-     * Get media is linked with mission or not
+     * Check media is linked with mission or not
      *
      * @param int $mediaId
-     * @return null|array
+     * @return bool
      */
-    public function checkMediaLink(int $mediaId, int $missionId): ?array
+    public function isMediaLinkedToMission(int $mediaId, int $missionId): bool
     {
-        return $this->missionMedia->where(['mission_media_id' => $mediaId, 'mission_id' => $missionId])
-        ->get()->toArray();
+        $media = $this->missionMedia->where(['mission_media_id' => $mediaId, 'mission_id' => $missionId])->first();
+        return ($media === null) ? false : true;
     }
 }

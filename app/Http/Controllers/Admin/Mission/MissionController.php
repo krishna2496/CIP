@@ -270,8 +270,11 @@ class MissionController extends Controller
                 foreach ($request->media_images as $mediaImages) {
                     if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== "")) {
                         $this->missionMediaRepository->find($mediaImages['media_id']);
-                        $mediaImage = $this->missionMediaRepository->checkMediaLink($mediaImages['media_id'], $id);
-                        if (empty($mediaImage)) {
+                        $mediaImage = $this->missionMediaRepository->isMediaLinkedToMission(
+                            $mediaImages['media_id'],
+                            $id
+                        );
+                        if (!$mediaImage) {
                             return $this->responseHelper->error(
                                 Response::HTTP_UNPROCESSABLE_ENTITY,
                                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -287,8 +290,11 @@ class MissionController extends Controller
                 foreach ($request->media_videos as $mediaVideos) {
                     if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != "")) {
                         $this->missionMediaRepository->find($mediaVideos['media_id']);
-                        $mediaVideo = $this->missionMediaRepository->checkMediaLink($mediaVideos['media_id'], $id);
-                        if (empty($mediaVideo)) {
+                        $mediaVideo = $this->missionMediaRepository->isMediaLinkedToMission(
+                            $mediaVideos['media_id'],
+                            $id
+                        );
+                        if (!$mediaVideo) {
                             return $this->responseHelper->error(
                                 Response::HTTP_UNPROCESSABLE_ENTITY,
                                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -311,11 +317,11 @@ class MissionController extends Controller
                 foreach ($request->documents as $mediaDocuments) {
                     if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== "")) {
                         $this->missionRepository->findDocument($mediaDocuments['document_id']);
-                        $mediaDocument = $this->missionRepository->checkDocumentLink(
+                        $mediaDocument = $this->missionRepository->isDocumentLinkedToMission(
                             $mediaDocuments['document_id'],
                             $id
                         );
-                        if (empty($mediaDocument)) {
+                        if (!$mediaDocument) {
                             return $this->responseHelper->error(
                                 Response::HTTP_UNPROCESSABLE_ENTITY,
                                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
