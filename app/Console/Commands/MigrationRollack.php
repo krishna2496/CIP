@@ -69,7 +69,7 @@ class MigrationRollack extends Command
                 if ($this->createConnection($tenant->tenant_id) !== 0) {
                     try {
                         // Run migration command to apply migration change
-                        Artisan::call('migrate:rollback');
+                        Artisan::call('migrate:rollback --path=database/migrations/tenant');
                     } catch (\Exception $e) {
                         // Failed then send mail to admin
                         $this->sendFailerMail($tenant, config('constants.migration_file_type.migration'));
@@ -101,13 +101,8 @@ class MigrationRollack extends Command
      */
     public function sendFailerMail(Tenant $tenant, string $type)
     {
-        if ($type === config('constants.migration_file_type.migration')) {
-            $message = "Migration changes filed for tenant : ". $tenant->name. '.';
-            $params['subject'] = 'Error in migration changes';
-        } else {
-            $message = "Seeder changes filed for tenant : ". $tenant->name. '.';
-            $params['subject'] = 'Error in seeder changes';
-        }
+        $message = "Seeder rollback filed for tenant : ". $tenant->name. '.';
+        $params['subject'] = 'Error in migration rollback';
 
         $message .= "<br> Database name : ". "ci_tenant_". $tenant->tenant_id;
 

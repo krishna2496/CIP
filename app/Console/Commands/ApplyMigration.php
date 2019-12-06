@@ -100,13 +100,8 @@ class ApplyMigration extends Command
      */
     public function sendFailerMail(Tenant $tenant, string $type)
     {
-        if ($type === config('constants.migration_file_type.migration')) {
-            $message = "Migration changes filed for tenant : ". $tenant->name. '.';
-            $params['subject'] = 'Error in migration changes';
-        } else {
-            $message = "Seeder changes filed for tenant : ". $tenant->name. '.';
-            $params['subject'] = 'Error in seeder changes';
-        }
+        $message = "Seeder changes filed for tenant : ". $tenant->name. '.';
+        $params['subject'] = 'Error in migration changes';
 
         $message .= "<br> Database name : ". "ci_tenant_". $tenant->tenant_id;
 
