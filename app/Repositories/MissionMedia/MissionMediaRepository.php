@@ -187,4 +187,27 @@ class MissionMediaRepository implements MissionMediaInterface
     {
         return $this->missionMedia->where('mission_media_id', $mediaId)->get();
     }
+
+    /**
+     * Get mission media details
+     *
+     * @param int $mediaId
+     * @return App\Models\MissionMedia
+     */
+    public function find(int $mediaId): MissionMedia
+    {
+        return $this->missionMedia->findOrFail($mediaId);
+    }
+
+    /**
+     * Check media is linked with mission or not
+     *
+     * @param int $mediaId
+     * @return bool
+     */
+    public function isMediaLinkedToMission(int $mediaId, int $missionId): bool
+    {
+        $media = $this->missionMedia->where(['mission_media_id' => $mediaId, 'mission_id' => $missionId])->first();
+        return ($media === null) ? false : true;
+    }
 }
