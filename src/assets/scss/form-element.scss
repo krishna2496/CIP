@@ -114,9 +114,9 @@ a {
         background-color: $primary !important;
         border: 2px solid $primary !important;
         &:hover {
-           color: $white !important;
-        	background: darken($primary, 15%) !important;
-        	border-color: darken($primary, 15%) !important;
+            color: $white !important;
+            background: darken($primary, 15%) !important;
+            border-color: darken($primary, 15%) !important;
         }
     }
     &.icon-btn {
@@ -173,9 +173,9 @@ a {
         border: 2px solid $gray-primary !important;
         background: $gray-primary !important;
         &:hover {
-           color: $white !important;
-        background: darken($gray-primary, 15%) !important;
-        border-color: darken($gray-primary, 15%) !important;
+            color: $white !important;
+            background: darken($gray-primary, 15%) !important;
+            border-color: darken($gray-primary, 15%) !important;
         }
     }
     &.icon-btn {
@@ -196,7 +196,7 @@ a {
         &:focus {
             i {
                 svg {
-                    fill:$white;
+                    fill: $white;
                 }
             }
             &:hover {
@@ -1154,6 +1154,9 @@ label {
         &.today {
             color: $white !important;
             background: $gray-primary !important;
+            &.disabled {
+                background: $gray-secondary!important;
+            }
         }
     }
     td,
