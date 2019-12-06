@@ -10,8 +10,10 @@ use App\Helpers\EmailHelper;
 use App\Models\Tenant;
 use DB;
 
-class ApplySeeder extends Command
+
+class MigrationRollack extends Command
 {
+
     /**
      * @var App\Helpers\EmailHelper
      */
@@ -27,15 +29,14 @@ class ApplySeeder extends Command
      *
      * @var string
      */
-    protected $signature = 'seeder:all {seederFileName}';
+    protected $signature = 'tenant-migration:rollback';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "It will apply seeder changes to all tenant's database. ARGUMENT FILE NAME
-    WITHOUT FILE EXTENSION";
+    protected $description = "It will rollback migration changes from all tenant's database";
 
     /**
      * Create a new command instance.
@@ -57,23 +58,22 @@ class ApplySeeder extends Command
      */
     public function handle()
     {
-        $seederClassName = $this->argument('seederFileName');
         $tenants = $this->tenantRepository->getAllTenants();
         $bar = $this->output->createProgressBar($tenants->count());
         if ($tenants->count() > 0) {
             $this->info("Total tenants : ". $tenants->count());
-            $this->info("\nIt is going to apply seeder changes\n");
+            $this->info("\nIt is going to rollback migration changes\n");
             $bar->start();
             foreach ($tenants as $tenant) {
                 // Create connection of tenant one by one
                 if ($this->createConnection($tenant->tenant_id) !== 0) {
                     try {
                         // Run migration command to apply migration change
-                        Artisan::call("db:seed --class=$seederClassName");
+                        Artisan::call('migrate:rollback --path=database/migrations/tenant');
                     } catch (\Exception $e) {
                         // Failed then send mail to admin
-                        $this->sendFailerMail($tenant, config('constants.migration_file_type.seeder'));
-                        $this->warn("\n\nSeeder change have some error for tenant : 
+                        $this->sendFailerMail($tenant, config('constants.migration_file_type.migration'));
+                        $this->warn("\n \n Migration rollback change have some error for tenant :
                         $tenant->name (tenant id : $tenant->tenant_id)");
                         $this->error("\n\n".$e->getMessage());
                         continue;
@@ -85,7 +85,7 @@ class ApplySeeder extends Command
                 }
             }
             $bar->finish();
-            $this->info("\n \nAll seeder changes are applied");
+            $this->info("\n \nAll rollback changes are done!");
         } else {
             $this->warn("No tenant found");
         }
@@ -101,8 +101,8 @@ class ApplySeeder extends Command
      */
     public function sendFailerMail(Tenant $tenant, string $type)
     {
-        $message = "Seeder changes filed for tenant : ". $tenant->name. '.';
-        $params['subject'] = 'Error in seeder changes';
+        $message = "Seeder rollback filed for tenant : ". $tenant->name. '.';
+        $params['subject'] = 'Error in migration rollback';
 
         $message .= "<br> Database name : ". "ci_tenant_". $tenant->tenant_id;
 
