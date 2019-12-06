@@ -455,11 +455,10 @@
                 
                 if(timeArray.application_end_time != null) {
                     if (endTime < compareEndDates) {
-                        if(endTime < currentDate) {
+                        this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).format("YYYY-MM-DD")
+                        if(endTime < currentDate && (moment(timeArray.application_end_time).format("YYYY-MM-DD") == moment().tz(this.userTimezone).format("YYYY-MM-DD"))) {
                             this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).subtract(1, 'd');
                              this.currentTimeData.disabledFutureDates = moment(this.currentTimeData.disabledFutureDates).format("YYYY-MM-DD");
-                        } else {
-                            this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).format("YYYY-MM-DD")
                         }
                     }
                 }
@@ -671,24 +670,28 @@
                         endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD");
                     }
                 }
-
+                let defaultDisable = 0;
                 timeArray.filter((timeSheetItem) => {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
-
+                    
                     if (currentTimeSheetYear == currentArrayYear) {
                         if (currentTimeSheetMonth == currentArrayMonth) {
                             if (date == currentArrayDate) {
                                 if (timeSheetItem.timesheet_status.status == "APPROVED" || timeSheetItem
                                     .timesheet_status.status == "AUTOMATICALLY_APPROVED") {
                                     returnData.push("approved")
+                                    defaultDisable = 0
                                 } else if (timeSheetItem.timesheet_status.status == "DECLINED") {
                                     returnData.push("declined")
+                                    defaultDisable = 1
                                 } else if (timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
                                     returnData.push("approval")
+                                    defaultDisable = 1
                                 } else {
                                     returnData.push("default-time")
+                                    defaultDisable = 1
                                 }
                             }
                         }
@@ -702,11 +705,11 @@
                  
                     returnData.push("disabled")
                 }
-                if (currentDate < startTime && timeSheetArray.application_start_time != null) {
+                if (currentDate < startTime && timeSheetArray.application_start_time != null && defaultDisable != 1) {
                    returnData.push("disabled")
                 }
                          
-                if (currentDate > endTime && timeSheetArray.application_end_time != null) {
+                if (currentDate > endTime && timeSheetArray.application_end_time != null && defaultDisable != 1) {
                    returnData.push("disabled")
                 }
 
