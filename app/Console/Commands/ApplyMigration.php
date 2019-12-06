@@ -72,8 +72,9 @@ class ApplyMigration extends Command
                     } catch (\Exception $e) {
                         // Failed then send mail to admin
                         $this->sendFailerMail($tenant, config('constants.migration_file_type.migration'));
-                        $this->error('Migration change have some error for tenant : '
-                        . $tenant->name . " (tenant id : $tenant->tenant_id)");
+                        $this->warn("\n \nMigration change have some error for tenant :
+                        $tenant->name (tenant id : $tenant->tenant_id)");
+                        $this->error("\n\n". $e->getMessage());
                         continue;
                     }
                     $bar->advance();
