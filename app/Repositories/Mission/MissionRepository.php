@@ -345,7 +345,7 @@ class MissionRepository implements MissionInterface
         if (isset($mission->missionLanguage)) {
             $languages = $this->languageHelper->getLanguages();
             foreach ($mission->missionLanguage as $missionLanguage) {
-                $missionLanguage['code'] = $languages->where(
+                $missionLanguage['language_code'] = $languages->where(
                     'language_id',
                     $missionLanguage->language_id
                 )->first()->code;
