@@ -445,20 +445,22 @@
                 let endTime = moment(timeArray.application_end_time).format("YYYY-MM-DD HH:mm:ss");
                 let compareEndDates = '';
                 let currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
+                
                 if (endDate > futerDate) {
                     this.currentTimeData.disabledFutureDates =  moment(this.futureDates).format("YYYY-MM-DD")
-                    compareEndDates = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss")
+                    compareEndDates = moment(this.futureDates).tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                 } else {
                     this.currentTimeData.disabledFutureDates = moment(missionEndDate).format("YYYY-MM-DD")
                     compareEndDates = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss")
                 }
                 
                 if(timeArray.application_end_time != null) {
+                   
                     if (endTime < compareEndDates) {
                         this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).format("YYYY-MM-DD")
                         if(endTime < currentDate && (moment(timeArray.application_end_time).format("YYYY-MM-DD") == moment().tz(this.userTimezone).format("YYYY-MM-DD"))) {
                             this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).subtract(1, 'd');
-                             this.currentTimeData.disabledFutureDates = moment(this.currentTimeData.disabledFutureDates).format("YYYY-MM-DD");
+                            this.currentTimeData.disabledFutureDates = moment(this.currentTimeData.disabledFutureDates).format("YYYY-MM-DD");
                         }
                     }
                 }
@@ -591,9 +593,9 @@
                 let returnData = [];
                 this.isCurrentDate = false;
                 let missionEndDate = timeSheetArray.end_date
-                let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD HH::mm::ss")
-                let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss");
-                let endDate = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss");
+                let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
+                let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+                let endDate = moment(missionEndDate).format("YYYY-MM-DD");
                 let startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD HH::mm::ss");
                 let endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD HH::mm::ss");
                 
@@ -633,7 +635,7 @@
                     
                     currentDate = moment(currentTimeSheetYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
                     if(now == currentDate) {
-                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
+                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD")
                     } else {
                         disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
                         disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
@@ -661,7 +663,7 @@
 
                     currentDate = moment(currentTimeSheetYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
                     if(now == currentDate) {
-                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
+                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD")
                        
                     } else {
                         disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
@@ -704,6 +706,10 @@
                 if (currentDate > disableEndDate) {
                  
                     returnData.push("disabled")
+                }
+                if(now == currentDate) {
+                    currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH::mm::ss")
+                       
                 }
                 if (currentDate < startTime && timeSheetArray.application_start_time != null && defaultDisable != 1) {
                    returnData.push("disabled")
