@@ -238,7 +238,7 @@ return [
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions not found',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
         'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Mission media not found in the system',
-        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Mission document does not found in the system',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Mission document not found in the system',
         'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'Mission default image cannot be deleted. Please set another image as a default image and try again.',
         'ERROR_MEDIA_ID_DOSENT_EXIST' => 'Media id doesnt exist',
         'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'Media id is not linked to mission',
