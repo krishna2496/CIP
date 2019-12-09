@@ -5,9 +5,7 @@ namespace App\Repositories\MissionApplication;
 use App\Models\DataObjects\VolunteerApplication;
 use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
@@ -110,27 +108,37 @@ class MissionApplicationQuery implements QueryableInterface
                 });
             })
             // Search
-            ->when(!empty($search), function($query) use ($search) {
-                $query->where(function ($query)  use ($search) {
+            ->when(!empty($search), function($query) use ($search, $filters) {
+                /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
+                 * the condition on the where can *not* be exclusive as we might lose valid results from
+                 * previous filtering. We then need to use the OR condition for searchable fields.
+                 */
+                $searchCallback = function ($query) use ($search) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
                             ->where('first_name', 'like', "%${search}%")
                             ->orWhere('last_name', 'like', "%${search}%")
                             ->orWhere('email', 'like', "%${search}%");
                     })
-                    ->orwhereHas('mission.missionLanguage', function($query) use ($search) {
-                        $query
-                            ->where('title', 'like', "%${search}%");
-                    })
-                    ->orwhereHas('mission.city', function($query) use ($search) {
-                        $query
-                            ->where('name', 'like', "%${search}%");
-                    })
-                    ->orwhereHas('mission.country', function($query) use ($search) {
-                        $query
-                            ->where('name', 'like', "%${search}%");
-                    });
-                });
+                        ->orwhereHas('mission.missionLanguage', function($query) use ($search) {
+                            $query
+                                ->where('title', 'like', "%${search}%");
+                        })
+                        ->orwhereHas('mission.city', function($query) use ($search) {
+                            $query
+                                ->where('name', 'like', "%${search}%");
+                        })
+                        ->orwhereHas('mission.country', function($query) use ($search) {
+                            $query
+                                ->where('name', 'like', "%${search}%");
+                        });
+                };
+
+                if (isset($filters[self::FILTER_APPLICATION_IDS])) {
+                    $query->orWhere($searchCallback);
+                } else {
+                    $query->where($searchCallback);
+                }
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
