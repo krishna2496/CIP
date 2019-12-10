@@ -221,6 +221,15 @@ class MissionController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        try {
+            $this->missionRepository->find($id);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
+
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -339,49 +348,41 @@ class MissionController extends Controller
             );
         }
 
-        try {
-            $language = $this->languageHelper->getDefaultTenantLanguage($request);
-            $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
+        $language = $this->languageHelper->getDefaultTenantLanguage($request);
+        $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
 
-            $this->missionRepository->update($request, $id);
-            
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
-           
-            // Make activity log
-            event(new UserActivityLogEvent(
-                config('constants.activity_log_types.MISSION'),
-                config('constants.activity_log_actions.UPDATED'),
-                config('constants.activity_log_user_types.API'),
-                $this->userApiKey,
-                get_class($this),
-                $request->toArray(),
-                null,
-                $id
-            ));
-            
-            // Send notification to user if mission publication status is PUBLISHED
-            $approved = config('constants.publication_status.APPROVED');
-            $publishedForApplying = config('constants.publication_status.PUBLISHED_FOR_APPLYING');
-            if ((($request->publication_status !== $missionDetails->publication_status) &&
-            ($request->publication_status === $approved || $request->publication_status === $publishedForApplying))
-            ) {
-                // Send notification to all users
-                $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
-                $entityId = $id;
-                $action = config('constants.notification_actions.'.$request->publication_status);
+        $this->missionRepository->update($request, $id);
+        
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $id
+        ));
+        
+        // Send notification to user if mission publication status is PUBLISHED
+        $approved = config('constants.publication_status.APPROVED');
+        $publishedForApplying = config('constants.publication_status.PUBLISHED_FOR_APPLYING');
+        if ((($request->publication_status !== $missionDetails->publication_status) &&
+        ($request->publication_status === $approved || $request->publication_status === $publishedForApplying))
+        ) {
+            // Send notification to all users
+            $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+            $entityId = $id;
+            $action = config('constants.notification_actions.'.$request->publication_status);
 
-                event(new UserNotificationEvent($notificationType, $entityId, $action));
-            }
-
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-            );
+            event(new UserNotificationEvent($notificationType, $entityId, $action));
         }
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
     
     /**
