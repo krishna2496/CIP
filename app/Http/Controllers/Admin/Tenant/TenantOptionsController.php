@@ -96,13 +96,13 @@ class TenantOptionsController extends Controller
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
     
         // Database connection with master database
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
         
         // Dispatch job, that will store in master database
         dispatch(new ResetStyleSettingsJob($tenantName));
 
         // Database connection with tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
         
         // Set response data
         $apiStatus = Response::HTTP_OK;
@@ -177,12 +177,12 @@ class TenantOptionsController extends Controller
         }
 
         // Database connection with master database
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
         
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
 
         if (!empty($fileName)) {
             $requestArray = $request->toArray();
@@ -202,7 +202,7 @@ class TenantOptionsController extends Controller
         }
 
         // Database connection with tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
         
         // Set response data
         $apiStatus = Response::HTTP_OK;

@@ -36,17 +36,16 @@ class LanguageHelper
     /**
      * Get languages from `ci_admin` table
      *
-     * @param Illuminate\Http\Request $request
      * @return Illuminate\Support\Collection
      */
-    public function getLanguages(Request $request): Collection
+    public function getLanguages(): Collection
     {
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
         $languages = $this->db->table('language')->whereNull('deleted_at')->get();
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
 
         return $languages;
     }
@@ -61,19 +60,18 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
 
         $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
         ->whereNull('tenant_language.deleted_at')
-		->whereNull('language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->get();
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
-
+        $this->helpers->switchDatabaseConnection('tenant');
         return $tenantLanguages;
     }
 
@@ -87,15 +85,14 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
 
         $tenantLanguage = $this->db->table('tenant_language')
         ->where('tenant_id', $tenant->tenant_id)
         ->where('language_id', $request->language_id);
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
-
+        $this->helpers->switchDatabaseConnection('tenant');
         return ($tenantLanguage->count() > 0) ? true : false;
     }
 
@@ -109,7 +106,7 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
 
         $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
@@ -118,8 +115,7 @@ class LanguageHelper
         ->pluck('language.name', 'language.language_id');
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
-
+        $this->helpers->switchDatabaseConnection('tenant');
         return $tenantLanguages;
     }
 
@@ -133,7 +129,7 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
 
         $tenantLanguagesCodes = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
@@ -141,7 +137,7 @@ class LanguageHelper
         ->where('tenant_id', $tenant->tenant_id)
         ->pluck('language.code', 'language.language_id');
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
 
         return $tenantLanguagesCodes;
     }

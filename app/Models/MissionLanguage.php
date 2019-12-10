@@ -49,6 +49,7 @@ class MissionLanguage extends Model
     protected $visible = [
         'lang',
         'language_id',
+        'language_code',
         'title',
         'objective',
         'short_description',

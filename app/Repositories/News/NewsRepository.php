@@ -160,7 +160,7 @@ class NewsRepository implements NewsInterface
         
         // Insert into news_language
         if ($request->has('news_content')) {
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -206,7 +206,7 @@ class NewsRepository implements NewsInterface
         
         // Update into news_language
         if ($request->has('news_content')) {
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database

@@ -193,8 +193,13 @@ return [
         'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
-        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'DE: Mission media does not found in the system',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'DE: Mission media not found in the system',
         'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'DE: Mission document does not found in the system',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'DE: Mission default image cannot be deleted. Please set another image as a default image and try again.',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => 'DE: Media id doesnt exist',
+        'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'DE: Media id is not linked to mission',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
+        'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
