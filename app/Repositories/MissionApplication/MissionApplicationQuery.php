@@ -5,7 +5,7 @@ namespace App\Repositories\MissionApplication;
 use App\Models\DataObjects\VolunteerApplication;
 use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
