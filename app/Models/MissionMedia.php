@@ -27,14 +27,14 @@ class MissionMedia extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'media_type', 'media_name', 'media_path', 'default'];
+    protected $fillable = ['mission_id', 'media_type', 'media_name', 'media_path', 'default', 'sort_order'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default'];
+    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default', 'sort_order'];
     
     protected $appends = ['video_thumbnail'];
 
@@ -48,5 +48,16 @@ class MissionMedia extends Model
     public function createOrUpdateMedia(array $condition, array $data): MissionMedia
     {
         return static::updateOrCreate($condition, $data);
+    }
+
+    /**
+     * Soft delete the mission media from the database.
+     *
+     * @param int $mediaId
+     * @return bool
+     */
+    public function deleteMedia(int $mediaId): bool
+    {
+        return static::findOrFail($mediaId)->delete();
     }
 }

@@ -25,7 +25,6 @@ use App\Transformations\MissionTransformable;
 use App\Events\User\UserActivityLogEvent;
 use App\Repositories\User\UserRepository;
 
-
 //!  Mission controller
 /*!
 This controller is responsible for handling mission listing, explore mission, filters,

@@ -507,7 +507,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission data for tenant specific */
     $router->group(
-        ['prefix' => 'missions', 'middleware' => 'auth.tenant.admin|JsonApiMiddleware|localization'],
+        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Mission\MissionController@index']);
@@ -527,6 +527,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 '/{missionId}/applications/{applicationId}',
                 ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
             );
+            $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
+            $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
         }
     );
 

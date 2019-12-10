@@ -176,5 +176,8 @@ return [
         'mission_detail.*.custom_information.*.description' => 'description',
         'mission_detail.*.title' => 'title',
 		'organisation.organisation_name' => 'organisation name',
+        'media_images.*.sort_order' => 'sort order',
+        'media_videos.*.sort_order' => 'sort order',
+        'documents.*.sort_order' => 'sort order',        
     ],
 ];
