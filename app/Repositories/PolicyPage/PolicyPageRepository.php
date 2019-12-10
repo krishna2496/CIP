@@ -60,7 +60,7 @@ class PolicyPageRepository implements PolicyPageInterface
         // Create new policy page
         $policyPage = $this->page->create($page);
         
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
         
         foreach ($postData['translations'] as $value) {
             // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -101,7 +101,7 @@ class PolicyPageRepository implements PolicyPageInterface
         $policyPage = $this->page->findOrFail($id);
         $policyPage->update($page);
         
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
                  
         if (isset($postData['translations'])) {
             foreach ($postData['translations'] as $value) {

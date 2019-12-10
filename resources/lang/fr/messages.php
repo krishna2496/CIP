@@ -225,8 +225,13 @@ return [
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
-        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Le support de mission ne se trouve pas dans le système',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Média de mission introuvable dans le système',
         'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Document de mission non trouvé dans le système',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'L\'image par défaut de la mission ne peut pas être supprimée. Veuillez définir une autre image comme image par défaut et réessayer.',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => 'L\'id  de média n\'existe pas',
+        'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'L\'id du média n\'est pas lié à la mission',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'L\'id de document n\'existe pas',
+        'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'L\'identifiant du document n\'est pas lié à la mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
