@@ -9,17 +9,23 @@ class CustomValidationRules
     public static function validate()
     {
         Validator::extend('valid_media_path', function ($attribute, $value) {
-            $extension = pathinfo($value, PATHINFO_EXTENSION);
-            $urlExtension = strtolower($extension);
-            $validExtensions = ($attribute == 'url') ?
-            config('constants.slider_image_types') : config('constants.image_types');
-            return (!in_array($urlExtension, $validExtensions)) ? false : true;
+            try {
+                $urlMimeType = get_headers($value, 1)['Content-Type'];
+                $validMimeTypes = config('constants.slider_image_mime_types');
+                return (!in_array($urlMimeType, $validMimeTypes)) ? false : true;
+            } catch (\Exception $e) {
+                return false;
+            }
         });
 
         Validator::extend('valid_document_path', function ($attribute, $value) {
-            $extension = pathinfo($value, PATHINFO_EXTENSION);
-            $urlExtension = strtolower($extension);
-            return (!in_array($urlExtension, config('constants.document_types'))) ? false : true;
+            try {
+                $urlMimeType = get_headers($value, 1)['Content-Type'];
+                $validMimeTypes = config('constants.document_mime_types');
+                return (!in_array($urlMimeType, $validMimeTypes)) ? false : true;
+            } catch (\Exception $e) {
+                return false;
+            }
         });
         
         Validator::extend('valid_video_url', function ($attribute, $value) {
