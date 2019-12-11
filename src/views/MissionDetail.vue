@@ -987,7 +987,11 @@
 
             pendingGoal(missionDetail) {
                 if (missionDetail.goal_objective) {
-                    return missionDetail.goal_objective - missionDetail.achieved_goal;
+                    if((missionDetail.goal_objective - missionDetail.achieved_goal) < 0) {
+                        return 0;
+                    } else {
+                        return missionDetail.goal_objective - missionDetail.achieved_goal;
+                    }
                 } else {
                     return 0;
                 }

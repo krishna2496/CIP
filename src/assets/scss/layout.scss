@@ -1469,6 +1469,19 @@ main {
 				margin: 5px 0 0;
 			}
 		}
+		.group-btns{
+			&.btn-wrap{
+				.btn{
+						min-width: 170px;
+						padding: 6px 18px;
+						font-size:17px;
+						min-height: 40px;
+						span{
+							top: -2px;
+						}
+				}
+			}
+		}
 	}
 }
 
@@ -2425,14 +2438,12 @@ main {
 			@include sm-max {
 				box-shadow: none;
 			}
-
+			
 			p {
 				font-size: 15px;
 				line-height: 20px;
-				margin-bottom: 0;
+				
 			}
-
-			a {}
 
 			h4 {
 				margin-bottom: 0;
@@ -2451,9 +2462,7 @@ main {
 				}
 
 				p {
-					@include sm-max {
-						margin-bottom: 0;
-					}
+					margin-bottom: 0;
 				}
 
 				@include sm-max {
@@ -2512,6 +2521,9 @@ main {
 					flex: 0 0 100%;
 					max-width: 100%;
 					text-align: center;
+				}
+				p{
+					text-align: justify;
 				}
 			}
 		}

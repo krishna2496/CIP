@@ -10,7 +10,7 @@
                                 <b-link class="group-img" v-else :style="{backgroundImage: 'url('+getDefaultImage()+')'}"></b-link>
                             </div>
                             <div class="group-category">
-                                <span class="category-text">{{data.news_category[0]}}</span>
+                                <span class="category-text" v-if="data.news_category[0]">{{data.news_category[0]}}</span>
                             </div>
                             <b-link class="btn btn-borderwhite icon-btn" :title="langauageData.label.view_detail" :to="'/news-detail/'+data.news_id">
                                 <span>{{langauageData.label.view_detail}}</span>
