@@ -29,11 +29,10 @@ interface NewsInterface
      * Get news details.
      *
      * @param int $id
-     * @param int $languageId
      * @param string $newsStatus
      * @return App\Models\News
      */
-    public function getNewsDetails(int $id, int $languageId = null, string $newsStatus = null): News;
+    public function getNewsDetails(int $id, string $newsStatus = null): News;
 
     /**
      * Remove news.
@@ -53,7 +52,6 @@ interface NewsInterface
      */
     public function getNewsList(
         Request $request,
-        int $languageId = null,
         string $newsStatus = null
     ): LengthAwarePaginator;
 }

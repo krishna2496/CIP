@@ -10,13 +10,23 @@ trait NewsTransformable
      *
      * @param App\Models\News $news
      * @param bool $sortDescription
+     * @param int $languageId
+     * @param int $defaultTenantLanguage
+     * @param $languageCode
+     * @param $defaultTenantLanguageCode
      * @return array
      */
-    protected function getTransformedNews(News $news, bool $sortDescription = null): array
-    {
+    protected function getTransformedNews(
+        News $news,
+        bool $sortDescription = null,
+        int $languageId = null,
+        int $defaultTenantLanguage = null,
+        $languageCode = null,
+        $defaultTenantLanguageCode = null
+    ): array {
         $newsDetails = $news->toArray();
         $wordLimit = config('constants.NEWS_SHORT_DESCRIPTION_WORD_LIMIT');
-        
+                        
         $transformedNews = array();
         $transformedNews['news_id'] = $newsDetails['news_id'];
         $transformedNews['news_image'] = $newsDetails['news_image'];
@@ -25,9 +35,10 @@ trait NewsTransformable
         $transformedNews['user_thumbnail'] = $newsDetails['user_thumbnail'];
         $transformedNews['published_on'] = $newsDetails['created_at'];
         $transformedNews['status'] = $newsDetails['status'];
-        
+
         if (isset($newsDetails['news_language']) && !empty($newsDetails['news_language'])) {
-            if (count($newsDetails['news_language']) > 1) {
+            $newsContent = [];
+            if (is_null($languageId)) {
                 foreach ($newsDetails['news_language'] as $key => $value) {
                     $newsContent[$key]['language_id'] = $value['language_id'];
                     $newsContent[$key]['title'] = $value['title'];
@@ -35,9 +46,13 @@ trait NewsTransformable
                     $this->helpers->trimText(strip_tags($value['description']), $wordLimit) : $value['description'];
                 }
             } else {
-                $description = $newsDetails['news_language'][0]['description'];
-                $newsContent['language_id'] = $newsDetails['news_language'][0]['language_id'];
-                $newsContent['title'] = $newsDetails['news_language'][0]['title'];
+                $key = array_search($languageId, array_column($news['newsLanguage']->toArray(), 'language_id'));
+                $language = ($key === false) ? $defaultTenantLanguage : $languageId;
+                $newsLanguage = $news['newsLanguage']->where('language_id', $language)->first();
+
+                $description =$newsLanguage->description;
+                $newsContent['language_id'] = $newsLanguage->language_id;
+                $newsContent['title'] = $newsLanguage->title;
                 $newsContent['description'] = ($sortDescription) ?
                 $this->helpers->trimText(strip_tags($description), $wordLimit) : $description;
             }
@@ -48,7 +63,6 @@ trait NewsTransformable
             $newsCategoryArray = array();
             foreach ($newsDetails['news_to_category'] as $key => $value) {
                 $newsCategoryArray[$key]['news_category_id'] = $value['news_category_id'];
-                $languageCode = config('app.locale');
                 foreach ($newsDetails['news_to_category'][$key]['news_category'] as $category) {
                     $arrayIndex = array_search($languageCode, array_column(
                         $category['translations'],
@@ -56,6 +70,14 @@ trait NewsTransformable
                     ));
                     if ($arrayIndex  !== false) {
                         $newsCategory[] = $category['translations'][$arrayIndex]['title'];
+                    } else {
+                        $arrayIndex = array_search($defaultTenantLanguageCode, array_column(
+                            $category['translations'],
+                            'lang'
+                        ));
+                        if ($arrayIndex  !== false) {
+                            $newsCategory[] = $category['translations'][$arrayIndex]['title'];
+                        }
                     }
                     unset($category['translations']);
                 }
