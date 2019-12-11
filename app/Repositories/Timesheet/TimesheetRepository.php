@@ -323,6 +323,7 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function timeRequestList(Request $request, array $statusArray, bool $withPagination = true) : Object
     {
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         
@@ -352,9 +353,18 @@ class TimesheetRepository implements TimesheetInterface
 
         foreach ($timeRequestsList as $value) {
             if ($value->missionLanguage) {
-                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                if (isset($value->missionLanguage[0])) {
+                    $missionTitle = $value->missionLanguage[0]->title;
+                } else {
+                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
+                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
+                    ->get();
+                    $missionTitle = $defaultLanguageMissionData[0]->title;
+                }
+                $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
+            
             $value->time = $this->helpers->convertInReportTimeFormat($value->total_hours);
             $value->hours = $this->helpers->convertInReportHoursFormat($value->total_hours);
             
@@ -374,6 +384,7 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function goalRequestList(Request $request, array $statusArray, bool $withPagination = true): Object
     {
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
        
@@ -402,7 +413,15 @@ class TimesheetRepository implements TimesheetInterface
         }
         foreach ($goalRequestList as $value) {
             if ($value->missionLanguage) {
-                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                if (isset($value->missionLanguage[0])) {
+                    $missionTitle = $value->missionLanguage[0]->title;
+                } else {
+                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
+                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
+                    ->get();
+                    $missionTitle = $defaultLanguageMissionData[0]->title;
+                }
+                $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
             $value->setAppends([]);
