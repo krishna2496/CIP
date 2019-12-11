@@ -28,4 +28,13 @@ interface CountryInterface
      * @return array
      */
     public function getCountry(int $countryId) : array;
+    
+    /**
+     * Country transformation.
+     *
+     * @param array $countryList
+     * @param int $languageId 
+     * @return Array
+     */
+    public function countryTransform(array $countryList,int $languageId): Array;
 }

@@ -39,6 +39,7 @@ class CityController extends Controller
      *
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param Illuminate\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
