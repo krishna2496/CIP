@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Repositories\Tenant\TenantRepository;
 use App\Jobs\TenantBackgroundJobsJob;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Helpers\ResponseHelper;
 
 //!  Tenantbackgroundprocess controller
 /*!
@@ -22,14 +23,20 @@ class TenantBackgroundProcessController extends Controller
     private $tenantRepository;
 
     /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
+
+    /**
      * Create a new TenantBackgroundProcess controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @return void
      */
-    public function __construct(TenantRepository $tenantRepository)
+    public function __construct(TenantRepository $tenantRepository, ResponseHelper $responseHelper)
     {
         $this->tenantRepository = $tenantRepository;
+        $this->responseHelper = $responseHelper;
     }
     
     /**
