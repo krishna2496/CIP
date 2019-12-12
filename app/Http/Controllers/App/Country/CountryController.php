@@ -10,6 +10,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use Illuminate\Http\Request;
 use App\Helpers\LanguageHelper;
+use App\Transformations\CountryTransformable;
 
 //!  Country controller
 /*!
@@ -17,7 +18,7 @@ This controller is responsible for handling country listing operation.
  */
 class CountryController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait, CountryTransformable;
     /**
      * @var App\Repositories\Country\CountryRepository
      */
@@ -61,13 +62,16 @@ class CountryController extends Controller
     {
         // Get language id
         $languageId = $this->languageHelper->getLanguageId($request);
+        
+        // Get tenant default language
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
 
         // Fetch country lists
         $countryList = $this->countryRepository->countryList();
         
         if (!$countryList->isEmpty()) {
             // Transform country details
-            $countryDetails = $this->countryRepository->countryTransform($countryList->toArray(), $languageId);
+            $countryDetails = $this->countryTransform($countryList->toArray(), $languageId, $defaultTenantLanguage->language_id);
         }
         
         $apiData = isset($countryDetails) ? $countryDetails : $countryList->toArray();

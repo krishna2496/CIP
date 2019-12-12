@@ -11,6 +11,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
+use App\Transformations\CityTransformable;
 
 //!  City controller
 /*!
@@ -18,7 +19,7 @@ This controller is responsible for handling city listing operation.
  */
 class CityController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait, CityTransformable;
     /**
      * @var App\Repositories\City\CityRepository
      */
@@ -67,10 +68,17 @@ class CityController extends Controller
         
             // Fetch city lists
             $cityList = $this->cityRepository->cityList($countryId);
+
+            // Get tenant default language
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             
             if (!$cityList->isEmpty()) {
                 // Transform city details
-                $cityDetails = $this->cityRepository->cityTransform($cityList->toArray(), $languageId);
+                $cityDetails = $this->cityTransform(
+                    $cityList->toArray(),
+                    $languageId,
+                    $defaultTenantLanguage->language_id
+                );
             }
             $apiData = isset($cityDetails) ? $cityDetails : $cityList->toArray();
             $apiStatus = Response::HTTP_OK;
