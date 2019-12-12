@@ -22,7 +22,6 @@ class CreateTableCountryLanguage extends Migration
             $table->softDeletes();
             
             $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('language_id')->references('language_id')->on('language')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
