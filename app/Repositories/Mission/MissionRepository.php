@@ -446,6 +446,7 @@ class MissionRepository implements MissionInterface
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
+       
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability'
@@ -521,7 +522,7 @@ class MissionRepository implements MissionInterface
             if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                 $missionQuery->where(function ($query) use ($request) {
                     $query->wherehas('country', function ($countryQuery) use ($request) {
-                        $countryQuery->where('name', 'like', '%' . $request->input('explore_mission_params') . '%');
+                        $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                     });
                 });
             }
@@ -647,7 +648,9 @@ class MissionRepository implements MissionInterface
                 ->orderBY('mission_theme_count', 'desc');
                 break;
             case config('constants.TOP_COUNTRY'):
-                $missionQuery->with(['country'])
+                $missionQuery->with(['country'=> function ($query) {
+                    $query->with('translations');
+                }])
                 ->selectRaw('COUNT(mission.country_id) as mission_country_count')
                 ->groupBy('mission.country_id')
                 ->orderBY('mission_country_count', 'desc');
@@ -701,11 +704,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where(
-                                    'name',
-                                    'like',
-                                    '%'.$request->input('explore_mission_params').'%'
-                                );
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -717,7 +716,10 @@ class MissionRepository implements MissionInterface
                         );
                     }
                 }
-                $missionQuery->with(['country'])
+
+                $missionQuery->with(['country'=> function ($query) {
+                    $query->with('translations');
+                }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
                 $mission = $missionQuery->get();
@@ -749,7 +751,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where('name', 'like', '%'.$request->input('explore_mission_params').'%');
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -762,7 +764,9 @@ class MissionRepository implements MissionInterface
                     }
                 }
 
-                $missionQuery->with(['city'])
+                $missionQuery->with(['city'=> function ($query) {
+                    $query->with('translations');
+                }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
                     $missionQuery->where("mission.country_id", $request->input('country_id'));
@@ -797,11 +801,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where(
-                                    'name',
-                                    'like',
-                                    '%' . $request->input('explore_mission_params') . '%'
-                                );
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -866,11 +866,7 @@ class MissionRepository implements MissionInterface
                         if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                             $query->where(function ($query) use ($request) {
                                 $query->wherehas('country', function ($countryQuery) use ($request) {
-                                    $countryQuery->where(
-                                        'name',
-                                        'like',
-                                        '%' . $request->input('explore_mission_params') . '%'
-                                    );
+                                    $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                                 });
                             });
                         }

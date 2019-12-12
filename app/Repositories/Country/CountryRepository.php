@@ -48,18 +48,37 @@ class CountryRepository implements CountryInterface
      * Get country detail from country_id
      *
      * @param int  $countryId
+     * @param int $languageId
+     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCountry(int $countryId) : array
+    public function getCountry(int $countryId, int $languageId, int $defaultLanguageId) : array
     {
-        $country = $this->country->where("country_id", $countryId)->first();
-        $countryData = array('country_id' => $country->country_id,
-                             'country_code' => $country->ISO,
-                             'name' => $country->name,
-                            );
+       
+        $country = $this->country->with('translations')->where("country_id", $countryId)->first();
+        $translation = $country->translations->toArray();
+
+        $translationkey = '';
+        if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
+            $translationkey = array_search($languageId, array_column($translation, 'language_id'));
+        } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+            $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
+        }
+    
+        if ($translationkey !== '') {
+            $countryData = array('country_id' => $country->country_id,
+            'country_code' => $country->ISO,
+            'name' => $translation[$translationkey]['name'],
+           );
+        } else {
+            $countryData = array('country_id' => $country->country_id,
+            'country_code' => $country->ISO,
+            'name' => $country->name,
+            );
+        }
+      
         return $countryData;
     }
-
 
     public function store(string $iso): Country
     {
