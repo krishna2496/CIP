@@ -82,7 +82,6 @@ class NewsRepository implements NewsInterface
      */
     public function getNewsList(
         Request $request,
-        int $languageId = null,
         string $newsStatus = null
     ): LengthAwarePaginator {
         $newsData = $this->news
@@ -92,29 +91,24 @@ class NewsRepository implements NewsInterface
             }]);
         }]);
 
-        if ($languageId) {
-            $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
-                $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
+       
+        // Search filters for admin side
+        if ($request->has('search')) {
+            $newsData
+            ->whereHas('newsLanguage', function ($query) use ($request) {
+                $query->select('news_id', 'language_id', 'title', 'description')
+                ->where('title', 'like', '%' . $request->input('search') . '%');
+            })
+            ->with(['newsLanguage' => function ($query) use ($request) {
+                $query->select('news_id', 'language_id', 'title', 'description')
+                ->where('title', 'like', '%' . $request->input('search') . '%');
             }]);
         } else {
-            // Search filters for admin side
-            if ($request->has('search')) {
-                $newsData
-                ->whereHas('newsLanguage', function ($query) use ($request) {
-                    $query->select('news_id', 'language_id', 'title', 'description')
-                    ->where('title', 'like', '%' . $request->input('search') . '%');
-                })
-                ->with(['newsLanguage' => function ($query) use ($request) {
-                    $query->select('news_id', 'language_id', 'title', 'description')
-                    ->where('title', 'like', '%' . $request->input('search') . '%');
-                }]);
-            } else {
-                $newsData->with(['newsLanguage' => function ($query) {
-                    $query->select('news_id', 'language_id', 'title', 'description');
-                }]);
-            }
+            $newsData->with(['newsLanguage' => function ($query) {
+                $query->select('news_id', 'language_id', 'title', 'description');
+            }]);
         }
-        
+
         // Order by filters for admin side
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
@@ -160,7 +154,7 @@ class NewsRepository implements NewsInterface
         
         // Insert into news_language
         if ($request->has('news_content')) {
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -206,7 +200,7 @@ class NewsRepository implements NewsInterface
         
         // Update into news_language
         if ($request->has('news_content')) {
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -229,24 +223,17 @@ class NewsRepository implements NewsInterface
      * Get news details.
      *
      * @param int $id
-     * @param int $languageId
      * @param string $newsStatus
      * @return App\Models\News
      */
-    public function getNewsDetails(int $id, int $languageId = null, string $newsStatus = null): News
+    public function getNewsDetails(int $id, string $newsStatus = null): News
     {
         $newsQuery = $this->news
         ->with(['newsToCategory' => function ($query) {
             $query->with('newsCategory');
         }]);
     
-        if ($languageId) {
-            $newsQuery->with(['newsLanguage' => function ($query) use ($languageId) {
-                $query->where('language_id', $languageId);
-            }]);
-        } else {
-            $newsQuery->with('newsLanguage');
-        }
+        $newsQuery->with('newsLanguage');
 
         if ($newsStatus) {
             $newsQuery->where('status', $newsStatus);

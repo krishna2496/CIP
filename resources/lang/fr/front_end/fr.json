@@ -278,7 +278,8 @@
         "all": "Toute",
         "delete_message": "Êtes-vous sûr de vouloir supprimer ce message?",
         "delete_comment": "Êtes-vous sûr de vouloir supprimer ce commentaire?",
-        "no_data": "Pas de données"
+        "no_data": "Pas de données",
+        "day_volunteered": "Journée bénévole"
     },
 
     "placeholder": {

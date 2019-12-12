@@ -182,6 +182,8 @@ return [
         'MESSAGE_AVAILABILITY_FOUND' => 'Availability found successfully',
         'MESSAGE_COUNTRY_CREATED' => 'Country created successfully',
         'MESSAGE_CITY_CREATED' => 'City created successfully',
+        'MESSAGE_MISSION_MEDIA_DELETED' => 'Mission media deleted successfully',
+        'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Mission document deleted successfully',
     ],
 
         
@@ -237,6 +239,13 @@ return [
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions not found',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Mission media not found in the system',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Mission document not found in the system',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'Mission default image cannot be deleted. Please set another image as a default image and try again.',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => 'Media id doesnt exist',
+        'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'Media id is not linked to mission',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
+        'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',

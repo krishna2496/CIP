@@ -184,6 +184,10 @@ return [
         'cities.*.translations.*.lang' => 'language code',
         'cities.*.translations.*.name' => 'name',
         'cities.*.translations' => 'translations',
+		'organisation.organisation_name' => 'organisation name',
+        'media_images.*.sort_order' => 'sort order',
+        'media_videos.*.sort_order' => 'sort order',
+        'documents.*.sort_order' => 'sort order',        
         ],
 
 ];

@@ -32,6 +32,7 @@ return [
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+    'AWS_S3_DOCUMENTS_FOLDER_NAME' => 'documents',
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
@@ -133,6 +134,16 @@ return [
     ],
     
     /*
+     * Slider image types
+     */
+    'slider_image_mime_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/svg+xml'
+    ],
+    
+    /*
      * User profile image allowed MIME types
      */
     'profile_image_types' => [
@@ -153,6 +164,20 @@ return [
         'TXT' => 'txt'
     ],
 
+    /*
+     * Document types
+     */
+    'document_mime_types' => [
+        'application/vnd.ms-word.document.macroenabled.12',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel.sheet.binary.macroenabled.12',
+        'application/vnd.ms-excel.sheet.macroenabled.12',
+        'application/pdf',
+        'text/plain'
+    ],
     
     /*
      * Timesheet document types
@@ -404,6 +429,11 @@ return [
         'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
         'ERROR_UNAUTHORIZED_USER' => '400043',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => '400045',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => '400046',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => '400047',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
         
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
@@ -444,7 +474,7 @@ return [
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
         'ERROR_AVAILABILITY_NOT_FOUND' => '410002',
-        'ERROR_CITY_INVALID_DATA' => '1200001',        
+        'ERROR_CITY_INVALID_DATA' => '1200001',
     ],
 
     /**
@@ -536,7 +566,9 @@ return [
         'NOTIFICATION' => 'NOTIFICATION',
         'AVAILABILITY' => 'AVAILABILITY',
         'COUNTRY' => 'COUNTRY',
-        'CITY' => 'CITY' 
+        'CITY' => 'CITY',
+        'MISSION_MEDIA' => 'MISSION_MEDIA',
+        'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
     ],
 
     'activity_log_actions' => [
