@@ -239,7 +239,6 @@ class MissionController extends Controller
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
                     $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
-            
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.TOP_THEME')][$key]['title'] =
                         $value->missionTheme->translations[$arrayKey]['title'];
@@ -257,20 +256,22 @@ class MissionController extends Controller
         if (!empty($topCountry->toArray())) {
             foreach ($topCountry as $key => $value) {
                 $translation = $value->country->translations->toArray();
-
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
                 } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
-            
+                
                 if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
                     $translation[$translationkey]['name'];
-                    $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
-                    $value->country->country_id;
+                } else {
+                    $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
+                    $value->country->name;
                 }
+                $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
+                $value->country->country_id;
             }
             $apiData[config('constants.TOP_COUNTRY')] = $returnData[config('constants.TOP_COUNTRY')];
         }
