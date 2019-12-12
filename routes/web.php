@@ -682,13 +682,25 @@ $router->group(['middleware' => 'localization'], function ($router) {
     );
 
     /* Get countries list */
-    $router->get('/countries', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\Country\CountryController@index']);
-
+    $router->group(
+        ['prefix' => 'countries', 'middleware' => 'localization|auth.tenant.admin'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
+            $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
+        }
+    );
+    
     /* Get cities by country id */
-    $router->get('/cities/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\City\CityController@fetchCity']);
+    $router->group(
+        ['prefix' => 'cities', 'middleware' => 'localization|auth.tenant.admin'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\City\CityController@index']);
+            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity']);
+            $router->post('/', ['uses' => 'Admin\City\CityController@store']);
+        }
+    );
 
+    
     /* News category management */
     $router->group(
         ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],

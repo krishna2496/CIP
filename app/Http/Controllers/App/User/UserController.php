@@ -232,6 +232,13 @@ class UserController extends Controller
 
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
+        // Get language id
+        $languageId = $this->languageHelper->getLanguageId($request);
+        if (!$cityList->isEmpty()) {
+            // Transform city details
+            $cityList = $this->cityRepository->cityTransform($cityList->toArray(), $languageId);
+        }
+
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
         $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :

@@ -25,7 +25,9 @@ interface CountryInterface
      * Get country detail from country_id
      *
      * @param int  $countryId
+     * @param int $languageId
+     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCountry(int $countryId) : array;
+    public function getCountry(int $countryId, int $languageId, int $defaultLanguageId) : array;
 }

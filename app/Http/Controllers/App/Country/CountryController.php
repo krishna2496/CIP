@@ -8,6 +8,8 @@ use App\Helpers\ResponseHelper;
 use App\Repositories\Country\CountryRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
+use Illuminate\Http\Request;
+use App\Helpers\LanguageHelper;
 
 //!  Country controller
 /*!
@@ -27,29 +29,48 @@ class CountryController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param Illuminate\Helpers\ResponseHelper $responseHelper
+     * @param Illuminate\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         CountryRepository $countryRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
     ) {
         $this->countryRepository = $countryRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
     }
 
     /**
     * Get country list
     *
+    * @param Illuminate\Http\Request $request
     * @return Illuminate\Http\JsonResponse
     */
-    public function index() : JsonResponse
+    public function index(Request $request) : JsonResponse
     {
+        // Get language id
+        $languageId = $this->languageHelper->getLanguageId($request);
+
+        // Fetch country lists
         $countryList = $this->countryRepository->countryList();
-        $apiData = $countryList->toArray();
+        
+        if (!$countryList->isEmpty()) {
+            // Transform country details
+            $countryDetails = $this->countryRepository->countryTransform($countryList->toArray(), $languageId);
+        }
+        
+        $apiData = isset($countryDetails) ? $countryDetails : $countryList->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (!empty($apiData)) ?
         trans('messages.success.MESSAGE_COUNTRY_LISTING') :

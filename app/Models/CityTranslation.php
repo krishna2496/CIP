@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\CountryTranslation;
 
-class Country extends Model
+class CityTranslation extends Model
 {
     use SoftDeletes;
 
@@ -14,31 +14,26 @@ class Country extends Model
      *
      * @var string
      */
-    protected $table = 'country';
+    protected $table = 'city_translation';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'country_id';
+    protected $primaryKey = 'city_translation_id';
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['country_id', 'ISO', 'translations'];
+    protected $visible = ['city_translation_id', 'city_id', 'language_id', 'name'];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['country_id', 'ISO'];
-
-    public function translations()
-    {
-        return $this->hasMany(CountryTranslation::class, 'country_id', 'country_id');
-    }
+    protected $fillable = ['city_translation_id', 'city_id', 'language_id', 'name'];
 }

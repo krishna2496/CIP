@@ -299,6 +299,10 @@ class StoryController extends Controller
      */
     public function show(Request $request, int $storyId): JsonResponse
     {
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultLanguageId = $defaultLanguage->language_id;
         // Get Story details
         $story = $this->storyRepository
         ->getStoryDetails(
@@ -350,7 +354,13 @@ class StoryController extends Controller
         $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
 
         // Transform story details
-        $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount, $defaultAvatar);
+        $storyTransformedData = $this->transformStoryDetails(
+            $story[0],
+            $storyViewCount,
+            $defaultAvatar,
+            $languageId,
+            $defaultLanguageId
+        );
         
         // Check mission status
         $missionStatus = $this->missionRepository->checkMissionStatus($storyTransformedData['mission_id']);
