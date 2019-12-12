@@ -29,7 +29,8 @@ return [
         'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
         'MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY' => 'Les modifications de migration ont été appliquées avec succès sur la base de données client hébergée.',
-        'MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY' => 'Les modifications de migration ont été appliquées avec succès sur la base de données client.'
+        'MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY' => 'Les modifications de migration ont été appliquées avec succès sur la base de données client.',
+        'MESSAGE_TENANT_BACKGROUND_PROCESS_COMPLETED' => 'Le processus d\'arrière-plan du locataire s\'est terminé avec succès'
     ],
     
     /**

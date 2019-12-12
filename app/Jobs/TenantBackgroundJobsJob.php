@@ -60,7 +60,7 @@ class TenantBackgroundJobsJob extends Job
         );
 
         // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-        if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
+        if (env('APP_ENV')=='testing') {
             dispatch(new TenantDefaultLanguageJob($this->tenant));
         }
     
@@ -81,6 +81,9 @@ class TenantBackgroundJobsJob extends Job
                 'background_process_status' => config('constants.background_process_status.COMPLETED')
             ]
         );
+
+        // Send success mail notification to admin
+        $this->sendEmailNotification(true);
     }
 
     /**
@@ -91,18 +94,21 @@ class TenantBackgroundJobsJob extends Job
     public function failed(\Exception $exception)
     {
         $this->tenant->update(['background_process_status' => config('constants.background_process_status.FAILED')]);
-        $this->sendEmailNotification();
+        $this->sendEmailNotification(false);
     }
 
     /**
      * Send email notification to admin
-     * @param bool $isFail
+     * @param bool $isSuccess
      * @return void
      */
-    public function sendEmailNotification()
+    public function sendEmailNotification(bool $isSuccess)
     {
+        $status = ($isSuccess) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
+        $subjectStatus = ($isSuccess) ? trans("messages.email_text.SUCCESS") : trans("messages.email_text.ERROR");
+
         $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
-        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".trans('messages.email_text.FAILED')
+        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status
         ." <br>";
 
         $data = array(
@@ -112,7 +118,7 @@ class TenantBackgroundJobsJob extends Job
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
         $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
-        $params['subject'] = trans("messages.email_text.ERROR"). " : "
+        $params['subject'] = $subjectStatus. " : "
         .trans('messages.email_text.ON_BACKGROUND_JOBS')." ". $this->tenant->name . " "
         .trans("messages.email_text.TENANT");
 
