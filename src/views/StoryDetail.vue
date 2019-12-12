@@ -90,7 +90,7 @@
                                 </div>
 
                                 <div class="profile-content" v-if="storyDetailList.why_i_volunteer != ''">
-                                    {{storyDetailList.why_i_volunteer}}
+                                    <p>{{storyDetailList.why_i_volunteer}}</p>
                                 </div>
                             </div>
                         </b-col>
