@@ -331,11 +331,15 @@ class MissionController extends Controller
                 if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
                     $translation[$translationkey]['name'];
-                    $returnData[config('constants.COUNTRY')][$key]['id'] =
-                    $value->country->country_id;
-                    $returnData[config('constants.COUNTRY')][$key]['mission_count'] =
-                    $value->mission_count;
+                    
+                } else {
+                    $returnData[config('constants.COUNTRY')][$key]['title'] =
+                    $value->country->name;
                 }
+                $returnData[config('constants.COUNTRY')][$key]['id'] =
+                $value->country->country_id;
+                $returnData[config('constants.COUNTRY')][$key]['mission_count'] =
+                $value->mission_count;
                 if (isset($returnData[config('constants.COUNTRY')])) {
                     $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
                 }
@@ -355,11 +359,14 @@ class MissionController extends Controller
                 if ($translationkey !== '') {
                     $returnData[config('constants.CITY')][$key]['title'] =
                     $translation[$translationkey]['name'];
-                    $returnData[config('constants.CITY')][$key]['id'] =
-                    $value->city_id;
-                    $returnData[config('constants.CITY')][$key]['mission_count'] =
-                    $value->mission_count;
+                } else {
+                    $returnData[config('constants.CITY')][$key]['title'] =
+                    $value->city->name;
                 }
+                $returnData[config('constants.CITY')][$key]['id'] =
+                $value->city_id;
+                $returnData[config('constants.CITY')][$key]['mission_count'] =
+                $value->mission_count;
             }
             if (isset($returnData[config('constants.CITY')])) {
                 $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
