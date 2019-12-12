@@ -54,7 +54,7 @@ class CityRepository implements CityInterface
     public function getCity(string $cityId, int $languageId, int $defaultLanguageId) : array
     {
         $city = $this->city->with('translations')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
-        
+       
         $cityData = [];
         if (!empty($city)) {
             foreach ($city as $key => $value) {
@@ -62,13 +62,14 @@ class CityRepository implements CityInterface
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } else if(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
            
                 if ($translationkey !== '') {
-                   
-                    $cityData[$value['city_id']] = $translation[$translationkey]['name'];
+                   $cityData[$value['city_id']] = $translation[$translationkey]['name'];
+                } else {
+                    $cityData[$value['city_id']] = $value['name'];
                 }
             }
         }
@@ -94,25 +95,5 @@ class CityRepository implements CityInterface
     public function cityLists(): Collection
     {
         return $this->city->with(['translations'])->get();
-    }
-
-    /**
-     * City transformation.
-     *
-     * @param array $cityList
-     * @param int $languageId 
-     * @return Array
-     */
-    public function cityTransform(array $cityList,int $languageId): Array
-    {
-        foreach ($cityList as $key => $value) {
-            $index = array_search($languageId, array_column($value['translations'], 'language_id'));
-            if ($index) {
-                $cityData[$value['translations'][$index]['city_id']] = $value['translations'][$index]['name'];                
-            } else {
-                $cityData[$value['translations'][$index]['city_id']] = $value['translations'][0]['name'];
-            }
-        }
-        return $cityData;
     }
 }

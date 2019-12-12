@@ -169,15 +169,19 @@ trait StoryTransformable
         } elseif(array_search($defaultLanguageId, array_column($countryTranslation, 'language_id')) !== false) {
             $countryTranslationKey = array_search($defaultLanguageId, array_column($countryTranslation, 'language_id'));
         }
-
+        
         if ($cityTranslationKey !== '' && $story->user->city) {
             $cityName = $cityTranslation[$cityTranslationKey]['name'];
-            $cityArray['name'] = $cityName;
+        } else {
+            $cityName =$story->user->city->name;
         }
+        $cityArray['name'] = $cityName;
         if ($countryTranslationKey !== '' && $story->user->country) {
             $countryName = $countryTranslation[$countryTranslationKey]['name'];
-            $countryArray['name'] = $countryName;
+        } else {
+            $countryName = $story->user->country->name;
         }
+        $countryArray['name'] = $countryName;
         $story->user->city = (object) $cityArray;
         $story->user->country = (object) $countryArray;
         if (!empty($story->user)) {

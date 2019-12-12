@@ -128,7 +128,7 @@ class Mission extends Model
     public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id')
-         ->select('city_id');
+         ->select('city_id', 'name');
     }
 
     /**
@@ -139,6 +139,7 @@ class Mission extends Model
     public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
+        //  ->select('country_id', 'name', 'ISO');
     }
 
     /**

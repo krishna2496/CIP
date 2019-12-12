@@ -29,7 +29,7 @@ class City extends Model
      *
      * @var array
      */
-    protected $visible = ['city_id', 'country_id', 'translations'];
+    protected $visible = ['city_id', 'country_id', 'name','translations'];
 
     /**
     * The attributes that are mass assignable.
