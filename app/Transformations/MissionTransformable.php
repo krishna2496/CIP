@@ -190,7 +190,7 @@ trait MissionTransformable
                 $cityTranslation[$cityTranslationkey]['name'];
             } else {
                 $mission['city_name'] =
-                $mission['city']['name'];
+                $cityTranslation[0]['name'] ?? '';
             }
         } else {
             $mission['city_name'] =
