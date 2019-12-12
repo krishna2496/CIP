@@ -65,24 +65,4 @@ class CountryRepository implements CountryInterface
     {
         return $this->country->create(['ISO' => $iso]);
     }
-
-    /**
-     * Country transformation.
-     *
-     * @param array $countryList
-     * @param int $languageId 
-     * @return Array
-     */
-    public function countryTransform(array $countryList, int $languageId): Array
-    {
-        foreach ($countryList as $key => $value) {
-            $index = array_search($languageId, array_column($value['translations'], 'language_id'));
-            if ($index) {
-                $countryData[$value['translations'][$index]['country_id']] = $value['translations'][$index]['name'];                
-            } else {
-                $countryData[$value['translations'][$index]['country_id']] = $value['translations'][0]['name'];
-            }
-        }
-        return $countryData;
-    }
 }

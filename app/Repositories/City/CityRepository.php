@@ -81,24 +81,4 @@ class CityRepository implements CityInterface
     {
         return $this->city->with(['translations'])->get();
     }
-
-    /**
-     * City transformation.
-     *
-     * @param array $cityList
-     * @param int $languageId 
-     * @return Array
-     */
-    public function cityTransform(array $cityList,int $languageId): Array
-    {
-        foreach ($cityList as $key => $value) {
-            $index = array_search($languageId, array_column($value['translations'], 'language_id'));
-            if ($index) {
-                $cityData[$value['translations'][$index]['city_id']] = $value['translations'][$index]['name'];                
-            } else {
-                $cityData[$value['translations'][$index]['city_id']] = $value['translations'][0]['name'];
-            }
-        }
-        return $cityData;
-    }
 }
