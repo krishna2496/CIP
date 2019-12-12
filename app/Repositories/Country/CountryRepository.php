@@ -73,7 +73,7 @@ class CountryRepository implements CountryInterface
         } else {
             $countryData = array('country_id' => $country->country_id,
             'country_code' => $country->ISO,
-            'name' => $country->name,
+            'name' =>  $translation[0]['name'] ?? '',
             );
         }
       

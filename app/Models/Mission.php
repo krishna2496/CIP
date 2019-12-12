@@ -128,7 +128,7 @@ class Mission extends Model
     public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id')
-         ->select('city_id', 'name');
+         ->select('city_id');
     }
 
     /**
