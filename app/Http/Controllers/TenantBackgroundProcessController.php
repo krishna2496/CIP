@@ -30,7 +30,8 @@ class TenantBackgroundProcessController extends Controller
     /**
      * Create a new TenantBackgroundProcess controller instance.
      *
-     * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
+     * @param App\Repositories\Tenant\TenantRepository $tenantRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(TenantRepository $tenantRepository, ResponseHelper $responseHelper)
