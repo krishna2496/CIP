@@ -10,8 +10,8 @@ class CustomValidationRules
     {
         Validator::extend('valid_media_path', function ($attribute, $value) {
             try {
-                $urlMimeType = isset(get_headers($value, 1)['Content-Type']) ? get_headers($value, 1)['Content-Type']
-				: get_headers($value, 1)['content-type'];
+                $urlMimeType = isset(get_headers($value, 1)['Content-Type']) ? get_headers($value, 1)['Content-Type'] :
+                get_headers($value, 1)['content-type'];
                 $validMimeTypes = config('constants.slider_image_mime_types');
                 return (!in_array($urlMimeType, $validMimeTypes)) ? false : true;
             } catch (\Exception $e) {
@@ -21,8 +21,8 @@ class CustomValidationRules
 
         Validator::extend('valid_document_path', function ($attribute, $value) {
             try {
-                $urlMimeType = isset(get_headers($value, 1)['Content-Type']) ? get_headers($value, 1)['Content-Type']
-				: get_headers($value, 1)['content-type'];
+                $urlMimeType = isset(get_headers($value, 1)['Content-Type']) ? get_headers($value, 1)['Content-Type'] :
+                get_headers($value, 1)['content-type'];
                 $validMimeTypes = config('constants.document_mime_types');
                 return (!in_array($urlMimeType, $validMimeTypes)) ? false : true;
             } catch (\Exception $e) {
