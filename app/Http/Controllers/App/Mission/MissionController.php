@@ -268,7 +268,7 @@ class MissionController extends Controller
                     $translation[$translationkey]['name'];
                 } else {
                     $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
-                    $value->country->name;
+                    $translation[0]['name'] ?? '';
                 }
                 $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
                 $value->country->country_id;
@@ -332,10 +332,9 @@ class MissionController extends Controller
                 if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
                     $translation[$translationkey]['name'];
-                    
                 } else {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
-                    $value->country->name;
+                    $translation[0]['name'] ?? '';
                 }
                 $returnData[config('constants.COUNTRY')][$key]['id'] =
                 $value->country->country_id;
@@ -362,7 +361,7 @@ class MissionController extends Controller
                     $translation[$translationkey]['name'];
                 } else {
                     $returnData[config('constants.CITY')][$key]['title'] =
-                    $value->city->name;
+                    $translation[0]['name'] ?? '';
                 }
                 $returnData[config('constants.CITY')][$key]['id'] =
                 $value->city_id;

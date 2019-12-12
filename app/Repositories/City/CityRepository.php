@@ -69,7 +69,7 @@ class CityRepository implements CityInterface
                 if ($translationkey !== '') {
                    $cityData[$value['city_id']] = $translation[$translationkey]['name'];
                 } else {
-                    $cityData[$value['city_id']] = $value['name'];
+                    $cityData[$value['city_id']] =  $translation[0]['name'] ?? '';
                 }
             }
         }
