@@ -174,7 +174,8 @@ class MissionController extends Controller
         }
 
         $missionList = $this->missionRepository->getMissions($request, $userFilterData);
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+       
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request); 
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
@@ -222,11 +223,14 @@ class MissionController extends Controller
         // Get language code
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
-
+        $languageId = $language->language_id;
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultLanguageId = $defaultLanguage->language_id;
         // Get data by top theme
         $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
         // Get data by top country
         $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
+      
         // Get data by top organization
         $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
@@ -252,9 +256,18 @@ class MissionController extends Controller
         // Return data by top country
         if (!empty($topCountry->toArray())) {
             foreach ($topCountry as $key => $value) {
-                if ($value->country) {
+                $translation = $value->country->translations->toArray();
+
+                $translationkey = '';
+                if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($languageId, array_column($translation, 'language_id'));
+                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
+                }
+            
+                if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
-                    $value->country->name;
+                    $translation[$translationkey]['name'];
                     $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
                     $value->country->country_id;
                 }
@@ -294,6 +307,9 @@ class MissionController extends Controller
         $returnData = $apiData = [];
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
+        $languageId = $language->language_id;
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultLanguageId = $defaultLanguage->language_id;
         // Get Data by country
         $missionCountry = $this->missionRepository->missionFilter($request, config('constants.COUNTRY'));
         // Get Data by top theme
@@ -305,9 +321,16 @@ class MissionController extends Controller
     
         if (!empty($missionCountry->toArray())) {
             foreach ($missionCountry as $key => $value) {
-                if ($value->country) {
+                $translation = $value->country->translations->toArray();
+                $translationkey = '';
+                if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($languageId, array_column($translation, 'language_id'));
+                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
+                }
+                if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
-                    $value->country->name;
+                    $translation[$translationkey]['name'];
                     $returnData[config('constants.COUNTRY')][$key]['id'] =
                     $value->country->country_id;
                     $returnData[config('constants.COUNTRY')][$key]['mission_count'] =
@@ -322,12 +345,21 @@ class MissionController extends Controller
 
         if (!empty($missionCity->toArray())) {
             foreach ($missionCity as $key => $value) {
-                $returnData[config('constants.CITY')][$key]['title'] =
-                    $value->city_name;
-                $returnData[config('constants.CITY')][$key]['id'] =
+                $translation = $value->city->translations->toArray();
+                $translationkey = '';
+                if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($languageId, array_column($translation, 'language_id'));
+                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
+                }
+                if ($translationkey !== '') {
+                    $returnData[config('constants.CITY')][$key]['title'] =
+                    $translation[$translationkey]['name'];
+                    $returnData[config('constants.CITY')][$key]['id'] =
                     $value->city_id;
-                $returnData[config('constants.CITY')][$key]['mission_count'] =
+                    $returnData[config('constants.CITY')][$key]['mission_count'] =
                     $value->mission_count;
+                }
             }
             if (isset($returnData[config('constants.CITY')])) {
                 $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
@@ -451,20 +483,32 @@ class MissionController extends Controller
      */
     public function missionFiltersTag(Request $request, object $language, UserFilter $userFilters): array
     {
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+
         // Get data of user's filter
         $filterTagArray = [];
         $filterData= $userFilters->toArray();
 
         if (!empty($filterData["filters"])) {
             if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
-                $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
+                $countryTag = $this->countryRepository->getCountry(
+                    $filterData["filters"]["country_id"],
+                    $languageId,
+                    $defaultLanguage->language_id
+                );
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                 }
             }
 
             if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
-                $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
+                $cityTag = $this->cityRepository->getCity(
+                    $filterData["filters"]["city_id"],
+                    $languageId,
+                    $defaultLanguage->language_id
+                );
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
                         $filterTagArray["city"][$key] = $value;
@@ -530,7 +574,7 @@ class MissionController extends Controller
             ) {
                 return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone);
             })->all();
-
+           
             $apiData = $mission;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!empty($mission)) ?
