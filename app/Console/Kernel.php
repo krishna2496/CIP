@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\ApplyMigration::class,
+        Commands\ApplySeeder::class,
+        Commands\MigrationRollack::class
     ];
 
     /**
