@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCityTranslation extends Migration
+class CreateTableCountryLanguage extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateTableCityTranslation extends Migration
      */
     public function up()
     {
-        Schema::create('city_translation', function (Blueprint $table) {
-            $table->bigIncrements('city_translation_id');
-            $table->unsignedBigInteger('city_id');
+        Schema::create('country_language', function (Blueprint $table) {
+            $table->bigIncrements('country_language_id');
+            $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('language_id');
             $table->string('name', 255);
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('city_id')->references('city_id')->on('city')->onDelete('CASCADE')->onUpdate('CASCADE');
+            
+            $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('language_id')->references('language_id')->on('language')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
@@ -33,6 +33,6 @@ class CreateTableCityTranslation extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('city_translation');
+        Schema::dropIfExists('country_language');
     }
 }
