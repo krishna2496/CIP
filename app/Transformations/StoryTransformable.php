@@ -1,4 +1,4 @@
-<?php
+ <?php
 namespace App\Transformations;
 
 use App\Models\Story;
@@ -179,7 +179,7 @@ trait StoryTransformable
         if ($countryTranslationKey !== '' && $story->user->country) {
             $countryName = $countryTranslation[$countryTranslationKey]['name'];
         } else {
-            $countryName = '';
+            $countryName = $countryTranslation[0]['name'] ?? '';
         }
         $countryArray['name'] = $countryName;
         $story->user->city = (object) $cityArray;
