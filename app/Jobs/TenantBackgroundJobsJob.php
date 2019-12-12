@@ -60,7 +60,7 @@ class TenantBackgroundJobsJob extends Job
         );
 
         // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-        if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
+        if (env('APP_ENV')=='testing') {
             dispatch(new TenantDefaultLanguageJob($this->tenant));
         }
     
@@ -81,6 +81,9 @@ class TenantBackgroundJobsJob extends Job
                 'background_process_status' => config('constants.background_process_status.COMPLETED')
             ]
         );
+
+        // Send success mail notification to admin
+        
     }
 
     /**
