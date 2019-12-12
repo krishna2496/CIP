@@ -175,7 +175,7 @@ class MissionController extends Controller
 
         $missionList = $this->missionRepository->getMissions($request, $userFilterData);
        
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request); 
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
@@ -256,12 +256,12 @@ class MissionController extends Controller
         // Return data by top country
         if (!empty($topCountry->toArray())) {
             foreach ($topCountry as $key => $value) {
-                $translation = $value->country->translations->toArray();
+                $translation = $value->country->languages->toArray();
 
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
             
@@ -321,17 +321,16 @@ class MissionController extends Controller
     
         if (!empty($missionCountry->toArray())) {
             foreach ($missionCountry as $key => $value) {
-                $translation = $value->country->translations->toArray();
+                $translation = $value->country->languages->toArray();
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
                 if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
                     $translation[$translationkey]['name'];
-                    
                 } else {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
                     $value->country->name;
@@ -349,11 +348,11 @@ class MissionController extends Controller
 
         if (!empty($missionCity->toArray())) {
             foreach ($missionCity as $key => $value) {
-                $translation = $value->city->translations->toArray();
+                $translation = $value->city->languages->toArray();
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
                 if ($translationkey !== '') {

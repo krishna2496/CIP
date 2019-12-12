@@ -1,18 +1,18 @@
 <?php
-namespace App\Repositories\CityTranslation;
+namespace App\Repositories\CityLanguage;
 
-use App\Repositories\CityTranslation\CityTranslationInterface;
-use App\Models\CityTranslation;
+use App\Repositories\CityLanguage\CityLanguageInterface;
+use App\Models\CityLanguage;
 use Illuminate\Support\Collection;
 use App\Helpers\LanguageHelper;
 use Illuminate\Http\Request;
 
-class CityTranslationRepository implements CityTranslationInterface
+class CityLanguageRepository implements CityLanguageInterface
 {
     /**
-     * @var App\Models\CityTranslation
+     * @var App\Models\CityLanguage
      */
-    public $cityTranslation;
+    public $cityLanguage;
 
     /**
      * @var App\Helpers\LanguageHelper
@@ -22,15 +22,15 @@ class CityTranslationRepository implements CityTranslationInterface
     /**
      * Create a new repository instance.
      *
-     * @param App\Models\CityTranslation $cityTranslation
+     * @param App\Models\CityLanguage $cityLanguage
      * @return void
      */
     public function __construct(
-        CityTranslation $cityTranslation,
+        CityLanguage $cityLanguage,
         LanguageHelper $languageHelper
     )
     {
-        $this->cityTranslation = $cityTranslation;
+        $this->cityLanguage = $cityLanguage;
         $this->languageHelper = $languageHelper;
     }
     
@@ -50,7 +50,7 @@ class CityTranslationRepository implements CityTranslationInterface
             $data['language_id'] = $languageId;
             $data['name'] = $city['name'];
             
-            $this->cityTranslation->create($data);
+            $this->cityLanguage->create($data);
         }
     }
 }

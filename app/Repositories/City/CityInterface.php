@@ -44,8 +44,33 @@ interface CityInterface
      * City transform.
      *
      * @param array $cityList
-     * @param int $languageId 
+     * @param int $languageId
      * @return Array
      */
-    public function cityTransform(array $cityList,int $languageId): Array;
+    public function cityTransform(array $cityList, int $languageId): Array;
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function delete(int $id): bool;
+
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @param  int $id
+    * @return App\Models\City
+    */
+    public function update(Request $request, int $id): City;
+
+    /**
+     * Find the specified resource from database
+     *
+     * @param int $id
+     * @return App\Models\City
+     */
+    public function find(int $id): City;
 }

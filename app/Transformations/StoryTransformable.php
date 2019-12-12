@@ -138,8 +138,13 @@ trait StoryTransformable
      * @return Array
      */
 
-    protected function transformStoryDetails(Story $story, int $storyViewCount, string $defaultAvatar, int $languageId, int $defaultLanguageId):array
-    {
+    protected function transformStoryDetails(
+        Story $story,
+        int $storyViewCount,
+        string $defaultAvatar,
+        int $languageId,
+        int $defaultLanguageId
+    ):array {
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
         $storyData['title'] = $story->title;
@@ -148,8 +153,8 @@ trait StoryTransformable
         $storyData['status'] = trans('general.status.' . $story->status);
         $storyData['published_at'] = $story->published_at;
 
-        $cityTranslation = $story->user->city->translations->toArray();
-        $countryTranslation = $story->user->country->translations->toArray();
+        $cityTranslation = $story->user->city->languages->toArray();
+        $countryTranslation = $story->user->country->languages->toArray();
 
         $cityTranslationKey = $countryTranslationKey = $cityName = $countryName = '';
         $cityArray = [
@@ -160,13 +165,13 @@ trait StoryTransformable
         ];
         if (array_search($languageId, array_column($cityTranslation, 'language_id')) !== false) {
             $cityTranslationKey = array_search($languageId, array_column($cityTranslation, 'language_id'));
-        } elseif(array_search($defaultLanguageId, array_column($cityTranslation, 'language_id')) !== false) {
+        } elseif (array_search($defaultLanguageId, array_column($cityTranslation, 'language_id')) !== false) {
             $cityTranslationKey = array_search($defaultLanguageId, array_column($cityTranslation, 'language_id'));
         }
 
         if (array_search($languageId, array_column($countryTranslation, 'language_id')) !== false) {
             $countryTranslationKey = array_search($languageId, array_column($countryTranslation, 'language_id'));
-        } elseif(array_search($defaultLanguageId, array_column($countryTranslation, 'language_id')) !== false) {
+        } elseif (array_search($defaultLanguageId, array_column($countryTranslation, 'language_id')) !== false) {
             $countryTranslationKey = array_search($defaultLanguageId, array_column($countryTranslation, 'language_id'));
         }
         
