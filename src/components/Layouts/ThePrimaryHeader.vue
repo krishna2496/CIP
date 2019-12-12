@@ -41,7 +41,7 @@
                                         <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
                                             <li v-for="(items, key) in topCountry" v-bind:key=key class="no-dropdown">
                                                 <router-link
-                                                    :to="{ path: '/home/country/'+items.title.toLowerCase().trim()}"
+                                                    :to="{ path: '/home/country/'+items.id}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
                                                 </router-link>
