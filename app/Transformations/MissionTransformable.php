@@ -175,8 +175,9 @@ trait MissionTransformable
                 }
             }
         }
+        
         //Get city name from translation
-        $cityTranslation = $mission['city_translation']->toArray();
+        $cityTranslation = $mission['city']->languages->toArray();
         if($cityTranslation) {
             $cityTranslationkey = '';
             if (array_search($languageId, array_column($cityTranslation, 'language_id')) !== false) {
@@ -196,7 +197,7 @@ trait MissionTransformable
             $mission['city_name'] =
             $mission['city']['name'];
         }
-        unset($mission['city_translation']);
+        unset($mission['city']->languages);
         unset($mission['missionSkill']);
         return $mission;
     }
