@@ -158,7 +158,7 @@ class CountryController extends Controller
                         "sometimes",
                         "required",
                         "max:3",
-                        Rule::unique('country')->ignore($id, 'country_id')],
+                        Rule::unique('country')->ignore($id, 'country_id,deleted_at,NULL')],
                     "translations" => 'sometimes|required|array',
                     "translations.*.lang" => 'required|min:2|max:2',
                     "translations.*.name" => 'required'
