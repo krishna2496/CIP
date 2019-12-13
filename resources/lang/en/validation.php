@@ -200,7 +200,14 @@ return [
         'cities.*.translations' => 'translations',
         'media_images.*.sort_order' => 'sort order',
         'media_videos.*.sort_order' => 'sort order',
-        'documents.*.sort_order' => 'sort order',        
+        'documents.*.sort_order' => 'sort order', 
+        'countries.*.translations.*.lang' => 'language code',
+        'countries.*.translations.*.name' => 'name',
+        'countries.*.translations' => 'translations',   
+        'countries.*.iso' => 'ISO',
+        'translations.*.lang' => 'language code',
+        'translations.*.name' => 'name',
+        'translations' => 'translations',
 		],
 
 ];

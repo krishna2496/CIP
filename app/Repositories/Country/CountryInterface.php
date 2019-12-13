@@ -30,4 +30,29 @@ interface CountryInterface
      * @return array
      */
     public function getCountry(int $countryId, int $languageId, int $defaultLanguageId) : array;
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function delete(int $id): bool;
+
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param \Illuminate\Http\Request $request
+    * @param int $id
+    * @return App\Models\Country
+    */
+    public function update(Request $request, int $id): Country;
+
+    /**
+     * Find the specified resource from database
+     *
+     * @param int $id
+     * @return App\Models\Country
+     */
+    public function find(int $id): Country;
 }

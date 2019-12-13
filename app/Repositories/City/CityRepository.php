@@ -1,10 +1,13 @@
 <?php
 namespace App\Repositories\City;
 
+use Illuminate\Http\Request;
 use App\Repositories\City\CityInterface;
 use App\Models\City;
+use App\Models\CityLanguage;
 use App\Models\Country;
 use Illuminate\Support\Collection;
+use App\Helpers\LanguageHelper;
 
 class CityRepository implements CityInterface
 {
@@ -14,21 +17,39 @@ class CityRepository implements CityInterface
     public $city;
 
     /**
+     * @var App\Models\CityLanguage
+     */
+    public $cityLanguage;
+
+    /**
      * @var App\Models\Country
      */
     public $country;
+
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
 
     /**
      * Create a new repository instance.
      *
      * @param App\Models\City $city
      * @param App\Models\Country $country
+     * @param App\Models\CityLanguage $cityLanguage
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
-    public function __construct(City $city, Country $country)
-    {
+    public function __construct(
+        City $city,
+        Country $country,
+        CityLanguage $cityLanguage,
+        LanguageHelper $languageHelper
+    ) {
         $this->city = $city;
         $this->country = $country;
+        $this->cityLanguage = $cityLanguage;
+        $this->languageHelper = $languageHelper;
     }
     
     /**
@@ -40,7 +61,7 @@ class CityRepository implements CityInterface
     public function cityList(int $countryId): Collection
     {
         $this->country->findOrFail($countryId);
-        return $this->city->with('translations')->where('country_id', $countryId)->get();
+        return $this->city->with('languages')->where('country_id', $countryId)->get();
     }
 
     /**
@@ -53,21 +74,21 @@ class CityRepository implements CityInterface
      */
     public function getCity(string $cityId, int $languageId, int $defaultLanguageId) : array
     {
-        $city = $this->city->with('translations')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
+        $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
        
         $cityData = [];
         if (!empty($city)) {
             foreach ($city as $key => $value) {
-                $translation = $value['translations'];
+                $translation = $value['languages'];
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } elseif(array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
+                } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
            
                 if ($translationkey !== '') {
-                   $cityData[$value['city_id']] = $translation[$translationkey]['name'];
+                    $cityData[$value['city_id']] = $translation[$translationkey]['name'];
                 } else {
                     $cityData[$value['city_id']] =  $translation[0]['name'] ?? '';
                 }
@@ -94,6 +115,66 @@ class CityRepository implements CityInterface
      */
     public function cityLists(): Collection
     {
-        return $this->city->with(['translations'])->get();
+        return $this->city->with(['languages'])->get();
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        return $this->city->deleteCity($id);
+    }
+
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @param  int $id
+    * @return App\Models\City
+    */
+    public function update(Request $request, int $id): City
+    {
+        // Set data for update record
+        $cityDetail = array();
+        if (isset($request['country_id'])) {
+            $cityDetail['country_id'] = $request['country_id'];
+        }
+        
+        // Update city
+        $cityData = $this->city->findOrFail($id);
+        $cityData->update($cityDetail);
+        
+        $languages = $this->languageHelper->getLanguages();
+                 
+        if (isset($request['translations'])) {
+            foreach ($request['translations'] as $value) {
+                $language = $languages->where('code', $value['lang'])->first();
+                $cityLanguageData = [
+                    'city_id' => $id,
+                    'name' => $value['name'],
+                    'language_id' => $language->language_id
+                ];
+
+                $this->cityLanguage->createOrUpdateCityLanguage(['city_id' => $id,
+                 'language_id' => $language->language_id], $cityLanguageData);
+                unset($cityLanguageData);
+            }
+        }
+        return $cityData;
+    }
+
+    /**
+     * Find the specified resource from database
+     *
+     * @param int $id
+     * @return App\Models\City
+     */
+    public function find(int $id): City
+    {
+        return $this->city->findOrFail($id);
     }
 }

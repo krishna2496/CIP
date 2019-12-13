@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\CountryTranslation;
+use App\Models\CountryLanguage;
 
 class Country extends Model
 {
@@ -28,7 +28,7 @@ class Country extends Model
      *
      * @var array
      */
-    protected $visible = ['country_id', 'ISO', 'translations'];
+    protected $visible = ['country_id', 'ISO', 'translations', 'languages'];
 
     /**
      * The attributes that are mass assignable.
@@ -37,8 +37,19 @@ class Country extends Model
      */
     protected $fillable = ['country_id', 'ISO'];
 
-    public function translations()
+    public function languages()
     {
-        return $this->hasMany(CountryTranslation::class, 'country_id', 'country_id');
+        return $this->hasMany(Countrylanguage::class, 'country_id', 'country_id');
+    }
+
+    /**
+     * Soft delete the model from the database.
+     *
+     * @param  int $id
+     * @return bool
+     */
+    public function deleteCountry(int $id): bool
+    {
+        return static::findOrFail($id)->delete();
     }
 }
