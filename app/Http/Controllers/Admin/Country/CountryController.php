@@ -95,12 +95,13 @@ class CountryController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // dd(\DB::connection()->getDatabaseName());
         // Server side validations
         $validator = Validator::make(
             $request->all(),
             [
                 "countries" => 'required',
-                "countries.*.iso" => 'required',
+                "countries.*.iso" => 'required|max:3',
                 "countries.*.translations" => 'required|array',
                 "countries.*.translations.*.lang" => 'required|min:2|max:2',
                 "countries.*.translations.*.name" => 'required'
@@ -116,23 +117,21 @@ class CountryController extends Controller
                 $validator->errors()->first()
             );
         }
-        // Get all countries
+        // Get all languages from master database
         $languages = $this->languageHelper->getLanguages($request);
 
         // Add countries one by one
         $createdCountries = [];
+        
         foreach ($request->countries as $key => $country) {
-
             // Add country ISO into country table
-            $countryDetails = $this->countryRepository->store($country['iso']);
-            // dd($countryDetails);
+            $countryDetail = $this->countryRepository->store($country['iso']);
+
             // Add all translations add into country_translation table
-            $createdCountries[$key]['country_id'] = $country['country_id'] = $countryDetails->country_id;
+            $createdCountries[$key]['country_id'] = $country['country_id'] = $countryDetail->country_id;
             
             $this->countryTranslationRepository->store($languages, $country);
         }
-        // dd($createdCountries);
-        
 
         // Set response data
         $apiData = ['country_ids' => $createdCountries];
