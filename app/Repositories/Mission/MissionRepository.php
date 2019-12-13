@@ -328,8 +328,8 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->
         with(
             'missionTheme',
-            'city',
-            'country',
+            'city.languages',
+            'country.languages',
             'missionLanguage',
             'timeMission',
             'goalMission'
@@ -387,7 +387,7 @@ class MissionRepository implements MissionInterface
             'mission.organisation_id',
             'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
+        ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
