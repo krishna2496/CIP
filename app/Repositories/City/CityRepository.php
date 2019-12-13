@@ -100,12 +100,34 @@ class CityRepository implements CityInterface
     /**
      * Store city data
      *
-     * @param string $countryId
+     * @param array $countryId
      * @return City
      */
     public function store(string $countryId): City
     {
         return $this->city->create(['country_id' => $countryId]);
+    }
+
+    /**
+     * Store city language data
+     *
+     * @param array $cityData
+     * @return void
+     */
+    public function storeCityLanguage(array $cityData)
+    {
+        $languages = $this->languageHelper->getLanguages();
+        
+        foreach ($cityData['translations'] as $key => $city) {
+            $data = [];
+            $languageId = $languages->where('code', $city['lang'])->first()->language_id;
+            
+            $data['city_id'] = $cityData['city_id'];
+            $data['language_id'] = $languageId;
+            $data['name'] = $city['name'];
+            
+            $this->cityLanguage->create($data);
+        }
     }
 
     /**

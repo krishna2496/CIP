@@ -100,12 +100,25 @@ class CountryRepository implements CountryInterface
     /**
      * Store a newly created resource in storage
      *
-     * @param string $iso
+     * @param array $countryData
      * @return App\Models\Country
      */
-    public function store(string $iso): Country
+    public function store(array $countryData): Country
     {
-        return $this->country->create(['ISO' => $iso]);
+        $insertedCountry = $this->country->create(['ISO' => $countryData['iso']]);
+        $languages = $this->languageHelper->getLanguages();
+
+        foreach ($countryData['translations'] as $key => $country) {
+            $data = [];
+            $languageId = $languages->where('code', $country['lang'])->first()->language_id;
+            
+            $data['country_id'] = $insertedCountry['country_id'];
+            $data['language_id'] = $languageId;
+            $data['name'] = $country['name'];
+            
+            $this->countryLanguage->create($data);
+        }
+        return $insertedCountry;
     }
 
     /**
