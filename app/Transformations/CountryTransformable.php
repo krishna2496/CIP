@@ -7,22 +7,26 @@ trait CountryTransformable
      * Country transformation.
      *
      * @param array $countryList
-     * @param int $languageId 
-     * @param int $defaultTenantlanguage 
+     * @param int $languageId
+     * @param int $defaultTenantlanguage
      * @return Array
      */
     public function countryTransform(array $countryList, int $languageId, int $defaultTenantlanguage): Array
     {
         foreach ($countryList as $key => $value) {
-            $index = array_search($languageId, array_column($value['translations'], 'language_id'));
+            $index = array_search($languageId, array_column($value['languages'], 'language_id'));
             if ($index !== false) {
-                $countryData[$value['translations'][$index]['country_id']] = $value['translations'][$index]['name'];
+                $countryData[$value['languages'][$index]['country_id']] = $value['languages'][$index]['name'];
             } else {
-                $translationIndex = array_search($defaultTenantlanguage, array_column($value['translations'], 'language_id'));
+                $translationIndex = array_search(
+                    $defaultTenantlanguage,
+                    array_column($value['languages'], 'language_id')
+                );
                 if ($translationIndex) {
-                    $countryData[$value['translations'][$translationIndex]['country_id']] = $value['translations'][$translationIndex]['name'];                
+                    $countryData[$value['languages'][$translationIndex]['country_id']]
+                    = $value['languages'][$translationIndex]['name'];
                 } else {
-                    $countryData[$value['translations'][$index]['country_id']] = $value['translations'][0]['name'];
+                    $countryData[$value['languages'][$index]['country_id']] = $value['languages'][0]['name'];
                 }
             }
         }
