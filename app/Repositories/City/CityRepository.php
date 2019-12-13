@@ -8,6 +8,7 @@ use App\Models\CityLanguage;
 use App\Models\Country;
 use Illuminate\Support\Collection;
 use App\Helpers\LanguageHelper;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CityRepository implements CityInterface
 {
@@ -133,11 +134,20 @@ class CityRepository implements CityInterface
     /**
      * Get listing of all city.
      *
-     * @return Illuminate\Support\Collection
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function cityLists(): Collection
+    public function cityLists(Request $request): LengthAwarePaginator
     {
-        return $this->city->with(['languages'])->get();
+        $cityQuery = $this->city->with(['languages']);
+
+        if ($request->has('search') && $request->input('search') != '') {
+            $cityQuery->wherehas('languages', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+
+        return $cityQuery->paginate($request->perPage);
     }
     
     /**

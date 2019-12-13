@@ -4,6 +4,7 @@ namespace App\Repositories\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Models\Country;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface CountryInterface
 {
@@ -56,4 +57,12 @@ interface CountryInterface
      * @return App\Models\Country
      */
     public function find(int $id): Country;
+
+    /**
+    * Get a listing of resource.
+    *
+    * @param Illuminate\Http\Request $request
+    * @return Illuminate\Pagination\LengthAwarePaginator
+    */
+    public function getCountryList(Request $request): LengthAwarePaginator;
 }
