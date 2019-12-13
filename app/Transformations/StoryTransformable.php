@@ -1,4 +1,4 @@
- <?php
+<?php
 namespace App\Transformations;
 
 use App\Models\Story;
