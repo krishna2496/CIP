@@ -251,14 +251,7 @@ class NewsRepository implements NewsInterface
     public function delete(int $id): bool
     {
         $news = $this->news->findOrFail($id);
-        $newsStatus = $news->delete();
-        // Delete news language data
-        $news->newsLanguage()->delete();
-
-        //Delete news_to_category data
-        $news->newsToCategory()->delete();
-        
-        return $newsStatus;
+        return $news->delete();
     }
 
     /** Get news title
