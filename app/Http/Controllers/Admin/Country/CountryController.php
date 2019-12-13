@@ -112,6 +112,7 @@ class CountryController extends Controller
 
         // Add countries one by one
         $createdCountries = [];
+        
         foreach ($request->countries as $key => $country) {
             // Add country ISO into country table
             $countryDetails = $this->countryRepository->store($country);

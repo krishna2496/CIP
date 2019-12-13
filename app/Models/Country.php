@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\CountryLanguage;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
@@ -37,6 +38,11 @@ class Country extends Model
      */
     protected $fillable = ['country_id', 'ISO'];
 
+    /**
+     * Get languages associated with the country.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function languages()
     {
         return $this->hasMany(Countrylanguage::class, 'country_id', 'country_id');
@@ -51,5 +57,16 @@ class Country extends Model
     public function deleteCountry(int $id): bool
     {
         return static::findOrFail($id)->delete();
+    }
+
+    /**
+     * Set ISO attribute on the model.
+     *
+     * @param $value
+     * @return void
+     */
+    public function setISOAttribute($value)
+    {
+        $this->attributes['ISO'] = strtoupper($value);
     }
 }

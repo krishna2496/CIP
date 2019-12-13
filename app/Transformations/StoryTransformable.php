@@ -178,7 +178,7 @@ trait StoryTransformable
         if ($cityTranslationKey !== '' && $story->user->city) {
             $cityName = $cityTranslation[$cityTranslationKey]['name'];
         } else {
-            $cityName =$story->user->city->name;
+            $cityName = $cityTranslation[0]['name'] ?? '';
         }
         $cityArray['name'] = $cityName;
         if ($countryTranslationKey !== '' && $story->user->country) {
