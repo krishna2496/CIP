@@ -22,6 +22,7 @@ use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
+use App\Transformations\CityTransformable;
 
 //!  User controller
 /*!
@@ -30,7 +31,7 @@ upload profile image operations.
  */
 class UserController extends Controller
 {
-    use RestExceptionHandlerTrait, UserTransformable;
+    use RestExceptionHandlerTrait, UserTransformable, CityTransformable;
     /**
      * @var App\Repositories\User\UserRepository
      */
@@ -231,6 +232,16 @@ class UserController extends Controller
         }
 
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        
+        // Get tenant default language
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        
+        // Get language id
+        $languageId = $this->languageHelper->getLanguageId($request);
+        if (!$cityList->isEmpty()) {
+            // Transform city details
+            $cityList = $this->cityTransform($cityList->toArray(), $languageId, $defaultLanguage->language_id);
+        }
 
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;

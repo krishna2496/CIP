@@ -260,7 +260,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
@@ -270,7 +270,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
@@ -682,13 +682,29 @@ $router->group(['middleware' => 'localization'], function ($router) {
     );
 
     /* Get countries list */
-    $router->get('/countries', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\Country\CountryController@index']);
-
+    $router->group(
+        ['prefix' => 'countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
+            $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
+            $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
+            $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
+        }
+    );
+    
     /* Get cities by country id */
-    $router->get('/cities/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\City\CityController@fetchCity']);
+    $router->group(
+        ['prefix' => 'cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\City\CityController@index']);
+            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity']);
+            $router->post('/', ['uses' => 'Admin\City\CityController@store']);
+            $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);
+            $router->delete('/{cityId}', ['uses' => 'Admin\City\CityController@destroy']);
+        }
+    );
 
+    
     /* News category management */
     $router->group(
         ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
