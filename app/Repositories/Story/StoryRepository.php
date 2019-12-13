@@ -248,8 +248,8 @@ class StoryRepository implements StoryInterface
     ): Collection {
         $storyQuery = $this->story->with([
             'user',
-            'user.city.translations',
-            'user.country.translations',
+            'user.city.languages',
+            'user.country.languages',
             'storyMedia',
             'mission',
             'mission.missionLanguage',

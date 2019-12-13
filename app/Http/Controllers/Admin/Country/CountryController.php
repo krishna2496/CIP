@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Repositories\Country\CountryRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use App\Repositories\CountryLanguage\CountryLanguageRepository;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
@@ -30,11 +29,6 @@ class CountryController extends Controller
     private $countryRepository;
 
     /**
-     * @var App\Repositories\CountryLanguage\CountryLanguageRepository
-     */
-    private $countryLanguageRepository;
-
-    /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
@@ -54,20 +48,17 @@ class CountryController extends Controller
      *
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param Illuminate\Helpers\ResponseHelper $responseHelper
-     * @param App\Repositories\CountryLanguage\CountryLanguageRepository $countryLanguagRepository
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         CountryRepository $countryRepository,
-        CountryLanguageRepository $countryLanguagRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Request $request
     ) {
         $this->countryRepository = $countryRepository;
-        $this->countryLanguageRepository = $countryLanguagRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->userApiKey =$request->header('php-auth-user');
@@ -118,18 +109,14 @@ class CountryController extends Controller
                 $validator->errors()->first()
             );
         }
-        // Get all countries
-        $languages = $this->languageHelper->getLanguages($request);
 
         // Add countries one by one
         $createdCountries = [];
         foreach ($request->countries as $key => $country) {
             // Add country ISO into country table
-            $countryDetails = $this->countryRepository->store($country['iso']);
+            $countryDetails = $this->countryRepository->store($country);
             // Add all translations add into country_translation table
             $createdCountries[$key]['country_id'] = $country['country_id'] = $countryDetails->country_id;
-            
-            $this->countryLanguageRepository->store($languages, $country);
         }
 
         // Set response data

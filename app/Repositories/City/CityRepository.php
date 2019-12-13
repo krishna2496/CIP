@@ -109,6 +109,28 @@ class CityRepository implements CityInterface
     }
 
     /**
+     * Store city language data
+     *
+     * @param array $cityData
+     * @return void
+     */
+    public function storeCityLanguage(array $cityData)
+    {
+        $languages = $this->languageHelper->getLanguages();
+        
+        foreach ($cityData['translations'] as $key => $city) {
+            $data = [];
+            $languageId = $languages->where('code', $city['lang'])->first()->language_id;
+            
+            $data['city_id'] = $cityData['city_id'];
+            $data['language_id'] = $languageId;
+            $data['name'] = $city['name'];
+            
+            $this->cityLanguage->create($data);
+        }
+    }
+
+    /**
      * Get listing of all city.
      *
      * @return Illuminate\Support\Collection
