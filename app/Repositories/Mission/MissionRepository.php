@@ -649,7 +649,7 @@ class MissionRepository implements MissionInterface
                 break;
             case config('constants.TOP_COUNTRY'):
                 $missionQuery->with(['country'=> function ($query) {
-                    $query->with('translations');
+                    $query->with('languages');
                 }])
                 ->selectRaw('COUNT(mission.country_id) as mission_country_count')
                 ->groupBy('mission.country_id')
@@ -718,7 +718,7 @@ class MissionRepository implements MissionInterface
                 }
 
                 $missionQuery->with(['country'=> function ($query) {
-                    $query->with('translations');
+                    $query->with('languages');
                 }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
@@ -765,7 +765,7 @@ class MissionRepository implements MissionInterface
                 }
 
                 $missionQuery->with(['city'=> function ($query) {
-                    $query->with('translations');
+                    $query->with('languages');
                 }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
@@ -866,7 +866,10 @@ class MissionRepository implements MissionInterface
                         if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                             $query->where(function ($query) use ($request) {
                                 $query->wherehas('country', function ($countryQuery) use ($request) {
-                                    $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
+                                    $countryQuery->where(
+                                        "mission.country_id",
+                                        $request->input('explore_mission_params')
+                                    );
                                 });
                             });
                         }

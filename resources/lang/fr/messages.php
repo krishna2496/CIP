@@ -176,6 +176,10 @@ return [
         'MESSAGE_CITY_CREATED' => 'Une ville créée avec succès',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Le média de mission a été supprimé avec succès',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Document de mission supprimé avec succès',
+        'MESSAGE_COUNTRY_DELETED' => 'Pays supprimé avec succès',
+        'MESSAGE_COUNTRY_UPDATED' => 'Pays mis à jour avec succès',
+        'MESSAGE_CITY_DELETED' => 'La ville a bien été supprimée',
+        'MESSAGE_CITY_UPDATED' => 'La ville a été mise à jour avec succès',
     ],
 
         
@@ -308,5 +312,11 @@ return [
 
         // For availability module
         'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Le pays n\'est pas trouvé dans le système',
+
+        // For Country module
+        'ERROR_CITY_NOT_FOUND' => 'La ville est introuvable dans le système',
     ]
 ];

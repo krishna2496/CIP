@@ -1,18 +1,18 @@
 <?php
-namespace App\Repositories\CountryTranslation;
+namespace App\Repositories\CountryLanguage;
 
-use App\Repositories\CountryTranslation\CountryTranslationInterface;
-use App\Models\CountryTranslation;
+use App\Repositories\CountryLanguage\CountryLanguageInterface;
+use App\Models\CountryLanguage;
 use Illuminate\Support\Collection;
 use App\Helpers\LanguageHelper;
 use Illuminate\Http\Request;
 
-class CountryTranslationRepository implements CountryTranslationInterface
+class CountryLanguageRepository implements CountryLanguageInterface
 {
     /**
-     * @var App\Models\CountryTranslation
+     * @var App\Models\CountryLanguage
      */
-    public $countryTranslation;
+    public $countryLanguage;
 
     /**
      * @var App\Helpers\LanguageHelper
@@ -22,15 +22,14 @@ class CountryTranslationRepository implements CountryTranslationInterface
     /**
      * Create a new repository instance.
      *
-     * @param App\Models\CountryTranslation $countryTranslation
+     * @param App\Models\CountryLanguage $countryLanguage
      * @return void
      */
     public function __construct(
-        CountryTranslation $countryTranslation,
+        CountryLanguage $countryLanguage,
         LanguageHelper $languageHelper
-    )
-    {
-        $this->countryTranslation = $countryTranslation;
+    ) {
+        $this->countryLanguage = $countryLanguage;
         $this->languageHelper = $languageHelper;
     }
     
@@ -52,7 +51,7 @@ class CountryTranslationRepository implements CountryTranslationInterface
             $data['language_id'] = $languageId;
             $data['name'] = $country['name'];
             
-            $this->countryTranslation->create($data);
+            $this->countryLanguage->create($data);
         }
     }
 }

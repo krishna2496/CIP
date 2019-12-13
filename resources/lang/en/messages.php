@@ -184,6 +184,11 @@ return [
         'MESSAGE_CITY_CREATED' => 'City created successfully',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Mission media deleted successfully',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Mission document deleted successfully',
+        'MESSAGE_COUNTRY_DELETED' => 'Country deleted successfully',
+        'MESSAGE_COUNTRY_UPDATED' => 'Country updated successfully',
+        'MESSAGE_CITY_DELETED' => 'City deleted successfully',
+        'MESSAGE_CITY_UPDATED' => 'City updated successfully',
+        
     ],
 
         
@@ -315,5 +320,11 @@ return [
 
         // For availability module
         'ERROR_AVAILABILITY_NOT_FOUND' => 'Availabilty does not found in system',
-    ]
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Country does not found in system',
+
+        // For Country module
+        'ERROR_CITY_NOT_FOUND' => 'City does not found in system',
+       ]
 ];

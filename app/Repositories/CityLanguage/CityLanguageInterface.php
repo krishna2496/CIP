@@ -1,10 +1,10 @@
 <?php
-namespace App\Repositories\CountryTranslation;
+namespace App\Repositories\CityLanguage;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-interface CountryTranslationInterface
+interface CityLanguageInterface
 {
     /**
     * Store resource.

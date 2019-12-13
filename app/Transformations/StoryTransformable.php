@@ -144,7 +144,7 @@ trait StoryTransformable
         string $defaultAvatar,
         int $languageId,
         int $defaultLanguageId
-    ): array {
+    ):array {
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
         $storyData['title'] = $story->title;
@@ -153,8 +153,8 @@ trait StoryTransformable
         $storyData['status'] = trans('general.status.' . $story->status);
         $storyData['published_at'] = $story->published_at;
 
-        $cityTranslation = $story->user->city->translations->toArray();
-        $countryTranslation = $story->user->country->translations->toArray();
+        $cityTranslation = $story->user->city->languages->toArray();
+        $countryTranslation = $story->user->country->languages->toArray();
 
         $cityTranslationKey = $countryTranslationKey = $cityName = $countryName = '';
         $cityArray = [
