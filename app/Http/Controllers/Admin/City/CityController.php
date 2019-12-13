@@ -10,7 +10,6 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
-use App\Repositories\CityLanguage\CityLanguageRepository;
 use Illuminate\Http\Request;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
@@ -39,17 +38,11 @@ class CityController extends Controller
     private $languageHelper;
 
     /**
-     * @var App\Repositories\CityLanguage\CityLanguageRepository
-     */
-    private $cityLanguageRepository;
-
-    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
-     * @param App\Repositories\CityLanguage\CityLanguageRepository $cityLanguageRepository
      * @param \Illuminate\Http\Request $request
      * @return void
      */
@@ -57,13 +50,11 @@ class CityController extends Controller
         CityRepository $cityRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        CityLanguageRepository $cityLanguageRepository,
         Request $request
     ) {
         $this->cityRepository = $cityRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
-        $this->cityLanguageRepository = $cityLanguageRepository;
         $this->userApiKey = $request->header('php-auth-user');
     }
 
@@ -120,9 +111,6 @@ class CityController extends Controller
             );
         }
 
-        // Get all languages
-        $languages = $this->languageHelper->getLanguages($request);
-
         $countryId = $request->country_id;
 
         // Add cities one by one
@@ -133,8 +121,7 @@ class CityController extends Controller
 
             // Add all translations add into city_translation table
             $createdCity[$key]['city_id'] = $city['city_id'] = $cityDetails->city_id;
-            
-            $this->cityLanguageRepository->store($languages, $city);
+            $this->cityRepository->storeCityLanguage($city);
         }
 
         // Set response data
