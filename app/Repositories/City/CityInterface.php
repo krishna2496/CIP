@@ -40,15 +40,7 @@ interface CityInterface
      */
     public function cityLists(): Collection;
 
-    /**
-     * City transform.
-     *
-     * @param array $cityList
-     * @param int $languageId
-     * @return Array
-     */
-    public function cityTransform(array $cityList, int $languageId): Array;
-
+    
      /**
      * Remove the specified resource from storage.
      *

@@ -3,6 +3,7 @@ namespace App\Repositories\Country;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Models\Country;
 
 interface CountryInterface
 {
