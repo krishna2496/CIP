@@ -4,6 +4,7 @@ namespace App\Repositories\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Models\City;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface CityInterface
 {
@@ -36,12 +37,12 @@ interface CityInterface
     /**
      * Get listing of all city.
      *
-     * @return Illuminate\Support\Collection
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function cityLists(): Collection;
-
+    public function cityLists(Request $request): LengthAwarePaginator;
     
-     /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

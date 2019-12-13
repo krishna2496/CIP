@@ -67,17 +67,17 @@ class CountryController extends Controller
     /**
     * Get country list
     *
+    * @param Illuminate\Http\Request $request
     * @return Illuminate\Http\JsonResponse
     */
-    public function index() : JsonResponse
+    public function index(Request $request) : JsonResponse
     {
-        $countryList = $this->countryRepository->countryList();
-        $apiData = $countryList->toArray();
+        $countryList = $this->countryRepository->getCountryList($request);
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (!empty($apiData)) ?
+        $apiMessage = (!$countryList->isEmpty()) ?
         trans('messages.success.MESSAGE_COUNTRY_LISTING') :
         trans('messages.success.MESSAGE_NO_COUNTRY_FOUND');
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $countryList);
     }
 
     /**
@@ -154,13 +154,12 @@ class CountryController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "iso" => 'required|max:3|unique:country,ISO,NULL,country_id,deleted_at,NULL',
                     "iso" => [
                         "sometimes",
                         "required",
                         "max:3",
                         Rule::unique('country')->ignore($id, 'country_id')],
-                    "translations" => 'required|array',
+                    "translations" => 'sometimes|required|array',
                     "translations.*.lang" => 'required|min:2|max:2',
                     "translations.*.name" => 'required'
                 ]

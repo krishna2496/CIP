@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\CountryLanguage;
 use Illuminate\Support\Collection;
 use App\Helpers\LanguageHelper;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CountryRepository implements CountryInterface
 {
@@ -144,13 +145,12 @@ class CountryRepository implements CountryInterface
         // Set data for update record
         $countryDetail = array();
         if (isset($request['iso'])) {
-            $countryDetail['iso'] = $request['iso'];
+            $countryDetail['ISO'] = $request['iso'];
         }
-        
+
         // Update country
         $countryData = $this->country->findOrFail($id);
         $countryData->update($countryDetail);
-        
         $languages = $this->languageHelper->getLanguages();
                  
         if (isset($request['translations'])) {
@@ -179,5 +179,24 @@ class CountryRepository implements CountryInterface
     public function find(int $id): Country
     {
         return $this->country->findOrFail($id);
+    }
+
+    /**
+    * Get a listing of resource.
+    *
+    * @param Illuminate\Http\Request $request
+    * @return Illuminate\Pagination\LengthAwarePaginator
+    */
+    public function getCountryList(Request $request): LengthAwarePaginator
+    {
+        $countryQuery = $this->country->with(['languages']);
+
+        if ($request->has('search') && $request->input('search') != '') {
+            $countryQuery->wherehas('languages', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+
+        return $countryQuery->paginate($request->perPage);
     }
 }

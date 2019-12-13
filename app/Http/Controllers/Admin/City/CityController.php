@@ -146,16 +146,16 @@ class CityController extends Controller
     /**
      * Fetch all city
      *
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $cityList = $this->cityRepository->cityLists();
-        $apiData = $cityList->toArray();
+        $cityList = $this->cityRepository->cityLists($request);
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (!empty($apiData)) ? trans('messages.success.MESSAGE_CITY_LISTING')
+        $apiMessage = (!$cityList->isEmpty()) ? trans('messages.success.MESSAGE_CITY_LISTING')
         : trans('messages.success.MESSAGE_NO_CITY_FOUND');
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $cityList);
     }
 
     
@@ -174,8 +174,8 @@ class CityController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "country_id" => 'required|exists:country,country_id,deleted_at,NULL',
-                    "translations" => 'required|array',
+                    "country_id" => 'sometimes|required|exists:country,country_id,deleted_at,NULL',
+                    "translations" => 'sometimes|required|array',
                     "translations.*.lang" => 'required|min:2|max:2',
                     "translations.*.name" => 'required'
                 ]
