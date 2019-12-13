@@ -316,7 +316,7 @@ return [
         // For Country module
         'ERROR_COUNTRY_NOT_FOUND' => 'Pays non trouvé dans le système',
 
-        // For Country module
+        // For city module
         'ERROR_CITY_NOT_FOUND' => 'Ville non trouvée dans le système',
     ]
 ];

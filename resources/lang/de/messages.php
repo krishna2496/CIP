@@ -273,7 +273,7 @@ return [
         // For Country module
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Country not found in system',
 
-        // For Country module
+        // For city module
         'ERROR_CITY_NOT_FOUND' => 'DE: City not found in system',
     ]
 ];
