@@ -184,7 +184,7 @@ trait StoryTransformable
         if ($countryTranslationKey !== '' && $story->user->country) {
             $countryName = $countryTranslation[$countryTranslationKey]['name'];
         } else {
-            $countryName = $story->user->country->name;
+            $countryName = $countryTranslation[0]['name'] ?? '';
         }
         $countryArray['name'] = $countryName;
         $story->user->city = (object) $cityArray;

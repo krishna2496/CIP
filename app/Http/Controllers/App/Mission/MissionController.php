@@ -239,7 +239,6 @@ class MissionController extends Controller
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
                     $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
-            
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.TOP_THEME')][$key]['title'] =
                         $value->missionTheme->translations[$arrayKey]['title'];
@@ -264,13 +263,16 @@ class MissionController extends Controller
                 } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
-            
+                
                 if ($translationkey !== '' && $value->country) {
                     $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
                     $translation[$translationkey]['name'];
-                    $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
-                    $value->country->country_id;
+                } else {
+                    $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
+                    $translation[0]['name'] ?? '';
                 }
+                $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
+                $value->country->country_id;
             }
             $apiData[config('constants.TOP_COUNTRY')] = $returnData[config('constants.TOP_COUNTRY')];
         }
@@ -333,7 +335,7 @@ class MissionController extends Controller
                     $translation[$translationkey]['name'];
                 } else {
                     $returnData[config('constants.COUNTRY')][$key]['title'] =
-                    $value->country->name;
+                    $translation[0]['name'] ?? '';
                 }
                 $returnData[config('constants.COUNTRY')][$key]['id'] =
                 $value->country->country_id;
@@ -360,7 +362,7 @@ class MissionController extends Controller
                     $translation[$translationkey]['name'];
                 } else {
                     $returnData[config('constants.CITY')][$key]['title'] =
-                    $value->city->name;
+                    $translation[0]['name'] ?? '';
                 }
                 $returnData[config('constants.CITY')][$key]['id'] =
                 $value->city_id;
