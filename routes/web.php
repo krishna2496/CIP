@@ -260,7 +260,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
@@ -270,7 +270,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
