@@ -314,9 +314,9 @@ return [
         'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
 
         // For Country module
-        'ERROR_COUNTRY_NOT_FOUND' => 'Le pays n\'est pas trouvé dans le système',
+        'ERROR_COUNTRY_NOT_FOUND' => 'Pays non trouvé dans le système',
 
         // For Country module
-        'ERROR_CITY_NOT_FOUND' => 'La ville est introuvable dans le système',
+        'ERROR_CITY_NOT_FOUND' => 'Ville non trouvée dans le système',
     ]
 ];
