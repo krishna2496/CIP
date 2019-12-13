@@ -328,8 +328,8 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->
         with(
             'missionTheme',
-            'city',
-            'country',
+            'city.languages',
+            'country.languages',
             'missionLanguage',
             'timeMission',
             'goalMission'
@@ -387,7 +387,7 @@ class MissionRepository implements MissionInterface
             'mission.organisation_id',
             'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
+        ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -446,6 +446,7 @@ class MissionRepository implements MissionInterface
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
+       
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability'
@@ -464,6 +465,7 @@ class MissionRepository implements MissionInterface
                     'custom_information'
                 );
             }])
+            ->with(['city.languages'])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
                 ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -521,7 +523,7 @@ class MissionRepository implements MissionInterface
             if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                 $missionQuery->where(function ($query) use ($request) {
                     $query->wherehas('country', function ($countryQuery) use ($request) {
-                        $countryQuery->where('name', 'like', '%' . $request->input('explore_mission_params') . '%');
+                        $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                     });
                 });
             }
@@ -647,7 +649,9 @@ class MissionRepository implements MissionInterface
                 ->orderBY('mission_theme_count', 'desc');
                 break;
             case config('constants.TOP_COUNTRY'):
-                $missionQuery->with(['country'])
+                $missionQuery->with(['country'=> function ($query) {
+                    $query->with('languages');
+                }])
                 ->selectRaw('COUNT(mission.country_id) as mission_country_count')
                 ->groupBy('mission.country_id')
                 ->orderBY('mission_country_count', 'desc');
@@ -701,11 +705,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where(
-                                    'name',
-                                    'like',
-                                    '%'.$request->input('explore_mission_params').'%'
-                                );
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -717,7 +717,10 @@ class MissionRepository implements MissionInterface
                         );
                     }
                 }
-                $missionQuery->with(['country'])
+
+                $missionQuery->with(['country'=> function ($query) {
+                    $query->with('languages');
+                }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
                 $mission = $missionQuery->get();
@@ -749,7 +752,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where('name', 'like', '%'.$request->input('explore_mission_params').'%');
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -762,7 +765,9 @@ class MissionRepository implements MissionInterface
                     }
                 }
 
-                $missionQuery->with(['city'])
+                $missionQuery->with(['city'=> function ($query) {
+                    $query->with('languages');
+                }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
                     $missionQuery->where("mission.country_id", $request->input('country_id'));
@@ -797,11 +802,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where(
-                                    'name',
-                                    'like',
-                                    '%' . $request->input('explore_mission_params') . '%'
-                                );
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -867,9 +868,8 @@ class MissionRepository implements MissionInterface
                             $query->where(function ($query) use ($request) {
                                 $query->wherehas('country', function ($countryQuery) use ($request) {
                                     $countryQuery->where(
-                                        'name',
-                                        'like',
-                                        '%' . $request->input('explore_mission_params') . '%'
+                                        "mission.country_id",
+                                        $request->input('explore_mission_params')
                                     );
                                 });
                             });
@@ -981,6 +981,7 @@ class MissionRepository implements MissionInterface
                 'objective'
             );
         }])
+        ->with(['city.languages'])
         ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -1062,6 +1063,7 @@ class MissionRepository implements MissionInterface
                     'custom_information'
                 );
             }])
+            ->with(['city.languages'])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
                 ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -1081,6 +1083,7 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));

@@ -248,7 +248,7 @@
         "message": "Message",
         "send": "Send",
         "status": "Status",
-     	"notification": "Notification",
+     	"notification": "Notifications",
         "notification_settings": "Notification Settings",
         "get_notification_for": "Get a notification for",
         "no_new_notifications": "You do not have any new notifications",
