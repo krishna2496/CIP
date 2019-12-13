@@ -95,7 +95,7 @@ class TenantController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->toArray(), [
-            'name' => 'required|regex:/(^[A-Za-z0-9]+$)+/|
+            'name' => 'required|regex:/(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/|
             max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
             'sponsor_id'  => 'required|numeric']);
 
