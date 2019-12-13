@@ -222,3 +222,16 @@ $factory->define(App\Models\NewsCategory::class, function (Faker\Generator $fake
         ],
     ];
 });
+
+$factory->define(App\Models\Country::class, function (Faker\Generator $faker) {
+    return [
+        "iso"=>str_random(3)
+    ];
+});
+
+
+$factory->define(App\Models\City::class, function (Faker\Generator $faker) {
+    return [
+        "country_id"=>1
+    ];
+});
