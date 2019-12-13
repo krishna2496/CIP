@@ -88,7 +88,6 @@ class CountryController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        // dd(\DB::connection()->getDatabaseName());
         // Server side validations
         $validator = Validator::make(
             $request->all(),
