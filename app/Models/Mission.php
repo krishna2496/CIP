@@ -68,8 +68,7 @@ class Mission extends Model
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
-    'seats_left','user_application_count','mission_application_count','missionSkill',
-    'city_translation','missionApplication',
+    'seats_left','user_application_count','mission_application_count','missionSkill','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
     'goal_objective', 'achieved_goal', 'mission_count', 'mission_rating_count',
@@ -79,8 +78,6 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'timesheetStatus', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information'];
     
-    protected $appends = ['city_translation'];
-
     /**
      * Get the document record associated with the mission.
      *
