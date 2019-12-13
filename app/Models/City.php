@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\CityTranslation;
+use App\Models\CityLanguage;
 
 class City extends Model
 {
@@ -29,7 +29,7 @@ class City extends Model
      *
      * @var array
      */
-    protected $visible = ['city_id', 'country_id','translations'];
+    protected $visible = ['city_id', 'country_id', 'name','translations', 'languages'];
 
     /**
     * The attributes that are mass assignable.
@@ -43,8 +43,19 @@ class City extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function translations(): HasMany
+    public function languages(): HasMany
     {
-        return $this->hasMany(CityTranslation::class, 'city_id', 'city_id');
+        return $this->hasMany(CityLanguage::class, 'city_id', 'city_id');
+    }
+
+    /**
+     * Soft delete the model from the database.
+     *
+     * @param  int $id
+     * @return bool
+     */
+    public function deleteCity(int $id): bool
+    {
+        return static::findOrFail($id)->delete();
     }
 }

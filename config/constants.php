@@ -475,6 +475,10 @@ return [
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
         'ERROR_AVAILABILITY_NOT_FOUND' => '410002',
         'ERROR_CITY_INVALID_DATA' => '1200001',
+        'ERROR_COUNTRY_INVALID_DATA' => '1200002',
+        'ERROR_COUNTRY_NOT_FOUND' => '1200003',
+        'ERROR_CITY_NOT_FOUND' => '1200004',
+        
     ],
 
     /**
