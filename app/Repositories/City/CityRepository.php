@@ -100,7 +100,7 @@ class CityRepository implements CityInterface
     /**
      * Store city data
      *
-     * @param array $countryId
+     * @param string $countryId
      * @return City
      */
     public function store(string $countryId): City
