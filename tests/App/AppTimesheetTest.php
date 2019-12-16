@@ -12,6 +12,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_timesheet_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -24,8 +29,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -164,6 +169,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_add_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -176,8 +186,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -264,6 +274,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_hours_data_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -276,8 +291,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -351,6 +366,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_minutes_data_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -363,8 +383,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -438,6 +458,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_day_volunteer_data_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -450,8 +475,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -567,6 +592,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_update_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -579,8 +609,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -669,6 +699,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_hours_data_for_update_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -681,8 +716,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -786,6 +821,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_minutes_data_for_update_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -798,8 +838,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -903,6 +943,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_day_volunteer_data_for_update_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -915,8 +960,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1019,6 +1064,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_a_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1031,8 +1081,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1166,6 +1216,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_delete_timesheet_document()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1178,8 +1233,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1221,7 +1276,7 @@ class AppTimesheetTest extends TestCase
                 'availability_id' => 1
             ];
         DB::setDefaultConnection('mysql');
-        
+        // dd($params);
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
@@ -1283,6 +1338,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_delete_timesheet_document()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1295,8 +1355,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1437,6 +1497,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_submit_timesheet_for_approval()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1449,8 +1514,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1552,6 +1617,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_is_already_approved()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1564,8 +1634,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1707,6 +1777,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_data_is_invalid()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1719,8 +1794,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1835,6 +1910,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_pending_time_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1847,8 +1927,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1972,6 +2052,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_pending_goal_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1984,8 +2069,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2108,6 +2193,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_export_all_pending_time_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2120,8 +2210,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2230,6 +2320,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_export_all_pending_goal_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2242,8 +2337,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2352,6 +2447,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_is_already_approved_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2364,8 +2464,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2466,6 +2566,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_is_approved_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2478,8 +2583,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2580,6 +2685,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_goal_actions()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2592,8 +2702,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2679,6 +2789,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_date_volunteered_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2691,8 +2806,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2778,6 +2893,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_date_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2790,8 +2910,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2877,6 +2997,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_application_is_not_approved_to_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2889,8 +3014,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2977,6 +3102,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_add_timesheet_entry_and_validate_end_date()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2990,8 +3120,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3070,6 +3200,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_on_add_timesheet_entry_for_invalid_date()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3083,8 +3218,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3163,6 +3298,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_add_timesheet_entry_with_documents()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3175,8 +3315,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3260,6 +3400,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_approved_timesheet_on_delete_timesheet_document()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3272,8 +3417,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3371,6 +3516,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_documents_on_add_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3383,8 +3533,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3464,6 +3614,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_documents_size_on_add_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3476,8 +3631,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3557,6 +3712,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_timesheet_list_of_goal_mission()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3569,8 +3729,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",

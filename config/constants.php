@@ -478,6 +478,8 @@ return [
         'ERROR_COUNTRY_INVALID_DATA' => '1200002',
         'ERROR_COUNTRY_NOT_FOUND' => '1200003',
         'ERROR_CITY_NOT_FOUND' => '1200004',
+        'ERROR_CITY_ENABLE_TO_DELETE' => '1200005',
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '1200006'
         
     ],
 

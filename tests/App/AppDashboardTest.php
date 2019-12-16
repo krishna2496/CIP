@@ -36,11 +36,15 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_return_dashboard_details_with_chart_details()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-
         
         $params = [
             "organisation" => [
@@ -49,8 +53,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -140,6 +144,11 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_get_list_of_comments_history_on_dashboard()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         // Creating user
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -154,8 +163,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -290,6 +299,11 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_delete_comment_from_comments_history_on_dashboard()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         // Creating user
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -304,8 +318,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -422,6 +436,11 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_export_user_comments()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         // Creating user
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -436,8 +455,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",

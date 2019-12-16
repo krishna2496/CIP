@@ -45,7 +45,7 @@ class CityController extends Controller
      */
     public function __construct(
         CityRepository $cityRepository,
-        ResponseHelper $responseHelper,        
+        ResponseHelper $responseHelper,
         LanguageHelper $languageHelper
     ) {
         $this->cityRepository = $cityRepository;
