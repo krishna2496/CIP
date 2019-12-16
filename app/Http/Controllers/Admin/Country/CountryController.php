@@ -211,6 +211,14 @@ class CountryController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        if ($this->countryRepository->hasMission($id) || $this->countryRepository->hasUser($id)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_COUNTRY_ENABLE_TO_DELETE'),
+                trans('messages.custom_error_message.ERROR_COUNTRY_ENABLE_TO_DELETE')
+            );
+        }
         try {
             $this->countryRepository->delete($id);
             
