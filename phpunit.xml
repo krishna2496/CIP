@@ -22,10 +22,10 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="TENANT_DB_DATABASE" value="ci_tenant_1817"/>
-        <env name="DEFAULT_TENANT" value="dec1301.tatvatest.com"/>
-        <env name="API_KEY" value="Cg2PZPomqapHKxjh"/>
-        <env name="API_SECRET" value="KarEDcEYU9lZQPw1"/>
+        <env name="TENANT_DB_DATABASE" value="ci_tenant_10"/>
+        <env name="DEFAULT_TENANT" value="tatvatest"/>
+        <env name="API_KEY" value="QtIrOg6SsW620tD2"/>
+        <env name="API_SECRET" value="NIHQwh3uLtkwKzlM"/>
         <env name="DEFAULT_TENANT_ID" value="1817"/>
     </php>
 </phpunit>
