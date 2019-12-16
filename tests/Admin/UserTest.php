@@ -3,6 +3,64 @@ use Illuminate\Support\Facades\DB;
 
 class UserTest extends TestCase
 {
+    public function createCityCountry()
+    {
+        DB::setDefaultConnection('mysql');
+        $iso = str_random(2);
+        $params = [
+            "countries" => [
+                [
+                    "iso" => $iso,
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+        /* Add country end */
+        
+        DB::setDefaultConnection('mysql');
+
+        /* Add city details start */     
+        $cityName = str_random(5);   
+        $params = [
+            "country_id" => $countryId,
+            "cities" => [ 
+                [ 
+                    "translations" => [ 
+                        [ 
+                            "lang" => "en",
+                            "name" => $cityName
+                        ]
+                    ]
+                ]         
+            ]
+        ];
+
+        $response = $this->post("cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        $cityId = json_decode($response->response->getContent())->data->city_ids[0]->city_id;
+        DB::setDefaultConnection('mysql');
+        /* Add city details end */
+        return array('iso' => $iso, 'city_id' => $cityId, 'country_id' => $countryId);
+    } 
+
+    public function deleteCityCountry(array $cityCountryData)
+    {
+        DB::setDefaultConnection('tenant');
+        App\Models\Country::where('country_id', $cityCountryData['country_id'])->delete();
+        App\Models\City::where('city_id', $cityCountryData['city_id'])->delete();
+        DB::setDefaultConnection('mysql');
+    }
+
     /**
      * @test
      *
@@ -10,8 +68,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_create_user()
+    public function should_create_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -24,8 +83,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityCountryData['city_id'],
+                'country_id' => $cityCountryData['country_id'],
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -39,7 +98,8 @@ class UserTest extends TestCase
             'message',
             'status',
         ]);
-        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();
+        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();        
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -49,7 +109,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_all_users()
+    public function should_return_all_users()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -73,21 +133,9 @@ class UserTest extends TestCase
                     "why_i_volunteer",
                     "employee_id",
                     "department",
-                    "city_id",
-                    "country_id",
                     "profile_text",
                     "linked_in_url",
                     "status",
-                    "city" => [
-                        "city_id",
-                        "name",
-                        "country_id"
-                    ],
-                    "country" => [
-                        "country_id",
-                        "name",
-                        "ISO"
-                    ],
                     "timezone" => [
                         "timezone_id",
                         "timezone",
@@ -108,7 +156,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_no_user_found()
+    public function should_return_no_user_found()
     {
         $this->get(route("users"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
@@ -125,7 +173,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_user_by_id()
+    public function should_return_user_by_id()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -147,21 +195,9 @@ class UserTest extends TestCase
                 "why_i_volunteer",
                 "employee_id",
                 "department",
-                "city_id",
-                "country_id",
                 "profile_text",
                 "linked_in_url",
                 "status",
-                "city" => [
-                    "city_id",
-                    "name",
-                    "country_id"
-                ],
-                "country" => [
-                    "country_id",
-                    "name",
-                    "ISO"
-                ],
                 "timezone" => [
                     "timezone_id",
                     "timezone",
@@ -181,7 +217,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_no_user_found_by_id()
+    public function should_return_no_user_found_by_id()
     {
         $userId = rand(1000000, 50000000);
         $this->get("users/".$userId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -205,8 +241,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_update_user()
+    public function should_update_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -218,8 +255,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityCountryData['city_id'],
+            'country_id' => $cityCountryData['country_id'],
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -238,7 +275,8 @@ class UserTest extends TestCase
             'message',
             'status',
             ]);
-        $user->delete();
+        $user->delete();        
+        $this->deleteCityCountry($cityCountryData);
     }
     
     /**
@@ -247,8 +285,9 @@ class UserTest extends TestCase
      * Update user api with already deleted or not available user id
      * @return void
      */
-    public function it_should_return_user_not_found_on_update()
+    public function should_return_user_not_found_on_update()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -260,8 +299,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityCountryData['city_id'],
+            'country_id' => $cityCountryData['country_id'],
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -282,6 +321,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -291,7 +331,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_delete_user()
+    public function should_delete_user()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -312,7 +352,7 @@ class UserTest extends TestCase
      * Delete user api with already deleted or not available user id
      * @return void
      */
-    public function it_should_return_user_not_found_on_delete()
+    public function should_return_user_not_found_on_delete()
     {
         $this->delete(
             "users/".rand(1000000, 50000000),
@@ -339,8 +379,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_while_data_is_empty_for_create_user()
+    public function should_return_error_while_data_is_empty_for_create_user()
     {
+        
         $params = [
                 'first_name' => '',
                 'last_name' => '',
@@ -352,8 +393,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => '',
                 'employee_id' => '',
                 'department' => '',
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => '',
+                'country_id' => '',
                 'profile_text' => '',
                 'linked_in_url' => ''
             ];
@@ -379,8 +420,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_while_email_is_invalid_for_create_user()
+    public function should_return_error_while_email_is_invalid_for_create_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -393,8 +435,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityCountryData['city_id'],
+                'country_id' => $cityCountryData['country_id'],
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -411,6 +453,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -420,7 +463,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_fix_length_validation_in_create_user()
+    public function should_return_error_fix_length_validation_in_create_user()
     {
         $params = [
                 'first_name' => str_random(255)
@@ -447,8 +490,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_update_user_without_email_update()
+    public function should_update_user_without_email_update()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -459,8 +503,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityCountryData['city_id'],
+            'country_id' => $cityCountryData['country_id'],
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -480,6 +524,7 @@ class UserTest extends TestCase
             'status',
             ]);
         $user->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -489,7 +534,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_user_skills()
+    public function should_return_user_skills()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -512,7 +557,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_user_is_not_exist()
+    public function should_return_error_if_user_is_not_exist()
     {
         $this->get('users/'.rand(100000, 500000).'/skills/', ['Authorization' => 'Basic '
         .base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -536,7 +581,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_no_user_skills_registered()
+    public function should_return_no_user_skills_registered()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -559,7 +604,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_link_skill_to_user()
+    public function should_link_skill_to_user()
     {
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
@@ -595,7 +640,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_validate_user_for_link_skill_to_user()
+    public function should_validate_user_for_link_skill_to_user()
     {
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
@@ -630,7 +675,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_unlink_skill_from_user()
+    public function should_unlink_skill_from_user()
     {
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
@@ -666,7 +711,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_validate_user_for_unlink_skill_from_user()
+    public function should_validate_user_for_unlink_skill_from_user()
     {
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
@@ -701,8 +746,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_while_email_is_exist_for_create_user()
+    public function should_return_error_while_email_is_exist_for_create_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -720,8 +766,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityCountryData['city_id'],
+                'country_id' => $cityCountryData['country_id'],
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -739,6 +785,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -748,7 +795,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_invalid_argument_error_for_get_users()
+    public function should_return_invalid_argument_error_for_get_users()
     {
         $this->get("users?order=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(400)
@@ -771,8 +818,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_while_language_id_is_invalid_for_create_user()
+    public function should_return_error_while_language_id_is_invalid_for_create_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -785,8 +833,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityCountryData['city_id'],
+                'country_id' => $cityCountryData['country_id'],
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -803,6 +851,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -812,8 +861,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_data_on_update_user()
+    public function should_return_error_for_invalid_data_on_update_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
             'first_name' => '',
             'last_name' => str_random(10),
@@ -825,8 +875,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityCountryData['city_id'],
+            'country_id' => $cityCountryData['country_id'],
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -849,6 +899,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
  
         /**
@@ -858,8 +909,9 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_language_id_on_update_user()
+    public function should_return_error_for_invalid_language_id_on_update_user()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
             'last_name' => str_random(10),
             'email' => str_random(10).'@email.com',
@@ -870,8 +922,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityCountryData['city_id'],
+            'country_id' => $cityCountryData['country_id'],
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -894,6 +946,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -903,7 +956,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_data_for_link_skill_to_user()
+    public function should_return_error_for_invalid_data_for_link_skill_to_user()
     {
         $connection = 'tenant';
  
@@ -935,7 +988,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_data_for_unlink_skill_to_user()
+    public function should_return_error_for_invalid_data_for_unlink_skill_to_user()
     {
         $connection = 'tenant';
  
@@ -967,7 +1020,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_authorization_error()
+    public function should_return_authorization_error()
     {
         $this->get('users/', [])
           ->seeStatusCode(401);
@@ -980,7 +1033,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_activity_logs()
+    public function should_return_activity_logs()
     {
         $this->get("logs?from_date=".date('Y-m-d')."&to_date=".date('Y-m-d'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);

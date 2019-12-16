@@ -12,6 +12,7 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_all_country_list()
     {
         // Get random langauge for country name
+        $countryName = str_random(5);
         $params = [
             "countries" => [
                 [
@@ -19,7 +20,7 @@ class CountryTest extends TestCase
                     "translations"=> [
                         [
                             "lang"=> "en",
-                            "name"=> str_random(5)
+                            "name"=> $countryName
                         ]
                     ]
                 ]
@@ -30,6 +31,11 @@ class CountryTest extends TestCase
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         
+        DB::setDefaultConnection('mysql');
+
+        $this->get('/countries?search='.$countryName, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
         DB::setDefaultConnection('mysql');
 
         $this->get('/countries', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])

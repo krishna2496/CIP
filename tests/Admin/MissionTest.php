@@ -1,7 +1,65 @@
 <?php
 
 class MissionTest extends TestCase
-{    
+{   
+    public function createCityCountry()
+    {
+        DB::setDefaultConnection('mysql');
+        $iso = str_random(2);
+        $params = [
+            "countries" => [
+                [
+                    "iso" => $iso,
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+        /* Add country end */
+        
+        DB::setDefaultConnection('mysql');
+
+        /* Add city details start */     
+        $cityName = str_random(5);   
+        $params = [
+            "country_id" => $countryId,
+            "cities" => [ 
+                [ 
+                    "translations" => [ 
+                        [ 
+                            "lang" => "en",
+                            "name" => $cityName
+                        ]
+                    ]
+                ]         
+            ]
+        ];
+
+        $response = $this->post("cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        $cityId = json_decode($response->response->getContent())->data->city_ids[0]->city_id;
+        DB::setDefaultConnection('mysql');
+        /* Add city details end */
+        return array('iso' => $iso, 'city_id' => $cityId, 'country_id' => $countryId);
+    } 
+
+    public function deleteCityCountry(array $cityCountryData)
+    {
+        DB::setDefaultConnection('tenant');
+        App\Models\Country::where('country_id', $cityCountryData['country_id'])->delete();
+        App\Models\City::where('city_id', $cityCountryData['city_id'])->delete();
+        DB::setDefaultConnection('mysql');
+    }
+    
     /**
      * @test
      *
@@ -28,6 +86,7 @@ class MissionTest extends TestCase
      */
     public function it_should_create_mission()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -40,8 +99,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -134,6 +193,7 @@ class MissionTest extends TestCase
             'status',
         ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -185,6 +245,7 @@ class MissionTest extends TestCase
      */
     public function it_should_return_all_mission()
     {
+        $cityCountryData = $this->createCityCountry();
         $description = str_random(20);
         $params = [
             "organisation" => [
@@ -193,8 +254,8 @@ class MissionTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityCountryData['city_id'],
+                "country_code" => $cityCountryData['iso']
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -288,6 +349,7 @@ class MissionTest extends TestCase
             "data",
             "message"
         ]);
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -299,6 +361,7 @@ class MissionTest extends TestCase
      */
     public function it_should_update_mission()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -311,8 +374,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -416,6 +479,7 @@ class MissionTest extends TestCase
             'status',
             ]);
         $mission->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -505,6 +569,7 @@ class MissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_goal_objective()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -512,8 +577,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -571,6 +636,7 @@ class MissionTest extends TestCase
                 ]
             ]
         ]);
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -719,6 +785,7 @@ class MissionTest extends TestCase
      */
     public function it_should_create_mission_and_assign_default_media()
     {
+        $cityCountryData = $this->createCityCountry();
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -726,8 +793,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -800,6 +867,7 @@ class MissionTest extends TestCase
             'status',
         ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -811,6 +879,7 @@ class MissionTest extends TestCase
      */
     public function it_should_update_mission_time_type()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -823,8 +892,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -918,6 +987,7 @@ class MissionTest extends TestCase
             'status',
             ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -929,6 +999,7 @@ class MissionTest extends TestCase
      */
     public function it_should_update_mission_goal_type()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -941,8 +1012,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -1028,6 +1099,7 @@ class MissionTest extends TestCase
             'status',
             ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -1039,6 +1111,7 @@ class MissionTest extends TestCase
      */
     public function it_should_update_time_mission()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -1051,8 +1124,8 @@ class MissionTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityCountryData['city_id'],
+                "country_code" => $cityCountryData['iso']
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1133,8 +1206,8 @@ class MissionTest extends TestCase
                         "organisation_detail" => ''
                     ],
                     "location" => [
-                        "city_id" => 1,
-                        "country_code" => "US"
+                        "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -1222,6 +1295,7 @@ class MissionTest extends TestCase
             'message',
             'status',
             ]);
+        $this->deleteCityCountry($cityCountryData);
     }
 
     
@@ -1233,7 +1307,8 @@ class MissionTest extends TestCase
      * @return void
      */
     public function it_should_delete_mission_media()
-    {        
+    {   
+        $cityCountryData = $this->createCityCountry();     
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -1250,8 +1325,8 @@ class MissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityCountryData['city_id'],
+                "country_code" => $cityCountryData['iso']
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1336,6 +1411,7 @@ class MissionTest extends TestCase
             ]
         ]); 
         App\Models\Mission::where("mission_id", $missionId)->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -1346,7 +1422,8 @@ class MissionTest extends TestCase
      * @return void
      */
     public function it_should_delete_mission_document()
-    {        
+    {    
+        $cityCountryData = $this->createCityCountry();    
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -1363,8 +1440,8 @@ class MissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityCountryData['city_id'],
+                        "country_code" => $cityCountryData['iso']
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1433,5 +1510,6 @@ class MissionTest extends TestCase
             ]
         ]); 
         App\Models\Mission::where("mission_id", $missionId)->delete();
+        $this->deleteCityCountry($cityCountryData);
     }
 }

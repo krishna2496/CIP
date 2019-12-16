@@ -2,7 +2,64 @@
 use App\Helpers\Helpers;
 
 class StoryTest extends TestCase
-{
+{   
+    public function createCityCountry()
+    {
+        $iso = str_random(2);
+        $params = [
+            "countries" => [
+                [
+                    "iso" => $iso,
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+        /* Add country end */
+        
+        DB::setDefaultConnection('mysql');
+
+        /* Add city details start */     
+        $cityName = str_random(5);   
+        $params = [
+            "country_id" => $countryId,
+            "cities" => [ 
+                [ 
+                    "translations" => [ 
+                        [ 
+                            "lang" => "en",
+                            "name" => $cityName
+                        ]
+                    ]
+                ]         
+            ]
+        ];
+
+        $response = $this->post("cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        $cityId = json_decode($response->response->getContent())->data->city_ids[0]->city_id;
+        DB::setDefaultConnection('mysql');
+        /* Add city details end */
+        return array('iso' => $iso, 'city_id' => $cityId, 'country_id' => $countryId);
+    } 
+
+    public function deleteCityCountry(array $cityCountryData)
+    {
+        DB::setDefaultConnection('tenant');
+        App\Models\Country::where('country_id', $cityCountryData['country_id'])->delete();
+        App\Models\City::where('city_id', $cityCountryData['city_id'])->delete();
+        DB::setDefaultConnection('mysql');
+    }
+
     /**
      * @test
      *
@@ -12,6 +69,7 @@ class StoryTest extends TestCase
      */
     public function it_should_fetch_all_user_story()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -37,8 +95,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityCountryData['city_id'],
+                "country_code" => $cityCountryData['iso']
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -129,6 +187,8 @@ class StoryTest extends TestCase
 
         $user->delete();
         $mission->delete();
+        
+        $this->deleteCityCountry($cityCountryData);
     }
 
     /**
@@ -140,6 +200,7 @@ class StoryTest extends TestCase
      */
     public function it_should_update_status_of_user_story()
     {
+        $cityCountryData = $this->createCityCountry();
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -161,8 +222,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityCountryData['city_id'],
+                "country_code" => $cityCountryData['iso']
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -256,5 +317,7 @@ class StoryTest extends TestCase
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
         $mission->delete();
+        
+        $this->deleteCityCountry($cityCountryData);
     }
 }

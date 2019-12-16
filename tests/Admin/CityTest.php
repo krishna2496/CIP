@@ -34,7 +34,8 @@ class CityTest extends TestCase
         
         DB::setDefaultConnection('mysql');
 
-        /* Add city details start */        
+        /* Add city details start */     
+        $cityName = str_random(5);   
         $params = [
             "country_id" => $countryId,
             "cities" => [ 
@@ -42,7 +43,7 @@ class CityTest extends TestCase
                     "translations" => [ 
                         [ 
                             "lang" => "en",
-                            "name" => str_random(5)
+                            "name" => $cityName
                         ]
                     ]
                 ]         
@@ -62,8 +63,18 @@ class CityTest extends TestCase
         ->seeJsonStructure([
             "status",
             "message"
-        ]);
+        ]);        
 
+        DB::setDefaultConnection('mysql');
+        // Get all cities
+        $this->get('/cities?search='.$cityName, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        // Get all cities
+        $this->get('/cities', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        
         /* Delete city details start */
         DB::setDefaultConnection('mysql');
 
@@ -78,7 +89,6 @@ class CityTest extends TestCase
         // Delete country and country_language data
         $this->delete("countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(204);
-
     }
 
     /**
@@ -578,12 +588,7 @@ class CityTest extends TestCase
         $city->save();
         $city->country_id = $countryId;
         $city->update();
-        
-        DB::setDefaultConnection('mysql');
-        // Get all cities
-        $this->get('/cities', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(200);
-
+                
         DB::setDefaultConnection('mysql');
         $this->delete("cities/".$city->city_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(204);
