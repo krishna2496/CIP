@@ -26,5 +26,6 @@
         <env name="DEFAULT_TENANT" value="tatvatest"/>
         <env name="API_KEY" value="QtIrOg6SsW620tD2"/>
         <env name="API_SECRET" value="NIHQwh3uLtkwKzlM"/>
+        <env name="DEFAULT_TENANT_ID" value="1817"/>
     </php>
 </phpunit>
