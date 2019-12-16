@@ -318,5 +318,9 @@ return [
 
         // For city module
         'ERROR_CITY_NOT_FOUND' => 'Ville non trouvée dans le système',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cette ville car elle est liée à la mission ou à l\'utilisateur',
+
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer ce pays car il est lié à la mission ou à l\'utilisateur'
     ]
 ];

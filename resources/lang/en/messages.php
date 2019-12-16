@@ -326,5 +326,9 @@ return [
 
         // For city module
         'ERROR_CITY_NOT_FOUND' => 'City not found in system',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
+        
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
        ]
 ];

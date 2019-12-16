@@ -18,11 +18,11 @@ class AppCityTest extends TestCase
         $user->save();
 
         DB::setDefaultConnection('tenant');
-        $countryId = App\Models\Country::get()->random()->country_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/city/'.$countryId, ['token' => $token])
+        $this->get('/app/city/'.$countryDetail->country_id, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -100,15 +100,25 @@ class AppCityTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        DB::setDefaultConnection('tenant');
-        $countryId = App\Models\Country::get()->random()->country_id;
+        $countryName = str_random(5);
+        $params = [
+            "countries" => [
+                [
+                    "iso" => str_random(2),
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> $countryName
+                        ]
+                    ]
+                ]
+            ]
+        ];
 
-        $connection = 'tenant';
-        $city = factory(\App\Models\City::class)->make();
-        $city->setConnection($connection);
-        $city->country_id = $countryId;
-        $city->save();
-
+        $response = $this->post("countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+              
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/city/'.$countryId, ['token' => $token])
@@ -118,6 +128,6 @@ class AppCityTest extends TestCase
             "message"
         ]);
         $user->delete();
-        $city->delete();
+        App\Models\Country::where('country_id', $countryId)->delete();
     }
 }

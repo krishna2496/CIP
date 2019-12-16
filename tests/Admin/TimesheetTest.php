@@ -27,8 +27,8 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = Country::where('ISO', 'US')->first();
-        $cityId = City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
 
@@ -41,7 +41,7 @@ class TimesheetTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -179,8 +179,8 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = Country::where('ISO', 'US')->first();
-        $cityId = City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
 
@@ -193,7 +193,7 @@ class TimesheetTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -325,13 +325,15 @@ class TimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
+        // Get country and city id for mission create       
         \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
 
-        // Get country and city id for mission create
-        $country = Country::where('ISO', 'US')->first();
-        $cityId = City::where('country_id', $country->country_id)->first()->city_id;
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
+        \DB::setDefaultConnection('mysql');
+
 
         // Create request for mission create
         $params = [
@@ -342,7 +344,7 @@ class TimesheetTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
