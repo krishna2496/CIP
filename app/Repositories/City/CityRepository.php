@@ -212,7 +212,7 @@ class CityRepository implements CityInterface
 
     /**
      * It will check is city belongs to any mission or not
-     * 
+     *
      * @param int $id
      * @return bool
      */
@@ -223,7 +223,7 @@ class CityRepository implements CityInterface
 
     /**
      * It will check is city belongs to any user or not
-     * 
+     *
      * @param int $id
      * @return bool
      */

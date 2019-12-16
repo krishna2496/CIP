@@ -63,7 +63,7 @@ class City extends Model
 
     /**
      * Get the mission which belongs to City
-     * 
+     *
      * @return void
      */
     public function mission()
@@ -73,7 +73,7 @@ class City extends Model
 
     /**
      * Get the user which belongs to City
-     * 
+     *
      * @return void
      */
     public function user()
