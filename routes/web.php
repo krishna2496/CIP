@@ -683,7 +683,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get countries list */
     $router->group(
-        ['prefix' => 'countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'entities/countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
             $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
@@ -694,7 +694,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Get cities by country id */
     $router->group(
-        ['prefix' => 'cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\City\CityController@index']);
             $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity']);
