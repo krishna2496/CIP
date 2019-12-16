@@ -1,10 +1,12 @@
 <?php
 namespace App\Models;
 
+use App\User;
+use App\Models\Mission;
+use App\Models\CityLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\CityLanguage;
 
 class City extends Model
 {
@@ -57,5 +59,25 @@ class City extends Model
     public function deleteCity(int $id): bool
     {
         return static::findOrFail($id)->delete();
+    }
+
+    /**
+     * Get the mission which belongs to City
+     *
+     * @return void
+     */
+    public function mission()
+    {
+        return $this->belongsTo(Mission::class, 'city_id', 'city_id');
+    }
+
+    /**
+     * Get the user which belongs to City
+     *
+     * @return void
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'city_id', 'city_id');
     }
 }

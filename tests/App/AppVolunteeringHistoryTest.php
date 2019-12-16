@@ -23,8 +23,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -35,7 +35,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -277,8 +277,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -289,7 +289,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -409,8 +409,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -425,7 +425,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -629,8 +629,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -645,7 +645,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -769,8 +769,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -781,7 +781,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",

@@ -209,4 +209,26 @@ class CityRepository implements CityInterface
     {
         return $this->city->findOrFail($id);
     }
+
+    /**
+     * It will check is city belongs to any mission or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasMission(int $id): bool
+    {
+        return $this->city->whereHas('mission')->whereCityId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is city belongs to any user or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasUser(int $id): bool
+    {
+        return $this->city->whereHas('user')->whereCityId($id)->count() ? true : false;
+    }
 }

@@ -178,12 +178,15 @@ trait MissionTransformable
         
         //Get city name from translation
         $cityTranslation = $mission['city']->languages->toArray();
-        if($cityTranslation) {
+        if ($cityTranslation) {
             $cityTranslationkey = '';
             if (array_search($languageId, array_column($cityTranslation, 'language_id')) !== false) {
                 $cityTranslationkey = array_search($languageId, array_column($cityTranslation, 'language_id'));
             } elseif (array_search($defaultTenantLanguage, array_column($cityTranslation, 'language_id')) !== false) {
-                $cityTranslationkey = array_search($defaultTenantLanguage, array_column($cityTranslation, 'language_id'));
+                $cityTranslationkey = array_search($defaultTenantLanguage, array_column(
+                    $cityTranslation,
+                    'language_id'
+                ));
             }
 
             if ($cityTranslationkey !== '') {

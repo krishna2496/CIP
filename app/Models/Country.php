@@ -1,9 +1,12 @@
 <?php
 namespace App\Models;
 
+use App\Models\City;
+use App\User;
+use App\Models\Mission;
+use App\Models\CountryLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\CountryLanguage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
@@ -68,5 +71,35 @@ class Country extends Model
     public function setISOAttribute($value)
     {
         $this->attributes['ISO'] = strtoupper($value);
+    }
+
+    /**
+     * Get city associated with the country.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function city()
+    {
+        return $this->hasMany(City::class, 'country_id', 'country_id');
+    }
+
+    /**
+     * Get the mission which belongs to City
+     *
+     * @return void
+     */
+    public function mission()
+    {
+        return $this->belongsTo(Mission::class, 'country_id', 'country_id');
+    }
+
+    /**
+     * Get the user which belongs to City
+     *
+     * @return void
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'country_id', 'country_id');
     }
 }

@@ -227,6 +227,14 @@ class CityController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        if ($this->cityRepository->hasMission($id) || $this->cityRepository->hasUser($id)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_CITY_ENABLE_TO_DELETE'),
+                trans('messages.custom_error_message.ERROR_CITY_ENABLE_TO_DELETE')
+            );
+        }
         try {
             $this->cityRepository->delete($id);
             
