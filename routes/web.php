@@ -260,7 +260,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
@@ -270,7 +270,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
@@ -683,7 +683,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get countries list */
     $router->group(
-        ['prefix' => 'countries', 'middleware' => 'localization|auth.tenant.admin'],
+        ['prefix' => 'countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
             $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
@@ -694,7 +694,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Get cities by country id */
     $router->group(
-        ['prefix' => 'cities', 'middleware' => 'localization|auth.tenant.admin'],
+        ['prefix' => 'cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\City\CityController@index']);
             $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity']);
