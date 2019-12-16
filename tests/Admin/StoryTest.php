@@ -12,6 +12,10 @@ class StoryTest extends TestCase
      */
     public function it_should_fetch_all_user_story()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -38,8 +42,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                'city_id' => 1,
-                'country_code' => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -143,7 +147,11 @@ class StoryTest extends TestCase
      */
     public function it_should_update_status_of_user_story()
     {
-        
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -165,8 +173,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                'city_id' => 1,
-                'country_code' => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
