@@ -30,5 +30,6 @@
         <env name="API_KEY" value="FAxawkKDi0wYqAfJ"/>
         <env name="API_SECRET" value="4oBuvj1RqqopeNWf"/>
         <env name="DEFAULT_TENANT_ID" value="31"/>
+        <env name="HTTP_REFERER" value="http://web8.anasource.com/team4/ciplatform/"/>
     </php>
 </phpunit>
