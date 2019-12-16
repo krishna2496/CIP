@@ -19,12 +19,16 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
-        ->inRandomOrder()
-        ->first();
-
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
+        ->inRandomOrder()->first();
+        
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
-            
+            $randomLangage = DB::table('language')
+            ->whereNull('deleted_at')
+            ->inRandomOrder()
+            ->first();
+
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
                 'language_id' => $randomLangage->language_id,
@@ -34,6 +38,8 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+            ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
@@ -129,11 +135,13 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->inRandomOrder()
         ->first();
 
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
+            $randomLangage = DB::table('language')->inRandomOrder()->whereNull('deleted_at')->first();
             
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
@@ -144,10 +152,11 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
-
         // Get random langauge for country name
         $params = [
             "countries" => [
@@ -210,11 +219,13 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->inRandomOrder()
         ->first();
 
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
+            $randomLangage = DB::table('language')->inRandomOrder()->whereNull('deleted_at')->first();
             
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
@@ -225,6 +236,8 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
@@ -292,11 +305,13 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->inRandomOrder()
         ->first();
 
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
+            $randomLangage = DB::table('language')->inRandomOrder()->whereNull('deleted_at')->first();
             
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
@@ -307,6 +322,8 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
@@ -356,7 +373,7 @@ class CityTest extends TestCase
         /* Delete country language end */
     }
 
-    /**
+        /**
      * @test
      */
     public function city_test_it_should_return_required_filed_validation_error_on_city_create()
@@ -368,11 +385,13 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->inRandomOrder()
         ->first();
 
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
+            $randomLangage = DB::table('language')->inRandomOrder()->whereNull('deleted_at')->first();
             
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
@@ -383,6 +402,8 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
@@ -466,11 +487,13 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->inRandomOrder()
         ->first();
 
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
+            $randomLangage = DB::table('language')->inRandomOrder()->whereNull('deleted_at')->first();
             
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
@@ -481,6 +504,8 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
@@ -563,11 +588,13 @@ class CityTest extends TestCase
         $tenantLanguage = DB::table('tenant_language')
         ->join('language', 'tenant_language.language_id', 'language.language_id')
         ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->inRandomOrder()
         ->first();
 
         if (is_null($tenantLanguage)) {
-            $randomLangage = DB::table('language')->inRandomOrder()->first();
+            $randomLangage = DB::table('language')->inRandomOrder()->whereNull('deleted_at')->first();
             
             $tenantLanguageId = DB::table('tenant_language')->insertGetId([
                 'tenant_id' => env('DEFAULT_TENANT_ID'),
@@ -578,6 +605,8 @@ class CityTest extends TestCase
             $tenantLanguage = DB::table('tenant_language')
             ->join('language', 'tenant_language.language_id', 'language.language_id')
             ->where('tenant_id', env('DEFAULT_TENANT_ID'))
+            ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
             ->inRandomOrder()
             ->first();
         }
@@ -827,5 +856,158 @@ class CityTest extends TestCase
         ->where('tenant_language_id', $tenantLanguage->tenant_language_id)
         ->delete();
         /* Delete country language end */
+    }
+    /**
+     * @test
+     *
+     * Update city api
+     *
+     * @return void
+     */
+    public function it_should_update_city()
+    {        
+        $connection = 'tenant';
+        $country = factory(\App\Models\Country::class)->make();
+        $country->setConnection($connection);
+        $country->save();
+        $countryId = $country->country_id;
+
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->country_id = $countryId;
+        $city->update();
+
+        $params = [
+            "country_id"=> $countryId,
+            "translations"=>[ 
+                [ 
+                    "lang"=>"en",
+                    "name"=>str_random(10)
+                ]
+            ]
+        ];
+
+        $this->patch("cities/".$city->city_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'message',
+            'status',
+        ]);
+        App\Models\Country::where('country_id', $countryId)->delete();
+        App\Models\City::where('city_id', $city->city_id)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if data is invalid for update city api
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_data_is_invalid_for_update_city()
+    {        
+        $connection = 'tenant';
+        $country = factory(\App\Models\Country::class)->make();
+        $country->setConnection($connection);
+        $country->save();
+        $countryId = $country->country_id;
+
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->country_id = $countryId;
+        $city->update();
+
+        $params = [
+                "country_id" => "",
+                "translations" => [ 
+                   [ 
+                      "lang" => "test",
+                      "name" => ""
+                   ]
+                ]
+        ];
+
+        $this->patch("cities/".$city->city_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message"
+                ]
+            ]
+        ]);
+        App\Models\Country::where('country_id', $countryId)->delete();
+        App\Models\City::where('city_id', $city->city_id)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if data is invalid for update city api
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_id_is_invalid_for_update_city()
+    { 
+        $this->patch("cities/".rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message"
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Delete city api
+     *
+     * @return void
+     */
+    public function it_should_delete_city()
+    {
+        $connection = 'tenant';
+        $country = factory(\App\Models\Country::class)->make();
+        $country->setConnection($connection);
+        $country->save();
+        $countryId = $country->country_id;
+
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->country_id = $countryId;
+        $city->update();
+        
+        DB::setDefaultConnection('mysql');
+        // Get all cities
+        $this->get('/cities', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        $this->delete("cities/".$city->city_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(204);
+        App\Models\Country::where('country_id', $countryId)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error for delete city api
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_delete_city()
+    {
+        $this->delete("cities/".rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404);
     }
 }
