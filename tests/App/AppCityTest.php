@@ -18,11 +18,11 @@ class AppCityTest extends TestCase
         $user->save();
 
         DB::setDefaultConnection('tenant');
-        $countryId = App\Models\Country::get()->random()->country_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/city/'.$countryId, ['token' => $token])
+        $this->get('/app/city/'.$countryDetail->country_id, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -93,7 +93,7 @@ class AppCityTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_no_city_found_test()
+    public function it_should_return_no_city_found()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
