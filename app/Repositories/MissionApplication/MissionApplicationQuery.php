@@ -6,6 +6,7 @@ use App\Models\DataObjects\VolunteerApplication;
 use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
@@ -26,9 +27,9 @@ class MissionApplicationQuery implements QueryableInterface
         'city' => 'ci.name',
         'applicationDate' => 'mission_application.applied_at',
         'applicationSkills' => 'applicant_skills',
+        'missionName' => 'mission_language.title',
         /*
          * TODO: implement the following sort options (and handle translations)
-         * - mission name
          * - mission skills
          * - country name
          * - city
@@ -37,6 +38,29 @@ class MissionApplicationQuery implements QueryableInterface
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+
+    /**
+     * @param array $filters
+     * @param Collection $tenantLanguages
+     * @return int
+     */
+    private function getFilteringLanguage(array $filters, Collection $tenantLanguages): int
+    {
+        $hasLanguageFilter = array_key_exists('language', $filters);
+        $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) { return $language->default == 1; })->first()->language_id;
+
+        if (!$hasLanguageFilter) {
+            return $defaultLanguageId;
+        }
+
+        $language = $tenantLanguages->filter(function ($language) use ($filters) { return $language->code === $filters['language']; })->first();
+
+        if (is_null($language)) {
+            return $defaultLanguageId;
+        }
+
+        return $language->language_id;
+    }
 
     /**
      * @param array $parameters
@@ -48,8 +72,10 @@ class MissionApplicationQuery implements QueryableInterface
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
+        $tenantLanguages = $parameters['tenantLanguages'];
 
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES]) || isset($filters[self::FILTER_MISSION_TYPES]);
+        $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
         $query = MissionApplication::query();
         $applications = $query
@@ -58,14 +84,19 @@ class MissionApplicationQuery implements QueryableInterface
                 'user.last_name',
                 'user.email',
                 'mission.mission_type',
+                'mission_language.title'
             ])
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
+            ->join('mission_language', 'mission_language.mission_id', '=', 'mission.mission_id')
+            ->where('mission_language.language_id', '=', $languageId)
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills',
                 'mission',
-                'mission.missionLanguage',
+                'mission.missionLanguage' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
                 'mission.missionSkill',
                 'mission.country',
                 'mission.city',
@@ -108,21 +139,24 @@ class MissionApplicationQuery implements QueryableInterface
                 });
             })
             // Search
-            ->when(!empty($search), function($query) use ($search, $filters) {
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
                 /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
                  * the condition on the where can *not* be exclusive as we might lose valid results from
                  * previous filtering. We then need to use the OR condition for searchable fields.
                  */
-                $searchCallback = function ($query) use ($search) {
+                $searchCallback = function ($query) use ($search, $languageId) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
                             ->where('first_name', 'like', "%${search}%")
                             ->orWhere('last_name', 'like', "%${search}%")
                             ->orWhere('email', 'like', "%${search}%");
                     })
-                        ->orwhereHas('mission.missionLanguage', function($query) use ($search) {
+                        ->orwhereHas('mission.missionLanguage', function($query) use ($search, $languageId) {
                             $query
-                                ->where('title', 'like', "%${search}%");
+                                ->where([
+                                    ['title', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
                         })
                         ->orwhereHas('mission.city', function($query) use ($search) {
                             $query

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin\Mission;
 
+use App\Helpers\LanguageHelper;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionApplication\MissionApplicationQuery;
 use Illuminate\Http\Request;
@@ -161,18 +162,23 @@ class MissionApplicationController extends Controller
      * @param MissionApplicationQuery $missionApplicationQuery
      * @return JsonResponse
      */
-    public function getMissionApplicationDetails(Request $request, MissionApplicationQuery $missionApplicationQuery)
-    {
+    public function getMissionApplicationDetails(
+        Request $request,
+        MissionApplicationQuery $missionApplicationQuery,
+        LanguageHelper $languageHelper
+    ) {
         $filters = $request->get('filters', []);
         $search = $request->get('search');
         $order = $request->get('order', []);
         $limit = $request->get('limit', []);
+        $tenantLanguages = $languageHelper->getTenantLanguages($request);
 
         $applicationList = $missionApplicationQuery->run([
             'filters' => $filters,
             'search' => $search,
             'order' => $order,
-            'limit' => $limit
+            'limit' => $limit,
+            'tenantLanguages' => $tenantLanguages
         ]);
 
         return $this->responseHelper->successWithPagination(
