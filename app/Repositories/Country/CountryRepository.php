@@ -199,4 +199,26 @@ class CountryRepository implements CountryInterface
 
         return $countryQuery->paginate($request->perPage);
     }
+
+    /**
+     * It will check is country belongs to any mission or not
+     * 
+     * @param int $id
+     * @return bool
+     */
+    public function hasMission(int $id): bool
+    {
+        return $this->country->whereHas('mission')->whereCountryId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is country belongs to any user or not
+     * 
+     * @param int $id
+     * @return bool
+     */
+    public function hasUser(int $id): bool
+    {
+        return $this->country->whereHas('user')->whereCountryId($id)->count() ? true : false;
+    }
 }
