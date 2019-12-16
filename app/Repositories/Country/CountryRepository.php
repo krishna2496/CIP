@@ -202,7 +202,7 @@ class CountryRepository implements CountryInterface
 
     /**
      * It will check is country belongs to any mission or not
-     * 
+     *
      * @param int $id
      * @return bool
      */
@@ -213,7 +213,7 @@ class CountryRepository implements CountryInterface
 
     /**
      * It will check is country belongs to any user or not
-     * 
+     *
      * @param int $id
      * @return bool
      */

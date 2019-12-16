@@ -135,8 +135,10 @@ class UserFilterController extends Controller
 
             if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
                 $cityTag = $this->cityRepository->getCity(
-                            $filterData["filters"]["city_id"], $languageId, 
-                           $defaultLanguage->language_id);
+                    $filterData["filters"]["city_id"],
+                    $languageId,
+                    $defaultLanguage->language_id
+                );
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
                         $filterTagArray["city"][$key] = $value;

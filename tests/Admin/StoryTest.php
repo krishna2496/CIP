@@ -2,7 +2,7 @@
 use App\Helpers\Helpers;
 
 class StoryTest extends TestCase
-{
+{   
     /**
      * @test
      *
@@ -12,6 +12,7 @@ class StoryTest extends TestCase
      */
     public function it_should_fetch_all_user_story()
     {
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -37,8 +38,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => 1,
+                'country_code' => "US"
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -129,6 +130,8 @@ class StoryTest extends TestCase
 
         $user->delete();
         $mission->delete();
+        
+        
     }
 
     /**
@@ -140,6 +143,7 @@ class StoryTest extends TestCase
      */
     public function it_should_update_status_of_user_story()
     {
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -161,8 +165,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => 1,
+                'country_code' => "US"
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -256,5 +260,7 @@ class StoryTest extends TestCase
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
         $mission->delete();
+        
+        
     }
 }

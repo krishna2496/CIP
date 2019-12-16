@@ -97,7 +97,7 @@ class CityController extends Controller
                 "cities" => 'required',
                 "cities.*.translations" => 'required|array',
                 "cities.*.translations.*.lang" => 'required|min:2|max:2',
-                "cities.*.translations.*.name" => 'required|unique:city_language,name,NULL,city_language_id,deleted_at,NULL'
+                "cities.*.translations.*.name" => 'required'
             ]
         );
         

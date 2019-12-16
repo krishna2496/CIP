@@ -9,6 +9,9 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
+        <testsuite name="Intial Data">
+            <directory suffix="SeederTest.php">./tests</directory>
+        </testsuite>
         <testsuite name="Application Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
@@ -22,10 +25,10 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="TENANT_DB_DATABASE" value="ci_tenant_10"/>
+        <env name="TENANT_DB_DATABASE" value="ci_tenant_31"/>
         <env name="DEFAULT_TENANT" value="tatvatest"/>
-        <env name="API_KEY" value="QtIrOg6SsW620tD2"/>
-        <env name="API_SECRET" value="NIHQwh3uLtkwKzlM"/>
-        <env name="DEFAULT_TENANT_ID" value="1817"/>
+        <env name="API_KEY" value="FAxawkKDi0wYqAfJ"/>
+        <env name="API_SECRET" value="4oBuvj1RqqopeNWf"/>
+        <env name="DEFAULT_TENANT_ID" value="31"/>
     </php>
 </phpunit>

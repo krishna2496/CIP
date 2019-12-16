@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Models\City;
 use App\User;
 use App\Models\Mission;
 use App\Models\CountryLanguage;
@@ -70,6 +71,16 @@ class Country extends Model
     public function setISOAttribute($value)
     {
         $this->attributes['ISO'] = strtoupper($value);
+    }
+
+    /**
+     * Get city associated with the country.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function city()
+    {
+        return $this->hasMany(City::class, 'country_id', 'country_id');
     }
 
     /**
