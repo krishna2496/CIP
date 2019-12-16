@@ -36,7 +36,7 @@ class SeederTest extends TestCase
             ]
         ];
 
-        $response = $this->post("countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         /* Add country end */
@@ -59,7 +59,7 @@ class SeederTest extends TestCase
             ]
         ];
 
-        $response = $this->post("cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
 
         $cityId = json_decode($response->response->getContent())->data->city_ids[0]->city_id;

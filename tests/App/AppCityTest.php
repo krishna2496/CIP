@@ -115,7 +115,7 @@ class AppCityTest extends TestCase
             ]
         ];
 
-        $response = $this->post("countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
               
