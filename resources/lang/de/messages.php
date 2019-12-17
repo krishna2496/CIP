@@ -268,7 +268,7 @@ return [
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
 
         // For availability module
-        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availabilty not found in system',
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availability not found in system',
 
         // For Country module
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Country not found in system',
