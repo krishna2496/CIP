@@ -25,9 +25,6 @@ trait CityTransformable
                 if ($translationIndex) {
                     $cityData[$value['languages'][$translationIndex]['city_id']]
                     = $value['languages'][$translationIndex]['name'];
-                } else {
-                    $cityData[$value['languages'][$index]['city_id']] = (!empty($value['languages']))
-                    ? $value['languages'][0]['name'] : '';
                 }
             }
         }

@@ -25,8 +25,6 @@ trait CountryTransformable
                 if ($translationIndex) {
                     $countryData[$value['languages'][$translationIndex]['country_id']]
                     = $value['languages'][$translationIndex]['name'];
-                } else {
-                    $countryData[$value['languages'][$index]['country_id']] = $value['languages'][0]['name'];
                 }
             }
         }
