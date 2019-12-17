@@ -301,8 +301,7 @@ class StoryController extends Controller
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
-        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $defaultLanguageId = $defaultLanguage->language_id;
+       
         // Get Story details
         $story = $this->storyRepository
         ->getStoryDetails(
@@ -358,8 +357,7 @@ class StoryController extends Controller
             $story[0],
             $storyViewCount,
             $defaultAvatar,
-            $languageId,
-            $defaultLanguageId
+            $languageId
         );
         
         // Check mission status

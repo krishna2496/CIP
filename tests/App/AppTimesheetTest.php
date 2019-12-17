@@ -57,6 +57,10 @@ class AppTimesheetTest extends TestCase
             "goal_objective" => rand(1, 1000),
             "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
+            "application_start_date" => "2019-05-15 10:40:00",
+            "application_end_date" => "2020-05-15 10:40:00",
+            "application_start_time" => "2019-05-15 10:40:00",
+            "application_end_time" => "2020-05-15 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
