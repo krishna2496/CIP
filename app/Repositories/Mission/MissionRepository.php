@@ -1214,7 +1214,6 @@ class MissionRepository implements MissionInterface
     public function getUserMissions(Request $request): ?array
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1231,11 +1230,6 @@ class MissionRepository implements MissionInterface
         foreach ($missionData->toArray() as $key => $value) {
             if (!empty($value['mission_language'])) {
                 $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
-            } else {
-                $defaultTenantLanguageData = $this->modelsService->missionLanguage->select('title')
-                ->where(['mission_id' => $value['mission_id'], 'language_id' => $defaultTenantLanguage->language_id])
-                ->get();
-                $missionLists[$key]['title'] = !$defaultTenantLanguageData->isEmpty() ? $defaultTenantLanguageData[0]->title : '';
             }
             $missionLists[$key]['mission_id'] = $value['mission_id'];
         }
@@ -1246,23 +1240,17 @@ class MissionRepository implements MissionInterface
      *
      * @param int $missionId
      * @param int $languageId
-     * @param int $defaultTenantLanguageId
      * @return string
      */
-    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
+    public function getMissionTitle(int $missionId, int $languageId): string
     {
         $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
         ->where(['mission_id' => $missionId, 'language_id' => $languageId])
         ->get();
         if ($languageData->count() > 0) {
             return $languageData[0]->title;
-        } else {
-            $defaultTenantLanguageData = $this->modelsService->missionLanguage
-                ->select('title')
-                ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
-                ->get();
-            return !$defaultTenantLanguageData->isEmpty() ? $defaultTenantLanguageData[0]->title : '';
         }
+        return '';
     }
 
     /**
@@ -1302,9 +1290,9 @@ class MissionRepository implements MissionInterface
         );
         if (isset($mission[0]['publication_status'])
         && (in_array($mission[0]['publication_status'], $missionStatus))) {
-            return true;
+            $status = true;
         }
-        return false;
+        return $status ?? false;
     }
 
     /**

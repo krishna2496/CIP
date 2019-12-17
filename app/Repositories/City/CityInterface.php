@@ -21,10 +21,9 @@ interface CityInterface
      *
      * @param string $cityId
      * @param int $languageId
-     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCity(string $cityId, int $languageId, int $defaultLanguageId) : array;
+    public function getCity(string $cityId, int $languageId) : array;
 
     /**
      * Store city data
