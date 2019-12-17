@@ -149,11 +149,6 @@ class TimesheetRepository implements TimesheetInterface
             if ($value->missionLanguage) {
                 if (isset($value->missionLanguage[0])) {
                     $missionTitle = $value->missionLanguage[0]->title;
-                } else {
-                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
-                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
-                    ->get();
-                    $missionTitle = $defaultLanguageMissionData[0]->title;
                 }
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
@@ -184,11 +179,6 @@ class TimesheetRepository implements TimesheetInterface
             if ($value->missionLanguage) {
                 if (isset($value->missionLanguage[0])) {
                     $missionTitle = $value->missionLanguage[0]->title;
-                } else {
-                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
-                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
-                    ->get();
-                    $missionTitle = $defaultLanguageMissionData[0]->title;
                 }
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
@@ -323,7 +313,6 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function timeRequestList(Request $request, array $statusArray, bool $withPagination = true) : Object
     {
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         
@@ -355,11 +344,6 @@ class TimesheetRepository implements TimesheetInterface
             if ($value->missionLanguage) {
                 if (isset($value->missionLanguage[0])) {
                     $missionTitle = $value->missionLanguage[0]->title;
-                } else {
-                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
-                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
-                    ->get();
-                    $missionTitle = $defaultLanguageMissionData[0]->title;
                 }
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
@@ -384,7 +368,6 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function goalRequestList(Request $request, array $statusArray, bool $withPagination = true): Object
     {
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
        
@@ -415,11 +398,6 @@ class TimesheetRepository implements TimesheetInterface
             if ($value->missionLanguage) {
                 if (isset($value->missionLanguage[0])) {
                     $missionTitle = $value->missionLanguage[0]->title;
-                } else {
-                    $defaultLanguageMissionData = $this->missionLanguage->select('title')
-                    ->where(['mission_id' => $value->mission_id, 'language_id' => $defaultTenantLanguage->language_id])
-                    ->get();
-                    $missionTitle = $defaultLanguageMissionData[0]->title;
                 }
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);

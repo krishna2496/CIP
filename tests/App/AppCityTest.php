@@ -28,6 +28,15 @@ class AppCityTest extends TestCase
             "status",
             "message"
         ]);
+
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('/app/city/'.$countryDetail->country_id, ['token' => $token, 'X-localization' => 'test'])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
         $user->delete();
     }
 
