@@ -123,7 +123,7 @@ class MissionCommentRepository implements MissionCommentInterface
      * @param int $languageId
      * @return array
      */
-    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array
+    public function getUserComments(int $userId, int $languageId): array
     {
         $comments = $this->comment->where('user_id', $userId)
         ->orderby('created_at', 'desc')
@@ -143,7 +143,7 @@ class MissionCommentRepository implements MissionCommentInterface
             
             foreach ($comments as $value) {
                 $value->title = $this->missionRepository
-                ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
+                ->getMissionTitle($value->mission_id, $languageId);
                 unset($value->mission);
             }
             $commentData['comments'] = $comments;
