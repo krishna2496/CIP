@@ -1235,7 +1235,7 @@ class MissionRepository implements MissionInterface
                 $defaultTenantLanguageData = $this->modelsService->missionLanguage->select('title')
                 ->where(['mission_id' => $value['mission_id'], 'language_id' => $defaultTenantLanguage->language_id])
                 ->get();
-                $missionLists[$key]['title'] = $defaultTenantLanguageData[0]->title;
+                $missionLists[$key]['title'] = !$defaultTenantLanguageData->isEmpty() ? $defaultTenantLanguageData[0]->title : '';
             }
             $missionLists[$key]['mission_id'] = $value['mission_id'];
         }
@@ -1261,7 +1261,7 @@ class MissionRepository implements MissionInterface
                 ->select('title')
                 ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
                 ->get();
-            return $defaultTenantLanguageData[0]->title;
+            return !$defaultTenantLanguageData->isEmpty() ? $defaultTenantLanguageData[0]->title : '';
         }
     }
 
