@@ -20,7 +20,9 @@
             </div>
         </div>
         <div class="pagination-block" v-if="items.length > 0 && totalPages > 1">
-            <b-pagination v-model="page" :total-rows="totalRow" :per-page="perPage" align="center" @change="pageChange">
+            <b-pagination 
+            hide-ellipsis=true
+            v-model="page" :total-rows="totalRow" :per-page="perPage" align="center" @change="pageChange">
             </b-pagination>
         </div>
     </div>
