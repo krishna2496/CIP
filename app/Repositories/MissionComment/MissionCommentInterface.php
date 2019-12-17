@@ -33,7 +33,7 @@ interface MissionCommentInterface
      * @param int $languageId
      * @return array
      */
-    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array;
+    public function getUserComments(int $userId, int $languageId): array;
     
     /**
      * Delete comment by commentId

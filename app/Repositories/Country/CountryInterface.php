@@ -28,10 +28,9 @@ interface CountryInterface
      *
      * @param int  $countryId
      * @param int $languageId
-     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCountry(int $countryId, int $languageId, int $defaultLanguageId) : array;
+    public function getCountry(int $countryId, int $languageId) : array;
 
     /**
      * Remove the specified resource from storage.

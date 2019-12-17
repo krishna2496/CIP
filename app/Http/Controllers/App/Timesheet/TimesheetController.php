@@ -142,7 +142,7 @@ class TimesheetController extends Controller
             $missionApplicationData = $this->missionRepository->getMissionApplication(
                 $request->mission_id,
                 $request->auth->user_id,
-                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
+                config('constants.application_status.AUTOMATICALLY_APPROVED')
             );
         } catch (ModelNotFoundException $e) {
             return $this->responseHelper->error(
