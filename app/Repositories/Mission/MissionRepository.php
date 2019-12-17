@@ -528,11 +528,7 @@ class MissionRepository implements MissionInterface
                 });
             }
             if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
-                $missionQuery->where(
-                    'organisation_name',
-                    'like',
-                    '%' . $request->input('explore_mission_params') . '%'
-                );
+                $missionQuery->where("mission.organisation_id", $request->input('explore_mission_params'));
             }
         }
         
