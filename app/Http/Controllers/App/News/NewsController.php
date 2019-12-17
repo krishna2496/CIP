@@ -74,7 +74,6 @@ class NewsController extends Controller
         try {
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
             $languageId = $this->languageHelper->getLanguageId($request);
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageCode = $language->code;
@@ -87,19 +86,16 @@ class NewsController extends Controller
             ->map(function (News $newsTransform) use (
                 $languageId,
                 $defaultTenantLanguageId,
-                $languageCode,
-                $defaultTenantLanguageCode
+                $languageCode
             ) {
                 return $this->getTransformedNews(
                     $newsTransform,
                     true,
                     $languageId,
                     $defaultTenantLanguageId,
-                    $languageCode,
-                    $defaultTenantLanguageCode
+                    $languageCode
                 );
             })->all();
-
             $requestString = $request->except(['page','perPage']);
             $newsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
                 $newsTransform,
