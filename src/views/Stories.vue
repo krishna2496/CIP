@@ -23,6 +23,7 @@
 				
 				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination
+							hide-ellipsis=true
 							v-model="pagination.currentPage"
 							:total-rows="pagination.total"
 							:per-page="pagination.perPage"

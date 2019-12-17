@@ -55,7 +55,7 @@
                                             v-if="topOrganization != null && topOrganization.length > 0">
                                             <li v-for="(items, key) in topOrganization" v-bind:key=key
                                                 class="no-dropdown">
-                                                <router-link :to="{ path: '/home/organization/'+items.title}"
+                                                <router-link :to="{ path: '/home/organization/'+items.id}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
                                                 </router-link>

@@ -209,6 +209,7 @@
 
 /** Timesheet Table style **/
 .timesheet-table {
+	max-height:400px;	
 	&.timesheethours-table {
 		table {
 			tr {
