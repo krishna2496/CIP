@@ -107,9 +107,7 @@
 										</template>
 										<!-- Mission type goal -->
 										<template v-else>
-											<template v-if="mission.objective != ''">
-												{{mission.objective}}
-											</template>
+											{{mission.objective}}
 										</template>
 									</span>
 								</div>
