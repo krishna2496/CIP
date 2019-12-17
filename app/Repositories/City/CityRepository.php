@@ -70,10 +70,9 @@ class CityRepository implements CityInterface
      *
      * @param string $cityId
      * @param int $languageId
-     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCity(string $cityId, int $languageId, int $defaultLanguageId) : array
+    public function getCity(string $cityId, int $languageId) : array
     {
         $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
        
@@ -81,17 +80,14 @@ class CityRepository implements CityInterface
         if (!empty($city)) {
             foreach ($city as $key => $value) {
                 $translation = $value['languages'];
+                $cityData[$value['city_id']] =  $translation[0]['name'] ?? '';
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
-                    $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
            
                 if ($translationkey !== '') {
                     $cityData[$value['city_id']] = $translation[$translationkey]['name'];
-                } else {
-                    $cityData[$value['city_id']] =  $translation[0]['name'] ?? '';
                 }
             }
         }

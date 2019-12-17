@@ -180,11 +180,9 @@ class MissionCommentController extends Controller
     public function getUserMissionComments(Request $request): JsonResponse
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
-            $languageId,
-            $defaultTenantLanguage->language_id
+            $languageId
         );
         
         // Set response data
@@ -242,11 +240,9 @@ class MissionCommentController extends Controller
     public function exportComments(Request $request): Object
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
-            $languageId,
-            $defaultTenantLanguage->language_id
+            $languageId
         );
 
         if (count($userMissionComments) == 0) {
