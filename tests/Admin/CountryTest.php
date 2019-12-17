@@ -455,5 +455,85 @@ class CountryTest extends TestCase
         // Delete country and country_language data
         $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(204);
-    } 
+    }
+
+    /**
+     * @test
+     *
+     * Delete country api, will return error. If country belongs to mission
+     *
+     * @return void
+     */
+    public function city_test_it_return_error_not_able_to_delete_country_it_belongs_to_mission()
+    {
+        $connection = 'tenant';
+        $country = factory(\App\Models\Country::class)->make();
+        $country->setConnection($connection);
+        $country->save();
+        $countryId = $country->country_id;
+
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->country_id = $countryId;
+        $city->update();
+        
+        DB::setDefaultConnection('mysql');
+
+        // Add user for this country and city
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $mission->city_id = $city->city_id;
+        $mission->country_id = $countryId;
+        $mission->update();
+
+        $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);        
+
+        App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
+        App\Models\City::where('city_id', $city->city_id)->delete();
+        App\Models\Country::where('country_id', $countryId)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Delete country api, will return error. If country belongs to user
+     *
+     * @return void
+     */
+    public function city_test_it_return_error_not_able_to_delete_country_it_belongs_to_user()
+    {
+        $connection = 'tenant';
+        $country = factory(\App\Models\Country::class)->make();
+        $country->setConnection($connection);
+        $country->save();
+        $countryId = $country->country_id;
+
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->country_id = $countryId;
+        $city->update();
+        
+        DB::setDefaultConnection('mysql');
+
+        // Add user for this country and city
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $user->city_id = $city->city_id;
+        $user->country_id = $countryId;
+        $user->update();
+
+        $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+
+        DB::setDefaultConnection('mysql');
+
+        App\User::where('user_id', $user->user_id)->delete();
+        App\Models\City::where('city_id', $city->city_id)->delete();
+        App\Models\Country::where('country_id', $countryId)->delete();
+    }
 }
