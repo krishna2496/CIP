@@ -173,9 +173,9 @@ class UserController extends Controller
 
         $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $languages = $this->languageHelper->getLanguages();
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : $defaultLanguage->code;
+        $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
+
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
