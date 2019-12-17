@@ -68,12 +68,16 @@ class CityController extends Controller
         
             // Fetch city lists
             $cityList = $this->cityRepository->cityList($countryId);
-            
+
+            // Get tenant default language
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+
             if (!$cityList->isEmpty()) {
                 // Transform city details
                 $cityDetails = $this->cityTransform(
                     $cityList->toArray(),
-                    $languageId
+                    $languageId,
+                    $defaultTenantLanguage->defaultTenantLanguage
                 );
             }
             $apiData = isset($cityDetails) ? $cityDetails : $cityList->toArray();

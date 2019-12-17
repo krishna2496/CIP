@@ -240,7 +240,7 @@ class UserController extends Controller
         $languageId = $this->languageHelper->getLanguageId($request);
         if (!$cityList->isEmpty()) {
             // Transform city details
-            $cityList = $this->cityTransform($cityList->toArray(), $languageId);
+            $cityList = $this->cityTransform($cityList->toArray(), $languageId, $defaultTenantLanguage->language_id);
         }
 
         $apiData = $userDetail->toArray();

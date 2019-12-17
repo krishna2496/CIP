@@ -66,9 +66,16 @@ class CountryController extends Controller
         // Fetch country lists
         $countryList = $this->countryRepository->countryList();
         
+        // Get tenant default language
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+
         if (!$countryList->isEmpty()) {
             // Transform country details
-            $countryDetails = $this->countryTransform($countryList->toArray(), $languageId);
+            $countryDetails = $this->countryTransform(
+                $countryList->toArray(),
+                $languageId,
+                $defaultTenantLanguage->language_id
+            );
         }
         
         $apiData = isset($countryDetails) ? $countryDetails : $countryList->toArray();
