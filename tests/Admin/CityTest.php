@@ -642,8 +642,6 @@ class CityTest extends TestCase
         $this->delete("entities/cities/".$city->city_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
 
-        DB::setDefaultConnection('mysql');
-
         App\User::where('user_id', $user->user_id)->delete();
         App\Models\City::where('city_id', $city->city_id)->delete();
         App\Models\Country::where('country_id', $countryId)->delete();
