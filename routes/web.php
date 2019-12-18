@@ -697,7 +697,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
         ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\City\CityController@index']);
-            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity']);
+            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity',
+            'middleware' => ['PaginationMiddleware']]);
             $router->post('/', ['uses' => 'Admin\City\CityController@store']);
             $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);
             $router->delete('/{cityId}', ['uses' => 'Admin\City\CityController@destroy']);

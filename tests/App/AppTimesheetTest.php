@@ -1712,7 +1712,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"]]);
+        ->update(['status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"]]);
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
         $params = [
             'timesheet_entries' => [
@@ -1873,7 +1873,7 @@ class AppTimesheetTest extends TestCase
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update([
-            'status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"],
+            'status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"],
             'user_id' => \App\User::get()->random()->user_id
         ]);
         
@@ -2005,7 +2005,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         $this->get('/app/timesheet/time-requests', ['token' => $token])
         ->seeJsonStructure([
@@ -2146,7 +2146,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet/goal-requests', ['token' => $token])
@@ -2288,7 +2288,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         $this->get('/app/timesheet/time-requests/export', ['token' => $token])
         ->seeStatusCode(200);
@@ -2414,7 +2414,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet/goal-requests/export', ['token' => $token])
@@ -2541,7 +2541,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"]]);
+        ->update(['status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"]]);
         
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -2660,7 +2660,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["APPROVED"]]);
+        ->update(['status' => config("constants.timesheet_status")["APPROVED"]]);
         
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -3489,7 +3489,7 @@ class AppTimesheetTest extends TestCase
         ->seeStatusCode(201);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
-        App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->update(['status_id' => config('constants.timesheet_status_id.APPROVED')]);
+        App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->update(['status' => config('constants.timesheet_status.APPROVED')]);
 
         $connection = 'tenant';
         $timesheetDocument = factory(\App\Models\TimesheetDocument::class)->make();

@@ -577,8 +577,7 @@ class AppNotificationTest extends TestCase
 
         // Update timesheet status
         $params = [
-            "status_id" => \App\Models\TimesheetStatus::
-            where('status', config('constants.timesheet_status.APPROVED'))->first()->timesheet_status_id
+            "status" => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
         ];
         
         DB::setDefaultConnection('mysql');

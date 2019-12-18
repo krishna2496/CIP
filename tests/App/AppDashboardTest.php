@@ -121,7 +121,7 @@ class AppDashboardTest extends TestCase
         ->seeStatusCode(201);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->first();
-        $timesheet->update(['status_id' => config("constants.timesheet_status_id")["APPROVED"]]);
+        $timesheet->update(['status' => config("constants.timesheet_status")["APPROVED"]]);
 
         DB::setDefaultConnection('mysql');
 
