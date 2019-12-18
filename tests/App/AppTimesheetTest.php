@@ -66,8 +66,9 @@ class AppTimesheetTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
+
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
         $params = [
@@ -97,7 +98,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $this->post('app/timesheet', $params, ['token' => $token])
+        $this->post('app/timesheet?type=hour', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
             'status',
@@ -108,11 +109,17 @@ class AppTimesheetTest extends TestCase
         ]);
 
         DB::setDefaultConnection('mysql');
-        $this->get('/app/timesheet', ['token' => $token])
+        $this->get('/app/timesheet?type=hour', ['token' => $token])
+        ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
             "message"
         ]);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('/app/timesheet', ['token' => $token])
+        ->seeStatusCode(422);
+
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
@@ -133,7 +140,7 @@ class AppTimesheetTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/timesheet', ['token' => $token])
+        $this->get('/app/timesheet?type=goal', ['token' => $token])
         ->seeJsonStructure([
             "status",
             "message"
@@ -3800,7 +3807,7 @@ class AppTimesheetTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/timesheet', ['token' => $token])
+        $this->get('/app/timesheet?type=goal', ['token' => $token])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');

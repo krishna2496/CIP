@@ -198,8 +198,8 @@ class TimesheetRepository implements TimesheetInterface
                     $value->setAttribute('title', $missionTitle);
                     unset($value->missionLanguage);
                 }
-                $timesheetEntries = $goalMissionEntries;
             }
+            $timesheetEntries = $goalMissionEntries;
         }
         return $timesheetEntries;
     }
