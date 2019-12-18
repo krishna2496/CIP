@@ -528,8 +528,8 @@
 
                     timeSheetArray.filter((timeSheetItem) => {
 
-                        if (timeSheetItem.timesheet_status.status == "APPROVED" ||
-                            timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
+                        if (timeSheetItem.status == "APPROVED" ||
+                            timeSheetItem.status == "AUTOMATICALLY_APPROVED"
                         ) {
                             this.volunteerHourDisableDates.push(timeSheetItem.date_volunteered)
                         }
@@ -693,14 +693,13 @@
                     if (currentTimeSheetYear == currentArrayYear) {
                         if (currentTimeSheetMonth == currentArrayMonth) {
                             if (date == currentArrayDate) {
-                                if (timeSheetItem.timesheet_status.status == "APPROVED" || timeSheetItem
-                                    .timesheet_status.status == "AUTOMATICALLY_APPROVED") {
+                                if (timeSheetItem.status == "APPROVED" || timeSheetItem.status == "AUTOMATICALLY_APPROVED") {
                                     returnData.push("approved")
                                     defaultDisable = 0
-                                } else if (timeSheetItem.timesheet_status.status == "DECLINED") {
+                                } else if (timeSheetItem.status == "DECLINED") {
                                     returnData.push("declined")
                                     defaultDisable = 1
-                                } else if (timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
+                                } else if (timeSheetItem.status == "SUBMIT_FOR_APPROVAL") {
                                     returnData.push("approval")
                                     defaultDisable = 1
                                 } else {
@@ -1070,8 +1069,7 @@
                                     minute = minute % 60;
                                     time1 = Math.floor(hour) + ':' + ("0" + Math
                                         .floor(minute)).slice(-2);
-                                    if (timeEntry.timesheet_status.status != "APPROVED" && timeEntry
-                                        .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                    if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
                                         //for submit request
                                         let splitTimeApproved = timeApproved.split(':');
                                         hourApproved = parseInt(splitTimeApproved[0]) + parseInt(
@@ -1098,8 +1096,7 @@
                                 if (this.volunteeringGoalCurrentMonth == currentArrayMonth) {
 
                                     action = action + timeEntry.action
-                                    if (timeEntry.timesheet_status.status != "APPROVED" && timeEntry
-                                        .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                    if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
                                         actionApproved = actionApproved + timeEntry.action
                                     }
                                 }
@@ -1177,8 +1174,7 @@
                                 let currentArrayMonth = timeSheet.month
                                 if (currentYear == currentArrayYear) {
                                     if (currentMonth == currentArrayMonth) {
-                                        if (timeSheet.timesheet_status.status != "APPROVED" && timeSheet
-                                            .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                        if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
                                             timeSheetId.timesheet_entries.push({
                                                 'timesheet_id': timeSheet.timesheet_id
                                             })
