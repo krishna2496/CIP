@@ -92,11 +92,11 @@ interface TimesheetInterface
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param int $statusId
+     * @param string $status
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool;
+    public function updateTimesheetStatus(string $status, int $timesheet): bool;
     
     /**
      * Get timesheet entries
