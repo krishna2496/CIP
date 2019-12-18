@@ -250,8 +250,11 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->with(['timesheet' => function ($query) use ($userId) {
+        ->with(['timesheet' => function ($query) use ($userId, $request) {
             $query->where('user_id', $userId);
+            if ($request->has('status') && $request->input('status') !== '') {
+                $query->where('status', strtoupper($request->status));
+            }
         }]);
 
         if ($request->has('type') && $request->input('type') !== '' &&
@@ -512,7 +515,7 @@ class TimesheetRepository implements TimesheetInterface
                         $query->whereMonth('date_volunteered', $month);
                     }
                 }
-                $query->whereIn('status_id', $statusArray);
+                $query->whereIn('status', $statusArray);
             }
         ]);
         return $missionQuery->get()->toArray();
@@ -540,7 +543,7 @@ class TimesheetRepository implements TimesheetInterface
                 if (isset($year) && $year != '') {
                     $query->whereYear('date_volunteered', $year);
                 }
-                $query->whereIn('status_id', $statusArray);
+                $query->whereIn('status', $statusArray);
             }
         ]);
         return $missionQuery->get()->toArray();
@@ -566,7 +569,7 @@ class TimesheetRepository implements TimesheetInterface
         ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
         $missionQuery->where('user_id', $userId);
         $missionQuery->whereYear('date_volunteered', $year);
-        $missionQuery->whereIn('status_id', $statusArray);
+        $missionQuery->whereIn('status', $statusArray);
         if (!is_null($missionId) && ($missionId != "")) {
             $missionQuery->where('timesheet.mission_id', $missionId);
         }
@@ -616,7 +619,7 @@ class TimesheetRepository implements TimesheetInterface
                 $timesheetQuery->whereMonth('date_volunteered', $month);
             }
         }
-        $timesheetQuery->whereIn('status_id', $statusArray);
+        $timesheetQuery->whereIn('status', $statusArray);
         $timesheetQuery->orderBy(DB::raw("total_minutes"), "DESC");
         $timesheetQuery->groupBy(DB::raw("user_id"));
 

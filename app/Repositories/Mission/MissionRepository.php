@@ -491,7 +491,7 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status.APPROVED'),
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
@@ -1005,7 +1005,7 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status.APPROVED'),
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
@@ -1083,7 +1083,7 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
-                    $query->whereIn('status_id', array(config('constants.timesheet_status.APPROVED'),
+                    $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
                     config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
                 }]);
         return $missionQuery->get();
