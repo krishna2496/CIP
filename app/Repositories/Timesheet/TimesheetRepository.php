@@ -142,14 +142,20 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getAllTimesheetEntries(Request $request): array
     {
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $languageId = $this->languageHelper->getLanguageId($request);
+		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+		
         $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         foreach ($timeMissionEntries as $value) {
             if ($value->missionLanguage) {
-                if (isset($value->missionLanguage[0])) {
-                    $missionTitle = $value->missionLanguage[0]->title;
-                }
+                $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+				$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+				$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+				
+				// Set mission title
+				$missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
@@ -177,9 +183,12 @@ class TimesheetRepository implements TimesheetInterface
         $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
         foreach ($goalMissionEntries as $value) {
             if ($value->missionLanguage) {
-                if (isset($value->missionLanguage[0])) {
-                    $missionTitle = $value->missionLanguage[0]->title;
-                }
+                $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+				$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+				$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+				
+				// Set mission title
+				$missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
@@ -424,8 +433,6 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getTimesheetEntries(Request $request, string $missionType): Collection
     {
-        $language = $this->languageHelper->getLanguageDetails($request);
-        $languageId = $language->language_id;
         $userId = $request->auth->user_id;
         
         // Fetch tenant options value
@@ -442,9 +449,8 @@ class TimesheetRepository implements TimesheetInterface
             $query->where('user_id', $userId)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         })
-        ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title')
-            ->where('language_id', $languageId);
+        ->with(['missionLanguage' => function ($query) {
+            $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
         }]);
 
         if ($missionType === config('constants.mission_type.TIME')) {
