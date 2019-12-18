@@ -286,12 +286,12 @@ class TimesheetRepository implements TimesheetInterface
         $status = false;
         if ($request->timesheet_entries) {
             foreach ($request->timesheet_entries as $data) {
-                $timesheetData = $this->timesheet->with('timesheetStatus')->where(['user_id' => $userId,
+                $timesheetData = $this->timesheet->where(['user_id' => $userId,
                 'timesheet_id' => $data['timesheet_id']])
                 ->firstOrFail();
                 $timesheetDetails = $timesheetData->toArray();
-                if ($timesheetDetails["timesheet_status"]["status"] === config('constants.timesheet_status.PENDING')) {
-                    $timesheetData->status_id = config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL');
+                if ($timesheetDetails["status"] === config('constants.timesheet_status.PENDING')) {
+                    $timesheetData->status = config('constants.timesheet_status.SUBMIT_FOR_APPROVAL');
                     $status = $timesheetData->update();
                 }
             }
@@ -321,21 +321,20 @@ class TimesheetRepository implements TimesheetInterface
             ->where('language_id', $languageId);
         }])
         ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
             $query->where('user_id', $request->auth->user_id);
         })
         ->withCount([
         'timesheet AS total_hours' => function ($query) use ($request, $statusArray) {
             $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
             $query->where('user_id', $request->auth->user_id);
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
         }]);
         if ($withPagination) {
             $timeRequestsList = $timeRequests->paginate($request->perPage);
         } else {
             $timeRequestsList = $timeRequests->get();
         }
-
         foreach ($timeRequestsList as $value) {
             if ($value->missionLanguage) {
                 if (isset($value->missionLanguage[0])) {
@@ -377,13 +376,13 @@ class TimesheetRepository implements TimesheetInterface
         }])
         ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
             $query->where('user_id', $request->auth->user_id);
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
         })
         ->withCount([
         'timesheet AS action' => function ($query) use ($request, $statusArray) {
             $query->select(DB::raw("SUM(action) as action"));
             $query->where('user_id', $request->auth->user_id);
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
         }]);
         if ($withPagination) {
             $goalRequestList = $goalRequests->paginate($request->perPage);
