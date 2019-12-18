@@ -1224,7 +1224,7 @@ class MissionRepository implements MissionInterface
             $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
         }])->get();
         
-        foreach ($missionData->toArray() as $key => $value) {
+        foreach ($missionData as $key => $value) {
             $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
 			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
 			$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
