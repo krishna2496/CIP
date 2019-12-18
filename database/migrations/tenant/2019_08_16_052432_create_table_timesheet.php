@@ -29,8 +29,6 @@ class CreateTableTimesheet extends Migration
             
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('status_id')->references('timesheet_status_id')->on('timesheet_status')->onDelete('CASCADE')->onUpdate('CASCADE');
-
         });
     }
 
