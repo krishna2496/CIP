@@ -46,7 +46,7 @@ class Availability extends Model
      */
     public function getAvailability(): SupportCollection
     {
-        return static::pluck('type', 'availability_id');
+        return static::select('translations', 'availability_id')->get();
     }
     
     /**

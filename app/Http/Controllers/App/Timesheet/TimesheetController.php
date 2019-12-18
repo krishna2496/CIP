@@ -103,8 +103,7 @@ class TimesheetController extends Controller
         $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request, $request->type);
         $apiData = $timesheetEntries;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($timesheetEntries->total() > 0 ||
-        count($timesheetEntries[config('constants.mission_type.GOAL')]) > 0) ?
+        $apiMessage = ($timesheetEntries->total() > 0)  ?
         trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
         trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
         return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
