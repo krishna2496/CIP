@@ -1,9 +1,10 @@
 <?php
 namespace App\Repositories\Timesheet;
 
-use Illuminate\Http\Request;
 use App\Models\Timesheet;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface TimesheetInterface
 {
@@ -102,9 +103,10 @@ interface TimesheetInterface
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request
-     * @return array
+     * @param string $type
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getAllTimesheetEntries(Request $request): array;
+    public function getAllTimesheetEntries(Request $request, string $type): LengthAwarePaginator;
 
     /**
      * Get user timesheet total hours data

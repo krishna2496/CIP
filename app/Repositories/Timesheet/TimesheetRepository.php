@@ -5,17 +5,18 @@ namespace App\Repositories\Timesheet;
 use DB;
 use Carbon\Carbon;
 use App\Models\Mission;
-use App\Models\MissionLanguage;
-use App\Models\Timesheet;
-use App\Models\TimesheetDocument;
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
+use App\Models\Timesheet;
+use Illuminate\Http\Request;
 use App\Helpers\LanguageHelper;
+use App\Models\MissionLanguage;
+use App\Models\TimesheetDocument;
 use Illuminate\Support\Collection;
+use App\Repositories\User\UserRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
 use App\Repositories\TenantOption\TenantOptionRepository;
-use App\Repositories\User\UserRepository;
 
 class TimesheetRepository implements TimesheetInterface
 {
@@ -138,67 +139,68 @@ class TimesheetRepository implements TimesheetInterface
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request
-     * @return array
+     * @param string $type
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getAllTimesheetEntries(Request $request): array
+    public function getAllTimesheetEntries(Request $request, string $type): LengthAwarePaginator
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-		
-        $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
-        $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-        foreach ($timeMissionEntries as $value) {
-            if ($value->missionLanguage) {
-                $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
-				$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
-				$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-				
-				// Set mission title
-				$missionTitle = $missionLanguage->title ?? '';
-                $value->setAttribute('title', $missionTitle);
-                unset($value->missionLanguage);
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        
+        if ($type === 'hour') {
+            $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+            foreach ($timeMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+                    $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+                    $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+                
+                    // Set mission title
+                    $missionTitle = $missionLanguage->title ?? '';
+                    $value->setAttribute('title', $missionTitle);
+                    unset($value->missionLanguage);
+                }
+
+                if ($value->timeMission) {
+                    $applicationStartTime = isset($value->timeMission->application_start_time) ?
+                    Carbon::parse(
+                        $value->timeMission->application_start_time,
+                        config('constants.TIMEZONE')
+                    )->setTimezone($timezone)->toDateTimeString() : null;
+
+                    $applicationEndTime = isset($value->timeMission->application_end_time) ?
+                    Carbon::parse(
+                        $value->timeMission->application_end_time,
+                        config('constants.TIMEZONE')
+                    )->setTimezone($timezone)->toDateTimeString() : null;
+
+                    $value->setAttribute('application_start_time', $applicationStartTime);
+                    $value->setAttribute('application_end_time', $applicationEndTime);
+                    unset($value->timeMission);
+                }
+                $value->setAppends([]);
             }
-
-            if ($value->timeMission) {
-                $applicationStartTime = isset($value->timeMission->application_start_time) ?
-                Carbon::parse(
-                    $value->timeMission->application_start_time,
-                    config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toDateTimeString() : null;
-
-                $applicationEndTime = isset($value->timeMission->application_end_time) ?
-                Carbon::parse(
-                    $value->timeMission->application_end_time,
-                    config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toDateTimeString() : null;
-
-                $value->setAttribute('application_start_time', $applicationStartTime);
-                $value->setAttribute('application_end_time', $applicationEndTime);
-                unset($value->timeMission);
-            }
-            $value->setAppends([]);
+            $timesheetEntries = $timeMissionEntries;
         }
 
-        $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
-        foreach ($goalMissionEntries as $value) {
-            if ($value->missionLanguage) {
-                $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
-				$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
-				$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-				
-				// Set mission title
-				$missionTitle = $missionLanguage->title ?? '';
-                $value->setAttribute('title', $missionTitle);
-                unset($value->missionLanguage);
+        if ($type === 'goal') {
+            $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
+            foreach ($goalMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+                    $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+                    $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+                
+                    // Set mission title
+                    $missionTitle = $missionLanguage->title ?? '';
+                    $value->setAttribute('title', $missionTitle);
+                    unset($value->missionLanguage);
+                }
+                $timesheetEntries = $goalMissionEntries;
             }
-            $value->setAppends([]);
-            $value->setAttribute('application_start_time', null);
-            $value->setAttribute('application_end_time', null);
         }
-
-        $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
-        $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
         return $timesheetEntries;
     }
     
@@ -324,8 +326,8 @@ class TimesheetRepository implements TimesheetInterface
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
-		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         
         $timeRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
@@ -353,11 +355,11 @@ class TimesheetRepository implements TimesheetInterface
         foreach ($timeRequestsList as $value) {
             if ($value->missionLanguage) {
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
-				$language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-				$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-				
-				// Set title
-				$missionTitle = $missionLanguage->title ?? '';
+                $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+                $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+                
+                // Set title
+                $missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
@@ -383,8 +385,8 @@ class TimesheetRepository implements TimesheetInterface
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
-		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
        
         $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
@@ -411,11 +413,11 @@ class TimesheetRepository implements TimesheetInterface
         foreach ($goalRequestList as $value) {
             if ($value->missionLanguage) {
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
-				$language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-				$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-				
-				// Set title
-				$missionTitle = $missionLanguage->title ?? '';
+                $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+                $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+                
+                // Set title
+                $missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
@@ -429,9 +431,9 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param Illuminate\Http\Request $request
      * @param string $missionType
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getTimesheetEntries(Request $request, string $missionType): Collection
+    public function getTimesheetEntries(Request $request, string $missionType): LengthAwarePaginator
     {
         $userId = $request->auth->user_id;
         
@@ -470,7 +472,7 @@ class TimesheetRepository implements TimesheetInterface
             ->where('user_id', $userId)
             ->with('timesheetStatus');
         }]);
-        return $timesheet->get();
+        return $timesheet->paginate($request->perPage);
     }
 
     /**
