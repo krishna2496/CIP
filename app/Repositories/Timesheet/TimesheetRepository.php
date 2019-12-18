@@ -250,12 +250,8 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->with(['timesheet' => function ($query) use ($userId, $request) {
+        ->with(['timesheet' => function ($query) use ($userId) {
             $query->where('user_id', $userId);
-            $query->with('timesheetStatus');
-            if ($request->has('status') && $request->input('status') !== '') {
-                $query->where('status_id', strtoupper($request->status));
-            }
         }]);
 
         if ($request->has('type') && $request->input('type') !== '' &&
@@ -269,14 +265,14 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param int $statusId
+     * @param string $status
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool
+    public function updateTimesheetStatus(string $status, int $timesheetId): bool
     {
         return $this->timesheet->where('timesheet_id', $timesheetId)
-        ->update(['status_id' => $statusId]);
+        ->update(['status' => $status]);
     }
 
     /** Update timesheet status on submit
@@ -642,8 +638,7 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getDetailsOfTimesheetEntry(int $timesheetId): Timesheet
     {
-        return $this->timesheet->with(['mission','user','timesheetStatus'])
-        ->where('timesheet_id', $timesheetId)->first();
+        return $this->timesheet->with(['mission','user'])->where('timesheet_id', $timesheetId)->first();
     }
 
     /**
