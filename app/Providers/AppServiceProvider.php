@@ -1,8 +1,9 @@
 <?php
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Rules\CustomValidationRules;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        CustomValidationRules::validate();
     }
     
     public function boot()
