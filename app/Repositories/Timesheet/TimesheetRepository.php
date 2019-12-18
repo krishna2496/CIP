@@ -323,7 +323,7 @@ class TimesheetRepository implements TimesheetInterface
         $timeRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> config('constants.mission_type.TIME')])
         ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title')
+            $query->select('mission_language_id', 'mission_id', 'title', 'language_id')
             ->where('language_id', $languageId);
         }])
         ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
