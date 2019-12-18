@@ -94,10 +94,17 @@ class TenantController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->toArray(), [
-            'name' => 'required|regex:/(^[A-Za-z0-9]+$)+/|
-            max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
-            'sponsor_id'  => 'required|numeric']);
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                'name' => 'required|valid_fqdn|
+                max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
+                'sponsor_id'  => 'required|numeric'
+            ],
+            [
+                'name.valid_fqdn' => trans('messages.custom_error_message.ERROR_INVALID_FQDN_NAME')
+            ]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -162,12 +169,14 @@ class TenantController extends Controller
     {
         try {
             $rules = [
-                'name' => 'max:512|sometimes|regex:/(^[A-Za-z0-9]+$)+/|
+                'name' => 'max:512|sometimes|valid_fqdn|
                 required|unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL',
                 'sponsor_id' => 'sometimes|required|numeric'
             ];
-            
-            $validator = Validator::make($request->toArray(), $rules);
+            $messages = [
+                'name.valid_fqdn' => trans('messages.custom_error_message.ERROR_INVALID_FQDN_NAME')
+            ];
+            $validator = Validator::make($request->toArray(), $rules, $messages);
 
             if ($validator->fails()) {
                 return $this->responseHelper->error(
