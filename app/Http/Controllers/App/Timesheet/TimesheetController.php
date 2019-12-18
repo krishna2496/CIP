@@ -167,7 +167,7 @@ class TimesheetController extends Controller
         ->setTimezone(config('constants.TIMEZONE'))
         ->format(config('constants.DB_DATE_TIME_FORMAT'));
 
-        $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
+        $statusArray = array(config('constants.timesheet_status.APPROVED'),
         config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
         // Get timesheet details
@@ -175,7 +175,7 @@ class TimesheetController extends Controller
             $request->mission_id,
             $request->auth->user_id,
             $dateVolunteered,
-            $timesheetStatus
+            $statusArray
         );
         if ($timesheetData->count() > 0) {
             return $this->responseHelper->error(

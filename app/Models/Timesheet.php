@@ -45,7 +45,7 @@ class Timesheet extends Model
      * @var array
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
-        'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission', 'month', 'total_hours',
+        'day_volunteered', 'notes', 'timesheetDocument', 'mission', 'month', 'total_hours',
         'total_minutes', 'status'];
     
     /**
@@ -77,18 +77,8 @@ class Timesheet extends Model
      */
     public function findTimesheet(int $timesheetId, int $userId)
     {
-        return static::with('timesheetDocument', 'timesheetStatus')->where(['timesheet_id' => $timesheetId,
+        return static::with('timesheetDocument')->where(['timesheet_id' => $timesheetId,
             'user_id' => $userId])->firstOrFail();
-    }
-
-    /**
-     * Get the timesheet status record associated with the timesheet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function timesheetStatus(): BelongsTo
-    {
-        return $this->belongsTo(TimesheetStatus::class, 'status_id', 'timesheet_status_id');
     }
 
     /**

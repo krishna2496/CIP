@@ -83,11 +83,11 @@ interface TimesheetInterface
      * @param int $missionId
      * @param int $userId
      * @param string $date
-     * @param array $timesheetStatus
+     * @param array $statusArray
      *
      * @return null|Illuminate\Support\Collection
      */
-    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $timesheetStatus): ?Collection;
+    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $statusArray): ?Collection;
 
     /**
      * Update timesheet field value, based on timesheet_id condition

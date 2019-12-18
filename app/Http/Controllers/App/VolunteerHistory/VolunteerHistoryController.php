@@ -130,8 +130,8 @@ class VolunteerHistoryController extends Controller
     public function timeMissionHistory(Request $request): JsonResponse
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
@@ -152,8 +152,8 @@ class VolunteerHistoryController extends Controller
     public function goalMissionHistory(Request $request): JsonResponse
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
