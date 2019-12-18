@@ -491,8 +491,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
        
@@ -1005,8 +1005,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
@@ -1083,8 +1083,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
-                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                    $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
                 }]);
         return $missionQuery->get();
     }
@@ -1210,6 +1210,8 @@ class MissionRepository implements MissionInterface
     public function getUserMissions(Request $request): ?array
     {
         $languageId = $this->languageHelper->getLanguageId($request);
+		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1219,15 +1221,16 @@ class MissionRepository implements MissionInterface
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         })
         ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title')
-            ->where('language_id', $languageId);
+            $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
         }])->get();
         
-        foreach ($missionData->toArray() as $key => $value) {
-            if (!empty($value['mission_language'])) {
-                $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
-            }
-            $missionLists[$key]['mission_id'] = $value['mission_id'];
+        foreach ($missionData as $key => $value) {
+            $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+			$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+			
+			$missionLists[$key]['title'] = $missionLanguage->title ?? '';
+            $missionLists[$key]['mission_id'] = $value->mission_id;
         }
         return $missionLists;
     }
@@ -1236,17 +1239,22 @@ class MissionRepository implements MissionInterface
      *
      * @param int $missionId
      * @param int $languageId
+     * @param int $defaultTenantLanguageId
      * @return string
      */
-    public function getMissionTitle(int $missionId, int $languageId): string
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
-        ->where(['mission_id' => $missionId, 'language_id' => $languageId])
+        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title', 'language_id')
+        ->where(['mission_id' => $missionId])
         ->get();
+		$missionTitle = '';
         if ($languageData->count() > 0) {
-            return $languageData[0]->title;
+			$index = array_search($languageId, array_column($languageData->toArray(), 'language_id'));
+			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+			$missionLanguage = $languageData->where('language_id', $language)->first();
+			$missionTitle =  $missionLanguage->title ?? '';
         }
-        return '';
+        return $missionTitle;
     }
 
     /**

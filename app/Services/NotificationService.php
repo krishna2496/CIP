@@ -125,7 +125,8 @@ class NotificationService
 
         $missionName = $this->missionRepository->getMissionTitle(
             $inviteDetails->mission->mission_id,
-            $languageId
+            $languageId,
+			$defaultTenantLanguageId
         );
         
         // Create message
@@ -322,7 +323,8 @@ class NotificationService
         // Get details
         $missionName = $this->missionRepository->getMissionTitle(
             $notification->entity_id,
-            $languageId
+            $languageId,
+			$defaultTenantLanguageId
         );
 
         // Create message
@@ -381,7 +383,8 @@ class NotificationService
 
         $missionName = $this->missionRepository->getMissionTitle(
             $missionId,
-            $languageId
+            $languageId,
+			$defaultTenantLanguageId
         );
         $status = trans('general.notification_status.'.$notification->action);
         

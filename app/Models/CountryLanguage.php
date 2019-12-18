@@ -28,7 +28,7 @@ class CountryLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['country_language_id', 'country_id', 'language_id', 'name'];
+    protected $visible = ['country_language_id', 'country_id', 'language_id', 'language_code', 'name'];
 
     /**
      * The attributes that are mass assignable.

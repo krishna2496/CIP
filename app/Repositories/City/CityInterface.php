@@ -65,4 +65,13 @@ interface CityInterface
      * @return App\Models\City
      */
     public function find(int $id): City;
+
+    /**
+    * Get listing of all city by country wise with pagination.
+    *
+    * @param Illuminate\Http\Request $request
+    * @param int $countryId
+    * @return Illuminate\Pagination\LengthAwarePaginator
+    */
+    public function getCityList(Request $request, int $countryId) : LengthAwarePaginator;
 }

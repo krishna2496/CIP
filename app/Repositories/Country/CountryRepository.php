@@ -192,7 +192,16 @@ class CountryRepository implements CountryInterface
             });
         }
 
-        return $countryQuery->paginate($request->perPage);
+        $countries = $countryQuery->paginate($request->perPage);
+
+        $languages = $this->languageHelper->getLanguages();
+        foreach ($countries as $key => $value) {
+            foreach ($value->languages as $languageValue) {
+                $languageData = $languages->where('language_id', $languageValue->language_id)->first();
+                $languageValue->language_code = $languageData->code;
+            }
+        }
+        return $countries;
     }
 
     /**

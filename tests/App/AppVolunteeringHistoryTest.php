@@ -120,8 +120,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         DB::setDefaultConnection('mysql');
@@ -376,8 +375,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
@@ -517,8 +515,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
@@ -737,8 +734,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
@@ -867,8 +863,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
