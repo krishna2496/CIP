@@ -231,6 +231,16 @@ class UserController extends Controller
             }
         }
 
+        $availabilityData = [];
+        foreach ($availabilityList as $availability) {
+            $arrayKey = array_search($languageCode, array_column($availability['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $availabilityData[$availability['availability_id']] = $availability
+                ['translations'][$arrayKey]['title'];
+            }
+        }
+        $availabilityList = $availabilityData;
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
         // Get tenant default language
