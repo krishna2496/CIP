@@ -37,7 +37,7 @@ class Timesheet extends Model
      */
     protected $fillable = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered',
-        'notes', 'status', 'status_id'];
+        'notes', 'status'];
 
     /**
      * The attributes that should be visible in arrays.
