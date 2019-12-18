@@ -162,8 +162,8 @@ class TenantController extends Controller
     {
         try {
             $rules = [
-                'name' => 'max:512|sometimes|regex:/(^[A-Za-z0-9]+$)+/|
-                required|unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL',
+                'name' => 'required|regex:/(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/|
+                max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
                 'sponsor_id' => 'sometimes|required|numeric'
             ];
             
