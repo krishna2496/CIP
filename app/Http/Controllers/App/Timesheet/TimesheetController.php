@@ -87,15 +87,27 @@ class TimesheetController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request);
+        $validator = Validator::make($request->toArray(), [
+            'type' => 'required|in:hour,goal'
+        ]);
 
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+
+        $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request, $request->type);
         $apiData = $timesheetEntries;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (count($timesheetEntries[config('constants.mission_type.TIME')]) > 0 ||
+        $apiMessage = ($timesheetEntries->total() > 0 ||
         count($timesheetEntries[config('constants.mission_type.GOAL')]) > 0) ?
         trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
         trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
     }
 
     /**

@@ -5,17 +5,18 @@ namespace App\Repositories\Timesheet;
 use DB;
 use Carbon\Carbon;
 use App\Models\Mission;
-use App\Models\MissionLanguage;
-use App\Models\Timesheet;
-use App\Models\TimesheetDocument;
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
+use App\Models\Timesheet;
+use Illuminate\Http\Request;
 use App\Helpers\LanguageHelper;
+use App\Models\MissionLanguage;
+use App\Models\TimesheetDocument;
 use Illuminate\Support\Collection;
+use App\Repositories\User\UserRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
 use App\Repositories\TenantOption\TenantOptionRepository;
-use App\Repositories\User\UserRepository;
 
 class TimesheetRepository implements TimesheetInterface
 {
@@ -138,58 +139,64 @@ class TimesheetRepository implements TimesheetInterface
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request
-     * @return array
+     * @param string $type
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getAllTimesheetEntries(Request $request): array
+    public function getAllTimesheetEntries(Request $request, string $type): LengthAwarePaginator
     {
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
-        $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-        foreach ($timeMissionEntries as $value) {
-            if ($value->missionLanguage) {
-                if (isset($value->missionLanguage[0])) {
-                    $missionTitle = $value->missionLanguage[0]->title;
+        $timesheetEntries = [];
+
+        if ($type === 'hour') {
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+            foreach ($timeMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    if (isset($value->missionLanguage[0])) {
+                        $missionTitle = $value->missionLanguage[0]->title;
+                    }
+                    $value->setAttribute('title', $missionTitle);
+                    unset($value->missionLanguage);
                 }
-                $value->setAttribute('title', $missionTitle);
-                unset($value->missionLanguage);
+
+                if ($value->timeMission) {
+                    $applicationStartTime = isset($value->timeMission->application_start_time) ?
+                    Carbon::parse(
+                        $value->timeMission->application_start_time,
+                        config('constants.TIMEZONE')
+                    )->setTimezone($timezone)->toDateTimeString() : null;
+
+                    $applicationEndTime = isset($value->timeMission->application_end_time) ?
+                    Carbon::parse(
+                        $value->timeMission->application_end_time,
+                        config('constants.TIMEZONE')
+                    )->setTimezone($timezone)->toDateTimeString() : null;
+
+                    $value->setAttribute('application_start_time', $applicationStartTime);
+                    $value->setAttribute('application_end_time', $applicationEndTime);
+                    unset($value->timeMission);
+                }
+                $value->setAppends([]);
             }
-
-            if ($value->timeMission) {
-                $applicationStartTime = isset($value->timeMission->application_start_time) ?
-                Carbon::parse(
-                    $value->timeMission->application_start_time,
-                    config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toDateTimeString() : null;
-
-                $applicationEndTime = isset($value->timeMission->application_end_time) ?
-                Carbon::parse(
-                    $value->timeMission->application_end_time,
-                    config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toDateTimeString() : null;
-
-                $value->setAttribute('application_start_time', $applicationStartTime);
-                $value->setAttribute('application_end_time', $applicationEndTime);
-                unset($value->timeMission);
-            }
-            $value->setAppends([]);
+            $timesheetEntries = $timeMissionEntries;
         }
 
-        $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
-        foreach ($goalMissionEntries as $value) {
-            if ($value->missionLanguage) {
-                if (isset($value->missionLanguage[0])) {
-                    $missionTitle = $value->missionLanguage[0]->title;
+        if ($type === 'goal') {
+            $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
+            foreach ($goalMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    if (isset($value->missionLanguage[0])) {
+                        $missionTitle = $value->missionLanguage[0]->title;
+                    }
+                    $value->setAttribute('title', $missionTitle);
+                    unset($value->missionLanguage);
                 }
-                $value->setAttribute('title', $missionTitle);
-                unset($value->missionLanguage);
+                $value->setAppends([]);
+                $value->setAttribute('application_start_time', null);
+                $value->setAttribute('application_end_time', null);
             }
-            $value->setAppends([]);
-            $value->setAttribute('application_start_time', null);
-            $value->setAttribute('application_end_time', null);
+            $timesheetEntries = $goalMissionEntries;
         }
-
-        $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
-        $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
         return $timesheetEntries;
     }
     
@@ -412,9 +419,9 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param Illuminate\Http\Request $request
      * @param string $missionType
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getTimesheetEntries(Request $request, string $missionType): Collection
+    public function getTimesheetEntries(Request $request, string $missionType): LengthAwarePaginator
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
@@ -456,7 +463,7 @@ class TimesheetRepository implements TimesheetInterface
             ->where('user_id', $userId)
             ->with('timesheetStatus');
         }]);
-        return $timesheet->get();
+        return $timesheet->paginate($request->perPage);
     }
 
     /**
