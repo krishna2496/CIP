@@ -74,6 +74,7 @@ class NewsController extends Controller
         try {
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
             $languageId = $this->languageHelper->getLanguageId($request);
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageCode = $language->code;
@@ -86,14 +87,16 @@ class NewsController extends Controller
             ->map(function (News $newsTransform) use (
                 $languageId,
                 $defaultTenantLanguageId,
-                $languageCode
+                $languageCode,
+                $defaultTenantLanguageCode
             ) {
                 return $this->getTransformedNews(
                     $newsTransform,
                     true,
                     $languageId,
                     $defaultTenantLanguageId,
-                    $languageCode
+                    $languageCode,
+                    $defaultTenantLanguageCode
                 );
             })->all();
             $requestString = $request->except(['page','perPage']);
