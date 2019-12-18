@@ -70,10 +70,9 @@ class CityRepository implements CityInterface
      *
      * @param string $cityId
      * @param int $languageId
-     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCity(string $cityId, int $languageId, int $defaultLanguageId) : array
+    public function getCity(string $cityId, int $languageId) : array
     {
         $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
        
@@ -81,17 +80,14 @@ class CityRepository implements CityInterface
         if (!empty($city)) {
             foreach ($city as $key => $value) {
                 $translation = $value['languages'];
+                $cityData[$value['city_id']] =  $translation[0]['name'] ?? '';
                 $translationkey = '';
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
-                    $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
                 }
            
                 if ($translationkey !== '') {
                     $cityData[$value['city_id']] = $translation[$translationkey]['name'];
-                } else {
-                    $cityData[$value['city_id']] =  $translation[0]['name'] ?? '';
                 }
             }
         }
@@ -208,5 +204,27 @@ class CityRepository implements CityInterface
     public function find(int $id): City
     {
         return $this->city->findOrFail($id);
+    }
+
+    /**
+     * It will check is city belongs to any mission or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasMission(int $id): bool
+    {
+        return $this->city->whereHas('mission')->whereCityId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is city belongs to any user or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasUser(int $id): bool
+    {
+        return $this->city->whereHas('user')->whereCityId($id)->count() ? true : false;
     }
 }

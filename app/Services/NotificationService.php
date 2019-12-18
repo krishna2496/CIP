@@ -126,7 +126,7 @@ class NotificationService
         $missionName = $this->missionRepository->getMissionTitle(
             $inviteDetails->mission->mission_id,
             $languageId,
-            $defaultTenantLanguageId
+			$defaultTenantLanguageId
         );
         
         // Create message
@@ -324,7 +324,7 @@ class NotificationService
         $missionName = $this->missionRepository->getMissionTitle(
             $notification->entity_id,
             $languageId,
-            $defaultTenantLanguageId
+			$defaultTenantLanguageId
         );
 
         // Create message
@@ -347,14 +347,12 @@ class NotificationService
     public function newNews(
         Notification $notification,
         string $tenantName = null,
-        int $languageId,
-        int $defaultTenantLanguageId
+        int $languageId
     ): array {
         // Get details
         $newsTitle = $this->newsRepository->getNewsTitle(
             $notification->entity_id,
-            $languageId,
-            $defaultTenantLanguageId
+            $languageId
         );
 
         // Create message
@@ -386,7 +384,7 @@ class NotificationService
         $missionName = $this->missionRepository->getMissionTitle(
             $missionId,
             $languageId,
-            $defaultTenantLanguageId
+			$defaultTenantLanguageId
         );
         $status = trans('general.notification_status.'.$notification->action);
         

@@ -109,7 +109,6 @@ class UserFilterController extends Controller
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
         $languageId = $language->language_id;
-        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $filterData = [];
 
         // Get data of user's filter
@@ -125,8 +124,7 @@ class UserFilterController extends Controller
             if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
                 $countryTag = $this->countryRepository->getCountry(
                     $filterData["filters"]["country_id"],
-                    $languageId,
-                    $defaultLanguage->language_id
+                    $languageId
                 );
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
@@ -135,8 +133,9 @@ class UserFilterController extends Controller
 
             if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
                 $cityTag = $this->cityRepository->getCity(
-                            $filterData["filters"]["city_id"], $languageId, 
-                           $defaultLanguage->language_id);
+                    $filterData["filters"]["city_id"],
+                    $languageId
+                );
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
                         $filterTagArray["city"][$key] = $value;

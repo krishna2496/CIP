@@ -528,11 +528,7 @@ class MissionRepository implements MissionInterface
                 });
             }
             if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
-                $missionQuery->where(
-                    'organisation_name',
-                    'like',
-                    '%' . $request->input('explore_mission_params') . '%'
-                );
+                $missionQuery->where("mission.organisation_id", $request->input('explore_mission_params'));
             }
         }
         
@@ -1214,7 +1210,8 @@ class MissionRepository implements MissionInterface
     public function getUserMissions(Request $request): ?array
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1224,20 +1221,16 @@ class MissionRepository implements MissionInterface
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         })
         ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title')
-            ->where('language_id', $languageId);
+            $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
         }])->get();
         
-        foreach ($missionData->toArray() as $key => $value) {
-            if (!empty($value['mission_language'])) {
-                $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
-            } else {
-                $defaultTenantLanguageData = $this->modelsService->missionLanguage->select('title')
-                ->where(['mission_id' => $value['mission_id'], 'language_id' => $defaultTenantLanguage->language_id])
-                ->get();
-                $missionLists[$key]['title'] = $defaultTenantLanguageData[0]->title;
-            }
-            $missionLists[$key]['mission_id'] = $value['mission_id'];
+        foreach ($missionData as $key => $value) {
+            $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+			$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+			
+			$missionLists[$key]['title'] = $missionLanguage->title ?? '';
+            $missionLists[$key]['mission_id'] = $value->mission_id;
         }
         return $missionLists;
     }
@@ -1251,18 +1244,17 @@ class MissionRepository implements MissionInterface
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
-        ->where(['mission_id' => $missionId, 'language_id' => $languageId])
+        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title', 'language_id')
+        ->where(['mission_id' => $missionId])
         ->get();
+		$missionTitle = '';
         if ($languageData->count() > 0) {
-            return $languageData[0]->title;
-        } else {
-            $defaultTenantLanguageData = $this->modelsService->missionLanguage
-                ->select('title')
-                ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
-                ->get();
-            return $defaultTenantLanguageData[0]->title;
+			$index = array_search($languageId, array_column($languageData->toArray(), 'language_id'));
+			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+			$missionLanguage = $languageData->where('language_id', $language)->first();
+			$missionTitle =  $missionLanguage->title ?? '';
         }
+        return $missionTitle;
     }
 
     /**
@@ -1302,9 +1294,9 @@ class MissionRepository implements MissionInterface
         );
         if (isset($mission[0]['publication_status'])
         && (in_array($mission[0]['publication_status'], $missionStatus))) {
-            return true;
+            $status = true;
         }
-        return false;
+        return $status ?? false;
     }
 
     /**

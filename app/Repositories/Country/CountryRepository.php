@@ -67,20 +67,21 @@ class CountryRepository implements CountryInterface
      *
      * @param int  $countryId
      * @param int $languageId
-     * @param int $defaultLanguageId
      * @return array
      */
-    public function getCountry(int $countryId, int $languageId, int $defaultLanguageId) : array
+    public function getCountry(int $countryId, int $languageId) : array
     {
-       
         $country = $this->country->with('languages')->where("country_id", $countryId)->first();
         $translation = $country->languages->toArray();
+
+        $countryData = array('country_id' => $country->country_id,
+            'country_code' => $country->ISO,
+            'name' =>  $translation[0]['name'] ?? '',
+            );
 
         $translationkey = '';
         if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
             $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-        } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
-            $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
         }
     
         if ($translationkey !== '') {
@@ -88,13 +89,7 @@ class CountryRepository implements CountryInterface
             'country_code' => $country->ISO,
             'name' => $translation[$translationkey]['name'],
             );
-        } else {
-            $countryData = array('country_id' => $country->country_id,
-            'country_code' => $country->ISO,
-            'name' =>  $translation[0]['name'] ?? '',
-            );
         }
-      
         return $countryData;
     }
 
@@ -198,5 +193,27 @@ class CountryRepository implements CountryInterface
         }
 
         return $countryQuery->paginate($request->perPage);
+    }
+
+    /**
+     * It will check is country belongs to any mission or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasMission(int $id): bool
+    {
+        return $this->country->whereHas('mission')->whereCountryId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is country belongs to any user or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasUser(int $id): bool
+    {
+        return $this->country->whereHas('user')->whereCountryId($id)->count() ? true : false;
     }
 }

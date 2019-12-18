@@ -319,12 +319,16 @@ return [
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification not found in the system',
 
         // For availability module
-        'ERROR_AVAILABILITY_NOT_FOUND' => 'Availabilty not found in system',
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'Availability not found in system',
 
         // For Country module
         'ERROR_COUNTRY_NOT_FOUND' => 'Country not found in system',
 
         // For city module
         'ERROR_CITY_NOT_FOUND' => 'City not found in system',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
+        
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
        ]
 ];

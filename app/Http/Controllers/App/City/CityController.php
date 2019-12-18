@@ -45,7 +45,7 @@ class CityController extends Controller
      */
     public function __construct(
         CityRepository $cityRepository,
-        ResponseHelper $responseHelper,        
+        ResponseHelper $responseHelper,
         LanguageHelper $languageHelper
     ) {
         $this->cityRepository = $cityRepository;
@@ -68,16 +68,12 @@ class CityController extends Controller
         
             // Fetch city lists
             $cityList = $this->cityRepository->cityList($countryId);
-
-            // Get tenant default language
-            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             
             if (!$cityList->isEmpty()) {
                 // Transform city details
                 $cityDetails = $this->cityTransform(
                     $cityList->toArray(),
-                    $languageId,
-                    $defaultTenantLanguage->language_id
+                    $languageId
                 );
             }
             $apiData = isset($cityDetails) ? $cityDetails : $cityList->toArray();
