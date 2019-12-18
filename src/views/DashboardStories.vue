@@ -124,7 +124,7 @@
                         </b-row>
                         <div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
                             <b-pagination 
-                                hide-ellipsis=true
+                                :hide-ellipsis="hideEllipsis"
                                 v-model="pagination.currentPage" :total-rows="pagination.total"
                                 :per-page="pagination.perPage" align="center" @change="pageChange"
                                 aria-controls="my-cardlist"></b-pagination>
@@ -176,6 +176,7 @@
                 storyText: '',
                 isLoaderActive: false,
                 isStoryDisplay: true,
+                hideEllipsis:true
             };
         },
         methods: {
