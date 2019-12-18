@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTimesheetStatusTable extends Migration
+class DropTimesheetStatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateTimesheetStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('timesheet_status', function (Blueprint $table) {
-            $table->bigIncrements('timesheet_status_id');
-            $table->string('status', 255);
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('timesheet_status', function (Blueprint $table) {
+            \DB::statement("DROP TABLE IF EXISTS timesheet_status");
         });
     }
 
@@ -28,6 +25,6 @@ class CreateTimesheetStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('timesheet_status');
+        
     }
 }
