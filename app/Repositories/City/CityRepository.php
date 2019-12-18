@@ -256,6 +256,15 @@ class CityRepository implements CityInterface
     public function getCityList(Request $request, int $countryId) : LengthAwarePaginator
     {
         $this->country->findOrFail($countryId);
-        return $this->city->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+        $cities = $this->city->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+
+        $languages = $this->languageHelper->getLanguages();
+        foreach ($cities as $key => $value) {
+            foreach ($value->languages as $languageValue) {
+                $languageData = $languages->where('language_id', $languageValue->language_id)->first();
+                $languageValue->language_code = $languageData->code;
+            }
+        }
+        return $cities;
     }
 }
