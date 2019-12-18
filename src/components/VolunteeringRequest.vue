@@ -21,7 +21,7 @@
         </div>
         <div class="pagination-block" v-if="items.length > 0 && totalPages > 1">
             <b-pagination 
-            hide-ellipsis=true
+            :hide-ellipsis="hideEllipsis"
             v-model="page" :total-rows="totalRow" :per-page="perPage" align="center" @change="pageChange">
             </b-pagination>
         </div>
@@ -50,7 +50,8 @@
         data: function () {
             return {
                 languageData: [],
-                page: this.currentPage
+                page: this.currentPage,
+                hideEllipsis:true
             }
         },
         directives: {},
