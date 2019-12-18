@@ -227,4 +227,17 @@ class CityRepository implements CityInterface
     {
         return $this->city->whereHas('user')->whereCityId($id)->count() ? true : false;
     }
+
+    /**
+    * Get listing of all city by country wise with pagination.
+    *
+    * @param Illuminate\Http\Request $request
+    * @param int $countryId
+    * @return Illuminate\Pagination\LengthAwarePaginator
+    */
+    public function getCityList(Request $request, int $countryId) : LengthAwarePaginator
+    {
+        $this->country->findOrFail($countryId);
+        return $this->city->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+    }
 }
