@@ -61,18 +61,19 @@ class CityController extends Controller
     /**
     * Fetch city by country id
     *
+    * @param Illuminate\Http\Request $request
     * @param int $countryId
     * @return Illuminate\Http\JsonResponse
     */
-    public function fetchCity(int $countryId): JsonResponse
+    public function fetchCity(Request $request, int $countryId): JsonResponse
     {
         try {
-            $cityList = $this->cityRepository->cityList($countryId);
-            $apiData = $cityList->toArray();
+            $cityList = $this->cityRepository->getCityList($request, $countryId);
+           
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ? trans('messages.success.MESSAGE_CITY_LISTING')
+            $apiMessage = ($cityList->count() > 0) ? trans('messages.success.MESSAGE_CITY_LISTING')
             : trans('messages.success.MESSAGE_NO_CITY_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $cityList);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COUNTRY_NOT_FOUND'),

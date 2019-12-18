@@ -491,8 +491,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
        
@@ -1005,8 +1005,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
@@ -1083,8 +1083,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
-                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                    $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
                 }]);
         return $missionQuery->get();
     }

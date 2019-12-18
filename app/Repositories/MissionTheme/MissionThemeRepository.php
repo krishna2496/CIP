@@ -5,7 +5,6 @@ use App\Repositories\MissionTheme\MissionThemeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\MissionTheme;
-use App\Models\TimesheetStatus;
 use Illuminate\Support\Collection;
 use \Illuminate\Pagination\LengthAwarePaginator;
 
@@ -15,23 +14,16 @@ class MissionThemeRepository implements MissionThemeInterface
      * @var App\Models\MissionTheme
      */
     public $missionTheme;
-
-    /**
-     * @var App\Models\TimesheetStatus
-     */
-    public $timesheetStatus;
  
     /**
      * Create a new MissionTheme repository instance.
      *
      * @param  App\Models\MissionTheme $missionTheme
-     * @param App\Models\TimesheetStatus $timesheetStatus
      * @return void
      */
-    public function __construct(MissionTheme $missionTheme, TimesheetStatus $timesheetStatus)
+    public function __construct(MissionTheme $missionTheme)
     {
         $this->missionTheme = $missionTheme;
-        $this->timesheetStatus = $timesheetStatus;
     }
     
     /**
@@ -141,10 +133,15 @@ class MissionThemeRepository implements MissionThemeInterface
         if (!empty($year)) {
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
+        
+        $statusArray = [
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
+        ];
         $queryBuilder = $queryBuilder->where('mission.publication_status', 'APPROVED')
         ->where('timesheet.user_id', $userId)
         ->whereNotNull('mission.mission_id')
-        ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
+        ->whereIn('timesheet.status', $statusArray)
         ->whereNotNull('timesheet.timesheet_id')
         ->whereNull('timesheet.deleted_at')
         ->groupBy('mission_theme.mission_theme_id');
