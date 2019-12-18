@@ -185,9 +185,10 @@ interface MissionInterface
      *
      * @param int $missionId
      * @param int $languageId
+     * @param int $defaultTenantLanguageId
      * @return string
      */
-    public function getMissionTitle(int $missionId, int $languageId): string;
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
     
     /**
      * Check mission status
