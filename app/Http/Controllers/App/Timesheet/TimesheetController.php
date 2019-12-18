@@ -185,7 +185,7 @@ class TimesheetController extends Controller
                 trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_APPROVED')
             );
         } else {
-            $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
+            $request->request->add(['status' => config('constants.timesheet_status.PENDING')]);
         }
         
         // Fetch mission data from missionid

@@ -467,12 +467,7 @@ class TimesheetRepository implements TimesheetInterface
     public function getTimesheetDetails(int $missionId, int $userId, string $date, array $timesheetStatus): ?Collection
     {
         return $this->timesheet->with('timesheetDocument')
-        ->whereHas('timesheetStatus', function ($query) use ($timesheetStatus) {
-            $query->whereIn('status', $timesheetStatus);
-        })
-        ->with(['timesheetStatus' => function ($query) use ($timesheetStatus) {
-            $query->whereIn('status', $timesheetStatus);
-        }])
+        ->whereIn('status', $timesheetStatus)
         ->where(['mission_id' => $missionId,
             'user_id' => $userId, 'date_volunteered' => $date])
             ->get();
@@ -487,8 +482,8 @@ class TimesheetRepository implements TimesheetInterface
     public function getSubmittedActions(int $missionId): int
     {
         return ($this->timesheet->where('mission_id', $missionId)
-        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')))
+        ->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')))
         ->sum('action')) ?? 0;
     }
     
