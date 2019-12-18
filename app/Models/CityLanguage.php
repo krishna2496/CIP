@@ -28,7 +28,7 @@ class CityLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['city_language_id', 'city_id', 'language_id', 'name'];
+    protected $visible = ['city_language_id', 'city_id', 'language_id', 'language_code', 'name'];
 
     /**
      * The attributes that are mass assignable.
