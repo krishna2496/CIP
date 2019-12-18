@@ -450,11 +450,10 @@ class TimesheetRepository implements TimesheetInterface
                 'date_volunteered',
                 'day_volunteered',
                 'notes',
-                'status_id',
+                'status',
                 $type
             )
-            ->where('user_id', $userId)
-            ->with('timesheetStatus');
+            ->where('user_id', $userId);
         }]);
         return $timesheet->get();
     }

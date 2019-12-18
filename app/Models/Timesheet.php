@@ -46,7 +46,7 @@ class Timesheet extends Model
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission', 'month', 'total_hours',
-        'total_minutes'];
+        'total_minutes', 'status'];
     
     /**
      * Get date volunteered attribute on the model.
@@ -77,7 +77,7 @@ class Timesheet extends Model
      */
     public function findTimesheet(int $timesheetId, int $userId)
     {
-        return static::with('timesheetDocument', 'timesheetStatus')->where(['timesheet_id' => $timesheetId,
+        return static::with('timesheetDocument')->where(['timesheet_id' => $timesheetId,
             'user_id' => $userId])->firstOrFail();
     }
 
