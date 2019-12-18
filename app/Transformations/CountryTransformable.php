@@ -20,14 +20,12 @@ trait CountryTransformable
                 $countryData[$value['languages'][$index]['country_id']] = $value['languages'][$index]['name'];
             } else {
                 $translationIndex = array_search(
-                    $defaultTenantlanguage,
+                    $defaultLanguageId,
                     array_column($value['languages'], 'language_id')
                 );
                 if ($translationIndex) {
                     $countryData[$value['languages'][$translationIndex]['country_id']]
                     = $value['languages'][$translationIndex]['name'];
-                } else {
-                    $countryData[$value['languages'][$index]['country_id']] = $value['languages'][0]['name'];
                 }
             }
         }

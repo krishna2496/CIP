@@ -77,7 +77,7 @@ class CityController extends Controller
                 $cityDetails = $this->cityTransform(
                     $cityList->toArray(),
                     $languageId,
-                    $defaultTenantLanguage->defaultTenantLanguage
+                    $defaultTenantLanguage->language_id
                 );
             }
             $apiData = isset($cityDetails) ? $cityDetails : $cityList->toArray();
