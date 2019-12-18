@@ -82,7 +82,10 @@ trait MissionTransformable
         unset($mission['missionApplication']);
         
         if (isset($mission['availability'])) {
-            $mission['availability_type']  = $mission['availability']['type'];
+            $arrayKey = array_search($languageCode, array_column($mission['availability']['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $mission['availability_type'] = $mission['availability']['translations'][$arrayKey]['title'];
+            }
             unset($mission['availability']);
         }
         // Set seats_left or already_volunteered
