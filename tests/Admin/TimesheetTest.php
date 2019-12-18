@@ -128,8 +128,7 @@ class TimesheetTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         
@@ -280,22 +279,21 @@ class TimesheetTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         
         DB::setDefaultConnection('mysql');
         
         $params = [
-            "status_id" => 1
+            "status" => config('constants.timesheet_status.PENDING')
         ];
         
         $this->patch('timesheet/'.$timeSheetId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
         $invalidParam = [
-            "status_id" => rand(80000,8000000)
+            "status" => rand(80000,8000000)
         ];
         DB::setDefaultConnection('mysql');
         $this->patch('timesheet/'.$timeSheetId, $invalidParam, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -428,15 +426,14 @@ class TimesheetTest extends TestCase
         ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
-        $status = config('constants.timesheet_status.AUTOMATICALLY_APPROVED');
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::where('status', $status)->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         
-
-        $statusId = Config('constants.timesheet_status_id.'.$status);
+        $status = config('constants.timesheet_status.AUTOMATICALLY_APPROVED');
+        $statusId = Config('constants.timesheet_status.'.$status);
         DB::setDefaultConnection('mysql');
         $response = $this->get('timesheet/'.$user->user_id.'?status='.$statusId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);

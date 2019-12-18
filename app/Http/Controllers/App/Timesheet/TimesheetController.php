@@ -179,7 +179,7 @@ class TimesheetController extends Controller
         ->setTimezone(config('constants.TIMEZONE'))
         ->format(config('constants.DB_DATE_TIME_FORMAT'));
 
-        $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
+        $statusArray = array(config('constants.timesheet_status.APPROVED'),
         config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
         // Get timesheet details
@@ -187,7 +187,7 @@ class TimesheetController extends Controller
             $request->mission_id,
             $request->auth->user_id,
             $dateVolunteered,
-            $timesheetStatus
+            $statusArray
         );
         if ($timesheetData->count() > 0) {
             return $this->responseHelper->error(
@@ -197,7 +197,7 @@ class TimesheetController extends Controller
                 trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_APPROVED')
             );
         } else {
-            $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
+            $request->request->add(['status' => config('constants.timesheet_status.PENDING')]);
         }
         
         // Fetch mission data from missionid
@@ -373,10 +373,10 @@ class TimesheetController extends Controller
             $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
 
             $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+                config('constants.timesheet_status.APPROVED')
             ];
-            if (in_array($timesheetData['status_id'], $statusArray)) {
+            if (in_array($timesheetData['status'], $statusArray)) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -483,7 +483,7 @@ class TimesheetController extends Controller
      */
     public function getPendingTimeRequests(Request $request): JsonResponse
     {
-        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $statusArray = [config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')];
         $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
         
         $apiStatus = Response::HTTP_OK;
@@ -501,7 +501,7 @@ class TimesheetController extends Controller
      */
     public function getPendingGoalRequests(Request $request): JsonResponse
     {
-        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $statusArray = [config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')];
         $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray);
 
         $apiMessage = (count($goalRequestList) > 0) ? trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING')
@@ -517,7 +517,7 @@ class TimesheetController extends Controller
      */
     public function exportPendingTimeRequests(Request $request): Object
     {
-        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $statusArray = [config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')];
 
         $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
 
@@ -575,7 +575,7 @@ class TimesheetController extends Controller
      */
     public function exportPendingGoalRequests(Request $request): Object
     {
-        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $statusArray = [config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')];
         $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
         
         if ($goalRequestList->count()) {

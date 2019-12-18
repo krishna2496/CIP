@@ -263,9 +263,8 @@ class TimesheetRepository implements TimesheetInterface
         }])
         ->with(['timesheet' => function ($query) use ($userId, $request) {
             $query->where('user_id', $userId);
-            $query->with('timesheetStatus');
             if ($request->has('status') && $request->input('status') !== '') {
-                $query->where('status_id', strtoupper($request->status));
+                $query->where('status', strtoupper($request->status));
             }
         }]);
 
@@ -280,14 +279,14 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param int $statusId
+     * @param string $status
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool
+    public function updateTimesheetStatus(string $status, int $timesheetId): bool
     {
         return $this->timesheet->where('timesheet_id', $timesheetId)
-        ->update(['status_id' => $statusId]);
+        ->update(['status' => $status]);
     }
 
     /** Update timesheet status on submit
@@ -301,12 +300,12 @@ class TimesheetRepository implements TimesheetInterface
         $status = false;
         if ($request->timesheet_entries) {
             foreach ($request->timesheet_entries as $data) {
-                $timesheetData = $this->timesheet->with('timesheetStatus')->where(['user_id' => $userId,
+                $timesheetData = $this->timesheet->where(['user_id' => $userId,
                 'timesheet_id' => $data['timesheet_id']])
                 ->firstOrFail();
                 $timesheetDetails = $timesheetData->toArray();
-                if ($timesheetDetails["timesheet_status"]["status"] === config('constants.timesheet_status.PENDING')) {
-                    $timesheetData->status_id = config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL');
+                if ($timesheetDetails["status"] === config('constants.timesheet_status.PENDING')) {
+                    $timesheetData->status = config('constants.timesheet_status.SUBMIT_FOR_APPROVAL');
                     $status = $timesheetData->update();
                 }
             }
@@ -337,21 +336,20 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
         }])
         ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
             $query->where('user_id', $request->auth->user_id);
         })
         ->withCount([
         'timesheet AS total_hours' => function ($query) use ($request, $statusArray) {
             $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
             $query->where('user_id', $request->auth->user_id);
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
         }]);
         if ($withPagination) {
             $timeRequestsList = $timeRequests->paginate($request->perPage);
         } else {
             $timeRequestsList = $timeRequests->get();
         }
-
         foreach ($timeRequestsList as $value) {
             if ($value->missionLanguage) {
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
@@ -397,13 +395,13 @@ class TimesheetRepository implements TimesheetInterface
         }])
         ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
             $query->where('user_id', $request->auth->user_id);
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
         })
         ->withCount([
         'timesheet AS action' => function ($query) use ($request, $statusArray) {
             $query->select(DB::raw("SUM(action) as action"));
             $query->where('user_id', $request->auth->user_id);
-            $query->whereIn('status_id', $statusArray);
+            $query->whereIn('status', $statusArray);
         }]);
         if ($withPagination) {
             $goalRequestList = $goalRequests->paginate($request->perPage);
@@ -466,11 +464,10 @@ class TimesheetRepository implements TimesheetInterface
                 'date_volunteered',
                 'day_volunteered',
                 'notes',
-                'status_id',
+                'status',
                 $type
             )
-            ->where('user_id', $userId)
-            ->with('timesheetStatus');
+            ->where('user_id', $userId);
         }]);
         return $timesheet->paginate($request->perPage);
     }
@@ -481,19 +478,14 @@ class TimesheetRepository implements TimesheetInterface
      * @param int $missionId
      * @param int $userId
      * @param string $date
-     * @param array $timesheetStatus
+     * @param array $statusArray
      *
      * @return null|Illuminate\Support\Collection
      */
-    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $timesheetStatus): ?Collection
+    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $statusArray): ?Collection
     {
         return $this->timesheet->with('timesheetDocument')
-        ->whereHas('timesheetStatus', function ($query) use ($timesheetStatus) {
-            $query->whereIn('status', $timesheetStatus);
-        })
-        ->with(['timesheetStatus' => function ($query) use ($timesheetStatus) {
-            $query->whereIn('status', $timesheetStatus);
-        }])
+        ->whereIn('status', $statusArray)
         ->where(['mission_id' => $missionId,
             'user_id' => $userId, 'date_volunteered' => $date])
             ->get();
@@ -508,8 +500,8 @@ class TimesheetRepository implements TimesheetInterface
     public function getSubmittedActions(int $missionId): int
     {
         return ($this->timesheet->where('mission_id', $missionId)
-        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')))
+        ->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')))
         ->sum('action')) ?? 0;
     }
     
@@ -523,8 +515,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getTotalHours(int $userId, $year, $month): ?array
     {
-        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+        $statusArray = [config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
 
         $missionQuery = $this->mission->select('mission.*');
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
@@ -539,7 +531,7 @@ class TimesheetRepository implements TimesheetInterface
                         $query->whereMonth('date_volunteered', $month);
                     }
                 }
-                $query->whereIn('status_id', $statusArray);
+                $query->whereIn('status', $statusArray);
             }
         ]);
         return $missionQuery->get()->toArray();
@@ -554,8 +546,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getTotalHoursForYear(int $userId, $year): ?array
     {
-        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+        $statusArray = [config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
 
         $missionQuery = $this->mission->select('mission.*');
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
@@ -567,7 +559,7 @@ class TimesheetRepository implements TimesheetInterface
                 if (isset($year) && $year != '') {
                     $query->whereYear('date_volunteered', $year);
                 }
-                $query->whereIn('status_id', $statusArray);
+                $query->whereIn('status', $statusArray);
             }
         ]);
         return $missionQuery->get()->toArray();
@@ -582,8 +574,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getTotalHoursbyMonth(int $userId, $year, $missionId): ?array
     {
-        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+        $statusArray = [config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
 
         $missionQuery = $this->timesheet
         ->select(DB::raw("MONTH(date_volunteered) as month,
@@ -593,7 +585,7 @@ class TimesheetRepository implements TimesheetInterface
         ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
         $missionQuery->where('user_id', $userId);
         $missionQuery->whereYear('date_volunteered', $year);
-        $missionQuery->whereIn('status_id', $statusArray);
+        $missionQuery->whereIn('status', $statusArray);
         if (!is_null($missionId) && ($missionId != "")) {
             $missionQuery->where('timesheet.mission_id', $missionId);
         }
@@ -627,8 +619,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getUsersTotalHours($year, $month): ?array
     {
-        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+        $statusArray = [config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
 
         $timesheetQuery = $this->timesheet
         ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
@@ -643,7 +635,7 @@ class TimesheetRepository implements TimesheetInterface
                 $timesheetQuery->whereMonth('date_volunteered', $month);
             }
         }
-        $timesheetQuery->whereIn('status_id', $statusArray);
+        $timesheetQuery->whereIn('status', $statusArray);
         $timesheetQuery->orderBy(DB::raw("total_minutes"), "DESC");
         $timesheetQuery->groupBy(DB::raw("user_id"));
 
@@ -658,8 +650,7 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getDetailsOfTimesheetEntry(int $timesheetId): Timesheet
     {
-        return $this->timesheet->with(['mission','user','timesheetStatus'])
-        ->where('timesheet_id', $timesheetId)->first();
+        return $this->timesheet->with(['mission','user'])->where('timesheet_id', $timesheetId)->first();
     }
 
     /**
@@ -681,6 +672,6 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getDetailOfTimesheetEntry(int $timesheetId): Timesheet
     {
-        return $this->timesheet->withTrashed()->with(['timesheetStatus'])->where('timesheet_id', $timesheetId)->first();
+        return $this->timesheet->withTrashed()->where('timesheet_id', $timesheetId)->first();
     }
 }
