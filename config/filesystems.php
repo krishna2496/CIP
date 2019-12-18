@@ -65,11 +65,6 @@ return [
                  'proxy' => 'http://' . env('AWS_WEBPROXY_HOST') . ':' . env('AWS_WEBPROXY_PORT')
              ],
         ],
-
-        'seeder' => [
-            'driver' => 'local',
-            'root' => base_path('database/seeds/tenant/uploaded')
-        ]
     ],
 
 ];
