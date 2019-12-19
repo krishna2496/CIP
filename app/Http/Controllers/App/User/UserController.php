@@ -231,6 +231,16 @@ class UserController extends Controller
             }
         }
 
+        $availabilityData = [];
+        foreach ($availabilityList as $availability) {
+            $arrayKey = array_search($languageCode, array_column($availability['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $availabilityData[$availability['availability_id']] = $availability
+                ['translations'][$arrayKey]['title'];
+            }
+        }
+        $availabilityList = $availabilityData;
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
         // Get tenant default language
@@ -240,7 +250,7 @@ class UserController extends Controller
         $languageId = $this->languageHelper->getLanguageId($request);
         if (!$cityList->isEmpty()) {
             // Transform city details
-            $cityList = $this->cityTransform($cityList->toArray(), $languageId);
+            $cityList = $this->cityTransform($cityList->toArray(), $languageId, $defaultTenantLanguage->language_id);
         }
 
         $apiData = $userDetail->toArray();

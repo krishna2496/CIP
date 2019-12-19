@@ -213,18 +213,7 @@ return [
         'APPROVED' => 'APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ],
-
-    /*
-     * Timesheet status
-     */
-    'timesheet_status_id' => [
-        'PENDING' => '1',
-        'APPROVED' => '2',
-        'DECLINED' => '3',
-        'AUTOMATICALLY_APPROVED' => '4',
-        'SUBMIT_FOR_APPROVAL' => '5'
-    ],
-
+    
     'ALLOW_TIMESHEET_ENTRY' => 2,
     
     /**

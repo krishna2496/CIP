@@ -62,7 +62,16 @@ class CityRepository implements CityInterface
     public function cityList(int $countryId): Collection
     {
         $this->country->findOrFail($countryId);
-        return $this->city->with('languages')->where('country_id', $countryId)->get();
+        $cities = $this->city->with('languages')->where('country_id', $countryId)->get();
+
+        $languages = $this->languageHelper->getLanguages();
+        foreach ($cities as $key => $value) {
+            foreach ($value->languages as $languageValue) {
+                $languageData = $languages->where('language_id', $languageValue->language_id)->first();
+                $languageValue->language_code = $languageData->code;
+            }
+        }
+        return $cities;
     }
 
     /**
@@ -143,7 +152,16 @@ class CityRepository implements CityInterface
             });
         }
 
-        return $cityQuery->paginate($request->perPage);
+        $cities = $cityQuery->paginate($request->perPage);
+
+        $languages = $this->languageHelper->getLanguages();
+        foreach ($cities as $key => $value) {
+            foreach ($value->languages as $languageValue) {
+                $languageData = $languages->where('language_id', $languageValue->language_id)->first();
+                $languageValue->language_code = $languageData->code;
+            }
+        }
+        return $cities;
     }
     
     /**
@@ -226,5 +244,27 @@ class CityRepository implements CityInterface
     public function hasUser(int $id): bool
     {
         return $this->city->whereHas('user')->whereCityId($id)->count() ? true : false;
+    }
+
+    /**
+    * Get listing of all city by country wise with pagination.
+    *
+    * @param Illuminate\Http\Request $request
+    * @param int $countryId
+    * @return Illuminate\Pagination\LengthAwarePaginator
+    */
+    public function getCityList(Request $request, int $countryId) : LengthAwarePaginator
+    {
+        $this->country->findOrFail($countryId);
+        $cities = $this->city->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+
+        $languages = $this->languageHelper->getLanguages();
+        foreach ($cities as $key => $value) {
+            foreach ($value->languages as $languageValue) {
+                $languageData = $languages->where('language_id', $languageValue->language_id)->first();
+                $languageValue->language_code = $languageData->code;
+            }
+        }
+        return $cities;
     }
 }

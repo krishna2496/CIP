@@ -13,6 +13,7 @@ trait NewsTransformable
      * @param int $languageId
      * @param int $defaultTenantLanguage
      * @param $languageCode
+     * @param $defaultTenantLanguageCode
      * @return array
      */
     protected function getTransformedNews(
@@ -20,7 +21,8 @@ trait NewsTransformable
         bool $sortDescription = null,
         int $languageId = null,
         int $defaultTenantLanguage = null,
-        $languageCode = null
+        $languageCode = null,
+        $defaultTenantLanguageCode = null
     ): array {
         $newsDetails = $news->toArray();
         $wordLimit = config('constants.NEWS_SHORT_DESCRIPTION_WORD_LIMIT');
@@ -62,13 +64,19 @@ trait NewsTransformable
             foreach ($newsDetails['news_to_category'] as $key => $value) {
                 $newsCategoryArray[$key]['news_category_id'] = $value['news_category_id'];
                 foreach ($newsDetails['news_to_category'][$key]['news_category'] as $category) {
-                    $arrayIndex = array_search($languageCode, array_column(
+                    $index = array_search($languageCode, array_column(
                         $category['translations'],
                         'lang'
                     ));
                     
-                    if ($arrayIndex  !== false) {
-                        $newsCategory[] = $category['translations'][$arrayIndex]['title'];
+                    if ($index  !== false) {
+                        $newsCategory[] = $category['translations'][$index]['title'];
+                    } else {
+                        $index = array_search($defaultTenantLanguageCode, array_column(
+                            $category['translations'],
+                            'lang'
+                        ));
+                        $newsCategory[] = ($index !== false) ? $category['translations'][$index]['title'] : '';
                     }
                     unset($category['translations']);
                 }
