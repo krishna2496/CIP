@@ -68,19 +68,6 @@ class TenantMigrationJob extends Job
         // Call artisan command to run database seeder for default values
         Artisan::call('db:seed');
 
-        // Fetch uploaded files from seeder folder and run one by one
-        $seederFiles = Storage::disk('seeder')->allFiles();
-        
-        // @codeCoverageIgnoreStart
-        foreach ($seederFiles as $file) {
-            $seederClassName = explode(".", $file)[0];
-            Artisan::call("db:seed --class=$seederClassName");
-            DB::table('seeders')->insert([
-                'seeder' => $file
-            ]);
-        }
-        // @codeCoverageIgnoreEnd
-        
         // Disconnect and reconnect with default database
         DB::disconnect('tenant');
         DB::reconnect('mysql');

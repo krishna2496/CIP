@@ -13,7 +13,5 @@ class DatabaseSeeder extends Seeder
     {
         $this->call('TimezoneTableSeeder');
         $this->call('NotificationTypeTableSeeder');
-        $this->call('TimesheetStatusTableSeeder');
-        $this->call('AvailabilityTableSeeder');
     }
 }
