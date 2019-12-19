@@ -223,6 +223,7 @@
 				} else {
 					this.previousButtonDisable = false
 				}
+			
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
 				let selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
@@ -232,6 +233,7 @@
 				selectedData['yearArray'] = this.yearArray;
 				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);
+				
 			},
 		},
 		created() {

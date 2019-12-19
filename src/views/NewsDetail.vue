@@ -8,7 +8,9 @@
 			<b-container>
 				<div class="news-detail-container">
 					<div class="news-detail-block" v-if="isContentLoaded">
-						<h2><p v-if="newsDetailList.news_content">{{newsDetailList.news_content.title}}</p><b-badge class="status-label">{{newsDetailList.news_category[0]}}</b-badge></h2>
+						<h2><p v-if="newsDetailList.news_content">{{newsDetailList.news_content.title}}</p>
+						<b-badge class="status-label" v-if="newsDetailList.news_category[0]">{{newsDetailList.news_category[0]}}</b-badge>
+						</h2>
 						<h3 class="author-name">{{newsDetailList.user_name}} - <span>{{newsDetailList.user_title}}</span></h3>
 						<p class="publish-date" v-if="newsDetailList.published_on != null">{{langauageData.label.published_on}} {{newsDetailList.published_on | formatDate}}</p>
 						<div class="news-img-wrap" :style="{backgroundImage: 'url('+newsDetailList.news_image+')'}" v-if="newsDetailList.news_image"></div>

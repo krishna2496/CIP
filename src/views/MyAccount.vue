@@ -630,11 +630,9 @@
                             this.profile.time = this.userData.timezone_id
                             this.profile.languageCode = this.userData.language_code
 
-                        if (this.userData.country.name != '' && this.userData.country.name != null) {
-                            this.countryDefault = this.userData.country.name
-                        }
-                        if (this.userData.city.name != '' && this.userData.city.name != null) {
-                            this.cityDefault = this.userData.city.name
+                        
+                        if (this.userData.city_list != '' && this.userData.city_list != null) {
+                            this.cityDefault = this.userData.city_list[this.userData.city_id]
                         }
                         if (this.userData.availability.type != '' && this.userData.availability.type !=
                             null) {
@@ -659,6 +657,13 @@
                         country().then(responseData => {
                             if (responseData.error == false) {
                                 this.countryList = responseData.data
+                                if (this.countryList) {
+                                    this.countryList.filter((data,index) => {
+                                        if(this.userData.country_id == data[0]) {
+                                            this.countryDefault = data[1]
+                                        }
+                                    })    
+                                }
                                 this.countryList.sort((countryA, countryB) => {
                                     let countryOne = countryA[1].toLowerCase(),
                                         countryTwo = countryB[1].toLowerCase();
@@ -669,7 +674,7 @@
                                     return 0; //default return value (no sorting)
                                 });
                             }
-
+                            
                             timezone().then(responseData => {
                                 if (responseData.error == false) {
                                     this.timeList = responseData.data
