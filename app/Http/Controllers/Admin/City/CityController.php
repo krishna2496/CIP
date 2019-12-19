@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 //!  City controller
 /*!
-This controller is responsible for handling city listing operation.
+This controller is responsible for handling city listing, store, update and delete operations.
  */
 class CityController extends Controller
 {
