@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCountry extends Migration
+class AlterColumnSizeIsoFromCountryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateTableCountry extends Migration
      */
     public function up()
     {
-        Schema::create('country', function (Blueprint $table) {
-            $table->bigIncrements('country_id')->unsigned();
-            $table->string('name',255);
-            $table->string('ISO',16);
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('country', function (Blueprint $table) {
+            \DB::statement("ALTER TABLE `country` CHANGE `ISO` `ISO` varchar(3)");
         });
     }
 
@@ -29,6 +25,8 @@ class CreateTableCountry extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('country');
+        Schema::table('country', function (Blueprint $table) {
+            \DB::statement("ALTER TABLE `country` CHANGE `ISO` `ISO` varchar(16)");
+        });
     }
 }

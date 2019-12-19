@@ -25,6 +25,11 @@ class DropTimesheetStatusTable extends Migration
      */
     public function down()
     {
-        
+        Schema::create('timesheet_status', function (Blueprint $table) {
+            $table->bigIncrements('timesheet_status_id');
+            $table->string('status', 255);
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 }
