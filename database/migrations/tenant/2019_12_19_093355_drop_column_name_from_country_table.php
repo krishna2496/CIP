@@ -26,7 +26,7 @@ class DropColumnNameFromCountryTable extends Migration
     public function down()
     {
         Schema::table('country', function (Blueprint $table) {
-            $table->string('name', 255);
+            $table->string('name', 255)->after('country_id');
         });
     }
 }
