@@ -19,7 +19,7 @@ class CreateTableTimesheet extends Migration
             $table->unsignedBigInteger('user_id'); // FK users id
             $table->unsignedBigInteger('mission_id');
             $table->time('time')->nullable();
-            $table->integer('action')->nullable();                        
+            $table->integer('action')->nullable();
             $table->date('date_volunteered');
             $table->enum('day_volunteered', ['WORKDAY','HOLIDAY','WEEKEND']);
             $table->text('notes')->nullable();
@@ -29,6 +29,7 @@ class CreateTableTimesheet extends Migration
             
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('status_id')->references('timesheet_status_id')->on('timesheet_status')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
