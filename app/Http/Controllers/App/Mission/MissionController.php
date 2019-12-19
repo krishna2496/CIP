@@ -259,18 +259,13 @@ class MissionController extends Controller
                     $translation = $value->country->languages->toArray();
 
                     $translationkey = '';
-                    if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
-                        $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                    } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
-                        $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
-                    }
-                    
+                    $index = array_search($languageId, array_column($translation, 'language_id'));
+                    $language = ($index === false) ? $defaultLanguageId : $languageId;
+                    $translationkey = array_search($language, array_column($translation, 'language_id'));
+
                     if ($translationkey !== '' && $value->country) {
                         $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
                         $translation[$translationkey]['name'];
-                    } else {
-                        $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
-                        $translation[0]['name'] ?? '';
                     }
                     $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
                     $value->country->country_id;
@@ -327,18 +322,15 @@ class MissionController extends Controller
             foreach ($missionCountry as $key => $value) {
                 if (isset($value->country)) {
                     $translation = $value->country->languages->toArray();
+
                     $translationkey = '';
-                    if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
-                        $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                    } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
-                        $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
-                    }
+                    $index = array_search($languageId, array_column($translation, 'language_id'));
+                    $language = ($index === false) ? $defaultLanguageId : $languageId;
+                    $translationkey = array_search($language, array_column($translation, 'language_id'));
+
                     if ($translationkey !== '' && $value->country) {
                         $returnData[config('constants.COUNTRY')][$key]['title'] =
                         $translation[$translationkey]['name'];
-                    } else {
-                        $returnData[config('constants.COUNTRY')][$key]['title'] =
-                        $translation[0]['name'] ?? '';
                     }
                     $returnData[config('constants.COUNTRY')][$key]['id'] =
                     $value->country->country_id;
@@ -357,17 +349,14 @@ class MissionController extends Controller
                 if (isset($value->city)) {
                     $translation = $value->city->languages->toArray();
                     $translationkey = '';
-                    if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
-                        $translationkey = array_search($languageId, array_column($translation, 'language_id'));
-                    } elseif (array_search($defaultLanguageId, array_column($translation, 'language_id')) !== false) {
-                        $translationkey = array_search($defaultLanguageId, array_column($translation, 'language_id'));
-                    }
+
+                    $index = array_search($languageId, array_column($translation, 'language_id'));
+                    $language = ($index === false) ? $defaultLanguageId : $languageId;
+                    $translationkey = array_search($language, array_column($translation, 'language_id'));
+
                     if ($translationkey !== '') {
                         $returnData[config('constants.CITY')][$key]['title'] =
                         $translation[$translationkey]['name'];
-                    } else {
-                        $returnData[config('constants.CITY')][$key]['title'] =
-                        $translation[0]['name'] ?? '';
                     }
                     $returnData[config('constants.CITY')][$key]['id'] =
                     $value->city_id;
