@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCountry extends Migration
+class CreateTimesheetStatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateTableCountry extends Migration
      */
     public function up()
     {
-        Schema::create('country', function (Blueprint $table) {
-            $table->bigIncrements('country_id')->unsigned();
-            $table->string('name',255);
-            $table->string('ISO',16);
+        Schema::create('timesheet_status', function (Blueprint $table) {
+            $table->bigIncrements('timesheet_status_id');
+            $table->string('status', 255);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +28,6 @@ class CreateTableCountry extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('country');
+        Schema::dropIfExists('timesheet_status');
     }
 }

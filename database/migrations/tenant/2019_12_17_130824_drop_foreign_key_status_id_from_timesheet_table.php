@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterColumnStatusIdInTimesheetTable extends Migration
+class DropForeignKeyStatusIdFromTimesheetTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AlterColumnStatusIdInTimesheetTable extends Migration
      */
     public function up()
     {
-        Schema::table('timesheet', function (Blueprint $table) { 
-            \DB::statement("ALTER TABLE `timesheet` CHANGE `status_id` `status` ENUM('PENDING','APPROVED','DECLINED','AUTOMATICALLY_APPROVED','SUBMIT_FOR_APPROVAL') NULL DEFAULT 'PENDING'");
+        Schema::table('timesheet', function (Blueprint $table) {
+            $table->dropForeign('timesheet_status_id_foreign');
+            $table->dropIndex('timesheet_status_id_foreign');
         });
     }
 
@@ -26,7 +27,7 @@ class AlterColumnStatusIdInTimesheetTable extends Migration
     public function down()
     {
         Schema::table('timesheet', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `timesheet` CHANGE `status` `status_id` BIGINT UNSIGNED NULL DEFAULT NULL");
+            $table->foreign('status_id')->references('timesheet_status_id')->on('timesheet_status')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 }
