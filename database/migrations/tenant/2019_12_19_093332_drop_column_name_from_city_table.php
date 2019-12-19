@@ -26,7 +26,7 @@ class DropColumnNameFromCityTable extends Migration
     public function down()
     {
         Schema::table('city', function (Blueprint $table) {
-            $table->string('name', 255);
+            $table->string('name', 255)->after('city_id');
         });
     }
 }
