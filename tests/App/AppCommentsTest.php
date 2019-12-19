@@ -492,6 +492,23 @@ class AppCommentsTest extends TestCase
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
         DB::setDefaultConnection('mysql');
+        $params = [
+            "comment" => str_random('100'),
+            "mission_id" => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('/app/mission/comment', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
+        DB::setDefaultConnection('tenant');
+        App\Models\Comment::where('mission_id', $mission->mission_id)->update(['approval_status' => 'PUBLISHED']);
+
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
           ->seeStatusCode(200)
