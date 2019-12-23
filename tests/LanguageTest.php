@@ -1008,4 +1008,34 @@ class LanguageTest extends TestCase
         }
         return $str;
     }
+
+    /**
+     * @test
+     *
+     * Create language, and upload language file
+     *
+     * @return void
+     */
+    public function it_should_create_language_and_upload_language_file()
+    {
+
+        $language = Language::where('code', 'en')->first();
+
+        if (Storage::disk('s3')->exists(env('DEFAULT_TENANT').'/languages/en.json')) {
+            Storage::disk('s3')->delete(env('DEFAULT_TENANT').'/languages/en.json');
+        }
+
+        $params = [        
+            "tenant_id" => env('DEFAULT_TENANT_ID'),
+            "language_id" => $language->language_id,
+            "default" => "1"
+        ];
+
+        $this->post("tenants/tenant-language", $params, [])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+    }
 }
