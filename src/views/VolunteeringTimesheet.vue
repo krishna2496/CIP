@@ -199,7 +199,7 @@
                         <AddVolunteeringAction ref="goalModal" :defaultWorkday="defaultWorkday"
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
-                            @changeTimeSheetView="changeTimeSheetGoalView" @getTimeSheetData="getVolunteerHoursData"
+                            @changeTimeSheetView="changeTimeSheetGoalView" @getTimeSheetData="getVolunteerGoalsData"
                             @resetModal="hideModal" :workDayList="workDayList" @updateCall="updateDefaultValue"
                             @changeDocument="changeGoalDocument" />
                     </div>
@@ -1189,11 +1189,14 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
-                        this.getVolunteerHoursData()
+                        
+                        
                         if (timeSheetType == "time") {
                             this.getTimeRequestData(this.currentPage);
+                            this.getVolunteerHoursData()
                         } else {
                             this.getGoalRequestData(this.currentPage);
+                            this.getVolunteerGoalsData()
                         }
                         this.makeToast("success", response.message);
                     }
