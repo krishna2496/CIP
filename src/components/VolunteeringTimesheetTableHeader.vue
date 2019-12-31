@@ -214,6 +214,9 @@
 				if(this.currentFixWeek  <= this.currentWeak && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(this.currentMonth.format('YYYY'))) ) {
 					this.disableNextWeek = true
+					if (this.currentFixWeek == 1 && this.currentFixWeek  < this.currentWeak) {
+						this.disableNextWeek = false
+					}
 				} else {
 					this.disableNextWeek = false
 				}
