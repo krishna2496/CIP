@@ -2,7 +2,6 @@ import store from '../store'
 import axios from 'axios'
 
 export default async() => {
-    // Store mission rating
     let responseData = {}
     responseData.error = false;
     responseData.data = [];

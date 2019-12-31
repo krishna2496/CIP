@@ -2,14 +2,13 @@ import axios from 'axios'
 import store from '../../store'
 import moment from 'moment';
 
-export default async() => {
+export default async(data) => {
     let responseData = [];
-
     let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet?page=" + data.page + "&type=" + data.type;
 
     await axios({
             url: url,
@@ -20,34 +19,37 @@ export default async() => {
             }
         })
         .then((response) => {
+
             if (response.data.data) {
-                if (response.data.data['TIME']) {
-                    let timeData = response.data.data['TIME']
+
+                if (response.data.data) {
+                    let timeData = response.data.data
                     timeData.filter((toItem, toIndex) => {
                         let timeSheet = timeData[toIndex].timesheet;
 
                         timeSheet.filter((timeSheetItem, timeSheetIndex) => {
+
                             let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
                             let dateVolunteered = momentObj.format('YYYY-MM-DD');
-                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
-                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
-                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
+                            response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                            response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                            response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
                         });
 
 
                     });
                 }
-                if (response.data.data['GOAL']) {
-                    let timeData = response.data.data['GOAL']
+                if (response.data.data) {
+                    let timeData = response.data.data
                     timeData.filter((toItem, toIndex) => {
                         let goalSheet = timeData[toIndex].timesheet;
 
                         goalSheet.filter((timeSheetItem, timeSheetIndex) => {
                             let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
                             let dateVolunteered = momentObj.format('YYYY-MM-DD');
-                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
-                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
-                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
+                            response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                            response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                            response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
                         });
 
 
@@ -55,7 +57,7 @@ export default async() => {
                 }
             }
 
-            responseData = response.data.data
+            responseData = response.data
         })
         .catch(function() {});
     return responseData;

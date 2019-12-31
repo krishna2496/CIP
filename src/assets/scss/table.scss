@@ -168,6 +168,15 @@
 }
 
 /** Dashboard history-table table style **/
+.dashboard-history{
+	.dashboard-table {
+		.table-col {
+			.table-col-inner{
+				height: auto;
+			}
+		}
+	}
+}
 .history-table {
 	max-height: 300px;
 
@@ -200,6 +209,7 @@
 
 /** Timesheet Table style **/
 .timesheet-table {
+	max-height:400px;	
 	&.timesheethours-table {
 		table {
 			tr {
