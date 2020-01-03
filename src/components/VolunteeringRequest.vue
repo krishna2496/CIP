@@ -11,7 +11,7 @@
                     </template>
                 </b-table>
                 <div class="text-center" v-else>
-                    <h5>{{headerLable | firstLetterCapital}} {{languageData.label.not_found}}</h5>
+                    <h5>{{languageData.label.no_data_available}}</h5>
                 </div>
             </div>
             <div class="btn-block" v-if="items.length > 0">
