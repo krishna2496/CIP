@@ -2424,8 +2424,18 @@ main {
 		.profile-box {
 			text-align: center;
 			border: 1px solid $primary-border-color;
-			height: calc(100% - 6px);
+			height: auto;
 			@extend .message_shadow;
+			&.blank-profile-content{
+				@include md-max{
+					justify-content:center;
+					.user-profile{
+						&:before{
+							display: none;
+						}
+					}
+				}
+			}
 
 			@include md-max {
 				display: flex;

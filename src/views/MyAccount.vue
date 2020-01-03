@@ -132,32 +132,19 @@
                                 </b-col>
                                 <b-col md="12">
                                     <b-form-group>
-                                        <label>{{languageData.label.my_profile}}*</label>
+                                        <label>{{languageData.label.my_profile}}</label>
                                         <b-form-textarea id :placeholder="languageData.placeholder.my_profile" size="lg"
                                             no-resize v-model.trim="profile.profileText"
-                                            :class="{ 'is-invalid': submitted && $v.profile.profileText.$error }"
                                             rows="5"></b-form-textarea>
-                                        <div v-if="submitted && !$v.profile.profileText.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.my_profile_required }}</div>
-                                        <!-- <div v-if="submitted && !$v.profile.profileText.maxLength && $v.profile.profileText.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.my_profile_max_length }}</div> -->
+                                       
                                     </b-form-group>
                                 </b-col>
                                 <b-col md="12">
                                     <b-form-group>
-                                        <label>{{languageData.label.why_i_volunteer}}*</label>
+                                        <label>{{languageData.label.why_i_volunteer}}</label>
                                         <b-form-textarea id v-model.trim="profile.whyiVolunteer"
-                                            :class="{ 'is-invalid': submitted && $v.profile.whyiVolunteer.$error }"
                                             :placeholder="languageData.placeholder.why_i_volunteer" size="lg" no-resize
                                             rows="5"></b-form-textarea>
-                                        <div v-if="submitted && !$v.profile.whyiVolunteer.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.why_i_volunteer_required }}</div>
-                                        <!-- <div v-if="submitted && !$v.profile.whyiVolunteer.maxLength && $v.profile.whyiVolunteer.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.why_i_volunteer_max_length }}</div> -->
                                     </b-form-group>
                                 </b-col>
                             </b-row>
@@ -212,7 +199,7 @@
 
                                 </b-col>
                                 <b-col md="6">
-                                    <b-form-group>
+                                    <b-form-group class="linked-in-url">
                                         <label>{{languageData.label.linked_in}}</label>
                                         <b-form-input id v-model.trim="profile.linkedInUrl"
                                             :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }"
@@ -471,12 +458,6 @@
                     required
                 },
                 lastName: {
-                    required
-                },
-                profileText: {
-                    required
-                },
-                whyiVolunteer: {
                     required
                 },
                 linkedInUrl: {

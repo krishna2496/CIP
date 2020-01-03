@@ -72,7 +72,11 @@
                             </b-row>
                         </b-col>
                         <b-col xl="3" lg="4" class="ml-auto profile-box-outer">
-                            <div class="profile-box">
+                            <div class="profile-box" 
+                                v-bind:class="{
+                                    'blank-profile-content' : (storyDetailList.why_i_volunteer == '' || storyDetailList.why_i_volunteer == null) ? true : false
+                                }"
+                                >
                                 <div class="user-profile">
                                     <i class="user-profile-icon"
                                         :style="{backgroundImage: 'url(' + storyDetailList.avatar + ')'}"></i>
@@ -89,7 +93,7 @@
                                     </div>
                                 </div>
 
-                                <div class="profile-content" v-if="storyDetailList.why_i_volunteer != ''">
+                                <div class="profile-content" v-if="storyDetailList.why_i_volunteer != '' && storyDetailList.why_i_volunteer != null">
                                     <p>{{storyDetailList.why_i_volunteer}}</p>
                                 </div>
                             </div>
