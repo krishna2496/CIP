@@ -98,12 +98,15 @@ class MissionApplicationQuery implements QueryableInterface
                     $query->where('language_id', '=', $languageId);
                 },
                 'mission.missionSkill',
-                'mission.country',
-                'mission.city',
+                'mission.country.languages' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
+                'mission.city.languages' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
             ])
             // Filter by application ID
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
-                Log::debug($filters[self::FILTER_APPLICATION_IDS]);
                 $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
             })
             // Filter by application start date
@@ -158,13 +161,19 @@ class MissionApplicationQuery implements QueryableInterface
                                     ['language_id', '=', $languageId]
                                 ]);
                         })
-                        ->orwhereHas('mission.city', function($query) use ($search) {
+                        ->orwhereHas('mission.city.languages', function($query) use ($search, $languageId) {
                             $query
-                                ->where('name', 'like', "%${search}%");
+                                ->where([
+                                    ['name', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
                         })
-                        ->orwhereHas('mission.country', function($query) use ($search) {
+                        ->orwhereHas('mission.country.languages', function($query) use ($search, $languageId) {
                             $query
-                                ->where('name', 'like', "%${search}%");
+                                ->where([
+                                    ['name', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
                         });
                 };
 
@@ -176,7 +185,6 @@ class MissionApplicationQuery implements QueryableInterface
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
-                Log::debug(json_encode($order));
                 $query->orderBy($order['orderBy'], $order['orderDir']);
             })
             // Pagination
