@@ -19,7 +19,7 @@
                 </b-alert>
                 <!-- reset password form start -->
                 <b-form class="signin-form">
-                    <b-form-group :state="false">
+                    <b-form-group>
                         <label>{{ languageData.label.new_password }}</label>
                         <b-form-input id="" type="password" v-model="resetPassword.password"
                             :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" maxlength="120"
@@ -210,6 +210,7 @@
                         this.resetPassword.password = ''
                         this.resetPassword.confirmPassword = ''
                         this.$v.$reset();
+						setTimeout( () => this.$router.replace({name: "login"}), 3000);
                     }
                 });
             },
