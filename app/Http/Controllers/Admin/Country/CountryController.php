@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 //!  Country controller
 /*!
-This controller is responsible for handling country listing operation.
+This controller is responsible for handling country listing, store, update and delete operations.
  */
 class CountryController extends Controller
 {
