@@ -2,7 +2,7 @@
 	<div class="banner-wrap">
 		<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 			<b-container>
-				<p>{{bannerText}}</p>
+				<p v-html="bannerText"></p>
 				<b-link class="btn btn-secondary btn-borderwhite icon-btn"  to="/share-story">
 					<span>{{languageData.label.share_your_story}}</span>
 					<i>

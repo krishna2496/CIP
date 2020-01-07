@@ -10,7 +10,7 @@
 					<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 						<b-container>
 							<h1>{{languageData.label.news}}</h1>
-							<p>{{bannerText}}</p>
+							<p v-html="bannerText"></p>
 						</b-container>
 					</div>
 				</div>
