@@ -92,7 +92,7 @@ class MissionApplicationQuery implements QueryableInterface
             ->where('mission_language.language_id', '=', $languageId)
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
-                'user.skills',
+                'user.skills.skill:skill_id',
                 'mission',
                 'mission.missionLanguage' => function ($query) use ($languageId) {
                     $query->where('language_id', '=', $languageId);
@@ -132,7 +132,8 @@ class MissionApplicationQuery implements QueryableInterface
             // Filter by applicant skills
             ->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
                 $query->whereHas('user.skills', function($query) use ($filters) {
-                    $query->whereIn('user_skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
+                    $query->whereIn('skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
+                    //TODO: delete me ; here I have changed user_skill_id for skill_id for the filter, need to commit
                 });
             })
             // Filter by mission skill
