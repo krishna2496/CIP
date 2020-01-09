@@ -65,7 +65,7 @@ spec:
           requests:
             cpu: 10m
       - name: ci-admin-api
-        image: registry.kubernetes.infra.optimy.net/ci/admin-api:{ADMIN_API_VERSION}
+        image: registry.kubernetes.infra.optimy.net/ci/admin-api:{{ADMIN_API_VERSION}}
         imagePullPolicy: Always
         resources:
           requests:
