@@ -100,7 +100,7 @@ class TimesheetRepository implements TimesheetInterface
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->userRepository = $userRepository;
     }
-    
+
     /**
      * Store/Update timesheet
      *
@@ -147,7 +147,7 @@ class TimesheetRepository implements TimesheetInterface
         $languageId = $this->languageHelper->getLanguageId($request);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-        
+
         if ($type === 'hour') {
             $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
@@ -156,7 +156,7 @@ class TimesheetRepository implements TimesheetInterface
                     $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                     $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
                     $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                     // Set mission title
                     $missionTitle = $missionLanguage->title ?? '';
                     $value->setAttribute('title', $missionTitle);
@@ -192,7 +192,7 @@ class TimesheetRepository implements TimesheetInterface
                     $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                     $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
                     $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                     // Set mission title
                     $missionTitle = $missionLanguage->title ?? '';
                     $value->setAttribute('title', $missionTitle);
@@ -203,7 +203,7 @@ class TimesheetRepository implements TimesheetInterface
         }
         return $timesheetEntries;
     }
-    
+
     /**
      * Fetch timesheet details
      *
@@ -226,7 +226,7 @@ class TimesheetRepository implements TimesheetInterface
     {
         return $this->timesheet->findTimesheet($timesheetId, $userId);
     }
-    
+
     /**
     * Remove the timesheet document.
     *
@@ -237,6 +237,40 @@ class TimesheetRepository implements TimesheetInterface
     public function delete(int $id, int $timesheetId): bool
     {
         return $this->timesheetDocument->deleteTimesheetDocument($id, $timesheetId);
+    }
+
+    /**
+     * Display a listing of timesheets.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getTimesheets(Request $request): Collection
+    {
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+
+        $timesheetQuery = $this->mission->select('mission.mission_id')
+            ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
+            ->whereHas('missionApplication', function ($query) {
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+            })
+            ->with(['missionLanguage' => function ($query) use ($languageId) {
+                $query->select('mission_language_id', 'mission_id', 'title')
+                    ->where('language_id', $languageId);
+            }])
+            ->with(['timesheet' => function ($query) use ($request) {
+                if ($request->has('status') && $request->input('status') !== '') {
+                    $query->where('status', strtoupper($request->status));
+                }
+            }]);
+
+        if ($request->has('type') && $request->input('type') !== '' &&
+            in_array(strtoupper($request->input('type')), config('constants.mission_type'))) {
+            $timesheetQuery->where('mission_type', strtoupper($request->input('type')));
+        }
+
+        return $timesheetQuery->get();
     }
 
     /**
@@ -327,7 +361,7 @@ class TimesheetRepository implements TimesheetInterface
         $languageId = $language->language_id;
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-        
+
         $timeRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
         $timeRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
@@ -355,16 +389,16 @@ class TimesheetRepository implements TimesheetInterface
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                 $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
                 $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                 // Set title
                 $missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
-            
+
             $value->time = $this->helpers->convertInReportTimeFormat($value->total_hours);
             $value->hours = $this->helpers->convertInReportHoursFormat($value->total_hours);
-            
+
             unset($value->total_hours);
             $value->setAppends([]);
         }
@@ -385,7 +419,7 @@ class TimesheetRepository implements TimesheetInterface
         $languageId = $language->language_id;
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-       
+
         $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
         $goalRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
@@ -413,7 +447,7 @@ class TimesheetRepository implements TimesheetInterface
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                 $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
                 $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                 // Set title
                 $missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
@@ -434,12 +468,12 @@ class TimesheetRepository implements TimesheetInterface
     public function getTimesheetEntries(Request $request, string $missionType): LengthAwarePaginator
     {
         $userId = $request->auth->user_id;
-        
+
         // Fetch tenant options value
         $tenantOptionData = $this->tenantOptionRepository->getOptionValue('ALLOW_TIMESHEET_ENTRY');
         $extraWeeks = isset($tenantOptionData[0]['option_value'])
         ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
-     
+
         $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
         ->where([
             'publication_status' => config("constants.publication_status")["APPROVED"],
@@ -504,7 +538,7 @@ class TimesheetRepository implements TimesheetInterface
         config('constants.timesheet_status.AUTOMATICALLY_APPROVED')))
         ->sum('action')) ?? 0;
     }
-    
+
     /**
      * Get user timesheet total hours data
      *

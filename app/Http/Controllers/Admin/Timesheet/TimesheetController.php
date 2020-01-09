@@ -43,7 +43,7 @@ class TimesheetController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -68,10 +68,34 @@ class TimesheetController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $timesheetsData = $this->timesheetRepository->getTimesheets($request);
+        foreach ($timesheetsData as $timesheets) {
+            if ($timesheets->missionLanguage) {
+                $timesheets->setAttribute('title', $timesheets->missionLanguage[0]->title);
+                unset($timesheets->missionLanguage);
+            }
+            $timesheets->setAppends([]);
+        }
+
+        $apiData = $timesheetsData->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ?
+            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
      * @param int $userId
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(int $userId, Request $request): JsonResponse
+    public function fetchTimesheet(int $userId, Request $request): JsonResponse
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -143,9 +167,9 @@ class TimesheetController extends Controller
             $entityId = $timesheetId;
             $action = config('constants.notification_actions.'.$timsheetDetails->status);
             $userId = $timsheetDetails->user_id;
-            
+
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-            
+
             // Make activity log
             $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
                 config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');

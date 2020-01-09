@@ -633,8 +633,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
+            $router->get('/', ['as' => 'timesheet', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Timesheet\TimesheetController@index']);
+            $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Timesheet\TimesheetController@fetchTimesheet']);
             $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
                 'uses' => 'Admin\Timesheet\TimesheetController@update']);
         }
@@ -650,7 +652,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
         }
     );
-    
+
     /* Get cities by country id */
     $router->group(
         ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
@@ -664,7 +666,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
-    
+
     /* News category management */
     $router->group(
         ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
@@ -742,13 +744,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
             /* Store availability */
             $router->post('/entities/availability', ['as' => 'availability.store',
                 'uses' => 'Admin\Availability\AvailabilityController@store']);
-            
+
             $router->delete('/entities/availability/{availabilityId}', ['as' => 'availability.destroy',
                 'uses' => 'Admin\Availability\AvailabilityController@destroy']);
-            
+
             $router->patch('/entities/availability/{availabilityId}', ['as' => 'availability.update',
                 'uses' => 'Admin\Availability\AvailabilityController@update']);
-                
+
             $router->get(
                 '/entities/availability/{availabilityId}',
                 ['uses' => 'Admin\Availability\AvailabilityController@show']
