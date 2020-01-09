@@ -72,7 +72,7 @@ class TimesheetController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $timesheetsData = $this->timesheetRepository->getTimesheets($request);
+        $timesheetsData = $this->timesheetRepository->getAllTimesheets($request);
         foreach ($timesheetsData as $timesheets) {
             if ($timesheets->missionLanguage) {
                 $timesheets->setAttribute('title', $timesheets->missionLanguage[0]->title);

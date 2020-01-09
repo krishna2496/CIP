@@ -245,7 +245,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getTimesheets(Request $request): Collection
+    public function getAllTimesheets(Request $request): Collection
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
@@ -265,8 +265,11 @@ class TimesheetRepository implements TimesheetInterface
                 }
             }]);
 
-        if ($request->has('type') && $request->input('type') !== '' &&
-            in_array(strtoupper($request->input('type')), config('constants.mission_type'))) {
+        if (
+            $request->has('type')
+            && $request->input('type') !== ''
+            && in_array(strtoupper($request->input('type')), config('constants.mission_type'))
+        ) {
             $timesheetQuery->where('mission_type', strtoupper($request->input('type')));
         }
 
