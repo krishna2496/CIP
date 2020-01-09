@@ -1,4 +1,4 @@
-FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
+FROM registry.kubernetes.infra.optimy.net/tools/web-ci:latest
 
 COPY . /optimy
 RUN rm /optimy/Dockerfile
