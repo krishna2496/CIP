@@ -4,5 +4,7 @@ COPY . /optimy
 RUN rm /optimy/Dockerfile
 RUN cd /optimy && composer install
 
+RUN chown -R www-data:www-data /optimy/storage
+
 #ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
 
