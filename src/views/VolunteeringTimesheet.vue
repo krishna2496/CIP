@@ -5,7 +5,6 @@
         </header>
         <main>
             <DashboardBreadcrumb />
-           
             <div class="dashboard-tab-content" v-if="isComponentLoaded">
                 <b-container v-if="isAllVisible">
                     <div class="heading-section">
@@ -13,29 +12,24 @@
                             {{languageData.label.volunteering_timesheet}}
                         </h1>
                     </div>
-                  
                     <div class="inner-content-wrap">
                         <div class="dashboard-table">
                             <div class="table-outer">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.volunteering_hours}}</h3>
-                                    <VolunteeringTimesheetTableHeader 
-                                    :currentWeek="timeSheetHourCurrentDate"
-                                    @updateCall="changeVolunteeringHours" />
+                                    <VolunteeringTimesheetTableHeader :currentWeek="timeSheetHourCurrentDate"
+                                        @updateCall="changeVolunteeringHours" />
                                     <div class="table-wrapper-outer">
                                         <div
                                             v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
                                             <div class="content-loader"></div>
                                         </div>
                                         <b-table-simple small responsive bordered
-                                            class="timesheet-table timesheethours-table"
-                                            >
+                                            class="timesheet-table timesheethours-table">
                                             <b-thead>
                                                 <b-tr>
                                                     <b-th class="mission-col">{{languageData.label.mission}}</b-th>
-                                                    <b-th v-for="(key,item) in volunteeringHoursWeeks"
-                                                        v-bind:key="key"
-                                                        v-if="item != null"
+                                                    <b-th v-for="(key,item) in volunteeringHoursWeeks" v-bind:key="key"
                                                         v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'time')}">
                                                         {{key+1}}<span>{{getTimeSheetWeekName(item,'time')}}</span>
                                                     </b-th>
@@ -45,13 +39,14 @@
                                             <b-tbody v-if="timeMissionData.length > 0">
                                                 <b-tr v-for="(timeItem,key) in timeMissionData" v-bind:key="key">
                                                     <b-td class="mission-col">
-                                                        <a target="_blank"
+                                                        <a target="_blank" class="table-link"
                                                             :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
                                                     </b-td>
                                                     <b-td :mission-id="timeItem.mission_id" :date="key+1"
                                                         v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
                                                         v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'time')]"
-                                                        v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null" v-bind:key="key">
+                                                        v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null"
+                                                        v-bind:key="key">
                                                         {{getTime(key,timeItem.timesheet,'time')}}
                                                     </b-td>
                                                     <b-td class="total-col">
@@ -59,7 +54,7 @@
                                                 </b-tr>
                                                 <b-tr class="total-row">
                                                     <b-td class="mission-col">{{languageData.label.total}}:</b-td>
-                                                    <b-td v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null" v-bind:key="key">
+                                                    <b-td v-for="(key,item) in volunteeringHoursWeeks" v-bind:key="key">
                                                         {{getColumnHourTotal(key+1,'time')}}
                                                     </b-td>
                                                     <b-td>
@@ -70,7 +65,8 @@
                                             <b-tbody v-else>
                                                 <b-tr>
                                                     <b-td colspan="9" class="disabled">
-                                                        {{languageData.label.volunteering_hours | firstLetterCapital}} {{languageData.label.not_found}}
+                                                        {{languageData.label.volunteering_hours | firstLetterCapital}}
+                                                        {{languageData.label.not_found}}
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
@@ -78,10 +74,17 @@
                                         </b-table-simple>
                                     </div>
                                 </div>
+                                <div class="pagination-block" v-if="timeTotalPages > 1">
+                                    <b-pagination :hide-ellipsis="hideEllipsis" v-model="timePage"
+                                        :total-rows="timeTotalRow" :per-page="timePerPage" align="center"
+                                        @change="timePageChange">
+                                    </b-pagination>
+                                </div>
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto" v-bind:class="{
-                                    disabled : enableSubmitTimeTimeSheet    
-                                }" @click="submitVolunteerTimeSheet('time')">{{languageData.label.submit}}</b-button>
+                                        disabled : enableSubmitTimeTimeSheet    
+                                    }" @click="submitVolunteerTimeSheet('time')">{{languageData.label.submit}}
+                                    </b-button>
                                 </div>
                             </div>
                             <ul class="meta-data-list">
@@ -95,12 +98,11 @@
                             <div class="table-outer timesheet-table-outer">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.volunteering_goals}}</h3>
-                                    <VolunteeringTimesheetTableHeader 
-                                    :currentWeek="timeSheetGoalCurrentDate"
-                                    @updateCall="changeVolunteeringGoals" />
+                                    <VolunteeringTimesheetTableHeader :currentWeek="timeSheetGoalCurrentDate"
+                                        @updateCall="changeVolunteeringGoals" />
                                     <div class="table-wrapper-outer">
                                         <div
-                                            v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalTableLoaderActive}">
+                                            v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalsTableLoaderActive}">
                                             <div class="content-loader"></div>
                                         </div>
                                         <b-table-simple small responsive bordered
@@ -119,15 +121,13 @@
                                             <b-tbody v-if="goalMissionData.length > 0">
                                                 <b-tr v-for="(timeItem,key) in goalMissionData" v-bind:key="key">
                                                     <b-td class="mission-col">
-                                                        <a target="_blank"
+                                                        <a target="_blank" class="table-link"
                                                             :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
                                                     </b-td>
                                                     <b-td :mission-id="timeItem.mission_id" :date="key+1"
                                                         v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
                                                         v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'goal')]"
-                                                        v-for="(key,item) in volunteeringGoalWeeks"
-                                                        v-bind:key="item"
-                                                        >
+                                                        v-for="(key,item) in volunteeringGoalWeeks" v-bind:key="item">
                                                         {{getTime(key,timeItem.timesheet,'goal')}}
                                                     </b-td>
                                                     <b-td class="total-col">
@@ -146,18 +146,25 @@
                                             <b-tbody v-else>
                                                 <b-tr>
                                                     <b-td colspan="9" class="disabled">
-                                                        {{languageData.label.volunteering_goals | firstLetterCapital}} {{languageData.label.not_found}}
+                                                        {{languageData.label.volunteering_goals | firstLetterCapital}}
+                                                        {{languageData.label.not_found}}
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
                                         </b-table-simple>
                                     </div>
                                 </div>
+                                <div class="pagination-block" v-if="goalTotalPages > 1">
+                                    <b-pagination :hide-ellipsis="hideEllipsis" v-model="goalPage"
+                                        :total-rows="goalTotalRow" :per-page="goalPerPage" align="center"
+                                        @change="goalPageChange">
+                                    </b-pagination>
+                                </div>
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto"
                                         @click="submitVolunteerTimeSheet('goal')" v-bind:class="{
-                                        disabled : enableSubmitGoalTimeSheet    
-                                    }">{{languageData.label.submit}}</b-button>
+                                            disabled : enableSubmitGoalTimeSheet    
+                                        }">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
                             <ul class="meta-data-list">
@@ -183,24 +190,18 @@
                                 :fileName="languageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
                                 :totalPages="goalMissionTotalPage" />
                         </div>
-                        <AddVolunteeringHours 
-                            ref="timeModal" 
-                            :defaultWorkday="defaultWorkday"
-                            :defaultHours="defaultHours" 
-                            :defaultMinutes="defaultMinutes" :files="files"
-                            :timeEntryDefaultData="currentTimeData" 
-                            :disableDates="volunteerHourDisableDates"
-                            @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
-                            @changeTimeSheetView="changeTimeSheetHourView"
-                            @updateCall="updateDefaultValue" @changeDocument="changeTimeDocument" />
-                        <AddVolunteeringAction 
-                            ref="goalModal" 
-                            :defaultWorkday="defaultWorkday"
+                        <AddVolunteeringHours ref="timeModal" :defaultWorkday="defaultWorkday"
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
-                            @changeTimeSheetView="changeTimeSheetGoalView"
                             @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
-                            @updateCall="updateDefaultValue" @changeDocument="changeGoalDocument" />
+                            @changeTimeSheetView="changeTimeSheetHourView" @updateCall="updateDefaultValue"
+                            @changeDocument="changeTimeDocument" />
+                        <AddVolunteeringAction ref="goalModal" :defaultWorkday="defaultWorkday"
+                            :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
+                            :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
+                            @changeTimeSheetView="changeTimeSheetGoalView" @getTimeSheetData="getVolunteerGoalsData"
+                            @resetModal="hideModal" :workDayList="workDayList" @updateCall="updateDefaultValue"
+                            @changeDocument="changeGoalDocument" />
                     </div>
                 </b-container>
                 <b-container v-else>
@@ -224,18 +225,12 @@
 <script>
     import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
     import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-    import AppCustomDropdown from "../components/CustomFieldDropdown";
     import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
     import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
     import AddVolunteeringHours from "../components/AddVolunteeringHours";
     import AddVolunteeringAction from "../components/AddVolunteeringAction";
     import VolunteeringRequest from "../components/VolunteeringRequest";
-    import SimpleBar from "simplebar";
-    import constants from '../constant';
-    import axios from "axios";
     import store from '../store';
-    import DatePicker from "vue2-datepicker";
-    import FileUpload from 'vue-upload-component';
 
     import {
         volunteerTimesheetHours,
@@ -253,13 +248,9 @@
         components: {
             ThePrimaryHeader,
             TheSecondaryFooter,
-            AppCustomDropdown,
-            SimpleBar,
             DashboardBreadcrumb,
             VolunteeringTimesheetTableHeader,
             AddVolunteeringAction,
-            DatePicker,
-            FileUpload,
             AddVolunteeringHours,
             VolunteeringRequest
         },
@@ -340,44 +331,55 @@
                 currentYear: moment().format("YYYY"),
                 currentMonth: moment().format("M"),
                 isComponentLoaded: false,
-                timeSheetHourCurrentDate :  moment().week(),
-                timeSheetGoalCurrentDate :  moment().week(),
-                timeSheetStartDate : '',
-                timeSheetEndDate : '',
+                timeSheetHourCurrentDate: moment().week(),
+                timeSheetGoalCurrentDate: moment().week(),
+                timeSheetStartDate: '',
+                timeSheetEndDate: '',
+                userTimezone: '',
+                hideEllipsis: true,
+                timeTotalPages: 0,
+                timePage: 1,
+                timeTotalRow: 0,
+                timePerPage: 0,
+                goalTotalPages: 0,
+                goalPage: 1,
+                goalTotalRow: 0,
+                goalPerPage: 0,
+                goalsTableLoaderActive : true
             };
         },
         updated() {
 
         },
         methods: {
-            getTimeSheetWeekName(item,timeSheetType){
+            getTimeSheetWeekName(item, timeSheetType) {
                 let weekArray = [];
-                if(timeSheetType == "time") {
+                if (timeSheetType == "time") {
                     weekArray = this.volunteeringHoursWeekName
                 } else {
-                    weekArray = this.volunteeringGoalWeekName   
+                    weekArray = this.volunteeringGoalWeekName
                 }
                 return weekArray[item]
-              
+
             },
             changeTimeSheetGoalView(data) {
-                this.timeSheetGoalCurrentDate =  moment(data).week();
+                this.timeSheetGoalCurrentDate = moment(data).week();
             },
-            changeTimeSheetHourView(data){
-                this.timeSheetHourCurrentDate =  moment(data).week();
+            changeTimeSheetHourView(data) {
+                this.timeSheetHourCurrentDate = moment(data).week();
             },
             changeTimeDocument(date) {
                 let year = moment(date).format("YYYY");
                 let month = moment(date).format("M");
                 let dates = moment(date).format("D");
                 let timeSheetId = '';
-                this.timeMissionData.filter( (timeArray, timeIndex) =>{
+                this.timeMissionData.filter((timeArray) => {
                     if (timeArray.mission_id == this.currentTimeData.missionId && timeArray.timesheet) {
-                        timeArray.timesheet.filter((timeSheetArray, timeSheetIndex) => {
+                        timeArray.timesheet.filter((timeSheetArray) => {
                             if (timeSheetArray.month == month && timeSheetArray.year == year &&
                                 timeSheetArray.date == dates) {
                                 timeSheetId = timeSheetArray.timesheet_id;
-                                this.workDayList.filter( (workList, workIndex) => {
+                                this.workDayList.filter((workList) => {
                                     if (workList[0] == timeSheetArray.day_volunteered) {
                                         this.defaultWorkday = this.languageData.label[
                                             workList[1]];
@@ -410,13 +412,13 @@
                 let month = moment(date).format("M");
                 let dates = moment(date).format("D");
                 let timeSheetId = '';
-                this.goalMissionData.filter( (timeArray, timeIndex)=>  {
+                this.goalMissionData.filter((timeArray) => {
                     if (timeArray.mission_id == this.currentTimeData.missionId && timeArray.timesheet) {
-                        timeArray.timesheet.filter( (timeSheetArray, timeSheetIndex) => {
+                        timeArray.timesheet.filter((timeSheetArray) => {
                             if (timeSheetArray.month == month && timeSheetArray.year == year &&
                                 timeSheetArray.date == dates) {
                                 timeSheetId = timeSheetArray.timesheet_id;
-                                this.workDayList.filter( (workList, workIndex) => {
+                                this.workDayList.filter((workList) => {
                                     if (workList[0] == timeSheetArray.day_volunteered) {
                                         this.defaultWorkday = this.languageData.label[
                                             workList[1]];
@@ -448,44 +450,86 @@
                 this.currentTimeData.day = date
                 let missionEndDate = timeArray.end_date
                 this.currentTimeData.disabledPastDates = timeArray.start_date
-                let futerDate = moment(this.futureDates).format("YYYY-MM-DD");
-                let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+                let futerDate = moment(this.futureDates).format("YYYY-MM-DD HH:mm:ss");
+                let endDate = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss");
+                let startTime = moment(timeArray.application_start_time).format("YYYY-MM-DD HH:mm:ss");
+                let endTime = moment(timeArray.application_end_time).format("YYYY-MM-DD HH:mm:ss");
+                let compareEndDates = '';
+                let currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
 
                 if (endDate > futerDate) {
-                    this.currentTimeData.disabledFutureDates = futerDate
+                    this.currentTimeData.disabledFutureDates = moment(this.futureDates).format("YYYY-MM-DD")
+                    compareEndDates = moment(this.futureDates).tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
                 } else {
-                    this.currentTimeData.disabledFutureDates = endDate
+                    this.currentTimeData.disabledFutureDates = moment(missionEndDate).format("YYYY-MM-DD")
+                    compareEndDates = moment(missionEndDate).format("YYYY-MM-DD HH:mm:ss")
+                }
+
+                if (timeArray.application_end_time != null) {
+
+                    if (endTime < compareEndDates) {
+                        this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).format(
+                            "YYYY-MM-DD")
+                        if (endTime < currentDate && (moment(timeArray.application_end_time).format("YYYY-MM-DD") ==
+                                moment().tz(this.userTimezone).format("YYYY-MM-DD"))) {
+                            this.currentTimeData.disabledFutureDates = moment(timeArray.application_end_time).subtract(
+                                1, 'd');
+                            this.currentTimeData.disabledFutureDates = moment(this.currentTimeData.disabledFutureDates)
+                                .format("YYYY-MM-DD");
+                        }
+                    }
+                }
+                if (timeArray.application_start_time != null) {
+                    if (startTime > this.currentTimeData.disabledPastDates) {
+                        this.currentTimeData.disabledPastDates = moment(timeArray.application_start_time).format(
+                            "YYYY-MM-DD")
+                    }
                 }
 
                 if (timeArray.timesheet) {
+                    let latestDate = date - 1
+                    let latestMonth = 0
                     let timeSheetArray = timeArray.timesheet;
                     this.currentTimeData.missionName = timeArray.title
                     let months = '';
                     let dates = '';
-                    if(timeSheetType == "time") {
-                        if(Math.floor(this.volunteeringHoursCurrentMonth) < 10) {
-                            months = ("0" + Math.floor(this.volunteeringHoursCurrentMonth)).slice(-2);
-                            dates = ("0" + Math.floor(date)).slice(-2);
+                    if (timeSheetType == "time") {
+                        let timeMonthIndex = ''
+                        this.volunteeringHoursWeeks.filter((data, index) => {
+                            if (data == latestDate) {
+                                timeMonthIndex = index
+                            }
+                        })
+                        latestMonth = this.volunteeringHoursMonthArray[timeMonthIndex]
+                        if (Math.floor(latestMonth) < 10) {
+                            months = ("0" + Math.floor(latestMonth)).slice(-2);
                         } else {
-                            months = Math.floor(this.volunteeringHoursCurrentMonth)
-                            dates = Math.floor(date)
+                            months = Math.floor(latestMonth)
                         }
+                        dates = ("0" + Math.floor(date)).slice(-2);
                     } else {
-                        if(Math.floor(this.volunteeringGoalCurrentMonth) < 10) {
-                            months = ("0" + Math.floor(this.volunteeringGoalCurrentMonth)).slice(-2);
-                            dates = ("0" + Math.floor(date)).slice(-2);
+                        let goalMonthIndex = ''
+                        this.volunteeringGoalWeeks.filter((data, index) => {
+                            if (data == latestDate) {
+                                goalMonthIndex = index
+                            }
+                        })
+                        latestMonth = this.volunteeringGoalMonthArray[goalMonthIndex]
+                        if (Math.floor(latestMonth) < 10) {
+                            months = ("0" + Math.floor(latestMonth)).slice(-2);
                         } else {
-                            months = Math.floor(this.volunteeringGoalCurrentMonth)
-                            dates = Math.floor(date)
+                            months = Math.floor(latestMonth)
                         }
+                        dates = ("0" + Math.floor(date)).slice(-2);
                     }
 
-                    this.currentTimeData.dateVolunteered = this.volunteeringHoursCurrentYear + '-' + months + '-' + dates
+                    this.currentTimeData.dateVolunteered = this.volunteeringHoursCurrentYear + '-' + months + '-' +
+                        dates
 
-                    timeSheetArray.filter( (timeSheetItem, timeSheetIndex) => {
+                    timeSheetArray.filter((timeSheetItem) => {
 
-                        if (timeSheetItem.timesheet_status.status == "APPROVED" ||
-                            timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
+                        if (timeSheetItem.status == "APPROVED" ||
+                            timeSheetItem.status == "AUTOMATICALLY_APPROVED"
                         ) {
                             this.volunteerHourDisableDates.push(timeSheetItem.date_volunteered)
                         }
@@ -498,10 +542,10 @@
                         let currentTimeSheetMonth = '';
                         if (timeSheetType == 'time') {
                             currentTimeSheetYear = this.volunteeringHoursCurrentYear;
-                            currentTimeSheetMonth = this.volunteeringHoursCurrentMonth;
+                            currentTimeSheetMonth = latestMonth;
                         } else {
                             currentTimeSheetYear = this.volunteeringGoalCurrentYear;
-                            currentTimeSheetMonth = this.volunteeringGoalCurrentMonth;
+                            currentTimeSheetMonth = latestMonth;
                         }
                         if (currentTimeSheetYear == currentArrayYear) {
                             if (currentTimeSheetMonth == currentArrayMonth) {
@@ -511,7 +555,7 @@
 
                                     this.fetchTimeSheetRealtedData(timeSheetId);
 
-                                    this.workDayList.filter((workList, workIndex) => {
+                                    this.workDayList.filter((workList) => {
                                         if (workList[0] == timeSheetItem.day_volunteered) {
                                             this.defaultWorkday = this.languageData.label[workList[
                                                 1]];
@@ -567,64 +611,81 @@
                 let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
                 let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
                 let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+                let startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD HH:mm:ss");
+                let endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD HH:mm:ss");
+
                 let disableEndDate = '';
                 if (endDate > disablefuterDate) {
                     disableEndDate = disablefuterDate
                 } else {
                     disableEndDate = endDate
                 }
-              
+
                 let timeArray = timeSheetArray.timesheet;
                 let currentTimeSheetYear = '';
                 let currentTimeSheetMonth = '';
                 let currentDate = ''
                 let currentDataArray = []
-
+                let now = moment().format("YYYY-MM-DD")
                 if (timeSheetType == 'time') {
                     currentDataArray = this.volunteeringHoursWeeks
 
-                    currentDataArray.filter((data,index) => {
-                        if(data+1 == date) {
+                    currentDataArray.filter((data, index) => {
+                        if (data + 1 == date) {
                             currentTimeSheetMonth = parseInt(this.volunteeringHoursMonthArray[index])
                             currentTimeSheetYear = parseInt(this.volunteeringHoursYearArray[index])
                         }
                     })
-                   
+
                     let timeMonth = '';
                     let timeDate = '';
-                    if(Math.floor(this.volunteeringHoursCurrentMonth) < 10) {
-                        timeMonth = ("0" + Math.floor(this.volunteeringHoursCurrentMonth)).slice(-2);
-                        timeDate = ("0" + Math.floor(date)).slice(-2);
+
+                    if (Math.floor(currentTimeSheetMonth) < 10) {
+                        timeMonth = ("0" + Math.floor(currentTimeSheetMonth)).slice(-2);
                     } else {
-                        timeMonth = Math.floor(this.volunteeringHoursCurrentMonth)
-                        timeDate = Math.floor(date)
+                        timeMonth = Math.floor(currentTimeSheetMonth)
                     }
-                    
-                    currentDate = moment(this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
-                    
+                    timeDate = ("0" + Math.floor(date)).slice(-2);
+
+                    currentDate = moment(currentTimeSheetYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
+                    if (now == currentDate) {
+                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD")
+                    } else {
+                        disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
+                        disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+                        startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD");
+                        endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD");
+                    }
                 } else {
                     currentDataArray = this.volunteeringGoalWeeks
 
-                    currentDataArray.filter((data,index) => {
-                        if(data+1 == date) { 
+                    currentDataArray.filter((data, index) => {
+                        if (data + 1 == date) {
                             currentTimeSheetMonth = parseInt(this.volunteeringGoalMonthArray[index])
                             currentTimeSheetYear = parseInt(this.volunteeringGoalYearArray[index])
                         }
                     })
                     let goalMonth = '';
                     let goalDate = '';
-                    if(Math.floor(this.volunteeringGoalCurrentMonth) < 10) {
-                        goalMonth = ("0" + Math.floor(this.volunteeringGoalCurrentMonth)).slice(-2);
-                        goalDate = ("0" + Math.floor(date)).slice(-2);
+                    if (Math.floor(currentTimeSheetMonth) < 10) {
+                        goalMonth = ("0" + Math.floor(currentTimeSheetMonth)).slice(-2);
                     } else {
-                        goalMonth = Math.floor(this.volunteeringGoalCurrentMonth)
-                        goalDate = Math.floor(date)
+                        goalMonth = Math.floor(currentTimeSheetMonth)
                     }
+                    goalDate = ("0" + Math.floor(date)).slice(-2);
+                    currentDate = moment(currentTimeSheetYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
+                    if (now == currentDate) {
+                        currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD")
 
-                     currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
+                    } else {
+                        disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")
+                        disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+                        startTime = moment(timeSheetArray.application_start_time).format("YYYY-MM-DD");
+                        endTime = moment(timeSheetArray.application_end_time).format("YYYY-MM-DD");
+                    }
                 }
-
-                timeArray.filter((timeSheetItem, timeSheetIndex) => {
+                let defaultDisable = 0;
+                timeArray.filter((timeSheetItem) => {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
@@ -632,25 +693,40 @@
                     if (currentTimeSheetYear == currentArrayYear) {
                         if (currentTimeSheetMonth == currentArrayMonth) {
                             if (date == currentArrayDate) {
-                                if (timeSheetItem.timesheet_status.status == "APPROVED" || timeSheetItem
-                                    .timesheet_status.status == "AUTOMATICALLY_APPROVED") {
+                                if (timeSheetItem.status == "APPROVED" || timeSheetItem.status == "AUTOMATICALLY_APPROVED") {
                                     returnData.push("approved")
-                                } else if (timeSheetItem.timesheet_status.status == "DECLINED") {
+                                    defaultDisable = 0
+                                } else if (timeSheetItem.status == "DECLINED") {
                                     returnData.push("declined")
-                                } else if (timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
+                                    defaultDisable = 1
+                                } else if (timeSheetItem.status == "SUBMIT_FOR_APPROVAL") {
                                     returnData.push("approval")
+                                    defaultDisable = 1
                                 } else {
                                     returnData.push("default-time")
+                                    defaultDisable = 1
                                 }
                             }
                         }
                     }
                 });
                 if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
+
+                    returnData.push("disabled")
+                }
+                if (currentDate > disableEndDate) {
+
+                    returnData.push("disabled")
+                }
+                if (now == currentDate) {
+                    currentDate = moment().tz(this.userTimezone).format("YYYY-MM-DD HH:mm:ss")
+                }
+
+                if (currentDate < startTime && timeSheetArray.application_start_time != null && defaultDisable != 1) {
                     returnData.push("disabled")
                 }
 
-                if (currentDate > disableEndDate) {
+                if (currentDate > endTime && timeSheetArray.application_end_time != null && defaultDisable != 1) {
                     returnData.push("disabled")
                 }
 
@@ -683,23 +759,23 @@
                 this.volunteeringHoursWeekName = data.weekdays
                 this.volunteeringHoursMonthArray = data.monthArray,
                 this.volunteeringHoursYearArray = data.yearArray,
-                setTimeout( () => {
+                setTimeout(() => {
                     this.tableLoaderActive = false
-                })
+                }, 500)
             },
             changeVolunteeringGoals(data) {
                 this.enableSubmitGoalTimeSheet = true;
-                this.goalTableLoaderActive = true
+                this.goalsTableLoaderActive = true
                 this.volunteeringGoalCurrentMonth = data.month
                 this.volunteeringGoalCurrentYear = data.year
                 data.weekdays.shift();
                 this.volunteeringGoalWeeks = data.days
                 this.volunteeringGoalWeekName = data.weekdays
                 this.volunteeringGoalMonthArray = data.monthArray,
-                this.volunteeringGoalYearArray = data.yearArray,
-                setTimeout(() => {
-                    this.goalTableLoaderActive = false
-                })
+                    this.volunteeringGoalYearArray = data.yearArray,
+                    setTimeout(() => {
+                        this.goalsTableLoaderActive = false
+                    })
             },
             updateWorkday(value) {
                 this.defaultWorkday = value.selectedVal;
@@ -720,18 +796,50 @@
             },
             async getVolunteerHoursData() {
                 this.tableLoaderActive = true
-                await volunteerTimesheetHours().then(response => {
+                let hourRequest = {
+                    page : this.timePage,
+                    type: "hour"
+                }
+                await volunteerTimesheetHours(hourRequest).then(response => {
+                   
+                    if (response.data) {
+                        this.timeMissionData = response.data
+                        if(response.pagination) {
+                            this.timeTotalPages = response.pagination.total_pages,
+                            this.timePage = response.pagination.current_page,
+                            this.timeTotalRow = response.pagination.total,
+                            this.timePerPage = response.pagination.per_page
+                        }
+                    }
+                    this.tableLoaderActive = false
+                })
+            },
+            async getVolunteerGoalsData() {
+                this.goalsTableLoaderActive = true
+                let goalRequest = {
+                    page : this.goalPage,
+                    type: "goal"
+                }
+                await volunteerTimesheetHours(goalRequest).then(response => {
+                    
                     if (response) {
-                        this.timeMissionData = response['TIME']
-                        this.goalMissionData = response['GOAL']
-                        if (response['TIME'].length > 0 || this.goalMissionData.length > 0) {
+                        if(response.data) {
+                            this.goalMissionData = response.data
+                            if(response.pagination) {
+                                this.goalTotalPages = response.pagination.total_pages,
+                                this.goalPage = response.pagination.current_page,
+                                this.goalTotalRow = response.pagination.total,
+                                this.goalPerPage = response.pagination.per_page
+                            }
+                        }
+                        if (this.timeMissionData.length > 0 || this.goalMissionData.length > 0) {
                             this.isAllVisible = true
                         } else {
                             this.isAllVisible = false
                         }
                     }
                     this.isComponentLoaded = true
-                    this.tableLoaderActive = false
+                    this.goalsTableLoaderActive = false
                 })
             },
             getTime(date, timeArray, timeSheetType) {
@@ -742,24 +850,23 @@
                 let currentDataArray = []
                 if (timeSheetType == "time") {
                     currentDataArray = this.volunteeringHoursWeeks
-                    currentDataArray.filter((data,index) => {
-                        if(data == date) {
+                    currentDataArray.filter((data, index) => {
+                        if (data == date) {
                             currentValueMonth = parseInt(this.volunteeringHoursMonthArray[index])
                             currentValueYear = parseInt(this.volunteeringHoursYearArray[index])
                         }
                     })
                 } else {
                     currentDataArray = this.volunteeringGoalWeeks
-                    currentDataArray.filter((data,index) => {
-                        if(data == date) {
+                    currentDataArray.filter((data, index) => {
+                        if (data == date) {
                             currentValueMonth = parseInt(this.volunteeringGoalMonthArray[index])
                             currentValueYear = parseInt(this.volunteeringGoalYearArray[index])
                         }
                     })
-                }    
+                }
 
-                timeArray.filter( (timeSheetItem, timeSheetIndex) => {
-
+                timeArray.filter((timeSheetItem) => {
                     let currentArrayDate = parseInt(timeSheetItem.date)
                     let currentArrayYear = parseInt(timeSheetItem.year)
                     let currentArrayMonth = parseInt(timeSheetItem.month)
@@ -779,9 +886,7 @@
                                 }
                             }
                         }
-
                     }
-
                 });
                 return returnData
             },
@@ -790,10 +895,9 @@
                 let hour = 0
                 let minute = 0
                 let action = 0
-                
+
                 if (timeArray) {
-                    timeArray.filter( (timeSheetItem, timeSheetIndex) => {
-                        let currentArrayDate = timeSheetItem.date
+                    timeArray.filter((timeSheetItem) => {
                         let currentArrayYear = timeSheetItem.year
                         let currentArrayMonth = timeSheetItem.month
                         let time2 = timeSheetItem.time;
@@ -807,14 +911,14 @@
                                     minute = parseInt(splitTime1[1]) + parseInt(splitTime2[1]);
                                     hour = hour + minute / 60;
                                     minute = minute % 60;
-                                    if(Math.floor(hour) < 10) {
+                                    if (Math.floor(hour) < 10) {
                                         time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" + Math.floor(
-                                        minute)).slice(-2);
+                                            minute)).slice(-2);
                                     } else {
                                         time1 = Math.floor(hour) + ':' + ("0" + Math.floor(
-                                        minute)).slice(-2);
+                                            minute)).slice(-2);
                                     }
-                                    
+
                                 }
                             }
                         } else {
@@ -850,12 +954,12 @@
                 let currentValueYear = ''
                 let currentValueMonth = ''
                 let currentDataArray = []
-                
+
                 if (timeSheetType == "time") {
                     timeArray = this.timeMissionData;
                     currentDataArray = this.volunteeringHoursWeeks
-                    currentDataArray.filter((data,index) => {
-                        if(data+1 == day) {
+                    currentDataArray.filter((data, index) => {
+                        if (data + 1 == day) {
                             currentValueMonth = parseInt(this.volunteeringHoursMonthArray[index])
                             currentValueYear = parseInt(this.volunteeringHoursYearArray[index])
                         }
@@ -863,18 +967,18 @@
                 } else {
                     timeArray = this.goalMissionData;
                     currentDataArray = this.volunteeringGoalWeeks
-                    currentDataArray.filter((data,index) => {
-                        if(data+1 == day) {
+                    currentDataArray.filter((data, index) => {
+                        if (data + 1 == day) {
                             currentValueMonth = parseInt(this.volunteeringGoalMonthArray[index])
                             currentValueYear = parseInt(this.volunteeringGoalYearArray[index])
                         }
                     })
-                }  
+                }
 
                 if (timeArray.length > 0) {
-                    timeArray.filter( (timeSheetItem, timeSheetIndex) => {
+                    timeArray.filter((timeSheetItem) => {
                         let timeEntryData = timeSheetItem.timesheet;
-                        timeEntryData.filter( (timeEntry, timeEntryIndex) => {
+                        timeEntryData.filter((timeEntry) => {
 
                             let currentArrayDate = timeEntry.date
                             let currentArrayYear = timeEntry.year
@@ -891,12 +995,13 @@
                                             minute = parseInt(splitTime1[1]) + parseInt(splitTime2[1]);
                                             hour = hour + minute / 60;
                                             minute = minute % 60;
-                                            if(Math.floor(hour) < 10) { 
-                                                time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" +
-                                                Math.floor(minute)).slice(-2);
+                                            if (Math.floor(hour) < 10) {
+                                                time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + (
+                                                    "0" +
+                                                    Math.floor(minute)).slice(-2);
                                             } else {
-                                                 time1 = Math.floor(hour) + ':' + ("0" +
-                                                Math.floor(minute)).slice(-2);
+                                                time1 = Math.floor(hour) + ':' + ("0" +
+                                                    Math.floor(minute)).slice(-2);
                                             }
 
                                         }
@@ -946,12 +1051,10 @@
                 } else {
                     timeArray = this.goalMissionData;
                 }
-               
-                timeArray.filter((timeSheetItem, timeSheetIndex) => {
-                    let timeEntryData = timeSheetItem.timesheet;
-                    timeEntryData.filter((timeEntry, timeEntryIndex) => {
 
-                        let currentArrayDate = timeEntry.date
+                timeArray.filter((timeSheetItem) => {
+                    let timeEntryData = timeSheetItem.timesheet;
+                    timeEntryData.filter((timeEntry) => {
                         let currentArrayYear = timeEntry.year
                         let currentArrayMonth = timeEntry.month
                         let time2 = timeEntry.time;
@@ -966,8 +1069,7 @@
                                     minute = minute % 60;
                                     time1 = Math.floor(hour) + ':' + ("0" + Math
                                         .floor(minute)).slice(-2);
-                                    if (timeEntry.timesheet_status.status != "APPROVED" && timeEntry
-                                        .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                    if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
                                         //for submit request
                                         let splitTimeApproved = timeApproved.split(':');
                                         hourApproved = parseInt(splitTimeApproved[0]) + parseInt(
@@ -976,26 +1078,25 @@
                                             splitTime2[1]);
                                         hourApproved = hourApproved + minuteApproved / 60;
                                         minuteApproved = minuteApproved % 60;
-                                       
-                                        if(Math.floor(hourApproved) < 10) { 
+
+                                        if (Math.floor(hourApproved) < 10) {
                                             timeApproved = ("0" + Math.floor(hourApproved)).slice(-2) +
-                                            ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
+                                                ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
                                         } else {
-                                            timeApproved =  Math.floor(hourApproved) +
-                                            ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
+                                            timeApproved = Math.floor(hourApproved) +
+                                                ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
                                         }
                                     }
 
                                 }
                             }
-                             
+
                         } else {
                             if (this.volunteeringGoalCurrentYear == currentArrayYear) {
                                 if (this.volunteeringGoalCurrentMonth == currentArrayMonth) {
 
                                     action = action + timeEntry.action
-                                    if (timeEntry.timesheet_status.status != "APPROVED" && timeEntry
-                                        .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                    if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
                                         actionApproved = actionApproved + timeEntry.action
                                     }
                                 }
@@ -1046,13 +1147,12 @@
                 this.defaultHours = this.languageData.placeholder.spent_hours
                 this.defaultMinutes = this.languageData.placeholder.spent_minutes
                 this.defaultWorkday = this.languageData.placeholder.workday
-
             },
             submitVolunteerTimeSheet(timeSheetType) {
                 let timeSheetId = {
                     'timesheet_entries': []
                 }
-                let timeSheetEntry = []
+
                 let timeArray = [];
                 let currentYear = ''
                 let currentMonth = ''
@@ -1066,16 +1166,15 @@
                     currentMonth = this.volunteeringGoalCurrentMonth
                 }
                 if (timeArray) {
-                    timeArray.filter( (timeMission, timeMissionIndex) => {
+                    timeArray.filter((timeMission) => {
                         let timeSheetArray = timeMission.timesheet;
                         if (timeSheetArray) {
-                            timeSheetArray.filter( (timeSheet, timeSheetIndex) => {
+                            timeSheetArray.filter((timeSheet) => {
                                 let currentArrayYear = timeSheet.year
                                 let currentArrayMonth = timeSheet.month
                                 if (currentYear == currentArrayYear) {
                                     if (currentMonth == currentArrayMonth) {
-                                        if (timeSheet.timesheet_status.status != "APPROVED" && timeSheet
-                                            .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                        if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
                                             timeSheetId.timesheet_entries.push({
                                                 'timesheet_id': timeSheet.timesheet_id
                                             })
@@ -1090,20 +1189,23 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
-                        this.getVolunteerHoursData()
+                        
+                        
                         if (timeSheetType == "time") {
                             this.getTimeRequestData(this.currentPage);
+                            this.getVolunteerHoursData()
                         } else {
                             this.getGoalRequestData(this.currentPage);
+                            this.getVolunteerGoalsData()
                         }
                         this.makeToast("success", response.message);
                     }
                 })
 
             },
-            makeToast(letiant = null, message) {
+            makeToast(variant = null, message) {
                 this.$bvToast.toast(message, {
-                    letiant: letiant,
+                    variant: variant,
                     solid: true,
                     autoHideDelay: 1000
                 })
@@ -1129,7 +1231,7 @@
                             this.timeMissionTotalPage = response.pagination.total_pages;
                         }
 
-                        data.filter( (item, index) => {
+                        data.filter((item) => {
                             currentData.push({
                                 [mission]: item.title,
                                 [time]: item.time,
@@ -1146,7 +1248,7 @@
                 this.getGoalRequestData(currentPage);
             },
             getGoalRequestData(currentPage) {
-                setTimeout( () => {
+                setTimeout(() => {
                     if (store.state.missionId != '' && store.state.missionId != null) {
                         let missionId = store.state.missionId;
                         let timeSheetType = store.state.missionType.toLowerCase()
@@ -1158,7 +1260,7 @@
                         } else {
                             timeArray = this.goalMissionData
                         }
-                        timeArray.filter( (timeArray, timeIndex) => {
+                        timeArray.filter((timeArray) => {
                             if (timeArray.mission_id == missionId) {
                                 timeSheetArray = timeArray;
                             }
@@ -1185,7 +1287,7 @@
                             this.goalMissionTotalPage = response.pagination.total_pages;
                         }
 
-                        data.filter( (item, index) => {
+                        data.filter((item) => {
                             currentData.push({
                                 [mission]: item.title,
                                 [action]: item.action,
@@ -1196,6 +1298,14 @@
                         })
                     }
                 })
+            },
+            timePageChange(page) {
+                this.timePage = page
+                this.getVolunteerHoursData();
+            },
+            goalPageChange(page) {
+                this.goalPage = page
+                this.getVolunteerGoalsData();
             }
         },
         created() {
@@ -1205,7 +1315,11 @@
             this.defaultMinutes = this.languageData.placeholder.spent_minutes
             this.timeRequestLabel = this.languageData.label.hours_requests
             this.goalRequestLabel = this.languageData.label.goals_requests
+            this.userTimezone = store.state.userTimezone
             this.getVolunteerHoursData();
+            setTimeout(() => {
+               this.getVolunteerGoalsData();
+            }, 90)
             this.isShownComponent = true;
             setTimeout(() => {
                 this.getTimeRequestData(this.hourRequestCurrentPage);
@@ -1227,17 +1341,18 @@
                 this.languageData.label.organisation,
             ]
 
-            goalRequestFieldArray.filter( (data, index) => {
+            goalRequestFieldArray.filter((data) => {
                 this.goalRequestFields.push({
                     "key": data
                 })
             });
 
-            timeRequestFieldArray.filter( (data, index) => {
+            timeRequestFieldArray.filter((data) => {
                 this.timesheetRequestFields.push({
                     "key": data
                 })
             });
         }
     };
+
 </script>

@@ -3,12 +3,17 @@ import axios from "axios";
 
 export default async(exportUrl, fileName) => {
     let url = `${process.env.VUE_APP_API_ENDPOINT}${exportUrl}`;
+    let defaultLanguage = '';
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
     await axios({
         url: url,
         responseType: "arraybuffer",
         method: "get",
         headers: {
-            token: store.state.token
+            'X-localization': defaultLanguage,
+            'token': store.state.token
         }
     }).then(response => {
 

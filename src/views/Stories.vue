@@ -23,6 +23,7 @@
 				
 				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination
+							:hide-ellipsis="hideEllipsis"
 							v-model="pagination.currentPage"
 							:total-rows="pagination.total"
 							:per-page="pagination.perPage"
@@ -74,11 +75,11 @@
 					'currentPage' :1,
 					"total": 0,
 					"perPage": 1,
-					"currentPage": 1, 
 					"totalPages": 0,
 				},
 				bannerUrl : '',
-				bannerText : ''
+				bannerText : '',
+				hideEllipsis:true
 			};
 		},
 

@@ -10,7 +10,7 @@
 					<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 						<b-container>
 							<h1>{{languageData.label.news}}</h1>
-							<p>{{bannerText}}</p>
+							<p v-html="bannerText"></p>
 						</b-container>
 					</div>
 				</div>
@@ -31,6 +31,7 @@
 					</div>
 					<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 						<b-pagination
+							:hide-ellipsis="hideEllipsis"
 							v-model="pagination.currentPage"
 							:total-rows="pagination.total"
 							:per-page="pagination.perPage"
@@ -84,7 +85,8 @@ export default {
 				"totalPages": 0,
 			},
 			bannerUrl : '',
-			bannerText : ''
+			bannerText : '',
+			hideEllipsis:true
 		};
 	},
 	methods: {

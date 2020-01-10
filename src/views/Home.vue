@@ -85,7 +85,7 @@
                     <!-- Tabing grid view and list view end -->
                     <!-- Pagination start -->
                     <div class="pagination-block" v-if="rows > 0 && totalPages > 1">
-                        <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"
+                        <b-pagination :hide-ellipsis="hideEllipsis" v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"
                             :simple="false" :aria-controls="activeView" @change="pageChange">
                         </b-pagination>
                     </div>
@@ -184,7 +184,8 @@ import { setTimeout } from 'timers';
                 isCountrySelectionSet: false,
                 totalPages: 0,
                 defaultCountry: 0,
-                isAjaxCall :true
+                isAjaxCall :true,
+                hideEllipsis:true
             };
         },
 
