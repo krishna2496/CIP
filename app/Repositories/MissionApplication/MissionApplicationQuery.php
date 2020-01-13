@@ -7,7 +7,6 @@ use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
 {
@@ -16,6 +15,8 @@ class MissionApplicationQuery implements QueryableInterface
     const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
     const FILTER_MISSION_SKILLS     = 'missionSkills';
     const FILTER_MISSION_THEMES     = 'missionThemes';
+    const FILTER_MISSION_COUNTRIES  = 'missionCountries';
+    const FILTER_MISSION_CITIES     = 'missionCities';
     const FILTER_MISSION_TYPES      = 'missionTypes';
 
     const ALLOWED_SORTABLE_FIELDS = [
@@ -74,7 +75,10 @@ class MissionApplicationQuery implements QueryableInterface
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
-        $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES]) || isset($filters[self::FILTER_MISSION_TYPES]);
+        $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
+            || isset($filters[self::FILTER_MISSION_COUNTRIES])
+            || isset($filters[self::FILTER_MISSION_CITIES])
+            || isset($filters[self::FILTER_MISSION_TYPES]);
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
         $query = MissionApplication::query();
@@ -122,6 +126,14 @@ class MissionApplicationQuery implements QueryableInterface
                     // Filter by mission theme
                     $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
                         $query->whereIn('theme_id', $filters[self::FILTER_MISSION_THEMES]);
+                    });
+                    // Filter by mission country
+                    $query->when(isset($filters[self::FILTER_MISSION_COUNTRIES]), function($query) use ($filters) {
+                        $query->whereIn('country_id', $filters[self::FILTER_MISSION_COUNTRIES]);
+                    });
+                    // Filter by mission city
+                    $query->when(isset($filters[self::FILTER_MISSION_CITIES]), function($query) use ($filters) {
+                        $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
                     });
                     // Filter by mission type
                     $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
