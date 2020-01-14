@@ -76,6 +76,7 @@ class TimesheetQuery implements QueryableInterface
                     $query->select('mission_language_id', 'mission_id', 'title')
                         ->where('language_id', $languageId);
                 },
+                'mission.missionSkill',
                 'mission.timeMission',
                 'mission.country.languages' => function ($query) use ($languageId) {
                     $query->where('language_id', '=', $languageId);
