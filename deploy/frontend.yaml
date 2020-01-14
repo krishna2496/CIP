@@ -71,14 +71,6 @@ spec:
           requests:
             cpu: 40m
             memory: 128Mi
-          # limits:
-          #   cpu: 120m
-          #   memory: 384Mi
-        # readinessProbe:
-        #   exec:
-        #     command:
-        #     - cat
-        #     - /optimy/sync.ok
        
 ---
 kind: Service
