@@ -12,7 +12,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserActivityLogEvent;
 
+//!  Mission theme controller
+/*!
+This controller is responsible for handling mission theme listing, show, store, update and delete operations.
+ */
 class MissionThemeController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -25,18 +30,28 @@ class MissionThemeController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\MissionThemeRepository $missionThemeRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(MissionThemeRepository $missionThemeRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        MissionThemeRepository $missionThemeRepository,
+        ResponseHelper $responseHelper,
+        Request $request
+    ) {
         $this->missionThemeRepository = $missionThemeRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -98,7 +113,18 @@ class MissionThemeController extends Controller
         $apiData = ['mission_theme_id' => $missionTheme->mission_theme_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_THEME_CREATED');
-        
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION_THEME'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $missionTheme->mission_theme_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -142,6 +168,18 @@ class MissionThemeController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_THEME_UPDATED');
             
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_THEME'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $missionTheme->mission_theme_id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -189,6 +227,19 @@ class MissionThemeController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_THEME_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_THEME'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

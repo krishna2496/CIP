@@ -11,9 +11,9 @@ interface TenantOptionInterface
      * Update style settings.
      *
      * @param  Illuminate\Http\Request $request
-     * @return void
+     * @return Array
      */
-    public function updateStyleSettings(Request $request);
+    public function updateStyleSettings(Request $request): Array;
 
     /**
      * Store tenant option data
@@ -45,4 +45,12 @@ interface TenantOptionInterface
      * @return Illuminate\Support\Collection
      */
     public function getOptionValue(string $data);
+
+    /**
+     * Get option value by option name
+     *
+     * @param String $data
+     * @return null|App\Models\TenantOption
+     */
+    public function getOptionValueFromOptionName(string $data): ?TenantOption;
 }

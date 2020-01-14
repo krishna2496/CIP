@@ -27,8 +27,8 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = Country::where('ISO', 'US')->first();
-        $cityId = City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
 
@@ -41,7 +41,7 @@ class TimesheetTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -58,7 +58,8 @@ class TimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -127,8 +128,7 @@ class TimesheetTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         
@@ -178,8 +178,8 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = Country::where('ISO', 'US')->first();
-        $cityId = City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
 
@@ -192,7 +192,7 @@ class TimesheetTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -209,7 +209,8 @@ class TimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -278,22 +279,21 @@ class TimesheetTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         
         DB::setDefaultConnection('mysql');
         
         $params = [
-            "status_id" => 1
+            "status" => config('constants.timesheet_status.PENDING')
         ];
         
         $this->patch('timesheet/'.$timeSheetId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
         $invalidParam = [
-            "status_id" => rand(80000,8000000)
+            "status" => rand(80000,8000000)
         ];
         DB::setDefaultConnection('mysql');
         $this->patch('timesheet/'.$timeSheetId, $invalidParam, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -323,13 +323,15 @@ class TimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
+        // Get country and city id for mission create       
         \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
 
-        // Get country and city id for mission create
-        $country = Country::where('ISO', 'US')->first();
-        $cityId = City::where('country_id', $country->country_id)->first()->city_id;
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
+        \DB::setDefaultConnection('mysql');
+
 
         // Create request for mission create
         $params = [
@@ -340,7 +342,7 @@ class TimesheetTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -357,7 +359,8 @@ class TimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -423,15 +426,14 @@ class TimesheetTest extends TestCase
         ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
-        $status = config('constants.timesheet_status.AUTOMATICALLY_APPROVED');
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::where('status', $status)->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         
-
-        $statusId = Config('constants.timesheet_status_id.'.$status);
+        $status = config('constants.timesheet_status.AUTOMATICALLY_APPROVED');
+        $statusId = Config('constants.timesheet_status.'.$status);
         DB::setDefaultConnection('mysql');
         $response = $this->get('timesheet/'.$user->user_id.'?status='.$statusId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
@@ -440,6 +442,10 @@ class TimesheetTest extends TestCase
         
         DB::setDefaultConnection('mysql');
         $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        $response = $this->get('timesheet/'.$user->user_id.'?type='.config("constants.mission_type.TIME"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
         $user->delete();

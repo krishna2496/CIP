@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers\Admin\Mission;
 
+use App\Helpers\LanguageHelper;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionApplication\MissionApplicationQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
@@ -12,7 +15,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
+use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
 
+//!  Mission application controller
+/*!
+This controller is responsible for handling mission application listing, update and show operations.
+ */
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -20,17 +29,17 @@ class MissionApplicationController extends Controller
      * @var MissionApplicationRepository
      */
     private $missionApplicationRepository;
-    
+
     /**
-     * @var App\Helpers\ResponseHelper
+     * @var ResponseHelper
      */
     private $responseHelper;
 
     /**
      * Create a new mission application controller instance.
      *
-     * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param MissionRepository $missionApplicationRepository
+     * @param ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
@@ -41,13 +50,13 @@ class MissionApplicationController extends Controller
         $this->responseHelper = $responseHelper;
     }
 
-    
+
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $missionId
-     * @return Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function missionApplications(Request $request, int $missionId): JsonResponse
     {
@@ -55,7 +64,7 @@ class MissionApplicationController extends Controller
             $applicationList = $this->missionApplicationRepository->missionApplications($request, $missionId);
             $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATIONS_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            
+
             return $this->responseHelper->successWithPagination(
                 Response::HTTP_OK,
                 $responseMessage,
@@ -74,24 +83,24 @@ class MissionApplicationController extends Controller
      *
      * @param int $missionId
      * @param int $applicationId
-     * @return Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function missionApplication(int $missionId, int $applicationId): JsonResponse
     {
         $applicationList = $this->missionApplicationRepository->missionApplication($missionId, $applicationId);
         $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
             : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-        
+
         return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $applicationList);
     }
 
     /**
      * Update mission application
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $missionId
      * @param int $applicationId
-     * @return Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId): JsonResponse
     {
@@ -121,11 +130,61 @@ class MissionApplicationController extends Controller
                 $e->getMessage()
             );
         }
-        
+
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
-        
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.MISSION_APPLICATION_STATUS_CHANGED'),
+            config('constants.activity_log_user_types.API'),
+            $request->header('php-auth-user'),
+            get_class($this),
+            $request->toArray(),
+            null,
+            $applicationId
+        ));
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.MISSION_APPLICATION');
+        $entityId = $applicationId;
+        $action = config('constants.notification_actions.'.$request->approval_status);
+        $userId = $application->user_id;
+
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * @param Request $request
+     * @param MissionApplicationQuery $missionApplicationQuery
+     * @return JsonResponse
+     */
+    public function getMissionApplicationDetails(
+        Request $request,
+        MissionApplicationQuery $missionApplicationQuery,
+        LanguageHelper $languageHelper
+    ) {
+        $filters = $request->get('filters', []);
+        $search = $request->get('search');
+        $order = $request->get('order', []);
+        $limit = $request->get('limit', []);
+        $tenantLanguages = $languageHelper->getTenantLanguages($request);
+
+        $applicationList = $missionApplicationQuery->run([
+            'filters' => $filters,
+            'search' => $search,
+            'order' => $order,
+            'limit' => $limit,
+            'tenantLanguages' => $tenantLanguages
+        ]);
+
+        return $this->responseHelper->successWithPagination(
+            Response::HTTP_OK,
+            '',
+            $applicationList
+        );
     }
 }

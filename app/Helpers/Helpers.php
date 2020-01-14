@@ -9,7 +9,6 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
-use Illuminate\Support\Facades\Hash;
 
 class Helpers
 {
@@ -44,7 +43,7 @@ class Helpers
             if ((env('APP_ENV') === 'local' || env('APP_ENV') === 'testing')) {
                 return env('DEFAULT_TENANT');
             } else {
-                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+                return parse_url($request->headers->all()['referer'][0])['host'];
             }
         }
     }
@@ -64,7 +63,7 @@ class Helpers
             return env('APP_MAIL_BASE_URL');
         }
     }
-    
+
     /**
      * It will retrive tenant details from tenant table
      *
@@ -75,11 +74,11 @@ class Helpers
     {
         // Connect master database to get language details
         $tenantName = $this->getSubDomainFromRequest($request);
-        $this->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql');
         $tenant = $this->db->table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
         // Connect tenant database
-        $this->switchDatabaseConnection('tenant', $request);
-                
+        $this->switchDatabaseConnection('tenant');
+
         return $tenant;
     }
 
@@ -87,11 +86,10 @@ class Helpers
      * Switch database connection runtime
      *
      * @param string $connection
-     * @param \Illuminate\Http\Request $request
      * @return void
      * @throws Exception
      */
-    public function switchDatabaseConnection(string $connection, Request $request)
+    public function switchDatabaseConnection(string $connection)
     {
         // Set master connection
         $this->db->connection('mysql')->getPdo();
@@ -104,7 +102,7 @@ class Helpers
             Config::set('database.default', 'tenant');
         }
     }
-    
+
     /**
      * Create database connection runtime
      *
@@ -113,11 +111,11 @@ class Helpers
     public function createConnection(int $tenantId)
     {
         Config::set('database.connections.tenant', array(
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$tenantId,
-            'username'  => env('DB_USERNAME'),
-            'password'  => env('DB_PASSWORD'),
+            'driver' => 'mysql',
+            'host' => env('DB_HOST'),
+            'database' => 'ci_tenant_' . $tenantId,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
         ));
         // Create connection for the tenant database
         $pdo = $this->db->connection('tenant')->getPdo();
@@ -131,14 +129,12 @@ class Helpers
      * @param string $date
      * @return string
      */
-    public function getUserTimeZoneDate(string $date) : string
+    public function getUserTimeZoneDate(string $date): string
     {
-        if (config('constants.TIMEZONE') !== '' && $date !== null) {
-            if (!($date instanceof Carbon)) {
-                $date = Carbon::parse($date);
-            }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
+        if (!($date instanceof Carbon)) {
+            $date = Carbon::parse($date);
         }
+        return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
     }
 
     /**
@@ -214,7 +210,7 @@ class Helpers
     {
         $tenant = $this->getTenantDetail($request);
         // Connect master database to get tenant settings
-        $this->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql');
         
         $tenantSetting = $this->db->table('tenant_has_setting')
         ->select(
@@ -237,11 +233,11 @@ class Helpers
         ->get();
 
         // Connect tenant database
-        $this->switchDatabaseConnection('tenant', $request);
+        $this->switchDatabaseConnection('tenant');
         
         return $tenantSetting;
     }
-    
+
     /**
      * Get domain from user API key
      *
@@ -251,7 +247,7 @@ class Helpers
     public function getDomainFromUserAPIKeys(Request $request): string
     {
         // Check basic auth passed or not
-        $this->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql');
         // authenticate api user based on basic auth parameters
         $apiUser = $this->db->table('api_user')
                     ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
@@ -262,7 +258,7 @@ class Helpers
                     ->whereNull('tenant.deleted_at')
                     ->first();
 
-        $this->switchDatabaseConnection('tenant', $request);
+        $this->switchDatabaseConnection('tenant');
         return $apiUser->name;
     }
 
@@ -277,19 +273,19 @@ class Helpers
     {
         return date($dateFormat, strtotime($date));
     }
-    
+
     /**
      * Convert in report time format
      *
      * @param string $totalHours
      * @return string
      */
-    public function convertInReportTimeFormat(string $totalHours) : string
+    public function convertInReportTimeFormat(string $totalHours): string
     {
-        $convertedHours = (int)($totalHours / 60);
-        $hours = $convertedHours."h";
+        $convertedHours = (int) ($totalHours / 60);
+        $hours = $convertedHours . "h";
         $minutes = $totalHours % 60;
-        return $hours.$minutes;
+        return $hours . $minutes;
     }
 
     /**
@@ -298,11 +294,40 @@ class Helpers
      * @param string $totalHours
      * @return string
      */
-    public function convertInReportHoursFormat(string $totalHours) : string
+    public function convertInReportHoursFormat(string $totalHours): string
     {
-        $hours = (int)($totalHours / 60);
+        $hours = (int) ($totalHours / 60);
         $minutes = ($totalHours % 60) / 60;
         $totalHours = $hours + $minutes;
-        return number_format((float)$totalHours, 2, '.', '');
+        return number_format((float) $totalHours, 2, '.', '');
+    }
+
+    /**
+     * Trim text after x words
+     *
+     * @param string $phrase
+     * @param int maxWords
+     * @return null|string
+     */
+    public function trimText(string $phrase, int $maxWords)
+    {
+        $phrase_array = explode(' ', $phrase);
+        if (count($phrase_array) > $maxWords && $maxWords > 0) {
+            $phrase = implode(' ', array_slice($phrase_array, 0, $maxWords)).'...';
+        }
+        return $phrase;
+    }
+
+    /**
+     * Get tenant default assets url
+     *
+     * @param string $tenantName
+     * @return string
+     */
+    public function getAssetsUrl(string $tenantName): string
+    {
+        return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
+        config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
+        '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/';
     }
 }

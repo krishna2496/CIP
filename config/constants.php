@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     /*
      * constants to use any where in system
      */
@@ -20,12 +20,19 @@ return [
     'SKILL_LIMIT' => '15',
     'TIMESHEET_DOCUMENT_SIZE_LIMIT' => '4096',
     'TIMESHEET_DATE_FORMAT' => 'Y-m-d',
+    'TIMESHEET_DATE_TIME_FORMAT' => 'Y-m-d H:i:s',
+    'NEWS_SHORT_DESCRIPTION_WORD_LIMIT' => 10,
+    'STORY_IMAGE_SIZE_LIMIT' => '4096',
+    'STORY_MAX_IMAGE_LIMIT' => 20,
+    'STORY_MAX_VIDEO_LIMIT' => 20,
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+    'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+    'AWS_S3_DOCUMENTS_FOLDER_NAME' => 'documents',
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
@@ -40,6 +47,8 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
+    'DEFAULT_USER_HOURS_GOAL' => '500',
     
     /*
      * User custom field types
@@ -101,7 +110,18 @@ return [
      * Image types
      */
     'image_types' => [
-        'PNG' => 'png'
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
+    ],
+
+    /*
+     * Story image types
+     */
+    'story_image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
     ],
 
     /*
@@ -111,6 +131,16 @@ return [
         'PNG' => 'png',
         'JPG' => 'jpg',
         'JPEG' => 'jpeg',
+    ],
+    
+    /*
+     * Slider image types
+     */
+    'slider_image_mime_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/svg+xml'
     ],
     
     /*
@@ -134,6 +164,20 @@ return [
         'TXT' => 'txt'
     ],
 
+    /*
+     * Document types
+     */
+    'document_mime_types' => [
+        'application/vnd.ms-word.document.macroenabled.12',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel.sheet.binary.macroenabled.12',
+        'application/vnd.ms-excel.sheet.macroenabled.12',
+        'application/pdf',
+        'text/plain'
+    ],
     
     /*
      * Timesheet document types
@@ -169,18 +213,7 @@ return [
         'APPROVED' => 'APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ],
-
-    /*
-     * Timesheet status
-     */
-    'timesheet_status_id' => [
-        'PENDING' => '1',
-        'APPROVED' => '2',
-        'DECLINED' => '3',
-        'AUTOMATICALLY_APPROVED' => '4',
-        'SUBMIT_FOR_APPROVAL' => '5'
-    ],
-
+    
     'ALLOW_TIMESHEET_ENTRY' => 2,
     
     /**
@@ -193,19 +226,97 @@ return [
         'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
     ],
 
-    /**
-     * Notification types
+    /*
+     * News status
      */
-    'notification_type_keys' => [
-        'RECOMMENDED_MISSIONS' => 'recommended_missions',
-        'VOLUNTEERING_HOURS' => 'volunteering_hours',
-        'VOLUNTEERING_GOALS' => 'volunteering_goals',
-        'MY_COMMENTS' => 'my_comments',
-        'MY_STORIES' => 'my_stories',
-        'NEW_MISSIONS' => 'new_missions',
-        'NEW_MESSAGES' => 'new_messages',
+    'news_status' => [
+        'PUBLISHED' => 'PUBLISHED',
+        'UNPUBLISHED' => 'UNPUBLISHED'
+    ],
+        
+        
+    /*
+     * Story status
+     */
+    'story_status' => [
+        'DRAFT' => 'DRAFT',
+        'PENDING' => 'PENDING',
+        'PUBLISHED' => 'PUBLISHED',
+        'DECLINED' => 'DECLINED'
+    ],
+
+    /**
+     * Export story file names
+     */
+    'export_story_file_names' => [
+        'STORY_XLSX' => 'Stories.xlsx',
+    ],
+
+    /**
+     * Export mission comments file names
+     */
+    'export_mission_comment_file_names' => [
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
+    ],
+        
+    /*
+     * Folder name s3
+     */
+    'folder_name' => [
+        'timesheet' => 'timesheet',
+        'story' => 'story'
+    ],
+
+    /*
+     * Story status
+     */
+    'story_status' => [
+        'DRAFT' => 'DRAFT',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED'
+    ],
+
+    /*
+     * send message froms
+     */
+    'message' => [
+        'read' => '1',
+        'unread' => '0',
+        'anonymous' => '1',
+        'not_anonymous' => '0',
+        'send_message_from' => [
+            'all' => 0,
+            'user' => 1,
+            'admin' => 2,
+        ]
+    ],
+
+    /*
+     * User notification types
+     */
+    'notification_types' => [
+        'RECOMMENDED_MISSIONS' => 'Recommended missions',
+        'VOLUNTEERING_HOURS' => 'Volunteering hours',
+        'VOLUNTEERING_GOALS' => 'Volunteering goals',
+        'MY-COMMENTS' => 'My comments',
+        'MY-STORIES' => 'My stories',
+        'NEW_STORIES_HOURS' => 'New stories hours',
+        'NEW_MISSIONS' => 'New missions',
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story',
+        'MISSION_APPLICATION' => 'Mission Application',
+        'NEW_NEWS' => 'New News'
     ],
     
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
     /*
      * Tenant settings
      */
@@ -266,7 +377,6 @@ return [
         'ERROR_RESET_PASSWORD_INVALID_DATA' => '210004',
         'ERROR_SEND_RESET_PASSWORD_LINK' => '210005',
         'ERROR_INVALID_DETAIL' => '210006',
-        'ERROR_INVALID_PASSWORD' => '210007',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => '210008',
         'ERROR_TOKEN_EXPIRED' => '210009',
         'ERROR_IN_TOKEN_DECODE' => '210010',
@@ -275,7 +385,6 @@ return [
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
         'ERROR_MISSION_NOT_FOUND' => '400003',
-        'ERROR_MISSION_DELETION' => '400004',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => '400006',
         'ERROR_NO_MISSION_FOUND' => '400007',
         'ERROR_THEME_INVALID_DATA' => '400008',
@@ -284,7 +393,6 @@ return [
         'ERROR_SKILL_DELETION' => '400011',
         'ERROR_SKILL_REQUIRED_FIELDS_EMPTY' => '400012',
         'ERROR_SKILL_NOT_FOUND' => '400014',
-        'ERROR_PARENT_SKILL_NOT_FOUND' => '400015',
         'ERROR_INVALID_MISSION_ID' => '400018',
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => '400021',
         'ERROR_INVALID_INVITE_MISSION_DATA' => '400019',
@@ -294,8 +402,6 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
         'ERROR_MISSION_RATING_INVALID_DATA' => '400025',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => '400026',
-        'ERROR_INVALID_MISSION_MEDIA_DATA' => '400027',
-        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => '400028',
         'ERROR_COMMENT_NOT_FOUND' => '400029',
         'ERROR_SKILL_LIMIT' => '400030',
         'ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY' => '400031',
@@ -312,54 +418,188 @@ return [
         'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
         'ERROR_UNAUTHORIZED_USER' => '400043',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => '400045',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => '400046',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => '400047',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
+        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
+        'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
+        'ERROR_NEWS_REQUIRED_FIELDS_EMPTY' => '500003',
+        'ERROR_NEWS_NOT_FOUND' => '500004',
+
+        'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
+        'ERROR_STORY_NOT_FOUND' => '700002',
+        'ERROR_COPY_DECLINED_STORY' => '700004',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700005',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
+        'ERROR_STORY_IMAGE_DELETE' => '700007',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
+        'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+                              
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
+
+        'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
-        'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
 
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => '800000',
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => '800001',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => '800002',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => '800003',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => '800004',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => '800005',
-        'ERROR_FAILED_TO_RESET_STYLING' => '800006',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => '800007',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => '800008',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => '800010',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => '800011',
         'ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY' => '800012',
         'ERROR_SETTING_FOUND' => '800013',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => '800014',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => '800015',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => '800016',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => '800017',
         'ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY' => '800018',
         'ERROR_TENANT_OPTION_NOT_FOUND' => '800019',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => '800020',
         'ERROR_COUNTRY_NOT_FOUND' => '800021',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
-        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
-        
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
+        'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
+        'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
+        'ERROR_AVAILABILITY_NOT_FOUND' => '410002',
+        'ERROR_CITY_INVALID_DATA' => '800024',
+        'ERROR_COUNTRY_INVALID_DATA' => '800025',
+        'ERROR_CITY_NOT_FOUND' => '800026',
+        'ERROR_CITY_ENABLE_TO_DELETE' => '800027',
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '800028'
     ],
 
-    
+    /**
+     * Notification types
+     */
+    'notification_type_keys' => [
+        'RECOMMENDED_MISSIONS' => 'recommended_missions',
+        'VOLUNTEERING_HOURS' => 'volunteering_hours',
+        'VOLUNTEERING_GOALS' => 'volunteering_goals',
+        'MY_COMMENTS' => 'my_comments',
+        'MY_STORIES' => 'my_stories',
+        'NEW_MISSIONS' => 'new_missions',
+        'NEW_MESSAGES' => 'new_messages',
+        'RECOMMENDED_STORY' => 'recommended_story',
+        'MISSION_APPLICATION' => 'mission_application',
+        'NEW_NEWS' => 'new_news'
+    ],
+
     /**
      * Notification actions
      */
     'notification_actions' => [
         'CREATED' => 'CREATED',
         'APPROVED' => 'APPROVED',
-        'REJECTED' => 'APPROVED',
+        'REJECTED' => 'REJECTED',
         'PUBLISHED' => 'PUBLISHED',
         'PENDING' => 'PENDING',
         'DECLINED' => 'DECLINED',
         'INVITE' => 'INVITE',
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'DELETED' => 'DELETED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING'
+    ],
+
+    /**
+     * Notification type icons
+     */
+    'notification_icons' => [
+        'APPROVED' => 'approve-ic.png',
+        'DECLINED' => 'warning.png',
+        'NEW' => 'circle-plus.png',
+    ],
+    
+    'notification_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED' => 'PUBLISHED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    'activity_log_types' => [
+        'AUTH' => 'AUTH',
+        'USERS' => 'USERS',
+        'MISSION' => 'MISSION',
+        'COMMENT' => 'COMMENT',
+        'MESSAGE' => 'MESSAGE',
+        'USERS_CUSTOM_FIELD' => 'USERS_CUSTOM_FIELD',
+        'USER_PROFILE' => 'USER_PROFILE',
+        'USER_PROFILE_IMAGE' => 'USER_PROFILE_IMAGE',
+        'NEWS_CATEGORY' => 'NEWS_CATEGORY',
+        'NEWS' => 'NEWS',
+        'VOLUNTEERING_TIMESHEET' => 'VOLUNTEERING_TIMESHEET',
+        'VOLUNTEERING_TIMESHEET_DOCUMENT' => 'VOLUNTEERING_TIMESHEET_DOCUMENT',
+        'SLIDER' => 'SLIDER',
+        'STYLE_IMAGE' => 'STYLE_IMAGE',
+        'STYLE' => 'STYLE',
+        'TENANT_OPTION' => 'TENANT_OPTION',
+        'TENANT_SETTINGS' => 'TENANT_SETTINGS',
+        'FOOTER_PAGE' => 'FOOTER_PAGE',
+        'POLICY_PAGE' => 'POLICY_PAGE',
+        'MISSION_THEME' => 'MISSION_THEME',
+        'SKILL' => 'SKILL',
+        'USER_SKILL' => 'USER_SKILL',
+        'USER_COOKIE_AGREEMENT' => 'USER_COOKIE_AGREEMENT',
+        'GOAL_TIMESHEET' => 'GOAL_TIMESHEET',
+        'TIME_TIMESHEET' => 'TIME_TIMESHEET',
+        'TIME_MISSION_TIMESHEET' => 'TIME_MISSION_TIMESHEET',
+        'GOAL_MISSION_TIMESHEET' => 'GOAL_MISSION_TIMESHEET',
+        'STORY' => 'STORY',
+        'MISSION_COMMENTS' => 'MISSION_COMMENTS',
+        'STORY_IMAGE' => 'STORY_IMAGE',
+        'STORY_VISITOR' => 'STORY_VISITOR',
+        'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
+        'NOTIFICATION' => 'NOTIFICATION',
+        'AVAILABILITY' => 'AVAILABILITY',
+        'COUNTRY' => 'COUNTRY',
+        'CITY' => 'CITY',
+        'MISSION_MEDIA' => 'MISSION_MEDIA',
+        'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
+    ],
+
+    'activity_log_actions' => [
+        'CREATED' => 'CREATED',
+        'UPDATED' => 'UPDATED',
+        'DELETED' => 'DELETED',
+        'INVITED' => 'INVITED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'APPROVED' => 'APPROVED',
+        'DECLINED' => 'DECLINED',
+        'LOGIN' => 'LOGIN',
+        'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
+        'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
+        'RATED' => 'RATED',
+        'COMMENT_ADDED' => 'COMMENT_ADDED',
+        'COMMENT_UPDATED' => 'COMMENT_UPDATED',
+        'COMMENT_DELETED' => 'COMMENT_DELETED',
+        'MISSION_APPLICATION_CREATED' => 'MISSION_APPLICATION_CREATED',
+        'MISSION_APPLICATION_STATUS_CHANGED' => 'MISSION_APPLICATION_STATUS_CHANGED',
+        'PASSWORD_RESET_REQUEST' => 'PASSWORD_RESET_REQUEST',
+        'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
+        'PASSWORD_RESET' => 'PASSWORD_RESET',
+        'LINKED' => 'LINKED',
+        'UNLINKED' => 'UNLINKED',
+        'ACCEPTED' => 'ACCEPTED',
+        'EXPORT' => 'EXPORT',
+        'COPIED' => 'COPIED',
+        'COUNTED' => 'COUNTED',
+        'READ' => 'READ',
+        'ACTIVATED' => 'ACTIVATED',
+        'DEACTIVATED' => 'DEACTIVATED',
+        'CLEAR_ALL' => 'CLEAR_ALL',
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
+    ],
+
+    'activity_log_user_types' => [
+        'API' => 'API',
+        'REGULAR' => 'REGULAR'
     ]
 
 

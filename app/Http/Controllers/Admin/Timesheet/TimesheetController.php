@@ -11,9 +11,15 @@ use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Timesheet\TimesheetRepository;
 use Validator;
-use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
+use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
+use Illuminate\Validation\Rule;
 
+//!  Timesheet controller
+/*!
+This controller is responsible for handling timesheet listing and update operations.
+ */
 class TimesheetController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -32,25 +38,56 @@ class TimesheetController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
+
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         TimesheetRepository $timesheetRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->userRepository = $userRepository;
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey =$request->header('php-auth-user');
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $timesheetsData = $this->timesheetRepository->getAllTimesheets($request);
+        foreach ($timesheetsData as $timesheets) {
+            if ($timesheets->missionLanguage) {
+                $timesheets->setAttribute('title', $timesheets->missionLanguage[0]->title);
+                unset($timesheets->missionLanguage);
+            }
+            $timesheets->setAppends([]);
+        }
+
+        $apiData = $timesheetsData->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ?
+            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
 
     /**
      * Display a listing of the resource.
@@ -58,7 +95,7 @@ class TimesheetController extends Controller
      * @param int $userId
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(int $userId, Request $request): JsonResponse
+    public function fetchTimesheet(int $userId, Request $request): JsonResponse
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -100,7 +137,7 @@ class TimesheetController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "status_id" => "required|numeric|exists:timesheet_status,timesheet_status_id"
+                    "status" => ["required",Rule::in(config('constants.timesheet_status'))]
                 ]
             );
 
@@ -114,11 +151,40 @@ class TimesheetController extends Controller
                 );
             }
             $this->timesheetRepository->find($timesheetId);
-            $this->timesheetRepository->updateTimesheetStatus($request->status_id, $timesheetId);
+            $this->timesheetRepository->updateTimesheetStatus($request->status, $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
             $apiData = ['timesheet_id' => $timesheetId];
+
+            // Send notification to user
+            $timsheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($timesheetId);
+            if ($timsheetDetails->mission->mission_type === config('constants.mission_type.TIME')) {
+                $notificationType = config('constants.notification_type_keys.VOLUNTEERING_HOURS');
+            } else {
+                $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
+            }
+            $entityId = $timesheetId;
+            $action = config('constants.notification_actions.'.$timsheetDetails->status);
+            $userId = $timsheetDetails->user_id;
+
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+            // Make activity log
+            $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
+                config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
+
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
+                $activityLogStatus,
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $timesheetId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

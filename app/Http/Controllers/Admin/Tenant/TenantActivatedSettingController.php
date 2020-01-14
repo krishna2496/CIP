@@ -12,7 +12,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Models\TenantActivatedSetting;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
 
+//!  Tenant activated setting controller
+/*!
+This controller is responsible for handling tenant activated setting store/delete operation.
+ */
 class TenantActivatedSettingController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -69,6 +74,25 @@ class TenantActivatedSettingController extends Controller
         // Store settings
         $this->tenantActivatedSettingRepository->store($request->toArray());
 
+        $requestArray = $request->toArray();
+
+        foreach ($requestArray['settings'] as $requestData) {
+            $activityLogStatus = $requestData['value'] == 1 ?
+                config('constants.activity_log_actions.CREATED') : config('constants.activity_log_actions.DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.TENANT_SETTINGS'),
+                $activityLogStatus,
+                config('constants.activity_log_user_types.API'),
+                $request->header('php-auth-user'),
+                get_class($this),
+                $request->toArray(),
+                null,
+                $requestData['tenant_setting_id']
+            ));
+        }
+       
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');

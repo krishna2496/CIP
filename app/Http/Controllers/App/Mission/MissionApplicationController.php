@@ -11,7 +11,13 @@ use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
 
+//!  Mission application controller
+/*!
+This controller is responsible for handling mission application apply to mission and get volunteer list operations.
+ */
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -30,6 +36,11 @@ class MissionApplicationController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new mission application controller instance.
@@ -37,16 +48,19 @@ class MissionApplicationController extends Controller
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         MissionApplicationRepository $missionApplicationRepository,
         MissionRepository $missionRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->missionApplicationRepository = $missionApplicationRepository;
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -125,6 +139,17 @@ class MissionApplicationController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.MISSION_APPLICATION_CREATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $missionApplication->mission_application_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -139,6 +164,16 @@ class MissionApplicationController extends Controller
     {
         try {
             $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
+            
+            // Get default user avatar
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+            
+            foreach ($missionVolunteers as $volunteers) {
+                if (!isset($volunteers->avatar)) {
+                    $volunteers->avatar = $defaultAvatar;
+                }
+            }
 
             // Set response data
             $apiData = $missionVolunteers;

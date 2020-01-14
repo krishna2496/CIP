@@ -15,6 +15,10 @@ use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
+//!  User filter controller
+/*!
+This controller is responsible for handling user filter listing operation.
+ */
 class UserFilterController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -101,12 +105,16 @@ class UserFilterController extends Controller
      */
     public function index(Request $request):JsonResponse
     {
+        
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
+        $languageId = $language->language_id;
         $filterData = [];
 
         // Get data of user's filter
-        $filterTagArray = [];
+        $filterTagArray = $filterData = [];
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
         $filters = $this->filters->userFilter($request);
         if ($filters !== null) {
             $filterData = $filters->toArray();
@@ -114,14 +122,20 @@ class UserFilterController extends Controller
 
         if (!empty($filterData["filters"])) {
             if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
-                $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
+                $countryTag = $this->countryRepository->getCountry(
+                    $filterData["filters"]["country_id"],
+                    $languageId
+                );
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                 }
             }
 
             if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
-                $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
+                $cityTag = $this->cityRepository->getCity(
+                    $filterData["filters"]["city_id"],
+                    $languageId
+                );
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
                         $filterTagArray["city"][$key] = $value;

@@ -21,10 +21,17 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
+use App\Events\User\UserActivityLogEvent;
+use App\Transformations\CityTransformable;
 
+//!  User controller
+/*!
+This controller is responsible for handling user listing, show, save cookie agreement and
+upload profile image operations.
+ */
 class UserController extends Controller
 {
-    use RestExceptionHandlerTrait, UserTransformable;
+    use RestExceptionHandlerTrait, UserTransformable, CityTransformable;
     /**
      * @var App\Repositories\User\UserRepository
      */
@@ -165,10 +172,10 @@ class UserController extends Controller
         $availabilityList = $this->userRepository->getAvailability();
 
         $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : $defaultLanguage->code;
+        $languages = $this->languageHelper->getLanguages();
+        $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
+
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
@@ -224,7 +231,27 @@ class UserController extends Controller
             }
         }
 
+        $availabilityData = [];
+        foreach ($availabilityList as $availability) {
+            $arrayKey = array_search($languageCode, array_column($availability['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $availabilityData[$availability['availability_id']] = $availability
+                ['translations'][$arrayKey]['title'];
+            }
+        }
+        $availabilityList = $availabilityData;
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        
+        // Get tenant default language
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        
+        // Get language id
+        $languageId = $this->languageHelper->getLanguageId($request);
+        if (!$cityList->isEmpty()) {
+            // Transform city details
+            $cityList = $this->cityTransform($cityList->toArray(), $languageId, $defaultTenantLanguage->language_id);
+        }
 
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
@@ -264,15 +291,13 @@ class UserController extends Controller
                 "max:16",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
-            "manager_name" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
-            "why_i_volunteer" => "sometimes|required",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
             "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-            'skills' => 'sometimes|required|array',
+            'skills' => 'array',
             'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
         );
 
@@ -305,7 +330,7 @@ class UserController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                    trans('messages.custom_error_message.SKILL_LIMIT')
+                    trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
                 );
             }
         }
@@ -325,14 +350,28 @@ class UserController extends Controller
         }
 
         // Update user skills
-        $this->userRepository->deleteSkills($id);
-        $this->userRepository->linkSkill($request->toArray(), $id);
+        if (!empty($request->skills)) {
+            $this->userRepository->deleteSkills($id);
+            $this->userRepository->linkSkill($request->toArray(), $id);
+        }
 
         // Set response data
         $apiData = ['user_id' => $user->user_id];
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
         
+        // Store Activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_PROFILE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $user->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
@@ -369,6 +408,52 @@ class UserController extends Controller
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
         $apiStatus = Response::HTTP_OK;
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_PROFILE_IMAGE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $apiData,
+            $request->auth->user_id,
+            $request->auth->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * store cookie agreement date
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function saveCookieAgreement(Request $request): JsonResponse
+    {
+        $userId = $request->auth->user_id;
+        
+        // Update cookie agreement date
+        $this->userRepository->updateCookieAgreement($userId);
+
+        // Set response data
+        $apiData = ['user_id' => $userId];
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_COOKIE_AGREEMENT'),
+            config('constants.activity_log_actions.ACCEPTED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $apiData,
+            $request->auth->user_id,
+            $request->auth->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

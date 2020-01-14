@@ -353,6 +353,8 @@ class ThemeTest extends TestCase
             ]
         ];
 
+        DB::setDefaultConnection('mysql');
+
         $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
         DB::setDefaultConnection('mysql');
 
@@ -369,29 +371,6 @@ class ThemeTest extends TestCase
             ]
         ]);
         App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->delete();
-    }
-
-    /**
-     * @test
-     *
-     * Return error for invalid API keys 
-     *
-     * @return void
-     */
-    public function it_should_return_error_for_invalid_api_key()
-    {
-        $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode('test'.':'.env('API_SECRET'))])
-        ->seeStatusCode(401)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'code',
-                    'message'
-                ]
-            ]
-        ]);
     }
 
     /**

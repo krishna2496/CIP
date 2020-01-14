@@ -73,6 +73,7 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
     'present'              => 'The :attribute field is required',
+	'distinct'             => 'The :attribute field has a duplicate value.',
 
     /*
     |--------------------------------------------------------------------------
@@ -114,6 +115,24 @@ return [
         ],
         'date_volunteered' => [
             'before' => 'You cannot add time entry for future dates',
+        ],
+        'news_image' => [
+            'valid_media_path' => 'Please enter valid media image',
+        ],
+        'user_thumbnail' => [
+            'valid_media_path' => 'Please enter valid media image',
+        ],
+        'story_images.*' => [
+            'valid_story_image_type' => 'Please select valid image type',
+            'max' => 'Image size must be ' .
+            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+        ],
+        'story_videos' => [
+            'valid_story_video_url' => 'Please enter valid video url',
+            'max_video_url' => 'Maximum '.config('constants.STORY_MAX_VIDEO_LIMIT').' video url can be added',
+        ],
+        'story_images' => [
+            'max' => 'Maximum '.config('constants.STORY_MAX_IMAGE_LIMIT').' images can be added',
         ],
     ],
 
@@ -163,6 +182,32 @@ return [
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
-        ],
+		'mission_detail.*.short_description' => 'short descreption',
+        'news_content.translations' => 'translations',
+        'news_content.translations.*.lang' => 'language code',
+        'news_content.translations.*.title' => 'title',
+        'news_content.translations.*.description' => 'description',
+        'translations.*.title' => 'title',
+        'settings.*.notification_type_id' => 'notification type id',
+        'user_ids.*' => 'user id',
+        'mission_detail.*.custom_information' => 'custom information',
+        'mission_detail.*.custom_information.*.title' => 'title',
+        'mission_detail.*.custom_information.*.description' => 'description',
+        'mission_detail.*.title' => 'title',
+        'organisation.organisation_name' => 'organisation name',
+        'cities.*.translations.*.lang' => 'language code',
+        'cities.*.translations.*.name' => 'name',
+        'cities.*.translations' => 'translations',
+        'media_images.*.sort_order' => 'sort order',
+        'media_videos.*.sort_order' => 'sort order',
+        'documents.*.sort_order' => 'sort order', 
+        'countries.*.translations.*.lang' => 'language code',
+        'countries.*.translations.*.name' => 'name',
+        'countries.*.translations' => 'translations',   
+        'countries.*.iso' => 'ISO',
+        'translations.*.lang' => 'language code',
+        'translations.*.name' => 'name',
+        'translations' => 'translations',
+		],
 
 ];

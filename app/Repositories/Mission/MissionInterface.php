@@ -172,4 +172,56 @@ interface MissionInterface
      * @return null|Collection
      */
     public function getMissionType(int $id): ?Collection;
+    
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array;
+    
+    /** Get mission title
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool;
+      
+    /**
+     * Remove mission media
+     *
+     * @param int $mediaId
+     *
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool;
+
+    /**
+     * Remove mission document
+     *
+     * @param int $documentId
+     *
+     * @return bool
+     */
+    public function deleteMissionDocument(int $documentId): bool;
+    
+    /**
+     * Get media details
+     *
+     * @param int $mediaId
+     *
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection;
 }

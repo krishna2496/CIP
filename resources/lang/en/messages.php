@@ -21,7 +21,7 @@ return [
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
-        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
+        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -40,7 +40,7 @@ return [
         'MESSAGE_SKILL_LISTING' => 'User skills listed successfully',
         'MESSAGE_THEME_LISTING' => 'Mission theme listed successfully',
         'MESSAGE_CITY_LISTING' => 'City listed successfully',
-        'MESSAGE_COUNTRY_LISTING' => 'Country listed successfully',
+        'MESSAGE_COUNTRY_LISTING' => 'Countries listed successfully',
         'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
         'MESSAGE_PAGE_FOUND' => 'Page found successfully',
         'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listed successfully",
@@ -127,8 +127,70 @@ return [
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
-        'MESSAGE_TENANT_OPTION_CREATED' => 'Image uploaded successfully'
+        'MESSAGE_IMAGE_UPLOADED_SUCCESSFULLY' => 'Image uploaded successfully',
+        'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'Dashboard statistics listed successfully',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'News categories listed successfully',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'News category deleted successfully',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'News category created successfully',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'News category updated successfully',
+        'MESSAGE_NEWS_CREATED' => 'News created successfully',
+        'MESSAGE_NEWS_DELETED' => 'News deleted successfully',
+        'MESSAGE_NEWS_LISTING' => 'News listed successfully',
+        'MESSAGE_NEWS_UPDATED' => 'News updated successfully',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found successfully',
+        'MESSAGE_NEWS_FOUND' => 'News found successfully',
+        'STORY_ADDED_SUCCESSFULLY' => 'Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'Story deleted successfully',
+        'MESSAGE_STORIES_ENTRIES_LISTING' => 'Stories listed successfully',
+        'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'No stories found',
+        'MESSAGE_STORY_STATUS_UPDATED' => 'Story status updated successfully',
+        'MESSAGE_STORY_FOUND' => 'Story found successfully',
+        'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
+        'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
+        'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
+       
+        'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted successfully',
+		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages sent successfully',
+    	'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
+        'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted successfully',
+        'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
+        'MESSAGE_STORY_VISITOR_ADDED_SUCCESSFULLY' => 'Story visitor added successfully',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted successfully',
+        'MESSAGE_INVITED_FOR_STORY' => 'User invited to story successfully',
+        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Cookie aggrement accepted successfully',        
+        'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listed successfully',
+        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'No messages found',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'User notification status updated successfully',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'User notification cleared successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'Notification listed successfully',
+        'MESSAGE_READ_SUCCESSFULLY' => 'Message read successfully',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Activity logs listed successfully',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'No activity logs found',
+        'MESSAGE_AVAILABILITY_LISTING' => 'Availability listed successfully',
+        'MESSAGE_AVAILABILITY_CREATED' => 'Availability created successfully',
+        'MESSAGE_AVAILABILITY_DELETED' => 'Availability deleted successfully',
+        'MESSAGE_AVAILABILITY_UPDATED' => 'Availability updated successfully',
+        'MESSAGE_AVAILABILITY_FOUND' => 'Availability found successfully',
+        'MESSAGE_COUNTRY_CREATED' => 'Country created successfully',
+        'MESSAGE_CITY_CREATED' => 'City created successfully',
+        'MESSAGE_MISSION_MEDIA_DELETED' => 'Mission media deleted successfully',
+        'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Mission document deleted successfully',
+        'MESSAGE_COUNTRY_DELETED' => 'Country deleted successfully',
+        'MESSAGE_COUNTRY_UPDATED' => 'Country updated successfully',
+        'MESSAGE_CITY_DELETED' => 'City deleted successfully',
+        'MESSAGE_CITY_UPDATED' => 'City updated successfully',
+        
     ],
+
         
     /**
     * API Error Codes and Message
@@ -149,6 +211,7 @@ return [
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
         'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
+        'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
         
                 
         // Custom error code for CMS Module - 300000 - 309999
@@ -163,13 +226,11 @@ return [
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Invalid application data or missing parameter',
         'ERROR_INVALID_MISSION_DATA' => 'Invalid mission data or missing parameter',
         'ERROR_MISSION_NOT_FOUND' => 'Requested mission does not exist',
-        'ERROR_MISSION_DELETION' => 'Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'Mission not found in system',
         'ERROR_THEME_INVALID_DATA' => 'Mission theme creation failed. Please check input parameters',
         'ERROR_THEME_NOT_FOUND' => 'Mission theme not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'Skill not found in system',
-        'ERROR_PARENT_SKILL_NOT_FOUND' => 'Parent skill not found in system',
         'ERROR_INVALID_MISSION_ID' => 'Invalid mission id',
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'No seats available for this mission',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Invalid invite mission detail',
@@ -179,21 +240,26 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'Mission comment creation failed. Please check input parameters',
-        'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
-        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
-        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
+        'ERROR_SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions not found',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Mission media not found in the system',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Mission document not found in the system',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'Mission default image cannot be deleted. Please set another image as a default image and try again.',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => 'Media id doesnt exist',
+        'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'Media id is not linked to mission',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
+        'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and secret key are required',
-        'ERROR_EMAIL_NOT_EXIST' => 'Email address not exist in the system',
+        'ERROR_EMAIL_NOT_EXIST' => 'If your email exists in the system, you will receive an email instruction on how to reset your password',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Something went wrong while sending reset password link',
         'ERROR_INVALID_DETAIL' => 'Invalid reset password token or email address',
-        'ERROR_INVALID_PASSWORD' => 'Invalid password',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Tenant domain not found',
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
@@ -202,37 +268,21 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'An error has occurred',
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         
-        // Custom erro code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => "An error has occured, while updating colors in database",
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => "File is failed to download from S3 to local",
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'An error has occured, while compiling SCSS files to update SCSS changes',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'An error has occured, while storing compiled css file to local storage',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'No files found to upload on S3 bucket',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Failed to upload files on S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'Failed to reset styling settings',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Default theme folder not found on server',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'No assets file found on S3 for tenant',
+        // Custom error code for other errors - 800000 - 809999
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'No files found on S3 assets folder for this tenant',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
         'ERROR_SETTING_FOUND' => 'Setting not found',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Image file not found on S3 server',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
         'ERROR_COUNTRY_NOT_FOUND' => 'Requested country does not exist',
         'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload image on S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
-        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'File path is not valid for this image',
 
         //For timesheet module
@@ -246,17 +296,39 @@ return [
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date',
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry, either mission application not found or not approved',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
-        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'
-    ],
 
-    /**
-     * Export sheet's headings
-     */
-    'export_sheet_headings' => [
-        'MISSION_NAME' => 'Mission Name',
-        'ORGANIZATION_NAME' => 'Organization Name',
-        'ACTIONS' => 'Actions',
-        'TIME' => 'Time',
-        'HOURS' => 'Hours'
-    ]
+        // Custom error code for news module - 500000 - 509999
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
+        'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'News not found in the system',
+        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user',
+
+        // Custom error code for news module -  700001 - 709999
+        'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
+        'ERROR_COPY_DECLINED_STORY' => 'You can only create copy of declined story',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'You cannot update published or declined story',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',
+        'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+
+        // For message module
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'User is already invited for this story',
+
+        // Custom error code for news module - 600000 - 609999
+        'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification not found in the system',
+
+        // For availability module
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'Availability not found in system',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Country not found in system',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'City not found in system',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
+        
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
+       ]
 ];

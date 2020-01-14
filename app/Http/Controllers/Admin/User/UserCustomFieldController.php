@@ -13,7 +13,12 @@ use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
+use App\Events\User\UserActivityLogEvent;
 
+//!  User custom field controller
+/*!
+This controller is responsible for handling user custom field listing, show, store, update and delete operations.
+ */
 class UserCustomFieldController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -30,16 +35,26 @@ class UserCustomFieldController extends Controller
     private $responseHelper;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(UserCustomFieldRepository $userCustomFieldRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        UserCustomFieldRepository $userCustomFieldRepository,
+        ResponseHelper $responseHelper,
+        Request $request
+    ) {
         $this->userCustomFieldRepository = $userCustomFieldRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -106,6 +121,18 @@ class UserCustomFieldController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
         $apiData = ['field_id' => $customField['field_id']];
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $customField['field_id']
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -119,7 +146,7 @@ class UserCustomFieldController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
-            // Server side validataions
+            // Server side validations
             $validator = Validator::make(
                 $request->toArray(),
                 ["name" => [
@@ -154,6 +181,19 @@ class UserCustomFieldController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_UPDATED');
             $apiData = ['field_id' => $customField['field_id']];
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $customField['field_id']
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -201,6 +241,19 @@ class UserCustomFieldController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

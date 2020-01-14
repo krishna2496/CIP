@@ -21,6 +21,7 @@ use App\Models\Timesheet;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
+use App\Models\Notification;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -47,9 +48,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
      'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
-      'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
-       'language_id', 'title'];
-    
+      'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
+       'language_id', 'title', 'hours_goal'];
+
     /**
      * The attributes that should be visible in arrays.
      *
@@ -57,10 +58,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $visible = ['user_id', 'first_name', 'last_name', 'email',
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
-     'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
+     'employee_id', 'department', 'city_id', 'country_id',
      'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue'];
-    
+    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'skills'];
+
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -69,7 +70,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
-  
+
     /**
      * Searchable rules.
      *
@@ -92,7 +93,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(City::class, 'city_id', 'city_id');
     }
-    
+
     /**
     * Defined has one relation for the country table.
     *
@@ -112,7 +113,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Availability::class, 'availability_id', 'availability_id');
     }
-    
+
     /**
     * Defined has one relation for the timezone table.
     *
@@ -122,7 +123,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Timezone::class, 'timezone_id', 'timezone_id');
     }
-    
+
     /**
      * Defined has many relation for the user_custom_field_value table.
      *
@@ -143,7 +144,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         $this->attributes['password'] = Hash::make($password);
     }
-    
+
     /**
      * Find the specified resource.
      *
@@ -154,7 +155,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return static::with('city', 'country', 'timezone')->findOrFail($id);
     }
-    
+
     /**
      * Delete the specified resource.
      *
@@ -210,5 +211,32 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function findUserDetail(int $userId): User
     {
         return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
+    }
+
+    /**
+     * Get specified resource.
+     *
+     * @param int $userId
+     * @return null|string
+     */
+    public function getUserHoursGoal(int $userId): ?string
+    {
+        return static::select('hours_goal')->where(['user_id' => $userId])->value('hours_goal');
+    }
+
+    /**
+     * A User can have many Notifications
+     */
+    public function notification()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function skills()
+    {
+        return $this->hasMany('App\Models\UserSkill', 'user_id', 'user_id');
     }
 }

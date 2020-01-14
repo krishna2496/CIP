@@ -3,13 +3,13 @@ namespace App\Models;
 
 use App\Models\Mission;
 use App\Models\TimesheetDocument;
-use App\Models\TimesheetStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\User;
 
 class Timesheet extends Model
 {
@@ -36,7 +36,7 @@ class Timesheet extends Model
      */
     protected $fillable = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered',
-        'notes', 'status', 'status_id'];
+        'notes', 'status'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -44,7 +44,8 @@ class Timesheet extends Model
      * @var array
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
-        'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission'];
+        'day_volunteered', 'notes', 'timesheetDocument', 'mission', 'month', 'total_hours',
+        'total_minutes', 'status'];
     
     /**
      * Get date volunteered attribute on the model.
@@ -75,18 +76,8 @@ class Timesheet extends Model
      */
     public function findTimesheet(int $timesheetId, int $userId)
     {
-        return static::with('timesheetDocument', 'timesheetStatus')->where(['timesheet_id' => $timesheetId,
+        return static::with('timesheetDocument')->where(['timesheet_id' => $timesheetId,
             'user_id' => $userId])->firstOrFail();
-    }
-
-    /**
-     * Get the timesheet status record associated with the timesheet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function timesheetStatus(): BelongsTo
-    {
-        return $this->belongsTo(TimesheetStatus::class, 'status_id', 'timesheet_status_id');
     }
 
     /**
@@ -108,5 +99,25 @@ class Timesheet extends Model
     public function setNotesAttribute(string $value)
     {
         $this->attributes['notes'] = trim($value);
+    }
+
+    /**
+     * Get the timesheet mission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function mission(): HasOne
+    {
+        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get the timesheet user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'user_id', 'user_id');
     }
 }

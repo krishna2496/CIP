@@ -491,8 +491,13 @@ class TenantOptionsTest extends TestCase
         $apiSecret = $randomString;
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
 
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret), 'X-localization' => 'en'])
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('mysql');
@@ -668,6 +673,13 @@ class TenantOptionsTest extends TestCase
             'name' => str_random('5'),
             'sponsor_id' => rand(1, 100000)
         ]);
+            
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
+
 
         $apiKey = str_random(16);
         $apiSecret = str_random(16);
@@ -715,6 +727,12 @@ class TenantOptionsTest extends TestCase
         $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
 
         $fileName = 'back-arrow-black.svg';
         $path  = storage_path("unitTestFiles/$fileName");
@@ -770,6 +788,11 @@ class TenantOptionsTest extends TestCase
         $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
 
         Storage::disk('s3')->put(
             $tenant->name.'/assets/css/style.css',
@@ -787,4 +810,21 @@ class TenantOptionsTest extends TestCase
         Storage::disk('s3')->deleteDirectory($tenant->name);
     }
     
+    /**
+    * @test
+    *
+    * Update style
+    *
+    * @return void
+    */
+    public function tenant_option_testing_it_should_update_secondary_color()
+    {
+        $params = [
+            'primary_color' => "#ccc",            
+            'secondary_color' => "#000"
+        ];
+
+        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+    }
 }

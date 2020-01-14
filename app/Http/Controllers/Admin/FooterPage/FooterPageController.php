@@ -12,7 +12,12 @@ use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserActivityLogEvent;
 
+//!  Footerpage controller
+/*!
+This controller is responsible for handling footerpage store, update, listing, show and delete operations.
+ */
 class FooterPageController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -25,18 +30,28 @@ class FooterPageController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\FooterPage\FooterPageRepository $footerPageRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(FooterPageRepository $footerPageRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        FooterPageRepository $footerPageRepository,
+        ResponseHelper $responseHelper,
+        Request $request
+    ) {
         $this->footerPageRepository = $footerPageRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -106,6 +121,19 @@ class FooterPageController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
         $apiData = ['page_id' => $footerPage['page_id']];
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.FOOTER_PAGE'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $footerPage['page_id']
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -194,6 +222,19 @@ class FooterPageController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_UPDATED');
             $apiData = ['page_id' => $id];
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.FOOTER_PAGE'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -217,6 +258,19 @@ class FooterPageController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_DELETED');
+            
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.FOOTER_PAGE'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

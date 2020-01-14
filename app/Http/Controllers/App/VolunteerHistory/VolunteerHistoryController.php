@@ -14,7 +14,12 @@ use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
+use App\Events\User\UserActivityLogEvent;
 
+//!  Volunteerhistory controller
+/*!
+This controller is responsible for handling volunteerhistory theme, goal, time history and export operations.
+ */
 class VolunteerHistoryController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -125,8 +130,8 @@ class VolunteerHistoryController extends Controller
     public function timeMissionHistory(Request $request): JsonResponse
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
@@ -147,8 +152,8 @@ class VolunteerHistoryController extends Controller
     public function goalMissionHistory(Request $request): JsonResponse
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
@@ -169,8 +174,8 @@ class VolunteerHistoryController extends Controller
     public function exportGoalMissionHistory(Request $request): Object
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
@@ -181,28 +186,41 @@ class VolunteerHistoryController extends Controller
             $excel = new ExportCSV($fileName);
 
             $headings = [
-                trans('messages.export_sheet_headings.MISSION_NAME'),
-                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                trans('messages.export_sheet_headings.ACTIONS')
+                trans('general.export_sheet_headings.MISSION_NAME'),
+                trans('general.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('general.export_sheet_headings.ACTIONS')
             ];
 
             $excel->setHeadlines($headings);
 
             foreach ($goalMissionList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->action
                 ]);
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+               
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.GOAL_MISSION_TIMESHEET'),
+                config('constants.activity_log_actions.EXPORT'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $goalMissionList->toArray(),
+                null,
+                $request->auth->user_id
+            ));
+
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
     
         $apiStatus = Response::HTTP_OK;
-        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -215,8 +233,8 @@ class VolunteerHistoryController extends Controller
     public function exportTimeMissionHistory(Request $request): Object
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
@@ -227,24 +245,36 @@ class VolunteerHistoryController extends Controller
             $excel = new ExportCSV($fileName);
 
             $headings = [
-                trans('messages.export_sheet_headings.MISSION_NAME'),
-                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                trans('messages.export_sheet_headings.TIME'),
-                trans('messages.export_sheet_headings.HOURS')
+                trans('general.export_sheet_headings.MISSION_NAME'),
+                trans('general.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('general.export_sheet_headings.TIME'),
+                trans('general.export_sheet_headings.HOURS')
             ];
 
             $excel->setHeadlines($headings);
 
             foreach ($timeRequestList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->time,
                     $mission->hours
                 ]);
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+           
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.TIME_MISSION_TIMESHEET'),
+                config('constants.activity_log_actions.EXPORT'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $timeRequestList->toArray(),
+                null,
+                $request->auth->user_id
+            ));
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }

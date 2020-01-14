@@ -31,15 +31,31 @@ class MissionLanguage extends Model
      * @var array
      */
 
-    protected $fillable = ['mission_id', 'language_id', 'title', 'description', 'objective', 'short_description'];
+    protected $fillable = [
+        'mission_id',
+        'language_id',
+        'title',
+        'description',
+        'objective',
+        'short_description',
+        'custom_information'
+    ];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['lang', 'language_id', 'title', 'objective', 'short_description',
-                         'description'];
+    protected $visible = [
+        'lang',
+        'language_id',
+        'language_code',
+        'title',
+        'objective',
+        'short_description',
+        'description',
+        'custom_information'
+    ];
 
     /**
      * Set description attribute on the model.
@@ -88,5 +104,29 @@ class MissionLanguage extends Model
     {
         return static::select('title')
         ->where(['mission_id' => $missionId, 'language_id' => $languageId])->value('title');
+    }
+
+    /**
+     * Set custom conformation attribute on the model.
+     *
+     * @param $value
+     * @return void
+     */
+    public function setCustomInformationAttribute($value)
+    {
+        $this->attributes['custom_information'] = isset($value) ? serialize($value) : null;
+    }
+    
+    /**
+     * Get an attribute from the model.
+     *
+     * @param $value
+     * @return null|array
+     */
+    public function getCustomInformationAttribute($value)
+    {
+        if ($value) {
+            return unserialize($value);
+        }
     }
 }

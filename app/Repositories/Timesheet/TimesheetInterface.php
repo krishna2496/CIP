@@ -1,9 +1,10 @@
 <?php
 namespace App\Repositories\Timesheet;
 
-use Illuminate\Http\Request;
 use App\Models\Timesheet;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface TimesheetInterface
 {
@@ -83,26 +84,72 @@ interface TimesheetInterface
      * @param int $missionId
      * @param int $userId
      * @param string $date
-     * @param array $timesheetStatus
+     * @param array $statusArray
      *
      * @return null|Illuminate\Support\Collection
      */
-    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $timesheetStatus): ?Collection;
+    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $statusArray): ?Collection;
 
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param int $statusId
+     * @param string $status
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool;
+    public function updateTimesheetStatus(string $status, int $timesheet): bool;
     
     /**
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request
-     * @return array
+     * @param string $type
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getAllTimesheetEntries(Request $request): array;
+    public function getAllTimesheetEntries(Request $request, string $type): LengthAwarePaginator;
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param $year
+     * @param $month
+     * @return null|array
+     */
+    public function getTotalHours(int $userId, $year, $month): ?array;
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return null|array
+     */
+    public function getTotalHoursForYear(int $userId, int $year): ?array;
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param $year
+     * @return null|array
+     */
+    public function getTotalHoursbyMonth(int $userId, $year, $missionId): ?array;
+
+    /**
+     * Get all user's timesheet total hours data
+     *
+     * @param $year
+     * @param $month
+     * @return null|array
+     */
+    public function getUsersTotalHours($year, $month): ?array;
+
+    /**
+     * Get details of timesheet from timesheetId
+     *
+     * @param int $timesheetId
+     * @return App\Models\Timesheet
+     */
+    public function getDetailOfTimesheetEntry(int $timesheetId): Timesheet;
 }
