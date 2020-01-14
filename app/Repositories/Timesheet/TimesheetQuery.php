@@ -46,7 +46,6 @@ class TimesheetQuery implements QueryableInterface
      */
     public function run($parameters = [])
     {
-        //TODO take only what I need, + need to handle filters
         $filters = $parameters['filters'];
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
@@ -59,7 +58,7 @@ class TimesheetQuery implements QueryableInterface
 
         $query = Timesheet::query();
         $timesheets = $query
-            ->select([
+            ->select([ //TODO take only what I need
                 'timesheet.*',
                 'user.*',
             ])
