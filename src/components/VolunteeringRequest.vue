@@ -11,7 +11,7 @@
                     </template>
                 </b-table>
                 <div class="text-center" v-else>
-                    <h5>{{headerLable | firstLetterCapital}} {{languageData.label.not_found}}</h5>
+                    <h5>{{languageData.label.no_data_available}}</h5>
                 </div>
             </div>
             <div class="btn-block" v-if="items.length > 0">
@@ -20,7 +20,9 @@
             </div>
         </div>
         <div class="pagination-block" v-if="items.length > 0 && totalPages > 1">
-            <b-pagination v-model="page" :total-rows="totalRow" :per-page="perPage" align="center" @change="pageChange">
+            <b-pagination 
+            :hide-ellipsis="hideEllipsis"
+            v-model="page" :total-rows="totalRow" :per-page="perPage" align="center" @change="pageChange">
             </b-pagination>
         </div>
     </div>
@@ -49,7 +51,8 @@
         data: function () {
             return {
                 languageData: [],
-                page: this.currentPage
+                page: this.currentPage,
+                hideEllipsis:true
             }
         },
         directives: {},

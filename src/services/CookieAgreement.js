@@ -1,7 +1,7 @@
 import store from '../store'
 import axios from 'axios'
 
-export default async() => {
+export default async(data) => {
     let responseData = {}
     responseData.error = false;
     responseData.data = [];
@@ -10,8 +10,9 @@ export default async() => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/country",
-            method: 'GET',
+            url: process.env.VUE_APP_API_ENDPOINT + "app/accept-cookie-agreement",
+            method: 'POST',
+            data,
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
@@ -19,11 +20,6 @@ export default async() => {
         }).then((response) => {
             responseData.error = false;
             responseData.message = response.data.message;
-            if (response.data.data) {
-                responseData.data = Object.keys(response.data.data).map(function(key) {
-                    return [Number(key), response.data.data[key]];
-                });
-            }
         })
         .catch(function() {
             responseData.error = true;

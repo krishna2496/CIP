@@ -211,6 +211,9 @@
 				if(this.currentFixWeek  <= this.currentWeak && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(this.currentMonth.format('YYYY'))) ) {
 					this.disableNextWeek = true
+					if (this.currentFixWeek == 1 && this.currentFixWeek  < this.currentWeak) {
+						this.disableNextWeek = false
+					}
 				} else {
 					this.disableNextWeek = false
 				}
@@ -220,6 +223,7 @@
 				} else {
 					this.previousButtonDisable = false
 				}
+			
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
 				let selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
@@ -229,6 +233,7 @@
 				selectedData['yearArray'] = this.yearArray;
 				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);
+				
 			},
 		},
 		created() {
