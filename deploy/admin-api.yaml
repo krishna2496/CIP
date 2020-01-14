@@ -79,8 +79,18 @@ spec:
         #     command:
         #     - cat
         #     - /optimy/sync.ok
+        volumeMounts:
+        - mountPath: /optimy/.env
+          name: ci-config
+          subPath: .env
         ports:
         - containerPort: 80
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: ci-admin-api-config
+        name: ci-config
+
 ---
 kind: Service
 apiVersion: v1
