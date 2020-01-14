@@ -85,6 +85,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
+  namespace: staging
   name: ci-admin-api-service
   labels:
     app: ci-admin-api
@@ -103,7 +104,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: app-admin-ingress
+  name: ci-api-admin-ingress
   namespace: staging
 spec:
   rules:
@@ -111,7 +112,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: ci-admin-api
+          serviceName: ci-admin-api-service
           servicePort: 80
 status:
   loadBalancer: {}
