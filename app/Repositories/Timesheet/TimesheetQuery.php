@@ -59,8 +59,7 @@ class TimesheetQuery implements QueryableInterface
         $query = Timesheet::query();
         $timesheets = $query
             ->select([ //TODO take only what I need
-                'timesheet.*',
-                'user.*',
+                'timesheet.*'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->whereHas('mission', function ($query) {
