@@ -24,7 +24,8 @@ module.exports = {
         });
     },
 
-    publicPath: process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
+    //publicPath: process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
+    publicPath: '/',
 
     lintOnSave: false,
 
