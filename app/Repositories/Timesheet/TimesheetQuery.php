@@ -12,31 +12,31 @@ use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
-//    const FILTER_APPLICATION_IDS    = 'applicationIds';
-//    const FILTER_APPLICATION_DATE   = 'applicationDate';
-//    const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
-//    const FILTER_MISSION_SKILLS     = 'missionSkills';
-//    const FILTER_MISSION_THEMES     = 'missionThemes';
-//    const FILTER_MISSION_TYPES      = 'missionTypes';
-//
-//    const ALLOWED_SORTABLE_FIELDS = [
-//        'applicant' => 'user.last_name',
-//        'applicantEmail' => 'user.email',
-//        'missionType' => 'mission.mission_type',
-//        'country' => 'c.name',
-//        'status' => 'mission_application.approval_status',
-//        'city' => 'ci.name',
-//        'applicationDate' => 'mission_application.applied_at',
-//        'applicationSkills' => 'applicant_skills',
-//        'missionName' => 'mission_language.title',
-//        /*
-//         * TODO: implement the following sort options (and handle translations)
-//         * - mission skills
-//         * - country name
-//         * - city
-//         */
-//
-//    ];
+    const FILTER_APPLICATION_IDS    = 'applicationIds';
+    const FILTER_APPLICATION_DATE   = 'applicationDate';
+    const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
+    const FILTER_MISSION_SKILLS     = 'missionSkills';
+    const FILTER_MISSION_THEMES     = 'missionThemes';
+    const FILTER_MISSION_TYPES      = 'missionTypes';
+
+    const ALLOWED_SORTABLE_FIELDS = [
+        'applicant' => 'user.last_name',
+        'applicantEmail' => 'user.email',
+        'missionType' => 'mission.mission_type',
+        'country' => 'c.name',
+        'status' => 'mission_application.approval_status',
+        'city' => 'ci.name',
+        'applicationDate' => 'mission_application.applied_at',
+        'applicationSkills' => 'applicant_skills',
+        'missionName' => 'mission_language.title',
+        /*
+         * TODO: implement the following sort options (and handle translations)
+         * - mission skills
+         * - country name
+         * - city
+         */
+
+    ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
 
@@ -53,9 +53,17 @@ class TimesheetQuery implements QueryableInterface
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
+        //todo filter
+
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
+
         $query = Timesheet::query();
         $timesheets = $query
+            ->select([
+                'timesheet.*',
+                'user.*',
+            ])
+            ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->whereHas('mission', function ($query) {
                 $query->where(['publication_status' => config("constants.publication_status")["APPROVED"],
                     'mission_type' => config('constants.mission_type.TIME')]);
@@ -64,13 +72,22 @@ class TimesheetQuery implements QueryableInterface
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
             })
             ->with([
+                'user:user_id,first_name,last_name,avatar,email',
+                'user.skills.skill:skill_id',
                 'mission.missionLanguage' => function ($query) use ($languageId) {
                     $query->select('mission_language_id', 'mission_id', 'title')
                         ->where('language_id', $languageId);
                 },
+                'mission.timeMission',
+                'mission.country.languages' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
+                'mission.city.languages' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
+                'timesheetDocument'
             ])
-            ->with('mission.timeMission')
-            ->with('timesheetDocument')
+
             // Ordering
             ->when($order, function ($query) use ($order) {
                 $query->orderBy($order['orderBy'], $order['orderDir']);
