@@ -1,5 +1,5 @@
-const host = "api.ci.staging.optimy.net";
-const port = 80;
+const host = "localhost";
+const port = 7000;
 module.exports = {
     chainWebpack: config => {
         config.module
@@ -24,8 +24,7 @@ module.exports = {
         });
     },
 
-    //publicPath: process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
-    publicPath: '/',
+    publicPath: process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
 
     lintOnSave: false,
 
