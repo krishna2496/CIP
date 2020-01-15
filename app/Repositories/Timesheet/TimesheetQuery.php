@@ -17,6 +17,8 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
     const FILTER_MISSION_SKILLS     = 'missionSkills';
     const FILTER_MISSION_THEMES     = 'missionThemes';
+    const FILTER_MISSION_COUNTRIES  = 'missionCountries';
+    const FILTER_MISSION_CITIES     = 'missionCities';
     const FILTER_MISSION_TYPES      = 'missionTypes';
 
     const ALLOWED_SORTABLE_FIELDS = [
@@ -51,14 +53,17 @@ class TimesheetQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
-
-        //todo filter
+    //TODO adapt and change
+        $hasTimesheetFilters = isset($filters[self::FILTER_MISSION_THEMES])
+            || isset($filters[self::FILTER_MISSION_COUNTRIES])
+            || isset($filters[self::FILTER_MISSION_CITIES])
+            || isset($filters[self::FILTER_MISSION_TYPES]);
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
         $query = Timesheet::query();
         $timesheets = $query
-            ->select([ //TODO take only what I need
+            ->select([
                 'timesheet.*'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
@@ -86,7 +91,93 @@ class TimesheetQuery implements QueryableInterface
                 },
                 'timesheetDocument'
             ])
+            // Filter by application ID
+            ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
+                $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
+            })
+            // Filter by application start date
+            ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function($query) use ($filters) {
+                $query->where('applied_at', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
+            })
+            // Filter by application end date
+            ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function($query) use ($filters) {
+                $query->where('applied_at', '<=', $filters[self::FILTER_APPLICATION_DATE]['to']);
+            })
+            ->when($hasTimesheetFilters, function($query) use ($filters) {
+                $query->whereHas('mission', function($query) use ($filters) {
+                    // Filter by mission theme
+                    $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
+                        $query->whereIn('theme_id', $filters[self::FILTER_MISSION_THEMES]);
+                    });
+                    // Filter by mission country
+                    $query->when(isset($filters[self::FILTER_MISSION_COUNTRIES]), function($query) use ($filters) {
+                        $query->whereIn('country_id', $filters[self::FILTER_MISSION_COUNTRIES]);
+                    });
+                    // Filter by mission city
+                    $query->when(isset($filters[self::FILTER_MISSION_CITIES]), function($query) use ($filters) {
+                        $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
+                    });
+                    // Filter by mission type
+                    $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
+                        $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
+                    });
+                });
+            })
+            // Filter by applicant skills
+            ->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
+                $query->whereHas('user.skills', function($query) use ($filters) {
+                    $query->whereIn('skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
+                    //TODO: delete me ; here I have changed user_skill_id for skill_id for the filter, need to commit
+                });
+            })
+            // Filter by mission skill
+            ->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
+                $query->whereHas('mission.missionSkill', function($query) use ($filters) {
+                    $query->whereIn('mission_skill_id', $filters[self::FILTER_MISSION_SKILLS]);
+                });
+            })
+            // Search
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
+                /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
+                 * the condition on the where can *not* be exclusive as we might lose valid results from
+                 * previous filtering. We then need to use the OR condition for searchable fields.
+                 */
+                $searchCallback = function ($query) use ($search, $languageId) {
+                    $query->whereHas('user', function($query) use ($search) {
+                        $query
+                            ->where('first_name', 'like', "%${search}%")
+                            ->orWhere('last_name', 'like', "%${search}%")
+                            ->orWhere('email', 'like', "%${search}%");
+                    })
+                        ->orwhereHas('mission.missionLanguage', function($query) use ($search, $languageId) {
+                            $query
+                                ->where([
+                                    ['title', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
+                        })
+                        ->orwhereHas('mission.city.languages', function($query) use ($search, $languageId) {
+                            $query
+                                ->where([
+                                    ['name', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
+                        })
+                        ->orwhereHas('mission.country.languages', function($query) use ($search, $languageId) {
+                            $query
+                                ->where([
+                                    ['name', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
+                        });
+                };
 
+                if (isset($filters[self::FILTER_APPLICATION_IDS])) {
+                    $query->orWhere($searchCallback);
+                } else {
+                    $query->where($searchCallback);
+                }
+            })
             // Ordering
             ->when($order, function ($query) use ($order) {
                 $query->orderBy($order['orderBy'], $order['orderDir']);
