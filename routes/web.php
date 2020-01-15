@@ -647,6 +647,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
         ['prefix' => 'entities/countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
+            $router->get('/{countryId}', ['uses' => 'Admin\Country\CountryController@show']);
+            $router->get('/{countryId}/cities', ['uses' => 'Admin\City\CityController@fetchCity']);
             $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
             $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
             $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
@@ -658,7 +660,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\City\CityController@index']);
-            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity',
+            $router->get('/{cityId}', ['uses' => 'Admin\City\CityController@show',
             'middleware' => ['PaginationMiddleware']]);
             $router->post('/', ['uses' => 'Admin\City\CityController@store']);
             $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);

@@ -94,6 +94,22 @@ class CountryRepository implements CountryInterface
     }
 
     /**
+     * Get country detail from country_id with all languages
+     *
+     * @param int  $countryId
+     * @return array
+     */
+    public function getCountryData(int $countryId) : array
+    {
+        $country = $this->country
+            ->with('languages')
+            ->where('country_id', $countryId)
+            ->first();
+
+        return $country->toArray();
+    }
+
+    /**
      * Store a newly created resource in storage
      *
      * @param array $countryData
@@ -190,6 +206,11 @@ class CountryRepository implements CountryInterface
             $countryQuery->wherehas('languages', function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->input('search') . '%');
             });
+            $countryQuery->orWhere('ISO', 'like', '%' . $request->input('search') . '%');
+            // Make the record with exaclty the same search value and ISO value first
+            $countryQuery->orderByRaw('FIELD(ISO, ?) DESC', [
+                $request->input('search')
+            ]);
         }
 
         $countries = $countryQuery->paginate($request->perPage);

@@ -188,6 +188,9 @@ return [
         'MESSAGE_COUNTRY_UPDATED' => 'Country updated successfully',
         'MESSAGE_CITY_DELETED' => 'City deleted successfully',
         'MESSAGE_CITY_UPDATED' => 'City updated successfully',
+
+        'MESSAGE_COUNTRY_FOUND' => 'Country found successfully',
+        'MESSAGE_CITY_FOUND' => 'City found successfully'
         
     ],
 
