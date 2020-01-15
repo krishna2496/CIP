@@ -2,6 +2,8 @@ FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
 
 COPY . /tmp
 
+RUN cd /tmp && mv vue-prod.config.js vue.config.js
+
 RUN apt-get install curl -y
 RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - 
 RUN apt-get install -y nodejs 
