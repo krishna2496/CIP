@@ -67,6 +67,15 @@
       },
 	  {  
          "name":"Activity Log"
+      },
+	  {  
+         "name":"Availability"
+      },
+	  {  
+         "name":"Country"
+      },
+	  {  
+         "name":"City"
       }
    ],
   "paths": {
@@ -280,7 +289,83 @@
 			  "description":"Not Found - Requested mission does not exist"
 			},
         }
-      }
+      },
+	},
+	"/missions/media/{mediaId}": {
+		"delete": {
+			"operationId": "DELETE_team4-cip-api-missions-media",
+			"summary": "Admin - Delete mission media",
+			"description": "Delete mission media or video",
+			"tags":[  
+				   "Mission"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"mediaId",
+				  "in":"path",
+				  "description":"Media id to delete",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+			  "403":{  
+				  "description":"Forbidden - Media deletion failed"
+				},
+			  "404":{  
+				  "description":"Not Found - Requested media does not exist"
+				},
+			}
+	     }
+	},
+	"/missions/document/{documentId}": {
+		"delete": {
+			"operationId": "DELETE_team4-cip-api-missions-document",
+			"summary": "Admin - Delete mission document",
+			"description": "Delete mission document",
+			"tags":[  
+				   "Mission"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"documentId",
+				  "in":"path",
+				  "description":"Document id to delete",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+			  "403":{  
+				  "description":"Forbidden - Document deletion failed"
+				},
+			  "404":{  
+				  "description":"Not Found - Requested document does not exist"
+				},
+			}
+	     }
 	},
 	"/app/missions?country_id={country_id}&city_id={city_id}&theme_id={theme_id}&skill_id={skill_id}&sort_by={sort_by}": {
       "get": {
@@ -1760,7 +1845,9 @@
 			  "description":"Unauthorized - Invalid API key or secret key"
 			}
         }
+	}
       },
+	"/users": {
       "post": {
         "operationId": "POST_team4-cip-api-users",
         "summary": "Admin - Create user (Milestone - 1)",
@@ -3247,65 +3334,6 @@
         }
       }
     },
-	"/countries":{
-		"get": {
-			"operationId": "GET_team4-cip-api-get-countries",
-			"summary": "Admin - Get country list (Milestone - 3)",
-			"tags":[  
-				   "Tenant - Admin"
-				],
-			"consumes": [
-			  "multipart/form-data"
-			],
-			"parameters": [
-			  {
-				"name": "Authorization",
-				"in": "header",
-				"required": true,
-				"type": "string",
-				"default": ""
-			  }
-			],
-			"responses": {
-			   "401":{  
-				  "description":"Unauthorized - Invalid API key or secret key"
-				}
-			}
-		},
-	},
-	"/cities/{countryId}":{
-		"get": {
-			"operationId": "GET_team4-cip-api-get-city-by-country",
-			"summary": "Admin - Get cities by country id (Milestone - 3)",
-			"tags":[  
-				   "Tenant - Admin"
-				],
-			"consumes": [
-			  "multipart/form-data"
-			],
-			"parameters": [
-			  {
-				"name": "Authorization",
-				"in": "header",
-				"required": true,
-				"type": "string",
-				"default": ""
-			  },
-			  {
-				"name": "countryId",
-				"in": "path",
-				"required": true,
-				"type": "integer",
-				"format": "int32"
-			  }
-			],
-			"responses": {
-			   "401":{  
-				  "description":"Unauthorized - Invalid API key or secret key"
-				}
-			}
-		},
-	},
 	"/language/{lang}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
@@ -4051,15 +4079,14 @@
             "name": "body",
             "in": "body",
             "required": true,
-			"description": "2 => APPROVED, 3 => DECLINED",
+			"description": "APPROVED", "DECLINED",
 			"schema": {
 			  "type": "object",
               "properties": {
-				"status_id": {
-                  "type": "integer",
-				  "format": "int32",
-				  "enum": ["2","3"],
-				  "example": 2
+				"status": {
+                  "type": "string",
+				  "enum": ["APPROVED","DECLINED"],
+				  "example": "APPROVED"
                 },
 			  }
 			}
@@ -4174,16 +4201,18 @@
 			  "description":"Invalid input"
 			}
         }
-      },
+      }
+	},
+	"​/app​/timesheet?type={missionType}":{
       "get": {
         "operationId": "GET_team4-cip-api-fetch-timesheet-data",
         "summary": "App - Fetch timesheet data (Milestone - 3)",
-		"description": "Fetch approved mission applications to show on volunteering timesheet page",
+		"description": "Fetch approved mission applications to show on volunteering timesheet page. Mission type either hour or goal must be passed in URL",
 		"tags":[  
                "Volunteering Timesheet"
             ],
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
 		"parameters": [
           {
@@ -4192,7 +4221,14 @@
             "required": true,
             "type": "string",
             "default": ""
-          }
+          },
+		  {
+				"name": "missionType",
+				"in": "path",
+				"required": true,
+				"type":"string",
+				"enum":["hour", "goal"]
+			  }
 		],
         "responses": {
           "400":{  
@@ -4205,9 +4241,9 @@
 			  "description":"Timesheet not found"
 			}
         }
-      },
-    },
-	"/app/timesheet/{timesheetId}": {
+      }
+	 },
+    "/app/timesheet/{timesheetId}": {
 		"get": {
 			"operationId": "GET_team4-cip-api-fetch-timesheet-details",
 			"summary": "App - Fetch timesheet entry details (Milestone - 3)",
@@ -6508,6 +6544,645 @@
 				}
 			}
 		}
+	},
+	"/entities/availability": {
+		"post": {
+        "operationId": "POST_team4-cip-api-entities-availability",
+        "summary": "Admin - Add availability",
+		"tags":[  
+               "Availability"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+		  {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "translations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lang": {
+                            "type": "string",
+							"description":"Language code.(i.e. en, fr etc)",
+                          },
+                          "title": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+            }
+          },
+          
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	"get": {
+        "operationId": "GET_team4-cip-api-get-availability",
+        "summary": "Admin - List availability",
+		"tags":[  
+               "Availability"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+           "401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+ },
+     "/entities/availability/{availabilityId}": {
+		"patch": {
+			"operationId": "POST_team4-cip-api-entities-availability-update",
+			"summary": "Admin - Update availability",
+			"tags":[  
+				   "Availability"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "type": "object",
+				  "properties": {
+						"type": {
+						  "type": "string"
+						},
+						"translations": {
+						  "type": "array",
+						  "items": {
+							"type": "object",
+							"properties": {
+							  "lang": {
+								"type": "string",
+								"description":"Language code.(i.e. en, fr etc)",
+							  },
+							  "title": {
+								"type": "string"
+							  }
+							}
+						  }
+						}
+					}
+				}
+			  },
+			  {
+				"name": "availabilityId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not found - Availabilty does not found in system"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "get": {
+			"operationId": "POST_team4-cip-api-get-entities-availability-detail",
+			"summary": "Admin - View availability detail",
+			"tags":[  
+				   "Availability"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "availabilityId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not found - Availabilty does not found in system"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "delete": {
+			"operationId": "POST_team4-cip-api-delete-entities-availability-detail",
+			"summary": "Admin - Delete availability detail",
+			"tags":[  
+				   "Availability"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "availabilityId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not found - Availabilty does not found in system"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+	 },
+	 "/entities/countries":{
+		"post": {
+			"operationId": "POST_team4-cip-api-admin-add-country",
+			"summary": "Admin - Add country",
+			"description": "Admin can add country for their platform using this endpoint.",
+			"tags":[  
+				   "Country"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "body",
+				"in": "body",
+				"required":true,
+				"schema": {
+				  "$ref":"#/definitions/Country"
+				}
+			  },
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		},
+		"get": {
+			"operationId": "GET_team4-cip-api-get-countries",
+			"summary": "Admin - Get country list (Milestone - 3)",
+			"tags":[  
+				   "Country"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				}
+			}
+		},
+	},
+	"/entities/countries/{countryId}": {
+		"patch": {
+			"operationId": "POST_team4-cip-api-admin-update-country",
+			"summary": "Admin - Update country",
+			"description": "Admin can update country details.",
+			"tags":[  
+				   "Country"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+				{
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+				{
+				"name": "countryId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+					"type": "object",
+					"properties": {
+						"iso": {
+							"type": "string",
+							"description": "Country ISO code"
+						},
+						"translations": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+								  "lang": {
+									"type": "string",
+									"description":"Language code.(i.e. en, fr etc)",
+								  },
+								  "name": {
+									"type": "string"
+								  },
+								}
+							  }
+						}
+					}
+				}
+			  },
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Country not found in the system"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		},
+		"delete": {
+			"operationId": "POST_team4-cip-api-admin-delete-country",
+			"summary": "Admin - Delete country",
+			"description": "Admin can delete country from the platform.",
+			"tags":[  
+				   "Country"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+				{
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+				{
+				"name": "countryId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Country not found in the system"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		}
+	},
+	"/entities/cities":{
+		"post": {
+			"operationId": "POST_team4-cip-api-admin-add-city",
+			"summary": "Admin - Add city",
+			"description": "Admin can add city for their platform using this endpoint.",
+			"tags":[  
+				   "City"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "body",
+				"in": "body",
+				"required":true,
+				"schema": {
+				  "$ref":"#/definitions/City"
+				}
+			  },
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		},
+		"get": {
+			"operationId": "GET_team4-cip-api-get-all-cities",
+			"summary": "Admin - Get city list",
+			"tags":[  
+				   "City"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				}
+			}
+		},
+	},
+	"/entities/cities/{countryId}": {
+		"get": {
+			"operationId": "GET_team4-cip-api-get-all-cities-by-country",
+			"summary": "Admin - Get cities by country id (Milestone - 3)",
+			"tags":[  
+				   "City"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "countryId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Not found - Requested country does not exist"
+				}
+			}
+		},
+	},
+	"/entities/cities/{cityId}": {
+		"patch": {
+			"operationId": "POST_team4-cip-api-admin-update-city",
+			"summary": "Admin - Update city",
+			"description": "Admin can update city details.",
+			"tags":[  
+				   "City"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+				{
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+				{
+				"name": "cityId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required":true,
+				"schema": {
+					"type": "object",
+					"properties": {
+						"country_id": {
+							"type":"integer",
+							"format":"int32"
+						},
+						"translations": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									  "lang": {
+										"type": "string",
+										"description":"Language code.(i.e. en, fr etc)",
+									  },
+									  "name": {
+										"type": "string"
+								  }
+								}
+							  }
+							}
+						}
+				}
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"City not found in the system"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		},
+		"delete": {
+			"operationId": "POST_team4-cip-api-admin-delete-city",
+			"summary": "Admin - Delete city",
+			"description": "Admin can delete city from the platform.",
+			"tags":[  
+				   "City"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+				{
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+				{
+				"name": "cityId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"City not found in the system"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		}
 	}
   },
   "definitions": {
@@ -6594,6 +7269,23 @@
                             }
                           }
                         }
+                      },
+					  "custom_information": {
+                        "type": "array",
+						"description": "This is for Custom Information in mission detail page. You will need to add title+description which will appear on Information section.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string",
+							  "description": "Title"
+                            },
+                            "description": {
+                              "type": "string",
+							  "description": "Description"
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -6611,7 +7303,12 @@
                       "document_path": {
                         "type": "string",
 						"description": "Url for document",
-                      }
+                      },
+					  "sort_order": {
+						"type":"integer",
+						"description": "Mission document sort order",
+						"format":"int64"
+					  },
                     }
                   }
                 },
@@ -6636,7 +7333,12 @@
 							"0"
 						],
 						"description": "If its set as 1, then mission thumbnail will be set to this media"
-                      }
+                      },
+					  "sort_order": {
+						"type":"integer",
+						"description": "Mission media sort order",
+						"format":"int64"
+					  },
                     }
                   }
                 },
@@ -6657,7 +7359,12 @@
                       "media_path": {
                         "type": "string",
 						"description": "Youtube url of a video"
-                      }
+                      },
+					  "sort_order": {
+						"type":"integer",
+						"description": "Mission media sort order",
+						"format":"int64"
+						},
                     }
                   }
                 },
@@ -7102,5 +7809,70 @@
                   
               }
           },
-     }
+		  "Country": {
+			"type": "object",
+			"properties": {
+				"countries": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+						"iso": {
+							"type": "string",
+							"description": "Country ISO code"
+						},
+						"translations": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+								  "lang": {
+									"type": "string",
+									"description":"Language code.(i.e. en, fr etc)",
+								  },
+								  "name": {
+									"type": "string"
+								  },
+								}
+							  }
+						}
+						}
+					}
+				}
+			}
+		},
+		"City": {
+			"type": "object",
+			"properties": {
+				"country_id": {
+					"type":"integer",
+					"format":"int32"
+				},
+				"cities": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+						"translations": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+								  "lang": {
+									"type": "string",
+									"description":"Language code.(i.e. en, fr etc)",
+								  },
+								  "name": {
+									"type": "string"
+								  }
+								}
+							  }
+							}
+							}
+						}
+					}
+				}
+			}
+		
+	}
 }
