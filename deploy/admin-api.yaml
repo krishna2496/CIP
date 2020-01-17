@@ -114,8 +114,12 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/whitelist-source-range: 109.88.0.88/32, 87.66.0.172/32,
+      94.225.245.228/32, 52.57.232.26/32, 51.38.187.3/32, 212.161.79.81/29, 52.29.166.205/32
   name: ci-api-admin-ingress
   namespace: staging
+      94.225.245.228/32, 52.57.232.26/32, 51.38.187.3/32, 212.161.79.81/29, 52.29.166.205/32
 spec:
   rules:
   - host: admin-api.ci.staging.optimy.net
