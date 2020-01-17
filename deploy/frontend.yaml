@@ -105,7 +105,7 @@ spec:
       - backend:
           serviceName: ci-frontend-service
           servicePort: 80
-  - host: '*.ci.staging.optimy.net'
+  - host: '*.front.ci.staging.optimy.net'
     http:
       paths:
       - backend:
