@@ -8,7 +8,7 @@
                         </b-link>
                     </div>
                     <b-navbar-brand :href="this.$store.state.logoRedirectUrl" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
-                        v-if="this.$store.state.isLoggedIn" @click.native="clearFilter"></b-navbar-brand>
+                        v-if="this.$store.state.isLoggedIn" @click.native="clearFilter(this.$store.state.logoRedirectUrl)"></b-navbar-brand>
                     <b-navbar-brand :to="{ name: 'login' }"
                         :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" v-else>
                     </b-navbar-brand>
@@ -435,10 +435,10 @@
                     });
                 },
 
-                async clearFilter() {
+                async clearFilter(value) {
                     if (store.state.isLoggedIn) {
                         this.$router.push({
-                            name: 'home'
+                            name: value
                         })
                         setTimeout(() => {
                             location.reload()
