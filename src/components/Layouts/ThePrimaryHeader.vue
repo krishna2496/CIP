@@ -7,7 +7,7 @@
                             <img :src="$store.state.imagePath+'/assets/images/menu-ic.svg'" alt />
                         </b-link>
                     </div>
-                    <b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
+                    <b-navbar-brand :href="this.$store.state.logoRedirectUrl" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                         v-if="this.$store.state.isLoggedIn" @click.native="clearFilter"></b-navbar-brand>
                     <b-navbar-brand :to="{ name: 'login' }"
                         :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" v-else>

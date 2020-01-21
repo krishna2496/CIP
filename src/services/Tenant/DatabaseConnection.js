@@ -7,6 +7,7 @@ export default async(langList, defautLang) => {
     let defaultLanguageData = []
     let sliderData = [];
     let logo = '';
+    let logoRedirectUrl = 'home';
     defautLang = "en";
     await axios.get(process.env.VUE_APP_API_ENDPOINT + "app/connect")
         .then((response) => {
@@ -69,13 +70,20 @@ export default async(langList, defautLang) => {
                     logo = data.custom_logo;
                 }
                 store.commit('setLogo', logo)
-
+				
+				// Set logo redirect url
+				if (data.logo_redirect_url) {
+                    logoRedirectUrl = data.logo_redirect_url;
+                }
+				store.commit('setLogoRedirectUrl', logoRedirectUrl);
+            
             } else {
                 localStorage.removeItem('slider');
                 localStorage.removeItem('listOfLanguage');
                 localStorage.removeItem('defaultLanguage');
                 localStorage.removeItem('defaultLanguageId');
                 localStorage.removeItem('logo');
+                localStorage.removeItem('logoRedirectUrl');
                 let listOfObjects = {};
                 store.commit('setLanguageList', JSON.stringify(listOfObjects))
                 defaultLanguageData["selectedVal"] = defautLang;
@@ -86,7 +94,7 @@ export default async(langList, defautLang) => {
                 sliderData = [];
                 store.commit('setSlider', JSON.stringify(sliderData))
             }
-
+			
             // Set no mission found message
             if (response.data.data.no_mission_custom_text) {
                 store.commit('missionNotFound', response.data.data.no_mission_custom_text.translations);

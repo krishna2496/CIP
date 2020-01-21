@@ -53,7 +53,8 @@ export default new Vuex.Store({
         timesheetFromYear: localStorage.getItem('timesheetFromYear'),
         submitNewMissionUrl: localStorage.getItem('submitNewMissionUrl'),
         userTimezone: localStorage.getItem('userTimezone'),
-        policyPage: localStorage.getItem('policyPage')
+        policyPage: localStorage.getItem('policyPage'),
+		logoRedirectUrl: localStorage.getItem('logoRedirectUrl')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -128,6 +129,12 @@ export default new Vuex.Store({
             localStorage.setItem('logo', logo)
             state.logo = logo;
         },
+		// Set logo redirect url in state and local storage
+        setLogoRedirectUrl(state, logoRedirectUrl) {
+			localStorage.removeItem('logoRedirectUrl');
+            localStorage.setItem('logoRedirectUrl', logoRedirectUrl)
+            state.logoRedirectUrl = logoRedirectUrl;
+		},
         // User filter data
         userFilter(state, filters) {
             localStorage.setItem('search', filters.search)
