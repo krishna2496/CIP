@@ -12,17 +12,21 @@ use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
-    const FILTER_APPLICATION_IDS    = 'applicationIds';
-    const FILTER_APPLICATION_DATE   = 'applicationDate';
-    const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
-    const FILTER_MISSION_SKILLS     = 'missionSkills';
     const FILTER_MISSION_THEMES     = 'missionThemes';
+    const FILTER_APPLICATION_DATE   = 'applicationDate';
+    const FILTER_MISSION_STATUSES   = 'missionStatus'; //Active or Closed ** //TODO
+    const FILTER_APPROVAL_STATUS    = 'timesheetStatus';
     const FILTER_MISSION_COUNTRIES  = 'missionCountries';
     const FILTER_MISSION_CITIES     = 'missionCities';
-    const FILTER_MISSION_TYPES      = 'missionTypes';
+
+    //**
+    //Active: Mission is open and ongoing (ref)
+    //Use mission status PUBLISHED_FOR_APPLYING
+    //Closed: Mission is closed and inactive (ref)
+    //Use mission end date and if no end date then use UNPUBLISHED mission status
 
     const ALLOWED_SORTABLE_FIELDS = [
-        'applicant' => 'user.last_name',
+        'applicant' => 'user.last_name', //TODO, check if it's ok, I don't think so
         'applicantEmail' => 'user.email',
         'missionType' => 'mission.mission_type',
         'country' => 'c.name',
@@ -33,11 +37,9 @@ class TimesheetQuery implements QueryableInterface
         'missionName' => 'mission_language.title',
         /*
          * TODO: implement the following sort options (and handle translations)
-         * - mission skills
          * - country name
          * - city
          */
-
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -53,11 +55,10 @@ class TimesheetQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
-    //TODO adapt and change
-        $hasTimesheetFilters = isset($filters[self::FILTER_MISSION_THEMES])
+
+        $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
-            || isset($filters[self::FILTER_MISSION_CITIES])
-            || isset($filters[self::FILTER_MISSION_TYPES]);
+            || isset($filters[self::FILTER_MISSION_CITIES]);
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
@@ -91,19 +92,23 @@ class TimesheetQuery implements QueryableInterface
                 },
                 'timesheetDocument'
             ])
-            // Filter by application ID
-            ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
-                $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
-            })
             // Filter by application start date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function($query) use ($filters) {
-                $query->where('applied_at', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
+                $query->where('date_volunteered', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
             })
             // Filter by application end date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function($query) use ($filters) {
-                $query->where('applied_at', '<=', $filters[self::FILTER_APPLICATION_DATE]['to']);
+                $query->where('date_volunteered', '<=', $filters[self::FILTER_APPLICATION_DATE]['to']);
             })
-            ->when($hasTimesheetFilters, function($query) use ($filters) {
+            // Filter by timesheet status
+            ->when(isset($filters[self::FILTER_APPROVAL_STATUS]), function($query) use ($filters) {
+                $query->whereIn('timesheet.status',
+                    collect($filters[self::FILTER_APPROVAL_STATUS])->map(function ($val) {
+                    return strtoupper($val);
+                    })
+                );
+            })
+            ->when($hasMissionFilters, function($query) use ($filters) {
                 $query->whereHas('mission', function($query) use ($filters) {
                     // Filter by mission theme
                     $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
@@ -117,27 +122,10 @@ class TimesheetQuery implements QueryableInterface
                     $query->when(isset($filters[self::FILTER_MISSION_CITIES]), function($query) use ($filters) {
                         $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
                     });
-                    // Filter by mission type
-                    $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
-                        $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
-                    });
-                });
-            })
-            // Filter by applicant skills
-            ->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
-                $query->whereHas('user.skills', function($query) use ($filters) {
-                    $query->whereIn('skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
-                    //TODO: delete me ; here I have changed user_skill_id for skill_id for the filter, need to commit
-                });
-            })
-            // Filter by mission skill
-            ->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
-                $query->whereHas('mission.missionSkill', function($query) use ($filters) {
-                    $query->whereIn('mission_skill_id', $filters[self::FILTER_MISSION_SKILLS]);
                 });
             })
             // Search
-            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId) { //TODO I DON4T THINK ITS OK
                 /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
                  * the condition on the where can *not* be exclusive as we might lose valid results from
                  * previous filtering. We then need to use the OR condition for searchable fields.
@@ -172,11 +160,8 @@ class TimesheetQuery implements QueryableInterface
                         });
                 };
 
-                if (isset($filters[self::FILTER_APPLICATION_IDS])) {
-                    $query->orWhere($searchCallback);
-                } else {
-                    $query->where($searchCallback);
-                }
+                $query->where($searchCallback);
+
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
@@ -216,28 +201,28 @@ class TimesheetQuery implements QueryableInterface
      * @param $order
      * @return mixed
      */
-    private function getOrder($order)
+    private function getOrder($order) //TODO NOT OK
     {
-        if (array_key_exists('orderBy', $order)) {
-            if (array_key_exists($order['orderBy'], self::ALLOWED_SORTABLE_FIELDS)) {
-                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS[$order['orderBy']];
-            } else {
-                // Default to application date
-                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['applicationDate'];
-            }
-
-            if (array_key_exists('orderDir', $order)) {
-                if (!in_array($order['orderDir'], self::ALLOWED_SORTING_DIR)) {
-                    // Default to ASC
-                    $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
-                }
-            } else {
-
-                // Default to ASC
-                $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
-            }
-        }
-        return $order;
+//        if (array_key_exists('orderBy', $order)) {
+//            if (array_key_exists($order['orderBy'], self::ALLOWED_SORTABLE_FIELDS)) {
+//                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS[$order['orderBy']];
+//            } else {
+//                // Default to application date
+//                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['applicationDate'];
+//            }
+//
+//            if (array_key_exists('orderDir', $order)) {
+//                if (!in_array($order['orderDir'], self::ALLOWED_SORTING_DIR)) {
+//                    // Default to ASC
+//                    $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
+//                }
+//            } else {
+//
+//                // Default to ASC
+//                $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
+//            }
+//        }
+//        return $order;
     }
 
     /**
