@@ -70,10 +70,17 @@ class MissionMediaRepository implements MissionMediaInterface
         }
 
         if ($isDefault ===  0) {
-            $mediaData = $this->missionMedia->where('mission_id', $missionId)
-            ->orderBy('mission_media_id', 'ASC')->first();
+            $mediaData = $this->missionMedia
+                ->where([
+                    ['mission_id', '=', $missionId],
+                    ['media_type', '<>', 'mp4']
+                ])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
             $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            $this->missionMedia
+                ->where('mission_media_id', $mediaData->mission_media_id)
+                ->update($missionMedia);
         }
     }
 
@@ -141,10 +148,16 @@ class MissionMediaRepository implements MissionMediaInterface
         $defaultData = $this->missionMedia->where('mission_id', $missionId)->where('default', '1')->count();
 
         if (($isDefault === 0) && ($defaultData === 0)) {
-            $mediaData = $this->missionMedia->where('mission_id', $missionId)
-                        ->orderBy('mission_media_id', 'ASC')->first();
-            $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            $mediaData = $this->missionMedia
+                ->where([
+                    ['mission_id', '=', $missionId],
+                    ['media_type', '<>', 'mp4']
+                ])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
+            $this->missionMedia
+                ->where('mission_media_id', $mediaData->mission_media_id)
+                ->update(['default' => '1']);
         }
     }
 
@@ -186,6 +199,22 @@ class MissionMediaRepository implements MissionMediaInterface
      */
     public function deleteMedia(int $mediaId): bool
     {
+        $mediaDetails = $this->getMediaDetails($mediaId);
+        if ($mediaDetails->count() > 0 && $mediaDetails[0]['default'] == '1') {
+            $firstImageMedia = $this->missionMedia
+                ->where([
+                    ['mission_id', '=', $mediaDetails[0]['mission_id']],
+                    ['media_type', '<>', 'mp4'],
+                    ['mission_media_id', '<>', $mediaId]
+                ])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
+            if ($firstImageMedia) {
+                $this->missionMedia
+                    ->where('mission_media_id', $firstImageMedia->mission_media_id)
+                    ->update(['default' => '1']);
+            }
+        }
         return $this->missionMedia->deleteMedia($mediaId);
     }
 

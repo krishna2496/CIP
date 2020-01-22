@@ -1329,18 +1329,31 @@ class MissionTest extends TestCase
                     ]
                 ]
             ],
-            "media_images" => [[
+            "media_images" => [
+                [
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1",
                     "sort_order" => "1"
-                ], [
+                ],
+                [
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "0",
-                    "sort_order" => "1"
+                    "sort_order" => "4"
+                ],
+                [
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "0",
+                    "sort_order" => "3"
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos"=> [
+                [
+                    "media_path" => "https://www.youtube.com/watch?v=mWOpppkOIvY",
+                    "media_name" => "video.mp4",
+                    "sort_order" => "2"
+                ]
+            ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1380,22 +1393,21 @@ class MissionTest extends TestCase
         ]);
 
         $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
-        // Return error if you are trying to delete default mission media
+
+        // Should update next image media as default if default mission media is deleted
         DB::setDefaultConnection('mysql');
         $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
-                ]
-            ]
-        ]);
-        App\Models\Mission::where("mission_id", $missionId)->delete();
+        ->seeStatusCode(204);
 
+        $nextImageMedia = App\Models\MissionMedia::where([
+                ['mission_id', $missionId],
+                ['sort_order', 3]
+            ])
+            ->first();
+        $this->assertSame($nextImageMedia['default'], '1');
+
+        App\Models\Mission::where('mission_id', $missionId)->delete();
+        App\Models\MissionMedia::where('mission_id', $missionId)->delete();
     }
 
     /**
