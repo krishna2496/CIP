@@ -40,8 +40,9 @@ class MigrationRollack extends Command
 
     /**
      * Create a new command instance.
-     * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
-     *
+     * @codeCoverageIgnore
+     * 
+     * @param  App\Repositories\Tenant\TenantRepository $tenantRepository    
      * @return void
      */
     public function __construct(TenantRepository $tenantRepository)
@@ -53,7 +54,8 @@ class MigrationRollack extends Command
 
     /**
      * Execute the console command.
-     *
+     * @codeCoverageIgnore
+     * 
      * @return mixed
      */
     public function handle()

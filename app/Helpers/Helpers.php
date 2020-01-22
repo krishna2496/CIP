@@ -2,10 +2,29 @@
 
 namespace App\Helpers;
 
+use App\Models\Tenant;
+use App\Repositories\Tenant\TenantRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class Helpers
 {
+    /**
+     * @var App\Repositories\Tenant\TenantRepository
+     */
+    private $tenantRepository;
+
+    /**
+     * Create a new Helpers class instance.
+     *
+     * @param App\Repositories\Tenant\TenantRepository $tenantRepository
+     * @return void
+     */
+    public function __construct(
+        TenantRepository $tenantRepository
+    ) {
+        $this->tenantRepository = $tenantRepository;
+    }
+
     /**
      * Pagination transform
      *
@@ -29,5 +48,16 @@ class Helpers
             ]
         );
         return $paginatedData;
+    }
+
+    /**
+     * Get the tenant details, based on it's id
+     *
+     * @param  int  $tenantId
+     * @return App\Models\Tenant $tenant
+     */
+    public function getTenantDetails(int $tenantId): Tenant
+    {
+        return $this->tenantRepository->find($tenantId);
     }
 }
