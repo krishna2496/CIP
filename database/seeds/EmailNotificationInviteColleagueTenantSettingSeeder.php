@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 
-class TenantSettingSeeder extends Seeder
+class EmailNotificationInviteColleagueTenantSettingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,6 +24,6 @@ class TenantSettingSeeder extends Seeder
 
         foreach ($items as $item) {            
             \DB::table('tenant_setting')->insert($item);
-        }
+        }        
     }
 }
