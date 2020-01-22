@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories\Skill;
 
-use App\Repositories\Skill\SkillInterface;
 use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,7 +23,7 @@ class SkillRepository implements SkillInterface
     {
         $this->skill = $skill;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +31,7 @@ class SkillRepository implements SkillInterface
      * @param string $skill_id
      * @return \Illuminate\Http\Response
      */
-    public function skillList(Request $request, String $skill_id = '')
+    public function skillList(Request $request, string $skill_id = '')
     {
         $skillQuery = $this->skill->select('skill_name', 'skill_id', 'translations');
         if ($skill_id !== '') {
@@ -41,7 +40,7 @@ class SkillRepository implements SkillInterface
         $skill = $skillQuery->get();
         return $skill;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -52,13 +51,26 @@ class SkillRepository implements SkillInterface
     {
         $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
 
+        if ($request->has('search')) {
+            $searchString = $request->search;
+            $skillQuery->where(function ($query) use ($searchString) {
+                $query->where('skill_name', 'like', '%' . $searchString . '%');
+                //title";s:[0-9]{1,2}:"[a-zA-Z\s]{0,60}(man)[a-zA-Z\s]{0,60}";}
+                //(title";s:[0-9]{1,2}:".{0,60}(br).{0,30}";})
+                $query->orWhere('translations', 'regexp', 'title%' . $searchString . '%');
+//                $query->orWhere(function ($organizationQuery) use ($searchString) {
+//                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $searchString . '%');
+//                });
+            });
+        }
+
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
         }
         return $skillQuery->paginate($request->perPage);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -88,7 +100,7 @@ class SkillRepository implements SkillInterface
         $skill->update($request);
         return $skill;
     }
-    
+
     /**
      * Find specified resource in storage.
      *
@@ -99,7 +111,7 @@ class SkillRepository implements SkillInterface
     {
         return $this->skill->findSkill($id);
     }
-    
+
     /**
      * Remove specified resource in storage.
      *
