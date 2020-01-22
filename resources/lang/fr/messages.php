@@ -180,6 +180,8 @@ return [
         'MESSAGE_COUNTRY_UPDATED' => 'Pays mis à jour avec succès',
         'MESSAGE_CITY_DELETED' => 'La ville a bien été supprimée',
         'MESSAGE_CITY_UPDATED' => 'La ville a été mise à jour avec succès',
+        'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Le fichier de langue du locataire a été trouvé avec succès',
+        'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Le fichier de langue du locataire a été mis à jour avec succès',
     ],
 
         
@@ -271,6 +273,10 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
+        'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => 'Dossier des langues des locataires introuvable',
+        'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => 'Fichier de langue du locataire introuvable',
+        'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => 'Le fichier doit être au format json',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Format JSON non valide dans le fichier téléchargé.',
 
         
         //For timesheet module
