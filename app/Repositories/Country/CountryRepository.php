@@ -104,8 +104,15 @@ class CountryRepository implements CountryInterface
         $country = $this->country
             ->with('languages')
             ->where('country_id', $countryId)
-            ->first();
+            ->firstOrFail();
 
+        $languages = $this->languageHelper->getLanguages();
+
+        foreach ($country->languages as $lang) {
+            $languageData = $languages->where('language_id', $lang->language_id)->first();
+            $lang->language_code = $languageData->code;
+        }
+        
         return $country->toArray();
     }
 
