@@ -202,13 +202,9 @@ class MissionApplicationQuery implements QueryableInterface
             // Ordering
             ->when($order, function ($query) use ($order) {
                 $query->orderBy($order['orderBy'], $order['orderDir']);
-            });
+            })
             // Pagination
-
-
-        Log::debug($applications->toSql());
-
-        $applications = $applications->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
+            ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
 
         return $applications;
     }
