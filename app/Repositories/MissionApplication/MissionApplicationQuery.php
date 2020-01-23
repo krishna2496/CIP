@@ -146,7 +146,6 @@ class MissionApplicationQuery implements QueryableInterface
             ->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
                 $query->whereHas('user.skills', function($query) use ($filters) {
                     $query->whereIn('skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
-                    //TODO: delete me ; here I have changed user_skill_id for skill_id for the filter, need to commit
                 });
             })
             // Filter by mission skill
