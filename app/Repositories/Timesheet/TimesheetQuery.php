@@ -2,8 +2,6 @@
 
 namespace App\Repositories\Timesheet;
 
-use App\Models\DataObjects\VolunteerApplication;
-use App\Models\MissionApplication;
 use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -14,7 +12,7 @@ class TimesheetQuery implements QueryableInterface
 {
     const FILTER_MISSION_THEMES     = 'missionThemes';
     const FILTER_APPLICATION_DATE   = 'applicationDate';
-    const FILTER_MISSION_STATUSES   = 'missionStatus'; //Active or Closed ** //TODO
+    const FILTER_MISSION_STATUSES   = 'customMissionStatus';
     const FILTER_APPROVAL_STATUS    = 'timesheetStatus';
     const FILTER_MISSION_COUNTRIES  = 'missionCountries';
     const FILTER_MISSION_CITIES     = 'missionCities';
@@ -22,21 +20,19 @@ class TimesheetQuery implements QueryableInterface
     //**
     //Active: Mission is open and ongoing (ref)
     //Use mission status PUBLISHED_FOR_APPLYING
+
     //Closed: Mission is closed and inactive (ref)
     //Use mission end date and if no end date then use UNPUBLISHED mission status
 
     const ALLOWED_SORTABLE_FIELDS = [
-        'applicant' => 'user.last_name', //TODO, check if it's ok, I don't think so
+        'applicant' => 'user.last_name',
         'applicantEmail' => 'user.email',
-        'missionType' => 'mission.mission_type',
         'country' => 'c.name',
         'status' => 'mission_application.approval_status',
         'city' => 'ci.name',
-        'applicationDate' => 'mission_application.applied_at',
-        'applicationSkills' => 'applicant_skills',
         'missionName' => 'mission_language.title',
         /*
-         * TODO: implement the following sort options (and handle translations)
+         * TODO: implement the sort options (and handle translations)
          * - country name
          * - city
          */
@@ -58,10 +54,10 @@ class TimesheetQuery implements QueryableInterface
 
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
-            || isset($filters[self::FILTER_MISSION_CITIES]);
+            || isset($filters[self::FILTER_MISSION_CITIES])
+            || isset($filters[self::FILTER_MISSION_STATUSES]);
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
-
         $query = Timesheet::query();
         $timesheets = $query
             ->select([
@@ -122,10 +118,20 @@ class TimesheetQuery implements QueryableInterface
                     $query->when(isset($filters[self::FILTER_MISSION_CITIES]), function($query) use ($filters) {
                         $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
                     });
+                    // Filter by mission Status
+                    $query->when(isset($filters[self::FILTER_MISSION_STATUSES]), function($query) use ($filters) {
+                        collect($filters[self::FILTER_MISSION_STATUSES])->map(function ($val) use ($query) {
+                            if ($val === 'active') {
+                                return $query->whereIn('publication_status', ['PUBLISHED_FOR_APPLYING', 'APPROVED']); //TODO use constant ?
+                            } else {
+                                return $query->whereIn('publication_status', ['UNPUBLISHED', 'DRAFT']);
+                            }
+                            });
+                    });
                 });
             })
             // Search
-            ->when(!empty($search), function($query) use ($search, $filters, $languageId) { //TODO I DON4T THINK ITS OK
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
                 /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
                  * the condition on the where can *not* be exclusive as we might lose valid results from
                  * previous filtering. We then need to use the OR condition for searchable fields.
