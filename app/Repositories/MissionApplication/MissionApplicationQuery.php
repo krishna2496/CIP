@@ -7,6 +7,7 @@ use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
 {
@@ -151,7 +152,7 @@ class MissionApplicationQuery implements QueryableInterface
             // Filter by mission skill
             ->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
                 $query->whereHas('mission.missionSkill', function($query) use ($filters) {
-                    $query->whereIn('mission_skill_id', $filters[self::FILTER_MISSION_SKILLS]);
+                    $query->whereIn('skill_id', $filters[self::FILTER_MISSION_SKILLS]);
                 });
             })
             // Search
