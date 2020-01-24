@@ -93,7 +93,10 @@ class MissionApplicationQuery implements QueryableInterface
             ])
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
-            ->join('mission_language', 'mission_language.mission_id', '=', 'mission.mission_id')
+            ->join('mission_language', function ($join) use ($languageId) {
+                $join->on('mission_language.mission_id', '=', 'mission.mission_id')
+                    ->where('mission_language.language_id', '=', $languageId);
+            })
             ->where('mission_language.language_id', '=', $languageId)
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
