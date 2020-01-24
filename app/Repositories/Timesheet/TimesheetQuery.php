@@ -18,18 +18,18 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_MISSION_CITIES = 'missionCities';
     const FILTER_TIMESHEET_IDS = 'timesheetIds';
 
+    //TODO how the app does to range some unspecified fields ?
     const ALLOWED_SORTABLE_FIELDS = [
+        'applicationDate' => 'date_volunteered',
         'applicant' => 'user.last_name',
-        'applicantEmail' => 'user.email',
+        'reviewedHours' => 'time',
+        'note' => 'notes',
+        'appliedDay' => 'day_volunteered',
+        'lastUpdated' => 'updated_at',
+        'applicantEmailAddress' => 'user.email',
         'country' => 'c.name',
-        'status' => 'mission_application.approval_status',
+        'approvalStatus' => 'status',
         'city' => 'ci.name',
-        'missionName' => 'mission_language.title',
-        /*
-         * TODO: implement the sort options (and handle translations)
-         * - country name
-         * - city
-         */
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -235,28 +235,28 @@ class TimesheetQuery implements QueryableInterface
      * @param $order
      * @return mixed
      */
-    private function getOrder($order) //TODO NOT OK
+    private function getOrder($order)
     {
-//        if (array_key_exists('orderBy', $order)) {
-//            if (array_key_exists($order['orderBy'], self::ALLOWED_SORTABLE_FIELDS)) {
-//                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS[$order['orderBy']];
-//            } else {
-//                // Default to application date
-//                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['applicationDate'];
-//            }
-//
-//            if (array_key_exists('orderDir', $order)) {
-//                if (!in_array($order['orderDir'], self::ALLOWED_SORTING_DIR)) {
-//                    // Default to ASC
-//                    $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
-//                }
-//            } else {
-//
-//                // Default to ASC
-//                $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
-//            }
-//        }
-//        return $order;
+        if (array_key_exists('orderBy', $order)) {
+            if (array_key_exists($order['orderBy'], self::ALLOWED_SORTABLE_FIELDS)) {
+                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS[$order['orderBy']];
+            } else {
+                // Default to application date
+                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['applicationDate'];
+            }
+
+            if (array_key_exists('orderDir', $order)) {
+                if (!in_array($order['orderDir'], self::ALLOWED_SORTING_DIR)) {
+                    // Default to ASC
+                    $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
+                }
+            } else {
+
+                // Default to ASC
+                $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
+            }
+        }
+        return $order;
     }
 
     /**
