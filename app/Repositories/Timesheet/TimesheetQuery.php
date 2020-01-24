@@ -16,13 +16,7 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_APPROVAL_STATUS    = 'timesheetStatus';
     const FILTER_MISSION_COUNTRIES  = 'missionCountries';
     const FILTER_MISSION_CITIES     = 'missionCities';
-
-    //**
-    //Active: Mission is open and ongoing (ref)
-    //Use mission status PUBLISHED_FOR_APPLYING
-
-    //Closed: Mission is closed and inactive (ref)
-    //Use mission end date and if no end date then use UNPUBLISHED mission status
+    const FILTER_TIMESHEET_IDS     = 'timesheetIds';
 
     const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
@@ -132,10 +126,6 @@ class TimesheetQuery implements QueryableInterface
             })
             // Search
             ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
-                /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
-                 * the condition on the where can *not* be exclusive as we might lose valid results from
-                 * previous filtering. We then need to use the OR condition for searchable fields.
-                 */
                 $searchCallback = function ($query) use ($search, $languageId) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
@@ -166,7 +156,11 @@ class TimesheetQuery implements QueryableInterface
                         });
                 };
 
-                $query->where($searchCallback);
+                if (isset($filters[self::FILTER_TIMESHEET_IDS])) {
+                    $query->orWhere($searchCallback);
+                } else {
+                    $query->where($searchCallback);
+                }
 
             })
             // Ordering
