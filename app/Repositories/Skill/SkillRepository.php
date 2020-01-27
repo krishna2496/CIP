@@ -59,8 +59,8 @@ class SkillRepository implements SkillInterface
                 //(title";s:[0-9]{1,2}:".{0,60}(br).{0,30}";})
                 // {s:4:"lang";s:2:"en";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}rkd[[:space:]|[:alpha:]]{0,60}";}
                 // if the language is passed through the request, we can also search in the available translation for that language
-                if ($request->has('language')) {
-                    $language = $request->has('language');
+                if ($request->has('searchLanguage')) {
+                    $language = $request->has('searchLanguage');
                     $query->orWhere(
                         'translations',
                         'regexp',
@@ -70,6 +70,15 @@ class SkillRepository implements SkillInterface
                             . $searchString
                             . '[[:space:]|[:alpha:]]{0,60}";}'
                     );
+                }
+            });
+        }
+
+        if ($request->has('translations')) {
+            $availableTranslations = $request->translations;
+            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
+                foreach ($availableTranslations as $languageCode) {
+                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'. $languageCode .'";s:5:"title";s:[1-9][0-9]{0,1}:"');
                 }
             });
         }
