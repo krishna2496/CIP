@@ -5,8 +5,8 @@
     "title": "CI Platform",
     "description": ""
   },
-  "host":"localhost:7003",
-  "basePath":"/team4/cip-api",
+  "host":"localhost:7004",
+  "basePath":"/",
   "tags":[  
       {  
          "name":"Mission",
