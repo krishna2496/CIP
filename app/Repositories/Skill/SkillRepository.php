@@ -53,14 +53,24 @@ class SkillRepository implements SkillInterface
 
         if ($request->has('search')) {
             $searchString = $request->search;
-            $skillQuery->where(function ($query) use ($searchString) {
+            $skillQuery->where(function ($query) use ($searchString, $request) {
                 $query->where('skill_name', 'like', '%' . $searchString . '%');
                 //title";s:[0-9]{1,2}:"[a-zA-Z\s]{0,60}(man)[a-zA-Z\s]{0,60}";}
                 //(title";s:[0-9]{1,2}:".{0,60}(br).{0,30}";})
-                $query->orWhere('translations', 'regexp', 'title%' . $searchString . '%');
-//                $query->orWhere(function ($organizationQuery) use ($searchString) {
-//                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $searchString . '%');
-//                });
+                // {s:4:"lang";s:2:"en";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}rkd[[:space:]|[:alpha:]]{0,60}";}
+                // if the language is passed through the request, we can also search in the available translation for that language
+                if ($request->has('language')) {
+                    $language = $request->has('language');
+                    $query->orWhere(
+                        'translations',
+                        'regexp',
+                        '{s:4:"lang";s:2:"'
+                            . $language
+                            . '";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}'
+                            . $searchString
+                            . '[[:space:]|[:alpha:]]{0,60}";}'
+                    );
+                }
             });
         }
 
