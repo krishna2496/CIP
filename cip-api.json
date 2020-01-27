@@ -5,7 +5,7 @@
     "title": "CI Platform",
     "description": ""
   },
-  "host":"web8.anasource.com",
+  "host":"localhost:7003",
   "basePath":"/team4/cip-api",
   "tags":[  
       {  
