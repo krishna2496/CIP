@@ -7685,7 +7685,10 @@
                     "text",
                     "email",
                     "drop-down",
-                    "radio"
+                    "radio",
+                    "checkbox",
+                    "multiselect",
+                    "textarea",
                   ]
                 },
                 "is_mandatory": {
