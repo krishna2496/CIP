@@ -272,15 +272,9 @@
         "new_news": "News",
         "mark_as_read": "Mark as read",
         "mark_as_un_read": "Mark as unread",
-<<<<<<< HEAD
         "cancel_story" : "Are you sure you want to cancel this story?",
         "yes": "Yes",
         "no" : "No",
-=======
-		"cancel_story" : "Are you sure you want to cancel this story?",
-		"yes": "Yes",
-		"no" : "No",
->>>>>>> 3795335b957bada8a213ccdbdd7459e126f42afe
         "delete_story" : "Are you sure you want to delete this story?",
         "sent" : "Sent",
         "not_volunteered_text" : "You haven't volunteered to any mission so you can not create story.",
@@ -289,7 +283,7 @@
         "delete_message": "Are you sure you want to delete this message?",
         "delete_comment": "Are you sure you want to delete this comment?",
         "no_data": "No data",
-        "no_data_available" : "No data available"
+        "no_data_available" : "No data available" 
     },
 
     "placeholder": {
