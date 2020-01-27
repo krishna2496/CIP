@@ -224,4 +224,15 @@ interface MissionInterface
      * @return Collection
      */
     public function getMediaDetails(int $mediaId): Collection;
+
+    /**
+     * Check mission user mission application status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param array $statusArray
+     *
+     * @return bool
+     */
+    public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool;
 }
