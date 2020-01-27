@@ -28,7 +28,8 @@ return [
         'STORY_STATUS' => 'DE: Story status',
         'MISSION_TITLE' => 'DE: Mission title',
 		'PUBLISHED_DATE' => 'DE: Published date',
-	],
+        'CREATED_DATE' => 'DE: Created date',
+    ],
 	
 	/**
 	 * Export user comment sheet's headings

@@ -11,10 +11,13 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
-use DB;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Mission theme controller
+/*!
+This controller is responsible for handling mission theme listing, show, store, update and delete operations.
+ */
 class MissionThemeController extends Controller
 {
     use RestExceptionHandlerTrait;

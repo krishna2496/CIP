@@ -29,14 +29,14 @@ class MissionDocument extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'document_name', 'document_type', 'document_path'];
+    protected $fillable = ['mission_id', 'document_name', 'document_type', 'document_path', 'sort_order'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['mission_document_id', 'document_name', 'document_type', 'document_path'];
+    protected $visible = ['mission_document_id', 'document_name', 'document_type', 'document_path', 'sort_order'];
 
     /**
      * Store/update specified resource.
@@ -48,5 +48,16 @@ class MissionDocument extends Model
     public function createOrUpdateDocument(array $condition, array $data): MissionDocument
     {
         return static::updateOrCreate($condition, $data);
+    }
+
+    /**
+     * Soft delete the mission document from the database.
+     *
+     * @param int $documentId
+     * @return bool
+     */
+    public function deleteDocument(int $documentId): bool
+    {
+        return static::findOrFail($documentId)->delete();
     }
 }

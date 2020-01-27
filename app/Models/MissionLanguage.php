@@ -49,6 +49,7 @@ class MissionLanguage extends Model
     protected $visible = [
         'lang',
         'language_id',
+        'language_code',
         'title',
         'objective',
         'short_description',
@@ -113,7 +114,7 @@ class MissionLanguage extends Model
      */
     public function setCustomInformationAttribute($value)
     {
-        $this->attributes['custom_information'] = isset($value) ? serialize($value) : NULL;
+        $this->attributes['custom_information'] = isset($value) ? serialize($value) : null;
     }
     
     /**

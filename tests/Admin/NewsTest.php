@@ -13,13 +13,18 @@ class NewsTest extends TestCase
      */
     public function admin_news_it_should_create_news()
     {
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+        
         DB::setDefaultConnection('tenant');
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -44,6 +49,7 @@ class NewsTest extends TestCase
 
         // When there is no category available
         News::whereNull('deleted_at')->where('news_id', $newsId)->delete();
+        $newsCategory->delete();
     }
 
     /**
@@ -92,13 +98,18 @@ class NewsTest extends TestCase
      */
     public function admin_news_it_should_return_error_for_blank_user_name_on_create()
     {
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');        
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
             "user_name" => "",
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -117,7 +128,8 @@ class NewsTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);        
+        ->seeStatusCode(422);     
+        $newsCategory->delete();   
     }
 
     /**
@@ -129,13 +141,18 @@ class NewsTest extends TestCase
      */
     public function admin_news_it_should_return_error_for_invalid_language_code_on_create()
     {
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');        
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -154,7 +171,8 @@ class NewsTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);           
+        ->seeStatusCode(422);       
+        $newsCategory->delete();    
     }
 
     /**
@@ -166,13 +184,18 @@ class NewsTest extends TestCase
      */
     public function admin_news_it_should_return_error_for_invalid_news_image_on_create()
     {
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');        
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/dummy.txt",
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -191,7 +214,8 @@ class NewsTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);        
+        ->seeStatusCode(422);
+        $newsCategory->delete();        
     }
 
     /**
@@ -203,13 +227,18 @@ class NewsTest extends TestCase
      */
     public function admin_news_it_should_return_error_for_invalid_status_on_create()
     {
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');        
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => str_random('5'),
             "news_content" => [
                 "translations" => [
@@ -229,6 +258,7 @@ class NewsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
+        $newsCategory->delete();
     }
 
     /**
@@ -249,9 +279,14 @@ class NewsTest extends TestCase
             $news->setConnection($connection);
             $news->save();
 
+            $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+            $newsCategory->setConnection($connection);
+            $newsCategory->save();
+            
             $newsToCategory = factory(\App\Models\NewsToCategory::class)->make();
             $newsToCategory->setConnection($connection);
             $newsToCategory->news_id = $news->news_id;
+            $newsToCategory->news_category_id = $newsCategory->news_category_id;
             $newsToCategory->save();
 
             $newsLanguage = factory(\App\Models\NewsLanguage::class)->make();
@@ -262,8 +297,16 @@ class NewsTest extends TestCase
             array_push($newsIdsArray, $news->news_id); 
         } 
 
+        $this->get('news?order=desc&search='.$newsLanguage->title, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
         $this->get('news', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('news?order=test&search='.$newsLanguage->title, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400);
 
         News::whereIn('news_id', $newsIdsArray)->delete();
     }
@@ -276,7 +319,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_should_update_news_details()
-    {        
+    {      
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -284,7 +332,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -311,13 +359,27 @@ class NewsTest extends TestCase
         // Going to update details
         $params["user_name"] = str_random('5');
         $params["user_title"] = strtoupper(str_random('3'));
+        $params["news_content"] = [
+            "translations" => [
+                [  
+                    "lang" => "en",
+                    "title" => "english_".str_random('10'),
+                    "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
+                ],
+                [
+                    "lang" => "fr",
+                    "title" => "french_".str_random('10'),
+                    "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
+                ]
+            ]
+        ];
         
         DB::setDefaultConnection('mysql');
         $response = $this->patch('news/'.$newsId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
         News::where('news_id', $newsId)->delete();
-
+        $newsCategory->delete();
     }
 
     /**
@@ -328,14 +390,19 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_should_return_error_for_invalid_news_id_update_news_details()
-    {        
+    {     
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -357,7 +424,8 @@ class NewsTest extends TestCase
         
         DB::setDefaultConnection('mysql');
         $response = $this->patch('news/'.$newsId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404);        
+        ->seeStatusCode(404);  
+        $newsCategory->delete();      
     }
 
     /**
@@ -368,7 +436,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_return_validation_error_on_update_news_details()
-    {        
+    {     
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -376,7 +449,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -409,6 +482,7 @@ class NewsTest extends TestCase
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
+        $newsCategory->delete();
 
     }
 
@@ -420,7 +494,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_return_validation_error_for_language_code_on_update_news_details()
-    {        
+    {  
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -428,7 +507,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -460,6 +539,7 @@ class NewsTest extends TestCase
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
+        $newsCategory->delete();
     }
 
     /**
@@ -470,7 +550,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_return_validation_error_for_invalid_media_url_on_update_news_details()
-    {        
+    {    
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -478,7 +563,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -510,6 +595,7 @@ class NewsTest extends TestCase
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
+        $newsCategory->delete();
     }
 
     /**
@@ -520,7 +606,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_return_validation_error_for_invalid_status_on_update_news_details()
-    {        
+    {    
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -528,7 +619,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -560,6 +651,7 @@ class NewsTest extends TestCase
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
+        $newsCategory->delete();
     }
 
     /**
@@ -570,7 +662,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_return_news_details()
-    {        
+    {   
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -578,7 +675,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -607,6 +704,7 @@ class NewsTest extends TestCase
         ->seeStatusCode(200);
 
         News::where('news_id', $newsId)->delete();
+        $newsCategory->delete();
     }
 
 
@@ -634,7 +732,12 @@ class NewsTest extends TestCase
      * @return void
      */
     public function admin_news_it_should_delete_news()
-    {        
+    {    
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+
         DB::setDefaultConnection('tenant');
 
         $params = [
@@ -642,7 +745,7 @@ class NewsTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -669,6 +772,7 @@ class NewsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $response = $this->delete('news/'.$newsId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(204);
+        $newsCategory->delete();
     }
 
     /**

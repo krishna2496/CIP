@@ -65,29 +65,29 @@ interface MissionApplicationInterface
      * Get mission application count.
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|int
      */
-    public function missionApplicationCount(int $userId, int $year, int $month): ?int;
+    public function missionApplicationCount(int $userId, $year, $month): ?int;
     
     /**
      * Get organization count.
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|array
      */
-    public function organizationCount(int $userId, int $year, int $month): ?array;
+    public function organizationCount(int $userId, $year, $month): ?array;
 
     /**
      * Get pending application count.
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return null|int
      */
-    public function pendingApplicationCount(int $userId, int $year, int $month): ?int;
+    public function pendingApplicationCount(int $userId, $year, $month): ?int;
 }

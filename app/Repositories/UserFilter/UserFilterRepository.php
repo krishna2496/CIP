@@ -3,7 +3,6 @@ namespace App\Repositories\UserFilter;
 
 use App\Repositories\UserFilter\UserFilterInterface;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\UserFilter;
 use App\Traits\RestExceptionHandlerTrait;
 
@@ -14,23 +13,16 @@ class UserFilterRepository implements UserFilterInterface
      * @var App\Models\UserFilter
      */
     public $filters;
-    
-    /**
-     * @var Illuminate\Http\Response
-     */
-    private $response;
-
+   
     /**
      * Create a new user filter repository instance.
      *
      * @param  App\Models\UserFilter $filters
-     * @param  Illuminate\Http\Response $response
      * @return void
      */
-    public function __construct(UserFilter $filters, Response $response)
+    public function __construct(UserFilter $filters)
     {
         $this->filters = $filters;
-        $this->response = $response;
     }
 
     /**
@@ -55,12 +47,12 @@ class UserFilterRepository implements UserFilterInterface
         $defaultCountryId = $defaultCityId = '';
 
         if (!$request->has('country_id')) {
-            if (isset($request->auth) && ($request->auth->country_id != '') && ($request->auth->country_id != 0)) {
+            if (isset($request->auth) && ($request->auth->country_id !== '') && ($request->auth->country_id !== 0)) {
                 $defaultCountryId = $request->auth->country_id;
             }
         }
         if (!$request->has('city_id')) {
-            if (isset($request->auth) && ($request->auth->city_id != '') && ($request->auth->city_id != 0)) {
+            if (isset($request->auth) && ($request->auth->city_id !== '') && ($request->auth->city_id !== 0)) {
                 $defaultCityId = $request->auth->city_id;
             }
         }
@@ -69,7 +61,7 @@ class UserFilterRepository implements UserFilterInterface
             $defaultCityId = '';
         }
         
-        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
+        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
             $defaultCountryId = $defaultCityId = '';
         }
 
@@ -79,6 +71,7 @@ class UserFilterRepository implements UserFilterInterface
         $userFilterData["theme_id"] = $request->has('theme_id') ? $request->input('theme_id') : '';
         $userFilterData["skill_id"] = $request->has('skill_id') ? $request->input('skill_id') : '';
         $userFilterData["sort_by"] = $request->has('sort_by') ? $request->input('sort_by') : '';
+        $userFilterData["current_view"] = $request->has('current_view') ? $request->input('current_view') : 0;
         $userFilter= $this->filters->createOrUpdateUserFilter(
             ['user_id' => $request->auth->user_id],
             array('filters' => $userFilterData)

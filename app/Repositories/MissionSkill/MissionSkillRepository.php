@@ -2,10 +2,7 @@
 namespace App\Repositories\MissionSkill;
 
 use App\Repositories\MissionSkill\MissionSkillInterface;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\MissionSkill;
-use App\Models\TimesheetStatus;
 use Illuminate\Support\Collection;
 use \Illuminate\Pagination\LengthAwarePaginator;
 
@@ -15,23 +12,16 @@ class MissionSkillRepository implements MissionSkillInterface
      * @var App\Models\MissionSkill
      */
     public $missionSkill;
-
-    /**
-     * @var App\Models\TimesheetStatus
-     */
-    public $timesheetStatus;
  
     /**
      * Create a new MissionSkill repository instance.
      *
      * @param  App\Models\MissionSkill $missionSkill
-     * @param App\Models\TimesheetStatus $timesheetStatus
      * @return void
      */
-    public function __construct(MissionSkill $missionSkill, TimesheetStatus $timesheetStatus)
+    public function __construct(MissionSkill $missionSkill)
     {
         $this->missionSkill = $missionSkill;
-        $this->timesheetStatus = $timesheetStatus;
     }
 
     /**
@@ -56,10 +46,15 @@ class MissionSkillRepository implements MissionSkillInterface
         if (!empty($year)) {
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
+
+        $statusArray = [
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
+        ];
         $queryBuilder = $queryBuilder->where('mission.publication_status', 'APPROVED')
         ->where('timesheet.user_id', $userId)
         ->whereNotNull('mission.mission_id')
-        ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
+        ->whereIn('timesheet.status', $statusArray)
         ->whereNotNull('timesheet.timesheet_id')
         ->whereNull('timesheet.deleted_at')
         ->groupBy('mission_skill.skill_id');

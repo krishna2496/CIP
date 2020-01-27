@@ -15,6 +15,10 @@ use InvalidArgumentException;
 use Validator;
 use App\Helpers\Helpers;
 
+//!  Tenant settings controller
+/*!
+This controller is responsible for handling tenant settings listing and update operations.
+ */
 class TenantSettingsController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -61,24 +65,24 @@ class TenantSettingsController extends Controller
     public function index(Request $request): JsonResponse
     {
         // Fetch all tenant settings details from super admin
-        $getTenantSettings = $this->helpers->getAllTenantSetting($request);
+        $adminTenantSettings = $this->helpers->getAllTenantSetting($request);
 
         // Fetch all tenant settings data
         $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
         $tenantSettingData = array();
 
-        if ($tenantSettings->count() &&  $getTenantSettings->count()) {
+        if ($tenantSettings->count() &&  $adminTenantSettings->count()) {
             foreach ($tenantSettings as $settingKey => $tenantSetting) {
-                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id == $tenantSetting->setting_id;
+                $index = $adminTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                    return $value->tenant_setting_id === $tenantSetting->setting_id;
                 });
                 
-                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSettings[$index]
+                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSetting
                 ->tenant_setting_id;
-                $tenantSettingData[$index]['key'] = $getTenantSettings[$index]->key;
-                $tenantSettingData[$index]['description'] = $getTenantSettings[$index]
+                $tenantSettingData[$index]['key'] = $adminTenantSettings[$index]->key;
+                $tenantSettingData[$index]['description'] = $adminTenantSettings[$index]
                 ->description;
-                $tenantSettingData[$index]['title'] = $getTenantSettings[$index]
+                $tenantSettingData[$index]['title'] = $adminTenantSettings[$index]
                 ->title;
             }
         }
@@ -86,7 +90,7 @@ class TenantSettingsController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty()) ?
+        $apiMessage = ($tenantSettings->isEmpty() || $adminTenantSettings->isEmpty()) ?
         trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
         trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 

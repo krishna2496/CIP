@@ -22,6 +22,10 @@ use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Story invite controller
+/*!
+This controller is responsible for handling story invite operations.
+ */
 class StoryInviteController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -138,6 +142,13 @@ class StoryInviteController extends Controller
             $request->auth->user_id
         );
 
+        $notificationTypeId = $this->notificationRepository
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_STORY'));
+        
+        // Check if to_user_id (colleague) has enabled notification for Recommended story
+        $notifyColleague = $this->notificationRepository
+        ->userNotificationSetting($request->to_user_id, $notificationTypeId);
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_STORY');
@@ -155,6 +166,16 @@ class StoryInviteController extends Controller
             $inviteStory->story_invite_id
         ));
 
+        if ($notifyColleague) {
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.RECOMMENDED_STORY');
+            $entityId = $inviteStory->story_invite_id;
+            $action = config('constants.notification_actions.INVITE');
+            $userId = $request->to_user_id;
+            
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+        }
+
         $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
         ->getAllTenantActivatedSetting($request);
 
@@ -163,30 +184,15 @@ class StoryInviteController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }
         
-        $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_STORY'));
-        
-        // Check if to_user_id (colleague) has enabled notification for Recommended story
-        $notifyColleague = $this->notificationRepository
-        ->userNotificationSetting($request->to_user_id, $notificationTypeId);
-        
         if ($notifyColleague) {
             $colleague = $this->userRepository->find($request->to_user_id);
             $colleagueEmail = $colleague->email;
             $colleagueLanguageId = $colleague->language_id;
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $language = $languages->where('language_id', $colleagueLanguageId)->first();
             $colleagueLanguage = $language->code;
             $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
             $storyName = $this->storyInviteRepository->getStoryName($request->story_id);
-            
-            // Send notification to user
-            $notificationType = config('constants.notification_type_keys.RECOMMENDED_STORY');
-            $entityId = $inviteStory->story_invite_id;
-            $action = config('constants.notification_actions.INVITE');
-            $userId = $request->to_user_id;
-            
-            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             $data = array(
                 'storyName'=> $storyName,
@@ -198,8 +204,13 @@ class StoryInviteController extends Controller
         
             $params['tenant_name'] = $tenantName;
             $params['to'] = $colleagueEmail; //required
-            $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_STORY_USER_INVITE'); //path to the email template
-            $params['subject'] = trans('mail.recommonded_story.MAIL_STORY_RECOMMENDATION', [], $colleagueLanguage); //optional
+            $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'
+            .config('constants.EMAIL_TEMPLATE_STORY_USER_INVITE'); //path to the email template
+            $params['subject'] = trans(
+                'mail.recommonded_story.MAIL_STORY_RECOMMENDATION',
+                [],
+                $colleagueLanguage
+            ); //optional
             $params['data'] = $data;
             $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
                 ['option_name' => 'custom_logo']

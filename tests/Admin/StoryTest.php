@@ -2,7 +2,7 @@
 use App\Helpers\Helpers;
 
 class StoryTest extends TestCase
-{
+{   
     /**
      * @test
      *
@@ -12,6 +12,11 @@ class StoryTest extends TestCase
      */
     public function it_should_fetch_all_user_story()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -37,8 +42,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -59,24 +64,18 @@ class StoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -135,6 +134,8 @@ class StoryTest extends TestCase
 
         $user->delete();
         $mission->delete();
+        
+        
     }
 
     /**
@@ -146,6 +147,11 @@ class StoryTest extends TestCase
      */
     public function it_should_update_status_of_user_story()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -167,8 +173,8 @@ class StoryTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -189,24 +195,18 @@ class StoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -268,5 +268,7 @@ class StoryTest extends TestCase
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
         $mission->delete();
+        
+        
     }
 }

@@ -18,7 +18,7 @@ class AppDashboardTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/dashboard', ['token' => $token])
+        $this->get('app/dashboard?year='.date('Y')."&month=".date('m'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -36,11 +36,15 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_return_dashboard_details_with_chart_details()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-
         
         $params = [
             "organisation" => [
@@ -49,8 +53,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -67,7 +71,8 @@ class AppDashboardTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -116,7 +121,7 @@ class AppDashboardTest extends TestCase
         ->seeStatusCode(201);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->first();
-        $timesheet->update(['status_id' => config("constants.timesheet_status_id")["APPROVED"]]);
+        $timesheet->update(['status' => config("constants.timesheet_status")["APPROVED"]]);
 
         DB::setDefaultConnection('mysql');
 
@@ -139,6 +144,11 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_get_list_of_comments_history_on_dashboard()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         // Creating user
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -153,8 +163,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -171,7 +181,8 @@ class AppDashboardTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -288,6 +299,11 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_delete_comment_from_comments_history_on_dashboard()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         // Creating user
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -302,8 +318,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -320,7 +336,8 @@ class AppDashboardTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -419,6 +436,11 @@ class AppDashboardTest extends TestCase
      */
     public function it_should_export_user_comments()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         // Creating user
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -433,8 +455,8 @@ class AppDashboardTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -451,7 +473,8 @@ class AppDashboardTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",

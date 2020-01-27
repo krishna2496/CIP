@@ -11,6 +11,10 @@ use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Mission rating controller
+/*!
+This controller is responsible for handling mission rating store operation.
+ */
 class MissionRatingController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -47,7 +51,7 @@ class MissionRatingController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        // Server side validataions
+        // Server side validations
         $validator = Validator::make(
             $request->all(),
             [
@@ -66,6 +70,25 @@ class MissionRatingController extends Controller
             );
         }
         
+        $missionApplicationStatus = array(
+            config('constants.application_status.AUTOMATICALLY_APPROVED')
+        );
+
+        //Check mission application status
+        $applicationStatus = $this->missionRepository->checkUserMissionApplicationStatus(
+            $request->mission_id,
+            $request->auth->user_id,
+            $missionApplicationStatus
+        );
+        if ($applicationStatus) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.MISSION_APPLICATION_NOT_APPROVED'),
+                trans('messages.custom_error_message.MISSION_APPLICATION_NOT_APPROVED')
+            );
+        }
+
         // Store mission rating
         $missionRating = $this->missionRepository->storeMissionRating($request->auth->user_id, $request->toArray());
 

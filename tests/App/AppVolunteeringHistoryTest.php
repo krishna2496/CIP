@@ -23,8 +23,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -35,7 +35,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -52,14 +52,15 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 10),
+            "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => App\Models\MissionTheme::first()->mission_theme_id,
@@ -80,8 +81,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 'availability_id' => 1
             ];
 
-        DB::setDefaultConnection('mysql');
-        
+        DB::setDefaultConnection('mysql');        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
         // Creating mission application for created mission
@@ -105,7 +105,6 @@ class AppVolunteeringHistoryTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-
         // Creating timesheet entry for created mission
         $timesheet = $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201)
@@ -121,11 +120,10 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
-
+        DB::setDefaultConnection('mysql');
         // Get history of total hours spent on specific theme        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
@@ -144,6 +142,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ]
         );
 
+        DB::setDefaultConnection('mysql');
         // Assert time mission history
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.time-mission'), ['token' => $token])
@@ -190,6 +189,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get history of total hours spent on specific theme        
+        \DB::setDefaultConnection('mysql');
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
         ->seeStatusCode(200)
@@ -199,6 +200,8 @@ class AppVolunteeringHistoryTest extends TestCase
                 "message"
             ]
         );
+
+        \DB::setDefaultConnection('mysql');
 
         // Assert time mission history not found
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -211,6 +214,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ]
         );
 
+        \DB::setDefaultConnection('mysql');
         // Assert export report 
         $response = $this->get(route('app.volunteer.history.time-mission.export'), ['token' => $token])
         ->seeStatusCode(200)
@@ -246,7 +250,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
         
         // Get history of total hours spent on specific theme        
-        $token = Helpers::getJwtToken($user->user_id, str_random('5'));        
+        $token = Helpers::getJwtToken($user->user_id, str_random('5'));  
+        \DB::setDefaultConnection('mysql');
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
         ->seeStatusCode(401);
         $user->delete();
@@ -271,8 +276,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -283,7 +288,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -300,14 +305,15 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 10),
+            "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => App\Models\MissionTheme::first()->mission_theme_id,
@@ -369,10 +375,11 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
+
+        \DB::setDefaultConnection('mysql');
 
         // Get history of total hours spent on specific theme        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -400,8 +407,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -416,7 +423,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -433,14 +440,15 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 10),
+            "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => App\Models\MissionTheme::first()->mission_theme_id,
@@ -507,10 +515,11 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
+
+        DB::setDefaultConnection('mysql');
 
         // Get history of total hours spent on specific theme        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -557,6 +566,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get history of total hours spent on specific skill        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        \DB::setDefaultConnection('mysql');
         $response = $this->get(route('app.volunteer.history.skill'), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -587,7 +597,10 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
         
         // Get history of total hours spent on specific skill        
-        $token = Helpers::getJwtToken($user->user_id, str_random('5'));        
+        $token = Helpers::getJwtToken($user->user_id, str_random('5'));   
+
+        \DB::setDefaultConnection('mysql');
+
         $response = $this->get(route('app.volunteer.history.skill'), ['token' => $token])
         ->seeStatusCode(401);
         
@@ -613,8 +626,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -629,7 +642,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -646,14 +659,15 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 10),
+            "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => App\Models\MissionTheme::first()->mission_theme_id,
@@ -720,11 +734,11 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
+        \DB::setDefaultConnection('mysql');
         // Get history of total hours spent on specific theme        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
@@ -751,8 +765,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -763,7 +777,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -780,14 +794,15 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 10),
+            "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => App\Models\MissionTheme::first()->mission_theme_id,
@@ -848,13 +863,13 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
         // Total history hours for all goal missions
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        \DB::setDefaultConnection('mysql');
         
         $response = $this->get(route('app.volunteer.history.goal-mission'), ['token' => $token])
         ->seeStatusCode(200)
@@ -873,6 +888,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ]
         );
         
+        \DB::setDefaultConnection('mysql');
+
         // Export total history hours for all goal missions
         $response = $this->get(route('app.volunteer.history.goal-mission.export'), ['token' => $token])
         ->seeStatusCode(200);
@@ -899,6 +916,7 @@ class AppVolunteeringHistoryTest extends TestCase
         // Total history hours for all goal missions
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
+        DB::setDefaultConnection('mysql');
         $response = $this->get(route('app.volunteer.history.goal-mission'), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -908,6 +926,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ]
         );
         
+        DB::setDefaultConnection('mysql');
         // Export total history hours for all goal missions
         $response = $this->get(route('app.volunteer.history.goal-mission.export'), ['token' => $token])
         ->seeStatusCode(200);

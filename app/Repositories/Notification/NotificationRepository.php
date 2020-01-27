@@ -2,7 +2,6 @@
 namespace App\Repositories\Notification;
 
 use App\Repositories\Notification\NotificationInterface;
-use App\Helpers\ResponseHelper;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\UserNotification;
@@ -13,11 +12,6 @@ use App\Repositories\Mission\MissionRepository;
 
 class NotificationRepository implements NotificationInterface
 {
-    /**
-     * @var App\Helpers\ResponseHelper
-     */
-    private $responseHelper;
-
     /**
      * @var App\Models\Notification
      */
@@ -51,7 +45,6 @@ class NotificationRepository implements NotificationInterface
     /**
      * Create a new Notification repository instance.
      *
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  App\Models\Notification $notification
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
@@ -61,7 +54,6 @@ class NotificationRepository implements NotificationInterface
      * @return void
      */
     public function __construct(
-        ResponseHelper $responseHelper,
         Notification $notification,
         NotificationType $notificationType,
         UserNotification $userNotification,
@@ -69,7 +61,6 @@ class NotificationRepository implements NotificationInterface
         UserRepository $userRepository,
         MissionRepository $missionRepository
     ) {
-        $this->responseHelper = $responseHelper;
         $this->notification = $notification;
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;
@@ -89,17 +80,6 @@ class NotificationRepository implements NotificationInterface
         return $this->notificationType
         ->where(['notification_type' => $type])
         ->value('notification_type_id');
-    }
-
-    /**
-     * Send notification
-     *
-     * @param array $notificationData
-     * @return App\Models\Notification
-     */
-    public function createNotification(array $notificationData): Notification
-    {
-        return $this->notification->create($notificationData);
     }
     
     /**
