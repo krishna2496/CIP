@@ -5,8 +5,8 @@
     "title": "CI Platform Admin",
     "description": ""
   },
-  "host":"web8.anasource.com",
-  "basePath":"/team4/cip-admin-api",
+  "host":"localhost:7002",
+  "basePath":"/",
   "tags":[  
       {  
          "name":"Tenant (Milestone - 1)"
