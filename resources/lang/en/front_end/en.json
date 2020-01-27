@@ -17,7 +17,7 @@
         "from": "From",
         "until": "Until",
         "seats_left": "Seats left",
-        "deadline": "Deadline",
+        "deadline": "Registration deadline",
         "location": "Location",
         "add_to_favourite": "Add to favourite",
         "achieved": "Achieved",
@@ -95,8 +95,8 @@
         "loading": "Loading...",
         "cancel": "Cancel",
         "save": "Save",
-        "first_name": "First name",
-        "surname": "Surname",
+        "first_name": "Name",
+        "surname": "Last name",
         "employee_id": "Employee ID",
         "manager": "Manager",
         "title": "Title",
@@ -106,7 +106,7 @@
         "availability": "Availability",
         "my_skills": "My skills",
         "add_skills": "Add skills",
-        "add_your_skills": "Add your Skills",
+        "add_your_skills": "Add your skills",
         "language": "Language",
         "timezone": "Timezone",
         "address_information": "Address information",
@@ -182,7 +182,7 @@
         "actions": "Actions",
         "years": "Years",
         "goal": "Goal",
-        "submit_for_approval": "Submit for approval",
+        "submit_for_approval": "Submitted for approval",
         "day_volunteered": "Day volunteered",
         "no_volunteer_history_found": "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
         "empty_volunteer_history_text": "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
@@ -212,7 +212,7 @@
         "preview": "Preview",
         "goal_objective": "Goal objective",
         "upload_your_photos": "Upload your photos",
-        "new_line_to_enter_multiple_urls": "Use new line to enter multiple URLs",
+        "new_line_to_enter_multiple_urls": "One item per line",
         "start_date": "Start date",
         "reset": "Reset",
         "year": "year",
@@ -248,7 +248,7 @@
         "message": "Message",
         "send": "Send",
         "status": "Status",
-     	"notification": "Notification",
+     	"notification": "Notifications",
         "notification_settings": "Notification Settings",
         "get_notification_for": "Get a notification for",
         "no_new_notifications": "You do not have any new notifications",
@@ -269,9 +269,21 @@
 		"yesterday": "Yesterday",
         "older": "Older",
 		"mission_application": "Mission application",
-        "new_news": "New news",
+        "new_news": "News",
         "mark_as_read": "Mark as read",
-        "mark_as_un_read": "Mark as unread"
+        "mark_as_un_read": "Mark as unread",
+		"cancel_story" : "Are you sure you want to cancel this story?",
+		"yes": "Yes",
+		"no" : "No",
+        "delete_story" : "Are you sure you want to delete this story?",
+        "sent" : "Sent",
+        "not_volunteered_text" : "You haven't volunteered to any mission so you can not create story.",
+        "all_missions" : "All missions",
+        "all": "All",
+        "delete_message": "Are you sure you want to delete this message?",
+        "delete_comment": "Are you sure you want to delete this comment?",
+        "no_data": "No data",
+        "no_data_available" : "No data available"
     },
 
     "placeholder": {
@@ -304,7 +316,8 @@
         "story_detail": "Enter your stories",
         "video_url": "Enter your video url",
  	 	"subject": "Enter your subject",
-        "message": "Enter your message"
+        "message": "Enter your message",
+        "search_user": "Search by name or email address"
     },
 
     "errors": {
@@ -347,7 +360,7 @@
         "invalid_file_type": "Invalid file type: valid file types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg",
         "file_already_uploaded": "File is already uploaded",
         "hours_numeric": "Hours must be numeric",
-        "hours_is_between": "Hours must be between 0 to 24",
+        "hours_is_between": "Hours must be between 0 to 23",
         "minute_numeric": "Minutes must be numeric",
         "minute_between": "Minutes must be between 0 to 59",
         "file_deleted_successfully": "File deleted successfully",
@@ -364,11 +377,11 @@
     },
 
     "export_timesheet_file_names": {
-        "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xlsx",
-        "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xlsx",
-        "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xlsx",
-        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx",
-        "MY_STORIES_XLSX": "My_Stories_Listing.xlsx",
-		"COMMENT_LISTING_XLSX" : "mission_comments.xlsx"
+        "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
+        "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",
+        "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xls",
+        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xls",
+        "MY_STORIES_XLSX": "My_Stories_Listing.xls",
+		"COMMENT_LISTING_XLSX" : "mission_comments.xls"
     }
 }
