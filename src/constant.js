@@ -55,4 +55,5 @@ export default Object.freeze({
     PENDING_STORY: "Pending",
     CONTACT_US: "contact_us_enabled",
     MAX_FILE_NUMBER: 20,
+    MISSION_RATING_VOLUNTEER :"mission_rating_volunteer"
 })
