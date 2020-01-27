@@ -17,7 +17,13 @@ use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\Mission\MissionRepository;
 
+//!  Story controller
+/*!
+This controller is responsible for handling story store, update, delete, copy, delete story image,
+user story listing, published story listing and export operations.
+ */
 class StoryController extends Controller
 {
     use RestExceptionHandlerTrait,StoryTransformable;
@@ -45,6 +51,11 @@ class StoryController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
+
+    /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
+    private $missionRepository;
     
     /**
      * Create a new Story controller instance
@@ -54,6 +65,7 @@ class StoryController extends Controller
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @return void
      */
     public function __construct(
@@ -61,13 +73,15 @@ class StoryController extends Controller
         StoryVisitorRepository $storyVisitorRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        MissionRepository $missionRepository
     ) {
         $this->storyRepository = $storyRepository;
         $this->storyVisitorRepository = $storyVisitorRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
+        $this->missionRepository = $missionRepository;
     }
        
     /**
@@ -107,7 +121,7 @@ class StoryController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.STORY_ADDED_SUCESSFULLY');
+        $apiMessage = trans('messages.success.STORY_ADDED_SUCCESSFULLY');
         $apiData = ['story_id' => $storyData->story_id];
 
         // get the story media data for log
@@ -285,6 +299,9 @@ class StoryController extends Controller
      */
     public function show(Request $request, int $storyId): JsonResponse
     {
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+       
         // Get Story details
         $story = $this->storyRepository
         ->getStoryDetails(
@@ -336,8 +353,17 @@ class StoryController extends Controller
         $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
 
         // Transform story details
-        $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount, $defaultAvatar);
+        $storyTransformedData = $this->transformStoryDetails(
+            $story[0],
+            $storyViewCount,
+            $defaultAvatar,
+            $languageId
+        );
         
+        // Check mission status
+        $missionStatus = $this->missionRepository->checkMissionStatus($storyTransformedData['mission_id']);
+        $storyTransformedData['open_mission_button'] = ($missionStatus) ? "1" : "0";
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
 
@@ -429,16 +455,18 @@ class StoryController extends Controller
             trans("general.export_story_headings.STORY_DESCRIPTION"),
             trans("general.export_story_headings.STORY_STATUS"),
             trans("general.export_story_headings.MISSION_TITLE"),
-            trans("general.export_story_headings.PUBLISHED_DATE"),
+            trans("general.export_story_headings.CREATED_DATE"),
+            trans("general.export_story_headings.PUBLISHED_DATE")
         ];
         
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
-                $story->title,
-                strip_tags($story->description),
+                strip_tags(preg_replace('~[\r\n]+~', '', $story->title)),
+                strip_tags(preg_replace('~[\r\n]+~', '', $story->description)),
                 $story->status,
-                $story->mission->missionLanguage[0]->title,
+                strip_tags(preg_replace('~[\r\n]+~', '', $story->mission->missionLanguage[0]->title)),
+                $story->created_at,
                 $story->published_at
             ]);
         }
@@ -496,7 +524,7 @@ class StoryController extends Controller
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
+            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCCESSFULLY');
             $apiData = ['story_id' => $storyData->story_id];
 
             //Make activity log

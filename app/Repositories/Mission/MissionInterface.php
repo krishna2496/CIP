@@ -7,7 +7,6 @@ use App\Models\Mission;
 use App\Models\FavouriteMission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\GoalMission;
 use App\Models\MissionApplication;
 
 interface MissionInterface
@@ -190,4 +189,39 @@ interface MissionInterface
      * @return string
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool;
+      
+    /**
+     * Remove mission media
+     *
+     * @param int $mediaId
+     *
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool;
+
+    /**
+     * Remove mission document
+     *
+     * @param int $documentId
+     *
+     * @return bool
+     */
+    public function deleteMissionDocument(int $documentId): bool;
+    
+    /**
+     * Get media details
+     *
+     * @param int $mediaId
+     *
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection;
 }

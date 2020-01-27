@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Notification type controller
+/*!
+This controller is responsible for handling notification type listing and store/update operations.
+ */
 class NotificationTypeController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -85,7 +89,8 @@ class NotificationTypeController extends Controller
         }
         
         // Store or update user notification settings
-        $notificationSettings = $this->notificationTypeRepository->storeOrUpdateUserNotification($request->toArray(), $request->auth->user_id);
+        $notificationSettings = $this->notificationTypeRepository
+        ->storeOrUpdateUserNotification($request->toArray(), $request->auth->user_id);
                 
         for ($i=0; $i<count($notificationSettings); $i++) {
             if ($notificationSettings[$i]['value']) {

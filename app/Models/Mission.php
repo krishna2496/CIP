@@ -66,20 +66,18 @@ class Mission extends Model
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
-    'default_media_type','default_media_path','title','short_description',
+    'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
-    'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
+    'seats_left','user_application_count','mission_application_count','missionSkill','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
     'goal_objective', 'achieved_goal', 'mission_count', 'mission_rating_count',
     'already_volunteered','total_available_seat', 'available_seat','deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
-    'availability_id', 'availability_type', 'average_rating', 'timesheet', 'timesheetStatus', 'total_hours', 'time',
-    'hours', 'action', 'total_minutes', 'custom_information'];
+    'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
+    'hours', 'action', 'ISO', 'total_minutes', 'custom_information'];
     
-    protected $appends = ['city_name'];
-
     /**
      * Get the document record associated with the mission.
      *
@@ -128,7 +126,7 @@ class Mission extends Model
     public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id')
-         ->select('city_id', 'name');
+         ->select('city_id');
     }
 
     /**
@@ -138,8 +136,8 @@ class Mission extends Model
      */
     public function country(): HasOne
     {
-        return $this->hasOne(Country::class, 'country_id', 'country_id')
-         ->select('country_id', 'name');
+        return $this->hasOne(Country::class, 'country_id', 'country_id');
+        //  ->select('country_id', 'name', 'ISO');
     }
 
     /**
@@ -258,20 +256,20 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getCityNameAttribute(): string
+    public function getCityTranslationAttribute():object
     {
-        return $this->city()->select('name')->first()->name;
+        return $this->city->hasMany(CityLanguage::class, 'city_id', 'city_id')->get();
     }
 
     /**
      * Set start date attribute on the model.
      *
-     * @param  string $value
+     * @param $value
      * @return void
      */
-    public function setStartDateAttribute(string $value): void
+    public function setStartDateAttribute($value): void
     {
-        $this->attributes['start_date'] = ($value != null) ?
+        $this->attributes['start_date'] = (($value !== null) && strlen(trim($value)) > 0) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
@@ -291,12 +289,12 @@ class Mission extends Model
     /**
      * Set end date attribute on the model.
      *
-     * @param string $value
+     * @param $value
      * @return void
      */
-    public function setEndDateAttribute(string $value): void
+    public function setEndDateAttribute($value): void
     {
-        $this->attributes['end_date'] = ($value != null) ?
+        $this->attributes['end_date'] = ($value !== null && strlen(trim($value)) > 0) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -350,10 +348,10 @@ class Mission extends Model
      */
     public function getOrganisationDetailAttribute($value)
     {
-        if (!is_null($value) && ($value != '')) {
+        if (!is_null($value) && ($value !== '')) {
             $data = @unserialize($value);
             if ($data !== false) {
-                return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
             }
         }
         return null;

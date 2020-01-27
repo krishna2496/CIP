@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Message controller
+/*!
+This controller is responsible for handling message read, send, listing and delete operations.
+ */
 class MessageController extends Controller
 {
     use RestExceptionHandlerTrait,MessageTransformable;
@@ -89,7 +93,7 @@ class MessageController extends Controller
         $apiMessage = (count($request->user_ids) > 1) ?
             trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY') :
             trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
-        $apiData = [];
+        $apiData = ['message_ids' => $messageIds];
 
         // Send notification to all users
         foreach ($messageIds as $message) {

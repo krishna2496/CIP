@@ -35,7 +35,7 @@ class SkillRepository implements SkillInterface
     public function skillList(Request $request, String $skill_id = '')
     {
         $skillQuery = $this->skill->select('skill_name', 'skill_id', 'translations');
-        if ($skill_id != '') {
+        if ($skill_id !== '') {
             $skillQuery->whereIn("skill_id", explode(",", $skill_id));
         }
         $skill = $skillQuery->get();
@@ -67,6 +67,7 @@ class SkillRepository implements SkillInterface
      */
     public function store(array $request): Skill
     {
+        $request['parent_skill'] = $request['parent_skill'] ?? 0;
         return $this->skill->create($request);
     }
 

@@ -14,6 +14,10 @@ use App\Models\TenantActivatedSetting;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Tenant activated setting controller
+/*!
+This controller is responsible for handling tenant activated setting store/delete operation.
+ */
 class TenantActivatedSettingController extends Controller
 {
     use RestExceptionHandlerTrait;

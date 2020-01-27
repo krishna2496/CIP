@@ -5,9 +5,7 @@ use App\Repositories\TenantOption\TenantOptionInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Validator;
-use DB;
 use App\Models\TenantOption;
-use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionRepository implements TenantOptionInterface
@@ -123,10 +121,10 @@ class TenantOptionRepository implements TenantOptionInterface
      * Get option value by option name
      *
      * @param String $data
-     * @return null|int
+     * @return null|App\Models\TenantOption
      */
-    public function getOptionValueFromOptionName(string $data): ?int
+    public function getOptionValueFromOptionName(string $data): ?TenantOption
     {
-        return $this->tenantOption->whereOption_name($data)->first()->option_value;
+        return $this->tenantOption->whereOption_name($data)->first();
     }
 }

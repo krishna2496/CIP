@@ -13,6 +13,12 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
+        App\Models\Mission::whereNull('deleted_at')->delete();
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -38,8 +44,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -60,24 +66,27 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -125,6 +134,8 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+        DB::setDefaultConnection('tenant');
+        App\Models\Mission::whereNull('deleted_at')->delete();
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
@@ -266,8 +277,13 @@ class AppMissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_app_mission_detail_by_id()
+    public function it_should_return_detail_by_id()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -289,8 +305,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -327,24 +343,27 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -441,6 +460,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission_by_id()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
 
         $params = [
@@ -459,8 +483,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -497,23 +521,17 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2020-07-28 11:40:00",
             "application_start_date" => "2019-05-15 10:40:00",
             "application_end_date" => "2020-05-15 10:40:00",
@@ -621,7 +639,7 @@ class AppMissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_app_mission_volunteers_by_mission_id()
+    public function it_should_return_volunteers_by_mission_id()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -806,6 +824,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_random()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -826,8 +849,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -848,24 +871,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -904,6 +921,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_theme()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -924,8 +946,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -946,24 +968,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1002,6 +1018,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_country()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1022,8 +1043,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1044,24 +1065,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1100,6 +1115,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_organization()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1121,8 +1141,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1143,24 +1163,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1199,6 +1213,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_top_recommended()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1220,8 +1239,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1242,24 +1261,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1298,6 +1311,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_top_favourite()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1319,8 +1337,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1341,21 +1359,23 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1396,6 +1416,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_most_ranked()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1417,8 +1442,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1439,24 +1464,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1486,6 +1505,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_country()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1506,8 +1530,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1528,24 +1552,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1584,6 +1602,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_organization()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1605,8 +1628,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1627,24 +1650,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1683,6 +1700,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_oldest()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1704,8 +1726,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1726,24 +1748,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1782,6 +1798,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_newest()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1803,8 +1824,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1825,24 +1846,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1881,6 +1896,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_lowest_available_seats()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1902,8 +1922,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1924,24 +1944,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -1980,6 +1994,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_highest_available_seats()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -2001,8 +2020,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2023,24 +2042,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -2079,6 +2092,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_deadline()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -2100,8 +2118,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2122,24 +2140,27 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -2178,6 +2199,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_filter_data_for_missions()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2198,8 +2224,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2220,24 +2246,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -2266,6 +2286,41 @@ class AppMissionTest extends TestCase
             "status",
             "data"
         ]);
+
+        // For theme filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=theme&explore_mission_params=1', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+        
+        $countryName = App\Models\CountryLanguage::where("country_id", $mission->country_id)->first()->name;
+
+        // For country filters
+        DB::setDefaultConnection('mysql');
+        $res = $this->get('app/filter-data?explore_mission_type=country&explore_mission_params='.$countryName, ['token' => $token])
+          ->seeStatusCode(200);
+
+        // For organization filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=organization&explore_mission_params='.$mission->organisation_name, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+
+        // For theme filters
+        DB::setDefaultConnection('mysql');
+        $this->get('app/filter-data?explore_mission_type=themes&explore_mission_params=1', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -2309,6 +2364,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
 
         $params = [
@@ -2327,8 +2387,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2349,23 +2409,26 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2020-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
@@ -2440,6 +2503,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_mission_with_application_count()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2461,8 +2529,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2483,17 +2551,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2545,6 +2614,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_user_filters()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2570,8 +2644,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2592,17 +2666,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2650,6 +2725,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_user_filters_without_search()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2675,8 +2755,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2697,17 +2777,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2755,6 +2836,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sort_by_my_favourite()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -2776,8 +2862,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2798,21 +2884,23 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
@@ -2853,6 +2941,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_user_filters_without_city()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2878,8 +2971,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2900,17 +2993,18 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
             "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -2958,6 +3052,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission_by_id_with_deadline()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
 
         $params = [
@@ -2976,8 +3075,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3014,23 +3113,17 @@ class AppMissionTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
-                ]
-            ],
+            "documents" => [],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2020-07-28 11:40:00",
             "application_start_date" => "2019-05-15 10:40:00",
             "application_end_date" => "2019-07-15 10:40:00",
@@ -3098,5 +3191,218 @@ class AppMissionTest extends TestCase
         $user->delete();
         $mission->delete();
         $missionRelated->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_all_app_missions_with_deadline()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [  
+                    [  
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [  
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1",
+                    "sort_order" => "1"
+                ]
+            ],
+            "documents" => [],
+            "media_videos"=> [],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.TIME"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => date("Y-m-d H:i:s"),
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        DB::setDefaultConnection('mysql');
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/missions?search=title&theme_id=1&skill_id='.$skill->skill_id, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "meta_data" => [
+                "filters" => [
+                    "search"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();        
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get mission volunteers by mission id
+     *
+     * @return void
+     */
+    public function it_should_return_mission_volunteers_by_mission_id()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [  
+                    [  
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [  
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1",
+                    "sort_order" => "1"
+                ]
+            ],
+            "documents" => [],
+            "media_videos"=> [],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => []
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
+
+        DB::setDefaultConnection('mysql');
+      
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'motivation' => str_random(10),
+            'availability_id' => 1
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/application', $params, ['token' => $token])
+        ->seeStatusCode(201);
+        App\Models\MissionApplication::where("mission_id", $mission->mission_id)
+        ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('app/mission/'.$mission->mission_id.'/volunteers', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+                
+        $user->delete();
     }
 }

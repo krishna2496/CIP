@@ -11,6 +11,10 @@ use App\Repositories\Skill\SkillRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 
+//!  Skill controller
+/*!
+This controller is responsible for handling skill listing operation.
+ */
 class SkillController extends Controller
 {
     use RestExceptionHandlerTrait;

@@ -3,12 +3,9 @@ namespace App\Repositories\PolicyPage;
 
 use App\Repositories\PolicyPage\PolicyPageInterface;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\PolicyPage;
 use App\Models\PolicyPagesLanguage;
-use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
-use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -63,7 +60,7 @@ class PolicyPageRepository implements PolicyPageInterface
         // Create new policy page
         $policyPage = $this->page->create($page);
         
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
         
         foreach ($postData['translations'] as $value) {
             // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -104,7 +101,7 @@ class PolicyPageRepository implements PolicyPageInterface
         $policyPage = $this->page->findOrFail($id);
         $policyPage->update($page);
         
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
                  
         if (isset($postData['translations'])) {
             foreach ($postData['translations'] as $value) {

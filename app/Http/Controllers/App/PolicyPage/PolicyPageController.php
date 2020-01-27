@@ -14,6 +14,10 @@ use App\Helpers\LanguageHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 
+//!  Policypage controller
+/*!
+This controller is responsible for handling policypage listing and show operations.
+ */
 class PolicyPageController extends Controller
 {
     use RestExceptionHandlerTrait;

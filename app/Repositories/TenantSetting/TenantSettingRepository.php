@@ -2,14 +2,8 @@
 namespace App\Repositories\TenantSetting;
 
 use App\Repositories\TenantSetting\TenantSettingInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use App\Helpers\ResponseHelper;
 use App\Models\TenantSetting;
-use Illuminate\Http\Request;
-use Validator;
-use DB;
 
 class TenantSettingRepository implements TenantSettingInterface
 {

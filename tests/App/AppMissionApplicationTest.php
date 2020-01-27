@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
 
-class AppMisionApplicationTest extends TestCase
+class AppMissionApplicationTest extends TestCase
 {
     /**
      * @test
@@ -20,7 +20,9 @@ class AppMisionApplicationTest extends TestCase
         $user->save();
        
         $params = [
-                'mission_id' => rand(1000000, 20000000)
+                'mission_id' => rand(1000000, 20000000),
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
@@ -68,7 +70,9 @@ class AppMisionApplicationTest extends TestCase
         $missionApplication->save();
         
         $params = [
-                'mission_id' => $mission->mission_id
+                'mission_id' => $mission->mission_id,
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
@@ -98,6 +102,11 @@ class AppMisionApplicationTest extends TestCase
      */
     public function it_should_return_error_if_deadline_is_passed()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -110,8 +119,8 @@ class AppMisionApplicationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+               'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -128,14 +137,15 @@ class AppMisionApplicationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2019-07-25 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
@@ -147,7 +157,9 @@ class AppMisionApplicationTest extends TestCase
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
         $params = [
-                'mission_id' => $mission[0]['mission_id']
+                'mission_id' => $mission[0]['mission_id'],
+                'availability_id' => 1,
+                'motivation' => str_random(10)
             ];
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -176,6 +188,11 @@ class AppMisionApplicationTest extends TestCase
      */
     public function it_should_return_error_if_seats_not_available()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -188,8 +205,8 @@ class AppMisionApplicationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -206,7 +223,8 @@ class AppMisionApplicationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -256,6 +274,11 @@ class AppMisionApplicationTest extends TestCase
      */
     public function it_should_add_record_for_apply_to_a_mission()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -268,8 +291,8 @@ class AppMisionApplicationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+               'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -286,7 +309,8 @@ class AppMisionApplicationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -336,6 +360,11 @@ class AppMisionApplicationTest extends TestCase
      */
     public function it_should_return_error_if_deadline_is_passed_for_goal_mission()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -348,8 +377,8 @@ class AppMisionApplicationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                'city_id' => $cityId,
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -366,14 +395,15 @@ class AppMisionApplicationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1, 1000),
+            "total_seats" => rand(10, 1000),
             "application_deadline" => "2019-07-25 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,

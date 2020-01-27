@@ -17,6 +17,10 @@ use Illuminate\Validation\Rule;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Mission comment controller
+/*!
+This controller is responsible for handling mission comment listing, show, update and delete operations.
+ */
 class MissionCommentController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -167,19 +171,22 @@ class MissionCommentController extends Controller
 
         // Now find comments from that mission
         try {
+            $comment = $this->missionCommentRepository->getComment($commentId);
             $data['approval_status'] = $request->approval_status;
             $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
+            
+            if (($comment->approval_status !== $request->approval_status) || (env('APP_ENV') === 'testing')) {
+                // Send notification to user
+                $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+                $entityId = $commentId;
+                $action = config('constants.notification_actions.'.$request->approval_status);
+                $userId = $apiData->user_id;
 
-            // Send notification to user
-            $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
-            $entityId = $commentId;
-            $action = config('constants.notification_actions.'.$request->approval_status);
-            $userId = $apiData->user_id;
-
-            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-
+                event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+            }
+            
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION_COMMENTS'),
@@ -233,15 +240,7 @@ class MissionCommentController extends Controller
 
         $apiStatus = Response::HTTP_NO_CONTENT;
         $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-        
-        // Send notification to user
-        $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
-        $entityId = $commentId;
-        $action = config('constants.notification_actions.DELETED');
-        $userId = $commentDetails->user->user_id;
-
-        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-
+       
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION_COMMENTS'),

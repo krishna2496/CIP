@@ -115,9 +115,17 @@ interface UserInterface
      * @param int $id
      * @param string $password
      *
-     * @return bool
+     * @return boolw
      */
     public function changePassword(int $id, string $password): bool;
+    
+    /**
+     * Get user's detail by email
+     *
+     * @param string $email
+     * @return null||App/User
+     */
+    public function findUserByEmail(string $email): ?User;
 
     /**
      * Get user goal hours

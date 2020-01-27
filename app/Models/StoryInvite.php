@@ -55,7 +55,8 @@ class StoryInvite extends Model
      */
     public function getDetails(int $inviteId): StoryInvite
     {
-        return $this->with(['toUser', 'fromUser', 'story'])->where('story_invite_id', $inviteId)->first();
+        return $this->withTrashed()->with(['toUser', 'fromUser', 'story'])
+        ->where('story_invite_id', $inviteId)->first();
     }
 
     /**
@@ -65,7 +66,7 @@ class StoryInvite extends Model
      */
     public function toUser(): HasOne
     {
-        return $this->hasOne(User::class, 'user_id', 'to_user_id');
+        return $this->hasOne(User::class, 'user_id', 'to_user_id')->withTrashed();
     }
 
     /**
@@ -75,7 +76,7 @@ class StoryInvite extends Model
      */
     public function fromUser(): HasOne
     {
-        return $this->hasOne(User::class, 'user_id', 'from_user_id');
+        return $this->hasOne(User::class, 'user_id', 'from_user_id')->withTrashed();
     }
 
     /**
@@ -85,6 +86,6 @@ class StoryInvite extends Model
      */
     public function story(): HasOne
     {
-        return $this->hasOne(Story::class, 'story_id', 'story_id');
+        return $this->hasOne(Story::class, 'story_id', 'story_id')->withTrashed();
     }
 }

@@ -7,30 +7,6 @@ class AppUserTest extends TestCase
     /**
      * @test
      *
-     * Search user by first name
-     *
-     * @return void
-     */
-    public function it_should_search_user_by_first_name()
-    {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-
-        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
-        $user->delete();
-    }
-
-    /**
-     * @test
-     *
      * Search user by last name
      *
      * @return void
@@ -278,18 +254,17 @@ class AppUserTest extends TestCase
             'confirm_password' => "12345678"
         ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->patch('app/change-password', $params, ['token' => $token]);
-        dd($this->response->getContent());
-        // ->seeStatusCode(200)
-        // ->seeJsonStructure(
-        //     [
-        //     "status",
-        //     "data" =>[
-        //         "token"
-        //     ],
-        //     "message"
-        //     ]
-        // );
+        $this->patch('app/change-password', $params, ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure(
+            [
+            "status",
+            "data" =>[
+                "token"
+            ],
+            "message"
+            ]
+        );
         $user->delete();
     }
 
@@ -788,6 +763,7 @@ class AppUserTest extends TestCase
     public function it_should_show_error_if_jwt_token_is_blank()
     {
         $token = '';
+        DB::setDefaultConnection('mysql');
         $this->patch('app/change-password', [], ['token' => $token])
         ->seeStatusCode(401)
         ->seeJsonStructure([
@@ -952,5 +928,115 @@ class AppUserTest extends TestCase
         DB::setDefaultConnection('mysql');
         DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => null]);
         
+    }
+    
+    /**
+     * @test
+     *
+     * Return error if language id is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_language_id_is_invalid_on_save_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $fieldId = $userCustomField->field_id;
+
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => rand(1000000, 50000000),
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'manager_name' => str_random(5),
+            'custom_fields' => [
+                [
+                    "field_id" => $fieldId,
+                    "value" => "1"
+                ]
+            ]
+        ];
+    
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+        $userCustomField->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Save cookie agreement date
+     *
+     * @return void
+     */
+    public function it_should_save_cookie_agreement_date()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+      
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/accept-cookie-agreement', [], ['token' => $token])
+        ->seeStatusCode(201)
+        ->seeJsonStructure(
+            [
+                "status",
+                "message"
+            ]
+        );
+        $user->delete();
+    }
+    
+    /**
+     * @test
+     *
+     * Search user by first name
+     *
+     * @return void
+     */
+    public function it_should_search_user_by_first_name()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $newUser = factory(\App\User::class)->make();
+        $newUser->setConnection($connection);
+        $newUser->save();
+
+        $token = Helpers::getJwtToken($newUser->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $newUser->delete();
     }
 }

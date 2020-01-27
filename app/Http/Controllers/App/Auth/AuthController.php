@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\User\UserRepository;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Auth controller
+/*!
+This controller is responsible for handling authenticate, change password and reset password operations.
+ */
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -64,6 +68,11 @@ class AuthController extends Controller
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
+
+    /**
+     * @var App\Models\PasswordReset
+     */
+    private $passwordReset;
     
     /**
      * Create a new controller instance.
@@ -72,8 +81,9 @@ class AuthController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Helpers\Helpers $helpers
-     * @param  Illuminate\Helpers\LanguageHelper $languageHelper
+     * @param Illuminate\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Models\PasswordReset $passwordReset
      * @return void
      */
     public function __construct(
@@ -82,7 +92,8 @@ class AuthController extends Controller
         TenantOptionRepository $tenantOptionRepository,
         Helpers $helpers,
         LanguageHelper $languageHelper,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        PasswordReset $passwordReset
     ) {
         $this->request = $request;
         $this->responseHelper = $responseHelper;
@@ -90,6 +101,8 @@ class AuthController extends Controller
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
         $this->userRepository = $userRepository;
+        $this->passwordReset = $passwordReset;
+        $this->passwordBrokerManager = new PasswordBrokerManager(app());
     }
 
     /**
@@ -117,14 +130,14 @@ class AuthController extends Controller
         }
         
         // Fetch user by email address
-        $userDetail = $user->where('email', $this->request->input('email'))->first();
+        $userDetail = $user->with('timezone')->where('email', $this->request->input('email'))->first();
 
         if (!$userDetail) {
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
-                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
         // Verify user's password
@@ -132,8 +145,8 @@ class AuthController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_PASSWORD'),
-                trans('messages.custom_error_message.ERROR_INVALID_PASSWORD')
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
         
@@ -150,6 +163,8 @@ class AuthController extends Controller
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
                                          $userDetail->cookie_agreement_date : '';
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
+        $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone !="") ?
+        $userDetail->timezone['timezone'] : '';
         
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
@@ -162,7 +177,7 @@ class AuthController extends Controller
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
-            $request->toArray(),
+            null,
             $userDetail->user_id
         ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -191,12 +206,12 @@ class AuthController extends Controller
             );
         }
 
-        $userDetail = $user->where('email', $request->get('email'))->first();
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
         
         if (!$userDetail) {
             return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
                 trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
             );
@@ -219,9 +234,7 @@ class AuthController extends Controller
         );
         
         // If reset password link didn't sent
-        // This error will be triggered in case of mail server issue. So it is not covered in unit test-case
-        // @codeCoverageIgnoreStart
-        if (!$response == Password::RESET_LINK_SENT) {
+        if (!$response === $this->passwordReset->RESET_LINK_SENT) {
             return $this->responseHelper->error(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
                 Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
@@ -229,7 +242,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_SEND_RESET_PASSWORD_LINK')
             );
         }
-        // @codeCoverageIgnoreEnd
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
@@ -276,7 +288,7 @@ class AuthController extends Controller
         }
 
         //get record of user by checking password expiry time
-        $record = PasswordReset::where('email', $request->get('email'))
+        $record = $this->passwordReset->where('email', $request->get('email'))
         ->where(
             'created_at',
             '>',
@@ -284,8 +296,6 @@ class AuthController extends Controller
         )->first();
         
         //if record not found
-        // This error is ignored in unit test as created date will always be greater than expiry date in test case
-        // @codeCoverageIgnoreStart
         if (!$record) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -294,7 +304,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_RESET_PASSWORD_LINK')
             );
         }
-        // @codeCoverageIgnoreEnd
         if (!Hash::check($request->get('token'), $record->token)) {
             //invalid hash
             return $this->responseHelper->error(
@@ -317,6 +326,7 @@ class AuthController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
@@ -348,8 +358,7 @@ class AuthController extends Controller
      */
     public function broker()
     {
-        $passwordBrokerManager = new PasswordBrokerManager(app());
-        return $passwordBrokerManager->broker();
+        return $this->passwordBrokerManager->broker();
     }
     
     /**
