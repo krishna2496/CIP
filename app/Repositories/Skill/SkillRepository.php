@@ -57,13 +57,9 @@ class SkillRepository implements SkillInterface
             $searchString = $request->search;
             $skillQuery->where(function ($query) use ($searchString, $request) {
                 $query->where('skill_name', 'like', '%' . $searchString . '%');
-                //title";s:[0-9]{1,2}:"[a-zA-Z\s]{0,60}(man)[a-zA-Z\s]{0,60}";}
-                //(title";s:[0-9]{1,2}:".{0,60}(br).{0,30}";})
-                // {s:4:"lang";s:2:"en";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}rkd[[:space:]|[:alpha:]]{0,60}";}
                 // if the language is passed through the request, we can also search in the available translation for that language
                 if ($request->has('searchLanguage')) {
-                    $language = $request->input('searchLanguage');
-                    Log::debug($language);
+                    $language = $request->searchLanguage;
                     $query->orWhereRaw(
                         'translations regexp \'{s:4:"lang";s:2:"'
                             . $language
@@ -75,14 +71,14 @@ class SkillRepository implements SkillInterface
             });
         }
 
-//        if ($request->has('translations')) {
-//            $availableTranslations = $request->translations;
-//            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
-//                foreach ($availableTranslations as $languageCode) {
-//                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'. $languageCode .'";s:5:"title";s:[1-9][0-9]{0,1}:"');
-//                }
-//            });
-//        }
+        if ($request->has('translations')) {
+            $availableTranslations = $request->translations;
+            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
+                foreach ($availableTranslations as $languageCode) {
+                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'. $languageCode .'";s:5:"title";s:[1-9][0-9]{0,1}:"');
+                }
+            });
+        }
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
