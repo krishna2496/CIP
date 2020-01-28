@@ -796,18 +796,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
             );
         }
     );
-/*
-|
-|--------------------------------------------------------------------------
-| Tenant User Routs
-|--------------------------------------------------------------------------
-|
-| These are tenant user routes to manage their profile and other stuff
-|
- */
-/*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
-$router->get('users', function() {
-$users = \App\User::all();
-return response()->json($users);
-});
-});*/
+
+    /* Language file management */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin'],
+        function ($router) {
+            /* Get language file */
+            $router->get(
+                '/language-downloaded',
+                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchLanguageFile']
+            );
+
+            /* Upload language file */
+            $router->post('/language-downloaded', ['as' => 'languagefile.upload',
+            'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
+        }
+    );

@@ -49,6 +49,8 @@ return [
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
+    'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
+    'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     
     /*
      * User custom field types
@@ -467,7 +469,12 @@ return [
         'ERROR_COUNTRY_INVALID_DATA' => '800025',
         'ERROR_CITY_NOT_FOUND' => '800026',
         'ERROR_CITY_ENABLE_TO_DELETE' => '800027',
-        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '800028'
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '800028',
+        'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => '800029',
+        'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => '800030',
+        'ERROR_TENANT_LANGUAGE_FILE_UPLOAD_INVALID_DATA' => '800031',
+        'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => '800032',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => '800033'
     ],
 
     /**
@@ -562,6 +569,7 @@ return [
         'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
+        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE'
     ],
 
     'activity_log_actions' => [
