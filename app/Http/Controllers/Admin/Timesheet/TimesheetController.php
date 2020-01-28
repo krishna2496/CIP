@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Timesheet;
 
+use App\Helpers\LanguageHelper;
+use App\Repositories\MissionApplication\MissionApplicationQuery;
+use App\Repositories\Timesheet\TimesheetQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -68,34 +71,10 @@ class TimesheetController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function index(Request $request): JsonResponse
-    {
-        $timesheetsData = $this->timesheetRepository->getAllTimesheets($request);
-        foreach ($timesheetsData as $timesheets) {
-            if ($timesheets->missionLanguage) {
-                $timesheets->setAttribute('title', $timesheets->missionLanguage[0]->title);
-                unset($timesheets->missionLanguage);
-            }
-            $timesheets->setAppends([]);
-        }
-
-        $apiData = $timesheetsData->toArray();
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
      * @param int $userId
      * @return Illuminate\Http\JsonResponse
      */
-    public function fetchTimesheet(int $userId, Request $request): JsonResponse
+    public function index(int $userId, Request $request): JsonResponse
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -121,6 +100,39 @@ class TimesheetController extends Controller
         trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
         trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @param Request $request
+     * @param TimesheetQuery $timesheetQuery
+     * @return JsonResponse
+     */
+    public function getTimesheetsDetails(
+        Request $request,
+        TimesheetQuery $timesheetQuery,
+        LanguageHelper $languageHelper
+    ): JsonResponse
+    {
+        $filters = $request->get('filters', []);
+        $search = $request->get('search');
+        $order = $request->get('order', []);
+        $limit = $request->get('limit', []);
+        $tenantLanguages = $languageHelper->getTenantLanguages($request);
+
+        $timesheetList = $timesheetQuery->run([
+            'filters' => $filters,
+            'search' => $search,
+            'order' => $order,
+            'limit' => $limit,
+            'tenantLanguages' => $tenantLanguages
+        ]);
+
+        return $this->responseHelper->successWithPagination(
+            Response::HTTP_OK,
+            '',
+            $timesheetList
+        );
     }
 
     /**
