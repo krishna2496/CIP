@@ -23,6 +23,18 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
+    /* SAML */
+    $router->get('/app/saml/sso', ['as' => 'sso', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\SamlController@sso']);
+    $router->patch('/app/saml/sso', ['as' => 'sso', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\SamlController@refreshToken']);
+    $router->post('/app/saml/acs', ['as' => 'acs', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\SamlController@acs']);
+    $router->get('/app/saml/slo', ['as' => 'slo', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\SamlController@slo']);
+    $router->get('/app/saml/metadata', ['as' => 'metadata', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\SamlController@metadata']);
+
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);

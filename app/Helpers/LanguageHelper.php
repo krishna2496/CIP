@@ -224,21 +224,25 @@ class LanguageHelper
         }
         return $language;
     }
-	
-	/**
-     * Check language code is valid for tenant
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param String $request
-     * @return Object
+
+    /**
+     * Search for the tenant language using language code
+     * @param  Request $request
+     * @param  string  $languageCode
+     * @return Array|Boolean
      */
-	 public function isValidTenantLanguageCode(Request $request, string $languageCode)
-	 {
-		 $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
-		 if (!in_array($languageCode, $tenantLanguageCodes->toArray())) {
-			return false;
-		 } else {
-			 return true;
-		 }
-	 }
-}
+    public function getTenantLanguageByCode(Request $request, string $languageCode)
+    {
+        $tenantLanguages = $this->getTenantLanguages($request);
+        $index = array_search(
+            $languageCode,
+            array_column($tenantLanguages->toArray(), 'code')
+        );
+
+        if ($index === false) {
+            return false;
+        }
+
+        return $tenantLanguages[$index];
+    }
+ }
