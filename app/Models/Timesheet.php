@@ -44,7 +44,7 @@ class Timesheet extends Model
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered', 'notes', 'timesheetDocument', 'mission', 'month', 'total_hours',
-        'total_minutes', 'status', 'updated_at', 'deleted_at', 'user'];
+        'total_minutes', 'status', 'updated_at', 'user'];
 
     /**
      * Get date volunteered attribute on the model.

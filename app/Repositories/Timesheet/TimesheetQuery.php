@@ -18,7 +18,6 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_MISSION_CITIES = 'missionCities';
     const FILTER_TIMESHEET_IDS = 'timesheetIds';
 
-    //TODO how the app does to range some unspecified fields ?
     const ALLOWED_SORTABLE_FIELDS = [
         'applicationDate' => 'date_volunteered',
         'applicant' => 'user.last_name',
@@ -65,14 +64,13 @@ class TimesheetQuery implements QueryableInterface
                 'timesheet.notes',
                 'timesheet.status',
                 'timesheet.created_at',
-                'timesheet.updated_at',
-                'timesheet.deleted_at',
+                'timesheet.updated_at'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->whereHas('mission', function ($query) {
                 $query->where([
                     'publication_status' => config("constants.publication_status")["APPROVED"],
-                    'mission_type' => config('constants.mission_type.TIME'),
+                    'mission_type' => config('constants.mission_type.TIME'), //TODO filter for goal
                 ]);
             })
             ->whereHas('mission.missionApplication', function ($query) {
@@ -129,10 +127,15 @@ class TimesheetQuery implements QueryableInterface
                     $query->when(isset($filters[self::FILTER_MISSION_STATUSES]), function ($query) use ($filters) {
                         collect($filters[self::FILTER_MISSION_STATUSES])->map(function ($val) use ($query) {
                             if ($val === 'active') {
-                                return $query->whereIn('publication_status',
-                                    ['PUBLISHED_FOR_APPLYING', 'APPROVED']); //TODO use constant ?
+                                return $query->whereIn('publication_status', [
+                                        config("constants.publication_status")["PUBLISHED_FOR_APPLYING"],
+                                        config("constants.publication_status")["APPROVED"]
+                                ]);
                             } else {
-                                return $query->whereIn('publication_status', ['UNPUBLISHED', 'DRAFT']);
+                                return $query->whereIn('publication_status', [
+                                    config("constants.publication_status")["UNPUBLISHED"],
+                                    config("constants.publication_status")["DRAFT"]
+                                ]);
                             }
                         });
                     });
@@ -147,13 +150,14 @@ class TimesheetQuery implements QueryableInterface
                         ->orWhere('timesheet.time', 'like', "%${search}%")
                         ->orWhere('timesheet.notes', 'like', "%${search}%")
                         ->orWhere('timesheet.day_volunteered', 'like', "%${search}%")
-//                        ->orWhere('timesheet.updated_at', 'like', "%${search}%")
-//                        ->orWhere('timesheet.created_at', 'like', "%${search}%")
                         ->orwhereHas('timesheetDocument', function ($query) use ($search) {
                             $query
                                 ->where('document_name', 'like', "%${search}%");
                         })
                         ->orwhereHas('mission.missionTheme', function ($query) use ($search) {
+                            /* TODO : translations are stored in PHP serialized arrays.
+                             *  This makes it very hard to search with the DB. Véro is working on a solution
+                             */
                             $query
                                 ->where('theme_name', 'like', "%${search}%");
                         })
@@ -213,7 +217,7 @@ class TimesheetQuery implements QueryableInterface
     {
         $hasLanguageFilter = array_key_exists('language', $filters);
         $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) {
-            return $language->default == 1;
+            return $language->default === 1;
         })->first()->language_id;
 
         if (!$hasLanguageFilter) {
