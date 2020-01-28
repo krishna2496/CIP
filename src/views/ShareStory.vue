@@ -63,7 +63,7 @@
                         <div class="story-form">
                             <b-form-group>
                                 <label
-                                    for>{{languageData.label.enter_video_url}}<span>({{languageData.label.new_line_to_enter_multiple_urls}})</span></label>
+                                    for>{{languageData.label.enter_video_url}} <span>({{languageData.label.new_line_to_enter_multiple_urls}})</span></label>
                                 <b-form-textarea id v-model.trim="story.videoUrl"
                                     :class="{ 'is-invalid': submitted && (youtubeUrlError || maxYoutubeUrlError || duplicateYoutubeUrlError)}"
                                     :placeholder="languageData.placeholder.video_url" size="lg" rows="5">
