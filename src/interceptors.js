@@ -12,6 +12,9 @@ export default function setup() {
 
     // Add a response interceptor
     axios.interceptors.response.use(function(response) {
+        if (response.headers.token) {
+          store.commit('setToken', response.headers.token);
+        }
         return response;
     }, function(error) {
 

@@ -43,17 +43,18 @@ export default new Vuex.Store({
         clearFilterSet: ''
     },
     mutations: {
-        // Set login data in state and local storage       
+        setToken(state, data) {
+            localStorage.setItem('token', data)
+            state.isLoggedIn = true;
+            state.token = data;
+        },
+        // Set login data in state and local storage
         loginUser(state, data) {
-            localStorage.setItem('isLoggedIn', data.token)
-            localStorage.setItem('token', data.token)
             localStorage.setItem('userId', data.user_id)
             localStorage.setItem('firstName', data.first_name)
             localStorage.setItem('lastName', data.last_name)
             localStorage.setItem('avatar', data.avatar)
             localStorage.setItem('defaultCountryId', data.country_id)
-            state.isLoggedIn = true;
-            state.token = data.token;
             state.userId = data.user_id;
             state.firstName = data.first_name;
             state.lastName = data.last_name;
@@ -61,7 +62,7 @@ export default new Vuex.Store({
             state.defaultCountryId = data.country_id;
         },
         // Remove login data in state and local storage
-        logoutUser(state) {
+        logoutUser(state, data) {
             localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
@@ -73,9 +74,12 @@ export default new Vuex.Store({
             state.firstName = null;
             state.lastName = null;
             state.avatar = null;
-            router.push({
-                name: 'login'
-            })
+
+            if (!data.stay) {
+              router.push({
+                  name: 'login'
+              });
+            }
         },
         // Set default language code and id data in state and local storage
         setDefaultLanguage(state, language) {
