@@ -111,12 +111,19 @@ class CityRepository implements CityInterface
      */
     public function getCityData(int $cityId) : array
     {
-        $country = $this->city
+        $city = $this->city
             ->with('languages')
             ->where('city_id', $cityId)
-            ->first();
+            ->firstOrFail();
 
-        return $country->toArray();
+        $languages = $this->languageHelper->getLanguages();
+
+        foreach ($city->languages as $lang) {
+            $languageData = $languages->where('language_id', $lang->language_id)->first();
+            $lang->language_code = $languageData->code;
+        }
+
+        return $city->toArray();
     }
     
     /**

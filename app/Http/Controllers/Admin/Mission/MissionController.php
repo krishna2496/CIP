@@ -30,12 +30,12 @@ class MissionController extends Controller
      * @var App\Repositories\Mission\MissionRepository
      */
     private $missionRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var string
      */
@@ -145,7 +145,7 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -157,7 +157,7 @@ class MissionController extends Controller
         }
 
         $mission = $this->missionRepository->store($request);
-                    
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
@@ -200,7 +200,7 @@ class MissionController extends Controller
         try {
             // Get data for parent table
             $mission = $this->missionRepository->find($id);
-            
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
@@ -264,7 +264,7 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -320,7 +320,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_MEDIA_ID_DOSENT_EXIST')
             );
         }
-              
+
         try {
             if (isset($request->documents) && count($request->documents) > 0) {
                 foreach ($request->documents as $mediaDocuments) {
@@ -352,11 +352,11 @@ class MissionController extends Controller
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
 
         $this->missionRepository->update($request, $id);
-        
+
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION'),
@@ -368,7 +368,7 @@ class MissionController extends Controller
             null,
             $id
         ));
-        
+
         // Send notification to user if mission publication status is PUBLISHED
         $approved = config('constants.publication_status.APPROVED');
         $publishedForApplying = config('constants.publication_status.PUBLISHED_FOR_APPLYING');
@@ -384,7 +384,7 @@ class MissionController extends Controller
         }
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -429,17 +429,6 @@ class MissionController extends Controller
     public function removeMissionMedia(int $mediaId): JsonResponse
     {
         try {
-            // Fetch mission media details
-            $missionMediaDetails = $this->missionRepository->getMediaDetails($mediaId);
-            if (($missionMediaDetails->count() > 0) && ($missionMediaDetails[0]['default'] == "1")) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED'),
-                    trans('messages.custom_error_message.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED')
-                );
-            }
-                     
             $this->missionRepository->deleteMissionMedia($mediaId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_DELETED');

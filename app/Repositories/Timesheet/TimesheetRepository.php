@@ -240,43 +240,6 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Display a listing of timesheets.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Database\Eloquent\Collection
-     */
-    public function getAllTimesheets(Request $request): Collection
-    {
-        $language = $this->languageHelper->getLanguageDetails($request);
-        $languageId = $language->language_id;
-
-        $timesheetQuery = $this->mission->select('mission.mission_id')
-            ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
-            ->whereHas('missionApplication', function ($query) {
-                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
-            })
-            ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title')
-                    ->where('language_id', $languageId);
-            }])
-            ->with(['timesheet' => function ($query) use ($request) {
-                if ($request->has('status') && $request->input('status') !== '') {
-                    $query->where('status', strtoupper($request->status));
-                }
-            }]);
-
-        if (
-            $request->has('type')
-            && $request->input('type') !== ''
-            && in_array(strtoupper($request->input('type')), config('constants.mission_type'))
-        ) {
-            $timesheetQuery->where('mission_type', strtoupper($request->input('type')));
-        }
-
-        return $timesheetQuery->get();
-    }
-
-    /**
      * Display a listing of specified resources.
      *
      * @param int $userId
