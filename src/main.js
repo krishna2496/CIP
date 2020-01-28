@@ -134,13 +134,11 @@ Vue.filter('substring', (value, data) => {
         return value.substring(0, data) + "...";
     }
 });
+
 window.addEventListener('storage', function (e) {
     if (event.key == 'logout-event') { 
-        router.push({
-            path: '/',
-        })
+        location.reload();
     }
-   
 },false);
 
 Vue.mixin({

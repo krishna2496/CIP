@@ -87,7 +87,7 @@ export default new Vuex.Store({
             
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
-           
+            
             localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
