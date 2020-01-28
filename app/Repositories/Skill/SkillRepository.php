@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SkillRepository implements SkillInterface
 {
@@ -60,33 +62,47 @@ class SkillRepository implements SkillInterface
                 // {s:4:"lang";s:2:"en";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}rkd[[:space:]|[:alpha:]]{0,60}";}
                 // if the language is passed through the request, we can also search in the available translation for that language
                 if ($request->has('searchLanguage')) {
-                    $language = $request->has('searchLanguage');
-                    $query->orWhere(
-                        'translations',
-                        'regexp',
-                        '{s:4:"lang";s:2:"'
+                    $language = $request->input('searchLanguage');
+                    Log::debug($language);
+                    $query->orWhereRaw(
+                        'translations regexp \'{s:4:"lang";s:2:"'
                             . $language
                             . '";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}'
                             . $searchString
-                            . '[[:space:]|[:alpha:]]{0,60}";}'
+                            . '[[:space:]|[:alpha:]]{0,60}";}\''
                     );
                 }
             });
         }
 
-        if ($request->has('translations')) {
-            $availableTranslations = $request->translations;
-            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
-                foreach ($availableTranslations as $languageCode) {
-                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'. $languageCode .'";s:5:"title";s:[1-9][0-9]{0,1}:"');
-                }
-            });
-        }
+//        if ($request->has('translations')) {
+//            $availableTranslations = $request->translations;
+//            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
+//                foreach ($availableTranslations as $languageCode) {
+//                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'. $languageCode .'";s:5:"title";s:[1-9][0-9]{0,1}:"');
+//                }
+//            });
+//        }
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
         }
+
+        if ($request->has('limit') && $request->has('offset')) {
+            $limit = $request->input('limit');
+            $offset = $request->input('offset');
+            $totalCount = $skillQuery->get()->count();
+            $skills = $skillQuery->offset($offset)->limit($limit)->get();
+
+            return new LengthAwarePaginator(
+                $skills,
+                $totalCount,
+                $limit,
+                $offset == 0 ? 1 : $offset
+            );
+        }
+
         return $skillQuery->paginate($request->perPage);
     }
 
