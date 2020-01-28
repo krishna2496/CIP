@@ -135,5 +135,5 @@ export {
     storyInviteColleague,
     clearNotification,
     readNotification,
-    notificationListing
+    notificationListing,
 }
