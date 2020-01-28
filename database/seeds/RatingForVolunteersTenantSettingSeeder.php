@@ -16,7 +16,7 @@ class RatingForVolunteersTenantSettingSeeder extends Seeder
             [
                 'title' => 'Enable/disable mission ratings for volunteers',
                 'description' => 'Enable/disable mission ratings so only volunteers that have been approved to the mission can rate the mission',
-                'key' => 'rating_for_volunteers',
+                'key' => 'mission_rating_volunteer',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
