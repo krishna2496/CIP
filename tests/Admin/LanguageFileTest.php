@@ -12,7 +12,7 @@ class LanguageFileTest extends TestCase
      */
     public function language_file_test_it_should_fetch_language_file()
     {
-        $this->get('language-downloaded?code=en', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('language-file?code=en', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
 
@@ -33,7 +33,7 @@ class LanguageFileTest extends TestCase
         
         $res = $this->call(
             'POST',
-            'language-downloaded',
+            'language-file',
             $params,
             [],
             [
@@ -66,7 +66,7 @@ class LanguageFileTest extends TestCase
         
         $res = $this->call(
             'POST',
-            'language-downloaded',
+            'language-file',
             $params,
             [],
             [
@@ -98,7 +98,7 @@ class LanguageFileTest extends TestCase
         
         $res = $this->call(
             'POST',
-            'language-downloaded',
+            'language-file',
             $params,
             [],
             [
@@ -130,7 +130,7 @@ class LanguageFileTest extends TestCase
         
         $res = $this->call(
             'POST',
-            'language-downloaded',
+            'language-file',
             $params,
             [],
             [
@@ -162,7 +162,7 @@ class LanguageFileTest extends TestCase
         
         $res = $this->call(
             'POST',
-            'language-downloaded',
+            'language-file',
             $params,
             [],
             [

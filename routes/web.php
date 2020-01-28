@@ -803,12 +803,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             /* Get language file */
             $router->get(
-                '/language-downloaded',
+                '/language-file',
                 ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchLanguageFile']
             );
 
             /* Upload language file */
-            $router->post('/language-downloaded', ['as' => 'languagefile.upload',
+            $router->post('/language-file', ['as' => 'languagefile.upload',
             'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
         }
     );
