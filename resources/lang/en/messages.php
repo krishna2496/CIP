@@ -21,7 +21,7 @@ return [
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
-        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
+        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -188,7 +188,8 @@ return [
         'MESSAGE_COUNTRY_UPDATED' => 'Country updated successfully',
         'MESSAGE_CITY_DELETED' => 'City deleted successfully',
         'MESSAGE_CITY_UPDATED' => 'City updated successfully',
-        
+        'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Tenant language file found sucessfully',
+        'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',     
     ],
 
         
@@ -284,6 +285,10 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'File path is not valid for this image',
+        'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => 'Tenant languages folder not found',
+        'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => 'Tenant language file not found',
+        'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => 'The file must be of json format',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Invalid JSON format in uploaded file.',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',

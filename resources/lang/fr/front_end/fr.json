@@ -95,7 +95,7 @@
         "loading": "Chargement...",
         "cancel": "Annuler",
         "save": "Sauvegarder",
-        "first_name": "Prénom",
+        "first_name": "Nom",
         "surname": "Nom de famille",
         "employee_id": "Numéro d'employé",
         "manager": "Directrice",
@@ -208,7 +208,7 @@
         "preview": "Aperçu",
         "goal_objective": "Objectif objectif",
         "upload_your_photos": "Téléchargez vos photos",
-        "new_line_to_enter_multiple_urls": "Utiliser une nouvelle ligne pour entrer plusieurs URL",
+        "new_line_to_enter_multiple_urls": "Un article par ligne",
         "start_date": "Date de début",
         "reset": "Réinitialiser",
         "year": "Année",
@@ -279,7 +279,8 @@
         "delete_message": "Êtes-vous sûr de vouloir supprimer ce message?",
         "delete_comment": "Êtes-vous sûr de vouloir supprimer ce commentaire?",
         "no_data": "Pas de données",
-        "day_volunteered": "Journée bénévole"
+        "day_volunteered": "Journée bénévole",
+        "no_data_available" : "Pas de données disponibles"
     },
 
     "placeholder": {
