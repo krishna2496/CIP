@@ -217,7 +217,7 @@ class TimesheetQuery implements QueryableInterface
     {
         $hasLanguageFilter = array_key_exists('language', $filters);
         $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) {
-            return $language->default === 1;
+            return $language->default === '1';
         })->first()->language_id;
 
         if (!$hasLanguageFilter) {
