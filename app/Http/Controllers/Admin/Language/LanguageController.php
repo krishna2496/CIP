@@ -15,6 +15,7 @@ use App\Exceptions\TenantDomainNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\FileNotFoundException;
 use App\Events\User\UserActivityLogEvent;
+use App\Helpers\LanguageHelper;
 
 //!  Language controller
 /*!
@@ -45,24 +46,32 @@ class LanguageController extends Controller
     private $userApiKey;
 
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
      * @param Illuminate\Http\Request $request
+	 * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
         Helpers $helpers,
         S3Helper $s3helper,
-        Request $request
+        Request $request,
+		LanguageHelper $languageHelper
     ) {
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->userApiKey = $request->header('php-auth-user');
+		$this->languageHelper = $languageHelper;
     }
 
     /**
@@ -136,7 +145,18 @@ class LanguageController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT')
             );
         }
-
+		
+		// Check for valid language code
+		$tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
+		if (!in_array($fileName, $tenantLanguageCodes->toArray())) {
+			return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID'),
+                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID')
+            );
+		}
+		
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         

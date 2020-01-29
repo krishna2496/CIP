@@ -152,7 +152,7 @@ class LanguageFileTest extends TestCase
      *
      * @return void
      */
-    public function language_file_test_it_should_return_file_not_found_on_s3_for_upload_language_file()
+    public function language_file_test_it_should_return_error_when_adding_invalid_file_name()
     {
         $fileName = str_random(2);
         $path  = storage_path("unitTestFiles/en.json");
@@ -174,6 +174,6 @@ class LanguageFileTest extends TestCase
             ]
         );
         // dd($res->response);
-        $this->seeStatusCode(404);
+        $this->seeStatusCode(422);
     }
 }
