@@ -51,7 +51,7 @@ return [
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
-    
+    'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
     /*
      * User custom field types
      */
