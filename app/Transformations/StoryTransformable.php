@@ -135,11 +135,15 @@ trait StoryTransformable
      * @param App\Models\Story $story
      * @param int $storyViewCount
      * @param string $defaultAvatar
+     * @param int $languageId
      * @return Array
      */
-
-    protected function transformStoryDetails(Story $story, int $storyViewCount, string $defaultAvatar):array
-    {
+    protected function transformStoryDetails(
+        Story $story,
+        int $storyViewCount,
+        string $defaultAvatar,
+        int $languageId
+    ):array {
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
         $storyData['title'] = $story->title;
@@ -148,6 +152,36 @@ trait StoryTransformable
         $storyData['status'] = trans('general.status.' . $story->status);
         $storyData['published_at'] = $story->published_at;
 
+        $cityTranslation = $story->user->city->languages->toArray();
+        $countryTranslation = $story->user->country->languages->toArray();
+
+        $cityTranslationKey = $countryTranslationKey = $cityName = $countryName = '';
+        $cityArray = [
+            'name' => '',
+        ];
+        $countryArray = [
+            'name' => '',
+        ];
+        if (array_search($languageId, array_column($cityTranslation, 'language_id')) !== false) {
+            $cityTranslationKey = array_search($languageId, array_column($cityTranslation, 'language_id'));
+        }
+
+        if (array_search($languageId, array_column($countryTranslation, 'language_id')) !== false) {
+            $countryTranslationKey = array_search($languageId, array_column($countryTranslation, 'language_id'));
+        }
+       
+        if ($cityTranslationKey !== '' && $story->user->city) {
+            $cityName = $cityTranslation[$cityTranslationKey]['name'];
+        }
+
+        $cityArray['name'] = $cityName;
+        if ($countryTranslationKey !== '' && $story->user->country) {
+            $countryName = $countryTranslation[$countryTranslationKey]['name'];
+        }
+
+        $countryArray['name'] = $countryName;
+        $story->user->city = (object) $cityArray;
+        $story->user->country = (object) $countryArray;
         if (!empty($story->user)) {
             $storyData['user_id'] = $story->user_id;
             $storyData['first_name'] = $story->user->first_name;

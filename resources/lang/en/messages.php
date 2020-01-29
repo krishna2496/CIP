@@ -21,7 +21,7 @@ return [
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
-        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
+        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -40,7 +40,7 @@ return [
         'MESSAGE_SKILL_LISTING' => 'User skills listed successfully',
         'MESSAGE_THEME_LISTING' => 'Mission theme listed successfully',
         'MESSAGE_CITY_LISTING' => 'City listed successfully',
-        'MESSAGE_COUNTRY_LISTING' => 'Country listed successfully',
+        'MESSAGE_COUNTRY_LISTING' => 'Countries listed successfully',
         'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
         'MESSAGE_PAGE_FOUND' => 'Page found successfully',
         'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listed successfully",
@@ -180,8 +180,15 @@ return [
         'MESSAGE_AVAILABILITY_DELETED' => 'Availability deleted successfully',
         'MESSAGE_AVAILABILITY_UPDATED' => 'Availability updated successfully',
         'MESSAGE_AVAILABILITY_FOUND' => 'Availability found successfully',
+        'MESSAGE_COUNTRY_CREATED' => 'Country created successfully',
+        'MESSAGE_CITY_CREATED' => 'City created successfully',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Mission media deleted successfully',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Mission document deleted successfully',
+        'MESSAGE_COUNTRY_DELETED' => 'Country deleted successfully',
+        'MESSAGE_COUNTRY_UPDATED' => 'Country updated successfully',
+        'MESSAGE_CITY_DELETED' => 'City deleted successfully',
+        'MESSAGE_CITY_UPDATED' => 'City updated successfully',
+        
     ],
 
         
@@ -312,6 +319,16 @@ return [
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification not found in the system',
 
         // For availability module
-        'ERROR_AVAILABILITY_NOT_FOUND' => 'Availabilty does not found in system',
-    ]
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'Availability not found in system',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Country not found in system',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'City not found in system',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
+        
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
+       ]
 ];

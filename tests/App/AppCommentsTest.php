@@ -294,7 +294,12 @@ class AppCommentsTest extends TestCase
      * @return void
      */
     public function it_should_return_all_comments_by_user_id()
-    {
+    {        
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
@@ -319,8 +324,8 @@ class AppCommentsTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -407,6 +412,11 @@ class AppCommentsTest extends TestCase
      */
     public function it_should_return_all_mission_comments_by_mission_id()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -428,8 +438,8 @@ class AppCommentsTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -480,6 +490,23 @@ class AppCommentsTest extends TestCase
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+
+        DB::setDefaultConnection('mysql');
+        $params = [
+            "comment" => str_random('100'),
+            "mission_id" => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('/app/mission/comment', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
+        DB::setDefaultConnection('tenant');
+        App\Models\Comment::where('mission_id', $mission->mission_id)->update(['approval_status' => 'PUBLISHED']);
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));

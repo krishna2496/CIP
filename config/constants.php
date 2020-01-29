@@ -213,18 +213,7 @@ return [
         'APPROVED' => 'APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ],
-
-    /*
-     * Timesheet status
-     */
-    'timesheet_status_id' => [
-        'PENDING' => '1',
-        'APPROVED' => '2',
-        'DECLINED' => '3',
-        'AUTOMATICALLY_APPROVED' => '4',
-        'SUBMIT_FOR_APPROVAL' => '5'
-    ],
-
+    
     'ALLOW_TIMESHEET_ENTRY' => 2,
     
     /**
@@ -474,6 +463,11 @@ return [
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
         'ERROR_AVAILABILITY_NOT_FOUND' => '410002',
+        'ERROR_CITY_INVALID_DATA' => '800024',
+        'ERROR_COUNTRY_INVALID_DATA' => '800025',
+        'ERROR_CITY_NOT_FOUND' => '800026',
+        'ERROR_CITY_ENABLE_TO_DELETE' => '800027',
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '800028'
     ],
 
     /**
@@ -564,6 +558,8 @@ return [
         'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
         'NOTIFICATION' => 'NOTIFICATION',
         'AVAILABILITY' => 'AVAILABILITY',
+        'COUNTRY' => 'COUNTRY',
+        'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
     ],

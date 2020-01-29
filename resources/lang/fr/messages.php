@@ -172,8 +172,14 @@ return [
         'MESSAGE_AVAILABILITY_DELETED' => 'Disponibilité supprimée avec succès',
         'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
         'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
+        'MESSAGE_COUNTRY_CREATED' => 'Pays créé avec succès',
+        'MESSAGE_CITY_CREATED' => 'Une ville créée avec succès',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Le média de mission a été supprimé avec succès',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Document de mission supprimé avec succès',
+        'MESSAGE_COUNTRY_DELETED' => 'Pays supprimé avec succès',
+        'MESSAGE_COUNTRY_UPDATED' => 'Pays mis à jour avec succès',
+        'MESSAGE_CITY_DELETED' => 'La ville a bien été supprimée',
+        'MESSAGE_CITY_UPDATED' => 'La ville a été mise à jour avec succès',
     ],
 
         
@@ -306,5 +312,15 @@ return [
 
         // For availability module
         'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Pays non trouvé dans le système',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'Ville non trouvée dans le système',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cette ville car elle est liée à la mission ou à l\'utilisateur',
+
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer ce pays car il est lié à la mission ou à l\'utilisateur'
     ]
 ];

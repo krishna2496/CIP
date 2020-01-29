@@ -99,7 +99,6 @@ class NewsController extends Controller
                     $defaultTenantLanguageCode
                 );
             })->all();
-
             $requestString = $request->except(['page','perPage']);
             $newsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
                 $newsTransform,

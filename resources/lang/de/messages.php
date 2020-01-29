@@ -144,6 +144,10 @@ return [
         'MESSAGE_AVAILABILITY_FOUND' => 'DE: Availability found successfully',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'DE: Mission media deleted successfully',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'DE: Mission document deleted successfully',
+        'MESSAGE_COUNTRY_DELETED' => 'DE: Country deleted successfully',
+        'MESSAGE_COUNTRY_UPDATED' => 'DE: Country updated successfully',
+        'MESSAGE_CITY_DELETED' => 'DE: City deleted successfully',
+        'MESSAGE_CITY_UPDATED' => 'DE: City updated successfully',
     ],
 
 
@@ -264,6 +268,12 @@ return [
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
 
         // For availability module
-        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availabilty does not found in system',
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availability not found in system',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'DE: Country not found in system',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'DE: City not found in system',
     ]
 ];

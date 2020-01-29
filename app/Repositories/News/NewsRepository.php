@@ -251,36 +251,24 @@ class NewsRepository implements NewsInterface
     public function delete(int $id): bool
     {
         $news = $this->news->findOrFail($id);
-        $newsStatus = $news->delete();
-        // Delete news language data
-        $news->newsLanguage()->delete();
-
-        //Delete news_to_category data
-        $news->newsToCategory()->delete();
-        
-        return $newsStatus;
+        return $news->delete();
     }
 
     /** Get news title
      *
      * @param int $newsId
      * @param int $languageId
-     * @param int $defaultTenantLanguageId
      * @return string
      */
-    public function getNewsTitle(int $newsId, int $languageId, int $defaultTenantLanguageId): string
+    public function getNewsTitle(int $newsId, int $languageId): string
     {
+        $title = '';
         $languageData = $this->newsLanguage->withTrashed()->select('title')
         ->where(['news_id' => $newsId, 'language_id' => $languageId])
         ->get();
         if ($languageData->count() > 0) {
-            return $languageData[0]->title;
-        } else {
-            $defaultTenantLanguageData = $this->newsLanguage
-                ->select('title')
-                ->where(['news_id' => $newsId, 'language_id' => $defaultTenantLanguageId])
-                ->get();
-            return $defaultTenantLanguageData[0]->title;
+            $title = $languageData[0]->title;
         }
+        return $title ?? '';
     }
 }

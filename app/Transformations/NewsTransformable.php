@@ -64,20 +64,19 @@ trait NewsTransformable
             foreach ($newsDetails['news_to_category'] as $key => $value) {
                 $newsCategoryArray[$key]['news_category_id'] = $value['news_category_id'];
                 foreach ($newsDetails['news_to_category'][$key]['news_category'] as $category) {
-                    $arrayIndex = array_search($languageCode, array_column(
+                    $index = array_search($languageCode, array_column(
                         $category['translations'],
                         'lang'
                     ));
-                    if ($arrayIndex  !== false) {
-                        $newsCategory[] = $category['translations'][$arrayIndex]['title'];
+                    
+                    if ($index  !== false) {
+                        $newsCategory[] = $category['translations'][$index]['title'];
                     } else {
-                        $arrayIndex = array_search($defaultTenantLanguageCode, array_column(
+                        $index = array_search($defaultTenantLanguageCode, array_column(
                             $category['translations'],
                             'lang'
                         ));
-                        if ($arrayIndex  !== false) {
-                            $newsCategory[] = $category['translations'][$arrayIndex]['title'];
-                        }
+                        $newsCategory[] = ($index !== false) ? $category['translations'][$index]['title'] : '';
                     }
                     unset($category['translations']);
                 }
