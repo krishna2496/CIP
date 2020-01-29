@@ -394,8 +394,8 @@
                     });
                 },
                 logout() {
-                    document.querySelector('body').classList.remove('small-header');
-                    this.$store.commit('logoutUser');
+                        document.querySelector('body').classList.remove('small-header');
+                        this.$store.commit('logoutUser');
                 },
                 menuBarclickHandler() {
 

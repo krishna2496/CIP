@@ -54,11 +54,12 @@ export default new Vuex.Store({
         submitNewMissionUrl: localStorage.getItem('submitNewMissionUrl'),
         userTimezone: localStorage.getItem('userTimezone'),
         policyPage: localStorage.getItem('policyPage'),
-		logoRedirectUrl: localStorage.getItem('logoRedirectUrl')
+        logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
     },
     mutations: {
         // Set login data in state and local storage       
         loginUser(state, data) {
+            localStorage.setItem('logout-event', 'login');
             localStorage.setItem('isLoggedIn', data.token)
             localStorage.setItem('token', data.token)
             localStorage.setItem('userId', data.user_id)
@@ -69,7 +70,7 @@ export default new Vuex.Store({
             localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
             localStorage.setItem('email', data.email)
             localStorage.setItem('userTimezone', data.timezone)
-
+            
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -83,6 +84,10 @@ export default new Vuex.Store({
         },
         // Remove login data in state and local storage
         logoutUser(state) {
+            
+            localStorage.setItem('logout-event', 'logout');
+            localStorage.removeItem('logout-event', 'logout');
+            
             localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
@@ -98,6 +103,8 @@ export default new Vuex.Store({
             state.avatar = null;
             state.cookieAgreementDate = null;
             state.policyPage = null;
+                     
+
             router.push({
                 name: 'login'
             })
