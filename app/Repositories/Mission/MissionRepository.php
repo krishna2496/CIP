@@ -282,6 +282,7 @@ class MissionRepository implements MissionInterface
         if (isset($request->skills) && count($request->skills) > 0) {
             //Unlink mission skill
             $this->modelsService->missionSkill->unlinkMissionSkill($mission->mission_id);
+            
             // Link mission skill
             foreach ($request->skills as $value) {
                 $this->modelsService->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
