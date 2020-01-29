@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  Mission rating controller
 /*!
@@ -27,20 +28,28 @@ class MissionRatingController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-
+	
+	/**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+	
     /**
      * Create a new Mission rating controller instance.
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+	 * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+		TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+		$this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -51,7 +60,7 @@ class MissionRatingController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        // Server side validataions
+        // Server side validations
         $validator = Validator::make(
             $request->all(),
             [
@@ -70,6 +79,32 @@ class MissionRatingController extends Controller
             );
         }
         
+		$getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+		
+		$missionRatingVolunteer = config('constants.tenant_settings.MISSION_RATING_VOLUNTEER');
+		
+		if (in_array($missionRatingVolunteer, $getActivatedTenantSettings)) {
+            $missionApplicationStatus = array(
+				config('constants.application_status.AUTOMATICALLY_APPROVED')
+			);
+
+			//Check mission application status
+			$applicationStatus = $this->missionRepository->checkUserMissionApplicationStatus(
+				$request->mission_id,
+				$request->auth->user_id,
+				$missionApplicationStatus
+			);
+			if ($applicationStatus) {
+				return $this->responseHelper->error(
+					Response::HTTP_UNPROCESSABLE_ENTITY,
+					Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+					config('constants.error_codes.MISSION_APPLICATION_NOT_APPROVED'),
+					trans('messages.custom_error_message.MISSION_APPLICATION_NOT_APPROVED')
+				);
+			}
+        }
+		
         // Store mission rating
         $missionRating = $this->missionRepository->storeMissionRating($request->auth->user_id, $request->toArray());
 
