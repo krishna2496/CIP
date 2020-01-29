@@ -140,29 +140,20 @@ class LanguageController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
-        $languageFilePath = $tenantName.'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/'.
-        $fileName.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
-        if (Storage::disk('s3')->exists($languageFilePath)) {
-            //Upload file on S3
-            set_time_limit(0);
-            $context = stream_context_create(array('http'=> array(
-                'timeout' => 1200
-            )));
-            
-            $disk = Storage::disk('s3');
-            $documentName = $fileName . '.' . $fileExtension;
-            $documentPath =  $tenantName .'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/' . $documentName;
-            ;
-    
-            $disk->put($documentPath, @file_get_contents($file, false, $context));
-            $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
-            . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
-        } else {
-            throw new FileNotFoundException(
-                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3'),
-                config('constants.error_codes.ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3')
-            );
-        }
+        //Upload file on S3
+		set_time_limit(0);
+		$context = stream_context_create(array('http'=> array(
+			'timeout' => 1200
+		)));
+		
+		$disk = Storage::disk('s3');
+		$documentName = $fileName . '.' . $fileExtension;
+		$documentPath =  $tenantName .'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/' . $documentName;
+		;
+
+		$disk->put($documentPath, @file_get_contents($file, false, $context));
+		$pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+		. env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 
         $fileDetail = array();
         $fileDetail['file_name'] = $documentName;
