@@ -98,7 +98,7 @@ class AppAuthTest extends TestCase
             'email' => $user->email,
         ];
 
-        $this->post('app/request-password-reset', $params, ['HTTP_REFERER' => 'http://web8.anasource.com/team4/ciplatform/'])
+        $this->post('app/request-password-reset', $params, ['HTTP_REFERER' => env('HTTP_REFERER')])
           ->seeStatusCode(200)
           ->seeJsonStructure(
               [

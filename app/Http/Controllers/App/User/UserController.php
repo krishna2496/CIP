@@ -22,10 +22,16 @@ use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
+use App\Transformations\CityTransformable;
 
+//!  User controller
+/*!
+This controller is responsible for handling user listing, show, save cookie agreement and
+upload profile image operations.
+ */
 class UserController extends Controller
 {
-    use RestExceptionHandlerTrait, UserTransformable;
+    use RestExceptionHandlerTrait, UserTransformable, CityTransformable;
     /**
      * @var App\Repositories\User\UserRepository
      */
@@ -166,10 +172,10 @@ class UserController extends Controller
         $availabilityList = $this->userRepository->getAvailability();
 
         $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : $defaultLanguage->code;
+        $languages = $this->languageHelper->getLanguages();
+        $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
+
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
@@ -225,7 +231,27 @@ class UserController extends Controller
             }
         }
 
+        $availabilityData = [];
+        foreach ($availabilityList as $availability) {
+            $arrayKey = array_search($languageCode, array_column($availability['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $availabilityData[$availability['availability_id']] = $availability
+                ['translations'][$arrayKey]['title'];
+            }
+        }
+        $availabilityList = $availabilityData;
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        
+        // Get tenant default language
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        
+        // Get language id
+        $languageId = $this->languageHelper->getLanguageId($request);
+        if (!$cityList->isEmpty()) {
+            // Transform city details
+            $cityList = $this->cityTransform($cityList->toArray(), $languageId, $defaultTenantLanguage->language_id);
+        }
 
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
@@ -266,13 +292,12 @@ class UserController extends Controller
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
-            "why_i_volunteer" => "sometimes|required",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
             "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-            'skills' => 'sometimes|required|array',
+            'skills' => 'array',
             'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
         );
 
@@ -305,7 +330,7 @@ class UserController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                    trans('messages.custom_error_message.SKILL_LIMIT')
+                    trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
                 );
             }
         }
@@ -325,8 +350,10 @@ class UserController extends Controller
         }
 
         // Update user skills
-        $this->userRepository->deleteSkills($id);
-        $this->userRepository->linkSkill($request->toArray(), $id);
+        if (!empty($request->skills)) {
+            $this->userRepository->deleteSkills($id);
+            $this->userRepository->linkSkill($request->toArray(), $id);
+        }
 
         // Set response data
         $apiData = ['user_id' => $user->user_id];
@@ -412,7 +439,7 @@ class UserController extends Controller
 
         // Set response data
         $apiData = ['user_id' => $userId];
-        $apiStatus = Response::HTTP_OK;
+        $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
         
         // Make activity log

@@ -4,7 +4,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionApplication extends Model
@@ -45,8 +44,8 @@ class MissionApplication extends Model
      * @var array
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
-    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar'];
-  
+    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar', 'mission'];
+
     /**
      * Find listing of a resource.
      *
@@ -130,36 +129,61 @@ class MissionApplication extends Model
     }
 
     /**
-     * Get mission application count
-     *
-     * @param int $userId
-     * @param int $year
-     * @param int $month
-     * @return int
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function missionApplicationCount(int $userId, int $year, int $month): int
+    public function mission()
     {
-        return $this->where(['user_id' => $userId])
-        ->whereYear('applied_at', $year)
-        ->whereMonth('applied_at', $month)
-        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'))
-        ->count();
+        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'user_id');
     }
 
     /**
      * Get mission application count
      *
      * @param int $userId
-     * @param int $year
-     * @param int $month
+     * @param $year
+     * @param $month
      * @return int
      */
-    public function pendingApplicationCount(int $userId, int $year, int $month): int
+    public function missionApplicationCount(int $userId, $year, $month): int
     {
-        return $this->where(['user_id' => $userId])
-        ->whereYear('applied_at', $year)
-        ->whereMonth('applied_at', $month)
-        ->where('approval_status', config('constants.application_status.PENDING'))
-        ->count();
+        $countQuery = $this->whereHas('mission')->where(['user_id' => $userId])
+        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'));
+        if (isset($year) && $year != '') {
+            $countQuery->whereYear('applied_at', $year);
+            if (isset($month) && $month != '') {
+                $countQuery->whereMonth('applied_at', $month);
+            }
+        }
+        return $countQuery->count();
+    }
+
+    /**
+     * Get mission application count
+     *
+     * @param int $userId
+     * @param $year
+     * @param $month
+     * @return int
+     */
+    public function pendingApplicationCount(int $userId, $year, $month): int
+    {
+        $countQuery = $this->whereHas('mission')->where(['user_id' => $userId])
+        ->where('approval_status', config('constants.application_status.PENDING'));
+
+        if (isset($year) && $year != '') {
+            $countQuery->whereYear('applied_at', $year);
+            if (isset($month) && $month != '') {
+                $countQuery->whereMonth('applied_at', $month);
+            }
+        }
+        return $countQuery->count();
     }
 }

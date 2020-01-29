@@ -260,7 +260,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
@@ -270,7 +270,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
@@ -505,6 +505,35 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+    /* Set mission data for tenant specific */
+    $router->group(
+        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Mission\MissionController@index']);
+            $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
+            $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
+            $router->patch('/{missionId}', ['as' => 'missions.update',
+                'uses' => 'Admin\Mission\MissionController@update']);
+            $router->delete('/{missionId}', ['as' => 'missions.delete',
+                'uses' => 'Admin\Mission\MissionController@destroy']);
+            $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
+            $router->get(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
+            );
+            $router->patch(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
+            );
+            $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
+            $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
+               'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+        }
+    );
+
     /* Set skill data for tenant user specific */
     $router->group(
         ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
@@ -604,6 +633,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
+            $router->get('/details', ['middleware' => ['PaginationMiddleware'],
+                    'uses' => 'Admin\Timesheet\TimesheetController@getTimesheetsDetails']);
             $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Timesheet\TimesheetController@index']);
             $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
@@ -612,12 +643,31 @@ $router->group(['middleware' => 'localization'], function ($router) {
     );
 
     /* Get countries list */
-    $router->get('/countries', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\Country\CountryController@index']);
+    $router->group(
+        ['prefix' => 'entities/countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
+            $router->get('/{countryId}', ['uses' => 'Admin\Country\CountryController@show']);
+            $router->get('/{countryId}/cities', ['uses' => 'Admin\City\CityController@fetchCity']);
+            $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
+            $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
+            $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
+        }
+    );
 
     /* Get cities by country id */
-    $router->get('/cities/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\City\CityController@fetchCity']);
+    $router->group(
+        ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\City\CityController@index']);
+            $router->get('/{cityId}', ['uses' => 'Admin\City\CityController@show',
+            'middleware' => ['PaginationMiddleware']]);
+            $router->post('/', ['uses' => 'Admin\City\CityController@store']);
+            $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);
+            $router->delete('/{cityId}', ['uses' => 'Admin\City\CityController@destroy']);
+        }
+    );
+
 
     /* News category management */
     $router->group(
@@ -682,6 +732,31 @@ $router->group(['middleware' => 'localization'], function ($router) {
             /* Get user activity logs */
             $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\ActivityLog\ActivityLogController@index']);
+        }
+    );
+
+    /* Availability management */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get availability */
+            $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Availability\AvailabilityController@index']);
+
+            /* Store availability */
+            $router->post('/entities/availability', ['as' => 'availability.store',
+                'uses' => 'Admin\Availability\AvailabilityController@store']);
+
+            $router->delete('/entities/availability/{availabilityId}', ['as' => 'availability.destroy',
+                'uses' => 'Admin\Availability\AvailabilityController@destroy']);
+
+            $router->patch('/entities/availability/{availabilityId}', ['as' => 'availability.update',
+                'uses' => 'Admin\Availability\AvailabilityController@update']);
+
+            $router->get(
+                '/entities/availability/{availabilityId}',
+                ['uses' => 'Admin\Availability\AvailabilityController@show']
+            );
         }
     );
 /*

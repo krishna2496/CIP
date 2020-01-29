@@ -12,6 +12,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_timesheet_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -24,8 +29,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -42,7 +47,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -51,13 +57,18 @@ class AppTimesheetTest extends TestCase
             "goal_objective" => rand(1, 1000),
             "total_seats" => rand(10, 100),
             "application_deadline" => "2020-10-15 10:40:00",
+            "application_start_date" => "2019-05-15 10:40:00",
+            "application_end_date" => "2020-05-15 10:40:00",
+            "application_start_time" => "2019-05-15 10:40:00",
+            "application_end_time" => "2020-05-15 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
+
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
         $params = [
@@ -87,7 +98,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $this->post('app/timesheet', $params, ['token' => $token])
+        $this->post('app/timesheet?type=hour', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
             'status',
@@ -98,11 +109,17 @@ class AppTimesheetTest extends TestCase
         ]);
 
         DB::setDefaultConnection('mysql');
-        $this->get('/app/timesheet', ['token' => $token])
+        $this->get('/app/timesheet?type=hour', ['token' => $token])
+        ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
             "message"
         ]);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('/app/timesheet', ['token' => $token])
+        ->seeStatusCode(422);
+
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
@@ -123,7 +140,7 @@ class AppTimesheetTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/timesheet', ['token' => $token])
+        $this->get('/app/timesheet?type=goal', ['token' => $token])
         ->seeJsonStructure([
             "status",
             "message"
@@ -163,6 +180,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_add_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -175,8 +197,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -193,7 +215,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -262,6 +285,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_hours_data_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -274,8 +302,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -292,7 +320,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -348,6 +377,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_minutes_data_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -360,8 +394,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -378,7 +412,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -434,6 +469,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_day_volunteer_data_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -446,8 +486,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -464,7 +504,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -562,6 +603,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_update_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -574,8 +620,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -592,7 +638,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -663,6 +710,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_hours_data_for_update_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -675,8 +727,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -693,7 +745,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -779,6 +832,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_minutes_data_for_update_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -791,8 +849,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -809,7 +867,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -895,6 +954,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_day_volunteer_data_for_update_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -907,8 +971,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -925,7 +989,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1010,6 +1075,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_a_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1022,8 +1092,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1040,7 +1110,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1156,6 +1227,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_delete_timesheet_document()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1168,8 +1244,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1186,7 +1262,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1210,7 +1287,7 @@ class AppTimesheetTest extends TestCase
                 'availability_id' => 1
             ];
         DB::setDefaultConnection('mysql');
-        
+        // dd($params);
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
@@ -1272,6 +1349,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_delete_timesheet_document()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1284,8 +1366,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1302,7 +1384,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1425,6 +1508,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_submit_timesheet_for_approval()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1437,8 +1525,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1455,7 +1543,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1539,6 +1628,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_is_already_approved()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1551,8 +1645,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1569,7 +1663,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1624,7 +1719,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"]]);
+        ->update(['status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"]]);
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
         $params = [
             'timesheet_entries' => [
@@ -1693,6 +1788,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_data_is_invalid()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1705,8 +1805,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1723,7 +1823,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1779,7 +1880,7 @@ class AppTimesheetTest extends TestCase
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update([
-            'status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"],
+            'status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"],
             'user_id' => \App\User::get()->random()->user_id
         ]);
         
@@ -1820,6 +1921,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_pending_time_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1832,8 +1938,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1850,7 +1956,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -1905,7 +2012,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         $this->get('/app/timesheet/time-requests', ['token' => $token])
         ->seeJsonStructure([
@@ -1956,6 +2063,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_pending_goal_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1968,8 +2080,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1986,7 +2098,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2040,7 +2153,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet/goal-requests', ['token' => $token])
@@ -2091,6 +2204,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_export_all_pending_time_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2103,8 +2221,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2121,7 +2239,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2176,7 +2295,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         $this->get('/app/timesheet/time-requests/export', ['token' => $token])
         ->seeStatusCode(200);
@@ -2212,6 +2331,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_export_all_pending_goal_requests_list()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2224,8 +2348,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2242,7 +2366,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2296,7 +2421,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
+        ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
         DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet/goal-requests/export', ['token' => $token])
@@ -2333,6 +2458,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_is_already_approved_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2345,8 +2475,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2363,7 +2493,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2417,7 +2548,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"]]);
+        ->update(['status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"]]);
         
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -2446,6 +2577,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_timesheet_is_approved_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2458,8 +2594,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2476,7 +2612,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2530,7 +2667,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
-        ->update(['status_id' => config("constants.timesheet_status_id")["APPROVED"]]);
+        ->update(['status' => config("constants.timesheet_status")["APPROVED"]]);
         
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -2559,6 +2696,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_goal_actions()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2571,8 +2713,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2589,7 +2731,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2657,6 +2800,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_date_volunteered_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2669,8 +2817,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2687,7 +2835,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2755,6 +2904,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_date_for_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2767,8 +2921,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2785,7 +2939,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2853,6 +3008,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_if_application_is_not_approved_to_add_timesheet()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2865,8 +3025,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2883,7 +3043,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -2952,6 +3113,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_add_timesheet_entry_and_validate_end_date()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2965,8 +3131,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2983,7 +3149,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => date( "Y-m-d", strtotime( "$date -50 day" ) ),
@@ -3044,6 +3211,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_on_add_timesheet_entry_for_invalid_date()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3057,8 +3229,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3075,7 +3247,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => date( "Y-m-d", strtotime( "$date -50 day" ) ),
@@ -3136,6 +3309,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_add_timesheet_entry_with_documents()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3148,8 +3326,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3166,7 +3344,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -3232,6 +3411,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_approved_timesheet_on_delete_timesheet_document()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3244,8 +3428,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3262,7 +3446,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -3311,7 +3496,7 @@ class AppTimesheetTest extends TestCase
         ->seeStatusCode(201);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
-        App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->update(['status_id' => config('constants.timesheet_status_id.APPROVED')]);
+        App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->update(['status' => config('constants.timesheet_status.APPROVED')]);
 
         $connection = 'tenant';
         $timesheetDocument = factory(\App\Models\TimesheetDocument::class)->make();
@@ -3342,6 +3527,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_documents_on_add_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3354,8 +3544,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3372,7 +3562,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -3434,6 +3625,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_error_for_invalid_documents_size_on_add_timesheet_entry()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3446,8 +3642,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3464,7 +3660,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -3526,6 +3723,11 @@ class AppTimesheetTest extends TestCase
      */
     public function it_should_return_all_timesheet_list_of_goal_mission()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3538,8 +3740,8 @@ class AppTimesheetTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3556,7 +3758,8 @@ class AppTimesheetTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -3600,21 +3803,19 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $this->post('app/timesheet', $params, ['token' => $token])
-          ->seeStatusCode(201)
-          ->seeJsonStructure([
-            'status',
-            'data' => [
-                "timesheet_id"
-            ],
-            'message',
-        ]);
+        ->seeStatusCode(201);
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/timesheet', ['token' => $token])
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
+        $this->get('/app/timesheet?type=goal', ['token' => $token])
+        ->seeStatusCode(200);
+
+        DB::setDefaultConnection('mysql');
+
+        // It will return all users mission list
+        $this->get('/app/user/missions', ['token' => $token])
+        ->seeStatusCode(200);
+
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();

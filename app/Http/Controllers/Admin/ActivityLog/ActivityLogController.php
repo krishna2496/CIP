@@ -12,6 +12,10 @@ use Validator;
 use App\Models\ActivityLog;
 use Illuminate\Http\JsonResponse;
 
+//!  Activity log controller
+/*!
+This controller is responsible for handling activity log listing operation.
+ */
 class ActivityLogController extends Controller
 {
     use RestExceptionHandlerTrait;

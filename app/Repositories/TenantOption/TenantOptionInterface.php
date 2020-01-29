@@ -50,7 +50,7 @@ interface TenantOptionInterface
      * Get option value by option name
      *
      * @param String $data
-     * @return null|int
+     * @return null|App\Models\TenantOption
      */
-    public function getOptionValueFromOptionName(string $data): ?int;
+    public function getOptionValueFromOptionName(string $data): ?TenantOption;
 }

@@ -47,29 +47,7 @@ class News extends Model
         'created_at',
         'status'
     ];
-
-    /**
-     * Find news by id.
-     *
-     * @param  int  $id
-     * @return News
-     */
-    public function findNews(int $id): News
-    {
-        return static::findOrFail($id);
-    }
     
-    /**
-     * Delete news category by id.
-     *
-     * @param  int  $id
-     * @return bool
-     */
-    public function deleteNews(int $id): bool
-    {
-        return static::findOrFail($id)->delete();
-    }
-
     /**
      * Get news Language
      *

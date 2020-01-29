@@ -9,12 +9,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface NewsCategoryInterface
 {
     /**
-     * Display news category details.
+     * Display news category list.
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getNewsCategoryDetails(Request $request): LengthAwarePaginator;
+    public function getNewsCategoryList(Request $request): LengthAwarePaginator;
 
     /**
      * Store news category.

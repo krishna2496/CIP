@@ -15,6 +15,10 @@ use InvalidArgumentException;
 use Validator;
 use App\Helpers\Helpers;
 
+//!  Tenant settings controller
+/*!
+This controller is responsible for handling tenant settings listing and update operations.
+ */
 class TenantSettingsController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -73,7 +77,7 @@ class TenantSettingsController extends Controller
                     return $value->tenant_setting_id === $tenantSetting->setting_id;
                 });
                 
-                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSettings[$index]
+                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSetting
                 ->tenant_setting_id;
                 $tenantSettingData[$index]['key'] = $adminTenantSettings[$index]->key;
                 $tenantSettingData[$index]['description'] = $adminTenantSettings[$index]

@@ -23,8 +23,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -35,7 +35,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -52,7 +52,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -119,8 +120,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
         DB::setDefaultConnection('mysql');
@@ -276,8 +276,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -288,7 +288,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -305,7 +305,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -374,8 +375,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
@@ -407,8 +407,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -423,7 +423,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -440,7 +440,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -514,8 +515,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
@@ -626,8 +626,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -642,7 +642,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -659,7 +659,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -733,8 +734,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 
@@ -765,8 +765,8 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('tenant');
 
         // Get country and city id for mission create
-        $country = \App\Models\Country::where('ISO', 'US')->first();
-        $cityId = \App\Models\City::where('country_id', $country->country_id)->first()->city_id;
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
         
         // Create request for mission create
         $params = [
@@ -777,7 +777,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $country->ISO
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -794,7 +794,8 @@ class AppVolunteeringHistoryTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -862,8 +863,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->update(
             [
-                'status_id' => \App\Models\TimesheetStatus::
-                where('status', config('constants.timesheet_status.AUTOMATICALLY_APPROVED'))->first()->timesheet_status_id
+                'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             ]
         );
 

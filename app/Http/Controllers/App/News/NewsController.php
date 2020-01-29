@@ -15,9 +15,9 @@ use App\Transformations\NewsTransformable;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 
-//!  News Controller
+//!  News controller
 /*!
-This controller is responsible for handling news show and listing operation.
+This controller is responsible for handling news show and listing operations.
  */
 class NewsController extends Controller
 {
@@ -72,17 +72,33 @@ class NewsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
             $languageId = $this->languageHelper->getLanguageId($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+            $languageCode = $language->code;
+            
             $news = $this->newsRepository->getNewsList(
                 $request,
-                $languageId,
                 config('constants.news_status.PUBLISHED')
             );
             $newsTransform = $news
-            ->map(function (News $newsTransform) {
-                return $this->getTransformedNews($newsTransform, true);
+            ->map(function (News $newsTransform) use (
+                $languageId,
+                $defaultTenantLanguageId,
+                $languageCode,
+                $defaultTenantLanguageCode
+            ) {
+                return $this->getTransformedNews(
+                    $newsTransform,
+                    true,
+                    $languageId,
+                    $defaultTenantLanguageId,
+                    $languageCode,
+                    $defaultTenantLanguageCode
+                );
             })->all();
-
             $requestString = $request->except(['page','perPage']);
             $newsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
                 $newsTransform,
@@ -122,12 +138,24 @@ class NewsController extends Controller
     public function show(Request $request, int $newsId): JsonResponse
     {
         try {
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
             $languageId = $this->languageHelper->getLanguageId($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+            $languageCode = $language->code;
             // Get news details
             $news = $this->newsRepository
-            ->getNewsDetails($newsId, $languageId, config('constants.news_status.PUBLISHED'));
+            ->getNewsDetails($newsId, config('constants.news_status.PUBLISHED'));
             // Transform news details
-            $newsTransform = $this->getTransformedNews($news);
+            $newsTransform = $this->getTransformedNews(
+                $news,
+                false,
+                $languageId,
+                $defaultTenantLanguageId,
+                $languageCode,
+                $defaultTenantLanguageCode
+            );
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');

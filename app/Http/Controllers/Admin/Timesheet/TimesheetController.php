@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Timesheet;
 
+use App\Helpers\LanguageHelper;
+use App\Repositories\MissionApplication\MissionApplicationQuery;
+use App\Repositories\Timesheet\TimesheetQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -11,11 +14,15 @@ use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Timesheet\TimesheetRepository;
 use Validator;
-use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
+use Illuminate\Validation\Rule;
 
+//!  Timesheet controller
+/*!
+This controller is responsible for handling timesheet listing and update operations.
+ */
 class TimesheetController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -39,7 +46,7 @@ class TimesheetController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -60,7 +67,6 @@ class TimesheetController extends Controller
         $this->responseHelper = $responseHelper;
         $this->userApiKey =$request->header('php-auth-user');
     }
-
 
     /**
      * Display a listing of the resource.
@@ -97,6 +103,39 @@ class TimesheetController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     * @param Request $request
+     * @param TimesheetQuery $timesheetQuery
+     * @return JsonResponse
+     */
+    public function getTimesheetsDetails(
+        Request $request,
+        TimesheetQuery $timesheetQuery,
+        LanguageHelper $languageHelper
+    ): JsonResponse
+    {
+        $filters = $request->get('filters', []);
+        $search = $request->get('search');
+        $order = $request->get('order', []);
+        $limit = $request->get('limit', []);
+        $tenantLanguages = $languageHelper->getTenantLanguages($request);
+
+        $timesheetList = $timesheetQuery->run([
+            'filters' => $filters,
+            'search' => $search,
+            'order' => $order,
+            'limit' => $limit,
+            'tenantLanguages' => $tenantLanguages
+        ]);
+
+        return $this->responseHelper->successWithPagination(
+            Response::HTTP_OK,
+            '',
+            $timesheetList
+        );
+    }
+
+    /**
      * Approve/decline timehseet entry
      *
      * @param  \Illuminate\Http\Request  $request
@@ -110,7 +149,7 @@ class TimesheetController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "status_id" => "required|numeric|exists:timesheet_status,timesheet_status_id"
+                    "status" => ["required",Rule::in(config('constants.timesheet_status'))]
                 ]
             );
 
@@ -124,7 +163,7 @@ class TimesheetController extends Controller
                 );
             }
             $this->timesheetRepository->find($timesheetId);
-            $this->timesheetRepository->updateTimesheetStatus($request->status_id, $timesheetId);
+            $this->timesheetRepository->updateTimesheetStatus($request->status, $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
@@ -138,13 +177,13 @@ class TimesheetController extends Controller
                 $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
             }
             $entityId = $timesheetId;
-            $action = config('constants.notification_actions.'.$timsheetDetails->timesheetStatus->status);
+            $action = config('constants.notification_actions.'.$timsheetDetails->status);
             $userId = $timsheetDetails->user_id;
-            
+
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-            
+
             // Make activity log
-            $activityLogStatus = $request->status_id == config('constants.timesheet_status_id.APPROVED') ?
+            $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
                 config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
 
             event(new UserActivityLogEvent(

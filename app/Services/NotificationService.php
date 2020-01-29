@@ -126,7 +126,7 @@ class NotificationService
         $missionName = $this->missionRepository->getMissionTitle(
             $inviteDetails->mission->mission_id,
             $languageId,
-            $defaultTenantLanguageId
+			$defaultTenantLanguageId
         );
         
         // Create message
@@ -183,7 +183,7 @@ class NotificationService
     public function volunteeringHours(Notification $notification, string $tenantName): array
     {
         // Get details
-        $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($notification->entity_id);
+        $timesheetDetails = $this->timesheetRepository->getDetailOfTimesheetEntry($notification->entity_id);
         $formattedDate = Carbon::createFromFormat('m-d-Y', $timesheetDetails->date_volunteered);
         $date = Carbon::parse($formattedDate)->format('d/m/Y');
         $status = trans('general.notification_status.'.$notification->action);
@@ -211,7 +211,7 @@ class NotificationService
     public function volunteeringGoals(Notification $notification, string $tenantName): array
     {
         // Get details
-        $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($notification->entity_id);
+        $timesheetDetails = $this->timesheetRepository->getDetailOfTimesheetEntry($notification->entity_id);
         $formattedDate = Carbon::createFromFormat('m-d-Y', $timesheetDetails->date_volunteered);
         $date = Carbon::parse($formattedDate)->format('d/m/Y');
         $status = trans('general.notification_status.'.$notification->action);
@@ -239,7 +239,7 @@ class NotificationService
     public function myComments(Notification $notification, string $tenantName): array
     {
         // Get details
-        $commentDetails = $this->missionCommentRepository->getComment($notification->entity_id);
+        $commentDetails = $this->missionCommentRepository->getCommentDetail($notification->entity_id);
         $date = Carbon::parse($commentDetails->created_at)
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
         $status = trans('general.notification_status.'.$notification->action);
@@ -266,7 +266,7 @@ class NotificationService
     public function myStories(Notification $notification, string $tenantName): array
     {
         // Get details
-        $storyDetails = $this->storyRepository->getStoryDetails($notification->entity_id);
+        $storyDetails = $this->storyRepository->getStoryDetail($notification->entity_id);
 
         $date = Carbon::parse($storyDetails[0]['created_at'])
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
@@ -295,7 +295,7 @@ class NotificationService
     public function newMessages(Notification $notification, string $tenantName): array
     {
         // Get details
-        $messageDetails = $this->messageRepository->getMessage($notification->entity_id);
+        $messageDetails = $this->messageRepository->getMessageDetail($notification->entity_id);
         
         // Create message
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).Config('constants.notification_icons.NEW');
@@ -324,7 +324,7 @@ class NotificationService
         $missionName = $this->missionRepository->getMissionTitle(
             $notification->entity_id,
             $languageId,
-            $defaultTenantLanguageId
+			$defaultTenantLanguageId
         );
 
         // Create message
@@ -347,14 +347,12 @@ class NotificationService
     public function newNews(
         Notification $notification,
         string $tenantName = null,
-        int $languageId,
-        int $defaultTenantLanguageId
+        int $languageId
     ): array {
         // Get details
         $newsTitle = $this->newsRepository->getNewsTitle(
             $notification->entity_id,
-            $languageId,
-            $defaultTenantLanguageId
+            $languageId
         );
 
         // Create message
@@ -386,7 +384,7 @@ class NotificationService
         $missionName = $this->missionRepository->getMissionTitle(
             $missionId,
             $languageId,
-            $defaultTenantLanguageId
+			$defaultTenantLanguageId
         );
         $status = trans('general.notification_status.'.$notification->action);
         

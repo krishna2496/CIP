@@ -14,6 +14,10 @@ use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Footerpage controller
+/*!
+This controller is responsible for handling footerpage store, update, listing, show and delete operations.
+ */
 class FooterPageController extends Controller
 {
     use RestExceptionHandlerTrait;

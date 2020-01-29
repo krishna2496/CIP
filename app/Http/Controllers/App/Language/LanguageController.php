@@ -3,6 +3,10 @@ namespace App\Http\Controllers\App\Language;
 
 use App\Http\Controllers\Controller;
 
+//!  Language controller
+/*!
+This controller is responsible for handling language file listing operation.
+ */
 class LanguageController extends Controller
 {
     /**

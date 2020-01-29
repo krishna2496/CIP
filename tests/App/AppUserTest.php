@@ -7,30 +7,6 @@ class AppUserTest extends TestCase
     /**
      * @test
      *
-     * Search user by first name
-     *
-     * @return void
-     */
-    public function it_should_search_user_by_first_name()
-    {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-
-        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
-        $user->delete();
-    }
-
-    /**
-     * @test
-     *
      * Search user by last name
      *
      * @return void
@@ -1007,5 +983,60 @@ class AppUserTest extends TestCase
         ]);
         $user->delete();
         $userCustomField->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Save cookie agreement date
+     *
+     * @return void
+     */
+    public function it_should_save_cookie_agreement_date()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+      
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/accept-cookie-agreement', [], ['token' => $token])
+        ->seeStatusCode(201)
+        ->seeJsonStructure(
+            [
+                "status",
+                "message"
+            ]
+        );
+        $user->delete();
+    }
+    
+    /**
+     * @test
+     *
+     * Search user by first name
+     *
+     * @return void
+     */
+    public function it_should_search_user_by_first_name()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $newUser = factory(\App\User::class)->make();
+        $newUser->setConnection($connection);
+        $newUser->save();
+
+        $token = Helpers::getJwtToken($newUser->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $newUser->delete();
     }
 }

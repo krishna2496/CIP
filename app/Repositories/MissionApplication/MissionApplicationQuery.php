@@ -3,47 +3,66 @@
 namespace App\Repositories\MissionApplication;
 
 use App\Models\DataObjects\VolunteerApplication;
+use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
 {
+    const FILTER_APPLICATION_IDS    = 'applicationIds';
+    const FILTER_APPLICATION_DATE   = 'applicationDate';
+    const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
+    const FILTER_MISSION_SKILLS     = 'missionSkills';
+    const FILTER_MISSION_THEMES     = 'missionThemes';
+    const FILTER_MISSION_COUNTRIES  = 'missionCountries';
+    const FILTER_MISSION_CITIES     = 'missionCities';
+    const FILTER_MISSION_TYPES      = 'missionTypes';
+
     const ALLOWED_SORTABLE_FIELDS = [
-        'applicationId' => 'ma.mission_application_id',
-        'applicantFirstName' => 'u.first_name',
-        'applicantLastName' => 'u.last_name',
-        'applicantEmail' => 'u.email',
-        'missionName' => 'ml.title',
+        'applicant' => 'user.last_name',
+        'applicantEmail' => 'user.email',
+        'missionType' => 'mission.mission_type',
         'country' => 'c.name',
+        'status' => 'mission_application.approval_status',
         'city' => 'ci.name',
-        'missionType' => 'm.mission_type',
-        'applicationDate' => 'ma.applied_at',
+        'applicationDate' => 'mission_application.applied_at',
+        'applicationSkills' => 'applicant_skills',
+        'missionName' => 'mission_language.title',
+        /*
+         * TODO: implement the following sort options (and handle translations)
+         * - mission skills
+         * - country name
+         * - city
+         */
+
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
 
-    const SEARCHABLE_COLUMNS = [
-        'u.first_name',
-        'u.last_name',
-        'u.email',
-        'ml.title',
-        'c.name',
-        'ci.name'
-    ];
+    /**
+     * @param array $filters
+     * @param Collection $tenantLanguages
+     * @return int
+     */
+    private function getFilteringLanguage(array $filters, Collection $tenantLanguages): int
+    {
+        $hasLanguageFilter = array_key_exists('language', $filters);
+        $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) { return $language->default == 1; })->first()->language_id;
 
-    const IN_COLUMN_MAPPINGS = [
-        'missionSkills' => 'ms.skill_id',
-        'applicantSkills' => 'us.skill_id',
-        'missionThemes' => 'm.theme_id',
-        'applicationIds' => 'ma.mission_application_id',
-//        'cities' => 'ci.name',
-    ];
+        if (!$hasLanguageFilter) {
+            return $defaultLanguageId;
+        }
 
-    const RANGE_COLUMN_MAPPINGS = [
-        'applicationDate' => 'ma.applied_at'
-    ];
+        $language = $tenantLanguages->filter(function ($language) use ($filters) { return $language->code === $filters['language']; })->first();
+
+        if (is_null($language)) {
+            return $defaultLanguageId;
+        }
+
+        return $language->language_id;
+    }
 
     /**
      * @param array $parameters
@@ -53,91 +72,141 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
-        $order = $parameters['order'];
+        $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
+        $tenantLanguages = $parameters['tenantLanguages'];
 
-        $order = $this->getOrder($order);
+        $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
+            || isset($filters[self::FILTER_MISSION_COUNTRIES])
+            || isset($filters[self::FILTER_MISSION_CITIES])
+            || isset($filters[self::FILTER_MISSION_TYPES]);
+        $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
-        $inClauses = [];
-        $whereClauses = [];
-
-        foreach ($filters as $filterKey => $values) {
-            if (array_key_exists($filterKey, self::IN_COLUMN_MAPPINGS) && !empty($values)) {
-                $inClauses[] = [self::IN_COLUMN_MAPPINGS[$filterKey], $values];
-            } elseif (array_key_exists($filterKey, self::RANGE_COLUMN_MAPPINGS)) {
-                if (!is_null($values['from'])) {
-                    $whereClauses[] = [self::RANGE_COLUMN_MAPPINGS[$filterKey], '>=', $values['from']];
-                }
-
-                if (!is_null($values['to'])) {
-                    $whereClauses[] = [self::RANGE_COLUMN_MAPPINGS[$filterKey], '<=', $values['to']];
-                }
-            }
-        }
-
-        $applications = DB::table('mission_application AS ma')
+        $query = MissionApplication::query();
+        $applications = $query
             ->select([
-                DB::raw('count(distinct mission_application_id) AS total'),
-                'ma.mission_application_id as id',
-                'ma.applied_at as applicationDate',
-                'ma.motivation as applicantMotivation',
-                'ma.approval_status as applicationStatus',
-                'ml.mission_id as missionId',
-                'ml.title as missionName',
-                'm.mission_type as missionType',
-                'm.theme_id as missionThemeId',
-                'c.name AS countryName',
-                'c.iso AS countryCode',
-                'ci.name AS city',
-                DB::raw('group_concat(distinct ms.skill_id) as missionSkills'),
-                'u.user_id AS applicantId',
-                'u.first_name AS applicantFirstName',
-                'u.last_name AS applicantLastName',
-                'u.email AS applicantEmail',
-                'u.avatar AS applicantAvatar',
-                DB::raw('group_concat(distinct us.skill_id) as applicantSkills'),
+                'mission_application.*',
+                'user.last_name',
+                'user.email',
+                'mission.mission_type',
+                'mission_language.title'
             ])
-            ->join('mission AS m', 'ma.mission_id', '=', 'm.mission_id')
-            ->join('mission_language AS ml', 'm.mission_id', '=', 'ml.mission_id')
-            ->join('country AS c', 'm.country_id', '=', 'c.country_id')
-            ->join('city AS ci', 'm.city_id', '=', 'ci.city_id')
-            ->leftJoin('mission_skill AS ms', 'm.mission_id', '=', 'ms.mission_id')
-            ->join('user AS u', 'u.user_id', '=', 'ma.user_id')
-            ->leftJoin('user_skill AS us', 'us.user_id', '=', 'u.user_id')
-            ->when($inClauses, function (Builder $query) use ($inClauses) {
-                foreach ($inClauses as $inClause) {
-                    $query
-                        ->whereIn($inClause[0], $inClause[1]);
+            ->join('user', 'user.user_id', '=', 'mission_application.user_id')
+            ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
+            ->join('mission_language', function ($join) use ($languageId) {
+                $join->on('mission_language.mission_id', '=', 'mission.mission_id')
+                    ->where('mission_language.language_id', '=', $languageId);
+            })
+            ->where('mission_language.language_id', '=', $languageId)
+            ->with([
+                'user:user_id,first_name,last_name,avatar,email',
+                'user.skills.skill:skill_id',
+                'mission',
+                'mission.missionLanguage' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
+                'mission.missionSkill',
+                'mission.country.languages' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
+                'mission.city.languages' => function ($query) use ($languageId) {
+                    $query->where('language_id', '=', $languageId);
+                },
+            ])
+            // Filter by application ID
+            ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
+                $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
+            })
+            // Filter by application start date
+            ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function($query) use ($filters) {
+                $query->where('applied_at', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
+            })
+            // Filter by application end date
+            ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function($query) use ($filters) {
+                $query->where('applied_at', '<=', $filters[self::FILTER_APPLICATION_DATE]['to']);
+            })
+            ->when($hasMissionFilters, function($query) use ($filters) {
+                $query->whereHas('mission', function($query) use ($filters) {
+                    // Filter by mission theme
+                    $query->when(isset($filters[self::FILTER_MISSION_THEMES]), function($query) use ($filters) {
+                        $query->whereIn('theme_id', $filters[self::FILTER_MISSION_THEMES]);
+                    });
+                    // Filter by mission country
+                    $query->when(isset($filters[self::FILTER_MISSION_COUNTRIES]), function($query) use ($filters) {
+                        $query->whereIn('country_id', $filters[self::FILTER_MISSION_COUNTRIES]);
+                    });
+                    // Filter by mission city
+                    $query->when(isset($filters[self::FILTER_MISSION_CITIES]), function($query) use ($filters) {
+                        $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
+                    });
+                    // Filter by mission type
+                    $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
+                        $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
+                    });
+                });
+            })
+            // Filter by applicant skills
+            ->when(isset($filters[self::FILTER_APPLICANT_SKILLS]), function($query) use ($filters) {
+                $query->whereHas('user.skills', function($query) use ($filters) {
+                    $query->whereIn('skill_id', $filters[self::FILTER_APPLICANT_SKILLS]);
+                });
+            })
+            // Filter by mission skill
+            ->when(isset($filters[self::FILTER_MISSION_SKILLS]), function($query) use ($filters) {
+                $query->whereHas('mission.missionSkill', function($query) use ($filters) {
+                    $query->whereIn('skill_id', $filters[self::FILTER_MISSION_SKILLS]);
+                });
+            })
+            // Search
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
+                /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
+                 * the condition on the where can *not* be exclusive as we might lose valid results from
+                 * previous filtering. We then need to use the OR condition for searchable fields.
+                 */
+                $searchCallback = function ($query) use ($search, $languageId) {
+                    $query->whereHas('user', function($query) use ($search) {
+                        $query
+                            ->where('first_name', 'like', "%${search}%")
+                            ->orWhere('last_name', 'like', "%${search}%")
+                            ->orWhere('email', 'like', "%${search}%");
+                    })
+                        ->orwhereHas('mission.missionLanguage', function($query) use ($search, $languageId) {
+                            $query
+                                ->where([
+                                    ['title', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
+                        })
+                        ->orwhereHas('mission.city.languages', function($query) use ($search, $languageId) {
+                            $query
+                                ->where([
+                                    ['name', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
+                        })
+                        ->orwhereHas('mission.country.languages', function($query) use ($search, $languageId) {
+                            $query
+                                ->where([
+                                    ['name', 'like', "%${search}%"],
+                                    ['language_id', '=', $languageId]
+                                ]);
+                        });
+                };
+
+                if (isset($filters[self::FILTER_APPLICATION_IDS])) {
+                    $query->orWhere($searchCallback);
+                } else {
+                    $query->where($searchCallback);
                 }
             })
-            ->when($whereClauses, function (Builder $query) use ($whereClauses) {
-                foreach ($whereClauses as $whereClause) {
-                    $query
-                        ->where($whereClause[0], $whereClause[1], $whereClause[2]);
-                }
-            })
-            ->when($search, function (Builder $query) use ($search) {
-                foreach (self::SEARCHABLE_COLUMNS as $column) {
-                    $query->orWhere($column, 'like', '%'. $search .'%');
-                }
-            })
-            ->groupBy('m.mission_id', 'u.user_id')
-            ->when($limit, function (Builder $query) use ($limit) {
-                $query->offset($limit['offset']);
-                $query->limit($limit['limit']);
-            })
-            ->when($order, function (Builder $query) use ($order) {
+            // Ordering
+            ->when($order, function ($query) use ($order) {
                 $query->orderBy($order['orderBy'], $order['orderDir']);
             })
-            ->get();
+            // Pagination
+            ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
 
-        $total = $applications->count() > 0 ? $applications->first()->total : 0;
-
-        $applications = $applications->map(function ($application) {
-            return $this->makeEntity($application);
-        });
-
-        return new LengthAwarePaginator($applications, $total, $limit['limit'], $limit['offset']);
+        return $applications;
     }
 
     /**

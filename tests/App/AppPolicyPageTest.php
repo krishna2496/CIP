@@ -73,16 +73,42 @@ class AppPolicyPageTest extends TestCase
     public function it_should_return_policy_page_detail_by_slug()
     {
         $connection = 'tenant';
-        $policyPage = factory(\App\Models\PolicyPage::class)->make();
-        $policyPage->setConnection($connection);
-        $policyPage->save();
-
-        $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+     
+        $slug = str_random(20);
+        $params = [
+            'page_details' =>
+                [
+                'slug' => $slug,
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'data' => [
+                'page_id',
+            ],
+            'message',
+            'status',
+        ]);
+
+        DB::setDefaultConnection('mysql');
         
-        $slug = $policyPage->slug;
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/'.$slug, ['token' => $token])
           ->seeStatusCode(200)
@@ -92,12 +118,16 @@ class AppPolicyPageTest extends TestCase
                 "page_id",
                 "slug",
                 "status",
-                "pages"
+                "pages" => [
+                    [
+                        "sections"
+                    ]
+                ]
             ],
             "message"
         ]);
         $user->delete();
-        $policyPage->delete();
+        App\Models\PolicyPage::where('slug', $slug)->delete();
     }
 
     /**

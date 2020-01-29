@@ -23,6 +23,7 @@ trait MissionTransformable
         int $defaultTenantLanguage,
         string $timezone
     ): Mission {
+       
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
         }
@@ -71,7 +72,6 @@ trait MissionTransformable
         }
         unset($mission['goalMission']);
         unset($mission['timeMission']);
-
         $mission['achieved_goal']  = $mission['achieved_goal'] ?? '';
         $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
         $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
@@ -82,7 +82,10 @@ trait MissionTransformable
         unset($mission['missionApplication']);
         
         if (isset($mission['availability'])) {
-            $mission['availability_type']  = $mission['availability']['type'];
+            $arrayKey = array_search($languageCode, array_column($mission['availability']['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $mission['availability_type'] = $mission['availability']['translations'][$arrayKey]['title'];
+            }
             unset($mission['availability']);
         }
         // Set seats_left or already_volunteered
@@ -175,6 +178,23 @@ trait MissionTransformable
                 }
             }
         }
+        
+        $mission['city_name'] = $mission['city']['name'];
+
+        //Get city name from translation
+        $cityTranslation = $mission['city']->languages->toArray();
+        if ($cityTranslation) {
+            $mission['city_name'] = $cityTranslation[0]['name'] ?? '';
+            $cityTranslationkey = '';
+            if (array_search($languageId, array_column($cityTranslation, 'language_id')) !== false) {
+                $cityTranslationkey = array_search($languageId, array_column($cityTranslation, 'language_id'));
+            }
+
+            if ($cityTranslationkey !== '') {
+                $mission['city_name'] = $cityTranslation[$cityTranslationkey]['name'];
+            }
+        }
+        unset($mission['city']->languages);
         unset($mission['missionSkill']);
         return $mission;
     }

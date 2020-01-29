@@ -12,6 +12,11 @@ class UserTest extends TestCase
      */
     public function it_should_create_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -24,8 +29,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityId,
+                'country_id' => $countryDetail->country_id,
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -39,7 +44,8 @@ class UserTest extends TestCase
             'message',
             'status',
         ]);
-        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();
+        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();        
+        
     }
 
     /**
@@ -73,21 +79,9 @@ class UserTest extends TestCase
                     "why_i_volunteer",
                     "employee_id",
                     "department",
-                    "city_id",
-                    "country_id",
                     "profile_text",
                     "linked_in_url",
                     "status",
-                    "city" => [
-                        "city_id",
-                        "name",
-                        "country_id"
-                    ],
-                    "country" => [
-                        "country_id",
-                        "name",
-                        "ISO"
-                    ],
                     "timezone" => [
                         "timezone_id",
                         "timezone",
@@ -147,21 +141,9 @@ class UserTest extends TestCase
                 "why_i_volunteer",
                 "employee_id",
                 "department",
-                "city_id",
-                "country_id",
                 "profile_text",
                 "linked_in_url",
                 "status",
-                "city" => [
-                    "city_id",
-                    "name",
-                    "country_id"
-                ],
-                "country" => [
-                    "country_id",
-                    "name",
-                    "ISO"
-                ],
                 "timezone" => [
                     "timezone_id",
                     "timezone",
@@ -207,6 +189,11 @@ class UserTest extends TestCase
      */
     public function it_should_update_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+        
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -218,8 +205,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -238,7 +225,8 @@ class UserTest extends TestCase
             'message',
             'status',
             ]);
-        $user->delete();
+        $user->delete();        
+        
     }
     
     /**
@@ -249,6 +237,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_user_not_found_on_update()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+        
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -260,8 +253,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -282,6 +275,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
+        
     }
 
     /**
@@ -341,6 +335,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_data_is_empty_for_create_user()
     {
+        
         $params = [
                 'first_name' => '',
                 'last_name' => '',
@@ -352,8 +347,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => '',
                 'employee_id' => '',
                 'department' => '',
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => '',
+                'country_id' => '',
                 'profile_text' => '',
                 'linked_in_url' => ''
             ];
@@ -381,6 +376,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_email_is_invalid_for_create_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+        
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -393,8 +393,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityId,
+                'country_id' => $countryDetail->country_id,
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -411,6 +411,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
+        
     }
 
     /**
@@ -449,6 +450,11 @@ class UserTest extends TestCase
      */
     public function it_should_update_user_without_email_update()
     {
+       
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -459,8 +465,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -480,6 +486,7 @@ class UserTest extends TestCase
             'status',
             ]);
         $user->delete();
+        
     }
 
     /**
@@ -703,6 +710,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_email_is_exist_for_create_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -720,8 +732,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityId,
+                'country_id' => $countryDetail->country_id,
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -739,6 +751,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
+        
     }
 
     /**
@@ -773,6 +786,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_language_id_is_invalid_for_create_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+            
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -785,8 +803,8 @@ class UserTest extends TestCase
                 'why_i_volunteer' => str_random(10),
                 'employee_id' => str_random(10),
                 'department' => str_random(10),
-                'city_id' => 1,
-                'country_id' => 233,
+                'city_id' => $cityId,
+                'country_id' => $countryDetail->country_id,
                 'profile_text' => str_random(10),
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
@@ -803,6 +821,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
+        
     }
 
     /**
@@ -814,6 +833,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_for_invalid_data_on_update_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+            
         $params = [
             'first_name' => '',
             'last_name' => str_random(10),
@@ -825,8 +849,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -849,6 +873,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
+        
     }
  
         /**
@@ -860,6 +885,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_for_invalid_language_id_on_update_user()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+            
         $params = [
             'last_name' => str_random(10),
             'email' => str_random(10).'@email.com',
@@ -870,8 +900,8 @@ class UserTest extends TestCase
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
-            'city_id' => 1,
-            'country_id' => 233,
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
@@ -894,6 +924,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
+        
     }
 
     /**
@@ -971,5 +1002,38 @@ class UserTest extends TestCase
     {
         $this->get('users/', [])
           ->seeStatusCode(401);
+    }
+
+    /**
+     * @test
+     *
+     * Returns activity logs
+     *
+     * @return void
+     */
+    public function it_should_return_activity_logs()
+    {
+        $this->get("logs?from_date=".date('Y-m-d')."&to_date=".date('Y-m-d'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?type=".config("constants.activity_log_types.AUTH"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?action=".config("constants.activity_log_actions.CREATED"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?user_type=".config("constants.activity_log_user_types.API"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?users=1", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        DB::setDefaultConnection('mysql');
+
+        $this->get("logs?type=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
     }
 }

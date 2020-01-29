@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Notification type controller
+/*!
+This controller is responsible for handling notification type listing and store/update operations.
+ */
 class NotificationTypeController extends Controller
 {
     use RestExceptionHandlerTrait;

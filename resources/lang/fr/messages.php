@@ -123,7 +123,7 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
-        'MESSAGE_TENANT_OPTION_CREATED' => 'Image téléchargée avec succès',
+        'MESSAGE_IMAGE_UPLOADED_SUCCESSFULLY' => 'Image téléchargée avec succès',
         'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'Statistiques du tableau de bord répertoriées avec succès',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_NEWS_CATEGORY_LISTING' => 'Catégorie de nouvelles répertoriée avec succès',
@@ -134,9 +134,9 @@ return [
         'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
         'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
         'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
-        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found successfully',
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
-        'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
+        'STORY_ADDED_SUCCESSFULLY' => 'Histoire ajoutée avec succès',
         'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
         'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
         'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
@@ -147,10 +147,10 @@ return [
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
         
         'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
-        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
-        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'message envoyé avec succès',
         'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages envoyés avec succès',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
@@ -166,7 +166,20 @@ return [
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message lu avec succès',
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
-        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé',
+        'MESSAGE_AVAILABILITY_LISTING' => 'Disponibilité listée avec succès',
+        'MESSAGE_AVAILABILITY_CREATED' => 'Disponibilité créée avec succès',
+        'MESSAGE_AVAILABILITY_DELETED' => 'Disponibilité supprimée avec succès',
+        'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
+        'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
+        'MESSAGE_COUNTRY_CREATED' => 'Pays créé avec succès',
+        'MESSAGE_CITY_CREATED' => 'Une ville créée avec succès',
+        'MESSAGE_MISSION_MEDIA_DELETED' => 'Le média de mission a été supprimé avec succès',
+        'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Document de mission supprimé avec succès',
+        'MESSAGE_COUNTRY_DELETED' => 'Pays supprimé avec succès',
+        'MESSAGE_COUNTRY_UPDATED' => 'Pays mis à jour avec succès',
+        'MESSAGE_CITY_DELETED' => 'La ville a bien été supprimée',
+        'MESSAGE_CITY_UPDATED' => 'La ville a été mise à jour avec succès',
     ],
 
         
@@ -202,7 +215,6 @@ return [
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Données d\'application non valides ou paramètre manquant',
         'ERROR_INVALID_MISSION_DATA' => 'Données de mission non valides ou paramètre manquant',
         'ERROR_MISSION_NOT_FOUND' => 'La mission demandée n\'existe pas',
-        'ERROR_MISSION_DELETION' => 'La suppression de la mission a échoué',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'La création de mission a échoué. Veuillez vérifier les paramètres d\'entrée',
         'ERROR_NO_MISSION_FOUND' => 'La mission ne se trouve pas dans le système',
         'ERROR_THEME_INVALID_DATA' => 'La création du thème de la mission a échoué. Veuillez vérifier les paramètres d\'entrée',
@@ -215,22 +227,26 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'L\'application de mission demandée n\'existe pas',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'La création de la note de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'La création de commentaire de mission a échoué. Veuillez vérifier les paramètres d`entrée',
-        'SKILL_LIMIT' => 'Désolé, vous ne pouvez pas ajouter plus de '. config('constants.SKILL_LIMIT').' compétences',
-        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Données de média de mission non valides',
-        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
+        'ERROR_SKILL_LIMIT' => 'Désolé, vous ne pouvez pas ajouter plus de '. config('constants.SKILL_LIMIT').' compétences',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
+        'ERROR_MISSION_MEDIA_NOT_FOUND' => 'Média de mission introuvable dans le système',
+        'ERROR_MISSION_DOCUMENT_NOT_FOUND' => 'Document de mission non trouvé dans le système',
+        'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => 'L\'image par défaut de la mission ne peut pas être supprimée. Veuillez définir une autre image comme image par défaut et réessayer.',
+        'ERROR_MEDIA_ID_DOSENT_EXIST' => 'L\'id  de média n\'existe pas',
+        'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'L\'id du média n\'est pas lié à la mission',
+        'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'L\'id de document n\'existe pas',
+        'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'L\'identifiant du document n\'est pas lié à la mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'Clé API et clé secrète requises',
-        'ERROR_EMAIL_NOT_EXIST' => 'L\'adresse email n\'existe pas dans le système',
+        'ERROR_EMAIL_NOT_EXIST' => 'Si votre email existe dans le système, vous recevrez un email expliquant comment réinitialiser votre mot de passe',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Le lien de réinitialisation du mot de passe a expiré ou n\'est pas valide',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Données d\'entrée non valides',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Une erreur s\'est produite lors de l\'envoi du lien de réinitialisation du mot de passe.',
         'ERROR_INVALID_DETAIL' => 'Mot de passe de réinitialisation ou adresse électronique non valide',
-        'ERROR_INVALID_PASSWORD' => 'Mot de passe incorrect',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Domaine locataire non trouvé',
         'ERROR_TOKEN_EXPIRED' => 'Le jeton fourni a expiré',
         'ERROR_IN_TOKEN_DECODE' => 'Une erreur lors du décodage du jeton',
@@ -239,36 +255,20 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURRED' => 'Une erreur est survenue',
         'ERROR_INVALID_JSON' => 'Format Json invalide',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Erreur Interne du Serveur',
         
         // Custom erro code for other errors - 800000 - 809999
-        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'Une erreur est survenue lors de la mise à jour des couleurs dans la base de données.',
-        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => 'Échec du téléchargement du fichier de S3 au local',
-        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Une erreur s\'est produite lors de la compilation des fichiers SCSS pour mettre à jour les modifications SCSS.',
-        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Une erreur est survenue lors du stockage du fichier CSS compilé sur le stockage local.',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'Aucun fichier trouvé à télécharger sur le compartiment s3',
-        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
-        'ERROR_FAILED_TO_RESET_STYLING' => 'Échec de la réinitialisation des paramètres de style',
-        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Dossier de thème par défaut introuvable sur le serveur',
-        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'Aucun fichier d\'actif trouvé sur S3 pour le locataire',
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Dossier du locataire non trouvé',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'Aucun fichier trouvé dans le dossier des actifs S3 pour ce locataire',
-        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Fichier SCSS d\'amorçage introuvable lors de la compilation des fichiers SCSS',
         'ERROR_SETTING_FOUND' => 'Paramètre non trouvé',
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Fichier image introuvable sur le serveur S3',
-        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'Une erreur lors du téléchargement de l\'image sur S3',
-        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'Une erreur lors du téléchargement de l\'image de S3 sur le serveur',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Fichier d\'entrée invalide',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif',
         'ERROR_COUNTRY_NOT_FOUND' => 'Le pays demandé n\'existe pas',
         'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
-        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
 
@@ -296,7 +296,6 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
-        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
         'ERROR_COPY_DECLINED_STORY' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
     
@@ -310,5 +309,18 @@ return [
 
         // For notification module
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification non trouvée dans le système',
+
+        // For availability module
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Pays non trouvé dans le système',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'Ville non trouvée dans le système',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cette ville car elle est liée à la mission ou à l\'utilisateur',
+
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer ce pays car il est lié à la mission ou à l\'utilisateur'
     ]
 ];

@@ -20,7 +20,7 @@ class UserFilter extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'user_filter_id';
 
     /**
      * The attributes that are mass assignable.

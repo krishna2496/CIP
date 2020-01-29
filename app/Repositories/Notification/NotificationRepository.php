@@ -81,17 +81,6 @@ class NotificationRepository implements NotificationInterface
         ->where(['notification_type' => $type])
         ->value('notification_type_id');
     }
-
-    /**
-     * Send notification
-     *
-     * @param array $notificationData
-     * @return App\Models\Notification
-     */
-    public function createNotification(array $notificationData): Notification
-    {
-        return $this->notification->create($notificationData);
-    }
     
     /**
      * Check if user notification is enabled or not

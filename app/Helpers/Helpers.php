@@ -43,7 +43,7 @@ class Helpers
             if ((env('APP_ENV') === 'local' || env('APP_ENV') === 'testing')) {
                 return env('DEFAULT_TENANT');
             } else {
-                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+                return parse_url($request->headers->all()['referer'][0])['host'];
             }
         }
     }
@@ -74,10 +74,10 @@ class Helpers
     {
         // Connect master database to get language details
         $tenantName = $this->getSubDomainFromRequest($request);
-        $this->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql');
         $tenant = $this->db->table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
         // Connect tenant database
-        $this->switchDatabaseConnection('tenant', $request);
+        $this->switchDatabaseConnection('tenant');
 
         return $tenant;
     }
@@ -86,11 +86,10 @@ class Helpers
      * Switch database connection runtime
      *
      * @param string $connection
-     * @param \Illuminate\Http\Request $request
      * @return void
      * @throws Exception
      */
-    public function switchDatabaseConnection(string $connection, Request $request)
+    public function switchDatabaseConnection(string $connection)
     {
         // Set master connection
         $this->db->connection('mysql')->getPdo();
@@ -132,12 +131,10 @@ class Helpers
      */
     public function getUserTimeZoneDate(string $date): string
     {
-        if (config('constants.TIMEZONE') !== '' && $date !== null) {
-            if (!($date instanceof Carbon)) {
-                $date = Carbon::parse($date);
-            }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
+        if (!($date instanceof Carbon)) {
+            $date = Carbon::parse($date);
         }
+        return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
     }
 
     /**
@@ -213,7 +210,7 @@ class Helpers
     {
         $tenant = $this->getTenantDetail($request);
         // Connect master database to get tenant settings
-        $this->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql');
         
         $tenantSetting = $this->db->table('tenant_has_setting')
         ->select(
@@ -236,7 +233,7 @@ class Helpers
         ->get();
 
         // Connect tenant database
-        $this->switchDatabaseConnection('tenant', $request);
+        $this->switchDatabaseConnection('tenant');
         
         return $tenantSetting;
     }
@@ -250,7 +247,7 @@ class Helpers
     public function getDomainFromUserAPIKeys(Request $request): string
     {
         // Check basic auth passed or not
-        $this->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql');
         // authenticate api user based on basic auth parameters
         $apiUser = $this->db->table('api_user')
                     ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
@@ -261,7 +258,7 @@ class Helpers
                     ->whereNull('tenant.deleted_at')
                     ->first();
 
-        $this->switchDatabaseConnection('tenant', $request);
+        $this->switchDatabaseConnection('tenant');
         return $apiUser->name;
     }
 

@@ -166,6 +166,11 @@ class AppNotificationTest extends TestCase
      */
     public function it_should_list_notifications()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -183,6 +188,15 @@ class AppNotificationTest extends TestCase
         $params = [
             "settings" => $notificationTypeArray
         ];
+
+        // Get setting id from master table
+        DB::setDefaultConnection('mysql');
+        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+
+        DB::setDefaultConnection('tenant');
+        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
 
         // Save user notification settings
         DB::setDefaultConnection('mysql');
@@ -229,7 +243,10 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(200);
-
+        
+        DB::setDefaultConnection('tenant');
+        App\Models\Mission::whereNull("deleted_at")->delete();
+        
         // Create goal mission
         $params = [
             "organisation" => [
@@ -238,8 +255,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -276,28 +293,16 @@ class AppNotificationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
-                ],
-                [
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => ""
-                ]
-            ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
-            "media_videos"=> [[
-                "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -414,6 +419,12 @@ class AppNotificationTest extends TestCase
         $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
+        DB::setDefaultConnection('tenant');
+        $connection = 'tenant';
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+        
         // Add news
         DB::setDefaultConnection('tenant');
         $params = [
@@ -421,7 +432,7 @@ class AppNotificationTest extends TestCase
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => \App\Models\NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -438,6 +449,7 @@ class AppNotificationTest extends TestCase
                 ]
             ]
         ];
+
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
@@ -479,8 +491,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -497,7 +509,8 @@ class AppNotificationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
@@ -545,8 +558,8 @@ class AppNotificationTest extends TestCase
         ->seeStatusCode(201);
 
         // Submit timesheet for approval
-        $timesheet = App\Models\Timesheet::where("mission_id", $mission->mission_id)->first();
-        $timeMissionTimesheet = App\Models\Timesheet::where("mission_id", $timeMissionId)->first();
+        $timesheet = App\Models\Timesheet::where("mission_id", $mission->mission_id)->orderBy('timesheet_id', 'DESC')->first();
+        $timeMissionTimesheet = App\Models\Timesheet::where("mission_id", $timeMissionId)->orderBy('timesheet_id', 'DESC')->first();
         $params = [
             'timesheet_entries' => [
                 [
@@ -557,14 +570,14 @@ class AppNotificationTest extends TestCase
                 ]
             ]
         ];
+
         DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200);
 
         // Update timesheet status
         $params = [
-            "status_id" => \App\Models\TimesheetStatus::
-            where('status', config('constants.timesheet_status.APPROVED'))->first()->timesheet_status_id
+            "status" => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
         ];
         
         DB::setDefaultConnection('mysql');
@@ -580,16 +593,20 @@ class AppNotificationTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->get('app/notifications', ['token' => $token])
         ->seeStatusCode(200);
-
+                
+        // Get notification of to user
+        $token = Helpers::getJwtToken($toUser->user_id , env('DEFAULT_TENANT'));        
         DB::setDefaultConnection('mysql');
-        $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/notifications', ['token' => $token])
-        ->seeStatusCode(200);
+        $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
+        $this->seeStatusCode(200);
 
         $user->delete();
         $toUser->delete();
         $mission->delete();
         $notification->delete();
+        $newsCategory->delete();
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        App\Models\TenantSetting::where(['setting_id' => $settings[0]->tenant_setting_id])->delete();
     }
 
     /**
@@ -601,6 +618,11 @@ class AppNotificationTest extends TestCase
      */
     public function it_should_update_notifications_status()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -673,8 +695,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -711,28 +733,32 @@ class AppNotificationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ],
                 [
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => ""
+                    "default" => "",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
@@ -770,6 +796,28 @@ class AppNotificationTest extends TestCase
         $this->post('app/notification/read-unread/'.rand(10000000, 50000000), [], ['token' => $token])
         ->seeStatusCode(404);
 
+        // Update notification settings
+        DB::setDefaultConnection('mysql');
+        $notificationTypeArray = [];
+
+        foreach ($notificationTypes as $notificationType) {
+            $notificationTypeArray[] = ["notification_type_id" => $notificationType['notification_type_id'], "value" => 0];
+        }
+
+        $params = [
+            "settings" => $notificationTypeArray
+        ];
+
+        // Save user notification settings
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/user-notification-settings/update', $params, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
         $user->delete();
         $mission->delete();
     }
@@ -783,6 +831,11 @@ class AppNotificationTest extends TestCase
      */
     public function it_should_clear_notifications()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -855,8 +908,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -893,28 +946,32 @@ class AppNotificationTest extends TestCase
             ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => "1"
+                    "default" => "1",
+                    "sort_order" => "1"
                 ],
                 [
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                    "default" => ""
+                    "default" => "",
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
+                    "sort_order" => "1"
                 ]
             ],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
-                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
+                "sort_order" => "1"
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(100, 1000),
-            "total_seats" => rand(1, 1000),
-            "application_deadline" => "2019-07-28 11:40:00",
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
             "availability_id" => 1,
