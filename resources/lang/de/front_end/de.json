@@ -370,7 +370,6 @@
         "max_video_upload": "Maximum 20 URL de la vidéo peut être ajouté",
 		"duplicate_video_url": "Les doublons d'URL de vidéos ne sont pas autorisés"
     },
-
     "export_timesheet_file_names": {
         "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xlsx",
         "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xlsx",
