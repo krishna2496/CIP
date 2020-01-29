@@ -256,10 +256,7 @@ class MissionRepository implements MissionInterface
             foreach ($request->mission_detail as $value) {
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
-                                        'language_id' => $language->language_id,
-                                        'short_description' => (isset($value['short_description'])) ?
-                                        $value['short_description'] : null,
-                                        'objective' => $value['objective'] ?? null
+                                        'language_id' => $language->language_id
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
@@ -269,6 +266,12 @@ class MissionRepository implements MissionInterface
                 }
                 if (array_key_exists('section', $value)) {
                     $missionLanguage['description'] = $value['section'];
+                }
+                if (array_key_exists('short_description', $value)) {
+                    $missionLanguage['short_description'] = $value['short_description'];
+                }
+                if (array_key_exists('objective', $value)) {
+                    $missionLanguage['objective'] = $value['objective'];
                 }
 
                 $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
