@@ -203,13 +203,13 @@ class S3Helper
         $languageFilePath = $tenantName.'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/'.
         $code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
         $languageFileUrl = Storage::disk('s3')->url($languageFilePath);
+		
+		if (!Storage::disk('s3')->exists($languageFilePath)) {
+			$defaultLanguagePath = config('constants.AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME').'/'.
+			$code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
+			$languageFileUrl = Storage::disk('s3')->url($defaultLanguagePath);
+		}
 
-        if (!Storage::disk('s3')->exists($languageFilePath)) {
-            throw new FileNotFoundException(
-                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3'),
-                config('constants.error_codes.ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3')
-            );
-        }
         return $languageFileUrl;
     }
 }
