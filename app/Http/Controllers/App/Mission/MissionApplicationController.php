@@ -137,9 +137,11 @@ class MissionApplicationController extends Controller
         );
 
 
-        // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
-        // THIS IS REALLY DIRTY CODE, but we have no choice for the moment for getting the tenant_id.
-        // A service who will implement that will be truly appreciated:
+        /*
+         * Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
+         * THIS IS REALLY DIRTY CODE, but we have no choice for the moment for getting the tenant_id.
+         * A service who will implement that will be truly appreciated:
+         */
         $domain = $this->helpers->getSubDomainFromRequest($request);
         $this->helpers->switchDatabaseConnection('mysql', $request);
         $db = app()->make('db');
@@ -156,7 +158,7 @@ class MissionApplicationController extends Controller
             'applied_at' => $missionApplication->applied_at,
             'approval_status' => $missionApplication->approval_status
         ];
-        (new Amqp)->publish('volunteerApplications', json_encode($missionForOptimy) , ['queue' => 'volunteerApplications']);
+        (new Amqp)->publish('ciSynchronizer', json_encode($missionForOptimy) , ['queue' => 'volunteerApplications']);
 
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
