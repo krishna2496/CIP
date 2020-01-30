@@ -145,35 +145,70 @@ class LanguageController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT')
             );
         }
-		
-		// Check for valid language code
-		$tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
-		if (!in_array($fileName, $tenantLanguageCodes->toArray())) {
-			return $this->responseHelper->error(
+        
+        // Check for valid language code
+        $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
+        if (!in_array($fileName, $tenantLanguageCodes->toArray())) {
+            return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID'),
                 trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID')
             );
-		}
-		
+        }
+
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
-        //Upload file on S3
-		set_time_limit(0);
-		$context = stream_context_create(array('http'=> array(
-			'timeout' => 1200
-		)));
-		
-		$disk = Storage::disk('s3');
-		$documentName = $fileName . '.' . $fileExtension;
-		$documentPath =  $tenantName .'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/' . $documentName;
-		;
 
-		$disk->put($documentPath, @file_get_contents($file, false, $context));
-		$pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
-		. env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
+        //Get default file from url
+        $defaultFileUrl = $this->s3helper->getDefaultLanguageFile($fileName);
+        $defaultFileContent = json_decode(file_get_contents($defaultFileUrl));
+        $keyNotExists = array();
+        $keyValueNotExists = array();
+        $missingKeyValueString = '';
+        $userLanguageFile = json_decode(file_get_contents($file->getRealPath()));
+        //Code to check file keywords
+        foreach ($defaultFileContent as $index => $data) {
+            if (isset($userLanguageFile->$index)) {
+                foreach ($defaultFileContent->$index as $key => $value) {
+                    if (!array_key_exists($key, $userLanguageFile->$index)) {
+                        $keyNotExists[] = $key;
+                    } elseif (trim($userLanguageFile->$index->$key) === "") {
+                        $keyValueNotExists[] = $key;
+                    }
+                }
+            } else {
+                $keyNotExists[] = $index;
+            }
+        }
+
+        if (!empty($keyNotExists)) {
+            $missingKeyValueString.= ' MISSING_KEYS: '.implode(", ", $keyNotExists).' ';
+        }
+        if (!empty($keyValueNotExists)) {
+            $missingKeyValueString.= ' MISSING_VALUES: '.implode(",", $keyValueNotExists);
+        }
+        if (isset($missingKeyValueString) && $missingKeyValueString !== '') {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INCOMPLETE_LANGUAGE_FILE'),
+                trans('messages.custom_error_message.ERROR_INCOMPLETE_LANGUAGE_FILE').$missingKeyValueString
+            );
+        }
+
+        //Upload file on S3
+        set_time_limit(0);
+        $context = stream_context_create(array('http'=> array(
+            'timeout' => 1200
+        )));
+        
+        $disk = Storage::disk('s3');
+        $documentName = $fileName . '.' . $fileExtension;
+        $documentPath =  $tenantName .'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/' . $documentName;
+        $disk->put($documentPath, @file_get_contents($file, false, $context));
+        $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+        . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 
         $fileDetail = array();
         $fileDetail['file_name'] = $documentName;
