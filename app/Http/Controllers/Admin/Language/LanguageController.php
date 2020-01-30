@@ -82,6 +82,34 @@ class LanguageController extends Controller
      */
     public function fetchLanguageFile(Request $request): JsonResponse
     {
+		// Server side validations
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                "code" => "required|max:2|min:2"
+            ]
+        );
+		
+		// If post parameter have any missing parameter
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                $validator->errors()->first()
+            );
+        }
+		
+		// Check for valid language code
+		if (!$this->languageHelper->isValidTenantLanguageCode($request, $request->code)) {
+			return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+            );
+		}
+		
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
@@ -147,8 +175,7 @@ class LanguageController extends Controller
         }
 		
 		// Check for valid language code
-		$tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
-		if (!in_array($fileName, $tenantLanguageCodes->toArray())) {
+		if (!$this->languageHelper->isValidTenantLanguageCode($request, $fileName)) {
 			return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
