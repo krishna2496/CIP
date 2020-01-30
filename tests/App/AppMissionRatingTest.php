@@ -28,7 +28,7 @@ class AppMissionRatingTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/rating', $params, ['token' => $token])
-          ->seeStatusCode(422);
+          ->seeStatusCode(201);
         $user->delete();
         $mission->delete();
     }
