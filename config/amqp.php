@@ -19,10 +19,10 @@ return [
     'properties' => [
 
         'production' => [
-            'host'                  => 'optimyapp-mbus',
-            'port'                  => 5672,
-            'username'              => 'guest',
-            'password'              => 'guest',
+            'host'                  => env('RABBITMQ_HOST', 'optimyapp-mbus'),
+            'port'                  => env('RABBITMQ_PORT', 5672),
+            'username'              => env('RABBITMQ_USERNAME', 'guest'),
+            'password'              => env('RABBITMQ_PASSWORD', 'guest'),
             'vhost'                 => '/',
             'connect_options'       => [],
             'ssl_options'           => [],
