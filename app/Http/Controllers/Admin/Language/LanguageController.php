@@ -210,7 +210,7 @@ class LanguageController extends Controller
         }
 
         if (!empty($keyNotExists)) {
-            $missingKeyValueString.= ' MISSING_KEYS: '.implode(", ", $keyNotExists).' ';
+            $missingKeyValueString.= ' MISSING_KEYS: '.implode(", ", $keyNotExists).'.';
         }
         if (!empty($keyValueNotExists)) {
             $missingKeyValueString.= ' MISSING_VALUES: '.implode(",", $keyValueNotExists);
