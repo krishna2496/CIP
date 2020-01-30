@@ -175,8 +175,7 @@ class LanguageController extends Controller
         }
         
         // Check for valid language code
-        $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
-        if (!in_array($fileName, $tenantLanguageCodes->toArray())) {
+        if (!$this->languageHelper->isValidTenantLanguageCode($request, $fileName)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
