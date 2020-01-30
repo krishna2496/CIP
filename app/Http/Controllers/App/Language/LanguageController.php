@@ -5,6 +5,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use Illuminate\Http\Response;
 
 //!  Language controller
 /*!
@@ -21,18 +24,31 @@ class LanguageController extends Controller
      * @var App\Helpers\Helpers
      */
     private $helpers;
+	
+	/**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+	
+	/**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
 
     /**
      * Create a new controller instance.
      *
      * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Helpers\Helpers $helpers
+	 * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
-    public function __construct(S3Helper $s3helper, Helpers $helpers)
+    public function __construct(S3Helper $s3helper, Helpers $helpers, LanguageHelper $languageHelper, ResponseHelper $responseHelper)
     {
         $this->s3helper = $s3helper;
         $this->helpers = $helpers;
+		$this->languageHelper = $languageHelper;
+		$this->responseHelper = $responseHelper;
     }
 
     /**
@@ -40,14 +56,24 @@ class LanguageController extends Controller
     *
     * @param \Illuminate\Http\Request $request
     * @param string $language
-    * @return Array
     */
-    public function fetchLanguageFile(Request $request, String $language) : array
+    public function fetchLanguageFile(Request $request, String $language)
     {
-        $response = array();
+        // Check for valid language code
+		$tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
+		if (!in_array($language, $tenantLanguageCodes->toArray())) {
+			return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+            );
+		}
+		
+		$response = array();
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
+		
         try {
             $filePath = $this->s3helper->getLanguageFile($tenantName, $language);
         } catch (BucketNotFoundException $e) {
