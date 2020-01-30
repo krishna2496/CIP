@@ -276,6 +276,8 @@ return [
         'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => 'Dossier des langues des locataires introuvable',
         'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => 'Fichier de langue du locataire introuvable',
         'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => 'Le fichier doit être au format json',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Format JSON non valide dans le fichier téléchargé.', 
+        'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Fichier de langue incomplet.',
         'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Format JSON non valide dans le fichier téléchargé.',
 		'ERROR_TENANT_LANGUAGE_INVALID' => 'Code de langue du locataire ou nom de fichier non valide.',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Code de langue du locataire non valide.',

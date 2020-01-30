@@ -212,4 +212,17 @@ class S3Helper
 
         return $languageFileUrl;
     }
+
+    /**
+     * Get default language file url from S3 bucket
+     *
+     * @param string $code
+     */
+    public function getDefaultLanguageFile(string $code)
+    {
+        $defaultLanguagePath = config('constants.AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME').'/'.
+        $code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
+        $languageFileUrl = Storage::disk('s3')->url($defaultLanguagePath);
+        return $languageFileUrl;
+    }
 }
