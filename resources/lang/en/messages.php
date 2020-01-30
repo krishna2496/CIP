@@ -290,6 +290,7 @@ return [
         'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => 'The file must be of json format',
         'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Invalid JSON format in uploaded file.',
         'ERROR_TENANT_LANGUAGE_INVALID' => 'Invalid tenant language code or file name.',
+        'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Invalid tenant language code.',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
