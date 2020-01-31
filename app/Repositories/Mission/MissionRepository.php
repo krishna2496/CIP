@@ -254,9 +254,13 @@ class MissionRepository implements MissionInterface
         // Add/Update mission title
         if (isset($request->mission_detail)) {
             foreach ($request->mission_detail as $value) {
+                $missionLanguageDeleteFlag = 0;
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
-                                        'language_id' => $language->language_id
+                                        'language_id' => $language->language_id,
+                                        'short_description' => (isset($value['short_description'])) ?
+                                        $value['short_description'] : null,
+                                        'objective' => $value['objective'] ?? null
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
@@ -265,18 +269,18 @@ class MissionRepository implements MissionInterface
                     $missionLanguage['title'] = $value['title'];
                 }
                 if (array_key_exists('section', $value)) {
-                    $missionLanguage['description'] = $value['section'];
-                }
-                if (array_key_exists('short_description', $value)) {
-                    $missionLanguage['short_description'] = $value['short_description'];
-                }
-                if (array_key_exists('objective', $value)) {
-                    $missionLanguage['objective'] = $value['objective'];
+                    if (empty($value['section'])) {
+                        $this->modelsService->missionLanguage->deleteMissionLanguage($id, $language->language_id);
+                        $missionLanguageDeleteFlag = 1;
+                    } else {
+                        $missionLanguage['description'] = $value['section'];
+                    }
                 }
 
-                $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
-                'language_id' => $language->language_id], $missionLanguage);
-                    
+                if ($missionLanguageDeleteFlag !== 1) {
+                    $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
+                    'language_id' => $language->language_id], $missionLanguage);
+                }
                 unset($missionLanguage);
             }
         }
