@@ -56,12 +56,18 @@
                             </b-form-group>
                             <b-form-group>
                                 <label>{{languageData.label.timezone}}*</label>
-                                <CustomFieldDropdown v-model="profile.time"
-                                    :errorClass="submitted && $v.profile.time.$error" :defaultText="timeDefault"
-                                    :optionList="timeList" @updateCall="updateTime" translationEnable="false" />
-                                <div v-if="submitted && !$v.profile.time.required" class="invalid-feedback">
-                                    {{ languageData.errors.timezone_required }}
-                                </div>
+                                 <model-select 
+                                        class="search-dropdown"
+                                        v-bind:class="{'is-invalid' :submitted && $v.profile.time.$error}"
+                                        :options="timeList"
+                                        v-model="profile.time"
+                                        :placeholder="timeDefault"
+                                        @input="updateTime"
+                                    >
+                                    </model-select>
+                                    <div v-if="submitted && !$v.profile.time.required" class="invalid-feedback">
+                                        {{ languageData.errors.timezone_required }}
+                                    </div>
                             </b-form-group>
                         </div>
                     </b-col>
@@ -324,6 +330,7 @@
     import CustomField from "../components/CustomField";
     import store from "../store";
     import PictureInput from '../components/vue-picture-input'
+    import { ModelSelect } from 'vue-search-select'
     import {
         getUserDetail,
         changeUserPassword,
@@ -350,7 +357,8 @@
             CustomFieldDropdown,
             MultiSelect,
             PictureInput,
-            CustomField
+            CustomField,
+            ModelSelect
         },
         data() {
             return {
@@ -498,9 +506,7 @@
                 this.languageCode = this.userData.language_code_list[value.selectedId];
             },
             updateTime(value) {
-                this.timeDefault = value.selectedVal;
-                this.profile.time = value.selectedId;
-
+                this.profile.time = value;
             },
             updateCity(value) {
                 this.cityDefault = value.selectedVal;
@@ -658,8 +664,16 @@
                             
                             timezone().then(responseData => {
                                 if (responseData.error == false) {
-                                    this.timeList = responseData.data
-                                }
+                                    var array = [];
+
+                                    responseData.data.filter((data, index) => {
+                                        array.push({
+                                            'text': data[1],
+                                            'value': data[0]
+                                        })
+                                    })
+                                        this.timeList = array
+                                    }
 
                                 skill().then(responseData => {
                                     if (responseData.error == false) {
