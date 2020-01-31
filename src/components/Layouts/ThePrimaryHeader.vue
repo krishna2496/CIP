@@ -7,8 +7,8 @@
                             <img :src="$store.state.imagePath+'/assets/images/menu-ic.svg'" alt />
                         </b-link>
                     </div>
-                    <b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
-                        v-if="this.$store.state.isLoggedIn" @click.native="clearFilter"></b-navbar-brand>
+                    <b-navbar-brand :href="this.$store.state.logoRedirectUrl === 'home' ? hostUrl+'home' : this.$store.state.logoRedirectUrl" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
+                        v-if="this.$store.state.isLoggedIn" @click.native="clearFilter(this.$store.state.logoRedirectUrl)"></b-navbar-brand>
                     <b-navbar-brand :to="{ name: 'login' }"
                         :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" v-else>
                     </b-navbar-brand>
@@ -332,7 +332,8 @@
                     totalNotificationCount: 0,
                     isNotificationLoaded: false,
                     submitNewMissionUrl: '',
-                    isSubmitNewMissionSet: true
+                    isSubmitNewMissionSet: true,
+					hostUrl: ''
                 };
             },
             mounted() {
@@ -393,8 +394,8 @@
                     });
                 },
                 logout() {
-                    document.querySelector('body').classList.remove('small-header');
-                    this.$store.commit('logoutUser');
+                        document.querySelector('body').classList.remove('small-header');
+                        this.$store.commit('logoutUser');
                 },
                 menuBarclickHandler() {
 
@@ -435,10 +436,10 @@
                     });
                 },
 
-                async clearFilter() {
+                async clearFilter(value) {
                     if (store.state.isLoggedIn) {
                         this.$router.push({
-                            name: 'home'
+                            name: value
                         })
                         setTimeout(() => {
                             location.reload()
@@ -610,6 +611,7 @@
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.submitNewMissionUrl = store.state.submitNewMissionUrl
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
+				this.hostUrl = process.env.BASE_URL;
                 if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
                 }

@@ -106,6 +106,12 @@ Vue.filter('substring', function(value, data) {
     }
 });
 
+window.addEventListener('storage', function (e) {
+    if (event.key == 'logout-event') { 
+        location.reload();
+    }
+},false);
+
 Vue.mixin({
     methods: {
         settingEnabled(key) {
