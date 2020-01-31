@@ -65,7 +65,7 @@ class MissionLanguage extends Model
      */
     public function setDescriptionAttribute(array $value)
     {
-        $this->attributes['description'] = !empty($value) ? serialize($value) : null;
+        $this->attributes['description'] = serialize($value);
     }
     
     /**
