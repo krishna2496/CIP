@@ -351,6 +351,24 @@ class MissionController extends Controller
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
 
+        // Check for default language delete
+        if (isset($request->mission_detail)) {
+            foreach ($request->mission_detail as $value) {
+                if (array_key_exists('section', $value)) {
+                    if (empty($value['section'])) {
+                        if ($value['lang'] === $language->code) {
+                            return $this->responseHelper->error(
+                                Response::HTTP_UNPROCESSABLE_ENTITY,
+                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                config('constants.error_codes.ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED'),
+                                trans('messages.custom_error_message.ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED')
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
         $this->missionRepository->update($request, $id);
         
         // Set response data

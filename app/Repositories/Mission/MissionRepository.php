@@ -254,6 +254,7 @@ class MissionRepository implements MissionInterface
         // Add/Update mission title
         if (isset($request->mission_detail)) {
             foreach ($request->mission_detail as $value) {
+                $missionLanguageDeleteFlag = 0;
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
                                         'language_id' => $language->language_id
@@ -264,19 +265,25 @@ class MissionRepository implements MissionInterface
                 if (array_key_exists('title', $value)) {
                     $missionLanguage['title'] = $value['title'];
                 }
-                if (array_key_exists('section', $value)) {
-                    $missionLanguage['description'] = $value['section'];
-                }
                 if (array_key_exists('short_description', $value)) {
                     $missionLanguage['short_description'] = $value['short_description'];
                 }
                 if (array_key_exists('objective', $value)) {
                     $missionLanguage['objective'] = $value['objective'];
                 }
+                if (array_key_exists('section', $value)) {
+                    if (empty($value['section'])) {
+                        $this->modelsService->missionLanguage->deleteMissionLanguage($id, $language->language_id);
+                        $missionLanguageDeleteFlag = 1;
+                    } else {
+                        $missionLanguage['description'] = $value['section'];
+                    }
+                }
 
-                $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
-                'language_id' => $language->language_id], $missionLanguage);
-                    
+                if ($missionLanguageDeleteFlag !== 1) {
+                    $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
+                    'language_id' => $language->language_id], $missionLanguage);
+                }
                 unset($missionLanguage);
             }
         }

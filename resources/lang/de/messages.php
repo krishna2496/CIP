@@ -204,6 +204,7 @@ return [
         'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'DE: Media id is not linked to mission',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
+        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'DE: Default mission language cannot be deleted.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',

@@ -65,7 +65,7 @@ class MissionLanguage extends Model
      */
     public function setDescriptionAttribute(array $value)
     {
-		$this->attributes['description'] = !empty($value) ? serialize($value) : null;
+        $this->attributes['description'] = serialize($value);
     }
     
     /**
@@ -128,5 +128,17 @@ class MissionLanguage extends Model
         if ($value) {
             return unserialize($value);
         }
+    }
+
+    /**
+     * Delete mission language.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return bool
+     */
+    public function deleteMissionLanguage(int $missionId, int $languageId): bool
+    {
+        return static::where(['mission_id'=> $missionId, 'language_id' => $languageId])->delete();
     }
 }
