@@ -257,16 +257,19 @@ class MissionRepository implements MissionInterface
                 $missionLanguageDeleteFlag = 0;
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
-                                        'language_id' => $language->language_id,
-                                        'short_description' => (isset($value['short_description'])) ?
-                                        $value['short_description'] : null,
-                                        'objective' => $value['objective'] ?? null
+                                        'language_id' => $language->language_id
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
                 }
                 if (array_key_exists('title', $value)) {
                     $missionLanguage['title'] = $value['title'];
+                }
+                if (array_key_exists('short_description', $value)) {
+                    $missionLanguage['short_description'] = $value['short_description'];
+                }
+                if (array_key_exists('objective', $value)) {
+                    $missionLanguage['objective'] = $value['objective'];
                 }
                 if (array_key_exists('section', $value)) {
                     if (empty($value['section'])) {
