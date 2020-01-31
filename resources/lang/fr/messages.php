@@ -240,7 +240,7 @@ return [
         'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'L\'id du média n\'est pas lié à la mission',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'L\'id de document n\'existe pas',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'L\'identifiant du document n\'est pas lié à la mission',
-        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'La langue par défaut de la mission ne peut pas être supprimée. Veuillez définir une autre langue comme langue par défaut et réessayer.',
+        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'La langue de mission par défaut ne peut pas être supprimée.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
