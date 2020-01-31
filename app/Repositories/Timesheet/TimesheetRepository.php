@@ -279,14 +279,14 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param string $status
+     * @param Request $request
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(string $status, int $timesheetId): bool
+    public function updateTimesheet(Request $request, int $timesheetId): bool
     {
         return $this->timesheet->where('timesheet_id', $timesheetId)
-        ->update(['status' => $status]);
+        ->update(['status' => $request['status']]);
     }
 
     /** Update timesheet status on submit

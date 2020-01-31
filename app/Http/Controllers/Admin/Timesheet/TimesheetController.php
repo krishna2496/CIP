@@ -145,6 +145,8 @@ class TimesheetController extends Controller
     public function update(Request $request, $timesheetId): JsonResponse
     {
         try {
+            //TODO other validation for other fields, send notif only if isset status etc
+
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
@@ -163,7 +165,7 @@ class TimesheetController extends Controller
                 );
             }
             $this->timesheetRepository->find($timesheetId);
-            $this->timesheetRepository->updateTimesheetStatus($request->status, $timesheetId);
+            $this->timesheetRepository->updateTimesheet($request, $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
