@@ -135,6 +135,7 @@ class LanguageHelper
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
+		->whereNull('tenant_language.deleted_at')
         ->pluck('language.code', 'language.language_id');
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
@@ -223,4 +224,21 @@ class LanguageHelper
         }
         return $language;
     }
+	
+	/**
+     * Check language code is valid for tenant
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String $request
+     * @return Object
+     */
+	 public function isValidTenantLanguageCode(Request $request, string $languageCode)
+	 {
+		 $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
+		 if (!in_array($languageCode, $tenantLanguageCodes->toArray())) {
+			return false;
+		 } else {
+			 return true;
+		 }
+	 }
 }

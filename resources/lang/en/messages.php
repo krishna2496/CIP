@@ -188,10 +188,10 @@ return [
         'MESSAGE_COUNTRY_UPDATED' => 'Country updated successfully',
         'MESSAGE_CITY_DELETED' => 'City deleted successfully',
         'MESSAGE_CITY_UPDATED' => 'City updated successfully',
-
         'MESSAGE_COUNTRY_FOUND' => 'Country found successfully',
         'MESSAGE_CITY_FOUND' => 'City found successfully'
-        
+        'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Tenant language file found sucessfully',
+        'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
     ],
 
         
@@ -254,6 +254,7 @@ return [
         'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'Media id is not linked to mission',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
+        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'Default mission language cannot be deleted.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
@@ -287,6 +288,13 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'File path is not valid for this image',
+        'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => 'Tenant languages folder not found',
+        'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => 'Tenant language file not found',
+        'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => 'The file must be of json format',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Invalid JSON format in uploaded file.',
+        'ERROR_TENANT_LANGUAGE_INVALID' => 'Invalid tenant language code or file name.',
+        'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Incomplete language file.',
+        'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Invalid tenant language code.',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',

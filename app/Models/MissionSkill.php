@@ -83,4 +83,16 @@ class MissionSkill extends Model
     {
         return $this->hasMany('App\Models\UserSkill', 'skill_id', 'skill_id');
     }
+
+    /**
+     * Unlink mission skill.
+     *
+     * @param  int  $missionId
+     *
+     * @return bool
+     */
+    public function unlinkMissionSkill(int $missionId): bool
+    {
+        return static::where('mission_id', $missionId)->forceDelete();
+    }
 }

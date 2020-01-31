@@ -194,7 +194,10 @@ return [
         'countries.*.iso' => 'ISO', 
         'translations.*.lang' => 'language code',
         'translations.*.name' => 'name',
-        'translations' => 'translations',     
+        'translations' => 'translations',
+        'mission_detail.*.section' => 'section',
+        'mission_detail.*.section.*.title' => 'title',
+        'mission_detail.*.section.*.description' => 'description',
         ],
 
 ];
