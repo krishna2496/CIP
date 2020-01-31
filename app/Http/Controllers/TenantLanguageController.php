@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
+use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Helpers\ResponseHelper;
-use App\Traits\RestExceptionHandlerTrait;
-use App\Repositories\TenantLanguage\TenantLanguageRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use Validator;
+use App\Helpers\ResponseHelper;
 use App\Events\ActivityLogEvent;
+use Illuminate\Http\JsonResponse;
+use App\Events\TenantLanguageAddedEvent;
+use App\Traits\RestExceptionHandlerTrait;
+use App\Repositories\Language\LanguageRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Repositories\TenantLanguage\TenantLanguageRepository;
 
 //!  Tenant language controller
 /*!
@@ -32,18 +35,35 @@ class TenantLanguageController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
+     * @var App\Repositories\Language\LanguageRepository
+     */
+    private $languageRepository;
+
+    /**
      * Create a new tenant language controller instance.
      *
      * @param  App\Repositories\TenantLanguage\TenantLanguageRepository $tenantLanguageRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
+     * @param  App\Repositories\Language\LanguageRepository $languageRepository
      * @return void
      */
     public function __construct(
         TenantLanguageRepository $tenantLanguageRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers,
+        LanguageRepository $languageRepository
+
     ) {
         $this->tenantLanguageRepository = $tenantLanguageRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
+        $this->languageRepository = $languageRepository;
     }
 
     /**
@@ -120,9 +140,13 @@ class TenantLanguageController extends Controller
             }
         }
 
-        // Store or update tenant language details
+        // Copy language file from default_language S3 bucket to tenant bucket
         $tenantLanguageData = $this->tenantLanguageRepository->storeOrUpdate($request->toArray());
+        $language = $this->languageRepository->find($request->language_id);
+        $tenantName = $this->helpers->getTenantDetails($request->tenant_id)->name;
+        event(new TenantLanguageAddedEvent($tenantName, $language->code));
 
+        // Store or update tenant language details
         // Set response data
         $apiStatus = ($tenantLanguageData->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
         $apiMessage = ($tenantLanguageData->wasRecentlyCreated)

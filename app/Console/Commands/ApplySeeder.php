@@ -40,6 +40,7 @@ class ApplySeeder extends Command
     /**
      * Create a new command instance.
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
+     * @codeCoverageIgnore
      *
      * @return void
      */
@@ -52,6 +53,7 @@ class ApplySeeder extends Command
 
     /**
      * Execute the console command.
+     * @codeCoverageIgnore
      *
      * @return mixed
      */
