@@ -4050,9 +4050,9 @@
     },
 	"/timesheet/{timesheetId}": {
       "patch": {
-        "operationId": "GET_team4-cip-api-approve-decline-timesheet-data",
-        "summary": "Admin - Approve/decline user's timesheet entry(Milestone - 3)",
-		"description": "Admin can approve/decline user's submitted timesheet entry",
+        "operationId": "GET_team4-cip-api-update-timesheet-data",
+        "summary": "Admin - Update timesheet entry(Milestone - 3)",
+		"description": "Admin can update a submitted timesheet entry",
 		"tags":[  
                "Volunteering Timesheet"
             ],
@@ -4078,7 +4078,7 @@
 		  {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
 			"description": "APPROVED", "DECLINED",
 			"schema": {
 			  "type": "object",
