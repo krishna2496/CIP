@@ -12,7 +12,7 @@
                 </router-link>
                 <div class="form-title-block">
                     <h1>{{ languageData.label.new_password }}</h1>
-                    <p>{{ languageData.label.new_password_messgae }}</p>
+                    <p>{{ languageData.label.new_password_message }}</p>
                 </div>
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}
