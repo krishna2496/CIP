@@ -122,6 +122,10 @@ class MissionController extends Controller
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
+                "mission_detail.*.section" => "required",
+                "mission_detail.*.section.*.title" => "required_with:mission_detail.*.section",
+                "mission_detail.*.section.*.description" =>
+                "required_with:mission_detail.*.section",
                 "organisation" => "required",
                 "organisation.organisation_id" => "required",
                 "organisation.organisation_name" => "required",
