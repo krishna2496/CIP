@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use App\Events\TenantLanaugeAddedEvent;
+use App\Events\TenantLanguageAddedEvent;
 
 class CopyLanguageFileListener
 {
@@ -21,10 +21,10 @@ class CopyLanguageFileListener
     /**
      * Handle the event.
      *
-     * @param  TenantLanaugeAddedEvent  $event
+     * @param  TenantLanguageAddedEvent  $event
      * @return void
      */
-    public function handle(TenantLanaugeAddedEvent $event)
+    public function handle(TenantLanguageAddedEvent $event)
     {
         $validFileName = $event->languageCode.'.json';
         if (
