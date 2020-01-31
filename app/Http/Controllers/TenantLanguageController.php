@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use App\Helpers\ResponseHelper;
 use App\Events\ActivityLogEvent;
 use Illuminate\Http\JsonResponse;
-use App\Events\TenantLanaugeAddedEvent;
+use App\Events\TenantLanguageAddedEvent;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Repositories\Language\LanguageRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -144,7 +144,7 @@ class TenantLanguageController extends Controller
         $tenantLanguageData = $this->tenantLanguageRepository->storeOrUpdate($request->toArray());
         $language = $this->languageRepository->find($request->language_id);
         $tenantName = $this->helpers->getTenantDetails($request->tenant_id)->name;
-        event(new TenantLanaugeAddedEvent($tenantName, $language->code));
+        event(new TenantLanguageAddedEvent($tenantName, $language->code));
 
         // Store or update tenant language details
         // Set response data

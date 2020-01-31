@@ -2,7 +2,7 @@
 namespace App\Providers;
 
 use App\Events\ActivityLogEvent;
-use App\Events\TenantLanaugeAddedEvent;
+use App\Events\TenantLanguageAddedEvent;
 use App\Listeners\CopyLanguageFileListener;
 use App\Listeners\ActivityLog\ActivityLogListner;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
@@ -18,7 +18,7 @@ class EventServiceProvider extends ServiceProvider
         ActivityLogEvent::class => [
             ActivityLogListner::class
         ],
-        TenantLanaugeAddedEvent::class => [
+        TenantLanguageAddedEvent::class => [
             CopyLanguageFileListener::class
         ]
     ];

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-class TenantLanaugeAddedEvent extends Event
+class TenantLanguageAddedEvent extends Event
 {
     /**
      * @var string
