@@ -53,6 +53,13 @@ class SkillRepository implements SkillInterface
     {
         $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
 
+        if ($request->has('id')) {
+            $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
+        }
+
+        /*
+         * Search on the internal name and the translations of a skill
+         */
         if ($request->has('search')) {
             $searchString = $request->search;
             $skillQuery->where(function ($query) use ($searchString, $request) {
@@ -60,6 +67,12 @@ class SkillRepository implements SkillInterface
                 // if the language is passed through the request, we can also search in the available translation for that language
                 if ($request->has('searchLanguage')) {
                     $language = $request->searchLanguage;
+                    /*
+                     * Regex searches in the translation of the given language ($language) for the searchString
+                     * ! Search in this won't work if the translation contains numbers or special characters
+                     * "[[:space:]|[:alpha:]]{0,60}' . $searchString . '[[:space:]|[:alpha:]]{0,60}"
+                     * means it only searches for letters and spaces before and after the $searchString
+                     */
                     $query->orWhereRaw(
                         'translations regexp \'{s:4:"lang";s:2:"'
                             . $language
@@ -71,11 +84,17 @@ class SkillRepository implements SkillInterface
             });
         }
 
+        /*
+         * Filtering on translations
+         * The regex here verifies that we have a translation (so no empty string)
+         * for the given language codes passed in the key 'translations' of the $request
+         */
         if ($request->has('translations')) {
             $availableTranslations = $request->translations;
             $skillQuery->where(function ($query) use ($availableTranslations, $request) {
                 foreach ($availableTranslations as $languageCode) {
-                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'. $languageCode .'";s:5:"title";s:[1-9][0-9]{0,1}:"');
+                    // Regex searches in translations column if the translation in the $languageCode exists and its length is greater than 0
+                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"' . $languageCode . '";s:5:"title";s:[1-9][0-9]{0,1}:"');
                 }
             });
         }
