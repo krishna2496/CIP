@@ -52,10 +52,15 @@ class SkillRepository implements SkillInterface
     {
         $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
 
+        if ($request->has('id')) {
+            $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
+        }
+
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
         }
+
         return $skillQuery->paginate($request->perPage);
     }
     
