@@ -5,8 +5,6 @@ use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SkillRepository implements SkillInterface
 {
@@ -107,15 +105,8 @@ class SkillRepository implements SkillInterface
         if ($request->has('limit') && $request->has('offset')) {
             $limit = $request->input('limit');
             $offset = $request->input('offset');
-            $totalCount = $skillQuery->get()->count();
-            $skills = $skillQuery->offset($offset)->limit($limit)->get();
 
-            return new LengthAwarePaginator(
-                $skills,
-                $totalCount,
-                $limit,
-                $offset == 0 ? 1 : $offset
-            );
+            return $skillQuery->paginate($limit, ['*'], 'page', round($offset / $limit) + 1);
         }
 
         return $skillQuery->paginate($request->perPage);
