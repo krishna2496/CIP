@@ -42,29 +42,6 @@ class MissionApplicationQuery implements QueryableInterface
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
 
     /**
-     * @param array $filters
-     * @param Collection $tenantLanguages
-     * @return int
-     */
-    private function getFilteringLanguage(array $filters, Collection $tenantLanguages): int
-    {
-        $hasLanguageFilter = array_key_exists('language', $filters);
-        $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) { return $language->default == 1; })->first()->language_id;
-
-        if (!$hasLanguageFilter) {
-            return $defaultLanguageId;
-        }
-
-        $language = $tenantLanguages->filter(function ($language) use ($filters) { return $language->code === $filters['language']; })->first();
-
-        if (is_null($language)) {
-            return $defaultLanguageId;
-        }
-
-        return $language->language_id;
-    }
-
-    /**
      * @param array $parameters
      * @return LengthAwarePaginator
      */
@@ -210,30 +187,26 @@ class MissionApplicationQuery implements QueryableInterface
     }
 
     /**
-     * @param $values
-     * @return VolunteerApplication
+     * @param array $filters
+     * @param Collection $tenantLanguages
+     * @return int
      */
-    private function makeEntity($values)
+    private function getFilteringLanguage(array $filters, Collection $tenantLanguages): int
     {
-        $application = new VolunteerApplication($values->applicantId, $values->applicationDate, $values->applicationStatus, $values->missionId);
+        $hasLanguageFilter = array_key_exists('language', $filters);
+        $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) { return $language->default == 1; })->first()->language_id;
 
-        foreach ($values as $property => $value) {
-            $setter = 'set' . ucfirst($property);
-
-            if ($property === 'missionSkills' || $property === 'applicantSkills') {
-                if (is_null($value)) {
-                    $value = [];
-                } else {
-                    $value = explode(',', $value);
-                }
-            }
-
-            if (method_exists($application, $setter)) {
-                $application->$setter($value);
-            }
+        if (!$hasLanguageFilter) {
+            return $defaultLanguageId;
         }
 
-        return $application;
+        $language = $tenantLanguages->filter(function ($language) use ($filters) { return $language->code === $filters['language']; })->first();
+
+        if (is_null($language)) {
+            return $defaultLanguageId;
+        }
+
+        return $language->language_id;
     }
 
     /**

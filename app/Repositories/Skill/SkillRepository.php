@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories\Skill;
 
-use App\Repositories\Skill\SkillInterface;
 use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,7 +23,7 @@ class SkillRepository implements SkillInterface
     {
         $this->skill = $skill;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +31,7 @@ class SkillRepository implements SkillInterface
      * @param string $skill_id
      * @return \Illuminate\Http\Response
      */
-    public function skillList(Request $request, String $skill_id = '')
+    public function skillList(Request $request, string $skill_id = '')
     {
         $skillQuery = $this->skill->select('skill_name', 'skill_id', 'translations');
         if ($skill_id !== '') {
@@ -41,7 +40,7 @@ class SkillRepository implements SkillInterface
         $skill = $skillQuery->get();
         return $skill;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -56,14 +55,63 @@ class SkillRepository implements SkillInterface
             $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
         }
 
+        /*
+         * Search on the internal name and the translations of a skill
+         */
+        if ($request->has('search')) {
+            $searchString = $request->search;
+            $skillQuery->where(function ($query) use ($searchString, $request) {
+                $query->where('skill_name', 'like', '%' . $searchString . '%');
+                // if the language is passed through the request, we can also search in the available translation for that language
+                if ($request->has('searchLanguage')) {
+                    $language = $request->searchLanguage;
+                    /*
+                     * Regex searches in the translation of the given language ($language) for the searchString
+                     * ! Search in this won't work if the translation contains numbers or special characters
+                     * "[[:space:]|[:alpha:]]{0,60}' . $searchString . '[[:space:]|[:alpha:]]{0,60}"
+                     * means it only searches for letters and spaces before and after the $searchString
+                     */
+                    $query->orWhereRaw(
+                        'translations regexp \'{s:4:"lang";s:2:"'
+                            . $language
+                            . '";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}'
+                            . $searchString
+                            . '[[:space:]|[:alpha:]]{0,60}";}\''
+                    );
+                }
+            });
+        }
+
+        /*
+         * Filtering on translations
+         * The regex here verifies that we have a translation (so no empty string)
+         * for the given language codes passed in the key 'translations' of the $request
+         */
+        if ($request->has('translations')) {
+            $availableTranslations = $request->translations;
+            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
+                foreach ($availableTranslations as $languageCode) {
+                    // Regex searches in translations column if the translation in the $languageCode exists and its length is greater than 0
+                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"' . $languageCode . '";s:5:"title";s:[1-9][0-9]{0,1}:"');
+                }
+            });
+        }
+
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
         }
 
+        if ($request->has('limit') && $request->has('offset')) {
+            $limit = $request->input('limit');
+            $offset = $request->input('offset');
+
+            return $skillQuery->paginate($limit, ['*'], 'page', round($offset / $limit) + 1);
+        }
+
         return $skillQuery->paginate($request->perPage);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -93,7 +141,7 @@ class SkillRepository implements SkillInterface
         $skill->update($request);
         return $skill;
     }
-    
+
     /**
      * Find specified resource in storage.
      *
@@ -104,7 +152,7 @@ class SkillRepository implements SkillInterface
     {
         return $this->skill->findSkill($id);
     }
-    
+
     /**
      * Remove specified resource in storage.
      *
