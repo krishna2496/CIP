@@ -129,4 +129,16 @@ class MissionLanguage extends Model
             return unserialize($value);
         }
     }
+
+    /**
+     * Delete mission language.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return bool
+     */
+    public function deleteMissionLanguage(int $missionId, int $languageId): bool
+    {
+        return static::where(['mission_id'=> $missionId, 'language_id' => $languageId])->delete();
+    }
 }

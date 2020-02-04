@@ -49,7 +49,9 @@ return [
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
-    
+    'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
+    'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
+    'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
     /*
      * User custom field types
      */
@@ -322,7 +324,8 @@ return [
      */
     'tenant_settings' => [
         'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
-        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved'
+        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
+        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer'
     ],
     
     'TOP_THEME' => "top_themes",
@@ -423,6 +426,7 @@ return [
         'ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED' => '400047',
         'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
+        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => '400050',
         
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
@@ -467,7 +471,15 @@ return [
         'ERROR_COUNTRY_INVALID_DATA' => '800025',
         'ERROR_CITY_NOT_FOUND' => '800026',
         'ERROR_CITY_ENABLE_TO_DELETE' => '800027',
-        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '800028'
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => '800028',
+        'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => '800029',
+        'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => '800030',
+        'ERROR_TENANT_LANGUAGE_FILE_UPLOAD_INVALID_DATA' => '800031',
+        'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => '800032',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => '800033',
+        'ERROR_TENANT_LANGUAGE_INVALID' => '800034',
+        'ERROR_TENANT_LANGUAGE_INVALID_CODE' => '800035',
+        'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036'
     ],
 
     /**
@@ -562,6 +574,7 @@ return [
         'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
+        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE'
     ],
 
     'activity_log_actions' => [

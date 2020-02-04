@@ -254,12 +254,10 @@ class MissionRepository implements MissionInterface
         // Add/Update mission title
         if (isset($request->mission_detail)) {
             foreach ($request->mission_detail as $value) {
+                $missionLanguageDeleteFlag = 0;
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
-                                        'language_id' => $language->language_id,
-                                        'short_description' => (isset($value['short_description'])) ?
-                                        $value['short_description'] : null,
-                                        'objective' => $value['objective'] ?? null
+                                        'language_id' => $language->language_id
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
@@ -267,19 +265,35 @@ class MissionRepository implements MissionInterface
                 if (array_key_exists('title', $value)) {
                     $missionLanguage['title'] = $value['title'];
                 }
+                if (array_key_exists('short_description', $value)) {
+                    $missionLanguage['short_description'] = $value['short_description'];
+                }
+                if (array_key_exists('objective', $value)) {
+                    $missionLanguage['objective'] = $value['objective'];
+                }
                 if (array_key_exists('section', $value)) {
-                    $missionLanguage['description'] = $value['section'];
+                    if (empty($value['section'])) {
+                        $this->modelsService->missionLanguage->deleteMissionLanguage($id, $language->language_id);
+                        $missionLanguageDeleteFlag = 1;
+                    } else {
+                        $missionLanguage['description'] = $value['section'];
+                    }
                 }
 
-                $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
-                'language_id' => $language->language_id], $missionLanguage);
-                    
+                if ($missionLanguageDeleteFlag !== 1) {
+                    $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
+                    'language_id' => $language->language_id], $missionLanguage);
+                }
                 unset($missionLanguage);
             }
         }
         
         // For skills
         if (isset($request->skills) && count($request->skills) > 0) {
+            //Unlink mission skill
+            $this->modelsService->missionSkill->unlinkMissionSkill($mission->mission_id);
+            
+            // Link mission skill
             foreach ($request->skills as $value) {
                 $this->modelsService->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
@@ -291,7 +305,7 @@ class MissionRepository implements MissionInterface
             $this->missionMediaRepository->updateMediaImages($request->media_images, $tenantName, $id);
         }
 
-    // Add/Update mission media videos
+        // Add/Update mission media videos
         if (isset($request->media_videos) && count($request->media_videos) > 0) {
             $this->missionMediaRepository->updateMediaVideos($request->media_videos, $id);
         }
@@ -1210,8 +1224,8 @@ class MissionRepository implements MissionInterface
     public function getUserMissions(Request $request): ?array
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-		$defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-		$defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1226,10 +1240,10 @@ class MissionRepository implements MissionInterface
         
         foreach ($missionData as $key => $value) {
             $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
-			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
-			$missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-			
-			$missionLists[$key]['title'] = $missionLanguage->title ?? '';
+            $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+            $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+            
+            $missionLists[$key]['title'] = $missionLanguage->title ?? '';
             $missionLists[$key]['mission_id'] = $value->mission_id;
         }
         return $missionLists;
@@ -1247,12 +1261,12 @@ class MissionRepository implements MissionInterface
         $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title', 'language_id')
         ->where(['mission_id' => $missionId])
         ->get();
-		$missionTitle = '';
+        $missionTitle = '';
         if ($languageData->count() > 0) {
-			$index = array_search($languageId, array_column($languageData->toArray(), 'language_id'));
-			$language = ($index === false) ? $defaultTenantLanguageId : $languageId;
-			$missionLanguage = $languageData->where('language_id', $language)->first();
-			$missionTitle =  $missionLanguage->title ?? '';
+            $index = array_search($languageId, array_column($languageData->toArray(), 'language_id'));
+            $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+            $missionLanguage = $languageData->where('language_id', $language)->first();
+            $missionTitle =  $missionLanguage->title ?? '';
         }
         return $missionTitle;
     }
@@ -1358,5 +1372,22 @@ class MissionRepository implements MissionInterface
         ->where(['mission_document_id' => $documentId, 'mission_id' => $missionId])
         ->first();
         return ($document === null) ? false : true;
+    }
+    
+    /**
+     * Check mission user mission application status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param array $statusArray
+     *
+     * @return bool
+     */
+    public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool
+    {
+        $applicationStatusData = $this->modelsService->missionApplication->select('approval_status')
+        ->where(['mission_id'=> $missionId, 'user_id'=> $userId])
+        ->whereIn('approval_status', $statusArray)->get();
+        return $applicationStatusData->isEmpty() ? true : false;
     }
 }
