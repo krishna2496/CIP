@@ -13,6 +13,7 @@ use App\Helpers\ResponseHelper;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Timesheet\TimesheetRepository;
+use Illuminate\Support\Facades\Log;
 use Validator;
 use Illuminate\Http\JsonResponse;
 use App\Events\User\UserNotificationEvent;
@@ -136,7 +137,7 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Approve/decline timehseet entry
+     * Update a timesheet entry
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $timesheetId
@@ -145,13 +146,16 @@ class TimesheetController extends Controller
     public function update(Request $request, $timesheetId): JsonResponse
     {
         try {
-            //TODO other validation for other fields, send notif only if isset status etc
-
-            // Server side validataions
+            // Server side validations
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "status" => ["required",Rule::in(config('constants.timesheet_status'))]
+                    "status" => ["sometimes",Rule::in(config('constants.timesheet_status'))],
+                    "notes" => "sometimes",
+                    "dateVolunteered" => "sometimes|date_format:Y-m-d",
+                    "dayVolunteered" => [Rule::in(config('constants.day_volunteered'))],
+                    "hours" => "integer",
+                    "minutes" => "integer|between:0,59",
                 ]
             );
 
@@ -165,6 +169,15 @@ class TimesheetController extends Controller
                 );
             }
             $this->timesheetRepository->find($timesheetId);
+
+            if (isset($request->hours) || isset($request->minutes)) {
+                $time = $request->hours . ":" . $request->minutes;
+                $request->request->add(['time' => $time]);
+                // Remove extra params
+                $request->request->remove('hours');
+                $request->request->remove('minutes');
+            }
+
             $this->timesheetRepository->updateTimesheet($request, $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
@@ -179,14 +192,13 @@ class TimesheetController extends Controller
                 $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
             }
             $entityId = $timesheetId;
-            $action = config('constants.notification_actions.'.$timsheetDetails->status);
+            $action = config('constants.notification_actions.UPDATED');
             $userId = $timsheetDetails->user_id;
 
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
 
             // Make activity log
-            $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
-                config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
+            $activityLogStatus = config('constants.activity_log_actions.UPDATED');
 
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),

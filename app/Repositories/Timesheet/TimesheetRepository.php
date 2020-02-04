@@ -17,6 +17,7 @@ use App\Repositories\User\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use Illuminate\Support\Facades\Log;
 
 class TimesheetRepository implements TimesheetInterface
 {
@@ -285,8 +286,25 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function updateTimesheet(Request $request, int $timesheetId): bool
     {
-        return $this->timesheet->where('timesheet_id', $timesheetId)
-        ->update(['status' => $request['status']]);
+        $valueToUpdate = [];
+        $timesheet = $this->timesheet->where('timesheet_id', $timesheetId);
+        if (isset($request['status'])) {
+            $valueToUpdate['status'] = $request['status'];
+        }
+        if (isset($request['notes'])) {
+            $valueToUpdate['notes'] = $request['notes'];
+        }
+        if (isset($request['dateVolunteered'])) {
+            $valueToUpdate['date_volunteered'] = $request['dateVolunteered'];
+        }
+        if (isset($request['dayVolunteered'])) {
+            $valueToUpdate['day_volunteered'] = $request['dayVolunteered'];
+        }
+        if (isset($request['time'])) {
+            $valueToUpdate['time'] = $request['time'];
+        }
+
+        return $timesheet->update($valueToUpdate);
     }
 
     /** Update timesheet status on submit
