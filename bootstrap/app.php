@@ -116,6 +116,10 @@ $app->withFacades();
 
  $app->register(App\Providers\AppServiceProvider::class);
 
+//AMQP Service Provider :
+$app->configure('amqp');
+$app->register(Bschmitt\Amqp\LumenServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
