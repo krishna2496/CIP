@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\App\Mission;
 
 use App\Http\Controllers\Controller;
@@ -20,6 +21,7 @@ use App\Helpers\Helpers;
 /*!
 This controller is responsible for handling mission application apply to mission and get volunteer list operations.
  */
+
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -81,7 +83,7 @@ class MissionApplicationController extends Controller
                 "mission_id" => [
                     "integer",
                     "required",
-                    "exists:mission,mission_id,deleted_at,NULL,publication_status,".$missionStatus
+                    "exists:mission,mission_id,deleted_at,NULL,publication_status," . $missionStatus
                 ],
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL"
             ]
@@ -136,8 +138,6 @@ class MissionApplicationController extends Controller
             $request->auth->user_id
         );
 
-
-
         // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
         $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
         $missionForOptimy = [
@@ -149,7 +149,7 @@ class MissionApplicationController extends Controller
             'tenant_status' => $missionApplication->approval_status,
             'tenant_applied_at' => $missionApplication->applied_at
         ];
-        (new Amqp)->publish('volunteerApplication', json_encode($missionForOptimy) , ['queue' => 'volunteerApplication']);
+        (new Amqp)->publish('volunteerApplication', json_encode($missionForOptimy), ['queue' => 'volunteerApplication']);
 
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
@@ -196,7 +196,7 @@ class MissionApplicationController extends Controller
             $apiData = $missionVolunteers;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (count($missionVolunteers) > 0) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
-            : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
+                : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
 
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
