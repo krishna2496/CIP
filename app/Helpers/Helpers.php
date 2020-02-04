@@ -49,6 +49,29 @@ class Helpers
     }
 
     /**
+     * It will retrieve tenant id and sponsor id from tenant table
+     *
+     * @param Request $request
+     * @return object $tenant
+     */
+    public function getTenantIdAndSponsorIdFromRequest(Request $request) : object
+    {
+        $domain = $this->getSubDomainFromRequest($request);
+
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantIdAndSponsorId = $this->db->table('tenant')
+            ->select('tenant_id, sponsor_id')
+            ->where('name', $domain)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection('tenant');
+
+        return $tenantIdAndSponsorId;
+    }
+
+    /**
      * Get base URL from request object
      *
      * @param Illuminate\Http\Request $request

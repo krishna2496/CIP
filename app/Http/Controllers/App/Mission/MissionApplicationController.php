@@ -137,27 +137,19 @@ class MissionApplicationController extends Controller
         );
 
 
-        /*
-         * Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
-         * And for the next 6 lines, it'll be better if it should be improved by a service.
-         * Calling app()->make('db') and switch database here it's not a good thing I think.
-         */
-        $domain = $this->helpers->getSubDomainFromRequest($request);
-        $this->helpers->switchDatabaseConnection('mysql', $request);
-        $db = app()->make('db');
-        $tenant = $db->table('tenant')->select('tenant_id')
-                     ->where('name', $domain)->whereNull('deleted_at')->first();
-        $this->helpers->switchDatabaseConnection('tenant', $request);
 
+        // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
+        $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
         $missionForOptimy = [
-            'tenant_id' => $tenant->tenant_id,
-            'mission_application_id' => $missionApplication->mission_application_id,
-            'user_id' => $missionApplication->user_id,
-            'mission_id' => $missionApplication->mission_id,
-            'applied_at' => $missionApplication->applied_at,
-            'approval_status' => $missionApplication->approval_status
+            'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id,
+            'tenant_application_id' => $missionApplication->mission_application_id,
+            'tenant_mission_id' => $missionApplication->mission_id,
+            'tenant_user_id' => $missionApplication->user_id,
+            'tenant_status' => $missionApplication->approval_status,
+            'tenant_applied_at' => $missionApplication->applied_at
         ];
-        (new Amqp)->publish('volunteerApplications', json_encode($missionForOptimy) , ['queue' => 'volunteerApplications']);
+        (new Amqp)->publish('volunteerApplication', json_encode($missionForOptimy) , ['queue' => 'volunteerApplication']);
 
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
