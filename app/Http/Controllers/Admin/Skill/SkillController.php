@@ -25,7 +25,7 @@ class SkillController extends Controller
      * @var App\Repositories\Skill\SkillRepository
      */
     private $skillRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -35,7 +35,7 @@ class SkillController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -50,7 +50,7 @@ class SkillController extends Controller
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -62,8 +62,6 @@ class SkillController extends Controller
         try {
             $skills = $this->skillRepository->skillDetails($request);
 
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
             $apiMessage = ($skills->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_SKILL_LISTING');
             return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $skills);
@@ -103,7 +101,7 @@ class SkillController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Create new skill
         $skill = $this->skillRepository->store($request->all());
 
@@ -111,7 +109,7 @@ class SkillController extends Controller
         $apiData = ['skill_id' => $skill->skill_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_SKILL_CREATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.SKILL'),
@@ -157,7 +155,7 @@ class SkillController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Update skill
         try {
             $skill = $this->skillRepository->update($request->toArray(), $id);
@@ -172,7 +170,7 @@ class SkillController extends Controller
         $apiData = ['skill_id' => $skill->skill_id];
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_SKILL_UPDATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.SKILL'),
@@ -198,11 +196,11 @@ class SkillController extends Controller
     {
         try {
             $skillDetail = $this->skillRepository->find($id);
-            
+
             $apiData = $skillDetail->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_SKILL_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -222,7 +220,7 @@ class SkillController extends Controller
     {
         try {
             $skill = $this->skillRepository->delete($id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_SKILL_DELETED');
@@ -238,7 +236,7 @@ class SkillController extends Controller
                 null,
                 $id
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
