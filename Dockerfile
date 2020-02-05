@@ -2,7 +2,7 @@ FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
 
 COPY . /optimy
 RUN rm /optimy/Dockerfile
-RUN mkdir /optimy/database/seeds
+RUN mkdir -p /optimy/database/seeds
 
 RUN cd /optimy && composer install
 
