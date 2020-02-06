@@ -153,9 +153,9 @@ class TimesheetController extends Controller
                     "status" => ["sometimes",Rule::in(config('constants.timesheet_status'))],
                     "notes" => "sometimes",
                     "dateVolunteered" => "sometimes|date_format:Y-m-d",
-                    "dayVolunteered" => [Rule::in(config('constants.day_volunteered'))],
-                    "hours" => "integer",
-                    "minutes" => "integer|between:0,59",
+                    "dayVolunteered" => ["sometimes",Rule::in(config('constants.day_volunteered'))],
+                    "hours" => "sometimes|integer",
+                    "minutes" => "sometimes|integer|between:0,59",
                 ]
             );
 
