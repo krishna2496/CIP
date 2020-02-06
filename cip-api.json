@@ -4092,12 +4092,12 @@
 					  "type": "string",
 					  "description": "Text area, a note in the timesheet",
 				  },
-				  "date_volunteered": {
+				  "dateVolunteered": {
 					  "type": "date",
 					  "description": "Format yyyy-mm-dd",
 					  "example": "2020-01-01"
 				  },
-				  "day_volunteered": {
+				  "dayVolunteered": {
 					  "type": "string",
 					  "enum": ["WORKDAY","HOLIDAY","WEEKEND"],
 					  "example": "WORKDAY"
