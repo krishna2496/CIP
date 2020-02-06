@@ -156,6 +156,7 @@
 		mounted() {			 
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
+			yearsList.push([0,this.languageData.label.all]);
 			for (let index = currentYear; index > (currentYear - 5); index--) {
 				yearsList.push([index, index]);
 			}
@@ -174,6 +175,9 @@
 				this.getVolunteerHistoryHoursOfType("skill", this.skillYearText);
 			},
 			getVolunteerHistoryHoursOfType(type = "theme", year = "") {
+				if(year ==  this.languageData.label.all) {
+					year = '';
+				}
 				VolunteerHistoryHours(type, year).then(response => {
 					let typeName =
 						"perHourApiData" + type.charAt(0).toUpperCase() + type.slice(1);
@@ -252,6 +256,8 @@
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.timeMissionTimesheetLabel = this.languageData.label.volunteering_hours
 			this.goalMissionTimesheetLabel = this.languageData.label.volunteering_goals
+			this.ThemeYearText = this.languageData.label.all
+			this.skillYearText = this.languageData.label.all
 			this.getVolunteerHistoryHoursOfType("theme");
 			this.getVolunteerHistoryHoursOfType("skill");
 			this.getVolunteerMissionsHours();
