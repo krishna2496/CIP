@@ -11,8 +11,8 @@
 						<h1>{{languageData.label.volunteering_history}}</h1>
 					</div>
 					<div class="inner-content-wrap" v-if="isAllVisible && !isLoading">
-						<b-row class="chart-block">
-							<b-col lg="6" class="chart-col">
+						<b-row class="chart-block" v-if="isThemeDisplay || isSkillDisplay">
+							<b-col lg="6" class="chart-col" v-if="isThemeDisplay">
 								<div class="inner-chart-col">
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_theme}}</h5>
@@ -32,7 +32,7 @@
 									</div>
 								</div>
 							</b-col>
-							<b-col lg="6" class="chart-col">
+							<b-col lg="6" class="chart-col" v-if="isSkillDisplay">
 								<div class="inner-chart-col">
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_skill}}</h5>
@@ -108,6 +108,7 @@
 	import VolunteerMissionGoals from "../services/VolunteerHistory/VolunteerMissionGoals";
 	import VolunteeringRequest from "../components/VolunteeringRequest";
 	import store from "../store";
+	import constants from '../constant';
 
 	export default {
 		components: {
@@ -150,7 +151,9 @@
 				goalRequestNextUrl: null,
 				perHourDataNotFoundForTheme: null,
 				perHourDataNotFoundForSkill: null,
-				isLoading: true
+				isLoading: true,
+				isThemeDisplay: true,
+				isSkillDisplay: true
 			};
 		},
 		mounted() {			 
@@ -258,6 +261,9 @@
 			this.goalMissionTimesheetLabel = this.languageData.label.volunteering_goals
 			this.ThemeYearText = this.languageData.label.all
 			this.skillYearText = this.languageData.label.all
+			this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+			this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+			
 			this.getVolunteerHistoryHoursOfType("theme");
 			this.getVolunteerHistoryHoursOfType("skill");
 			this.getVolunteerMissionsHours();
