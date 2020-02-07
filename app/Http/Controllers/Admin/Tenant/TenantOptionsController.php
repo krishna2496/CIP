@@ -471,4 +471,40 @@ class TenantOptionsController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_ASSET_IMAGES_RESET_SUCCESS');
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
+
+    /**
+     * Display tenant option value
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function fetchTenantOptionValue(Request $request): JsonResponse
+    {
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required"
+            ]
+        );
+        
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+
+        // Fetch tenant option value
+        $tenantOptionDetail = $this->tenantOptionRepository->getOptionValue($request->option_name);
+        $apiMessage = ($tenantOptionDetail->isEmpty())
+        ? trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+        : trans('messages.success.MESSAGE_TENANT_OPTION_FOUND');
+        $apiStatus = Response::HTTP_OK;
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
+    }
 }
