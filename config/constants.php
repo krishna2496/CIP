@@ -61,11 +61,11 @@ return [
         'DROP-DOWN' => 'drop-down',
         'RADIO' => 'radio'
      ],
-     
+
      /*
       * Language constants
       */
-     
+
     'DEFAULT_LANGUAGE' => 'EN',
     'FRONTEND_LANGUAGE_FOLDER' => 'front_end',
 
@@ -134,7 +134,7 @@ return [
         'JPG' => 'jpg',
         'JPEG' => 'jpeg',
     ],
-    
+
     /*
      * Slider image types
      */
@@ -144,7 +144,7 @@ return [
         'image/jpg',
         'image/svg+xml'
     ],
-    
+
     /*
      * User profile image allowed MIME types
      */
@@ -180,7 +180,7 @@ return [
         'application/pdf',
         'text/plain'
     ],
-    
+
     /*
      * Timesheet document types
      */
@@ -215,9 +215,9 @@ return [
         'APPROVED' => 'APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ],
-    
+
     'ALLOW_TIMESHEET_ENTRY' => 2,
-    
+
     /**
      * Export timesheet file names
      */
@@ -235,8 +235,8 @@ return [
         'PUBLISHED' => 'PUBLISHED',
         'UNPUBLISHED' => 'UNPUBLISHED'
     ],
-        
-        
+
+
     /*
      * Story status
      */
@@ -260,7 +260,7 @@ return [
     'export_mission_comment_file_names' => [
         'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
     ],
-        
+
     /*
      * Folder name s3
      */
@@ -310,7 +310,7 @@ return [
         'MISSION_APPLICATION' => 'Mission Application',
         'NEW_NEWS' => 'New News'
     ],
-    
+
     /**
      * notification status
      */
@@ -327,7 +327,7 @@ return [
         'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
         'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer'
     ],
-    
+
     'TOP_THEME' => "top_themes",
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",
@@ -427,7 +427,7 @@ return [
         'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
         'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => '400050',
-        
+
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
         'ERROR_NEWS_REQUIRED_FIELDS_EMPTY' => '500003',
@@ -442,12 +442,12 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
-                              
+
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
         'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
-                
+
         'ERROR_INVALID_JSON' => '900000',
 
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
@@ -512,6 +512,7 @@ return [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
         'DELETED' => 'DELETED',
+        'UPDATED' => 'UPDATED',
         'REFUSED' => 'REFUSED',
         'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING'
     ],
@@ -524,7 +525,7 @@ return [
         'DECLINED' => 'warning.png',
         'NEW' => 'circle-plus.png',
     ],
-    
+
     'notification_status' => [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'PENDING' => 'PENDING',

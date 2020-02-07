@@ -637,7 +637,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
                     'uses' => 'Admin\Timesheet\TimesheetController@getTimesheetsDetails']);
             $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Timesheet\TimesheetController@index']);
-            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
+            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet',
                 'uses' => 'Admin\Timesheet\TimesheetController@update']);
         }
     );
