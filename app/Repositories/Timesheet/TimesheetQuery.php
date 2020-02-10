@@ -17,6 +17,7 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_MISSION_COUNTRIES = 'missionCountries';
     const FILTER_MISSION_CITIES = 'missionCities';
     const FILTER_TIMESHEET_IDS = 'timesheetIds';
+    const FILTER_TYPE = 'type';
 
     const ALLOWED_SORTABLE_FIELDS = [
         'applicationDate' => 'date_volunteered',
@@ -69,8 +70,7 @@ class TimesheetQuery implements QueryableInterface
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->whereHas('mission', function ($query) {
                 $query->where([
-                    'publication_status' => config("constants.publication_status")["APPROVED"],
-                    'mission_type' => config('constants.mission_type.TIME'), //TODO filter for goal
+                    'publication_status' => config("constants.publication_status")["APPROVED"]
                 ]);
             })
             ->whereHas('mission.missionApplication', function ($query) {
@@ -80,11 +80,11 @@ class TimesheetQuery implements QueryableInterface
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
                 'mission.missionLanguage' => function ($query) use ($languageId) {
-                    $query->select('mission_language_id', 'mission_id', 'title')
+                    $query->select('mission_language_id', 'mission_id', 'title', 'objective')
                         ->where('language_id', $languageId);
                 },
+                'mission.goalMission',
                 'mission.missionSkill',
-                'mission.timeMission',
                 'mission.country.languages' => function ($query) use ($languageId) {
                     $query->where('language_id', '=', $languageId);
                 },
@@ -141,6 +141,13 @@ class TimesheetQuery implements QueryableInterface
                     });
                 });
             })
+             // Filter by type
+             ->whereHas('mission', function ($query) use ($filters) {
+                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
+                     $type = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
+                     $query->where('mission_type', '=', $type);
+                 });
+             })
             // Search
             ->when(!empty($search), function ($query) use ($search, $filters, $languageId) {
                 $searchCallback = function ($query) use ($search, $languageId) {
