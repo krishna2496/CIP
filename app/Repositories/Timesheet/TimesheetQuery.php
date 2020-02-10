@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class TimesheetQuery implements QueryableInterface
 {
     const FILTER_MISSION_THEMES = 'missionThemes';
-    const FILTER_APPLICATION_DATE = 'applicationDate';
+    const FILTER_APPLICATION_DATE = 'appliedDate';
     const FILTER_MISSION_STATUSES = 'customMissionStatus';
     const FILTER_APPROVAL_STATUS = 'timesheetStatus';
     const FILTER_MISSION_COUNTRIES = 'missionCountries';
@@ -20,7 +20,7 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_TYPE = 'type';
 
     const ALLOWED_SORTABLE_FIELDS = [
-        'applicationDate' => 'date_volunteered',
+        'appliedDate' => 'date_volunteered',
         'applicant' => 'user.last_name',
         'reviewedHours' => 'time',
         'note' => 'notes',
@@ -30,9 +30,12 @@ class TimesheetQuery implements QueryableInterface
         'country' => 'c.name',
         'approvalStatus' => 'status',
         'city' => 'ci.name',
+        'appliedTo' => 'title'
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+
+    private $type;
 
     /**
      * @param array $parameters
@@ -141,11 +144,11 @@ class TimesheetQuery implements QueryableInterface
                     });
                 });
             })
-             // Filter by type
+             // Filter by type; always sent
              ->whereHas('mission', function ($query) use ($filters) {
                  $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
-                     $type = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
-                     $query->where('mission_type', '=', $type);
+                     $this->type = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
+                     $query->where('mission_type', '=', "$this->type");
                  });
              })
             // Search
@@ -178,8 +181,13 @@ class TimesheetQuery implements QueryableInterface
                             $query
                                 ->where([
                                     ['title', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId],
-                                ]);
+                                    ['language_id', '=', $languageId]
+                                ])
+                                ->orWhere('objective', 'like', "%${search}%");
+                        })
+                        ->orwhereHas('mission.goalMission', function ($query) use ($search) {
+                            $query
+                                ->where('goal_objective', 'like', "%${search}%");
                         })
                         ->orwhereHas('mission.city.languages', function ($query) use ($search, $languageId) {
                             $query
@@ -203,6 +211,11 @@ class TimesheetQuery implements QueryableInterface
                     $query->where($searchCallback);
                 }
 
+            })
+            ->whereHas('mission', function ($query) use ($filters) {
+                $query->when(isset($filters[self::FILTER_TYPE]), function ($query) {
+                    $query->where('mission_type', '=', "$this->type");
+                });
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
@@ -253,7 +266,7 @@ class TimesheetQuery implements QueryableInterface
                 $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS[$order['orderBy']];
             } else {
                 // Default to application date
-                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['applicationDate'];
+                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['appliedDate'];
             }
 
             if (array_key_exists('orderDir', $order)) {
