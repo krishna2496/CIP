@@ -1,5 +1,11 @@
 <?php
+
 use Illuminate\Support\Facades\DB;
+use App\User;
+use App\Models\Mission;
+use App\Models\MissionApplication;
+use App\Models\Timesheet;
+use App\Models\MissionLanguage;
 
 class UserTest extends TestCase
 {
@@ -1036,4 +1042,351 @@ class UserTest extends TestCase
         $this->get("logs?type=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
     }
+
+    /**
+     * @test
+     *
+     * it should return user with specified email
+     *
+     * @return void
+     */
+
+    public function it_should_return_user_with_given_email()
+    {
+        $connection = 'tenant';
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        // Create two skill record.
+
+        $userIds = [];
+        $userCollection = [];
+        $users = factory(\App\User::class, 2)->make();
+
+        foreach ($users as $key => $user) {
+            $user->setConnection($connection);
+            $user->save();
+            $userIds[] = $user->user_id;
+            $userCollection[] = $user->toArray();
+        }
+
+        // Get the first created user
+        $userEmail = $userCollection[0]['email'];
+
+        $response = $this->get('users?email='.$userEmail, $authorization)
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            'status',
+            'data' => [
+                '*' => [
+                    'user_id',
+                    'first_name',
+                    'last_name',
+                    'email',
+                    'avatar',
+                    'timezone_id',
+                    'availability_id',
+                    'why_i_volunteer',
+                    'employee_id',
+                    'department',
+                    'profile_text',
+                    'linked_in_url',
+                    'status',
+                    'timezone' => [
+                        'timezone_id',
+                        'timezone',
+                        'offset',
+                        'status'
+                    ]
+                ]
+            ],
+            'message'
+        ]);
+
+        $result = json_decode($response->response->getContent());
+
+        $this->assertSame($result->pagination->total, 1);
+
+        foreach ($result->data as $key => $data) {
+            $this->assertSame($data->email, $userEmail);
+        }
+
+        // Forced Delete all created user. It will not softdelete user
+
+        DB::setDefaultConnection('tenant');
+
+        \App\User::whereIn('user_id', $userIds)->forceDelete();
+
+    }
+
+    /**
+     * @test
+     *
+     * it should return correct user timesheet summary
+     *
+     * @return void
+     */
+    public function it_should_return_correct_user_timesheet_summary()
+    {
+
+      $timesheetCount = 3;
+      $response = $this->mockTimesheetCreation($timesheetCount)->seeJsonStructure(
+          [
+              'status',
+              'data' => [
+                  'total_timesheet_time',
+                  'total_timesheet_action',
+                  'total_timesheet'
+              ],
+              'message'
+          ]
+      );
+      $result = json_decode($response->response->getContent());
+
+      $this->assertSame($result->status, 200);
+      $this->assertSame($result->data->total_timesheet_time, '03:03:03');
+      $this->assertSame($result->data->total_timesheet_action, null);
+      $this->assertSame($result->data->total_timesheet, $timesheetCount);
+      $this->assertSame($result->message, 'User timesheet summarized successfully');
+
+    }
+
+    /**
+     * @test
+     *
+     * it should return correct user timesheet summary with specified valid status
+     *
+     * @return void
+     */
+    public function it_should_return_correct_user_timesheet_summary_with_specified_valid_status()
+    {
+
+      $timesheetCount = 3;
+      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet-summary', 'WORKDAY')->seeJsonStructure(
+          [
+              'status',
+              'data' => [
+                  'total_timesheet_time',
+                  'total_timesheet_action',
+                  'total_timesheet'
+              ],
+              'message'
+          ]
+      );
+      $result = json_decode($response->response->getContent());
+
+      $this->assertSame($result->status, 200);
+      $this->assertSame($result->data->total_timesheet_time, '03:03:03');
+      $this->assertSame($result->data->total_timesheet_action, null);
+      $this->assertSame($result->data->total_timesheet, $timesheetCount);
+      $this->assertSame($result->message, 'User timesheet summarized successfully');
+
+    }
+
+    /**
+     * @test
+     *
+     * it should return correct user timesheet summary with specified invalid status
+     *
+     * @return void
+     */
+    public function it_should_return_correct_user_timesheet_summary_with_specified_invalid_status()
+    {
+
+      $timesheetCount = 3;
+      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet-summary', 'HOLIDAY')->seeJsonStructure(
+          [
+              'status',
+              'data' => [
+                  'total_timesheet_time',
+                  'total_timesheet_action',
+                  'total_timesheet'
+              ],
+              'message'
+          ]
+      );
+      $result = json_decode($response->response->getContent());
+
+      $this->assertSame($result->status, 200);
+      $this->assertSame($result->data->total_timesheet_time, null);
+      $this->assertSame($result->data->total_timesheet_action, null);
+      $this->assertSame($result->data->total_timesheet, 0);
+      $this->assertSame($result->message, 'User timesheet summarized successfully');
+
+    }
+
+    /**
+     * @test
+     *
+     * it should return correct user timesheets per mission
+     *
+     * @return void
+     */
+    public function it_should_return_correct_user_timesheets_per_mission()
+    {
+
+      $timesheetCount = 3;
+      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet')->seeJsonStructure(
+          [
+              'status',
+              'data' => [
+                '*' => [
+                  'mission_id',
+                  'mission_type',
+                  'mission_title',
+                  'total_timesheet_time',
+                  'total_timesheet_action',
+                  'total_timesheet'
+                ]
+              ],
+              'message'
+          ]
+      );
+      $result = json_decode($response->response->getContent());
+
+      $this->assertSame($result->status, 200);
+      $this->assertSame($result->data[0]->mission_type, 'GOAL');
+      $this->assertSame($result->data[0]->mission_title, 'mission title');
+      $this->assertSame($result->data[0]->total_timesheet_time, '03:03:03');
+      $this->assertSame($result->data[0]->total_timesheet_action, null);
+      $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
+      $this->assertSame($result->message, 'User timesheet listed successfully');
+
+    }
+
+    /**
+     * @test
+     *
+     * it should return correct user timesheets per mission with specified valid status
+     *
+     * @return void
+     */
+    public function it_should_return_correct_user_timesheets_per_mission_with_specified_valid_status()
+    {
+
+      $timesheetCount = 3;
+      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet', 'WORKDAY')->seeJsonStructure(
+          [
+              'status',
+              'data' => [
+                '*' => [
+                  'mission_id',
+                  'mission_type',
+                  'mission_title',
+                  'total_timesheet_time',
+                  'total_timesheet_action',
+                  'total_timesheet'
+                ]
+              ],
+              'message'
+          ]
+      );
+      $result = json_decode($response->response->getContent());
+
+      $this->assertSame($result->status, 200);
+      $this->assertSame($result->data[0]->mission_type, 'GOAL');
+      $this->assertSame($result->data[0]->mission_title, 'mission title');
+      $this->assertSame($result->data[0]->total_timesheet_time, '03:03:03');
+      $this->assertSame($result->data[0]->total_timesheet_action, null);
+      $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
+      $this->assertSame($result->message, 'User timesheet listed successfully');
+
+    }
+
+    /**
+     * @test
+     *
+     * it should return correct user timesheets per mission with specified invalid status
+     *
+     * @return void
+     */
+    public function it_should_return_correct_user_timesheets_per_mission_with_specified_invalid_status()
+    {
+
+      $timesheetCount = 3;
+      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet', 'SAMPLE')->seeJsonStructure(
+          [
+              'status',
+              'message'
+          ]
+      );
+      $result = json_decode($response->response->getContent());
+
+      $this->assertSame($result->status, 404);
+      $this->assertSame($result->message, 'User timesheets not found');
+
+    }
+
+    private function mockTimesheetCreation($timesheetCount, $action = 'timesheet-summary', $status = null)
+    {
+        $connection = 'tenant';
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        $user = factory(User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        // Create a mock mission
+
+        $mission = factory(Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        // Create a mock mission application
+
+        $missionApplication = factory(MissionApplication::class)->make([
+            'user_id' => $user->user_id,
+            'mission_id' => $mission->mission_id
+        ]);
+        $missionApplication->setConnection($connection);
+        $missionApplication->save();
+
+        // Create a mock mission language
+
+        if ($action === 'timesheet') {
+          $missionLanguage = factory(MissionLanguage::class)->make([
+              'mission_id' => $mission->mission_id
+          ]);
+          $missionLanguage->setConnection($connection);
+          $missionLanguage->save();
+        }
+
+        // Create a mock timesheet
+
+        $timesheetId = [];
+        $timesheets = factory(Timesheet::class, $timesheetCount)->make([
+            'user_id' => $user->user_id,
+            'mission_id' => $mission->mission_id,
+        ]);
+
+        foreach ($timesheets as $key => $timesheet) {
+            $timesheet->setConnection($connection);
+            $timesheet->save();
+            $timesheetId[] = $timesheet->timesheet_id;
+        }
+
+        $response = $this->get("users/$user->user_id/$action?day_volunteered=$status", $authorization);
+
+        // Forced Delete all created user, mission, mission_application and timesheet. It will not softdelete mission
+
+        DB::setDefaultConnection($connection);
+
+        User::where('user_id', $user->user_id)->forceDelete();
+        Mission::where('mission_id', $mission->mission_id)->forceDelete();
+        MissionApplication::where('mission_application_id', $missionApplication->mission_application_id)->forceDelete();
+        Timesheet::whereIn('timesheet_id', $timesheetId)->forceDelete();
+        if ($action === 'timesheet') {
+          MissionLanguage::where('mission_language_id', $missionLanguage->mission_language_id)->forceDelete();
+        }
+
+        // Return $response
+
+        return $response;
+
+    }
+
 }
