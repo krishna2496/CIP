@@ -187,6 +187,9 @@ return [
         'MESSAGE_CITY_FOUND' => 'City found successfully',
         'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Tenant language file found sucessfully',
         'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
+        'MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS' => 'User timesheet summarized successfully',
+        'MESSAGE_TENANT_USER_TIMESHEET_SUCCESS' => 'User timesheet listed successfully',
+        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found'
     ],
 
 

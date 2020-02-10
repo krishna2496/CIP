@@ -13,6 +13,8 @@ use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
+use App\Models\Mission;
+use App\Helpers\LanguageHelper;
 
 class UserRepository implements UserInterface
 {
@@ -42,12 +44,24 @@ class UserRepository implements UserInterface
     private $helpers;
 
     /**
+     * @var App\Models\Mission
+     */
+    private $mission;
+
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
      * Create a new User repository instance.
      *
      * @param  App\User $user
      * @param  App\Models\UserSkill $userSkill
      * @param  App\Models\UserCustomFieldValue $userCustomFieldValue
      * @param  App\Models\Availability $availability
+     * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Models\Mission $mission
      * @param  App\Helpers\Helpers $helpers
      * @return void
      */
@@ -56,12 +70,16 @@ class UserRepository implements UserInterface
         UserSkill $userSkill,
         UserCustomFieldValue $userCustomFieldValue,
         Availability $availability,
+        LanguageHelper $languageHelper,
+        Mission $mission,
         Helpers $helpers
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
         $this->userCustomFieldValue = $userCustomFieldValue;
         $this->availability = $availability;
+        $this->languageHelper = $languageHelper;
+        $this->mission = $mission;
         $this->helpers = $helpers;
     }
     
@@ -99,6 +117,11 @@ class UserRepository implements UserInterface
                 $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
             });
         }
+
+        if ($request->has('email')) {
+            $userQuery->where('email', $request->input('email'));
+        }
+
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $userQuery->orderBy('user_id', $orderDirection);
@@ -361,4 +384,94 @@ class UserRepository implements UserInterface
     {
         return $this->user->with('timezone')->where('user_id', $userId)->first()->timezone['timezone'];
     }
+
+    /**
+     * Get specific user timesheet summary
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getTimesheetSummary($request, $userId): Collection
+    {
+        $publicationStatus = config("constants.publication_status");
+        $applicationStatus = config("constants.application_status");
+
+        $timesheet = $this->mission
+            ->selectRaw('
+                SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet.time))) as total_timesheet_time,
+                SUM(timesheet.action) as total_timesheet_action,
+                COUNT(*) as total_timesheet
+            ')
+            ->where('publication_status', $publicationStatus['APPROVED'])
+            ->whereHas('missionApplication', function ($query) use ($userId, $applicationStatus) {
+                $query->where('user_id', $userId);
+                $query->where([
+                    'user_id' => $userId,
+                    'approval_status' => $applicationStatus["AUTOMATICALLY_APPROVED"]
+                ]);
+            })
+            ->leftjoin('timesheet', 'timesheet.mission_id', '=', 'mission.mission_id');
+
+        if ($request->has('day_volunteered') && $request->get('day_volunteered')) {
+            $timesheet->where('timesheet.day_volunteered', strtoupper($request->get('day_volunteered')));
+        }   
+
+        if ($request->has('mission_type') && $request->get('mission_type')) {
+            $timesheet->where('mission.mission_type', strtoupper($request->get('mission_type')));
+        }
+
+        return $timesheet->get();
+
+    }
+
+    /**
+     * Get specific user timesheets per mission
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getMissionTimesheet($request, $userId): Collection
+    {
+        $publicationStatus = config("constants.publication_status");
+        $applicationStatus = config("constants.application_status");
+
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+
+        $timesheet = $this->mission
+            ->selectRaw('
+                mission.mission_id,
+                mission.mission_type,
+                mission_language.title as mission_title,
+                SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet.time))) as total_timesheet_time,
+                SUM(timesheet.action) as total_timesheet_action,
+                COUNT(*) as total_timesheet
+            ')
+            ->where('publication_status', $publicationStatus['APPROVED'])
+            ->whereHas('missionApplication', function ($query) use ($userId, $applicationStatus) {
+                $query->where('user_id', $userId);
+                $query->where([
+                    'user_id' => $userId,
+                    'approval_status' => $applicationStatus["AUTOMATICALLY_APPROVED"]
+                ]);
+            })
+            ->leftJoin('mission_language', 'mission_language.mission_id', '=', 'mission.mission_id')
+            ->leftJoin('timesheet', 'timesheet.mission_id', '=', 'mission.mission_id')
+            ->groupBy('mission.mission_id')
+            ->where('mission_language.language_id', $languageId);
+
+        if ($request->has('day_volunteered') && $request->get('day_volunteered')) {
+            $timesheet->where('timesheet.day_volunteered', strtoupper($request->get('day_volunteered')));
+        }
+
+        if ($request->has('mission_type') && $request->get('mission_type')) {
+            $timesheet->where('mission.mission_type', strtoupper($request->get('mission_type')));
+        }
+
+        return $timesheet->get();
+
+    }
+
 }

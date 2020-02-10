@@ -76,7 +76,8 @@ class Mission extends Model
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
-    'hours', 'action', 'ISO', 'total_minutes', 'custom_information'];
+    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
+    'mission_title'];
     
     /**
      * Get the document record associated with the mission.
