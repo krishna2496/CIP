@@ -1236,6 +1236,7 @@ class UserTest extends TestCase
                   'mission_id',
                   'mission_type',
                   'mission_title',
+                  'mission_objective',
                   'total_timesheet_time',
                   'total_timesheet_action',
                   'total_timesheet'
@@ -1275,6 +1276,7 @@ class UserTest extends TestCase
                   'mission_id',
                   'mission_type',
                   'mission_title',
+                  'mission_objective',
                   'total_timesheet_time',
                   'total_timesheet_action',
                   'total_timesheet'
