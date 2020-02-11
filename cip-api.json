@@ -6873,6 +6873,37 @@
 		},
 	},
 	"/entities/countries/{countryId}": {
+    "get": {
+      "operationId": "GET_team4-cip-api-get-a-country",
+      "summary": "Admin - Get a country detail",
+      "tags": [
+        "Country"
+      ],
+      "consumes": [
+        "multipart/form-data"
+      ],
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "default": ""
+        },
+        {
+          "name": "countryId",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "format": "int32"
+        }
+      ],
+      "responses": {
+        "401": {
+          "description": "Unauthorized - Invalid API key or secret key"
+        }
+      }
+    },
 		"patch": {
 			"operationId": "POST_team4-cip-api-admin-update-country",
 			"summary": "Admin - Update country",
@@ -6988,6 +7019,42 @@
 			}
 		}
 	},
+  "/entities/countries/{countryId}/cities": {
+    "get": {
+      "operationId": "GET_team4-cip-api-get-all-cities-by-country",
+      "summary": "Admin - Get cities by country id (Milestone - 3)",
+      "tags": [
+        "Country"
+      ],
+      "consumes": [
+        "multipart/form-data"
+      ],
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "default": ""
+        },
+        {
+          "name": "countryId",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "format": "int32"
+        }
+      ],
+      "responses": {
+        "401": {
+          "description": "Unauthorized - Invalid API key or secret key"
+        },
+        "404": {
+          "description": "Not found - Requested country does not exist"
+        }
+      }
+    }
+  },
 	"/entities/cities":{
 		"post": {
 			"operationId": "POST_team4-cip-api-admin-add-city",
@@ -7056,43 +7123,38 @@
 			}
 		},
 	},
-	"/entities/cities/{countryId}": {
-		"get": {
-			"operationId": "GET_team4-cip-api-get-all-cities-by-country",
-			"summary": "Admin - Get cities by country id (Milestone - 3)",
-			"tags":[
-				   "City"
-				],
-			"consumes": [
-			  "multipart/form-data"
-			],
-			"parameters": [
-			  {
-				"name": "Authorization",
-				"in": "header",
-				"required": true,
-				"type": "string",
-				"default": ""
-			  },
-			  {
-				"name": "countryId",
-				"in": "path",
-				"required": true,
-				"type": "integer",
-				"format": "int32"
-			  }
-			],
-			"responses": {
-			   "401":{
-				  "description":"Unauthorized - Invalid API key or secret key"
-				},
-				"404":{
-				  "description":"Not found - Requested country does not exist"
-				}
-			}
-		},
-	},
 	"/entities/cities/{cityId}": {
+    "get": {
+      "operationId": "GET_team4-cip-api-get-a-city",
+      "summary": "Admin - Get a city detail",
+      "tags": [
+        "City"
+      ],
+      "consumes": [
+        "multipart/form-data"
+      ],
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "default": ""
+        },
+        {
+          "name": "cityId",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "format": "int32"
+        }
+      ],
+      "responses": {
+        "401": {
+          "description": "Unauthorized - Invalid API key or secret key"
+        }
+      }
+    },
 		"patch": {
 			"operationId": "POST_team4-cip-api-admin-update-city",
 			"summary": "Admin - Update city",
@@ -7350,6 +7412,10 @@
                         "type": "string",
 						"description": "Url for media",
                       },
+                      "internal_note": {
+                        "type": "string",
+                        "description": "Internal note describing the image"
+                      },
                       "default": {
                         "type": "int32",
 						"enum":[
@@ -7383,6 +7449,10 @@
                       "media_path": {
                         "type": "string",
 						"description": "Youtube url of a video"
+                      },
+                      "internal_note": {
+                        "type": "string",
+                        "description": "Internal note describing the video"
                       },
 					  "sort_order": {
 						"type":"integer",
