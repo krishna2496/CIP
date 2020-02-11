@@ -359,7 +359,7 @@ class UserController extends Controller
         }
 
         // Set response data
-        $apiData = ['user_id' => $user->user_id, 'profile_complete_status' => $userData->is_profile_complete];
+        $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
         
