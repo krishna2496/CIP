@@ -35,6 +35,9 @@ class TimesheetQuery implements QueryableInterface
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
 
+    /**
+     * @var string
+     */
     private $type;
 
     /**
