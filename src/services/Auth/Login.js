@@ -21,6 +21,7 @@ export default async(data) => {
 
             //Store login data in local storage
             store.commit('loginUser', response.data.data)
+           
             setTimeout(() => {
                 document.body.classList.remove("loader-enable");
             }, 700)
