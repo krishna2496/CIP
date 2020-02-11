@@ -38,7 +38,7 @@ class TimesheetQuery implements QueryableInterface
     /**
      * @var string
      */
-    private $type;
+    private $missionType;
 
     /**
      * @param array $parameters
@@ -150,8 +150,8 @@ class TimesheetQuery implements QueryableInterface
              // Filter by type; always sent
              ->whereHas('mission', function ($query) use ($filters) {
                  $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
-                     $this->type = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
-                     $query->where('mission_type', '=', "$this->type");
+                     $this->missionType = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
+                     $query->where('mission_type', '=', "$this->missionType");
                  });
              })
             // Search
@@ -217,7 +217,7 @@ class TimesheetQuery implements QueryableInterface
             })
             ->whereHas('mission', function ($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) {
-                    $query->where('mission_type', '=', "$this->type");
+                    $query->where('mission_type', '=', "$this->missionType");
                 });
             })
             // Ordering
