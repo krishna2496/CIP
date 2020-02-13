@@ -333,7 +333,10 @@ header {
         }
         ul {
             li {
-                margin: 0;
+				margin: 0;
+				a{
+					white-space: normal;
+				}
             }
         }
         .nav-link {
@@ -369,7 +372,7 @@ header {
             }
         }
         .dropdown-menu {
-            min-width: 137px;
+            min-width: 260px;
             padding: 5px 0;
             margin: 4px 0 0;
             border: 1px solid $primary-border-color;
