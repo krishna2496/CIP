@@ -55,6 +55,7 @@ export default new Vuex.Store({
         userTimezone: localStorage.getItem('userTimezone'),
         policyPage: localStorage.getItem('policyPage'),
         logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
+        isProfileComplete: localStorage.getItem('isProfileComplete')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -70,7 +71,7 @@ export default new Vuex.Store({
             localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
             localStorage.setItem('email', data.email)
             localStorage.setItem('userTimezone', data.timezone)
-            
+            localStorage.setItem('isProfileComplete',data.is_profile_complete)
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -81,13 +82,13 @@ export default new Vuex.Store({
             state.cookieAgreementDate = data.cookie_agreement_date;
             state.email = data.email;
             state.userTimezone = data.timezone;
+            state.isProfileComplete = data.is_profile_complete;
         },
         // Remove login data in state and local storage
         logoutUser(state) {
             
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
-            
             localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
@@ -95,6 +96,7 @@ export default new Vuex.Store({
             localStorage.removeItem('avatar')
             localStorage.removeItem('cookieAgreementDate')
             localStorage.removeItem('policyPage')
+            localStorage.removeItem('isProfileComplete');
             state.isLoggedIn = false;
             state.token = null;
             state.userId = null;
@@ -103,8 +105,7 @@ export default new Vuex.Store({
             state.avatar = null;
             state.cookieAgreementDate = null;
             state.policyPage = null;
-                     
-
+            state.isProfileComplete = null;
             router.push({
                 name: 'login'
             })
@@ -340,6 +341,10 @@ export default new Vuex.Store({
                 localStorage.setItem('policyPage', null)
                 state.policyPage = null
             }
+        },
+        changeProfileSetFlag(state,data) {
+            localStorage.setItem('isProfileComplete',data);
+            state.isProfileComplete = data;
         }
     },
     getters: {},

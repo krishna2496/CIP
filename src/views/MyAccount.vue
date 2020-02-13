@@ -828,6 +828,7 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
+                        store.commit('changeProfileSetFlag',response.data.is_profile_complete);
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
                         this.getUserProfileDetail().then(() => {
