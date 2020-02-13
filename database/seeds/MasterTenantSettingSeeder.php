@@ -194,6 +194,34 @@ class MasterTenantSettingSeeder extends Seeder
                 'key' => 'country_selection',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
+            ],
+			[
+                'title' => 'Email notification for invite colleague',
+                'description' => 'Enable/disable email notification for invite colleague.',
+                'key' => 'email_notification_invite_colleague',
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ],
+			[
+                'title' => 'Enable/disable document upload for timesheet entry',
+                'description' => 'Enable/disable document upload for timesheet entry.',
+                'key' => 'timesheet_document_upload',
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ],
+			[
+                'title' => 'Contact us enabled',
+                'description' => 'Enable/disable contact us/report a bug link in platform.',
+                'key' => 'contact_us_enabled',
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ],
+			[
+                'title' => 'Enable/disable mission ratings for volunteers',
+                'description' => 'Enable/disable mission ratings so only volunteers that have been approved to the mission can rate the mission.',
+                'key' => 'mission_rating_volunteer',
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
             ]
 
 
