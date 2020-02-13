@@ -22,7 +22,6 @@ class AlterTableUserColumnsDefaultNull extends Migration
 			\DB::statement("ALTER TABLE `user` CHANGE `why_i_volunteer` `why_i_volunteer` TEXT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `employee_id` `employee_id` VARCHAR(16) NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `department` `department` VARCHAR(16) NULL");
-			\DB::statement("ALTER TABLE `user` CHANGE `manager_name` `manager_name` VARCHAR(16) NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `city_id` `city_id` BIGINT(20) UNSIGNED NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `country_id` `country_id` BIGINT(20) UNSIGNED NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `profile_text` `profile_text` TEXT NULL");
@@ -46,7 +45,6 @@ class AlterTableUserColumnsDefaultNull extends Migration
 			\DB::statement("ALTER TABLE `user` CHANGE `why_i_volunteer` `why_i_volunteer` TEXT NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `employee_id` `employee_id` VARCHAR(16) NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `department` `department` VARCHAR(16) NOT NULL");
-			\DB::statement("ALTER TABLE `user` CHANGE `manager_name` `manager_name` VARCHAR(16) NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `city_id` `city_id` BIGINT(20) UNSIGNED NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `country_id` `country_id` BIGINT(20) UNSIGNED NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `profile_text` `profile_text` TEXT NOT NULL");
