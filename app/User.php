@@ -49,7 +49,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
      'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
       'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
-       'language_id', 'title', 'hours_goal' , 'is_profile_complete'];
+       'language_id', 'title', 'hours_goal', 'is_profile_complete'];
     
     /**
      * The attributes that should be visible in arrays.
