@@ -222,8 +222,15 @@ class MasterTenantSettingSeeder extends Seeder
                 'key' => 'mission_rating_volunteer',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
+            ],
+			[
+                'title' => 'Related missions',
+                'description' => 'Hide/Show related mission on mission detail page.',
+                'key' => 'related_missions',
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
             ]
-
+			
 
         ];
     
