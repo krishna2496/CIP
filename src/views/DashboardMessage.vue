@@ -21,15 +21,15 @@
 						<div>
 							<div class="heading-section">
 								<h1>{{languageData.label.messages}}</h1>
-								<b-button title="Send Message" class="btn-bordersecondary"
-									@click="handleModal">{{languageData.label.send}} {{languageData.label.message}} </b-button>
+								<b-button  class="btn-bordersecondary"
+									@click="handleModal">{{languageData.label.send_message}}</b-button>
 							</div>
 						</div>
 							<div class="inner-content-wrap" v-if="isPageLoaded">
 								<div class="message-count-block">
 									<span class="highlighted-text" v-if="newMessage > 1">({{newMessage}}) {{languageData.label.new}} {{languageData.label.messages | firstLetterSmall}}</span>
 									<span class="highlighted-text" v-else>({{newMessage}}) {{languageData.label.new}} {{languageData.label.message | firstLetterSmall}}  </span>
-									<span v-if="messageCount > 1">({{messageCount}}) {{languageData.label.total}} {{languageData.label.messages | firstLetterSmall}}</span>
+									<span v-if="messageCount > 1">({{messageCount}}) {{languageData.label.total_messages}}</span>
 									<span v-else>({{messageCount}}) {{languageData.label.message | firstLetterSmall}}</span>
 								</div>
 								
