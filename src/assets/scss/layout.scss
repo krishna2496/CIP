@@ -1496,7 +1496,7 @@ main {
 		padding-bottom: 0;
 		flex-wrap: nowrap;
 		align-items: flex-end;
-		overflow-x: scroll;
+		overflow-x: auto;
 
 		@include sm-max {
 			display: none;
@@ -1960,6 +1960,7 @@ main {
 			padding: 23px 29px 10px;
 			margin-bottom: 40px;
 			font-size: 13px;
+
 			@include lg-max {
 				padding: 20px 20px 10px;
 			}
@@ -1981,6 +1982,13 @@ main {
 
 				&.volunteery-counter {
 					margin-left: 5px;
+				}
+			}
+			.table-wrap {
+				.table-row{
+					 span{
+						 font-size: 13px;
+					 }
 				}
 			}
 		}

@@ -100,6 +100,7 @@
                                     <div class="chart-title">
                                         <h5>{{languageData.label.hours_per_month}}</h5>
                                         <model-select 
+                                            class="search-dropdown"
                                             v-if="missionFilterDisplay"
                                             :options="missionTitle"
                                             v-model="defaultMissionModel"
