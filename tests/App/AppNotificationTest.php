@@ -166,6 +166,11 @@ class AppNotificationTest extends TestCase
      */
     public function it_should_list_notifications()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -250,8 +255,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -486,8 +491,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -572,8 +577,7 @@ class AppNotificationTest extends TestCase
 
         // Update timesheet status
         $params = [
-            "status_id" => \App\Models\TimesheetStatus::
-            where('status', config('constants.timesheet_status.APPROVED'))->first()->timesheet_status_id
+            "status" => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
         ];
         
         DB::setDefaultConnection('mysql');
@@ -614,6 +618,11 @@ class AppNotificationTest extends TestCase
      */
     public function it_should_update_notifications_status()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -686,8 +695,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -822,6 +831,11 @@ class AppNotificationTest extends TestCase
      */
     public function it_should_clear_notifications()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -894,8 +908,8 @@ class AppNotificationTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",

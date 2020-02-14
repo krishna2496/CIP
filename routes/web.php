@@ -260,7 +260,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
@@ -270,7 +270,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
@@ -682,13 +682,30 @@ $router->group(['middleware' => 'localization'], function ($router) {
     );
 
     /* Get countries list */
-    $router->get('/countries', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\Country\CountryController@index']);
-
+    $router->group(
+        ['prefix' => 'entities/countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
+            $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
+            $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
+            $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
+        }
+    );
+    
     /* Get cities by country id */
-    $router->get('/cities/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\City\CityController@fetchCity']);
+    $router->group(
+        ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\City\CityController@index']);
+            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity',
+            'middleware' => ['PaginationMiddleware']]);
+            $router->post('/', ['uses' => 'Admin\City\CityController@store']);
+            $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);
+            $router->delete('/{cityId}', ['uses' => 'Admin\City\CityController@destroy']);
+        }
+    );
 
+    
     /* News category management */
     $router->group(
         ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
@@ -779,18 +796,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
             );
         }
     );
-/*
-|
-|--------------------------------------------------------------------------
-| Tenant User Routs
-|--------------------------------------------------------------------------
-|
-| These are tenant user routes to manage their profile and other stuff
-|
- */
-/*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
-$router->get('users', function() {
-$users = \App\User::all();
-return response()->json($users);
-});
-});*/
+
+    /* Language file management */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin'],
+        function ($router) {
+            /* Get language file */
+            $router->get(
+                '/language-file',
+                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchLanguageFile']
+            );
+
+            /* Upload language file */
+            $router->post('/language-file', ['as' => 'languagefile.upload',
+            'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
+        }
+    );

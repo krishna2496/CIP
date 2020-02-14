@@ -254,12 +254,10 @@ class MissionRepository implements MissionInterface
         // Add/Update mission title
         if (isset($request->mission_detail)) {
             foreach ($request->mission_detail as $value) {
+                $missionLanguageDeleteFlag = 0;
                 $language = $languages->where('code', $value['lang'])->first();
                 $missionLanguage = array('mission_id' => $id,
-                                        'language_id' => $language->language_id,
-                                        'short_description' => (isset($value['short_description'])) ?
-                                        $value['short_description'] : null,
-                                        'objective' => $value['objective'] ?? null
+                                        'language_id' => $language->language_id
                                         );
                 if (array_key_exists('custom_information', $value)) {
                     $missionLanguage['custom_information'] = $value['custom_information'];
@@ -267,19 +265,35 @@ class MissionRepository implements MissionInterface
                 if (array_key_exists('title', $value)) {
                     $missionLanguage['title'] = $value['title'];
                 }
+                if (array_key_exists('short_description', $value)) {
+                    $missionLanguage['short_description'] = $value['short_description'];
+                }
+                if (array_key_exists('objective', $value)) {
+                    $missionLanguage['objective'] = $value['objective'];
+                }
                 if (array_key_exists('section', $value)) {
-                    $missionLanguage['description'] = $value['section'];
+                    if (empty($value['section'])) {
+                        $this->modelsService->missionLanguage->deleteMissionLanguage($id, $language->language_id);
+                        $missionLanguageDeleteFlag = 1;
+                    } else {
+                        $missionLanguage['description'] = $value['section'];
+                    }
                 }
 
-                $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
-                'language_id' => $language->language_id], $missionLanguage);
-                    
+                if ($missionLanguageDeleteFlag !== 1) {
+                    $this->modelsService->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
+                    'language_id' => $language->language_id], $missionLanguage);
+                }
                 unset($missionLanguage);
             }
         }
         
         // For skills
         if (isset($request->skills) && count($request->skills) > 0) {
+            //Unlink mission skill
+            $this->modelsService->missionSkill->unlinkMissionSkill($mission->mission_id);
+            
+            // Link mission skill
             foreach ($request->skills as $value) {
                 $this->modelsService->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
@@ -291,7 +305,7 @@ class MissionRepository implements MissionInterface
             $this->missionMediaRepository->updateMediaImages($request->media_images, $tenantName, $id);
         }
 
-    // Add/Update mission media videos
+        // Add/Update mission media videos
         if (isset($request->media_videos) && count($request->media_videos) > 0) {
             $this->missionMediaRepository->updateMediaVideos($request->media_videos, $id);
         }
@@ -328,8 +342,8 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->
         with(
             'missionTheme',
-            'city',
-            'country',
+            'city.languages',
+            'country.languages',
             'missionLanguage',
             'timeMission',
             'goalMission'
@@ -387,7 +401,7 @@ class MissionRepository implements MissionInterface
             'mission.organisation_id',
             'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
+        ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -446,6 +460,7 @@ class MissionRepository implements MissionInterface
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
+       
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability'
@@ -464,6 +479,7 @@ class MissionRepository implements MissionInterface
                     'custom_information'
                 );
             }])
+            ->with(['city.languages'])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
                 ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -489,8 +505,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
        
@@ -521,16 +537,12 @@ class MissionRepository implements MissionInterface
             if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                 $missionQuery->where(function ($query) use ($request) {
                     $query->wherehas('country', function ($countryQuery) use ($request) {
-                        $countryQuery->where('name', 'like', '%' . $request->input('explore_mission_params') . '%');
+                        $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                     });
                 });
             }
             if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
-                $missionQuery->where(
-                    'organisation_name',
-                    'like',
-                    '%' . $request->input('explore_mission_params') . '%'
-                );
+                $missionQuery->where("mission.organisation_id", $request->input('explore_mission_params'));
             }
         }
         
@@ -647,7 +659,9 @@ class MissionRepository implements MissionInterface
                 ->orderBY('mission_theme_count', 'desc');
                 break;
             case config('constants.TOP_COUNTRY'):
-                $missionQuery->with(['country'])
+                $missionQuery->with(['country'=> function ($query) {
+                    $query->with('languages');
+                }])
                 ->selectRaw('COUNT(mission.country_id) as mission_country_count')
                 ->groupBy('mission.country_id')
                 ->orderBY('mission_country_count', 'desc');
@@ -701,11 +715,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where(
-                                    'name',
-                                    'like',
-                                    '%'.$request->input('explore_mission_params').'%'
-                                );
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -717,7 +727,10 @@ class MissionRepository implements MissionInterface
                         );
                     }
                 }
-                $missionQuery->with(['country'])
+
+                $missionQuery->with(['country'=> function ($query) {
+                    $query->with('languages');
+                }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
                 $mission = $missionQuery->get();
@@ -749,7 +762,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where('name', 'like', '%'.$request->input('explore_mission_params').'%');
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -762,7 +775,9 @@ class MissionRepository implements MissionInterface
                     }
                 }
 
-                $missionQuery->with(['city'])
+                $missionQuery->with(['city'=> function ($query) {
+                    $query->with('languages');
+                }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
                     $missionQuery->where("mission.country_id", $request->input('country_id'));
@@ -797,11 +812,7 @@ class MissionRepository implements MissionInterface
                     if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
                         $missionQuery->where(function ($query) use ($request) {
                             $query->wherehas('country', function ($countryQuery) use ($request) {
-                                $countryQuery->where(
-                                    'name',
-                                    'like',
-                                    '%' . $request->input('explore_mission_params') . '%'
-                                );
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
                     }
@@ -867,9 +878,8 @@ class MissionRepository implements MissionInterface
                             $query->where(function ($query) use ($request) {
                                 $query->wherehas('country', function ($countryQuery) use ($request) {
                                     $countryQuery->where(
-                                        'name',
-                                        'like',
-                                        '%' . $request->input('explore_mission_params') . '%'
+                                        "mission.country_id",
+                                        $request->input('explore_mission_params')
                                     );
                                 });
                             });
@@ -981,6 +991,7 @@ class MissionRepository implements MissionInterface
                 'objective'
             );
         }])
+        ->with(['city.languages'])
         ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -1008,8 +1019,8 @@ class MissionRepository implements MissionInterface
         $missionQuery->withCount([
             'timesheet AS achieved_goal' => function ($query) use ($request) {
                 $query->select(DB::raw("SUM(action) as action"));
-                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
@@ -1062,6 +1073,7 @@ class MissionRepository implements MissionInterface
                     'custom_information'
                 );
             }])
+            ->with(['city.languages'])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
                 ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -1081,11 +1093,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
-                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                    $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
+                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
                 }]);
         return $missionQuery->get();
     }
@@ -1212,6 +1225,7 @@ class MissionRepository implements MissionInterface
     {
         $languageId = $this->languageHelper->getLanguageId($request);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $userId = $request->auth->user_id;
         $missionLists = array();
 
@@ -1221,20 +1235,16 @@ class MissionRepository implements MissionInterface
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         })
         ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title')
-            ->where('language_id', $languageId);
+            $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
         }])->get();
         
-        foreach ($missionData->toArray() as $key => $value) {
-            if (!empty($value['mission_language'])) {
-                $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
-            } else {
-                $defaultTenantLanguageData = $this->modelsService->missionLanguage->select('title')
-                ->where(['mission_id' => $value['mission_id'], 'language_id' => $defaultTenantLanguage->language_id])
-                ->get();
-                $missionLists[$key]['title'] = $defaultTenantLanguageData[0]->title;
-            }
-            $missionLists[$key]['mission_id'] = $value['mission_id'];
+        foreach ($missionData as $key => $value) {
+            $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
+            $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+            $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+            
+            $missionLists[$key]['title'] = $missionLanguage->title ?? '';
+            $missionLists[$key]['mission_id'] = $value->mission_id;
         }
         return $missionLists;
     }
@@ -1248,18 +1258,17 @@ class MissionRepository implements MissionInterface
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title')
-        ->where(['mission_id' => $missionId, 'language_id' => $languageId])
+        $languageData = $this->modelsService->missionLanguage->withTrashed()->select('title', 'language_id')
+        ->where(['mission_id' => $missionId])
         ->get();
+        $missionTitle = '';
         if ($languageData->count() > 0) {
-            return $languageData[0]->title;
-        } else {
-            $defaultTenantLanguageData = $this->modelsService->missionLanguage
-                ->select('title')
-                ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
-                ->get();
-            return $defaultTenantLanguageData[0]->title;
+            $index = array_search($languageId, array_column($languageData->toArray(), 'language_id'));
+            $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+            $missionLanguage = $languageData->where('language_id', $language)->first();
+            $missionTitle =  $missionLanguage->title ?? '';
         }
+        return $missionTitle;
     }
 
     /**
@@ -1299,9 +1308,9 @@ class MissionRepository implements MissionInterface
         );
         if (isset($mission[0]['publication_status'])
         && (in_array($mission[0]['publication_status'], $missionStatus))) {
-            return true;
+            $status = true;
         }
-        return false;
+        return $status ?? false;
     }
 
     /**
@@ -1363,5 +1372,22 @@ class MissionRepository implements MissionInterface
         ->where(['mission_document_id' => $documentId, 'mission_id' => $missionId])
         ->first();
         return ($document === null) ? false : true;
+    }
+    
+    /**
+     * Check mission user mission application status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param array $statusArray
+     *
+     * @return bool
+     */
+    public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool
+    {
+        $applicationStatusData = $this->modelsService->missionApplication->select('approval_status')
+        ->where(['mission_id'=> $missionId, 'user_id'=> $userId])
+        ->whereIn('approval_status', $statusArray)->get();
+        return $applicationStatusData->isEmpty() ? true : false;
     }
 }

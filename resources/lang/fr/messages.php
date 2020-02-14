@@ -172,8 +172,16 @@ return [
         'MESSAGE_AVAILABILITY_DELETED' => 'Disponibilité supprimée avec succès',
         'MESSAGE_AVAILABILITY_UPDATED' => 'Disponibilité mise à jour avec succès',
         'MESSAGE_AVAILABILITY_FOUND' => 'Disponibilité trouvée avec succès',
+        'MESSAGE_COUNTRY_CREATED' => 'Pays créé avec succès',
+        'MESSAGE_CITY_CREATED' => 'Une ville créée avec succès',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'Le média de mission a été supprimé avec succès',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'Document de mission supprimé avec succès',
+        'MESSAGE_COUNTRY_DELETED' => 'Pays supprimé avec succès',
+        'MESSAGE_COUNTRY_UPDATED' => 'Pays mis à jour avec succès',
+        'MESSAGE_CITY_DELETED' => 'La ville a bien été supprimée',
+        'MESSAGE_CITY_UPDATED' => 'La ville a été mise à jour avec succès',
+        'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Le fichier de langue du locataire a été trouvé avec succès',
+        'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Le fichier de langue du locataire a été mis à jour avec succès',
     ],
 
         
@@ -232,6 +240,7 @@ return [
         'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'L\'id du média n\'est pas lié à la mission',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'L\'id de document n\'existe pas',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'L\'identifiant du document n\'est pas lié à la mission',
+        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'La langue de mission par défaut ne peut pas être supprimée.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
@@ -265,6 +274,14 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
+        'ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3' => 'Dossier des langues des locataires introuvable',
+        'ERROR_TENANT_LANGUAGE_FILE_NOT_FOUND_ON_S3' => 'Fichier de langue du locataire introuvable',
+        'ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION' => 'Le fichier doit être au format json',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Format JSON non valide dans le fichier téléchargé.', 
+        'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Fichier de langue incomplet.',
+        'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => 'Format JSON non valide dans le fichier téléchargé.',
+		'ERROR_TENANT_LANGUAGE_INVALID' => 'Code de langue du locataire ou nom de fichier non valide.',
+        'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Code de langue du locataire non valide.',
 
         
         //For timesheet module
@@ -306,5 +323,15 @@ return [
 
         // For availability module
         'ERROR_AVAILABILITY_NOT_FOUND' => 'Disponibilité non trouvée dans le système',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'Pays non trouvé dans le système',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'Ville non trouvée dans le système',
+
+        'ERROR_CITY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cette ville car elle est liée à la mission ou à l\'utilisateur',
+
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer ce pays car il est lié à la mission ou à l\'utilisateur'
     ]
 ];

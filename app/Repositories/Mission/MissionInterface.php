@@ -200,28 +200,39 @@ interface MissionInterface
       
     /**
      * Remove mission media
-     * 
+     *
      * @param int $mediaId
-     * 
+     *
      * @return bool
      */
     public function deleteMissionMedia(int $mediaId): bool;
 
     /**
      * Remove mission document
-     * 
+     *
      * @param int $documentId
-     * 
+     *
      * @return bool
      */
     public function deleteMissionDocument(int $documentId): bool;
     
     /**
      * Get media details
-     * 
+     *
      * @param int $mediaId
-     * 
+     *
      * @return Collection
      */
     public function getMediaDetails(int $mediaId): Collection;
+
+    /**
+     * Check mission user mission application status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param array $statusArray
+     *
+     * @return bool
+     */
+    public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool;
 }

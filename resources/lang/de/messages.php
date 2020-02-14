@@ -144,6 +144,10 @@ return [
         'MESSAGE_AVAILABILITY_FOUND' => 'DE: Availability found successfully',
         'MESSAGE_MISSION_MEDIA_DELETED' => 'DE: Mission media deleted successfully',
         'MESSAGE_MISSION_DOCUMENT_DELETED' => 'DE: Mission document deleted successfully',
+        'MESSAGE_COUNTRY_DELETED' => 'DE: Country deleted successfully',
+        'MESSAGE_COUNTRY_UPDATED' => 'DE: Country updated successfully',
+        'MESSAGE_CITY_DELETED' => 'DE: City deleted successfully',
+        'MESSAGE_CITY_UPDATED' => 'DE: City updated successfully',
     ],
 
 
@@ -200,6 +204,7 @@ return [
         'ERROR_MEDIA_NOT_LINKED_WITH_MISSION' => 'DE: Media id is not linked to mission',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
+        'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'DE: Default mission language cannot be deleted.',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
@@ -264,6 +269,12 @@ return [
         'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
 
         // For availability module
-        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availabilty does not found in system',
+        'ERROR_AVAILABILITY_NOT_FOUND' => 'DE: Availability not found in system',
+
+        // For Country module
+        'ERROR_COUNTRY_NOT_FOUND' => 'DE: Country not found in system',
+
+        // For city module
+        'ERROR_CITY_NOT_FOUND' => 'DE: City not found in system',
     ]
 ];

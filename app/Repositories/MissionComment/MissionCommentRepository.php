@@ -121,6 +121,7 @@ class MissionCommentRepository implements MissionCommentInterface
      *
      * @param int $userId
      * @param int $languageId
+     * @param int $defaultTenantLanguageId
      * @return array
      */
     public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array

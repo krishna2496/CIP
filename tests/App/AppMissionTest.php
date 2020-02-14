@@ -13,6 +13,12 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id; 
+        App\Models\Mission::whereNull('deleted_at')->delete();
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -38,8 +44,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -128,6 +134,8 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+        DB::setDefaultConnection('tenant');
+        App\Models\Mission::whereNull('deleted_at')->delete();
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
@@ -271,6 +279,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_detail_by_id()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -292,8 +305,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -447,6 +460,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission_by_id()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
 
         $params = [
@@ -465,8 +483,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -806,6 +824,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_random()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -826,8 +849,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -898,6 +921,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_theme()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -918,8 +946,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -990,6 +1018,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_country()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1010,8 +1043,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1082,6 +1115,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_organization()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1103,8 +1141,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1175,6 +1213,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_top_recommended()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1196,8 +1239,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1268,6 +1311,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_top_favourite()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1289,8 +1337,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1368,6 +1416,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_by_most_ranked()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1389,8 +1442,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1452,6 +1505,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_country()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1472,8 +1530,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1544,6 +1602,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_explore_mission_type_organization()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1565,8 +1628,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1637,6 +1700,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_oldest()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1658,8 +1726,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1730,6 +1798,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_newest()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1751,8 +1824,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1823,6 +1896,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_lowest_available_seats()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1844,8 +1922,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1916,6 +1994,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_highest_available_seats()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -1937,8 +2020,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2009,6 +2092,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sortby_deadline()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -2030,8 +2118,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2111,6 +2199,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_filter_data_for_missions()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2131,8 +2224,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2194,8 +2287,6 @@ class AppMissionTest extends TestCase
             "data"
         ]);
 
-        // &explore_mission_type=themes&explore_mission_params=1
-
         // For theme filters
         DB::setDefaultConnection('mysql');
         $this->get('app/filter-data?explore_mission_type=theme&explore_mission_params=1', ['token' => $token])
@@ -2205,16 +2296,12 @@ class AppMissionTest extends TestCase
             "data"
         ]);
         
-        $countryName = App\Models\Country::where("country_id", $mission->country_id)->first()->name;
+        $countryName = App\Models\CountryLanguage::where("country_id", $mission->country_id)->first()->name;
 
         // For country filters
         DB::setDefaultConnection('mysql');
-        $this->get('app/filter-data?explore_mission_type=country&explore_mission_params='.$countryName, ['token' => $token])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data"
-        ]);
+        $res = $this->get('app/filter-data?explore_mission_type=country&explore_mission_params='.$countryName, ['token' => $token])
+          ->seeStatusCode(200);
 
         // For organization filters
         DB::setDefaultConnection('mysql');
@@ -2277,6 +2364,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
 
         $params = [
@@ -2295,8 +2387,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2411,6 +2503,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_mission_with_application_count()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2432,8 +2529,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2517,6 +2614,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_user_filters()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2542,8 +2644,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2623,6 +2725,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_user_filters_without_search()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2648,8 +2755,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2729,6 +2836,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_sort_by_my_favourite()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $organizationName = str_random(10);
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -2750,8 +2862,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2829,6 +2941,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_user_filters_without_city()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2854,8 +2971,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2935,6 +3052,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission_by_id_with_deadline()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
 
         $params = [
@@ -2953,8 +3075,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3080,6 +3202,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_all_app_missions_with_deadline()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3105,8 +3232,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -3182,6 +3309,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_mission_volunteers_by_mission_id()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3203,8 +3335,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "location" => [
-                "city_id" => 1,
-                "country_code" => "US"
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
