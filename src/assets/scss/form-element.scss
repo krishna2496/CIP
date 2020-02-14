@@ -93,135 +93,135 @@ a {
 }
 
 .btn-bordersecondary {
-	min-width: 132px;
-	min-height: 48px;
-	font-size: 17px;
-	color: $primary;
-	background-color: $white;
-	border: 2px solid $primary;
-	border-radius: 25px;
+    min-width: 132px;
+    min-height: 48px;
+    font-size: 17px;
+    color: $primary;
+    background-color: $white;
+    border: 2px solid $primary;
+    border-radius: 25px;
 
-	&:active,
-	&:active:focus,
-	&:hover {
-		color: $white !important;
-		background: $primary !important;
-		border-color: $primary !important;
-	}
+    &:active,
+    &:active:focus,
+    &:hover {
+        color: $white !important;
+        background: $primary !important;
+        border-color: $primary !important;
+    }
 
-	&:focus,
-	&:disabled,
-	&.disabled {
-		color: $primary !important;
-		background-color: $white !important;
-		border: 2px solid $primary !important;
+    &:focus,
+    &:disabled,
+    &.disabled {
+        color: $primary !important;
+        background-color: $white !important;
+        border: 2px solid $primary !important;
 
-		&:hover {
-			color: $white !important;
-			background: $primary !important;
-			border-color: $primary !important;
-		}
-	}
+        &:hover {
+            color: $white !important;
+            background: $primary !important;
+            border-color: $primary !important;
+        }
+    }
 
-	&.icon-btn {
-		i {
-			svg {
-				height: 100%;
-				width: 100%;
-				fill: $primary;
-			}
-		}
+    &.icon-btn {
+        i {
+            svg {
+                height: 100%;
+                width: 100%;
+                fill: $primary;
+            }
+        }
 
-		&:focus {
-			i {
-				svg {
-					fill: $primary;
-				}
-			}
+        &:focus {
+            i {
+                svg {
+                    fill: $primary;
+                }
+            }
 
-			&:hover {
-				i {
-					svg {
-						fill: $white;
-					}
-				}
-			}
-		}
+            &:hover {
+                i {
+                    svg {
+                        fill: $white;
+                    }
+                }
+            }
+        }
 
-		&:active,
-		&:hover {
-			i {
-				svg {
-					fill: $white;
-				}
-			}
-		}
-	}
+        &:active,
+        &:hover {
+            i {
+                svg {
+                    fill: $white;
+                }
+            }
+        }
+    }
 }
 
 .btn-borderprimary {
-	min-width: 132px;
-	min-height: 48px;
-	font-size: 17px;
-	color: $gray-primary;
-	border: 2px solid $gray-primary;
-	background: transparent;
-	border-radius: 25px;
+    min-width: 132px;
+    min-height: 48px;
+    font-size: 17px;
+    color: $gray-primary;
+    border: 2px solid $gray-primary;
+    background: transparent;
+    border-radius: 25px;
 
-	&:active,
-	&:hover {
-		color: $white !important;
-		background: $gray-primary !important;
-		border-color: $gray-primary !important;
-	}
+    &:active,
+    &:hover {
+        color: $white !important;
+        background: $gray-primary !important;
+        border-color: $gray-primary !important;
+    }
 
-	&:focus,
-	&:disabled,
-	&.disabled {
-		color: $gray-primary !important;
-		border: 2px solid $gray-primary !important;
-		background: transparent !important;
+    &:focus,
+    &:disabled,
+    &.disabled {
+        color: $gray-primary !important;
+        border: 2px solid $gray-primary !important;
+        background: transparent !important;
 
-		&:hover {
-			color: $white !important;
-			background: $gray-primary !important;
-			border-color: $gray-primary !important;
-		}
-	}
+        &:hover {
+            color: $white !important;
+            background: $gray-primary !important;
+            border-color: $gray-primary !important;
+        }
+    }
 
-	&.icon-btn {
-		i {
-			svg {
-				height: 100%;
-				width: 100%;
-				fill: $gray-primary;
-			}
-		}
+    &.icon-btn {
+        i {
+            svg {
+                height: 100%;
+                width: 100%;
+                fill: $gray-primary;
+            }
+        }
 
-		&:hover {
-			i {
-				svg {
-					fill: $white;
-				}
-			}
-		}
+        &:hover {
+            i {
+                svg {
+                    fill: $white;
+                }
+            }
+        }
 
-		&:focus {
-			i {
-				svg {
-					fill: $gray-primary;
-				}
-			}
+        &:focus {
+            i {
+                svg {
+                    fill: $gray-primary;
+                }
+            }
 
-			&:hover {
-				i {
-					svg {
-						fill: $white;
-					}
-				}
-			}
-		}
-	}
+            &:hover {
+                i {
+                    svg {
+                        fill: $white;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .btn-borderwhite {
@@ -292,7 +292,6 @@ a {
     //     }
     //   }
 }
-
 
 /**Form-element**/
 
@@ -390,15 +389,15 @@ label {
         .option-list-wrap {
             border-top-color: $error;
         }
-        ~.invalid-feedback {
-            display: block !important;
+        ~ .invalid-feedback {
+            display: block;
         }
     }
 }
 
 .custom-file-input {
     &:focus {
-        ~.custom-file-label {
+        ~ .custom-file-label {
             box-shadow: none;
             border-color: $control-border;
         }
@@ -439,7 +438,7 @@ label {
             }
         }
         &:checked {
-            ~.custom-control-label {
+            ~ .custom-control-label {
                 &:before {
                     background: $primary;
                     border-color: $primary !important;
@@ -455,7 +454,7 @@ label {
     align-items: center;
     width: 100%;
     height: 100%;
-    &>span {
+    & > span {
         display: block;
         padding: 6px 35px 6px 15px;
         border: 1px solid $control-border;
@@ -571,7 +570,7 @@ label {
     width: 100%;
     font-size: 14px;
     line-height: 18px;
-    &>span {
+    & > span {
         display: block;
         padding: 6px 35px 6px 15px;
         border: 1px solid $control-border;
@@ -822,7 +821,7 @@ label {
                         font-size: 16px;
                         line-break: 20px;
                     }
-                    >div {
+                    > div {
                         display: flex;
                         align-items: center;
                         img {
@@ -836,7 +835,7 @@ label {
                                 height: 35px;
                             }
                         }
-                        >div {
+                        > div {
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
@@ -858,7 +857,6 @@ label {
         }
     }
 }
-
 
 /** breadcrumb dropdown style **/
 
@@ -970,7 +968,7 @@ label {
         overflow: hidden;
         position: relative;
         @include transition(all 0.3s);
-        >div {
+        > div {
             border-radius: 100%;
             overflow: hidden;
         }
@@ -1085,7 +1083,6 @@ label {
     line-height: 0;
 }
 
-
 /** Date picker style **/
 
 .mx-datepicker {
@@ -1096,7 +1093,7 @@ label {
                 border-color: $error;
             }
         }
-        +.invalid-feedback {
+        + .invalid-feedback {
             display: block;
         }
     }
@@ -1179,7 +1176,7 @@ label {
     }
 }
 
-.mx-calendar-header>a[class*="mx-icon-"] {
+.mx-calendar-header > a[class*="mx-icon-"] {
     &:hover {
         opacity: 0.6 !important;
     }
@@ -1192,7 +1189,6 @@ label {
     -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
     -o-zbox-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
 }
-
 
 /**Date range picker style**/
 
@@ -1232,7 +1228,6 @@ label {
     }
 }
 
-
 /** File upload Style **/
 
 .uploaded-file-wrap {
@@ -1261,7 +1256,7 @@ label {
                     font-size: 13px;
                     line-height: 20px;
                 }
-                +span {
+                + span {
                     @include xxs-max {
                         font-size: 13px;
                     }
@@ -1407,7 +1402,7 @@ span {
         border-color: $control-border;
     }
     &.is-invalid {
-        ~.invalid-feedback {
+        ~ .invalid-feedback {
             display: block;
         }
     }
@@ -1521,7 +1516,11 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .chart-title {
     .ui.selection.dropdown {
-        max-width: 200px;
-        flex: 0 0 200px;
+        max-width: 270px;
+		flex: 0 0 270px;
+		@include xxxs-max{
+			max-width: 255px;
+			flex: 0 0 255px;
+		}
     }
 }

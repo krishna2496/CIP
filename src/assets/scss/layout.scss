@@ -1493,7 +1493,10 @@ main {
 	}
 
 	.nav-tabs {
-		padding-bottom: 22px;
+		padding-bottom: 0;
+		flex-wrap: nowrap;
+		align-items: flex-end;
+		overflow-x: auto;
 
 		@include sm-max {
 			display: none;
@@ -1501,19 +1504,20 @@ main {
 
 		li {
 			margin-bottom: 0;
-
+			// max-width: 35%;
+			// flex: 0 0 35%;
 			.tablinks {
 				position: relative;
 				border: none;
 				font-size: 16px;
-				padding: 0 20px;
+				padding: 0 20px 22px;
 				display: inline-block;
 
 				&:after {
 					content: "";
 					position: absolute;
 					left: 0;
-					bottom: -23px;
+					bottom: 0;
 					width: 0;
 					background: $black-primary;
 					height: 3px;
@@ -1956,6 +1960,7 @@ main {
 			padding: 23px 29px 10px;
 			margin-bottom: 40px;
 			font-size: 13px;
+
 			@include lg-max {
 				padding: 20px 20px 10px;
 			}
@@ -1977,6 +1982,13 @@ main {
 
 				&.volunteery-counter {
 					margin-left: 5px;
+				}
+			}
+			.table-wrap {
+				.table-row{
+					 span{
+						 font-size: 13px;
+					 }
 				}
 			}
 		}
@@ -2424,18 +2436,8 @@ main {
 		.profile-box {
 			text-align: center;
 			border: 1px solid $primary-border-color;
-			height: auto;
+			height: calc(100% - 6px);
 			@extend .message_shadow;
-			&.blank-profile-content{
-				@include md-max{
-					justify-content:center;
-					.user-profile{
-						&:before{
-							display: none;
-						}
-					}
-				}
-			}
 
 			@include md-max {
 				display: flex;
