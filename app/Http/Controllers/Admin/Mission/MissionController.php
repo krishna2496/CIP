@@ -147,6 +147,7 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
+                "is_virtual" => "sometimes|required|in:0,1",
             ]
         );
         
@@ -266,6 +267,7 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
+                "is_virtual" => "sometimes|required|in:0,1",
             ]
         );
         
