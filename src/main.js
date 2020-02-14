@@ -42,16 +42,16 @@ let entryUrl = null;
 
 // check requirment of authentication for path
 router.beforeEach(async(to, from, next) => {
-    // if (store.state.isLoggedIn) {
-    //     if(store.state.isProfileComplete != 1) {
-    //        if(to.path != '/my-account') {
-    //             next({
-    //                 name: "myAccount"
-    //             });
-    //             return;
-    //        }
-    //     }
-    // }
+    if (store.state.isLoggedIn) {
+        if(store.state.isProfileComplete != 1) {
+           if(to.path != '/my-account') {
+                next({
+                    name: "myAccount"
+                });
+                return;
+           }
+        }
+    }
     // if from path is (/) then we need to call custom css call and wait for its reponse 
     if (to.path == '/') {
         document.body.classList.add("loader-enable");
