@@ -545,7 +545,7 @@
                     skills.filter((data,index) => {
                         if(data) {
                             if(skillString != '') {
-                                skillString = skillString + ',' + data.title;
+                                skillString = skillString + ', ' + data.title;
                             } else {
                                 skillString = data.title;
                             }
