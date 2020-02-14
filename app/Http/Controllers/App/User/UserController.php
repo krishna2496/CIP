@@ -167,7 +167,7 @@ class UserController extends Controller
         $userDetail = $this->userRepository->findUserDetail($userId);
         $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
         $userSkillList = $this->userRepository->userSkills($userId);
-        if (isset($userDetail->country_id)) {
+        if (isset($userDetail->country_id) && $userDetail->country_id != 0) {
             $cityList = $this->cityRepository->cityList($userDetail->country_id);
         }
         $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
@@ -179,10 +179,9 @@ class UserController extends Controller
         $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
 
-        if (!isset($userDetail->language_id)) {
+        if (isset($userDetail->language_id) && $userDetail->language_id == 0) {
             $userDetail->language_id = $defaultLanguage->language_id;
         }
-      
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
