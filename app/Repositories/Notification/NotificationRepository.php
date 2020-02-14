@@ -167,4 +167,15 @@ class NotificationRepository implements NotificationInterface
         ->where(['notification_type_id' => $notificationTypeId])
         ->value('notification_type');
     }
+
+    /**
+     * Get notification from notification type id
+     *
+     * @param int $notificationTypeId
+     * @return App\Models\Notification
+     */
+    public function getNotificationByTypeId(int $notificationTypeId): Notification
+    {
+        return $this->notification->where(['notification_type_id' => $notificationTypeId])->first();
+    }
 }

@@ -2,14 +2,13 @@
 
 namespace App\Listeners\Notifications;
 
-use App\Events\User\UserNotificationEvent;
-use App\Notifiers\AppUserNotifiers\UserDatabaseNotifier;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\User;
 use App\Models\UserNotification;
-use App\Repositories\Notification\NotificationRepository;
+use App\Events\User\UserNotificationEvent;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Repositories\Mission\MissionRepository;
-use Illuminate\Support\Facades\Log;
+use App\Notifiers\AppUserNotifiers\UserDatabaseNotifier;
+use App\Repositories\Notification\NotificationRepository;
 
 class UserNotificationListner
 {
