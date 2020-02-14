@@ -109,21 +109,21 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            ["first_name" => "required|max:16",
-            "last_name" => "required|max:16",
+            ["first_name" => "sometimes|required|max:16",
+            "last_name" => "sometimes|required|max:16",
             "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
             "password" => "required|min:8",
-            "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-            "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
-            "language_id" => "required|int",
-            "city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
-            "country_id" => "integer|required|exists:country,country_id,deleted_at,NULL",
-            "profile_text" => "required",
+            "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+            "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "language_id" => "sometimes|required|int",
+            "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
+            "profile_text" => "sometimes|required",
             "employee_id" => "max:16|
             unique:user,employee_id,NULL,user_id,deleted_at,NULL",
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
-            "why_i_volunteer" => "required",
+            "why_i_volunteer" => "sometimes|required",
             ]
         );
 
@@ -137,19 +137,24 @@ class UserController extends Controller
             );
         }
         
-        // Check language id
-        if (!$this->languageHelper->validateLanguageId($request)) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
-            );
+        // Check language id is set and valid or not
+        if (isset($request->language_id)) {
+            if (!$this->languageHelper->validateLanguageId($request)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+                );
+            }
         }
         
         
         // Create new user
         $user = $this->userRepository->store($request->all());
+
+        // Check profile complete status
+        $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id);
 
         // Set response data
         $apiData = ['user_id' => $user->user_id];
@@ -227,10 +232,10 @@ class UserController extends Controller
                 "department" => "sometimes|required|max:16",
                 "linked_in_url" => "url|valid_linkedin_url",
                 "why_i_volunteer" => "sometimes|required",
-                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-                "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "integer|exists:country,country_id,deleted_at,NULL"]
+                "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
+                "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL"]
             );
                         
             // If request parameter have any error
@@ -258,6 +263,9 @@ class UserController extends Controller
             // Update user
             $user = $this->userRepository->update($request->toArray(), $id);
 
+            // Check profile complete status
+            $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id);
+            
             // Set response data
             $apiData = ['user_id' => $user->user_id];
             $apiStatus = Response::HTTP_OK;
