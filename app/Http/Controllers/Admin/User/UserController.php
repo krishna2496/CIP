@@ -232,10 +232,10 @@ class UserController extends Controller
                 "department" => "sometimes|required|max:16",
                 "linked_in_url" => "url|valid_linkedin_url",
                 "why_i_volunteer" => "sometimes|required",
-                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-                "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "integer|exists:country,country_id,deleted_at,NULL"]
+                "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
+                "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL"]
             );
                         
             // If request parameter have any error
