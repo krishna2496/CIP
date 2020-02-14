@@ -399,8 +399,16 @@ class UserRepository implements UserInterface
 
         $timesheet = $this->mission
             ->selectRaw('
-                SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet.time))) as total_timesheet_time,
-                SUM(timesheet.action) as total_timesheet_action,
+                SEC_TO_TIME(
+                    SUM(
+                        TIME_TO_SEC(
+                            IF(mission.mission_type = "TIME", timesheet.time, null)
+                        )
+                    )
+                ) as total_timesheet_time,
+                SUM(
+                    IF(mission.mission_type = "GOAL", timesheet.action, 0)
+                ) as total_timesheet_action,
                 COUNT(*) as total_timesheet
             ')
             ->where('publication_status', $publicationStatus['APPROVED'])
@@ -445,8 +453,17 @@ class UserRepository implements UserInterface
                 mission.mission_id,
                 mission.mission_type,
                 mission_language.title as mission_title,
-                SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet.time))) as total_timesheet_time,
-                SUM(timesheet.action) as total_timesheet_action,
+                mission_language.objective as mission_objective,
+                SEC_TO_TIME(
+                    SUM(
+                        TIME_TO_SEC(
+                            IF(mission.mission_type = "TIME", timesheet.time, null)
+                        )
+                    )
+                ) as total_timesheet_time,
+                SUM(
+                    IF(mission.mission_type = "GOAL", timesheet.action, 0)
+                ) as total_timesheet_action,
                 COUNT(*) as total_timesheet
             ')
             ->where('publication_status', $publicationStatus['APPROVED'])
