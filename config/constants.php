@@ -613,7 +613,16 @@ return [
     'activity_log_user_types' => [
         'API' => 'API',
         'REGULAR' => 'REGULAR'
+    ],
+    
+    'profile_required_fields'=> [
+        'first_name',
+        'last_name',
+        'email',
+        'city_id',
+        'country_id',
+        'timezone_id',
+        'language_id'
     ]
-
 
 ];

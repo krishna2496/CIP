@@ -162,11 +162,14 @@ class UserController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
+        $cityList = collect();
         $userId = $request->auth->user_id;
         $userDetail = $this->userRepository->findUserDetail($userId);
         $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
         $userSkillList = $this->userRepository->userSkills($userId);
-        $cityList = $this->cityRepository->cityList($userDetail->country_id);
+        if (isset($userDetail->country_id) && $userDetail->country_id != 0) {
+            $cityList = $this->cityRepository->cityList($userDetail->country_id);
+        }
         $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
         $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
         $availabilityList = $this->userRepository->getAvailability();
@@ -176,6 +179,9 @@ class UserController extends Controller
         $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
 
+        if (isset($userDetail->language_id) && $userDetail->language_id == 0) {
+            $userDetail->language_id = $defaultLanguage->language_id;
+        }
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
@@ -282,8 +288,8 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            ["first_name" => "sometimes|required|max:16",
-            "last_name" => "sometimes|required|max:16",
+            ["first_name" => "required|max:16",
+            "last_name" => "required|max:16",
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "sometimes",
@@ -292,10 +298,10 @@ class UserController extends Controller
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
-            "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-            "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
-            "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
-            "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
+            "availability_id" => "required|integer|exists:availability,availability_id,deleted_at,NULL",
+            "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "city_id" => "required|integer|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
             'skills' => 'array',
             'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
@@ -343,6 +349,9 @@ class UserController extends Controller
 
         // Update user
         $user = $this->userRepository->update($request->toArray(), $id);
+        
+        // Check profile complete status
+        $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id);
 
         // Update user custom fields
         if (!empty($request->custom_fields) && isset($request->custom_fields)) {
@@ -356,7 +365,7 @@ class UserController extends Controller
         }
 
         // Set response data
-        $apiData = ['user_id' => $user->user_id];
+        $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
         
