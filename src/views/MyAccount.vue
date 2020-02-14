@@ -608,22 +608,34 @@
                             this.profile.whyiVolunteer = this.userData.why_i_volunteer,
                             this.profile.linkedInUrl = this.userData.linked_in_url,
                             this.profile.department = this.userData.department,
-                            this.profile.availability = this.userData.availability_id,
+                            // this.profile.availability = this.userData.availability_id,
                             this.profile.userSkills = this.userData.user_skills
-                            this.profile.country = this.userData.country_id,
-                            this.profile.city = this.userData.city_id,
-                            this.profile.availability = this.userData.availability_id,
-                            this.profile.language = this.userData.language_id,
-                            this.profile.time = this.userData.timezone_id
+                            if(this.userData.country_id != 0) {
+                                this.profile.country = this.userData.country_id
+                            }
+                            if(this.userData.city_id != 0) {
+                            this.profile.city = this.userData.city_id 
+                            }
+                            if(this.userData.availability_id != 0) {
+                                this.profile.availability = this.userData.availability_id
+                            }
+                            if( this.userData.language_id != 0) {
+                                this.profile.language = this.userData.language_id
+                            }
+                            if(this.userData.timezone_id != 0) {
+                                this.profile.time = this.userData.timezone_id
+                            }
                             this.profile.languageCode = this.userData.language_code
 
-                        
+                       
                         if (this.userData.city_list != '' && this.userData.city_list != null) {
                             this.cityDefault = this.userData.city_list[this.userData.city_id]
                         }
-                        if (this.userData.availability.type != '' && this.userData.availability.type !=
+                        if (this.userData.availability && this.userData.availability.type != '' && this.userData.availability.type !=
                             null) {
                             this.availabilityDefault = this.userData.availability.type
+                        } else {
+                            this.availabilityDefault = this.languageData.placeholder.availability;
                         }
                         if (this.userData.language_id != '' && this.userData.language_id != null) {
                             Object.keys(this.userData.language_list).map((key) => {
@@ -632,7 +644,7 @@
                                 }
                             });
                         }
-                        if (this.userData.timezone.timezone != '' && this.userData.timezone.timezone !=
+                        if (this.userData.timezone && this.userData.timezone.timezone != '' && this.userData.timezone.timezone !=
                             null) {
                             this.timeDefault = this.userData.timezone.timezone
                         }
