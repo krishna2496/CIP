@@ -39,8 +39,8 @@ class AlterTableUserColumnsDefaultNull extends Migration
 		Schema::table('user', function (Blueprint $table) {
             \DB::statement("ALTER TABLE `user` CHANGE `first_name` `first_name` VARCHAR(16) NOT NULL");
             \DB::statement("ALTER TABLE `user` CHANGE `last_name` `last_name` VARCHAR(16) NOT NULL");
-            \DB::statement("ALTER TABLE `user` CHANGE `timezone_id` `timezone_id` BIGINT(20) UNSIGNED NOT NULL");
-            \DB::statement("ALTER TABLE `user` CHANGE `language_id` `language_id` INT(10) UNSIGNED NOT NULL");
+			\DB::statement("ALTER TABLE `user` CHANGE `timezone_id` `timezone_id` BIGINT(20) UNSIGNED NOT NULL");
+			\DB::statement("ALTER TABLE `user` CHANGE `language_id` `language_id` INT(10) UNSIGNED NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `availability_id` `availability_id` BIGINT(20) UNSIGNED NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `why_i_volunteer` `why_i_volunteer` TEXT NOT NULL");
 			\DB::statement("ALTER TABLE `user` CHANGE `employee_id` `employee_id` VARCHAR(16) NOT NULL");
