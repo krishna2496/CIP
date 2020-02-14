@@ -179,7 +179,7 @@ class UserController extends Controller
         $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
 
-        if (isset($userDetail->language_id) && $userDetail->language_id == 0) {
+        if (is_null($userDetail->language_id) || $userDetail->language_id == 0) {
             $userDetail->language_id = $defaultLanguage->language_id;
         }
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
