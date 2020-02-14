@@ -162,11 +162,14 @@ class UserController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
+        $cityList = collect();
         $userId = $request->auth->user_id;
         $userDetail = $this->userRepository->findUserDetail($userId);
         $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
         $userSkillList = $this->userRepository->userSkills($userId);
-        $cityList = $this->cityRepository->cityList($userDetail->country_id);
+        if (isset($userDetail->country_id)) {
+            $cityList = $this->cityRepository->cityList($userDetail->country_id);
+        }
         $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
         $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
         $availabilityList = $this->userRepository->getAvailability();
@@ -176,6 +179,10 @@ class UserController extends Controller
         $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
 
+        if (!isset($userDetail->language_id)) {
+            $userDetail->language_id = $defaultLanguage->language_id;
+        }
+      
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
