@@ -371,20 +371,21 @@ class UserRepository implements UserInterface
     public function checkProfileCompleteStatus(int $userId): User
     {
         $profileStatus = true;
-        $indexArray = config('constants.profile_required_fields');
+        $requiredFieldsArray = config('constants.profile_required_fields');
         $userData = $this->find($userId);
         $dataArray = $userData->toArray();
-        foreach ($indexArray as $value) {
+        foreach ($requiredFieldsArray as $value) {
             if ($dataArray[$value] === null) {
                 $profileStatus = false;
             }
         }
 
-        if (!$profileStatus) {
-            $userData->update(["is_profile_complete" => '0']);
-        } else {
-            $userData->update(["is_profile_complete" => '1']);
+        $profileComplete = '0';
+        if ($profileStatus) {
+            $profileComplete = '1';
         }
+
+        $userData->update(["is_profile_complete" => $profileComplete]);
         return $userData;
     }
 }
