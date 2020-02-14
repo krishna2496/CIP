@@ -361,4 +361,31 @@ class UserRepository implements UserInterface
     {
         return $this->user->with('timezone')->where('user_id', $userId)->first()->timezone['timezone'];
     }
+
+    /**
+     * Check profile complete status
+     *
+     * @param int $userId
+     * @return User
+     */
+    public function checkProfileCompleteStatus(int $userId): User
+    {
+        $profileStatus = true;
+        $requiredFieldsArray = config('constants.profile_required_fields');
+        $userData = $this->find($userId);
+        $dataArray = $userData->toArray();
+        foreach ($requiredFieldsArray as $value) {
+            if ($dataArray[$value] === null) {
+                $profileStatus = false;
+            }
+        }
+
+        $profileComplete = '0';
+        if ($profileStatus) {
+            $profileComplete = '1';
+        }
+
+        $userData->update(["is_profile_complete" => $profileComplete]);
+        return $userData;
+    }
 }
