@@ -147,7 +147,6 @@ class TimesheetQuery implements QueryableInterface
                     });
                 });
             })
-             // Filter by type; always sent
              ->whereHas('mission', function ($query) use ($filters) {
                  $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
                      $this->missionType = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
