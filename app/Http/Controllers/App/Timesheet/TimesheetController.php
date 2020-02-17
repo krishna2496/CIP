@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\Timesheet\TimesheetRepository;
 use App\Traits\RestExceptionHandlerTrait;
+use Bschmitt\Amqp\Amqp;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -290,6 +291,16 @@ class TimesheetController extends Controller
         // Store timesheet
         $request->request->add(['user_id' => $request->auth->user_id]);
         $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
+
+        // Send data of the new timesheet created to Optimy app using "timesheet" queue from RabbitMQ
+        $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
+        $timesheetForOptimy = [
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id,
+            'timesheet_id' => $timesheet->timesheet_id,
+            'user_id' => $timesheet->user_id,
+            'mission_id' => $timesheet->mission_id,
+        ];
+        (new Amqp)->publish('timesheet', json_encode($timesheetForOptimy), ['queue' => 'timesheet']);
       
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;

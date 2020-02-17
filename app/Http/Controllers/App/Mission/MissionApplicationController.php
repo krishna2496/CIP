@@ -138,7 +138,7 @@ class MissionApplicationController extends Controller
             $request->auth->user_id
         );
 
-        // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
+        // Send data of the new mission application created to Optimy app using "volunteerApplication" queue from RabbitMQ
         $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
         $missionForOptimy = [
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
