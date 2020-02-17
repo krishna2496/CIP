@@ -36,7 +36,7 @@ class LanguageTest extends TestCase
     public function it_should_return_error_for_invalid_laguage_code()
     {
         $this->get('language/eq', [])
-        ->seeStatusCode(404)
+        ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
                 [
