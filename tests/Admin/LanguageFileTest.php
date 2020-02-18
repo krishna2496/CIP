@@ -213,7 +213,7 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_return_error_on_upload_language_file()
     {
         $fileName = 'en';
-        $path  = storage_path("unitTestFiles/mission_params_en.json");
+        $path  = storage_path("unitTestFiles/missing_params_en.json");
         $params = [
             'file_name' => $fileName
         ];
@@ -224,7 +224,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'mission_params_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
