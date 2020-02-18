@@ -237,7 +237,9 @@ class AppNotificationTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -680,7 +682,9 @@ class AppNotificationTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -893,7 +897,9 @@ class AppNotificationTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');

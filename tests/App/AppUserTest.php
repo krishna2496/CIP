@@ -85,6 +85,11 @@ class AppUserTest extends TestCase
      */
     public function it_should_save_user_data()
     {
+		\DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+		
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -116,7 +121,9 @@ class AppUserTest extends TestCase
                     "value" => "1"
                 ]
             ],
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
 
         ];
     
