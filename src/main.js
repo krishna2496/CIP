@@ -52,7 +52,7 @@ router.beforeEach(async(to, from, next) => {
            }
         }
     }
-    // if from path is (/) then we need to call custom css call and wait for its reponse 
+    // if from path is (/) then we need to call custom css call and wait for its reponse
     if (to.path == '/') {
         document.body.classList.add("loader-enable");
         setTimeout(() => {
@@ -146,7 +146,7 @@ Vue.filter('substring', (value, data) => {
 });
 
 window.addEventListener('storage', function (e) {
-    if (event.key == 'logout-event') { 
+    if (event.key === 'logout-event') { 
         location.reload();
     }
 },false);

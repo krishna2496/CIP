@@ -90,7 +90,7 @@ export default new Vuex.Store({
         },
         // Remove login data in state and local storage
         logoutUser(state) {
-            
+
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
             localStorage.removeItem('token')
@@ -141,12 +141,12 @@ export default new Vuex.Store({
             localStorage.setItem('logo', logo)
             state.logo = logo;
         },
-		// Set logo redirect url in state and local storage
+        // Set logo redirect url in state and local storage
         setLogoRedirectUrl(state, logoRedirectUrl) {
-			localStorage.removeItem('logoRedirectUrl');
+            localStorage.removeItem('logoRedirectUrl');
             localStorage.setItem('logoRedirectUrl', logoRedirectUrl)
             state.logoRedirectUrl = logoRedirectUrl;
-		},
+        },
         // User filter data
         userFilter(state, filters) {
             localStorage.setItem('search', filters.search)

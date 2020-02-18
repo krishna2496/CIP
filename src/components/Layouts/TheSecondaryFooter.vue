@@ -19,10 +19,10 @@
                 <b-col md="6" class="footer-menu">
                     <b-list-group v-if="isDynamicFooterItemsSet">
                         <b-list-group-item v-for="(item, key) in footerItems" v-bind:key=key
-                            :to="{ path: '/'+item.slug}" :title="getTitle(item)" @click.native="clickHandler">
+                                           :to="{ path: '/'+item.slug}" :title="getTitle(item)" @click.native="clickHandler">
                             {{getTitle(item)}}
                         </b-list-group-item>
-                         <b-list-group-item @click="showModal" href="javascript:void(0)" v-if="contactUsDisplay">
+                        <b-list-group-item @click="showModal" href="javascript:void(0)" v-if="contactUsDisplay">
                             {{ languageData.label.contact_us }}
                         </b-list-group-item>
                     </b-list-group>
@@ -30,8 +30,8 @@
                 <b-col md="6" class="copyright-text">
                     <p>© {{year}} Optimy.com. {{ languageData.label.all_rights_reserved }}.</p>
                     <div class="lang-drodown-wrap">
-                            <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
-                                translationEnable="false" @updateCall="setLanguage" />
+                        <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
+                                           translationEnable="false" @updateCall="setLanguage" />
                     </div>
                 </b-col>
 
@@ -49,27 +49,27 @@
                 <b-form>
                     <b-form-group>
                         <label for>{{ languageData.label.name }}</label>
-                        <b-form-input id type="text" 
-                        v-model.trim="contactUs.name" 
-                        maxLength="128"
-                        :placeholder="languageData.placeholder.name"
-                        class="disabled"
+                        <b-form-input id type="text"
+                                      v-model.trim="contactUs.name"
+                                      maxLength="128"
+                                      :placeholder="languageData.placeholder.name"
+                                      class="disabled"
                         ></b-form-input>
                     </b-form-group>
                     <b-form-group>
                         <label for>{{ languageData.label.email_address }}</label>
                         <b-form-input id type="text" :placeholder="languageData.placeholder.email_address"
-                            v-model.trim="contactUs.email" 
-                            maxLength="128"
-                            class="disabled"></b-form-input>
+                                      v-model.trim="contactUs.email"
+                                      maxLength="128"
+                                      class="disabled"></b-form-input>
                     </b-form-group>
                     <b-form-group>
                         <label for>{{ languageData.label.subject }}</label>
-                        <b-form-input id 
-                            v-model.trim="contactUs.subject" 
-                            maxLength="255"
-                            :class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
-                            type="text" :placeholder="languageData.placeholder.subject">
+                        <b-form-input id
+                                      v-model.trim="contactUs.subject"
+                                      maxLength="255"
+                                      :class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
+                                      type="text" :placeholder="languageData.placeholder.subject">
                         </b-form-input>
                         <div v-if="submitted && !$v.contactUs.subject.required" class="invalid-feedback">
                             {{ languageData.errors.subject_required }}
@@ -78,8 +78,8 @@
                     <b-form-group>
                         <label for>{{ languageData.label.message }}</label>
                         <b-form-textarea id :placeholder="languageData.placeholder.message" size="lg" no-resize rows="5"
-                            v-model.trim="contactUs.message" 
-                            :class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"></b-form-textarea>
+                                         v-model.trim="contactUs.message"
+                                         :class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"></b-form-textarea>
                         <div v-if="submitted && !$v.contactUs.message.required" class="invalid-feedback">
                             {{ languageData.errors.message_required }}
                         </div>
@@ -197,7 +197,7 @@
             }
 
             if(store.state.isLoggedIn == true) {
-                this.contactUs.name = store.state.firstName+' '+store.state.lastName 
+                this.contactUs.name = store.state.firstName+' '+store.state.lastName
                 this.contactUs.email = store.state.email
             }
             window.addEventListener("resize", this.footerAdj);
@@ -230,7 +230,7 @@
                     return items.slug
                 }
             },
-            
+
             clickHandler() {
                 this.$emit('cmsListing', this.$route.params.slug);
             },
@@ -244,11 +244,11 @@
                 }
             },
             async setLanguage(language) {
-                    this.defautLang = language.selectedVal;
-                    store.commit('setDefaultLanguage', language);
-                    this.$i18n.locale = language.selectedVal.toLowerCase()
-                    await loadLocaleMessages(this.$i18n.locale);
-                    location.reload();
+                this.defautLang = language.selectedVal;
+                store.commit('setDefaultLanguage', language);
+                this.$i18n.locale = language.selectedVal.toLowerCase()
+                await loadLocaleMessages(this.$i18n.locale);
+                location.reload();
             },
             agreeCookie() {
                 let data = {
@@ -298,12 +298,12 @@
                 })
             },
             hideModal() {
-				this.showDismissibleAlert = false
-				this.submitted = false;
-				this.$v.$reset();
-				this.contactUs.message = '';
-				this.contactUs.subject = '';
-			},
+                this.showDismissibleAlert = false
+                this.submitted = false;
+                this.$v.$reset();
+                this.contactUs.message = '';
+                this.contactUs.subject = '';
+            },
         },
         updated() {
             this.footerAdj();

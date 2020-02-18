@@ -3,7 +3,8 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-let routes = [{
+let routes = [
+    {
         path: '*',
         redirect: '/404'
     },
