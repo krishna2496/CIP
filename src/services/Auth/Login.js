@@ -19,6 +19,10 @@ export default async(data) => {
         }).then((response) => {
             //Store login data in local storage
             store.commit('loginUser', response.data.data)
+           
+            setTimeout(() => {
+                document.body.classList.remove("loader-enable");
+            }, 700)
         })
         .catch(error => {
             if (error.response.data.errors[0].message) {

@@ -522,6 +522,26 @@
                         return true;
                     }
                 }
+            },
+            submitNewMission() {
+                if (this.submitNewMissionUrl != '') {
+                    window.open(this.submitNewMissionUrl, '_self');
+                }
+            },
+            getSkills(skills) {
+                let skillString = '';
+                if(skills) {
+                    skills.filter((data,index) => {
+                        if(data) {
+                            if(skillString != '') {
+                                skillString = skillString + ', ' + data.title;
+                            } else {
+                                skillString = data.title;
+                            }
+                        }
+                    })
+                }
+                return skillString
             }
         },
         created() {
