@@ -18,10 +18,8 @@
 </template>
 
 <script>
-	import axios from "axios";
 	import store from "../../store";
 	import {
-		loadLocaleMessages,
 		cmsPages
 	} from "../../services/service";
 
@@ -53,7 +51,7 @@
 				//Get title according to language
 				items = items.pages;
 				if (items) {
-					let filteredObj = items.filter((item, i) => {
+					let filteredObj = items.filter((item) => {
 						if (item.language_id == store.state.defaultLanguageId) {
 							return item;
 						}

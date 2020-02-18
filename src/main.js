@@ -17,7 +17,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
+import 'moment-timezone';
 import customCss from './services/CustomCss'
+import 'vue-search-select/dist/VueSearchSelect.css'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -38,31 +40,27 @@ export const eventBus = new Vue();
 interceptorsSetup();
 let entryUrl = null;
 
-
-
 // check requirment of authentication for path
 router.beforeEach(async(to, from, next) => {
     if (store.state.isLoggedIn) {
         if(store.state.isProfileComplete != 1) {
-           if(to.path != '/my-account') {
+            if(to.path != '/my-account') {
                 next({
                     name: "myAccount"
                 });
                 return;
-           }
+            }
         }
     }
-
-    // if from path is (/) then we need to call custom css call and wait for its reponse 
+    // if from path is (/) then we need to call custom css call and wait for its reponse
     if (to.path == '/') {
         document.body.classList.add("loader-enable");
         setTimeout(() => {
             document.body.classList.remove("loader-enable");
         }, 700)
     }
-
     if ((from.path == '/' && to.path == '/') || from.path == '/') {
-        document.body.classList.add("loader-enable");
+        // document.body.classList.add("loader-enable");
         await customCss().then(() => {
             document.body.classList.remove("loader-enable");
         });
@@ -90,18 +88,34 @@ router.beforeEach(async(to, from, next) => {
     }
     next();
 });
-
-Vue.filter('formatDate', function(value) {
+router.afterEach((to) => {
+    if (to.path == '/') {
+        setTimeout(() => {
+            document.body.classList.remove("loader-enable");
+        }, 500)
+    }
+})
+Vue.filter('formatDate', (value) => {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
     }
 })
 
-Vue.filter('filterGoal', function(value) {
+Vue.filter('formatStoryDate', (value) => {
+    return moment(value, 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY');
+})
+
+Vue.filter('formatDateTime', (value) => {
+    return moment(String(value)).format('DD/MM/YYYY, LT')
+})
+
+
+
+Vue.filter('filterGoal', (value) => {
     return parseInt(value)
 })
 
-Vue.filter('formatTime', function(value) {
+Vue.filter('formatTime', (value) => {
     if (value) {
         let splitArray = value.split(":");
 
@@ -109,14 +123,21 @@ Vue.filter('formatTime', function(value) {
     }
 })
 
-Vue.filter('firstLetterCapital', function(value) {
+Vue.filter('firstLetterCapital', (value) => {
     if (value) {
         value = value.toLowerCase()
         return value.charAt(0).toUpperCase() + value.slice(1)
     }
 })
 
-Vue.filter('substring', function(value, data) {
+Vue.filter('firstLetterSmall', (value) => {
+    if (value) {
+        return value.toLowerCase()
+    }
+})
+
+
+Vue.filter('substring', (value, data) => {
     if (value.length <= data) {
         return value
     } else {
@@ -125,7 +146,7 @@ Vue.filter('substring', function(value, data) {
 });
 
 window.addEventListener('storage', function (e) {
-    if (event.key == 'logout-event') { 
+    if (e.key === 'logout-event') {
         location.reload();
     }
 },false);
@@ -134,7 +155,6 @@ Vue.mixin({
     methods: {
         settingEnabled(key) {
             let settingArray = JSON.parse(store.state.tenantSetting)
-
             if (settingArray != null) {
                 if (settingArray.indexOf(key) !== -1) {
                     return true;

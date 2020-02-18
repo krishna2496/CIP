@@ -1,14 +1,14 @@
 <template>
-    <div 
-      v-bind:class="[handleFilterCount()]"
-      >
+    <div
+            v-bind:class="[handleFilterCount()]"
+    >
         <b-container>
             <b-row>
                 <b-col xl="6" lg="5" class="search-block">
                     <div class="icon-input">
                         <b-form-input type="text" v-on:keyup.enter="searchMission" :placeholder="searchPlaceHolder"
-                            @focus="handleFocus()" @blur="handleBlur()" v-model="searchString" id="search"
-                            @keyup="searchMissionString">
+                                      @focus="handleFocus()" @blur="handleBlur()" v-model="searchString" id="search"
+                                      @keyup="searchMissionString">
                         </b-form-input>
                         <i>
                             <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt="Search">
@@ -17,7 +17,7 @@
                     <i class="clear-btn" @click="clearSearchFilter">
 
                         <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'"
-                            :title="languageData.label.clear_search" alt="clear" />
+                             :title="languageData.label.clear_search" alt="clear" />
                     </i>
                 </b-col>
                 <b-col xl="6" lg="7" class="filter-block"  v-if="quickAccessFilterSet">
@@ -32,21 +32,21 @@
                     <b-list-group>
                         <b-list-group-item v-if="isCountrySelectionSet">
                             <AppFilterDropdown :optionList="countryList" :defaultText="defautCountry"
-                                translationEnable="false" @updateCall="changeCountry" v-if="isComponentVisible" />
+                                               translationEnable="false" @updateCall="changeCountry" v-if="isComponentVisible" />
                         </b-list-group-item>
                         <b-list-group-item>
                             <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defautCity"
-                                :selectedItem="selectedCity" :checkList="cityList" @updateCall="changeCity" />
+                                                 :selectedItem="selectedCity" :checkList="cityList" @updateCall="changeCity" />
                         </b-list-group-item>
                         <b-list-group-item v-if="isThemeDisplay">
                             <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defautTheme"
-                                :selectedItem="selectedTheme" :checkList="themeList" @changeParmas="changeThemeParmas"
-                                @updateCall="changeTheme" />
+                                                 :selectedItem="selectedTheme" :checkList="themeList" @changeParmas="changeThemeParmas"
+                                                 @updateCall="changeTheme" />
                         </b-list-group-item>
                         <b-list-group-item v-if="isSkillDisplay">
                             <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defautSkill"
-                                :checkList="skillList" :selectedItem="selectedSkill" @changeParmas="changeSkillParmas"
-                                @updateCall="changeSkill" />
+                                                 :checkList="skillList" :selectedItem="selectedSkill" @changeParmas="changeSkillParmas"
+                                                 @updateCall="changeSkill" />
                         </b-list-group-item>
                     </b-list-group>
                 </b-col>
@@ -63,8 +63,7 @@
     import AppFilterDropdown from "../AppFilterDropdown";
     import AppCheckboxDropdown from "../AppCheckboxDropdown";
     import {
-        filterList,
-        missionFilterListing
+        filterList
     } from "../../services/service";
     import store from "../../store";
     import {
@@ -107,7 +106,9 @@
                     skillId: "",
                     tags: [],
                     sortBy: "",
-                    search: ""
+                    search: "",
+                    exploreMissionType : '',
+                    exploreMissionParams :''
                 },
                 show: false,
                 isComponentVisible: false,
@@ -126,11 +127,11 @@
         mounted() {
             let mobileFilter = document.querySelector(".filter-block");
             if(mobileFilter != null){
-            mobileFilter.addEventListener("click", function (e) {
-                if (window.innerWidth < 992) {
-                    e.stopPropagation();
-                }
-            });
+                mobileFilter.addEventListener("click", function (e) {
+                    if (window.innerWidth < 992) {
+                        e.stopPropagation();
+                    }
+                });
             }
         },
         methods: {
@@ -171,7 +172,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.cityId.toString().split(',');
-                    let filteredCity = selectedData.filter((value, index, arr) =>  {
+                    let filteredCity = selectedData.filter((value) =>  {
                         return value != data.selectedId;
                     });
                     this.selectedCity = filteredCity;
@@ -183,7 +184,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.themeId.toString().split(',');
-                    let filteredTheme = selectedData.filter((value, index, arr) => {
+                    let filteredTheme = selectedData.filter((value) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = [];
@@ -192,7 +193,7 @@
                 }
                 if (data.selectedType == "skill") {
                     let selectedData = store.state.skillId.toString().split(',');
-                    let filteredSkill = selectedData.filter( (value, index, arr) => {
+                    let filteredSkill = selectedData.filter( (value) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = filteredSkill;
@@ -226,7 +227,7 @@
             },
             handleFilterCount() {
                 let returnData = [];
-               
+
                 if(this.searchString != '') {
                     returnData.push('active')
                 } else {
@@ -237,7 +238,7 @@
                 let filterCount = document.querySelectorAll(
                     ".filter-block .list-group-item"
                 ).length;
-                let bottomHeader = document.querySelector(".bottom-header");
+
                 if (filterCount != null) {
                     if (filterCount == 3) {
                         returnData.push('three-filters')
@@ -264,16 +265,18 @@
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
                 this.selectedfilterParams.skillId = '';
+                this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
+                this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
                 this.cityList = [];
                 this.themeList = [];
                 this.skillList = [];
-                let filters = {};
-                filters.exploreMissionType = '';
-                filters.exploreMissionParams = '';
-                store.commit("exploreFilter", filters);
-                this.$router.push({
-                    name: 'home'
-                })
+                // let filters = {};
+                // filters.exploreMissionType = '';
+                // filters.exploreMissionParams = '';
+                // store.commit("exploreFilter", filters);
+                // this.$router.push({
+                //     name: 'home'
+                // })
                 await filterList(this.selectedfilterParams).then(response => {
                     if (response) {
                         if (response.city) {
@@ -302,15 +305,17 @@
                     this.selectedfilterParams.cityId = city;
                     this.selectedfilterParams.themeId = '';
                     this.selectedfilterParams.skillId = '';
+                    this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
+                    this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
                     this.themeList = [];
                     this.skillList = [];
-                    let filters = {};
-                    filters.exploreMissionType = '';
-                    filters.exploreMissionParams = '';
-                    store.commit("exploreFilter", filters);
-                    this.$router.push({
-                        name: 'home'
-                    })
+                    // let filters = {};
+                    // filters.exploreMissionType = '';
+                    // filters.exploreMissionParams = '';
+                    // store.commit("exploreFilter", filters);
+                    // this.$router.push({
+                    //     name: 'home'
+                    // })
                     await filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.themes) {
@@ -334,15 +339,17 @@
                 if (!this.isCountryChange && !this.isCityChange) {
                     this.selectedfilterParams.themeId = theme;
                     this.selectedfilterParams.skillId = '';
+                    this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
+                    this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
                     this.skillList = [];
                     this.selectedSkill = [];
-                    let filters = {};
-                    filters.exploreMissionType = '';
-                    filters.exploreMissionParams = '';
-                    store.commit("exploreFilter", filters);
-                    this.$router.push({
-                        name: 'home'
-                    })
+                    // let filters = {};
+                    // filters.exploreMissionType = '';
+                    // filters.exploreMissionParams = '';
+                    // store.commit("exploreFilter", filters);
+                    // this.$router.push({
+                    //     name: 'home'
+                    // })
                     await filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.skill) {
@@ -359,13 +366,15 @@
             async changeSkill(skill) {
                 if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange) {
                     this.selectedfilterParams.skillId = skill;
-                    let filters = {};
-                    filters.exploreMissionType = '';
-                    filters.exploreMissionParams = '';
-                    store.commit("exploreFilter", filters);
-                    this.$router.push({
-                        name: 'home'
-                    })
+                    this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
+                    this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
+                    // let filters = {};
+                    // filters.exploreMissionType = '';
+                    // filters.exploreMissionParams = '';
+                    // store.commit("exploreFilter", filters);
+                    // this.$router.push({
+                    //     name: 'home'
+                    // })
                     this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 }
             },
@@ -378,7 +387,7 @@
                     'theme': [],
                     'skill': []
                 }
-                
+
                 setTimeout( () => {
                     this.defautCity = this.languageData.label.city,
                         this.defautTheme = this.languageData.label.theme,
@@ -390,10 +399,11 @@
                 this.selectedfilterParams.themeId = store.state.themeId;
                 this.selectedfilterParams.skillId = store.state.skillId;
                 this.selectedfilterParams.search = store.state.search;
+                this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
+                this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
                 this.selectedCity = [];
                 this.selectedTheme = [];
                 this.selectedSkill = [];
-
                 filterList(this.selectedfilterParams).then(response => {
                     if (response) {
                         if (response.country) {
@@ -449,7 +459,7 @@
                 });
             },
 
-            searchMission($event) {
+            searchMission() {
                 this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 this.selectedfilterParams.search = this.search
                 this.filterSearchListing();
@@ -460,13 +470,20 @@
             },
 
             clearFilter() {
-                
+
                 this.selectedfilterParams.countryId = '';
                 this.defautCountry = this.languageData.label.country;
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
                 this.selectedfilterParams.skillId = '';
                 this.selectedfilterParams.sortBy = '';
+                if(this.$route.params.searchParamsType) {
+                    this.selectedfilterParams.exploreMissionType = this.$route.params.searchParamsType
+                }
+                if(this.$route.params.searchParams) {
+                    this.selectedfilterParams.exploreMissionParams = this.$route.params.searchParams;
+                }
+
                 this.selectedCity = [];
                 this.selectedSkill = [];
                 this.selectedTheme = [];
@@ -524,7 +541,7 @@
                 this.selectedfilterParams.search = '';
                 this.$parent.searchMissions(this.searchString, this.selectedfilterParams);
                 this.filterSearchListing();
-                
+
                 setTimeout(() => {
                     this.handleBlur()
                 }, 200)
@@ -578,7 +595,7 @@
                             if (store.state.countryId != '') {
                                 if (this.countryList) {
                                     let selectedCountryData = this.countryList.filter((
-                                    country) => {
+                                        country) => {
                                         if (store.state.countryId == country[1].id) {
                                             return country;
                                         }
@@ -602,19 +619,19 @@
         },
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
-            
+
             this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
             this.quickAccessFilterSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-            eventBus.$on('clearAllFilters', (message) => {
+            eventBus.$on('clearAllFilters', () => {
                 this.clearFilter();
             });
-            eventBus.$on('setDefaultText', (message) => {
+            eventBus.$on('setDefaultText', () => {
                 this.defautCountry = this.languageData.label.country;
             });
-            eventBus.$on('setDefaultData', (message) => {
+            eventBus.$on('setDefaultData', () => {
                 this.filterListing();
             });
             // Fetch Filters
