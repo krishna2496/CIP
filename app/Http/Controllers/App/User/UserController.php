@@ -179,9 +179,9 @@ class UserController extends Controller
         $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
 
-        if (is_null($userDetail->language_id) || $userDetail->language_id == 0) {
-            $userDetail->language_id = $defaultLanguage->language_id;
-        }
+        $userDetail->language_id = (is_null($userDetail->language_id) || $userDetail->language_id == 0)
+        ? $defaultLanguage->language_id : $userDetail->language_id;
+
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
