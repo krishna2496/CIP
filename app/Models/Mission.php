@@ -366,4 +366,17 @@ class Mission extends Model
     {
         return $this->hasMany('App\User', 'availability_id', 'availability_id');
     }
+	
+	/**
+     * Set is virtual attribute on the model.
+     *
+     * @param $value
+     * @return void
+     */
+    public function setIsVirtualAttribute($value): void
+    {
+        if (!is_null($value)) {
+		    $this->attributes['is_virtual'] = (string)$value;
+        }
+    }
 }
