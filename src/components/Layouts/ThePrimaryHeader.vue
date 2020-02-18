@@ -158,8 +158,8 @@
                             </b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-nav>
-                    <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
-                               @show="onPopoverShow" ref="notficationPopover" triggers="click">
+                    <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap" custom-class="notification-popover"
+                              ref="notificationPopover" triggers="click">
                         <template slot="title">
                             <b-button class="btn-setting" :title="languageData.label.notification_settings"
                                       @click="showsetting">
@@ -341,11 +341,6 @@
 
         },
         methods: {
-            onPopoverShow() {
-                this.$refs.notficationPopover._toolpop
-                    .getTipElement()
-                    .classList.add("notification-popover");
-            },
             showclearitem() {
                 let popoverBody = document.querySelector(".popover-body");
                 popoverBody.classList.add("clear-item");
