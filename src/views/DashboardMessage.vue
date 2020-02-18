@@ -122,6 +122,7 @@
 	import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
 	import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 	import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
+	import constants from "../constant";
 	import {
 		deleteMessage,
 		messageListing,
@@ -179,12 +180,17 @@
 				name : '',
 				email:'',
 				isPageLoaded : false,
-				hideEllipsis:true
+				hideEllipsis:true,
+				isMessageDisplay:true
 			};
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.isLoaderActive = true;
+			this.isMessageDisplay = this.settingEnabled(constants.MESSAGE)
+			if(!this.isMessageDisplay) {
+				this.$router.push('/home')
+			}
 			this.getMessageListing()
 		},
 		updated() {},
