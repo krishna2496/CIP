@@ -7534,6 +7534,13 @@
                   "type":"integer",
 				  "format":"int64",
 				  "description": "availability_id from `availability` table"
+                },
+				"is_virtual": {
+                  "type": "string",
+				  "enum":[  
+					"0",
+					"1"
+				  ]
                 }
               }
 		  },
