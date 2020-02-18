@@ -69,6 +69,8 @@ class TimesheetController extends Controller
      * @param TenantOptionRepository $tenantOptionRepository
      * @param Helpers $helpers
      * @param Amqp $amqp
+     *
+     * @return void
      */
     public function __construct(
         TimesheetRepository $timesheetRepository,

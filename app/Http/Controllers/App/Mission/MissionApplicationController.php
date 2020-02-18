@@ -59,6 +59,8 @@ class MissionApplicationController extends Controller
      * @param ResponseHelper $responseHelper
      * @param Helpers $helpers
      * @param Amqp $amqp
+     *
+     * @return void
      */
     public function __construct(
         MissionApplicationRepository $missionApplicationRepository,
