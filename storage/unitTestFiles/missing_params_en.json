@@ -1,5 +1,5 @@
 {
-    "label": {
+    "labels": {
         "email_address": "Email address",
         "password": "Password",
         "lost_password": "Lost your password?",
@@ -290,8 +290,8 @@
     },
 
     "placeholder": {
-        "email_address": "Enter email address",
-        "password": "Enter password",
+        "email_addresss": "Enter email address",
+        "password": "",
         "comment": "Enter your comments..",
         "name": "Enter your name",
         "surname": "Enter your last name",

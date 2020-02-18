@@ -278,17 +278,6 @@ class TenantOptionsController extends Controller
             return $validateResponse;
         }
        
-        // If request parameter have any error
-        if (!in_array($file->getMimeType(), $validFileTypesArray) &&
-        $fileNameExtension === $file->getClientOriginalExtension()) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
-                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
-            );
-        }
-
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);

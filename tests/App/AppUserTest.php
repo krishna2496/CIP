@@ -148,6 +148,11 @@ class AppUserTest extends TestCase
      */
     public function it_should_return_skill_limit_error_for_save_user_data()
     {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+                
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -182,13 +187,15 @@ class AppUserTest extends TestCase
                     "value" => "1"
                 ]
             ],
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
 
         ];
     
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        $this->patch('app/user/', $params, ['token' => $token])
+        $res = $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -200,6 +207,7 @@ class AppUserTest extends TestCase
                 ]
             ]
         ]);
+        
         $user->delete();
         $skill->delete();
         $userCustomField->delete();
@@ -1045,5 +1053,64 @@ class AppUserTest extends TestCase
         ]);
         $user->delete();
         $newUser->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Edit user data
+     *
+     * @return void
+     */
+    public function it_should_return_error_on_save_user_data()
+    {
+		\DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;        
+        \DB::setDefaultConnection('mysql');
+		
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $fieldId = $userCustomField->field_id;
+
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+
+        $skillsArray[] = ["skill_id" => $skill->skill_id];
+
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 0,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'custom_fields' => [
+                [
+                    "field_id" => $fieldId,
+                    "value" => "1"
+                ]
+            ],
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
+
+        ];
+    
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422);
+        $user->delete();
+        $userCustomField->delete();
     }
 }
