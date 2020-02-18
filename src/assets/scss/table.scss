@@ -209,7 +209,7 @@
 
 /** Timesheet Table style **/
 .timesheet-table {
-	max-height:400px;	
+	max-height:400px;
 	&.timesheethours-table {
 		table {
 			tr {
@@ -337,7 +337,7 @@
 				background: transparent;
 
 				&:hover {
-					background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat !important;
+					background: $light-gray url($assetUrl + "/plus-ic-black.svg") no-repeat !important;
 					-webkit-background-size: auto 20px !important;
 					-moz-background-size: auto 20px !important;
 					-o-background-size: auto 20px !important;

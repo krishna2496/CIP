@@ -1,10 +1,3 @@
-//break points
-@mixin xxxs-max {
-  @media (max-width: 374px) {
-    @content;
-  }
-}
-
 // Transform Mixin
 @mixin transform($transforms) {
   -moz-transform: $transforms;
@@ -83,15 +76,12 @@
   &.placeholder {
     @content;
   }
-
   &:-moz-placeholder {
     @content;
   }
-
   &::-moz-placeholder {
     @content;
   }
-
   &::-webkit-input-placeholder {
     @content;
   }
@@ -101,6 +91,12 @@
 }
 
 //break points
+@mixin xxxs-max {
+  @media (max-width: 374px) {
+    @content;
+  }
+}
+
 @mixin xxs-max {
   @media (max-width: 480px) {
     @content;
@@ -124,11 +120,13 @@
     @content;
   }
 }
+
 @mixin md-min {
   @media (min-width: 992px) {
     @content;
   }
 }
+
 @mixin md-max {
   @media (max-width: 991px) {
     @content;

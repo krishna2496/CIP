@@ -54,20 +54,24 @@ h6 {
 }
 
 .title-with-border {
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid $primary-border-color;
   font-size: 22px;
   line-height: 28px;
+
   @include md-max {
     font-size: 20px;
     line-height: 26px;
   }
+
   span {
     display: inline-block;
     position: relative;
     padding-bottom: 15px;
+
     @include md-max {
       padding-bottom: 12px;
     }
+
     &:after {
       position: absolute;
       content: "";
