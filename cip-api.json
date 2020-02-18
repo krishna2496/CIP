@@ -76,6 +76,9 @@
       },
 	  {
          "name":"City"
+      },
+	  {  
+         "name":"Language File"
       }
    ],
   "paths": {
@@ -7269,6 +7272,85 @@
 				}
 			}
 		}
+	},
+	"/language-file?code={code}": {
+		"get": {
+			"operationId": "GET_team4-cip-api-get-language-file",
+			"summary": "Admin - Fetch language file",
+			"tags":[  
+				   "Language File"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "code",
+				"in": "path",
+				"required": true,
+				"type": "string",
+				"description": "Language code. Example: To fetch english language file use en, for French fr"
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Not found - Tenant language file not found"
+				}
+			}
+		}
+	},
+	"/language-file": {
+		"post": {
+			"operationId": "GET_team4-cip-api-post-language-file-changes",
+			"summary": "Admin - Update language file",
+			"tags":[  
+				   "Language File"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "file_path",
+				"in": "formData",
+				"required": true,
+				"type": "file",
+				"description": "Upload json file that you have modified."
+			  },
+			  {
+				"name": "file_name",
+				"in": "formData",
+				"required": true,
+				"type": "string",
+				"description": "This is file name of uploaded file or language code. If you want to modify English language file then enter 'en', for French language file enter 'fr'"
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"422":{  
+				  "description":"Unprocessable Entity"
+				}
+			}
+		},
 	}
   },
   "definitions": {
@@ -7546,6 +7628,13 @@
                   "type":"integer",
 				  "format":"int64",
 				  "description": "availability_id from `availability` table"
+                },
+				"is_virtual": {
+                  "type": "string",
+				  "enum":[  
+					"0",
+					"1"
+				  ]
                 }
               }
 		  },
@@ -7779,7 +7868,10 @@
                     "text",
                     "email",
                     "drop-down",
-                    "radio"
+                    "radio",
+                    "checkbox",
+                    "multiselect",
+                    "textarea",
                   ]
                 },
                 "is_mandatory": {
