@@ -56,28 +56,34 @@ class TimesheetController extends Controller
     private $helpers;
 
     /**
+     * @var Bschmitt\Amqp\Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
-     * @param App\Helpers\ResponseHelper $responseHelper
-     * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
-     * @param App\Helpers\Helpers $helpers
-     *
-     * @return void
+     * @param TimesheetRepository $timesheetRepository
+     * @param ResponseHelper $responseHelper
+     * @param MissionRepository $missionRepository
+     * @param TenantOptionRepository $tenantOptionRepository
+     * @param Helpers $helpers
+     * @param Amqp $amqp
      */
     public function __construct(
         TimesheetRepository $timesheetRepository,
         ResponseHelper $responseHelper,
         MissionRepository $missionRepository,
         TenantOptionRepository $tenantOptionRepository,
-        Helpers $helpers
+        Helpers $helpers,
+        Amqp $amqp
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
         $this->missionRepository = $missionRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->helpers = $helpers;
+        $this->amqp = $amqp;
     }
 
     /**
@@ -300,7 +306,7 @@ class TimesheetController extends Controller
             'user_id' => $timesheet->user_id,
             'mission_id' => $timesheet->mission_id,
         ];
-        (new Amqp)->publish('timesheet', json_encode($timesheetForOptimy), ['queue' => 'timesheet']);
+        $this->amqp->publish('timesheet', json_encode($timesheetForOptimy), ['queue' => 'timesheet']);
       
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
