@@ -291,14 +291,16 @@ class SamlController extends Controller
             'ciContacts',
             json_encode([
                 'ci_platform_instance_id' => $settings['ci_platform_instance_id'],
-                'email' => $userDetail->email,
-                'title' => $userDetail->title,
-                'first_name' => $userDetail->first_name,
-                'last_name' => $userDetail->last_name,
-                'postal_city' => $city,
-                'postal_country' => $country->iso,
-                'preferred_language' => $language->code,
-                'department' => $userDetail->department,
+                'contact_info' => [
+                    'email' => $userDetail->email,
+                    'title' => $userDetail->title,
+                    'first_name' => $userDetail->first_name,
+                    'last_name' => $userDetail->last_name,
+                    'postal_city' => $city,
+                    'postal_country' => $country->iso,
+                    'preferred_language' => $language->code,
+                    'department' => $userDetail->department,
+                ]
             ]),
             ['queue' => 'ciContacts']
         );
