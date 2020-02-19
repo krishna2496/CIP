@@ -12,7 +12,7 @@
                         </b-alert>
                         </b-col>
                 </b-row>
-                <b-row class="is-profile-complete" v-if="$store.state.isProfileComplete">
+                <b-row class="is-profile-complete" v-if="!$store.state.isProfileComplete">
                     <b-col xl="12" lg="12" md="12">
                         <b-alert show variant="warning" >
                             {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
