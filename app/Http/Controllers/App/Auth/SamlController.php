@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\App\Auth;
 
 use App\Exceptions\SamlException;
@@ -15,6 +14,7 @@ use App\Repositories\Timezone\TimezoneRepository;
 use App\Repositories\User\UserRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
+use Bschmitt\Amqp\Amqp;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -199,6 +199,8 @@ class SamlController extends Controller
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
 
+        $this->syncContact($userDetail, $settings);
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         $token = $this->helpers->getJwtToken(
@@ -276,6 +278,29 @@ class SamlController extends Controller
 
         return $optionSetting->getOptionValueAttribute(
             $optionSetting->option_value
+        );
+    }
+
+    private function syncContact($userDetail, $settings)
+    {
+        $city = $this->cityRepository->getCityData($userDetail->city_id);
+        $country = $this->countryRepository->getCountryData($userDetail->country_id);
+        $language = $this->languageHelper->getLanguage($userDetail->language_id);
+
+        (new Amqp)->publish(
+            'ciContacts',
+            json_encode([
+                'ci_platform_instance_id' => $settings['ci_platform_instance_id'],
+                'email' => $userDetail->email,
+                'title' => $userDetail->title,
+                'first_name' => $userDetail->first_name,
+                'last_name' => $userDetail->last_name,
+                'postal_city' => $city,
+                'postal_country' => $country->iso,
+                'preferred_language' => $language->code,
+                'department' => $userDetail->department,
+            ]),
+            ['queue' => 'ciContacts']
         );
     }
 }

@@ -50,6 +50,17 @@ class LanguageHelper
         return $languages;
     }
 
+    public function getLanguage(int $id)
+    {
+        $this->helpers->switchDatabaseConnection('mysql');
+        $language = $this->db->table('language')
+            ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+            ->where('language_id', $id)
+            ->first();
+        $this->helpers->switchDatabaseConnection('tenant');
+        return $language;
+    }
+
     /**
      * Get languages from `ci_admin` table
      *
