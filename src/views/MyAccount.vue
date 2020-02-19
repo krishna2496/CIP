@@ -944,26 +944,6 @@
                 setTimeout(() => {
                     this.$refs.oldPassword.focus();
                 }, 100)
-            },
-            openConfirmModal() {
-                console.log(this.$bvModal.msgBoxConfirm);
-                this.$bvModal.msgBoxConfirm("2323", {
-                    buttonSize: 'md',
-                    okTitle: "uh",
-                    cancelTitle: "gahd",
-                    centered: true,
-                    size: 'md',
-                    buttonSize: 'sm',
-                    okVariant: 'success',
-                    headerClass: 'p-2 border-bottom-0',
-                    footerClass: 'p-2 border-top-0',
-                    centered: true
-                }).then(value => {
-                    if (value == true) {
-                        return true
-                    }
-                })
-                return false;
             }
         },
         created() {
