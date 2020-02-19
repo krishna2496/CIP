@@ -400,7 +400,8 @@ class MissionRepository implements MissionInterface
             'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
-            'mission.organisation_name'
+            'mission.organisation_name',
+            'mission.is_virtual'
         )
         ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
