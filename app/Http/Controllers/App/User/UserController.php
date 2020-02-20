@@ -293,6 +293,7 @@ class UserController extends Controller
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "max:16",
+				"nullable",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
