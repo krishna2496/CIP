@@ -55,7 +55,7 @@ class SamlController extends Controller
     public function sso(Request $request)
     {
         $settings = $this->getIdentityProviderSettings();
-        if ($settings['idp_id'] !== $request->input('t')) {
+        if ($settings['idp_id'] !== $request->query('t')) {
             SamlException::throw('ERROR_INVALID_SAML_IDENTITY_PROVIDER');
         }
 
@@ -66,7 +66,7 @@ class SamlController extends Controller
     public function acs(Request $request, User $user)
     {
         $settings = $this->getIdentityProviderSettings();
-        if ($settings['idp_id'] !== $request->input('t')) {
+        if ($settings['idp_id'] !== $request->query('t')) {
             SamlException::throw('ERROR_INVALID_SAML_IDENTITY_PROVIDER');
         }
 
@@ -219,7 +219,7 @@ class SamlController extends Controller
     public function slo(Request $request)
     {
         $settings = $this->getIdentityProviderSettings();
-        if ($settings['idp_id'] !== $request->input('t')) {
+        if ($settings['idp_id'] !== $request->query('t')) {
             throw new SamlException(
                 trans('messages.custom_error_message.ERROR_INVALID_SAML_IDENTITY_PROVIDER'),
                 config('constants.error_codes.ERROR_INVALID_SAML_IDENTITY_PROVIDER')
@@ -238,7 +238,7 @@ class SamlController extends Controller
     public function metadata(Request $request, Response $response)
     {
         $settings = $this->getIdentityProviderSettings();
-        if ($settings['idp_id'] !== $request->input('t')) {
+        if ($settings['idp_id'] !== $request->query('t')) {
             throw new SamlException(
                 trans('messages.custom_error_message.ERROR_INVALID_SAML_IDENTITY_PROVIDER'),
                 config('constants.error_codes.ERROR_INVALID_SAML_IDENTITY_PROVIDER')
@@ -260,10 +260,16 @@ class SamlController extends Controller
             'security' => $settings['security'],
             'idp' => $settings['idp'],
             'sp' => [
-                'entityId' => env('APP_URL').'/app/saml/metadata?t='.$settings['idp_id'],
-                'singleSignOnService' => ['url' => env('APP_URL').'/app/saml/sso?t='.$settings['idp_id']],
-                'singleLogoutService' => ['url' => env('APP_URL').'/app/saml/slo?t='.$settings['idp_id']],
-                'assertionConsumerService' => ['url' => env('APP_URL').'/app/saml/acs?t='.$settings['idp_id']],
+                'entityId' => route('saml.metadata', ['t' => $settings['idp_id']]),
+                'singleSignOnService' => [
+                    'url' => route('saml.sso.create', ['t' => $settings['idp_id']])
+                ],
+                'singleLogoutService' => [
+                    'url' => route('saml.slo', ['t' => $settings['idp_id']])
+                ],
+                'assertionConsumerService' => [
+                    'url' => route('saml.acs', ['t' => $settings['idp_id']])
+                ],
                 'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
                 'x509cert' => Storage::disk('local')->get('samlCertificate/login.optimyapp.com.cert.pem'),
                 'privateKey' => Storage::disk('local')->get('samlCertificate/login.optimyapp.com.key.pem'),
@@ -287,21 +293,35 @@ class SamlController extends Controller
         $country = $this->countryRepository->getCountryData($userDetail->country_id);
         $language = $this->languageHelper->getLanguage($userDetail->language_id);
 
+        $cityLanguages = collect($city['languages']);
+        $postalCity = null;
+        if ($cityLanguages->count()) {
+            $postalCity = $cityLanguages->where('language_id', $userDetail->country_id)
+                ->first();
+            if ($postalCity) {
+                $postalCity = $postalCity['name'];
+            } else {
+                $postalCity = $cityLanguages->first()['name'];
+            }
+        }
+
+        $payload = json_encode([
+            'ci_platform_instance_id' => $settings['ci_platform_instance_id'],
+            'contact_info' => [
+                'email' => $userDetail->email,
+                'title' => $userDetail->title,
+                'first_name' => $userDetail->first_name,
+                'last_name' => $userDetail->last_name,
+                'postal_city' => $postalCity,
+                'postal_country' => $country['ISO'],
+                'preferred_language' => $language->code,
+                'department' => $userDetail->department,
+            ]
+        ]);
+
         (new Amqp)->publish(
             'ciContacts',
-            json_encode([
-                'ci_platform_instance_id' => $settings['ci_platform_instance_id'],
-                'contact_info' => [
-                    'email' => $userDetail->email,
-                    'title' => $userDetail->title,
-                    'first_name' => $userDetail->first_name,
-                    'last_name' => $userDetail->last_name,
-                    'postal_city' => $city,
-                    'postal_country' => $country->iso,
-                    'preferred_language' => $language->code,
-                    'department' => $userDetail->department,
-                ]
-            ]),
+            $payload,
             ['queue' => 'ciContacts']
         );
     }

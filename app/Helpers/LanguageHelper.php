@@ -54,7 +54,7 @@ class LanguageHelper
     {
         $this->helpers->switchDatabaseConnection('mysql');
         $language = $this->db->table('language')
-            ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+            ->select('language_id', 'code', 'name', 'default')
             ->where('language_id', $id)
             ->first();
         $this->helpers->switchDatabaseConnection('tenant');
@@ -240,20 +240,12 @@ class LanguageHelper
      * Search for the tenant language using language code
      * @param  Request $request
      * @param  string  $languageCode
-     * @return Array|Boolean
+     * @return Array
      */
     public function getTenantLanguageByCode(Request $request, string $languageCode)
     {
         $tenantLanguages = $this->getTenantLanguages($request);
-        $index = array_search(
-            $languageCode,
-            array_column($tenantLanguages->toArray(), 'code')
-        );
-
-        if ($index === false) {
-            return false;
-        }
-
-        return $tenantLanguages[$index];
+        return $tenantLanguages->where('code', $languageCode)
+            ->first();
     }
  }

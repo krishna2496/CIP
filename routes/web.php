@@ -9,6 +9,11 @@
 | and give it the Closure to call when that URI is requested.
 |
  */
+
+$router->get('/test', function () {
+    echo route('saml.sso.create');
+});
+
 $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get api to fetch user default language, from it's mail. */
@@ -24,15 +29,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* SAML */
-    $router->get('/app/saml/sso', ['as' => 'sso', 'middleware' => 'tenant.connection',
+    $router->post('/app/saml/sso', ['as' => 'saml.sso.create', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\SamlController@sso']);
-    $router->patch('/app/saml/sso', ['as' => 'sso', 'middleware' => 'tenant.connection',
+    $router->patch('/app/saml/sso', ['as' => 'saml.sso.update', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\SamlController@refreshToken']);
-    $router->post('/app/saml/acs', ['as' => 'acs', 'middleware' => 'tenant.connection',
+    $router->post('/app/saml/acs', ['as' => 'saml.acs', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\SamlController@acs']);
-    $router->get('/app/saml/slo', ['as' => 'slo', 'middleware' => 'tenant.connection',
+    $router->get('/app/saml/slo', ['as' => 'saml.slo', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\SamlController@slo']);
-    $router->get('/app/saml/metadata', ['as' => 'metadata', 'middleware' => 'tenant.connection',
+    $router->get('/app/saml/metadata', ['as' => 'saml.metadata', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\SamlController@metadata']);
 
     /* Forgot password routing */
