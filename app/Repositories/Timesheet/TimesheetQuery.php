@@ -5,13 +5,14 @@ namespace App\Repositories\Timesheet;
 use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
     const FILTER_MISSION_THEMES = 'missionThemes';
-    const FILTER_APPLICATION_DATE = 'appliedDate';
+    const FILTER_APPLICATION_DATE = 'applicationDate';
     const FILTER_MISSION_STATUSES = 'customMissionStatus';
     const FILTER_APPROVAL_STATUS = 'timesheetStatus';
     const FILTER_MISSION_COUNTRIES = 'missionCountries';
