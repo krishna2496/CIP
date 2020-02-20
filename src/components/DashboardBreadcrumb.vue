@@ -18,6 +18,7 @@
 	import {
 		setTimeout
 	} from "timers";
+	import constants from '../constant';
 	import store from "../store";
 	export default {
 		name: "Breadcrumb",
@@ -26,12 +27,15 @@
 		},
 		data() {
 			return {
+				isStoryDisplay: true,
+				isCommentDisplay : true,
+				isMessageDisplay : true,
 				languageData: [],
 				items: [{
-						id: 1,
-						name: '',
-						link: "dashboard"
-					},
+					id: 1,
+					name: '',
+					link: "dashboard"
+				},
 					{
 						id: 2,
 						name: '',
@@ -42,6 +46,9 @@
 						name: '',
 						link: "volunteering-timesheet"
 					},
+					{ id: 4, name: "", link: "messages" },
+					{ id: 5, name: "", link: "comment-history" },
+					{ id: 6, name: "", link: "my-stories" }
 				]
 			};
 		},
@@ -49,7 +56,7 @@
 			handleBreadcrumb() {
 				if (screen.width < 768) {
 					let breadcrumbDropdown = document.querySelector(
-						".breadcrumb-dropdown-wrap"
+							".breadcrumb-dropdown-wrap"
 					);
 					breadcrumbDropdown.classList.toggle("open");
 				}
@@ -59,19 +66,38 @@
 			setTimeout(() => {
 				if (document.querySelector(".breadcrumb") != null) {
 					let currentDashboard = document.querySelector(
-						".breadcrumb .router-link-active"
+							".breadcrumb .router-link-active"
 					).innerHTML;
 					this.currentDashboardPage = currentDashboard;
 					let currentLink = document.querySelector(".breadcrumb-current");
 					currentLink.innerHTML = this.currentDashboardPage;
-					let breadcrumbItem = document.querySelectorAll(".breadcrumb-item");
 					currentLink.addEventListener("click", this.handleBreadcrumb);
 				}
 			});
+			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+			this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
+			this.isMessageDisplay = this.settingEnabled(constants.MESSAGE)
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.items[0].name = this.languageData.label.dashboard
 			this.items[1].name = this.languageData.label.volunteering_history
 			this.items[2].name = this.languageData.label.volunteering_timesheet
+			// this.items[3].name = this.languageData.label.messages
+			if(!this.isCommentDisplay) {
+				this.items.splice(4,1)
+			} else {
+				this.items[4].name = this.languageData.label.comment_history
+			}
+
+			if(!this.isStoryDisplay) {
+				this.items.splice(5,1)
+			} else {
+				this.items[5].name = this.languageData.label.my_stories
+			}
+			if(!this.isMessageDisplay) {
+				this.items.splice(3,1)
+			} else {
+				this.items[3].name = this.languageData.label.messages
+			}
 		}
 	};
 </script>
