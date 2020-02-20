@@ -10,6 +10,13 @@
                         <b-alert show variant="danger">
                             {{errorPageMessage}}
                         </b-alert>
+                        </b-col>
+                </b-row>
+                <b-row class="is-profile-complete" v-if="!$store.state.isProfileComplete">
+                    <b-col xl="12" lg="12" md="12">
+                        <b-alert show variant="warning" >
+                            {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
+                        </b-alert>
                     </b-col>
                 </b-row>
                 <b-row class="profile-content" v-if="showPage && (!errorPage) && pageLoaded">
@@ -193,16 +200,11 @@
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group>
-                                        <label>{{languageData.label.availability}}*</label>
+                                        <label>{{languageData.label.availability}}</label>
                                         <CustomFieldDropdown v-model="profile.availability"
-                                            :errorClass="submitted && $v.profile.availability.$error"
                                             :defaultText="availabilityDefault" :optionList="availabilityList"
                                             @updateCall="updateAvailability" translationEnable="false" />
-                                        <div v-if="submitted && !$v.profile.availability.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.availability_required }}</div>
                                     </b-form-group>
-
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group class="linked-in-url">
@@ -251,7 +253,7 @@
                                         @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
 
                                 </b-col>
-                                <b-col cols="12" v-if="isSkillDisplay">
+                                <b-col cols="12">
                                     <div class="btn-wrapper">
                                         <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
                                             {{languageData.label.save}}
@@ -411,7 +413,7 @@
                     department: "",
                     country: "",
                     city: "",
-                    availability: "",
+                    availability: 0,
                     userSkills: [],
                     language: "",
                     time: "",
@@ -481,9 +483,6 @@
                     required
                 },
                 city: {
-                    required
-                },
-                availability: {
                     required
                 },
                 language: {
@@ -948,7 +947,6 @@
             }
         },
         created() {
-
             this.languageData = JSON.parse(store.state.languageLabel);
             this.countryDefault = this.languageData.placeholder.country
             this.cityDefault = this.languageData.placeholder.city
