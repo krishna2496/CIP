@@ -12,7 +12,7 @@
                         </b-alert>
                         </b-col>
                 </b-row>
-                <b-row class="is-profile-complete" v-if="!$store.state.isProfileComplete">
+                <b-row class="is-profile-complete" v-if="isUserProfileComplete != 1">
                     <b-col xl="12" lg="12" md="12">
                         <b-alert show variant="warning" >
                             {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
@@ -364,6 +364,7 @@
         },
         data() {
             return {
+                isUserProfileComplete : 1,
                 languageList: [],
                 errorPage: false,
                 pageLoaded: false,
@@ -446,7 +447,8 @@
                     profile_text: "",
                     linked_in_url: "",
                     custom_fields: []
-                }
+                },
+                
             };
         },
         validations: {
@@ -839,6 +841,7 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
+                        this.isUserProfileComplete = response.data.is_profile_complete;
                         store.commit('changeProfileSetFlag',response.data.is_profile_complete);
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
@@ -958,6 +961,9 @@
             this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.getUserProfileDetail();
+            if(store.state.isProfileComplete != 1) {
+                this.isUserProfileComplete = 0;
+            }
         }
 
     };
