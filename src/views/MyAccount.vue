@@ -10,6 +10,13 @@
                         <b-alert show variant="danger">
                             {{errorPageMessage}}
                         </b-alert>
+                        </b-col>
+                </b-row>
+                <b-row class="is-profile-complete" v-if="isUserProfileComplete != 1">
+                    <b-col xl="12" lg="12" md="12">
+                        <b-alert show variant="warning" >
+                            {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
+                        </b-alert>
                     </b-col>
                 </b-row>
                 <b-row class="profile-content" v-if="showPage && (!errorPage) && pageLoaded">
@@ -193,16 +200,11 @@
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group>
-                                        <label>{{languageData.label.availability}}*</label>
+                                        <label>{{languageData.label.availability}}</label>
                                         <CustomFieldDropdown v-model="profile.availability"
-                                            :errorClass="submitted && $v.profile.availability.$error"
                                             :defaultText="availabilityDefault" :optionList="availabilityList"
                                             @updateCall="updateAvailability" translationEnable="false" />
-                                        <div v-if="submitted && !$v.profile.availability.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.availability_required }}</div>
                                     </b-form-group>
-
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group class="linked-in-url">
@@ -251,7 +253,7 @@
                                         @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
 
                                 </b-col>
-                                <b-col cols="12" v-if="isSkillDisplay">
+                                <b-col cols="12">
                                     <div class="btn-wrapper">
                                         <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
                                             {{languageData.label.save}}
@@ -362,6 +364,7 @@
         },
         data() {
             return {
+                isUserProfileComplete : 1,
                 languageList: [],
                 errorPage: false,
                 pageLoaded: false,
@@ -411,7 +414,7 @@
                     department: "",
                     country: "",
                     city: "",
-                    availability: "",
+                    availability: 0,
                     userSkills: [],
                     language: "",
                     time: "",
@@ -444,7 +447,8 @@
                     profile_text: "",
                     linked_in_url: "",
                     custom_fields: []
-                }
+                },
+                
             };
         },
         validations: {
@@ -481,9 +485,6 @@
                     required
                 },
                 city: {
-                    required
-                },
-                availability: {
                     required
                 },
                 language: {
@@ -840,6 +841,7 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
+                        this.isUserProfileComplete = response.data.is_profile_complete;
                         store.commit('changeProfileSetFlag',response.data.is_profile_complete);
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
@@ -948,7 +950,6 @@
             }
         },
         created() {
-
             this.languageData = JSON.parse(store.state.languageLabel);
             this.countryDefault = this.languageData.placeholder.country
             this.cityDefault = this.languageData.placeholder.city
@@ -960,6 +961,9 @@
             this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.getUserProfileDetail();
+            if(store.state.isProfileComplete != 1) {
+                this.isUserProfileComplete = 0;
+            }
         }
 
     };
