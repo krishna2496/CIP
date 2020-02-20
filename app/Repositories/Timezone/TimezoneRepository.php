@@ -52,7 +52,8 @@ class TimezoneRepository implements TimezoneInterface
      */
     public function getTenantTimezoneByCode($timezone)
     {
-        $timezone = Timezone::where('timezone', $timezone)
+        $timezone = $this->timezone
+            ->where('timezone', $timezone)
             ->whereNull('deleted_at')
             ->first();
 

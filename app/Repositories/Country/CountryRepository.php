@@ -262,7 +262,8 @@ class CountryRepository implements CountryInterface
       */
     public function getCountryByCode(string $isoCode)
     {
-        $country = Country::where('ISO', $isoCode)
+        $country = $this->country
+            ->where('ISO', $isoCode)
             ->whereNull('deleted_at')
             ->first();
 
