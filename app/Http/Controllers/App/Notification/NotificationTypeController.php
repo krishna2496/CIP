@@ -77,7 +77,8 @@ class NotificationTypeController extends Controller
             'settings.*.notification_type_id' =>
             'required|exists:notification_type,notification_type_id,deleted_at,NULL',
             'settings.*.value' => 'required|in:0,1',
-            ]);
+            'user_settings' => 'required',
+        ]);
 
         if ($validator->fails()) {
             return $this->responseHelper->error(

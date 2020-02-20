@@ -19,6 +19,12 @@ use App\Repositories\Notification\NotificationRepository;
 class UserEmailNotificationListner implements ShouldQueue
 {
     /**
+     * It change job connection to database
+     * @var string
+     */
+    public $connection = 'database';
+
+    /**
      * @var App\Repositories\Notification\NotificationRepository
      */
     public $notificationRepository;
@@ -58,7 +64,6 @@ class UserEmailNotificationListner implements ShouldQueue
         $this->missionRepository = $missionRepository;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
-        
         $this->request = $request;
     }
 
@@ -73,62 +78,61 @@ class UserEmailNotificationListner implements ShouldQueue
         $this->notificationType = $this->notificationRepository->getNotificationType($data->notificationTypeId);
         $this->userNotificationEventData = $data;
 
-        if ($data->userId !== null) {
-            $user = User::where('user_id', $data->userId)->first();
-            $data->userId = $data->userId;
-        } else {
-            $users = User::all();
+        $userId = null;
+        if (is_null($data->userId)) {
+            // Get only those users who have email notification enabled
+            $users = User::where('receive_email_notification', 1)->get();
             foreach ($users as $userDetails) {
-                $data->userId = $userDetails->user_id;
-                $this->storeNotificationToDatabase($data);
+                $userId = $userDetails->user_id;
+                $this->checkNotificationData($data, $userId);
             }
             return true;
         }
-        $this->storeNotificationToDatabase($data);
+        $userId = $data->userId;
+        // If single user, then need to check it's email notification is enanbled or not
+        if (User::whereUserId($userId)->where('receive_email_notification', 1)->count()) {
+            $this->checkNotificationData($data);
+        }
         return true;
     }
 
     /**
-     * Store notification data into database, if user have activated settings
+     * Check notification data with conditions
      * @param UserNotificationEvent $data
+     * @param int $userId
      * @return void
      */
-    public function storeNotificationToDatabase(UserNotificationEvent $data)
+    public function checkNotificationData(UserNotificationEvent $data, int $userId)
     {
-        // Checking user have activated email notification setting or not
-        $isEmailNotificationActive = $this->notificationRepository->userNotificationSetting(
-            $data->userId,
-            $data->notificationTypeId
-        );
+        $userId = is_null($userId) ? $data->userId : $userId;
+
         if (config('constants.notification_type_keys.NEW_MISSIONS')
             === $this->notificationType
-            && !is_null($isEmailNotificationActive)
         ) {
             // This is mission create notification,
             // here need to check user's skill and availability match with mission or not.
             $isUserRelatedToMission = $this->missionRepository->checkIsMissionRelatedToUser(
                 $data->entityId,
-                $data->userId
+                $userId
             );
             if ($isUserRelatedToMission > 0) {
-                $this->sendEmailNotification($data);
+                $this->sendEmailNotification($data, $userId);
             }
         } else {
-            if ($isEmailNotificationActive) {
-                $this->sendEmailNotification($data);
-            }
+            $this->sendEmailNotification($data, $userId);
         }
-        $this->sendEmailNotification($data);
     }
 
     /**
      * Send email notification to user
      * @param UserNotificationEvent $data
+     * @param int $userId
      * @return void
      */
-    public function sendEmailNotification(UserNotificationEvent $data)
+    public function sendEmailNotification(UserNotificationEvent $data, int $userId)
     {
         $mailData = [];
+        // Get email template data from database, based on notification type
         // $template = 'emails.notifications.'.$this->notificationType;
         $template = 'emails.notifications.all-in-one';
         $mailTemplateFromDb = '<div style="width:200px;background:#CCC"><h1>[[MISSION_NAME]]</h1></div>';
@@ -138,16 +142,21 @@ class UserEmailNotificationListner implements ShouldQueue
         
         /* Here we call dynamic function based on notification type name */
         $mailData = $this->$notificationString($mailTemplateFromDb);
+        
+        /* Get User details based on user id, and mail will send on it's email */
+        // $mailTo = User::whereUserId($userId)->first();
+
         Mail::to('siddharajsinh.zala@tatvasoft.com')->send(new NotificationMail($template, $mailData));
     }
 
     /**
      * This function will return array with create mission data
+     * @param string $mailTemplateFromDb
      * @return array
      */
-    public function newMissions($mailTemplateFromDb): array
+    public function newMissions(string $mailTemplateFromDb): array
     {
-        // Here need to call service function 
+        // Here need to call service function
         $tenantName = $this->helpers->getSubDomainFromRequest($this->request);
         $languageId = $this->languageHelper->getLanguageId($this->request);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($this->request);
