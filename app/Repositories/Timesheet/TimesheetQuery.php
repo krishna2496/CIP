@@ -5,9 +5,7 @@ namespace App\Repositories\Timesheet;
 use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Log\Logger;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
