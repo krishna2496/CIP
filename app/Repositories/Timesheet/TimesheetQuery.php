@@ -85,7 +85,7 @@ class TimesheetQuery implements QueryableInterface
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
                 'mission.missionLanguage' => function ($query) use ($languageId) {
-                    $query->select('mission_language_id', 'mission_id', 'title', 'objective')
+                    $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'objective')
                         ->where('language_id', $languageId);
                 },
                 'mission.goalMission',
