@@ -606,9 +606,11 @@
                             this.profile.employeeId = this.userData.employee_id,
                             this.profile.profileText = this.userData.profile_text,
                             this.profile.title = this.userData.title,
-                            this.profile.whyiVolunteer = this.userData.why_i_volunteer,
-                            this.profile.linkedInUrl = this.userData.linked_in_url,
-                            this.profile.department = this.userData.department,
+                            this.profile.whyiVolunteer = this.userData.why_i_volunteer
+                        if (this.userData.linked_in_url != null) {
+                            this.profile.linkedInUrl = this.userData.linked_in_url
+                        }
+                        this.profile.department = this.userData.department,
                             // this.profile.availability = this.userData.availability_id,
                             this.profile.userSkills = this.userData.user_skills
                         if(this.userData.country_id != 0) {
@@ -617,9 +619,10 @@
                         if(this.userData.city_id != 0) {
                             this.profile.city = this.userData.city_id
                         }
-                        if(this.userData.availability_id != 0) {
+                        if(this.userData.availability_id != 0 && this.userData.availability_id != null) {
                             this.profile.availability = this.userData.availability_id
                         }
+
                         if( this.userData.language_id != 0) {
                             this.profile.language = this.userData.language_id
                         }
@@ -836,7 +839,7 @@
                     });
                 }
 
-                // Call to save profile service 
+                // Call to save profile service
                 saveUserProfile(this.saveProfileData).then(response => {
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
@@ -864,7 +867,7 @@
 
                 this.passwordSubmit = true;
                 this.$v.$touch();
-                // stop here if form is invalid 
+                // stop here if form is invalid
                 if (this.$v.resetPassword.$invalid) {
                     return;
                 }
@@ -873,7 +876,7 @@
                 resetPasswordData.old_password = this.resetPassword.oldPassword
                 resetPasswordData.password = this.resetPassword.newPassword
                 resetPasswordData.confirm_password = this.resetPassword.confirmPassword
-                // Call to save profile service 
+                // Call to save profile service
                 changeUserPassword(resetPasswordData).then(response => {
                     if (response.error === true) {
                         this.message = null;
