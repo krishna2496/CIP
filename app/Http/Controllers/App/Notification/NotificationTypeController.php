@@ -46,12 +46,12 @@ class NotificationTypeController extends Controller
      */
     public function __construct(
         NotificationTypeRepository $notificationTypeRepository,
-        ResponseHelper $responseHelper,        
-		TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        ResponseHelper $responseHelper,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->notificationTypeRepository = $notificationTypeRepository;
         $this->responseHelper = $responseHelper;
-		$this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -71,12 +71,12 @@ class NotificationTypeController extends Controller
 
         $notificationSettings = $notificationSettings->toArray();
         $enabledNotificationSettings = array();
-        foreach($notificationSettings as $key => $value) {
+        foreach ($notificationSettings as $key => $value) {
             switch ($value['notification_type']) {
                 case "my_stories":
                 case "recommended_story":
                     $tenantSetting = config('constants.tenant_settings.STORIES_ENABLED');
-		            if (in_array($tenantSetting, $getActivatedTenantSettings)) {
+                    if (in_array($tenantSetting, $getActivatedTenantSettings)) {
                         $enabledNotificationSettings[] = $value;
                     }
                     break;
@@ -90,7 +90,7 @@ class NotificationTypeController extends Controller
                     $tenantSetting = config('constants.tenant_settings.NEWS_ENABLED');
                     if (in_array($tenantSetting, $getActivatedTenantSettings)) {
                         $enabledNotificationSettings[] = $value;
-                    }                    
+                    }
                     break;
                 case "new_messages":
                     $tenantSetting = config('constants.tenant_settings.MESSAGE_ENABLED');
