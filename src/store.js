@@ -75,7 +75,7 @@ export default new Vuex.Store({
             state.lastName = null;
             state.avatar = null;
 
-            if (!data.stay) {
+            if (!data || !data.stay) {
               router.push({
                   name: 'login'
               });
