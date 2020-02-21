@@ -9,11 +9,6 @@
 | and give it the Closure to call when that URI is requested.
 |
  */
-
-$router->get('/test', function () {
-    echo route('saml.sso.create');
-});
-
 $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get api to fetch user default language, from it's mail. */
