@@ -158,7 +158,9 @@ class NotificationService
     ): array {
         // Get details
         $inviteDetails = $this->storyInviteRepository->getDetails($notification->entity_id);
-
+		if (is_null($inviteDetails->story) || is_null($inviteDetails->fromUser) || is_null($inviteDetails->toUser)) {
+			return array();
+		}
         $storyTitle = $inviteDetails->story->title;
 
         // Create message
