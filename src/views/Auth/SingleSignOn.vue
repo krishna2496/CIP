@@ -13,13 +13,13 @@ export default {
     data() { return {}; },
     methods: {
       async createConnection(){
-        await databaseConnection([]).then(response => {
-          tenantSetting(); 
-        });
+        await databaseConnection([]);
+        await tenantSetting();
       },
     },
     async created() {
-        this.createConnection()
+        await this.createConnection();
+
         let domain = '';
         let imagePath = '';
         let currentUrl = (((window.location.origin).split('.')));
