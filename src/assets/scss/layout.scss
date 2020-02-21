@@ -3724,6 +3724,16 @@ main {
 		.author-name {
 			margin: 15px 0 4px;
 			color: $gray-primary;
+			i{
+				height: 40px;
+				width: 40px;
+				border-radius: 100%;
+				vertical-align: middle;
+				margin-right: 10px;
+				background-size: cover;
+				background-repeat: no-repeat;
+				background-position: center;
+			}
 		}
 
 		.publish-date {

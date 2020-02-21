@@ -11,7 +11,9 @@
 						<h2><p v-if="newsDetailList.news_content">{{newsDetailList.news_content.title}}</p>
 						<b-badge class="status-label" v-if="newsDetailList.news_category[0]">{{newsDetailList.news_category[0]}}</b-badge>
 						</h2>
-						<h3 class="author-name"> <span v-if="newsDetailList.user_name">{{newsDetailList.user_name}}</span> <span v-if="newsDetailList.user_name && newsDetailList.user_title"> - </span> <span v-if="newsDetailList.user_title">{{newsDetailList.user_title}}</span></h3>
+						<h3 class="author-name"> 
+						<i v-if="newsDetailList.user_thumbnail && newsDetailList.user_thumbnail != ''" :style="{backgroundImage: 'url('+newsDetailList.user_thumbnail+')'}"></i>
+						<span v-if="newsDetailList.user_name">{{newsDetailList.user_name}}</span> <span v-if="newsDetailList.user_name && newsDetailList.user_title"> - </span> <span v-if="newsDetailList.user_title">{{newsDetailList.user_title}}</span></h3>
 						<p class="publish-date" v-if="newsDetailList.published_on != null">{{langauageData.label.published_on}} {{newsDetailList.published_on | formatDate}}</p>
 						<div class="news-img-wrap" :style="{backgroundImage: 'url('+newsDetailList.news_image+')'}" v-if="newsDetailList.news_image"></div>
 						<div 

@@ -77,10 +77,10 @@
 							<div class="content-block">
 								<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
 									class="card-title mb-2">
-									{{mission.title | substring(40)}}
+									{{mission.title | substring(60)}}
 								</b-link>
 								<b-card-text>
-									{{mission.short_description | substring(98)}}
+									{{mission.short_description | substring(105)}}
 								</b-card-text>
 								<div class="group-ratings">
 									<span class="group-name">{{mission.organisation_name}}</span>
