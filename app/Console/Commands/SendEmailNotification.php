@@ -34,13 +34,70 @@ class SendEmailNotification extends Command
      */
     protected $signature = 'send:email-notification';
 
-    protected $helpers;
-
+    /**
+     * @var App\Models\Tenant
+     */
     protected $tenant;
 
+    /**
+     * @var App\Helpers\Helpers
+     */
+    protected $helpers;
+
+    /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    protected $notificationRepository;
+
+    /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
     protected $missionRepository;
 
-    protected $notificationRepository;
+    /**
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    protected $tenantOptionRepository;
+
+    /**
+     * @var App\Repositories\Message\MessageRepository
+     */
+    protected $messageRepository;
+
+    /**
+     * @var App\Repositories\MissionComment\MissionCommentRepository
+     */
+    protected $missionCommentRepository;
+
+    /**
+     * @var App\Repositories\News\NewsRepository
+     */
+    protected $newsRepository;
+
+    /**
+     * @var App\Repositories\MissionApplication\MissionApplicationRepository
+     */
+    protected $missionApplicationRepository;
+
+    /**
+     * @var App\Repositories\Story\StoryRepository
+     */
+    protected $storyRepository;
+
+    /**
+     * @var App\Repositories\Timesheet\TimesheetRepository
+     */
+    protected $timesheetRepository;
+
+    /**
+     * @var App\Repositories\StoryInvite\StoryInviteRepository
+     */
+    protected $storyInviteRepository;
+
+    /**
+     * @var App\Repositories\MissionInvite\MissionInviteRepository
+     */
+    protected $missionInviteRepository;
 
     /**
      * The console command description.
@@ -95,8 +152,7 @@ class SendEmailNotification extends Command
         $this->helpers->switchDatabaseConnection('mysql');
         $tenants = DB::select('select * from tenant 
         left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
-        and tenant_language.default = 1        
-        where tenant.tenant_id in (1000, 1797)');
+        and tenant_language.default = 1');
 
         if (sizeof($tenants)) {
             $this->warn("\n\nTotal tenants : ". sizeof($tenants));
@@ -119,7 +175,13 @@ class SendEmailNotification extends Command
         }
     }
 
-    public function sendEmail($tenant)
+    /**
+     * This function will send mail to user
+     *
+     * @var Object $tenant
+     * @return void
+     */
+    public function sendEmail(Object $tenant)
     {
         $this->tenant = $tenant;
         // Get all email notification
