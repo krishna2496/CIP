@@ -24,16 +24,20 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* SAML */
-    $router->post('/app/saml/sso', ['as' => 'saml.sso.create', 'middleware' => 'tenant.connection',
-        'uses' => 'App\Auth\SamlController@sso']);
-    $router->patch('/app/saml/sso', ['as' => 'saml.sso.update', 'middleware' => 'tenant.connection',
-        'uses' => 'App\Auth\SamlController@refreshToken']);
-    $router->post('/app/saml/acs', ['as' => 'saml.acs', 'middleware' => 'tenant.connection',
-        'uses' => 'App\Auth\SamlController@acs']);
-    $router->get('/app/saml/slo', ['as' => 'saml.slo', 'middleware' => 'tenant.connection',
-        'uses' => 'App\Auth\SamlController@slo']);
-    $router->get('/app/saml/metadata', ['as' => 'saml.metadata', 'middleware' => 'tenant.connection',
-        'uses' => 'App\Auth\SamlController@metadata']);
+    $router->group(
+        [
+            'prefix' => '/app/saml',
+            'namespace' => 'App\Auth',
+            'middleware' => 'tenant.connection',
+        ],
+        function ($router) {
+            $router->post('/sso', ['as' => 'saml.sso.create', 'uses' => 'SamlController@sso']);
+            $router->patch('/sso', ['as' => 'saml.sso.update', 'uses' => 'SamlController@refreshToken']);
+            $router->post('/acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
+            $router->get('/slo', ['as' => 'saml.slo', 'uses' => 'SamlController@slo']);
+            $router->get('/metadata', ['as' => 'saml.metadata', 'uses' => 'SamlController@metadata']);
+        }
+    );
 
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
