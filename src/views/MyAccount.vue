@@ -637,7 +637,10 @@
                         }
                         if (this.userData.availability && this.userData.availability.type != '' && this.userData.availability.type !=
                             null) {
-                            this.availabilityDefault = this.userData.availability.type
+                            const translatedAvailability = this.userData.availability.translations
+                                .find(translation => translation.lang === this.languageCode.toLowerCase());
+                            this.availabilityDefault = translatedAvailability ?
+                                translatedAvailability.title : this.userData.availability.type;
                         } else {
                             this.availabilityDefault = this.languageData.placeholder.availability;
                         }
@@ -839,7 +842,7 @@
                     });
                 }
 
-                // Call to save profile service 
+                // Call to save profile service
                 saveUserProfile(this.saveProfileData).then(response => {
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
@@ -867,7 +870,7 @@
 
                 this.passwordSubmit = true;
                 this.$v.$touch();
-                // stop here if form is invalid 
+                // stop here if form is invalid
                 if (this.$v.resetPassword.$invalid) {
                     return;
                 }
@@ -876,7 +879,7 @@
                 resetPasswordData.old_password = this.resetPassword.oldPassword
                 resetPasswordData.password = this.resetPassword.newPassword
                 resetPasswordData.confirm_password = this.resetPassword.confirmPassword
-                // Call to save profile service 
+                // Call to save profile service
                 changeUserPassword(resetPasswordData).then(response => {
                     if (response.error === true) {
                         this.message = null;
