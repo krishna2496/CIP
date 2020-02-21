@@ -96,11 +96,16 @@ class UserNotificationListner
      */
     public function sendDatabaseNotification(UserNotificationEvent $data, int $userId)
     {
-        UserDatabaseNotifier::notify(
+        $isEmailNotification = 0;
+        if (User::whereUserId($userId)->where('receive_email_notification', 1)->count()) {
+            $isEmailNotification = 1;
+        }
+        $notification = UserDatabaseNotifier::notify(
             $data->notificationTypeId,
             $data->entityId,
             $data->action,
-            $userId
-        );
+            $userId,
+            $isEmailNotification
+        );        
     }
 }

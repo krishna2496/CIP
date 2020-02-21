@@ -18,8 +18,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         UserNotificationEvent::class => [
-            UserNotificationListner::class,
-            UserEmailNotificationListner::class
+            UserNotificationListner::class
         ],
         UserActivityLogEvent::class => [
             UserActivityLogListner::class

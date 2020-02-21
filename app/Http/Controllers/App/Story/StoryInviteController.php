@@ -176,47 +176,6 @@ class StoryInviteController extends Controller
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
         }
 
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-
-        $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        if (!in_array($emailNotificationInviteColleague, $getActivatedTenantSettings)) {
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        }
-        
-        if ($notifyColleague) {
-            $colleague = $this->userRepository->find($request->to_user_id);
-            $colleagueEmail = $colleague->email;
-            $colleagueLanguageId = $colleague->language_id;
-            $languages = $this->languageHelper->getLanguages();
-            $language = $languages->where('language_id', $colleagueLanguageId)->first();
-            $colleagueLanguage = $language->code;
-            $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
-            $storyName = $this->storyInviteRepository->getStoryName($request->story_id);
-            
-            $data = array(
-                'storyName'=> $storyName,
-                'fromUserName'=> $fromUserName,
-                'colleagueLanguage'=> $colleagueLanguage
-            );
-
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
-            $params['tenant_name'] = $tenantName;
-            $params['to'] = $colleagueEmail; //required
-            $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'
-            .config('constants.EMAIL_TEMPLATE_STORY_USER_INVITE'); //path to the email template
-            $params['subject'] = trans(
-                'mail.recommonded_story.MAIL_STORY_RECOMMENDATION',
-                [],
-                $colleagueLanguage
-            ); //optional
-            $params['data'] = $data;
-            $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
-                ['option_name' => 'custom_logo']
-            )->option_value;
-            dispatch(new AppMailerJob($params));
-        }
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }
