@@ -96,7 +96,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function admin_news_it_should_return_error_for_blank_user_name_on_create()
+    public function admin_news_it_should_accept_blank_user_name_on_create()
     {
         $connection = 'tenant';
         $newsCategory = factory(\App\Models\NewsCategory::class)->make();
@@ -128,7 +128,7 @@ class NewsTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);     
+        ->seeStatusCode(201);     
         $newsCategory->delete();   
     }
 
@@ -479,7 +479,7 @@ class NewsTest extends TestCase
         
         DB::setDefaultConnection('mysql');
         $response = $this->patch('news/'.$newsId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(200);
 
         News::where('news_id', $newsId)->delete();
         $newsCategory->delete();
