@@ -13,7 +13,7 @@ RUN mkdir /optimy
 RUN mkdir /optimy/public
 
 RUN cp -R /tmp/dist/* /optimy/public/
-RUN cp /tmp/.htaccess /optimy/public/
+RUN cp /tmp/htaccess /optimy/public/.htaccess
 
 RUN rm -rf /tmp/*
 
