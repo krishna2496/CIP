@@ -161,18 +161,20 @@
                             </b-nav-item-dropdown>
                         </b-nav>
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
-                            @show="onPopoverShow" ref="notficationPopover" triggers="click">
+                            ref="notficationPopover" triggers="click" custom-class="notification-popover">
                             <template slot="title">
-                                <b-button class="btn-setting" :title="languageData.label.notification_settings"
-                                    @click="showsetting">
-                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
-                                        alt="Setting icon">
+                                <div>
+                                    <b-button class="btn-setting" :title="languageData.label.notification_settings"
+                                        @click="showsetting">
+                                        <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
+                                            alt="Setting icon">
 
-                                </b-button>
-                                <span class="title">{{languageData.label.notification}}</span>
-                                <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">
-                                    {{languageData.label.clear_all}}
-                                </b-button>
+                                    </b-button>
+                                    <span class="title">{{languageData.label.notification}}</span>
+                                    <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">
+                                        {{languageData.label.clear_all}}
+                                    </b-button>
+                                </div>
                             </template>
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
@@ -343,11 +345,6 @@
 
             },
             methods: {
-                onPopoverShow() {
-                    this.$refs.notficationPopover._toolpop
-                        .getTipElement()
-                        .classList.add("notification-popover");
-                },
                 showclearitem() {
                     let popoverBody = document.querySelector(".popover-body");
                     popoverBody.classList.add("clear-item");
