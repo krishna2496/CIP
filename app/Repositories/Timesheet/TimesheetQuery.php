@@ -6,12 +6,11 @@ use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
     const FILTER_MISSION_THEMES = 'missionThemes';
-    const FILTER_APPLICATION_DATE = 'appliedDate';
+    const FILTER_APPLICATION_DATE = 'applicationDate';
     const FILTER_MISSION_STATUSES = 'customMissionStatus';
     const FILTER_APPROVAL_STATUS = 'timesheetStatus';
     const FILTER_MISSION_COUNTRIES = 'missionCountries';
@@ -86,7 +85,7 @@ class TimesheetQuery implements QueryableInterface
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
                 'mission.missionLanguage' => function ($query) use ($languageId) {
-                    $query->select('mission_language_id', 'mission_id', 'title', 'objective')
+                    $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'objective')
                         ->where('language_id', $languageId);
                 },
                 'mission.goalMission',
