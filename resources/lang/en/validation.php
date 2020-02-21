@@ -182,7 +182,7 @@ return [
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
-		'mission_detail.*.short_description' => 'short descreption',
+		'mission_detail.*.short_description' => 'short description',
         'news_content.translations' => 'translations',
         'news_content.translations.*.lang' => 'language code',
         'news_content.translations.*.title' => 'title',

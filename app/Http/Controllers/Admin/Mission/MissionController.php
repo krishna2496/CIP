@@ -139,7 +139,7 @@ class MissionController extends Controller
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "mission_detail.*.short_description" => "max:255",
+                "mission_detail.*.short_description" => "max:1000",
                 "mission_detail.*.custom_information" =>"sometimes|required",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
@@ -147,6 +147,7 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
+                "is_virtual" => "sometimes|required|in:0,1",
             ]
         );
         
@@ -252,7 +253,7 @@ class MissionController extends Controller
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
-                "mission_detail.*.short_description" => "max:255",
+                "mission_detail.*.short_description" => "max:1000",
                 "mission_detail.*.custom_information" =>"sometimes|required",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
@@ -266,6 +267,7 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
+                "is_virtual" => "sometimes|required|in:0,1",
             ]
         );
         

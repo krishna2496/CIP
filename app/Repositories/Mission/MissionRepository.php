@@ -103,7 +103,8 @@ class MissionRepository implements MissionInterface
                 'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
                 $request->organisation['organisation_detail'] : null,
                 'availability_id' => $request->availability_id,
-                'mission_type' => $request->mission_type
+                'mission_type' => $request->mission_type,
+                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
             );
         
         // Create new record
@@ -399,7 +400,8 @@ class MissionRepository implements MissionInterface
             'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
-            'mission.organisation_name'
+            'mission.organisation_name',
+            'mission.is_virtual'
         )
         ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
