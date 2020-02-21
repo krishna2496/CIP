@@ -153,7 +153,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUser(int $id)
     {
-        return static::with('city', 'country', 'timezone')->findOrFail($id);
+        return static::with('city', 'country', 'timezone', 'userCustomFieldValue.userCustomField')->findOrFail($id);
     }
 
     /**
