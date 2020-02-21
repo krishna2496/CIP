@@ -606,8 +606,10 @@
                             this.profile.employeeId = this.userData.employee_id,
                             this.profile.profileText = this.userData.profile_text,
                             this.profile.title = this.userData.title,
-                            this.profile.whyiVolunteer = this.userData.why_i_volunteer,
-                            this.profile.linkedInUrl = this.userData.linked_in_url,
+                            this.profile.whyiVolunteer = this.userData.why_i_volunteer
+                            if (this.userData.linked_in_url != null) {
+                                this.profile.linkedInUrl = this.userData.linked_in_url
+                            }
                             this.profile.department = this.userData.department,
                             // this.profile.availability = this.userData.availability_id,
                             this.profile.userSkills = this.userData.user_skills
@@ -617,9 +619,10 @@
                             if(this.userData.city_id != 0) {
                             this.profile.city = this.userData.city_id 
                             }
-                            if(this.userData.availability_id != 0) {
+                            if(this.userData.availability_id != 0 && this.userData.availability_id != null) {
                                 this.profile.availability = this.userData.availability_id
                             }
+                           
                             if( this.userData.language_id != 0) {
                                 this.profile.language = this.userData.language_id
                             }
