@@ -244,7 +244,7 @@
                 this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
             },
             inputUpdate(files) {
-                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES 
+                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES
                 this.fileError = '';
                 let error = false
                 let duplicateUpload = false
@@ -359,7 +359,7 @@
                             this.$refs.goalActionModal.hide();
                             this.hideModal();
                         }, 700)
-                       
+
                     }
                     this.isAjaxCall = false;
                 })

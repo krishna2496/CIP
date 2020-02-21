@@ -18,7 +18,9 @@
                                 <div
                                     v-bind:class="{'rating-with-btn' : true , 'justify-content-end' : !isStarDisplay }">
                                     <div class="rating-block" v-if="isStarDisplay">
-                                        <star-rating v-bind:increment="0.5" v-bind:max-rating="5"
+                                        <star-rating 
+                                            :read-only="isStarRatingDisable"
+                                            v-bind:increment="0.5" v-bind:max-rating="5"
                                             inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
                                             :rating="missionDetail.rating" @rating-selected="setRating">
                                         </star-rating>
@@ -745,7 +747,9 @@
                     missionName: '',
                     action: ''
                 },
-                customInformation: []
+                customInformation: [],
+                missionRatingSetting:true,
+                isStarRatingDisable: false
             };
         },
         mounted() {
@@ -1013,6 +1017,11 @@
                                 if (response.data[0].is_favourite == 1) {
                                     this.missionAddedToFavoriteByUser = true;
                                 }
+                                if(this.missionRatingSetting) {
+                                    if (response.data[0].user_application_status != constants.AUTOMATICALLY_APPROVED) {
+                                        this.isStarRatingDisable = true;
+                                    }
+                                }
 
                                 let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
 
@@ -1212,6 +1221,7 @@
             this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)
             this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
             this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+            this.missionRatingSetting = this.settingEnabled(constants.MISSION_RATING_VOLUNTEER)
             this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
         },
         updated() {
@@ -1269,7 +1279,7 @@
                 this.relatedMissionsDisplay = false
                 this.timeSheetId = false
                 this.hideApply = false,
-                    this.customInformation = []
+                this.customInformation = []
                 this.getMissionDetail();
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.applyButton = this.languageData.label.apply_now
@@ -1289,8 +1299,9 @@
                 this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
                 this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
                 this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT + "social-sharing/" + this.domainName + "/" +
-                    this.missionId + "/" + store.state.defaultLanguageId;
-
+                this.missionId + "/" + store.state.defaultLanguageId;
+                this.missionRatingSetting = true
+                this.isStarRatingDisable = false
                 let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
                 tabItem.forEach(function (tabItemEvent) {
                     tabItemEvent.classList.remove('active')

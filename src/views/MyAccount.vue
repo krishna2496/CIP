@@ -12,6 +12,13 @@
                         </b-alert>
                     </b-col>
                 </b-row>
+                <b-row class="is-profile-complete" v-if="isUserProfileComplete != 1">
+                    <b-col xl="12" lg="12" md="12">
+                        <b-alert show variant="warning" >
+                            {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
+                        </b-alert>
+                    </b-col>
+                </b-row>
                 <b-row class="profile-content" v-if="showPage && (!errorPage) && pageLoaded">
                     <b-col xl="3" lg="4" md="12" class="profile-left-col">
                         <div class="profile-details">
@@ -20,7 +27,7 @@
                                     <div class="content-loader"></div>
                                 </div>
                                 <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
-                                    accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
+                                               accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
                                         upload: '<h1>Bummer!</h1>',
                                         drag: 'Drag a 😺 GIF or GTFO'
                                     }">
@@ -31,13 +38,13 @@
 
 
                                 <b-list-group-item
-                                    v-if="userData.linked_in_url != null && userData.linked_in_url != ''  ">
+                                        v-if="userData.linked_in_url != null && userData.linked_in_url != ''  ">
                                     <b-link :href="userData.linked_in_url" target="_blank" :title="languageData.label.linked_in"
-                                        class="linkedin-link">
+                                            class="linkedin-link">
                                         <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-blue.svg'"
-                                            class="normal-img" alt="linkedin img" />
+                                             class="normal-img" alt="linkedin img" />
                                         <img :src="$store.state.imagePath+'/assets/images/linkedin-ic.svg'"
-                                            class="hover-img" alt="linkedin img" />
+                                             class="hover-img" alt="linkedin img" />
                                     </b-link>
                                 </b-list-group-item>
                             </b-list-group>
@@ -48,17 +55,23 @@
                             <b-form-group>
                                 <label>{{languageData.label.language}}*</label>
                                 <CustomFieldDropdown v-model="profile.language"
-                                    :errorClass="submitted && $v.profile.language.$error" :defaultText="languageDefault"
-                                    :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
+                                                     :errorClass="submitted && $v.profile.language.$error" :defaultText="languageDefault"
+                                                     :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
                                 <div v-if="submitted && !$v.profile.language.required" class="invalid-feedback">
                                     {{ languageData.errors.language_required }}
                                 </div>
                             </b-form-group>
                             <b-form-group>
                                 <label>{{languageData.label.timezone}}*</label>
-                                <CustomFieldDropdown v-model="profile.time"
-                                    :errorClass="submitted && $v.profile.time.$error" :defaultText="timeDefault"
-                                    :optionList="timeList" @updateCall="updateTime" translationEnable="false" />
+                                <model-select
+                                        class="search-dropdown"
+                                        v-bind:class="{'is-invalid' :submitted && $v.profile.time.$error}"
+                                        :options="timeList"
+                                        v-model="profile.time"
+                                        :placeholder="timeDefault"
+                                        @input="updateTime"
+                                >
+                                </model-select>
                                 <div v-if="submitted && !$v.profile.time.required" class="invalid-feedback">
                                     {{ languageData.errors.timezone_required }}
                                 </div>
@@ -77,11 +90,11 @@
                                     <b-form-group>
                                         <label for>{{languageData.label.first_name}}*</label>
                                         <b-form-input id type="text" v-model.trim="profile.firstName"
-                                            :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }"
-                                            @keypress="alphaNumeric($event)"
-                                            :placeholder="languageData.placeholder.name" maxlength="16"></b-form-input>
+                                                      :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }"
+                                                      @keypress="alphaNumeric($event)"
+                                                      :placeholder="languageData.placeholder.name" maxlength="16"></b-form-input>
                                         <div v-if="submitted && !$v.profile.firstName.required"
-                                            class="invalid-feedback">
+                                             class="invalid-feedback">
                                             {{ languageData.errors.name_required }}
                                         </div>
                                     </b-form-group>
@@ -90,9 +103,9 @@
                                     <b-form-group>
                                         <label for>{{languageData.label.surname}}*</label>
                                         <b-form-input id type="text" v-model.trim="profile.lastName"
-                                            :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }"
-                                            @keypress="alphaNumeric($event)"
-                                            :placeholder="languageData.placeholder.surname" maxlength="16">
+                                                      :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }"
+                                                      @keypress="alphaNumeric($event)"
+                                                      :placeholder="languageData.placeholder.surname" maxlength="16">
                                         </b-form-input>
                                         <div v-if="submitted && !$v.profile.lastName.required" class="invalid-feedback">
                                             {{ languageData.errors.last_name_required }}</div>
@@ -102,7 +115,7 @@
                                     <b-form-group>
                                         <label for>{{languageData.label.employee_id}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="16"
-                                            :placeholder="languageData.placeholder.employee_id">
+                                                      :placeholder="languageData.placeholder.employee_id">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
@@ -118,7 +131,7 @@
                                     <b-form-group>
                                         <label for>{{languageData.label.title}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.title"
-                                            :placeholder="languageData.placeholder.title" maxlength="25">
+                                                      :placeholder="languageData.placeholder.title" maxlength="25">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
@@ -126,7 +139,7 @@
                                     <b-form-group>
                                         <label for>{{languageData.label.department}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.department" maxlength="16"
-                                            :placeholder="languageData.placeholder.department"></b-form-input>
+                                                      :placeholder="languageData.placeholder.department"></b-form-input>
 
                                     </b-form-group>
                                 </b-col>
@@ -134,17 +147,17 @@
                                     <b-form-group>
                                         <label>{{languageData.label.my_profile}}</label>
                                         <b-form-textarea id :placeholder="languageData.placeholder.my_profile" size="lg"
-                                            no-resize v-model.trim="profile.profileText"
-                                            rows="5"></b-form-textarea>
-                                       
+                                                         no-resize v-model.trim="profile.profileText"
+                                                         rows="5"></b-form-textarea>
+
                                     </b-form-group>
                                 </b-col>
                                 <b-col md="12">
                                     <b-form-group>
                                         <label>{{languageData.label.why_i_volunteer}}</label>
                                         <b-form-textarea id v-model.trim="profile.whyiVolunteer"
-                                            :placeholder="languageData.placeholder.why_i_volunteer" size="lg" no-resize
-                                            rows="5"></b-form-textarea>
+                                                         :placeholder="languageData.placeholder.why_i_volunteer" size="lg" no-resize
+                                                         rows="5"></b-form-textarea>
                                     </b-form-group>
                                 </b-col>
                             </b-row>
@@ -158,9 +171,9 @@
                                     <b-form-group>
                                         <label>{{languageData.label.country}}*</label>
                                         <CustomFieldDropdown v-model="profile.country"
-                                            :errorClass="submitted && $v.profile.country.$error"
-                                            :defaultText="countryDefault" :optionList="countryList"
-                                            @updateCall="updateCountry" translationEnable="false" />
+                                                             :errorClass="submitted && $v.profile.country.$error"
+                                                             :defaultText="countryDefault" :optionList="countryList"
+                                                             @updateCall="updateCountry" translationEnable="false" />
                                         <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
                                             {{ languageData.errors.country_required }}
                                         </div>
@@ -171,8 +184,8 @@
                                     <b-form-group>
                                         <label>{{languageData.label.city}}*</label>
                                         <CustomFieldDropdown v-model="profile.city"
-                                            :errorClass="submitted && $v.profile.city.$error" :defaultText="cityDefault"
-                                            :optionList="cityList" @updateCall="updateCity" translationEnable="false" />
+                                                             :errorClass="submitted && $v.profile.city.$error" :defaultText="cityDefault"
+                                                             :optionList="cityList" @updateCall="updateCity" translationEnable="false" />
                                         <div v-if="submitted && !$v.profile.city.required" class="invalid-feedback">
                                             {{ languageData.errors.city_required }}</div>
                                     </b-form-group>
@@ -187,25 +200,20 @@
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group>
-                                        <label>{{languageData.label.availability}}*</label>
+                                        <label>{{languageData.label.availability}}</label>
                                         <CustomFieldDropdown v-model="profile.availability"
-                                            :errorClass="submitted && $v.profile.availability.$error"
-                                            :defaultText="availabilityDefault" :optionList="availabilityList"
-                                            @updateCall="updateAvailability" translationEnable="false" />
-                                        <div v-if="submitted && !$v.profile.availability.required"
-                                            class="invalid-feedback">
-                                            {{ languageData.errors.availability_required }}</div>
+                                                             :defaultText="availabilityDefault" :optionList="availabilityList"
+                                                             @updateCall="updateAvailability" translationEnable="false" />
                                     </b-form-group>
-
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group class="linked-in-url">
                                         <label>{{languageData.label.linked_in}}</label>
                                         <b-form-input id v-model.trim="profile.linkedInUrl"
-                                            :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }"
-                                            :placeholder="languageData.placeholder.linked_in"></b-form-input>
+                                                      :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }"
+                                                      :placeholder="languageData.placeholder.linked_in"></b-form-input>
                                         <div v-if="submitted && !$v.profile.linkedInUrl.validLinkedInUrl"
-                                            class="invalid-feedback">
+                                             class="invalid-feedback">
                                             {{ languageData.errors.valid_linked_in_url }}</div>
                                     </b-form-group>
 
@@ -219,8 +227,8 @@
                                 </b-col>
                                 <b-col cols="12">
                                     <CustomField :optionList="CustomFieldList" :optionListValue="CustomFieldValue"
-                                        :isSubmit="isCustomFieldSubmit"
-                                        @detectChangeInCustomFeild="detectChangeInCustomFeild" />
+                                                 :isSubmit="isCustomFieldSubmit"
+                                                 @detectChangeInCustomFeild="detectChangeInCustomFeild" />
                                 </b-col>
 
 
@@ -241,11 +249,11 @@
                                         <li>{{languageData.label.no_skill_found}}</li>
                                     </ul>
                                     <MultiSelect v-if="isShownComponent" :fromList="skillListing"
-                                        :toList="userSkillList" @resetData="resetSkillListingData"
-                                        @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
+                                                 :toList="userSkillList" @resetData="resetSkillListingData"
+                                                 @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
 
                                 </b-col>
-                                <b-col cols="12" v-if="isSkillDisplay">
+                                <b-col cols="12">
                                     <div class="btn-wrapper">
                                         <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
                                             {{languageData.label.save}}
@@ -268,36 +276,36 @@
                     <form action class="form-wrap">
                         <b-form-group>
                             <b-form-input id type="password" ref="oldPassword" v-model.trim="resetPassword.oldPassword"
-                                :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.oldPassword.$error }"
-                                :placeholder="languageData.placeholder.old_password"></b-form-input>
+                                          :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.oldPassword.$error }"
+                                          :placeholder="languageData.placeholder.old_password"></b-form-input>
                             <div v-if="passwordSubmit && !$v.resetPassword.oldPassword.required"
-                                class="invalid-feedback">
+                                 class="invalid-feedback">
                                 {{ languageData.errors.field_is_required }}</div>
                         </b-form-group>
 
                         <b-form-group>
                             <b-form-input id type="password" v-model.trim="resetPassword.newPassword"
-                                :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.newPassword.$error }"
-                                :placeholder="languageData.placeholder.new_password"></b-form-input>
+                                          :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.newPassword.$error }"
+                                          :placeholder="languageData.placeholder.new_password"></b-form-input>
                             <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required"
-                                class="invalid-feedback">
+                                 class="invalid-feedback">
                                 {{ languageData.errors.field_is_required }}</div>
                             <div v-if="passwordSubmit && !$v.resetPassword.newPassword.minLength"
-                                class="invalid-feedback">
+                                 class="invalid-feedback">
                                 {{ languageData.errors.invalid_password }}</div>
                         </b-form-group>
 
                         <b-form-group>
                             <b-form-input id v-model.trim="resetPassword.confirmPassword"
-                                :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.confirmPassword.$error }"
-                                :placeholder="languageData.placeholder.confirm_password"
-                                @keypress.enter.prevent="changePassword" type="password">
+                                          :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.confirmPassword.$error }"
+                                          :placeholder="languageData.placeholder.confirm_password"
+                                          @keypress.enter.prevent="changePassword" type="password">
                             </b-form-input>
                             <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.required"
-                                class="invalid-feedback">
+                                 class="invalid-feedback">
                                 {{ languageData.errors.field_is_required }}</div>
                             <div v-if="passwordSubmit && $v.resetPassword.confirmPassword.required && !$v.resetPassword.confirmPassword.sameAsPassword"
-                                class="invalid-feedback">
+                                 class="invalid-feedback">
                                 {{ languageData.errors.identical_password }}</div>
                         </b-form-group>
                     </form>
@@ -324,6 +332,7 @@
     import CustomField from "../components/CustomField";
     import store from "../store";
     import PictureInput from '../components/vue-picture-input'
+    import { ModelSelect } from 'vue-search-select'
     import {
         getUserDetail,
         changeUserPassword,
@@ -350,10 +359,12 @@
             CustomFieldDropdown,
             MultiSelect,
             PictureInput,
-            CustomField
+            CustomField,
+            ModelSelect
         },
         data() {
             return {
+                isUserProfileComplete : 1,
                 languageList: [],
                 errorPage: false,
                 pageLoaded: false,
@@ -403,7 +414,7 @@
                     department: "",
                     country: "",
                     city: "",
-                    availability: "",
+                    availability: 0,
                     userSkills: [],
                     language: "",
                     time: "",
@@ -436,7 +447,8 @@
                     profile_text: "",
                     linked_in_url: "",
                     custom_fields: []
-                }
+                },
+
             };
         },
         validations: {
@@ -475,9 +487,6 @@
                 city: {
                     required
                 },
-                availability: {
-                    required
-                },
                 language: {
                     required
                 },
@@ -498,9 +507,7 @@
                 this.languageCode = this.userData.language_code_list[value.selectedId];
             },
             updateTime(value) {
-                this.timeDefault = value.selectedVal;
-                this.profile.time = value.selectedId;
-
+                this.profile.time = value;
             },
             updateCity(value) {
                 this.cityDefault = value.selectedVal;
@@ -594,7 +601,7 @@
                             });
                         }
 
-                            this.profile.firstName = this.userData.first_name,
+                        this.profile.firstName = this.userData.first_name,
                             this.profile.lastName = this.userData.last_name,
                             this.profile.employeeId = this.userData.employee_id,
                             this.profile.profileText = this.userData.profile_text,
@@ -602,22 +609,34 @@
                             this.profile.whyiVolunteer = this.userData.why_i_volunteer,
                             this.profile.linkedInUrl = this.userData.linked_in_url,
                             this.profile.department = this.userData.department,
-                            this.profile.availability = this.userData.availability_id,
+                            // this.profile.availability = this.userData.availability_id,
                             this.profile.userSkills = this.userData.user_skills
-                            this.profile.country = this.userData.country_id,
-                            this.profile.city = this.userData.city_id,
-                            this.profile.availability = this.userData.availability_id,
-                            this.profile.language = this.userData.language_id,
+                        if(this.userData.country_id != 0) {
+                            this.profile.country = this.userData.country_id
+                        }
+                        if(this.userData.city_id != 0) {
+                            this.profile.city = this.userData.city_id
+                        }
+                        if(this.userData.availability_id != 0) {
+                            this.profile.availability = this.userData.availability_id
+                        }
+                        if( this.userData.language_id != 0) {
+                            this.profile.language = this.userData.language_id
+                        }
+                        if(this.userData.timezone_id != 0) {
                             this.profile.time = this.userData.timezone_id
-                            this.profile.languageCode = this.userData.language_code
+                        }
+                        this.profile.languageCode = this.userData.language_code
 
-                        
+
                         if (this.userData.city_list != '' && this.userData.city_list != null) {
                             this.cityDefault = this.userData.city_list[this.userData.city_id]
                         }
-                        if (this.userData.availability.type != '' && this.userData.availability.type !=
+                        if (this.userData.availability && this.userData.availability.type != '' && this.userData.availability.type !=
                             null) {
                             this.availabilityDefault = this.userData.availability.type
+                        } else {
+                            this.availabilityDefault = this.languageData.placeholder.availability;
                         }
                         if (this.userData.language_id != '' && this.userData.language_id != null) {
                             Object.keys(this.userData.language_list).map((key) => {
@@ -626,7 +645,7 @@
                                 }
                             });
                         }
-                        if (this.userData.timezone.timezone != '' && this.userData.timezone.timezone !=
+                        if (this.userData.timezone && this.userData.timezone.timezone != '' && this.userData.timezone.timezone !=
                             null) {
                             this.timeDefault = this.userData.timezone.timezone
                         }
@@ -643,7 +662,7 @@
                                         if(this.userData.country_id == data[0]) {
                                             this.countryDefault = data[1]
                                         }
-                                    })    
+                                    })
                                 }
                                 this.countryList.sort((countryA, countryB) => {
                                     let countryOne = countryA[1].toLowerCase(),
@@ -655,10 +674,18 @@
                                     return 0; //default return value (no sorting)
                                 });
                             }
-                            
+
                             timezone().then(responseData => {
                                 if (responseData.error == false) {
-                                    this.timeList = responseData.data
+                                    var array = [];
+
+                                    responseData.data.filter((data, index) => {
+                                        array.push({
+                                            'text': data[1],
+                                            'value': data[0]
+                                        })
+                                    })
+                                    this.timeList = array
                                 }
 
                                 skill().then(responseData => {
@@ -667,15 +694,15 @@
                                         Object.keys(this.userData.skill_list).map(
                                             (key) => {
                                                 if (this.userData.skill_list[
-                                                        key]) {
+                                                    key]) {
                                                     this.skillListing.push({
                                                         name: this
                                                             .userData
                                                             .skill_list[
-                                                                key],
+                                                            key],
                                                         id: key
                                                     });
-                                                  
+
                                                     this.skillListing.sort(function (first, next) {
                                                         first = first.name;
                                                         next = next.name;
@@ -773,19 +800,19 @@
                 }
 
                 this.saveProfileData.first_name = this.profile.firstName,
-                this.saveProfileData.last_name = this.profile.lastName,
-                this.saveProfileData.title = this.profile.title,
-                this.saveProfileData.timezone_id = this.profile.time,
-                this.saveProfileData.language_id = this.profile.language,
-                this.saveProfileData.availability_id = this.profile.availability,
-                this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
-                this.saveProfileData.employee_id = this.profile.employeeId,
-                this.saveProfileData.department = this.profile.department,
-                this.saveProfileData.city_id = this.profile.city,
-                this.saveProfileData.country_id = this.profile.country,
-                this.saveProfileData.profile_text = this.profile.profileText,
-                this.saveProfileData.linked_in_url = this.profile.linkedInUrl,
-                this.saveProfileData.custom_fields = []
+                    this.saveProfileData.last_name = this.profile.lastName,
+                    this.saveProfileData.title = this.profile.title,
+                    this.saveProfileData.timezone_id = this.profile.time,
+                    this.saveProfileData.language_id = this.profile.language,
+                    this.saveProfileData.availability_id = this.profile.availability,
+                    this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
+                    this.saveProfileData.employee_id = this.profile.employeeId,
+                    this.saveProfileData.department = this.profile.department,
+                    this.saveProfileData.city_id = this.profile.city,
+                    this.saveProfileData.country_id = this.profile.country,
+                    this.saveProfileData.profile_text = this.profile.profileText,
+                    this.saveProfileData.linked_in_url = this.profile.linkedInUrl,
+                    this.saveProfileData.custom_fields = []
                 this.saveProfileData.skills = []
 
                 Object.keys(this.returnCustomFeildData).map((key) => {
@@ -814,6 +841,8 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
+                        this.isUserProfileComplete = response.data.is_profile_complete;
+                        store.commit('changeProfileSetFlag',response.data.is_profile_complete);
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
                         this.getUserProfileDetail().then(() => {
@@ -906,8 +935,8 @@
                 evt = (evt) ? evt : window.event;
                 let keyCode = (evt.which) ? evt.which : evt.keyCode;
                 if (!((keyCode >= 48 && keyCode <= 57) ||
-                        (keyCode >= 65 && keyCode <= 90) ||
-                        (keyCode >= 97 && keyCode <= 122)) &&
+                    (keyCode >= 65 && keyCode <= 90) ||
+                    (keyCode >= 97 && keyCode <= 122)) &&
                     keyCode != 8 && keyCode != 32) {
                     evt.preventDefault();
                 }
@@ -921,7 +950,6 @@
             }
         },
         created() {
-
             this.languageData = JSON.parse(store.state.languageLabel);
             this.countryDefault = this.languageData.placeholder.country
             this.cityDefault = this.languageData.placeholder.city
@@ -933,6 +961,9 @@
             this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.getUserProfileDetail();
+            if(store.state.isProfileComplete != 1) {
+                this.isUserProfileComplete = 0;
+            }
         }
 
     };

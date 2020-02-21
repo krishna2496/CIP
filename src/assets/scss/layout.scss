@@ -955,7 +955,7 @@ main {
 						background-size: 22px;
 						height: 22px;
 						width: 22px;
-						background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+						background: url($assetUrl + "/white-arrow.svg")no-repeat !important;
 
 						@include sm-max {
 							height: 18px;
@@ -979,7 +979,7 @@ main {
 						background-size: 22px;
 						height: 22px;
 						width: 22px;
-						background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+						background: url($assetUrl + "/white-arrow.svg")no-repeat !important;
 
 						@include sm-max {
 							height: 18px;
@@ -1028,7 +1028,7 @@ main {
 						content: "";
 						width: 23px;
 						height: 23px;
-						background: url($assetUrl+"/play-ic.svg")no-repeat;
+						background: url($assetUrl + "/play-ic.svg")no-repeat;
 						top: 50%;
 						@include translate(-50%, -50%);
 						left: 50%;
@@ -1472,13 +1472,13 @@ main {
 		.group-btns{
 			&.btn-wrap{
 				.btn{
-						min-width: 170px;
-						padding: 6px 18px;
-						font-size:17px;
-						min-height: 40px;
-						span{
-							top: -2px;
-						}
+					min-width: 170px;
+					padding: 6px 18px;
+					font-size:17px;
+					min-height: 40px;
+					span{
+						top: -2px;
+					}
 				}
 			}
 		}
@@ -1493,7 +1493,10 @@ main {
 	}
 
 	.nav-tabs {
-		padding-bottom: 22px;
+		padding-bottom: 0;
+		flex-wrap: nowrap;
+		align-items: flex-end;
+		overflow-x: auto;
 
 		@include sm-max {
 			display: none;
@@ -1501,19 +1504,20 @@ main {
 
 		li {
 			margin-bottom: 0;
-
+			// max-width: 35%;
+			// flex: 0 0 35%;
 			.tablinks {
 				position: relative;
 				border: none;
 				font-size: 16px;
-				padding: 0 20px;
+				padding: 0 20px 22px;
 				display: inline-block;
 
 				&:after {
 					content: "";
 					position: absolute;
 					left: 0;
-					bottom: -23px;
+					bottom: 0;
 					width: 0;
 					background: $black-primary;
 					height: 3px;
@@ -1556,7 +1560,7 @@ main {
 					&:after {
 						position: absolute;
 						content: "";
-						background: url($assetUrl+"/down-arrow.svg")no-repeat;
+						background: url($assetUrl + "/down-arrow.svg")no-repeat;
 						right: 10px;
 						top: 8px;
 						background-size: 12px;
@@ -1955,6 +1959,7 @@ main {
 			border: 1px solid $primary-border-color;
 			padding: 23px 29px 10px;
 			margin-bottom: 40px;
+			font-size: 13px;
 
 			@include lg-max {
 				padding: 20px 20px 10px;
@@ -1977,6 +1982,13 @@ main {
 
 				&.volunteery-counter {
 					margin-left: 5px;
+				}
+			}
+			.table-wrap {
+				.table-row{
+					span{
+						font-size: 13px;
+					}
 				}
 			}
 		}
@@ -2188,7 +2200,7 @@ main {
 				&:after {
 					position: absolute;
 					content: "";
-					background: url($assetUrl+"/next-arrow.svg");
+					background: url($assetUrl + "/next-arrow.svg");
 					background-size: 12px;
 					width: 100%;
 					height: 100%;
@@ -2225,7 +2237,7 @@ main {
 				&:after {
 					position: absolute;
 					content: "";
-					background: url($assetUrl+"/next-arrow.svg");
+					background: url($assetUrl + "/next-arrow.svg");
 					@include rotate(180deg);
 					background-size: 12px;
 					width: 100%;
@@ -2424,18 +2436,8 @@ main {
 		.profile-box {
 			text-align: center;
 			border: 1px solid $primary-border-color;
-			height: auto;
+			height: calc(100% - 6px);
 			@extend .message_shadow;
-			&.blank-profile-content{
-				@include md-max{
-					justify-content:center;
-					.user-profile{
-						&:before{
-							display: none;
-						}
-					}
-				}
-			}
 
 			@include md-max {
 				display: flex;
@@ -2448,11 +2450,11 @@ main {
 			@include sm-max {
 				box-shadow: none;
 			}
-			
+
 			p {
 				font-size: 15px;
 				line-height: 20px;
-				
+
 			}
 
 			h4 {
@@ -2734,7 +2736,9 @@ main {
 	label {
 		margin-bottom: 3px;
 	}
-
+	.is-profile-complete {
+		padding-top: 20px;
+	}
 	main {
 		.container {
 			max-width: 1170px;
@@ -3807,7 +3811,7 @@ main {
 			background-size: 17px;
 			height: 17px;
 			width: 17px;
-			background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+			background: url($assetUrl + "/white-arrow.svg")no-repeat !important;
 
 			@include lg-max {
 				transform: translate(-50%, -50%) rotate(0);
@@ -3848,7 +3852,7 @@ main {
 			background-size: 17px;
 			height: 17px;
 			width: 17px;
-			background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+			background: url($assetUrl + "/white-arrow.svg")no-repeat !important;
 
 			@include lg-max {
 				transform: translate(-50%, -50%) rotate(0);
@@ -4035,7 +4039,7 @@ main {
 					position: absolute;
 					border: none;
 					content: "";
-					background: transparent url($assetUrl+"/plus-ic.svg") no-repeat;
+					background: transparent url($assetUrl + "/plus-ic.svg") no-repeat;
 					padding: 0;
 					background-size: 32px;
 					width: 32px;

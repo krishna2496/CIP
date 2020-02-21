@@ -40,41 +40,73 @@ export default new Vuex.Store({
         defaultCountryId: localStorage.getItem('defaultCountryId'),
         newsBanner: localStorage.getItem('newsBanner'),
         newsBannerText: localStorage.getItem('newsBannerText'),
-        clearFilterSet: ''
+        storyBanner: localStorage.getItem('storyBanner'),
+        storyBannerText: localStorage.getItem('storyBannerText'),
+        clearFilterSet: '',
+        storyDashboardText: localStorage.getItem('storyDashboardText'),
+        slideInterval: localStorage.getItem('slideInterval'),
+        slideEffect: localStorage.getItem('slideEffect'),
+        cookieAgreementDate: localStorage.getItem('cookieAgreementDate'),
+        cookiePolicyText: localStorage.getItem('cookiePolicyText'),
+        email: localStorage.getItem('email'),
+        currentView: localStorage.getItem('currentView'),
+        timesheetFromYear: localStorage.getItem('timesheetFromYear'),
+        submitNewMissionUrl: localStorage.getItem('submitNewMissionUrl'),
+        userTimezone: localStorage.getItem('userTimezone'),
+        policyPage: localStorage.getItem('policyPage'),
+        logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
+        isProfileComplete: localStorage.getItem('isProfileComplete')
     },
     mutations: {
         setToken(state, data) {
             localStorage.setItem('token', data)
+            localStorage.setItem('isLoggedIn', data.token)
             state.isLoggedIn = true;
             state.token = data;
         },
         // Set login data in state and local storage
         loginUser(state, data) {
+            localStorage.setItem('logout-event', 'login');
             localStorage.setItem('userId', data.user_id)
             localStorage.setItem('firstName', data.first_name)
             localStorage.setItem('lastName', data.last_name)
             localStorage.setItem('avatar', data.avatar)
             localStorage.setItem('defaultCountryId', data.country_id)
+            localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
+            localStorage.setItem('email', data.email)
+            localStorage.setItem('userTimezone', data.timezone)
+            localStorage.setItem('isProfileComplete',data.is_profile_complete)
             state.userId = data.user_id;
             state.firstName = data.first_name;
             state.lastName = data.last_name;
             state.avatar = data.avatar;
             state.defaultCountryId = data.country_id;
+            state.cookieAgreementDate = data.cookie_agreement_date;
+            state.email = data.email;
+            state.userTimezone = data.timezone;
+            state.isProfileComplete = data.is_profile_complete;
         },
         // Remove login data in state and local storage
         logoutUser(state, data) {
+            localStorage.setItem('logout-event', 'logout');
+            localStorage.removeItem('logout-event', 'logout');
             localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
             localStorage.removeItem('lastName')
             localStorage.removeItem('avatar')
+            localStorage.removeItem('cookieAgreementDate')
+            localStorage.removeItem('policyPage')
+            localStorage.removeItem('isProfileComplete');
             state.isLoggedIn = false;
             state.token = null;
             state.userId = null;
             state.firstName = null;
             state.lastName = null;
             state.avatar = null;
-
+            state.cookieAgreementDate = null;
+            state.policyPage = null;
+            state.isProfileComplete = null;
             if (!data || !data.stay) {
               router.push({
                   name: 'login'
@@ -108,23 +140,36 @@ export default new Vuex.Store({
             localStorage.setItem('logo', logo)
             state.logo = logo;
         },
+        // Set logo redirect url in state and local storage
+        setLogoRedirectUrl(state, logoRedirectUrl) {
+            localStorage.removeItem('logoRedirectUrl');
+            localStorage.setItem('logoRedirectUrl', logoRedirectUrl)
+            state.logoRedirectUrl = logoRedirectUrl;
+        },
         // User filter data
         userFilter(state, filters) {
-
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
             localStorage.setItem('cityId', filters.cityId)
             localStorage.setItem('themeId', filters.themeId)
             localStorage.setItem('skillId', filters.skillId)
             localStorage.setItem('tags', JSON.stringify(filters.tags))
-            localStorage.setItem('sortBy', filters.sortBy),
-                state.search = filters.search
+            localStorage.setItem('sortBy', filters.sortBy)
+            if (filters.currentView) {
+                localStorage.setItem('currentView', filters.currentView)
+                state.currentView = filters.currentView
+            } else {
+                localStorage.setItem('currentView', 0)
+                state.currentView = 0
+            }
+            state.search = filters.search
             state.countryId = filters.countryId
             state.cityId = filters.cityId
             state.themeId = filters.themeId
             state.skillId = filters.skillId
             state.tags = JSON.stringify(filters.tags)
             state.sortBy = filters.sortBy
+
         },
 
         // Explore data
@@ -192,12 +237,18 @@ export default new Vuex.Store({
             state.cityId = data.city
         },
         saveCurrentSkill(state, data) {
-            // state.currentSkill = data;
-            localStorage.setItem('currentSkill', JSON.stringify(data))
+            if (data !== null) {
+                localStorage.setItem('currentSkill', JSON.stringify(data))
+            } else {
+                localStorage.removeItem('currentSkill')
+            }
         },
         saveCurrentFromSkill(state, data) {
-            // state.currentSkill = data;
-            localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            if (data !== null) {
+                localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            } else {
+                localStorage.removeItem('currentFromSkill')
+            }
         },
         clearFilter(state) {
             let tag = []
@@ -239,11 +290,64 @@ export default new Vuex.Store({
             state.newsBanner = data
         },
         newsBannerText(state, data) {
-            localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
-            state.newsBannerText = JSON.stringify(data.translations)
+            localStorage.setItem('newsBannerText', JSON.stringify(data))
+            state.newsBannerText = JSON.stringify(data)
+        },
+        storyBanner(state, data) {
+            localStorage.setItem('storyBanner', data)
+            state.storyBanner = data
+        },
+        storyBannerText(state, data) {
+            localStorage.setItem('storyBannerText', JSON.stringify(data))
+            state.storyBannerText = JSON.stringify(data)
         },
         clearFilterClick(state, data) {
             state.clearFilterSet = data
+        },
+        storyDashboardText(state, data) {
+            localStorage.setItem('storyDashboardText', JSON.stringify(data))
+            state.storyDashboardText = JSON.stringify(data)
+        },
+        slideInterval(state, data) {
+            localStorage.setItem('slideInterval', data)
+            state.slideInterval = data
+        },
+        slideEffect(state, data) {
+            localStorage.setItem('slideEffect', data)
+            state.slideEffect = data
+        },
+        removeCookieBlock(state) {
+            localStorage.setItem('cookieAgreementDate', 1)
+            state.cookieAgreementDate = 1;
+        },
+        cookiePolicyText(state, data) {
+            localStorage.setItem('cookiePolicyText', JSON.stringify(data))
+            state.cookiePolicyText = JSON.stringify(data)
+        },
+        timesheetFromYear(state, data) {
+            localStorage.setItem('timesheetFromYear', data)
+            state.timesheetFromYear = data
+        },
+        submitNewMissionUrl(state, data) {
+            localStorage.setItem('submitNewMissionUrl', data)
+            state.submitNewMissionUrl = data
+        },
+        changeCurrentView(state, data) {
+            localStorage.setItem('currentView', data)
+            state.currentView = data
+        },
+        policyPage(state, data) {
+            if (data != null) {
+                localStorage.setItem('policyPage', JSON.stringify(data))
+                state.policyPage = JSON.stringify(data)
+            } else {
+                localStorage.setItem('policyPage', null)
+                state.policyPage = null
+            }
+        },
+        changeProfileSetFlag(state,data) {
+            localStorage.setItem('isProfileComplete',data);
+            state.isProfileComplete = data;
         }
     },
     getters: {},

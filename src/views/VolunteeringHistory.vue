@@ -11,8 +11,8 @@
 						<h1>{{languageData.label.volunteering_history}}</h1>
 					</div>
 					<div class="inner-content-wrap" v-if="isAllVisible && !isLoading">
-						<b-row class="chart-block">
-							<b-col lg="6" class="chart-col">
+						<b-row class="chart-block" v-if="isThemeDisplay || isSkillDisplay">
+							<b-col lg="6" class="chart-col" v-if="isThemeDisplay">
 								<div class="inner-chart-col">
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_theme}}</h5>
@@ -32,7 +32,7 @@
 									</div>
 								</div>
 							</b-col>
-							<b-col lg="6" class="chart-col">
+							<b-col lg="6" class="chart-col" v-if="isSkillDisplay">
 								<div class="inner-chart-col">
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_skill}}</h5>
@@ -109,6 +109,7 @@
 	import VolunteeringRequest from "../components/VolunteeringRequest";
 	import store from "../store";
 	import Chart from "chart.js";
+	import constants from '../constant';
 
 	export default {
 		components: {
@@ -152,12 +153,15 @@
 				goalRequestNextUrl: null,
 				perHourDataNotFoundForTheme: null,
 				perHourDataNotFoundForSkill: null,
-				isLoading: true
+				isLoading: true,
+				isThemeDisplay: true,
+				isSkillDisplay: true
 			};
 		},
 		mounted() {			 
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
+			yearsList.push([0,this.languageData.label.all]);
 			for (let index = currentYear; index > (currentYear - 5); index--) {
 				yearsList.push([index, index]);
 			}
@@ -176,6 +180,9 @@
 				this.getVolunteerHistoryHoursOfType("skill", this.skillYearText);
 			},
 			getVolunteerHistoryHoursOfType(type = "theme", year = "") {
+				if(year ==  this.languageData.label.all) {
+					year = '';
+				}
 				VolunteerHistoryHours(type, year).then(response => {
 					let typeName =
 						"perHourApiData" + type.charAt(0).toUpperCase() + type.slice(1);
@@ -255,6 +262,11 @@
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.timeMissionTimesheetLabel = this.languageData.label.volunteering_hours
 			this.goalMissionTimesheetLabel = this.languageData.label.volunteering_goals
+			this.ThemeYearText = this.languageData.label.all
+			this.skillYearText = this.languageData.label.all
+			this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+			this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+			
 			this.getVolunteerHistoryHoursOfType("theme");
 			this.getVolunteerHistoryHoursOfType("skill");
 			this.getVolunteerMissionsHours();
