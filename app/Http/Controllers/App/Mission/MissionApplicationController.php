@@ -47,24 +47,33 @@ class MissionApplicationController extends Controller
     private $helpers;
 
     /**
+     * @var Bschmitt\Amqp\Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new mission application controller instance.
      *
-     * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
-     * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\Helpers $helpers
+     * @param MissionApplicationRepository $missionApplicationRepository
+     * @param MissionRepository $missionRepository
+     * @param ResponseHelper $responseHelper
+     * @param Helpers $helpers
+     * @param Amqp $amqp
+     *
      * @return void
      */
     public function __construct(
         MissionApplicationRepository $missionApplicationRepository,
         MissionRepository $missionRepository,
         ResponseHelper $responseHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        Amqp $amqp
     ) {
         $this->missionApplicationRepository = $missionApplicationRepository;
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
+        $this->amqp = $amqp;
     }
 
     /**
@@ -138,7 +147,7 @@ class MissionApplicationController extends Controller
             $request->auth->user_id
         );
 
-        // Send data of the new mission application created to Optimy app using "volunteerApplications" queue from RabbitMQ
+        // Send data of the new mission application created to Optimy app using "volunteerApplication" queue from RabbitMQ
         $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
         $missionForOptimy = [
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
@@ -149,7 +158,7 @@ class MissionApplicationController extends Controller
             'tenant_status' => $missionApplication->approval_status,
             'tenant_applied_at' => $missionApplication->applied_at
         ];
-        (new Amqp)->publish('volunteerApplication', json_encode($missionForOptimy), ['queue' => 'volunteerApplication']);
+        $this->amqp->publish('volunteerApplication', json_encode($missionForOptimy), ['queue' => 'volunteerApplication']);
 
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];

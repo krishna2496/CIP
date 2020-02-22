@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\Timesheet\TimesheetRepository;
 use App\Traits\RestExceptionHandlerTrait;
+use Bschmitt\Amqp\Amqp;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -55,13 +56,19 @@ class TimesheetController extends Controller
     private $helpers;
 
     /**
+     * @var Bschmitt\Amqp\Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
-     * @param App\Helpers\ResponseHelper $responseHelper
-     * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
-     * @param App\Helpers\Helpers $helpers
+     * @param TimesheetRepository $timesheetRepository
+     * @param ResponseHelper $responseHelper
+     * @param MissionRepository $missionRepository
+     * @param TenantOptionRepository $tenantOptionRepository
+     * @param Helpers $helpers
+     * @param Amqp $amqp
      *
      * @return void
      */
@@ -70,13 +77,15 @@ class TimesheetController extends Controller
         ResponseHelper $responseHelper,
         MissionRepository $missionRepository,
         TenantOptionRepository $tenantOptionRepository,
-        Helpers $helpers
+        Helpers $helpers,
+        Amqp $amqp
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
         $this->missionRepository = $missionRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->helpers = $helpers;
+        $this->amqp = $amqp;
     }
 
     /**
@@ -290,6 +299,16 @@ class TimesheetController extends Controller
         // Store timesheet
         $request->request->add(['user_id' => $request->auth->user_id]);
         $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
+
+        // Send data of the new timesheet created to Optimy app using "timesheet" queue from RabbitMQ
+        $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
+        $timesheetForOptimy = [
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id,
+            'timesheet_id' => $timesheet->timesheet_id,
+            'user_id' => $timesheet->user_id,
+            'mission_id' => $timesheet->mission_id,
+        ];
+        $this->amqp->publish('timesheet', json_encode($timesheetForOptimy), ['queue' => 'timesheet']);
       
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
