@@ -22,6 +22,8 @@ class MissionApplicationQuery implements QueryableInterface
 
     const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
+        'applicantLastName' => 'user.last_name',
+        'applicantFirstName' => 'user.first_name',
         'applicantEmail' => 'user.email',
         'missionType' => 'mission.mission_type',
         'missionCountryCode' => 'country_language.name',
@@ -30,13 +32,6 @@ class MissionApplicationQuery implements QueryableInterface
         'applicationDate' => 'mission_application.applied_at',
         'applicationSkills' => 'applicant_skills',
         'missionName' => 'mission_language.title',
-        /*
-         * TODO: implement the following sort options (and handle translations)
-         * - mission skills
-         * - country name
-         * - city
-         */
-
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -52,7 +47,7 @@ class MissionApplicationQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
-Log::debug($parameters['order']);
+
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
