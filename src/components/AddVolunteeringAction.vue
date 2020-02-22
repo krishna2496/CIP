@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer @hidden="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
@@ -20,7 +19,7 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.mission}}</label>
                                     <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
-                                        class="disabled"></b-form-input>
+                                                  class="disabled"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -30,15 +29,15 @@
                                             <b-form-group>
                                                 <label for>{{languageData.label.actions}}*</label>
                                                 <b-form-input v-model.trim="timeEntryDefaultData.action"
-                                                    :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
-                                                    type="text" :placeholder="languageData.placeholder.action">
+                                                              :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
+                                                              type="text" :placeholder="languageData.placeholder.action">
                                                 </b-form-input>
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
-                                                    class="invalid-feedback">
+                                                     class="invalid-feedback">
                                                     {{ languageData.errors.action_required }}
                                                 </div>
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue"
-                                                    class="invalid-feedback">
+                                                     class="invalid-feedback">
                                                     {{ languageData.errors.minimum_action }}
                                                 </div>
                                             </b-form-group>
@@ -54,14 +53,14 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.date_volunteered}}*</label>
                                     <date-picker v-model="timeEntryDefaultData.dateVolunteered"
-                                        :notAfter="timeEntryDefaultData.disabledFutureDates"
-                                        :notBefore="timeEntryDefaultData.disabledPastDates" :disabledDays="disableDates"
-                                        @change="dateChange()"
-                                        :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
-                                        :lang="lang">
+                                                 :notAfter="timeEntryDefaultData.disabledFutureDates"
+                                                 :notBefore="timeEntryDefaultData.disabledPastDates" :disabledDays="disableDates"
+                                                 @change="dateChange()"
+                                                 :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
+                                                 :lang="lang">
                                     </date-picker>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.date_volunteer_is_required }}</div>
                                 </b-form-group>
                             </b-col>
@@ -69,11 +68,11 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.day_volunteered}}*</label>
                                     <AppCustomDropdown v-model="timeEntryDefaultData.workDay" :optionList="workDayList"
-                                        :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error"
-                                        :defaultText="defaultWorkday" @updateCall="updateWorkday"
-                                        translationEnable="true" />
+                                                       :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error"
+                                                       :defaultText="defaultWorkday" @updateCall="updateWorkday"
+                                                       translationEnable="true" />
                                     <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.work_day }}</div>
                                 </b-form-group>
 
@@ -86,11 +85,11 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.notes}}*</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
-                                        :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
-                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
+                                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
+                                                     :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.notes.required"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.notes }}</div>
                                 </b-form-group>
 
@@ -104,38 +103,38 @@
                                 <label for>{{languageData.label.file_upload}}</label>
                                 <div class="file-upload-wrap">
                                     <div class="btn-wrapper"
-                                        v-bind:class="{'has-error' : fileError != '' ? true : false}">
+                                         v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                         <file-upload class="btn"
-                                            accept="image/png,image/jpeg,application/doc,
+                                                     accept="image/png,image/jpeg,application/doc,
                                         application/docx,application/xls,application/xlsx,application/csv,application/pdf" :multiple="true"
-                                            :drop="true" :drop-directory="true" @input="inputUpdate"
-                                            :size="1024 * 1024 *10" v-model="fileArray" ref="upload">
+                                                     :drop="true" :drop-directory="true" @input="inputUpdate"
+                                                     :size="1024 * 1024 *10" v-model="fileArray" ref="upload">
                                             {{languageData.label.browse}}
                                         </file-upload>
                                         <span>{{languageData.label.drop_files}}</span>
                                     </div>
                                     <div class="uploaded-file-wrap">
                                         <div class="uploaded-file-details"
-                                            v-bind:key=index
-                                            v-for="(file, index) in timeEntryDefaultData.documents">
+                                             v-bind:key=index
+                                             v-for="(file, index) in timeEntryDefaultData.documents">
 
                                             <a class="filename" :href="file.document_path"
-                                                target="_blank">{{file.document_name}}</a>
+                                               target="_blank">{{file.document_name}}</a>
                                             <b-button class="remove-item"
-                                                @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"
-                                                :title="languageData.label.delete">
+                                                      @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"
+                                                      :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
-                                                    alt="delete-ic" />
+                                                     alt="delete-ic" />
                                             </b-button>
 
                                         </div>
                                         <div class="uploaded-file-details" v-for="file in fileArray"
-                                            :key="file.id">
+                                             :key="file.id">
                                             <p class="filename">{{file.name}}</p>
                                             <b-button class="remove-item" @click.prevent="$refs.upload.remove(file)"
-                                                :title="languageData.label.delete">
+                                                      :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
-                                                    alt="delete-ic" />
+                                                     alt="delete-ic" />
                                             </b-button>
                                         </div>
                                     </div>
@@ -164,14 +163,7 @@
     import AppCustomDropdown from "../components/CustomFieldDropdown";
     import {
         required,
-        maxLength,
-        email,
-        sameAs,
-        minLength,
-        between,
-        helpers,
         numeric,
-        requiredIf,
         minValue
     } from 'vuelidate/lib/validators';
     import FileUpload from 'vue-upload-component';
@@ -256,7 +248,8 @@
 
                 files.filter((data, index) => {
                     let fileName = data.name.split('.');
-                    if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
+                    fileName = fileName[fileName.length - 1].toLowerCase()
+                    if (!allowedFileTypes.includes(fileName)) {
                         this.fileError = this.languageData.errors.invalid_file_type
                         error = true
                     } else {
@@ -325,14 +318,12 @@
                 let fileData = []
                 let file = this.fileArray;
                 if (file) {
-                    file.filter((fileItem, fileIndex) => {
+                    file.filter((fileItem) => {
                         fileData.push(fileItem.file);
                         formData.append('documents[]', fileItem.file);
                     })
                 }
                 let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('YYYY-MM-DD');
-                let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
-                let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
                 formData.append('mission_id', this.timeEntryDefaultData.missionId);
                 formData.append('date_volunteered', volunteeredDate);
                 formData.append('day_volunteered', this.timeEntryDefaultData.workDay);

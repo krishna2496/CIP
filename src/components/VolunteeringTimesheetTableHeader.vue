@@ -1,44 +1,43 @@
 <template>
 	<div class="tab-with-picker">
 		<div class="table-header">
-		<h2>{{languageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
-		<div class="inner-wrap">
-			<div class="picker-btn-wrap table-action-btn">
-				<button class="prev-btn picker-btn" 
-				v-bind:class="{disabled :previousButtonDisable}"
-				v-b-tooltip.hover :title="languageData.label.previous +' '+languageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
-					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="languageData.label.previous" />
-				</button>
+			<h2>{{languageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
+			<div class="inner-wrap">
+				<div class="picker-btn-wrap table-action-btn">
+					<button class="prev-btn picker-btn"
+							v-bind:class="{disabled :previousButtonDisable}"
+							v-b-tooltip.hover :title="languageData.label.previous +' '+languageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
+						<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+							 :alt="languageData.label.previous" />
+					</button>
 
-				<!-- <span>{{currentWeak}}</span> -->
-				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
-					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
-					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="languageData.label.next" />
-				</button>
+					<button class="next-btn picker-btn" v-b-tooltip.hover  :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
+							v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
+						<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+							 :alt="languageData.label.next" />
+					</button>
+				</div>
+				<div class="picker-btn-wrap">
+					<button class="prev-btn picker-btn" v-b-tooltip.hover
+							v-bind:class="{disabled :previousButtonDisable}"
+							:title="languageData.label.previous+' '+languageData.label.month.toLowerCase()" @click.stop="goPrev">
+						<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+							 :alt="languageData.label.previous" />
+					</button>
+
+					<span>{{languageData.label[currentMonthName]}}</span>
+					<button class="next-btn picker-btn" v-b-tooltip.hover :title="languageData.label.next+' '+languageData.label.month.toLowerCase()"
+							v-bind:class="{disabled :isPreviousButtonDisable}" @click.stop="goNext">
+						<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+							 :alt="languageData.label.next" />
+					</button>
+				</div>
+				<div>
+					<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
+									   translationEnable="false" />
+				</div>
+
 			</div>
-			<div class="picker-btn-wrap">
-				<button class="prev-btn picker-btn" v-b-tooltip.hover
-				v-bind:class="{disabled :previousButtonDisable}"
-				:title="languageData.label.previous+' '+languageData.label.month.toLowerCase()" @click.stop="goPrev">
-					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="languageData.label.previous" />
-				</button>
-
-				<span>{{languageData.label[currentMonthName]}}</span>
-				<button class="next-btn picker-btn" v-b-tooltip.hover :title="languageData.label.next+' '+languageData.label.month.toLowerCase()"
-					v-bind:class="{disabled :isPreviousButtonDisable}" @click.stop="goNext">
-					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="languageData.label.next" />
-				</button>
-			</div>		
-			<div>
-				<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
-					translationEnable="false" />
-			</div>
-
-		</div>
 		</div>
 	</div>
 </template>
@@ -46,18 +45,16 @@
 <script>
 	import store from '../store';
 	import moment from 'moment'
-	import DatePicker from "vue2-datepicker";
 	import AppCustomDropdown from "../components/AppCustomDropdownToolTip";
 
 	export default {
 		name: "VolunteeringTimesheetHeader",
 		components: {
-			DatePicker,
 			AppCustomDropdown
 		},
 		props: {
-            currentWeek: Number
-        },
+			currentWeek: Number
+		},
 		data: function () {
 			return {
 				time1: "",
@@ -112,7 +109,7 @@
 				lastYear : ''
 			}
 		},
-		watch: { 
+		watch: {
 			currentWeek: function(newVal, oldVal) { // watch it
 				this.currentWeak = newVal
 				let payload = moment().startOf('date').week(this.currentWeak)
@@ -122,7 +119,14 @@
 		mounted() {
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
-			for (let index = currentYear; index > (currentYear - 5); index--) {
+			let yearDiff  = 5;
+			if(store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+				let lastYear = store.state.timesheetFromYear;
+				if((currentYear - lastYear) +1 > 0) {
+					yearDiff = (currentYear - lastYear) +1;
+				}
+			}
+			for (let index = currentYear; index > (currentYear - yearDiff); index--) {
 				yearsList.push([index, index]);
 			}
 			this.yearListing = yearsList;
@@ -134,48 +138,47 @@
 		},
 		methods: {
 			goPrevWeek() {
-				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day')
-				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day').week()
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'days').startOf('week')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'days').week()
 				this.changeMonth(payload);
 				this.$root.$emit('bv::hide::tooltip');
 			},
 			goNextWeek() {
-				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
-				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day').week()
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'days').startOf('week')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'days').week()
 				this.changeMonth(payload);
 				this.$root.$emit('bv::hide::tooltip');
 			},
 			getWeekDayNameOfMonth(month, year) {
-				//stating date of week	
-				let _this = this
+				//stating date of week
 				let start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
-				
+
 				this.weekNameArray = []
 				this.daysArray = []
 				let i=0;
 				let j = 1;
 				for (let end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
 					let dayName = start.format('dddd').toLowerCase();
-						this.weekNameArray[j] = this.languageData.label[dayName];
-						this.daysArray[i] = start.format('D')-1
-						this.yearArray[i] = start.format('YYYY')
-						this.monthArray[i] = start.format('M')
-						i++;
-						j++;
+					this.weekNameArray[j] = this.languageData.label[dayName];
+					this.daysArray[i] = start.format('D')-1
+					this.yearArray[i] = start.format('YYYY')
+					this.monthArray[i] = start.format('M')
+					i++;
+					j++;
 				}
 			},
 			goPrev() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
-				'month');
+						'month');
 				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
-				'month').week()
+						'month').week()
 				this.$root.$emit('bv::hide::tooltip');
 				this.changeMonth(payload);
 			},
 			goNext() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf('month');
 				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf(
-				'month').week()
+						'month').week()
 				this.changeMonth(payload);
 				this.$root.$emit('bv::hide::tooltip');
 			},
@@ -200,14 +203,14 @@
 				this.defaultYear = this.currentMonth.format('Y');
 
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
-						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {		
+						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {
 					this.isPreviousButtonDisable = true;
 
 					// previousButtonDisable
 				} else {
 					this.isPreviousButtonDisable = false;
 				}
-			
+
 				if(this.currentFixWeek  <= this.currentWeak && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(this.currentMonth.format('YYYY'))) ) {
 					this.disableNextWeek = true
@@ -217,13 +220,13 @@
 				} else {
 					this.disableNextWeek = false
 				}
-				
+
 				if(this.lastYear == parseInt(this.currentYearNumber) && (this.currentMonthNumber <= 1)) {
 					this.previousButtonDisable = true
 				} else {
 					this.previousButtonDisable = false
 				}
-			
+
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
 				let selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
@@ -233,14 +236,14 @@
 				selectedData['yearArray'] = this.yearArray;
 				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);
-				
+
 			},
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.currentMonth = moment().startOf('date').week(this.currentWeak);
 			this.changeMonth(this.currentMonth);
-			
+
 		}
 	};
 </script>
