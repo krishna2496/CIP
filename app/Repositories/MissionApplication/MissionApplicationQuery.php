@@ -24,9 +24,9 @@ class MissionApplicationQuery implements QueryableInterface
         'applicant' => 'user.last_name',
         'applicantEmail' => 'user.email',
         'missionType' => 'mission.mission_type',
-        'country' => 'c.name',
+        'missionCountryCode' => 'country_language.name',
         'status' => 'mission_application.approval_status',
-        'city' => 'ci.name',
+        'missionCityId' => 'city_language.name',
         'applicationDate' => 'mission_application.applied_at',
         'applicationSkills' => 'applicant_skills',
         'missionName' => 'mission_language.title',
@@ -52,7 +52,7 @@ class MissionApplicationQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
-
+Log::debug($parameters['order']);
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
@@ -66,13 +66,23 @@ class MissionApplicationQuery implements QueryableInterface
                 'user.last_name',
                 'user.email',
                 'mission.mission_type',
-                'mission_language.title'
+                'mission_language.title',
+                'city_language.name',
+                'country_language.name'
             ])
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
             ->join('mission_language', function ($join) use ($languageId) {
                 $join->on('mission_language.mission_id', '=', 'mission.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
+            })
+            ->join('city_language', function($join) use ($languageId) {
+                $join->on('city_language.city_id', '=', 'mission.city_id')
+                    ->where('city_language.language_id', '=', $languageId);
+            })
+            ->join('country_language', function($join) use ($languageId) {
+                $join->on('country_language.country_id', '=', 'mission.country_id')
+                    ->where('country_language.language_id', '=', $languageId);
             })
             ->where('mission_language.language_id', '=', $languageId)
             ->with([
