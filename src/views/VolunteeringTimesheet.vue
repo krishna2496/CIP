@@ -801,7 +801,7 @@
                     type: "hour"
                 }
                 await volunteerTimesheetHours(hourRequest).then(response => {
-                   
+
                     if (response.data) {
                         this.timeMissionData = response.data
                         if(response.pagination) {
@@ -821,7 +821,7 @@
                     type: "goal"
                 }
                 await volunteerTimesheetHours(goalRequest).then(response => {
-                    
+
                     if (response) {
                         if(response.data) {
                             this.goalMissionData = response.data
@@ -1189,8 +1189,8 @@
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
                     } else {
-                        
-                        
+
+
                         if (timeSheetType == "time") {
                             this.getTimeRequestData(this.currentPage);
                             this.getVolunteerHoursData()

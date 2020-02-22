@@ -19,32 +19,32 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.mission}}</label>
                                     <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
-                                        class="disabled"></b-form-input>
+                                                  class="disabled"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group>
                                     <label for>{{languageData.label.hours}}*</label>
 
-                                    <b-form-input id 
-                                        :placeholder="languageData.placeholder.spent_hours" 
-                                        :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid) || (!$v.timeEntryDefaultData.hours.numeric) || (!$v.timeEntryDefaultData.hours.between)) }"
-                                        type="text" 
-                                        maxlength="2"
-                                        @input="hourChange"
-                                        v-model.trim="timeEntryDefaultData.hours"
-                                        ></b-form-input>
+                                    <b-form-input id
+                                                  :placeholder="languageData.placeholder.spent_hours"
+                                                  :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid) || (!$v.timeEntryDefaultData.hours.numeric) || (!$v.timeEntryDefaultData.hours.between)) }"
+                                                  type="text"
+                                                  maxlength="2"
+                                                  @input="hourChange"
+                                                  v-model.trim="timeEntryDefaultData.hours"
+                                    ></b-form-input>
 
                                     <div v-if="submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid))"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.hours_is_required }}</div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.hours.numeric)"
-                                        class="invalid-feedback">
-                                       {{ languageData.errors.hours_numeric }}
+                                         class="invalid-feedback">
+                                        {{ languageData.errors.hours_numeric }}
                                     </div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.hours.between) && ($v.timeEntryDefaultData.hours.numeric)"
-                                        class="invalid-feedback">
-                                       {{ languageData.errors.hours_is_between }}
+                                         class="invalid-feedback">
+                                        {{ languageData.errors.hours_is_between }}
                                     </div>
                                 </b-form-group>
 
@@ -52,25 +52,25 @@
                             <b-col sm="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.minutes}}*</label>
-                                     <b-form-input id 
-                                        :placeholder="languageData.placeholder.spent_minutes" 
-                                        :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid) || (!$v.timeEntryDefaultData.minutes.numeric) || (!$v.timeEntryDefaultData.minutes.between)) }"
-                                        type="text"            
-                                        maxlength="2"
-                                        @input="minuteChange"
-                                        v-model.trim="timeEntryDefaultData.minutes"
-                                        ></b-form-input>
-                                    
+                                    <b-form-input id
+                                                  :placeholder="languageData.placeholder.spent_minutes"
+                                                  :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid) || (!$v.timeEntryDefaultData.minutes.numeric) || (!$v.timeEntryDefaultData.minutes.between)) }"
+                                                  type="text"
+                                                  maxlength="2"
+                                                  @input="minuteChange"
+                                                  v-model.trim="timeEntryDefaultData.minutes"
+                                    ></b-form-input>
+
                                     <div v-if="submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid))"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.minute_is_required }}</div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.minutes.numeric)"
-                                        class="invalid-feedback">
-                                       {{ languageData.errors.minute_numeric }}
+                                         class="invalid-feedback">
+                                        {{ languageData.errors.minute_numeric }}
                                     </div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.minutes.between) && ($v.timeEntryDefaultData.minutes.numeric)"
-                                        class="invalid-feedback">
-                                       {{ languageData.errors.minute_between }}
+                                         class="invalid-feedback">
+                                        {{ languageData.errors.minute_between }}
                                     </div>
                                 </b-form-group>
 
@@ -83,15 +83,15 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.date_volunteered}}*</label>
                                     <date-picker v-model="timeEntryDefaultData.dateVolunteered"
-                                        :notAfter="timeEntryDefaultData.disabledFutureDates"
-                                        :notBefore="timeEntryDefaultData.disabledPastDates" :disabledDays="disableDates"
-                                        @change="dateChange()"
-                                        :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
-                                        :lang="lang">
+                                                 :notAfter="timeEntryDefaultData.disabledFutureDates"
+                                                 :notBefore="timeEntryDefaultData.disabledPastDates" :disabledDays="disableDates"
+                                                 @change="dateChange()"
+                                                 :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
+                                                 :lang="lang">
 
                                     </date-picker>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.date_volunteer_is_required }}</div>
                                 </b-form-group>
                             </b-col>
@@ -99,11 +99,11 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.day_volunteered}}*</label>
                                     <AppCustomDropdown v-model="timeEntryDefaultData.workDay" :optionList="workDayList"
-                                        :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error"
-                                        :defaultText="defaultWorkday" @updateCall="updateWorkday"
-                                        translationEnable="true" />
+                                                       :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error"
+                                                       :defaultText="defaultWorkday" @updateCall="updateWorkday"
+                                                       translationEnable="true" />
                                     <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.work_day }}</div>
                                 </b-form-group>
 
@@ -116,11 +116,11 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.notes}}*</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
-                                        :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
-                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
+                                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
+                                                     :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.notes.required"
-                                        class="invalid-feedback">
+                                         class="invalid-feedback">
                                         {{ languageData.errors.notes }}</div>
                                 </b-form-group>
 
@@ -134,13 +134,13 @@
 
                                 <label for>{{languageData.label.file_upload}}</label>
                                 <div class="file-upload-wrap"
-                                    v-bind:class="{'has-error' : fileError != '' ? true : false}">
+                                     v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                     <div class="btn-wrapper"
-                                        v-bind:class="{'has-error' : fileError != '' ? true : false}">
+                                         v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                         <file-upload class="btn" accept="image/png,image/jpeg,application/doc,
                                     application/docx,application/xls,application/xlsx,application/csv,application/pdf"
-                                            :multiple="true" :drop="true" :drop-directory="true" @input="inputUpdate"
-                                            :size="1024 * 1024 *10" v-model="fileArray" ref="upload">
+                                                     :multiple="true" :drop="true" :drop-directory="true" @input="inputUpdate"
+                                                     :size="1024 * 1024 *10" v-model="fileArray" ref="upload">
                                             {{languageData.label.browse}}
                                         </file-upload>
                                         <span>{{languageData.label.drop_files}}</span>
@@ -148,25 +148,25 @@
 
                                     <div class="uploaded-file-wrap">
                                         <div class="uploaded-file-details"
-                                            v-for="(file, index) in timeEntryDefaultData.documents"
-                                            v-bind:key=index>
+                                             v-for="(file, index) in timeEntryDefaultData.documents"
+                                             v-bind:key=index>
                                             <a class="filename" :href="file.document_path"
-                                                target="_blank">{{file.document_name}}</a>
+                                               target="_blank">{{file.document_name}}</a>
                                             <b-button class="remove-item"
-                                                @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"
-                                                :title="languageData.label.delete">
+                                                      @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"
+                                                      :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
-                                                    alt="delete-ic" />
+                                                     alt="delete-ic" />
                                             </b-button>
                                         </div>
                                         <div class="uploaded-file-details"
-                                            v-for="file in fileArray"
-                                            :key="file.id">
+                                             v-for="file in fileArray"
+                                             :key="file.id">
                                             <p class="filename">{{file.name}}</p>
                                             <b-button class="remove-item" @click.prevent="$refs.upload.remove(file)"
-                                                :title="languageData.label.delete">
+                                                      :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
-                                                    alt="delete-ic" />
+                                                     alt="delete-ic" />
                                             </b-button>
                                         </div>
                                     </div>
@@ -250,11 +250,11 @@
 
             const requiredHourValidation = (
                 (this.timeEntryDefaultData.hours == '') ||
-                (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0') 
+                (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
             ) ? {
                 required
             } : {};
-            
+
             const requiredMinuteValidation = (
                 (this.timeEntryDefaultData.minutes == '') ||
                 (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
@@ -301,7 +301,7 @@
                 this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
             },
             inputUpdate(files) {
-                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES 
+                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES
                 this.fileError = '';
                 let error = false
                 let duplicateUpload = false
@@ -376,12 +376,12 @@
                 if (this.$v.$invalid) {
                     return;
                 }
-            
+
                 if ((this.timeEntryDefaultData.hours == '' || this.timeEntryDefaultData.hours == '0') &&
                     (this.timeEntryDefaultData.minutes == "0" || this.timeEntryDefaultData.minutes == "")) {
                     return
                 }
-                
+
                 this.fileError = '';
                 this.isAjaxCall = true;
                 const formData = new FormData();
@@ -423,7 +423,7 @@
                             this.$refs.timeHoursModal.hide();
                             this.hideModal();
                         }, 700)
-                        
+
                     }
                     this.isAjaxCall = false;
                 })
