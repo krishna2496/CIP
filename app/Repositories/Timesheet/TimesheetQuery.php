@@ -6,7 +6,6 @@ use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -172,18 +171,13 @@ class TimesheetQuery implements QueryableInterface
                     $query
                         ->where('timesheet.status', 'like', "%${search}%")
                         ->orWhere('timesheet.time', 'like', "%${search}%")
+                        ->orWhere('timesheet.action', 'like', "%${search}%")
                         ->orWhere('timesheet.notes', 'like', "%${search}%")
                         ->orWhere('timesheet.day_volunteered', 'like', "%${search}%")
+                        ->orWhere('timesheet.date_volunteered', 'like', "%${search}%")
                         ->orwhereHas('timesheetDocument', function ($query) use ($search) {
                             $query
                                 ->where('document_name', 'like', "%${search}%");
-                        })
-                        ->orwhereHas('mission.missionTheme', function ($query) use ($search) {
-                            /* TODO : translations are stored in PHP serialized arrays.
-                             *  This makes it very hard to search with the DB. Véro is working on a solution
-                             */
-                            $query
-                                ->where('theme_name', 'like', "%${search}%");
                         })
                         ->orwhereHas('user', function ($query) use ($search) {
                             $query
