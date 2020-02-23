@@ -74,9 +74,9 @@ class TimesheetQuery implements QueryableInterface
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->whereHas('mission', function ($query) {
-                $query->where([
-                    'publication_status' => config("constants.publication_status")["APPROVED"]
-                ]);
+                $query->whereIn(
+                    'publication_status', [config("constants.publication_status")["APPROVED"], config("constants.publication_status")["PUBLISHED_FOR_APPLYING"]]
+                );
             })
             ->whereHas('mission.missionApplication', function ($query) {
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
