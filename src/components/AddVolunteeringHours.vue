@@ -393,11 +393,11 @@
                         formData.append('documents[]', fileItem.file);
                     })
                 }
-                let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('YYYY-MM-DD');
+                let volunteeredDate = moment(this.timeEntryDefaultData.dateVolunteered, 'YYYY-MM-DD');
                 let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
                 let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
                 formData.append('mission_id', this.timeEntryDefaultData.missionId);
-                formData.append('date_volunteered', volunteeredDate);
+                formData.append('date_volunteered', volunteeredDate.format('YYYY-MM-DD'));
                 formData.append('day_volunteered', this.timeEntryDefaultData.workDay);
                 formData.append('notes', this.timeEntryDefaultData.notes);
                 formData.append('hours', parseInt(hours, 10));
