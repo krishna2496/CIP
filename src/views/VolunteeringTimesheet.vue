@@ -579,9 +579,8 @@
             fetchTimeSheetRealtedData(timeSheetId) {
                 fetchTimeSheetDocuments(timeSheetId).then(response => {
                     if (response) {
-                        let momentObj = moment(response.date_volunteered, 'MM-DD-YYYY');
-                        let dateVolunteered = momentObj.format('YYYY-MM-DD');
-                        this.currentTimeData.dateVolunteered = dateVolunteered;
+                        let dateVolunteered = moment(response.date_volunteered, 'YYYY-MM-DD');
+                        this.currentTimeData.dateVolunteered = dateVolunteered.format('YYYY-MM-DD');
                         this.currentTimeData.workDay = response.day_volunteered
                         this.currentTimeData.notes = response.notes
                         this.currentTimeData.documents = response.timesheet_document
