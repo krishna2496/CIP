@@ -6,6 +6,7 @@ use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -29,7 +30,7 @@ class TimesheetQuery implements QueryableInterface
         'country' => 'c.name',
         'approvalStatus' => 'status',
         'city' => 'ci.name',
-        'appliedTo' => 'title'
+        'appliedTo' => 'mission_language.title'
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -48,6 +49,9 @@ class TimesheetQuery implements QueryableInterface
         $filters = $parameters['filters'];
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
+
+        Log::debug('order',$order);
+
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
@@ -70,9 +74,14 @@ class TimesheetQuery implements QueryableInterface
                 'timesheet.notes',
                 'timesheet.status',
                 'timesheet.created_at',
-                'timesheet.updated_at'
+                'timesheet.updated_at',
+                'mission_language.title',
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
+            ->join('mission_language', function ($join) use ($languageId) {
+                $join->on('mission_language.mission_id', '=', 'timesheet.mission_id')
+                    ->where('mission_language.language_id', '=', $languageId);
+            })
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
                     'publication_status', [config("constants.publication_status")["APPROVED"], config("constants.publication_status")["PUBLISHED_FOR_APPLYING"]]
