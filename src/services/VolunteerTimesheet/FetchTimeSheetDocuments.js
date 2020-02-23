@@ -11,13 +11,13 @@ export default async(timeSheetId) => {
     let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + timeSheetId;
 
     await axios({
-            url: url,
-            method: 'get',
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token,
-            }
-        })
+        url: url,
+        method: 'get',
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token,
+        }
+    })
         .then((response) => {
             if (response.data.data) {
                 responseData = response.data.data

@@ -13,13 +13,13 @@ export default async(page) => {
     let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page=" + page;
 
     await axios({
-            url: url,
-            method: 'GET',
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token
-            }
-        })
+        url: url,
+        method: 'GET',
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token
+        }
+    })
         .then((response) => {
             if (response.data.data) {
                 responseData.error = false;
