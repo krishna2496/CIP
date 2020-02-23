@@ -9,13 +9,13 @@ export default async(deletFile) => {
     }
     let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + deletFile.timesheet_id + "/document/" + deletFile.document_id;
     await axios({
-            url: url,
-            method: 'DELETE',
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token,
-            }
-        })
+        url: url,
+        method: 'DELETE',
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token,
+        }
+    })
         .then((response) => {
             if (response.data.message) {
                 responseData = response.data.message

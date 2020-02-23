@@ -13,15 +13,15 @@ export default async(data) => {
     let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet";
 
     await axios({
-            url: url,
-            method: 'POST',
-            data,
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token,
-                'Content-Type': 'multipart/form-data'
-            }
-        })
+        url: url,
+        method: 'POST',
+        data,
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token,
+            'Content-Type': 'multipart/form-data'
+        }
+    })
         .then((response) => {
             if (response.data.data) {
                 responseData.error = false;
