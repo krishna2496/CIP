@@ -25,12 +25,15 @@ class TimesheetQuery implements QueryableInterface
         'reviewedHours' => 'time',
         'note' => 'notes',
         'appliedDay' => 'day_volunteered',
-        'lastUpdated' => 'updated_at',
         'applicantEmailAddress' => 'user.email',
-        'country' => 'c.name',
+        'missionCountryCode' => 'country_language.name',
         'approvalStatus' => 'status',
-        'city' => 'ci.name',
-        'appliedTo' => 'mission_language.title'
+        'missionCityId' => 'city_language.name',
+        'appliedTo' => 'mission_language.title',
+        'reviewedObjective' => 'action',
+        'notes' => 'notes',
+        'applicantFirstName' => 'user.first_name',
+        'applicantLastName' => 'user.last_name',
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -50,8 +53,6 @@ class TimesheetQuery implements QueryableInterface
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
 
-        Log::debug('order',$order);
-
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
@@ -64,23 +65,26 @@ class TimesheetQuery implements QueryableInterface
         $query = Timesheet::query();
         $timesheets = $query
             ->select([
-                'timesheet.timesheet_id',
-                'timesheet.user_id',
-                'timesheet.mission_id',
-                'timesheet.time',
-                'timesheet.action',
-                'timesheet.date_volunteered',
-                'timesheet.day_volunteered',
-                'timesheet.notes',
-                'timesheet.status',
-                'timesheet.created_at',
-                'timesheet.updated_at',
+                'timesheet.*',
                 'mission_language.title',
+                'city_language.name',
+                'country_language.name',
+                'goal_mission.goal_objective'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
+            ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
+            ->join('goal_mission', 'goal_mission.mission_id', '=', 'timesheet.mission_id')
             ->join('mission_language', function ($join) use ($languageId) {
                 $join->on('mission_language.mission_id', '=', 'timesheet.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
+            })
+            ->join('city_language', function($join) use ($languageId) {
+                $join->on('city_language.city_id', '=', 'mission.city_id')
+                    ->where('city_language.language_id', '=', $languageId);
+            })
+            ->join('country_language', function($join) use ($languageId) {
+                $join->on('country_language.country_id', '=', 'mission.country_id')
+                    ->where('country_language.language_id', '=', $languageId);
             })
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
