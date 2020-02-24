@@ -3691,18 +3691,13 @@ main {
 
 	.news-detail-block {
 		.news-img-wrap {
-			min-height: 400px;
-			background-size: cover;
+			min-height: 1px;
+			background-size: 100%;
 			background-repeat: no-repeat;
 			background-position: center;
 			margin: 30px 0;
-
-			@include md-max {
-				min-height: 350px;
-			}
-
+			padding-bottom: 43.9%;
 			@include sm-max {
-				min-height: 270px;
 				margin: 20px 0;
 			}
 		}
