@@ -424,7 +424,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Read message send by admin */
     $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
-        'middleware' => 'localization|tenant.connection|jwt.auth|check.profile',
+        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Message\MessageController@readMessage']);
 });
 
