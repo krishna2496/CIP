@@ -233,7 +233,7 @@ class UserRepository implements UserInterface
      */
     public function listUsers(int $userId) : Collection
     {
-        return $this->user->where('user_id', '<>', $userId)->get();
+        return $this->user->where([['user_id', '<>', $userId],['is_profile_complete', '1']])->get();
     }
 
     /**

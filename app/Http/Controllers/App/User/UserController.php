@@ -179,9 +179,9 @@ class UserController extends Controller
         $language = config('app.locale') ?? $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
 
-        if (is_null($userDetail->language_id) || $userDetail->language_id == 0) {
-            $userDetail->language_id = $defaultLanguage->language_id;
-        }
+        $userDetail->language_id = (is_null($userDetail->language_id) || $userDetail->language_id == 0)
+        ? $defaultLanguage->language_id : $userDetail->language_id;
+
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
         $userSkillData = [];
@@ -293,10 +293,11 @@ class UserController extends Controller
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "max:16",
+				"nullable",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
-            "availability_id" => "required|integer|exists:availability,availability_id,deleted_at,NULL",
+            "availability_id" => "integer",
             "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
             "city_id" => "required|integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",

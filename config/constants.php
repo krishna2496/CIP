@@ -325,7 +325,12 @@ return [
     'tenant_settings' => [
         'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
         'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
-        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer'
+        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer',
+        'STORIES_ENABLED' => 'stories_enabled',
+        'INVITE_COLLEAGUE' => 'invite_colleague',
+        'NEWS_ENABLED' => 'news_enabled',
+        'MESSAGE_ENABLED' => 'message_enabled',
+        'MISSION_COMMENTS' => 'mission_comments'
     ],
 
     'TOP_THEME' => "top_themes",

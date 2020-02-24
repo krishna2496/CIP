@@ -1,5 +1,5 @@
 {
-    "label": {
+    "labels": {
         "email_address": "Email address",
         "password": "Password",
         "lost_password": "Lost your password?",
@@ -286,13 +286,12 @@
         "no_data_available" : "No data available",
 		"total_messages" : "Total messages",
 		"send_message" : "Send message",
-        "receive_email_notification":"Receive notification by email",
-        "fill_up_mandatory_fields_to_access_platform" : "Please fill up mandatory fields to access platform"
+        "receive_email_notification":"Receive notification by email"
     },
 
     "placeholder": {
-        "email_address": "Enter email address",
-        "password": "Enter password",
+        "email_addresss": "Enter email address",
+        "password": "",
         "comment": "Enter your comments..",
         "name": "Enter your name",
         "surname": "Enter your last name",
