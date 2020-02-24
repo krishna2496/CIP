@@ -150,6 +150,7 @@ class MissionApplicationController extends Controller
         // Send data of the new mission application created to Optimy app using "volunteerApplication" queue from RabbitMQ
         $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
         $missionForOptimy = [
+            'activity_type' => 'volunteerApplication',
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
             'tenant_id' => $tenantIdAndSponsorId->tenant_id,
             'tenant_application_id' => $missionApplication->mission_application_id,
@@ -158,7 +159,7 @@ class MissionApplicationController extends Controller
             'tenant_status' => $missionApplication->approval_status,
             'tenant_applied_at' => $missionApplication->applied_at
         ];
-        $this->amqp->publish('volunteerApplication', json_encode($missionForOptimy), ['queue' => 'volunteerApplication']);
+        $this->amqp->publish('ciSynchronizer', json_encode($missionForOptimy), ['queue' => 'ciSynchronizer']);
 
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];

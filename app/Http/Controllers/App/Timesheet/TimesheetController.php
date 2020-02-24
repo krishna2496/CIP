@@ -132,7 +132,7 @@ class TimesheetController extends Controller
             $getmissionType->count() > 0 ?
             $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
         }
-           
+
         $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
         $validator = Validator::make(
             $request->toArray(),
@@ -172,7 +172,7 @@ class TimesheetController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY')
             );
         }
-        
+
         $dateVolunteered = $this->helpers->changeDateFormat(
             $request->date_volunteered,
             config('constants.TIMESHEET_DATE_FORMAT')
@@ -207,7 +207,7 @@ class TimesheetController extends Controller
         } else {
             $request->request->add(['status' => config('constants.timesheet_status.PENDING')]);
         }
-        
+
         // Fetch mission data from missionid
         $timesheetMissionData = $this->missionRepository->getTimesheetMissionData($request->mission_id);
 
@@ -244,7 +244,7 @@ class TimesheetController extends Controller
                 $request->request->remove('action');
                 break;
         }
-        
+
         // Check start dates and end dates of mission
         if ($timesheetMissionData->start_date) {
             $missionStartDate = $this->helpers->changeDateFormat(
@@ -264,17 +264,17 @@ class TimesheetController extends Controller
                         $timesheetMissionData->end_date,
                         config('constants.TIMESHEET_DATE_TIME_FORMAT')
                     );
-                   
+
                     if ($dateVolunteeredCurrentTime > $missionEndDate) {
                         $endDate = Carbon::createFromFormat(
                             config('constants.TIMESHEET_DATE_TIME_FORMAT'),
                             $missionEndDate
                         );
-            
+
                         // Fetch tenant options value
                         $tenantOptionData = $this->tenantOptionRepository
                         ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
-                        
+
                         $extraWeeks = isset($tenantOptionData[0]['option_value'])
                         ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
 
@@ -303,13 +303,14 @@ class TimesheetController extends Controller
         // Send data of the new timesheet created to Optimy app using "timesheet" queue from RabbitMQ
         $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
         $timesheetForOptimy = [
+            'activity_type' => 'timesheet',
             'tenant_id' => $tenantIdAndSponsorId->tenant_id,
             'timesheet_id' => $timesheet->timesheet_id,
             'user_id' => $timesheet->user_id,
             'mission_id' => $timesheet->mission_id,
         ];
-        $this->amqp->publish('timesheet', json_encode($timesheetForOptimy), ['queue' => 'timesheet']);
-      
+        $this->amqp->publish('ciSynchronizer', json_encode($timesheetForOptimy), ['queue' => 'ciSynchronizer']);
+
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
         $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCCESSFULLY')
@@ -319,7 +320,7 @@ class TimesheetController extends Controller
         $requestArray = $request->toArray();
         $activityLogStatus = ($timesheet->wasRecentlyCreated) ?
             config('constants.activity_log_actions.CREATED') : config('constants.activity_log_actions.UPDATED');
-        
+
         // get the uplaoded file data
         if ($request->hasFile('documents')) {
             //get documents data related to Timesheet that is uploded
@@ -454,7 +455,7 @@ class TimesheetController extends Controller
                     'timesheet_entries.*.timesheet_id' => 'required|exists:timesheet,timesheet_id,deleted_at,NULL',
                 ]
             );
-           
+
             // If validator fails
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -464,7 +465,7 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             $timesheet = $this->timesheetRepository->submitTimesheet($request, $request->auth->user_id);
 
             $apiStatus = Response::HTTP_OK;
@@ -503,7 +504,7 @@ class TimesheetController extends Controller
     {
         $statusArray = [config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')];
         $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
-        
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (count($timeRequestList) > 0) ? trans('messages.success.MESSAGE_TIME_REQUEST_LISTING') :
         trans('messages.success.MESSAGE_TIME_REQUEST_NOT_FOUND');
@@ -541,7 +542,7 @@ class TimesheetController extends Controller
 
         if ($timeRequestList->count()) {
             $fileName = config('constants.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX');
-        
+
             $excel = new ExportCSV($fileName);
 
             $headings = [
@@ -563,7 +564,7 @@ class TimesheetController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.TIME_TIMESHEET'),
@@ -595,10 +596,10 @@ class TimesheetController extends Controller
     {
         $statusArray = [config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')];
         $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
-        
+
         if ($goalRequestList->count()) {
             $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
-    
+
             $excel = new ExportCSV($fileName);
 
             $headings = [
@@ -618,7 +619,7 @@ class TimesheetController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.GOAL_TIMESHEET'),
