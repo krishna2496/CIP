@@ -253,4 +253,24 @@ class CountryRepository implements CountryInterface
     {
         return $this->country->whereHas('user')->whereCountryId($id)->count() ? true : false;
     }
+
+    /**
+      * Get country by ISO code
+      *
+      * @param  string $isoCode
+      * @return Object|Boolean
+      */
+    public function getCountryByCode(string $isoCode)
+    {
+        $country = $this->country
+            ->where('ISO', $isoCode)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$country) {
+            return false;
+        }
+
+        return $country;
+    }
 }

@@ -18,7 +18,9 @@ class CorsMiddleware
 			'Access-Control-Allow-Methods'     => 'POST, GET, OPTIONS, PUT, DELETE, PATCH',
 			'Access-Control-Allow-Credentials' => 'true',
 			'Access-Control-Max-Age'           => '86400',
-			'Access-Control-Allow-Headers'     => 'Access-Control-allow-Headers, Token, Content-Type, Authorization, X-Requested-With, X-Localization',
+			'Access-Control-Allow-Headers' 		=> 'Access-Control-Allow-Origin, Access-Control-allow-Headers, Token, Content-Type, Authorization, X-Requested-With, X-Localization',
+			'Access-Control-Allow-Origin' 		=> '*',
+			'Access-Control-Expose-Headers' 	=> 'Token',
 		];
 
 		if ($request->isMethod('OPTIONS'))
