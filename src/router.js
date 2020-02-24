@@ -20,7 +20,18 @@ let routes = [
         component: () =>
             import ('./views/Auth/Login.vue')
     },
-
+    {
+        path: '/auth/sso',
+        name: 'sso',
+        component: () =>
+            import ('./views/Auth/SingleSignOn.vue')
+    },
+    {
+        path: '/auth/slo',
+        name: 'sso',
+        component: () =>
+            import ('./views/Auth/SingleLogout.vue')
+    },
     {
         path: '/home',
         name: 'home',
