@@ -31,8 +31,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             'middleware' => 'tenant.connection',
         ],
         function ($router) {
-            $router->post('/sso', ['as' => 'saml.sso.create', 'uses' => 'SamlController@sso']);
-            $router->patch('/sso', ['as' => 'saml.sso.update', 'uses' => 'SamlController@refreshToken']);
+            $router->get('/sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
             $router->post('/acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
             $router->get('/slo', ['as' => 'saml.slo', 'uses' => 'SamlController@slo']);
             $router->get('/metadata', ['as' => 'saml.metadata', 'uses' => 'SamlController@metadata']);

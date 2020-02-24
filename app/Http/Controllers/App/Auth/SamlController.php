@@ -262,7 +262,7 @@ class SamlController extends Controller
             'sp' => [
                 'entityId' => route('saml.metadata', ['t' => $settings['idp_id']]),
                 'singleSignOnService' => [
-                    'url' => route('saml.sso.create', ['t' => $settings['idp_id']])
+                    'url' => route('saml.sso', ['t' => $settings['idp_id']])
                 ],
                 'singleLogoutService' => [
                     'url' => route('saml.slo', ['t' => $settings['idp_id']])
