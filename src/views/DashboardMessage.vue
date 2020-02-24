@@ -35,8 +35,8 @@
 								
 								<ul class="message-box" v-if="messageList.length > 0">
 									<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
-										<b-button :title="languageData.label.delete" class="delete-btn" v-if="message.sent_from != 1">
-											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" v-on:click="deleteMessage($event,message.messageId)" alt="delete" />
+										<b-button :title="languageData.label.delete" class="delete-btn" v-if="message.sent_from != 1" v-on:click="deleteMessage($event,message.messageId)" >
+											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete" />
 										</b-button>
 										<div class="title-wrap">
 											<h3>{{message.person }}</h3>
