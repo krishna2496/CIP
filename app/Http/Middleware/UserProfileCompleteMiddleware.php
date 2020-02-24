@@ -7,7 +7,7 @@ use App\User;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Response;
 
-class CheckProfileMiddleware
+class UserProfileCompleteMiddleware
 {
     use RestExceptionHandlerTrait;
     
