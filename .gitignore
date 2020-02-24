@@ -11,3 +11,4 @@ Homestead.yaml
 composer.lock
 /node_modules
 /storage/reports
+npm-debug.log
