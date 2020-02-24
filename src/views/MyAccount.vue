@@ -637,7 +637,10 @@
                         }
                         if (this.userData.availability && this.userData.availability.type != '' && this.userData.availability.type !=
                             null) {
-                            this.availabilityDefault = this.userData.availability.type
+                            const translatedAvailability = this.userData.availability.translations
+                                .find(translation => translation.lang === this.languageCode.toLowerCase());
+                            this.availabilityDefault = translatedAvailability ?
+                                translatedAvailability.title : this.userData.availability.type;
                         } else {
                             this.availabilityDefault = this.languageData.placeholder.availability;
                         }

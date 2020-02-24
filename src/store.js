@@ -58,11 +58,15 @@ export default new Vuex.Store({
         isProfileComplete: localStorage.getItem('isProfileComplete')
     },
     mutations: {
-        // Set login data in state and local storage       
+        setToken(state, data) {
+            localStorage.setItem('token', data)
+            localStorage.setItem('isLoggedIn', data.token)
+            state.isLoggedIn = true;
+            state.token = data;
+        },
+        // Set login data in state and local storage
         loginUser(state, data) {
             localStorage.setItem('logout-event', 'login');
-            localStorage.setItem('isLoggedIn', data.token)
-            localStorage.setItem('token', data.token)
             localStorage.setItem('userId', data.user_id)
             localStorage.setItem('firstName', data.first_name)
             localStorage.setItem('lastName', data.last_name)
@@ -72,8 +76,6 @@ export default new Vuex.Store({
             localStorage.setItem('email', data.email)
             localStorage.setItem('userTimezone', data.timezone)
             localStorage.setItem('isProfileComplete',data.is_profile_complete)
-            state.isLoggedIn = true;
-            state.token = data.token;
             state.userId = data.user_id;
             state.firstName = data.first_name;
             state.lastName = data.last_name;
@@ -85,8 +87,7 @@ export default new Vuex.Store({
             state.isProfileComplete = data.is_profile_complete;
         },
         // Remove login data in state and local storage
-        logoutUser(state) {
-
+        logoutUser(state, data) {
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
             localStorage.removeItem('token')
@@ -106,9 +107,11 @@ export default new Vuex.Store({
             state.cookieAgreementDate = null;
             state.policyPage = null;
             state.isProfileComplete = null;
-            router.push({
-                name: 'login'
-            })
+            if (!data || !data.stay) {
+              router.push({
+                  name: 'login'
+              });
+            }
         },
         // Set default language code and id data in state and local storage
         setDefaultLanguage(state, language) {
