@@ -103,7 +103,7 @@
                         <div class="content-block">
                             <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
                                 class="card-title mb-2">
-                                {{mission.title | substring(40)}}
+                                {{mission.title | substring(75)}}
                             </b-link>
                             <b-card-text>
                                 {{mission.short_description | substring(150)}}
