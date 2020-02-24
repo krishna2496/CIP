@@ -55,8 +55,8 @@ class Mission extends Model
     protected $fillable = ['theme_id', 'city_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id'];
-    
+    'organisation_detail', 'availability_id', 'is_virtual'];
+
     /**
      * The attributes that should be visible in arrays.
      *
@@ -76,9 +76,10 @@ class Mission extends Model
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
-    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
+    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective'];
-    
+
+
     /**
      * Get the document record associated with the mission.
      *
@@ -170,7 +171,7 @@ class Mission extends Model
     {
         return $this->hasMany(MissionRating::class, 'mission_id', 'mission_id');
     }
-    
+
     /**
      * Get the mission application associated with the mission.
      *
@@ -210,7 +211,7 @@ class Mission extends Model
     {
         return $this->hasOne(TimeMission::class, 'mission_id', 'mission_id');
     }
-    
+
     /**
      * Get comment associated with the mission.
      *
@@ -286,7 +287,7 @@ class Mission extends Model
             ->format(config('constants.DB_DATE_TIME_FORMAT')):
             null;
     }
-    
+
     /**
      * Set end date attribute on the model.
      *
@@ -298,7 +299,7 @@ class Mission extends Model
         $this->attributes['end_date'] = ($value !== null && strlen(trim($value)) > 0) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-    
+
     /**
      * Get end date attribute from the model.
      *
@@ -311,7 +312,7 @@ class Mission extends Model
              ->format(config('constants.DB_DATE_TIME_FORMAT')):
              null;
     }
-    
+
     /**
     * Check seats are available or not.
     *
@@ -366,5 +367,18 @@ class Mission extends Model
     public function availableUsers(): HasMany
     {
         return $this->hasMany('App\User', 'availability_id', 'availability_id');
+    }
+
+	/**
+     * Set is virtual attribute on the model.
+     *
+     * @param $value
+     * @return void
+     */
+    public function setIsVirtualAttribute($value): void
+    {
+        if (!is_null($value)) {
+		    $this->attributes['is_virtual'] = (string)$value;
+        }
     }
 }

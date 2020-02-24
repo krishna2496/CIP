@@ -37,7 +37,7 @@ class UserRepository implements UserInterface
      * @var App\Models\Availability
      */
     public $availability;
-    
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -82,7 +82,7 @@ class UserRepository implements UserInterface
         $this->mission = $mission;
         $this->helpers = $helpers;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -93,7 +93,7 @@ class UserRepository implements UserInterface
     {
         return $this->user->create($request);
     }
-    
+
     /**
      * Get listing of users
      *
@@ -105,12 +105,12 @@ class UserRepository implements UserInterface
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
 
-        $userQuery = $this->user->selectRaw("user_id, first_name, last_name, email, password, 
-        case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar, 
+        $userQuery = $this->user->selectRaw("user_id, first_name, last_name, email, password,
+        case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar,
         timezone_id, availability_id, why_i_volunteer, employee_id, department,
          city_id, country_id, profile_text, linked_in_url, status, language_id, title")
         ->with('city', 'country', 'timezone');
-        
+
         if ($request->has('search')) {
             $userQuery->where(function ($query) use ($request) {
                 $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
@@ -126,7 +126,7 @@ class UserRepository implements UserInterface
             $orderDirection = $request->input('order', 'asc');
             $userQuery->orderBy('user_id', $orderDirection);
         }
-        
+
         return $userQuery->paginate($request->perPage);
     }
 
@@ -143,7 +143,7 @@ class UserRepository implements UserInterface
         $user->update($request);
         return $user;
     }
-    
+
     /**
      * Find specified resource in storage.
      *
@@ -165,7 +165,7 @@ class UserRepository implements UserInterface
     {
         return $this->user->deleteUser($id);
     }
-    
+
     /**
      * Store a newly created resource into database
      *
@@ -183,7 +183,7 @@ class UserRepository implements UserInterface
         }
         return $skillIds;
     }
-    
+
     /**
      * Remove the specified resource from storage
      *
@@ -257,7 +257,7 @@ class UserRepository implements UserInterface
     public function getUserByEmail(string $email): User
     {
         $user = $this->user->getUserByEmail($email);
-        
+
         if (is_null($user)) {
             throw new ModelNotFoundException(
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
@@ -349,7 +349,7 @@ class UserRepository implements UserInterface
     {
         return $this->user->where('email', $email)->first();
     }
-    
+
     /**
      * Get user goal hours
      *
@@ -370,7 +370,7 @@ class UserRepository implements UserInterface
     public function updateCookieAgreement(int $userId): bool
     {
         $now = Carbon::now()->toDateTimeString();
-        
+
         return $this->user->where('user_id', $userId)->update(['cookie_agreement_date' => $now]);
     }
 
@@ -423,7 +423,7 @@ class UserRepository implements UserInterface
 
         if ($request->has('day_volunteered') && $request->get('day_volunteered')) {
             $timesheet->where('timesheet.day_volunteered', strtoupper($request->get('day_volunteered')));
-        }   
+        }
 
         if ($request->has('mission_type') && $request->get('mission_type')) {
             $timesheet->where('mission.mission_type', strtoupper($request->get('mission_type')));
@@ -491,4 +491,30 @@ class UserRepository implements UserInterface
 
     }
 
+     /**
+      * Check profile complete status
+     *
+     * @param int $userId
+     * @return User
+     */
+    public function checkProfileCompleteStatus(int $userId): User
+    {
+        $profileStatus = true;
+        $requiredFieldsArray = config('constants.profile_required_fields');
+        $userData = $this->find($userId);
+        $dataArray = $userData->toArray();
+        foreach ($requiredFieldsArray as $value) {
+            if ($dataArray[$value] === null) {
+                $profileStatus = false;
+            }
+        }
+
+        $profileComplete = '0';
+        if ($profileStatus) {
+            $profileComplete = '1';
+        }
+
+        $userData->update(["is_profile_complete" => $profileComplete]);
+        return $userData;
+    }
 }

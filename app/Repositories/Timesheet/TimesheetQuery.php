@@ -17,21 +17,31 @@ class TimesheetQuery implements QueryableInterface
     const FILTER_MISSION_COUNTRIES = 'missionCountries';
     const FILTER_MISSION_CITIES = 'missionCities';
     const FILTER_TIMESHEET_IDS = 'timesheetIds';
+    const FILTER_TYPE = 'type';
 
     const ALLOWED_SORTABLE_FIELDS = [
-        'applicationDate' => 'date_volunteered',
+        'appliedDate' => 'date_volunteered',
         'applicant' => 'user.last_name',
         'reviewedHours' => 'time',
         'note' => 'notes',
         'appliedDay' => 'day_volunteered',
-        'lastUpdated' => 'updated_at',
         'applicantEmailAddress' => 'user.email',
-        'country' => 'c.name',
+        'missionCountryCode' => 'country_language.name',
         'approvalStatus' => 'status',
-        'city' => 'ci.name',
+        'missionCityId' => 'city_language.name',
+        'appliedTo' => 'mission_language.title',
+        'reviewedObjective' => 'action',
+        'notes' => 'notes',
+        'applicantFirstName' => 'user.first_name',
+        'applicantLastName' => 'user.last_name',
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+
+    /**
+     * @var string
+     */
+    private $missionType;
 
     /**
      * @param array $parameters
@@ -42,6 +52,7 @@ class TimesheetQuery implements QueryableInterface
         $filters = $parameters['filters'];
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
+
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
@@ -54,24 +65,33 @@ class TimesheetQuery implements QueryableInterface
         $query = Timesheet::query();
         $timesheets = $query
             ->select([
-                'timesheet.timesheet_id',
-                'timesheet.user_id',
-                'timesheet.mission_id',
-                'timesheet.time',
-                'timesheet.action',
-                'timesheet.date_volunteered',
-                'timesheet.day_volunteered',
-                'timesheet.notes',
-                'timesheet.status',
-                'timesheet.created_at',
-                'timesheet.updated_at'
+                'timesheet.*',
+                'mission_language.title',
+                'city_language.name',
+                'country_language.name',
+                $filters[self::FILTER_TYPE] !== 'goal' ? 'timesheet.time' :'goal_mission.goal_objective'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
+            ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
+            ->when($filters[self::FILTER_TYPE] === 'goal', function ($query) use ($filters) {
+                $query->join('goal_mission', 'goal_mission.mission_id', '=', 'timesheet.mission_id');
+            })
+            ->join('mission_language', function ($join) use ($languageId) {
+                $join->on('mission_language.mission_id', '=', 'timesheet.mission_id')
+                    ->where('mission_language.language_id', '=', $languageId);
+            })
+            ->join('city_language', function($join) use ($languageId) {
+                $join->on('city_language.city_id', '=', 'mission.city_id')
+                    ->where('city_language.language_id', '=', $languageId);
+            })
+            ->join('country_language', function($join) use ($languageId) {
+                $join->on('country_language.country_id', '=', 'mission.country_id')
+                    ->where('country_language.language_id', '=', $languageId);
+            })
             ->whereHas('mission', function ($query) {
-                $query->where([
-                    'publication_status' => config("constants.publication_status")["APPROVED"],
-                    'mission_type' => config('constants.mission_type.TIME'), //TODO filter for goal
-                ]);
+                $query->whereIn(
+                    'publication_status', [config("constants.publication_status")["APPROVED"], config("constants.publication_status")["PUBLISHED_FOR_APPLYING"]]
+                );
             })
             ->whereHas('mission.missionApplication', function ($query) {
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
@@ -80,11 +100,11 @@ class TimesheetQuery implements QueryableInterface
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
                 'mission.missionLanguage' => function ($query) use ($languageId) {
-                    $query->select('mission_language_id', 'mission_id', 'title')
+                    $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'objective')
                         ->where('language_id', $languageId);
                 },
+                'mission.goalMission',
                 'mission.missionSkill',
-                'mission.timeMission',
                 'mission.country.languages' => function ($query) use ($languageId) {
                     $query->where('language_id', '=', $languageId);
                 },
@@ -141,6 +161,12 @@ class TimesheetQuery implements QueryableInterface
                     });
                 });
             })
+             ->whereHas('mission', function ($query) use ($filters) {
+                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
+                     $this->missionType = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
+                     $query->where('mission_type', '=', "$this->missionType");
+                 });
+             })
             // Search
             ->when(!empty($search), function ($query) use ($search, $filters, $languageId) {
                 $searchCallback = function ($query) use ($search, $languageId) {
@@ -148,18 +174,13 @@ class TimesheetQuery implements QueryableInterface
                     $query
                         ->where('timesheet.status', 'like', "%${search}%")
                         ->orWhere('timesheet.time', 'like', "%${search}%")
+                        ->orWhere('timesheet.action', 'like', "%${search}%")
                         ->orWhere('timesheet.notes', 'like', "%${search}%")
                         ->orWhere('timesheet.day_volunteered', 'like', "%${search}%")
+                        ->orWhere('timesheet.date_volunteered', 'like', "%${search}%")
                         ->orwhereHas('timesheetDocument', function ($query) use ($search) {
                             $query
                                 ->where('document_name', 'like', "%${search}%");
-                        })
-                        ->orwhereHas('mission.missionTheme', function ($query) use ($search) {
-                            /* TODO : translations are stored in PHP serialized arrays.
-                             *  This makes it very hard to search with the DB. Véro is working on a solution
-                             */
-                            $query
-                                ->where('theme_name', 'like', "%${search}%");
                         })
                         ->orwhereHas('user', function ($query) use ($search) {
                             $query
@@ -171,8 +192,13 @@ class TimesheetQuery implements QueryableInterface
                             $query
                                 ->where([
                                     ['title', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId],
-                                ]);
+                                    ['language_id', '=', $languageId]
+                                ])
+                                ->orWhere('objective', 'like', "%${search}%");
+                        })
+                        ->orwhereHas('mission.goalMission', function ($query) use ($search) {
+                            $query
+                                ->where('goal_objective', 'like', "%${search}%");
                         })
                         ->orwhereHas('mission.city.languages', function ($query) use ($search, $languageId) {
                             $query
@@ -196,6 +222,11 @@ class TimesheetQuery implements QueryableInterface
                     $query->where($searchCallback);
                 }
 
+            })
+            ->whereHas('mission', function ($query) use ($filters) {
+                $query->when(isset($filters[self::FILTER_TYPE]), function ($query) {
+                    $query->where('mission_type', '=', "$this->missionType");
+                });
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
@@ -246,7 +277,7 @@ class TimesheetQuery implements QueryableInterface
                 $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS[$order['orderBy']];
             } else {
                 // Default to application date
-                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['applicationDate'];
+                $order['orderBy'] = self::ALLOWED_SORTABLE_FIELDS['appliedDate'];
             }
 
             if (array_key_exists('orderDir', $order)) {

@@ -164,6 +164,8 @@ class AuthController extends Controller
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
         $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone !="") ?
         $userDetail->timezone['timezone'] : '';
+        $data['is_profile_complete'] = ((isset($userDetail->is_profile_complete))
+        && $userDetail->is_profile_complete != "") ? $userDetail->is_profile_complete : '';
         
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;

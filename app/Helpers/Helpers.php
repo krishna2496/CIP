@@ -62,7 +62,7 @@ class Helpers
         $this->switchDatabaseConnection('mysql');
 
         $tenantIdAndSponsorId = $this->db->table('tenant')
-            ->select('tenant_id, sponsor_id')
+            ->select('tenant_id', 'sponsor_id')
             ->where('name', $domain)
             ->whereNull('deleted_at')
             ->first();

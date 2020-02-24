@@ -29,7 +29,7 @@ class TimezoneRepository implements TimezoneInterface
      * @param int $timezone_id
      * @return App\Models\Timezone
      */
-    public function timezoneList(int $timezone_id = null) :Timezone
+    public function timezoneList(int $timezone_id = null) : ?Timezone
     {
         return $this->timezone->where("timezone_id", $timezone_id)->first();
     }

@@ -22,6 +22,7 @@ class TenantOptionsControllerTest extends TestCase
 
     /**
     * @testdox Test fetchTenantOptionValue success
+    *
     * @return void
     */
     public function testFetchTenantOptionValue_001()
@@ -78,6 +79,7 @@ class TenantOptionsControllerTest extends TestCase
 
     /**
     * @testdox Test fetchTenantOptionValue failure, validation failed
+    *
     * @return void
     */
     public function testFetchTenantOptionValue_002()
@@ -128,6 +130,7 @@ class TenantOptionsControllerTest extends TestCase
 
     /**
     * @testdox Test fetchTenantOptionValue failure, no tenant option found
+    *
     * @return void
     */
     public function testFetchTenantOptionValue_003()
