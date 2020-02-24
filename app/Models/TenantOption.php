@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TenantOption extends Model
 {
     use SoftDeletes;
+    const SAML_SETTINGS = 'saml_settings';
  
     /**
      * The table associated with the model.

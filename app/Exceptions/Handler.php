@@ -50,6 +50,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if (env('APP_ENV') === 'local' && env('APP_DEBUG')) {
+            dd($exception);
+        }
         if ($exception instanceof MethodNotAllowedHttpException) {
             return $this->methodNotAllowedHttp();
         }
@@ -62,6 +65,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof TenantDomainNotFoundException) {
             return $this->tenantDomainNotFound($exception->getCode(), $exception->getMessage());
         }
+
         return $this->internalServerError(trans('messages.custom_error_message.ERROR_INTERNAL_SERVER_ERROR'));
     }
 }

@@ -18,6 +18,7 @@
         "league/flysystem": " ~1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "nicolaslopezj/searchable": "^1.11",
+        "onelogin/php-saml": "^3.4",
         "orumad/lumen-config-cache": "^1.0",
         "ramsey/uuid": "^3.8",
         "scssphp/scssphp": "^1.0",

@@ -338,6 +338,11 @@ return [
 
         'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
 
-        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
+
+        'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => 'Invalid identity provider.',
+        'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
+        'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
        ]
 ];
