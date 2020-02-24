@@ -12,3 +12,12 @@ Homestead.yaml
 /composer.lock
 composer.lock
 /storage/reports
+
+
+storage/*
+!storage/unitTestFiles
+!storage/app
+
+
+storage/app/*
+!storage/app/default_theme
