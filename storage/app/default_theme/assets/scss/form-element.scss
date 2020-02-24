@@ -1237,7 +1237,10 @@ label {
 
 .file-upload-wrap {
     border: 1px solid $primary-border-color;
-    @include border-radius(3px);
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
     .btn-wrapper {
         display: flex;
         flex: 1;
