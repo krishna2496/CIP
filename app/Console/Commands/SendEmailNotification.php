@@ -345,16 +345,16 @@ class SendEmailNotification extends Command
 
         $date = Carbon::parse($commentDetails->created_at)
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
-        $status = trans('general.notification_status.'.$notification->action);
+        $status = trans('general.notification_status.'.$notification->action, [], $language->code);
 
         // Create message
         $icon = ($notification->action === config('constants.notification_status.PUBLISHED')) ?
         Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
                 
-        $mailData['mission_name'] = trans('general.export_sheet_headings.MISSION_NAME') . $missionName;
+        $mailData['mission_name'] = trans('general.export_sheet_headings.MISSION_NAME', [], $language->code) . $missionName;
         $mailData['comment'] = $commentDetails->comment;
-        $mailData['comment_details'] = trans('general.notification.COMMENT_OF')." "
-        .$date." ".trans('general.notification.IS')." ".$status;
+        $mailData['comment_details'] = trans('general.notification.COMMENT_OF', [], $language->code)." "
+        .$date." ".trans('general.notification.IS', [], $language->code)." ".$status;
         return $mailData;
     }
 
@@ -381,7 +381,7 @@ class SendEmailNotification extends Command
         );
 
         // Create message
-        $mailData['news_title'] = trans('general.notification.NEW_NEWS')." - ".$newsTitle;
+        $mailData['news_title'] = trans('general.notification.NEW_NEWS', [], $language->code)." - ".$newsTitle;
 
         return $mailData;
     }
@@ -411,11 +411,11 @@ class SendEmailNotification extends Command
             $languageId,
             $tenantDefaultLangId
         );
-        $status = trans('general.notification_status.'.$notification->action);
+        $status = trans('general.notification_status.'.$notification->action, [], $language->code);
         
         // Create message
-        $mailData['application_status'] = trans('general.notification.VOLUNTEERING_REQUEST')." ".$status." ".
-        trans('general.notification.FOR_THIS_MISSION')." ".$missionName;
+        $mailData['application_status'] = trans('general.notification.VOLUNTEERING_REQUEST', [], $language->code)." ".$status." ".
+        trans('general.notification.FOR_THIS_MISSION', [], $language->code)." ".$missionName;
         return $mailData;
     }
 
@@ -440,8 +440,8 @@ class SendEmailNotification extends Command
         $status = trans('general.notification_status.'.$notification->action);
         
         // Create message
-        $mailData['story_details'] = trans('general.notification.STORY')." "
-        .trans('general.notification.IS')." ".$status." - ".$storyDetails[0]['title'];
+        $mailData['story_details'] = trans('general.notification.STORY', [], $language->code)." "
+        .trans('general.notification.IS', [], $language->code)." ".$status." - ".$storyDetails[0]['title'];
         return $mailData;
     }
 
@@ -468,8 +468,8 @@ class SendEmailNotification extends Command
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $mailData['volunteering_details'] = trans('general.notification.VOLUNTEERING_GOALS_SUBMITTED_THE')." "
-        .$date." ".trans('general.notification.IS')." ".$status;
+        $mailData['volunteering_details'] = trans('general.notification.VOLUNTEERING_GOALS_SUBMITTED_THE', [], $language->code)." "
+        .$date." ".trans('general.notification.IS', [], $language->code)." ".$status;
         return $mailData;
     }
 
@@ -496,8 +496,8 @@ class SendEmailNotification extends Command
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $response['volunteering_details'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE')." ".
-        $date." ".trans('general.notification.IS')." ".$status;
+        $response['volunteering_details'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE', [], $language->code)." ".
+        $date." ".trans('general.notification.IS', [], $language->code)." ".$status;
         return $response;
     }
 
@@ -534,7 +534,7 @@ class SendEmailNotification extends Command
         // Create message
         $mailData['recommendation_details'] = $inviteDetails->fromUser->first_name.
         " ".$inviteDetails->fromUser->last_name." - "
-        .trans('general.notification.RECOMMENDS_THIS_STORY')." - ".$storyTitle;
+        .trans('general.notification.RECOMMENDS_THIS_STORY', [], $language->code)." - ".$storyTitle;
         $mailData['colleagueLanguage'] = $colleagueLanguageId;
 
         return $mailData;
@@ -578,7 +578,7 @@ class SendEmailNotification extends Command
         // Create message
         $mailData['recommendation_details'] = $inviteDetails->fromUser->first_name.
         " ".$inviteDetails->fromUser->last_name." - "
-        .trans('general.notification.RECOMMENDS_THIS_MISSION')." - ".$missionName;
+        .trans('general.notification.RECOMMENDS_THIS_MISSION', [], $language->code)." - ".$missionName;
         $mailData['colleagueLanguage'] = $colleagueLanguageId;
 
         return $mailData;
