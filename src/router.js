@@ -28,7 +28,7 @@ let routes = [
     },
     {
         path: '/auth/slo',
-        name: 'sso',
+        name: 'slo',
         component: () =>
             import ('./views/Auth/SingleLogout.vue')
     },
