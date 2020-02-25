@@ -348,6 +348,10 @@ export default new Vuex.Store({
         changeProfileSetFlag(state,data) {
             localStorage.setItem('isProfileComplete',data);
             state.isProfileComplete = data;
+        },
+        changeNotificationFlag(state,data) {
+            localStorage.setItem('getEmailNotification',data);
+            state.getEmailNotification = data;
         }
     },
     getters: {},
