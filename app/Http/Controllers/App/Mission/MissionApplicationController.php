@@ -159,7 +159,16 @@ class MissionApplicationController extends Controller
             'tenant_status' => $missionApplication->approval_status,
             'tenant_applied_at' => $missionApplication->applied_at
         ];
-        $this->amqp->publish('ciSynchronizer', json_encode($missionForOptimy), ['queue' => 'ciSynchronizer']);
+        $this->amqp->publish(
+            'ciSynchronizer',
+            json_encode($missionForOptimy),
+            [
+                'queue' => 'ciSynchronizer',
+                'queue_properties' => [
+                    'x-dead-letter-exchange' => ['S', ''],
+                    'x-dead-letter-routing-key' => ['S', 'ciSynchronizer.dlq'],
+                ],
+            ]);
 
         // Set response data
         $apiData = ['mission_application_id' => $missionApplication->mission_application_id];

@@ -309,7 +309,17 @@ class TimesheetController extends Controller
             'user_id' => $timesheet->user_id,
             'mission_id' => $timesheet->mission_id,
         ];
-        $this->amqp->publish('ciSynchronizer', json_encode($timesheetForOptimy), ['queue' => 'ciSynchronizer']);
+        $this->amqp->publish(
+            'ciSynchronizer',
+            json_encode($timesheetForOptimy),
+            [
+                'queue' => 'ciSynchronizer',
+                'queue_properties' => [
+                    'x-dead-letter-exchange' => ['S', ''],
+                    'x-dead-letter-routing-key' => ['S', 'ciSynchronizer.dlq'],
+                ],
+            ]
+        );
 
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
