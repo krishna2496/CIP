@@ -1113,4 +1113,28 @@ class AppUserTest extends TestCase
         $user->delete();
         $userCustomField->delete();
     }
+    
+    /**
+     * @test
+     *
+     * It should create user with incomplete profile
+     *
+     * @return void
+     */
+    public function it_should_create_user_with_incomplete_profile()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->is_profile_complete = "0";
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+
+        DB::setDefaultConnection('mysql');
+        $this->get('app/missions', ['token' => $token])
+        ->seeStatusCode(401);
+        
+        $user->delete();      
+    }
 }
