@@ -151,9 +151,6 @@ class MissionInviteController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_MISSION');
         $apiData = ['mission_invite_id' => $inviteMission->mission_invite_id];
         
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
 
         $notificationTypeId = $this->notificationRepository
@@ -184,46 +181,6 @@ class MissionInviteController extends Controller
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
         }
 
-        if (!in_array($emailNotificationInviteColleague, $getActivatedTenantSettings)) {
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        }
-                
-        if ($notifyColleague) {
-            $colleague = $this->userRepository->find($request->to_user_id);
-            $colleagueEmail = $colleague->email;
-            $colleagueLanguageId = $colleague->language_id;
-            $languages = $this->languageHelper->getLanguages();
-            $language = $languages->where('language_id', $colleagueLanguageId)->first();
-            $colleagueLanguage = $language->code;
-            $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
-            $missionName = $this->missionRepository->getMissionName(
-                $request->mission_id,
-                $colleague->language_id
-            );
-            
-            $data = array(
-                'missionName'=> $missionName,
-                'fromUserName'=> $fromUserName,
-                'colleagueLanguage'=> $colleagueLanguage
-            );
-
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
-            $params['tenant_name'] = $tenantName;
-            $params['to'] = $colleagueEmail; //required
-            $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'
-            .config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-            $params['subject'] = trans(
-                'mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION',
-                [],
-                $colleagueLanguage
-            ); //optional
-            $params['data'] = $data;
-            $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
-                ['option_name' => 'custom_logo']
-            )->option_value;
-            dispatch(new AppMailerJob($params));
-        }
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

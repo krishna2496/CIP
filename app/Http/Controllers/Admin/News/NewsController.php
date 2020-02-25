@@ -230,7 +230,7 @@ class NewsController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_NEWS_UPDATED');
             $apiData = ['news_id' => $news->news_id];
 
-             // Make activity log
+            // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.NEWS'),
                 config('constants.activity_log_actions.UPDATED'),
