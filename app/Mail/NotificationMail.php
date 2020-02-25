@@ -29,12 +29,11 @@ class NotificationMail extends Mailable
         $this->template = $template;
         $this->subject = $data['subject'];
         
-         $this->from_email = isset($this->data['from_email']) ? $this->data['from_email'] 
-        : env('MAIL_FROM_ADDRESS', 'noreply@example.com');;
+        $this->from_email = isset($this->data['from_email']) ? $this->data['from_email']
+        : env('MAIL_FROM_ADDRESS', 'noreply@example.com');
             
         $this->from_name = isset($this->data['from_name']) ? $this->data['from_name']
         : env('MAIL_FROM_NAME', 'Optimy');
-
     }
 
     /**

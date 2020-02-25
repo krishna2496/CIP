@@ -266,15 +266,15 @@ class SendEmailNotification extends Command
      */
     public function newMissions(Notification $notification): array
     {
-        $mailData = [];
-        $mailData['subject'] = 'New mission created';
-        $mailData['logo'] = $this->tenantOptionRepository
-        ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
-
-        // Here need to call service function
         $tenantName = $this->tenant->name;
         $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
         $tenantDefaultLangId = $this->tenant->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+        
+        $mailData = [];
+        $mailData['subject'] = trans('mail-subjects.subjects.NEW_MISSIONS', [], $language->code);
+        $mailData['logo'] = $this->tenantOptionRepository
+        ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
         // Get details
         $missionName = $this->missionRepository->getMissionTitle(
@@ -297,8 +297,12 @@ class SendEmailNotification extends Command
      */
     public function newMessages(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $tenantDefaultLangId = $this->tenant->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+
         $mailData = [];
-        $mailData['subject'] = 'New message received';
+        $mailData['subject'] = trans('mail-subjects.subjects.NEW_MESSAGES', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
@@ -306,7 +310,7 @@ class SendEmailNotification extends Command
         $messageDetails = $this->messageRepository->getMessageDetail($notification->entity_id);
         
         // Create message
-        $mailData['message_subject'] = trans('general.notification.NEW_MESSAGE')." - ".$messageDetails->subject;
+        $mailData['message_subject'] = trans('general.notification.NEW_MESSAGE', [], $language->code)." - ".$messageDetails->subject;
         $mailData['message_body'] = $messageDetails->message;
         
         return $mailData;
@@ -320,16 +324,17 @@ class SendEmailNotification extends Command
      */
     public function myComments(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $tenantDefaultLangId = $this->tenant->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+
         $mailData = [];
-        $mailData['subject'] = 'Your comment on mission';
+        $mailData['subject'] = trans('mail-subjects.subjects.MY_COMMENTS', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
         // Get details
-        $commentDetails = $this->missionCommentRepository->getCommentDetail($notification->entity_id);
-        
-        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
-        $tenantDefaultLangId = $this->tenant->language_id;
+        $commentDetails = $this->missionCommentRepository->getCommentDetail($notification->entity_id);        
 
         // Get details
         $missionName = $this->missionRepository->getMissionTitle(
@@ -346,7 +351,7 @@ class SendEmailNotification extends Command
         $icon = ($notification->action === config('constants.notification_status.PUBLISHED')) ?
         Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
                 
-        $mailData['mission_name'] = 'Mission Name : ' . $missionName;
+        $mailData['mission_name'] = trans('general.export_sheet_headings.MISSION_NAME') . $missionName;
         $mailData['comment'] = $commentDetails->comment;
         $mailData['comment_details'] = trans('general.notification.COMMENT_OF')." "
         .$date." ".trans('general.notification.IS')." ".$status;
@@ -361,13 +366,13 @@ class SendEmailNotification extends Command
      */
     public function newNews(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+        
         $mailData = [];
-        $mailData['subject'] = 'New news published';
+        $mailData['subject'] = trans('mail-subjects.subjects.NEW_NEWS', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
-
-
-        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
 
         // Get details
         $newsTitle = $this->newsRepository->getNewsTitle(
@@ -389,12 +394,13 @@ class SendEmailNotification extends Command
      */
     public function missionApplication(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+
         $mailData = [];
-        $mailData['subject'] = 'Your mission application update';
+        $mailData['subject'] = trans('mail-subjects.subjects.MISSION_APPLICATION', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
-
-        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
 
         // Get details
         $missionId = $this->missionApplicationRepository->getMissionId($notification->entity_id);
@@ -421,15 +427,18 @@ class SendEmailNotification extends Command
      */
     public function myStories(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+        
         $mailData = [];
-        $mailData['subject'] = 'Your story status';
+        $mailData['subject'] = trans('mail-subjects.subjects.MY_STORIES', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
         // Get details
         $storyDetails = $this->storyRepository->getStoryDetail($notification->entity_id);
         $status = trans('general.notification_status.'.$notification->action);
-
+        
         // Create message
         $mailData['story_details'] = trans('general.notification.STORY')." "
         .trans('general.notification.IS')." ".$status." - ".$storyDetails[0]['title'];
@@ -444,8 +453,11 @@ class SendEmailNotification extends Command
      */
     public function volunteeringGoals(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+        
         $mailData = [];
-        $mailData['subject'] = 'Your timesheet status';
+        $mailData['subject'] = trans('mail-subjects.subjects.VOLUNTEERING_GOALS', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
@@ -469,8 +481,11 @@ class SendEmailNotification extends Command
      */
     public function volunteeringHours(Notification $notification): array
     {
+        $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($languageId);
+        
         $mailData = [];
-        $mailData['subject'] = 'Your timesheet status';
+        $mailData['subject'] = trans('mail-subjects.subjects.VOLUNTEERING_HOURS', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
@@ -494,6 +509,9 @@ class SendEmailNotification extends Command
      */
     public function recommendedStory(Notification $notification): array
     {
+        $colleagueLanguageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($colleagueLanguageId);
+
         $mailData = [];
 
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
@@ -503,7 +521,7 @@ class SendEmailNotification extends Command
             return $mailData;
         }
         
-        $mailData['subject'] = 'Your story recommendation';
+        $mailData['subject'] = trans('mail-subjects.subjects.RECOMMENDED_STORY', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
@@ -511,7 +529,7 @@ class SendEmailNotification extends Command
         $inviteDetails = $this->storyInviteRepository->getDetails($notification->entity_id);
         $storyTitle = $inviteDetails->story->title;
 
-        $colleagueLanguageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        
 
         // Create message
         $mailData['recommendation_details'] = $inviteDetails->fromUser->first_name.
@@ -530,6 +548,9 @@ class SendEmailNotification extends Command
      */
     public function recommendedMissions(Notification $notification): array
     {
+        $colleagueLanguageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
+        $language = $this->helpers->getLanguageDetail($colleagueLanguageId);
+
         $mailData = [];
 
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
@@ -539,7 +560,7 @@ class SendEmailNotification extends Command
             return $mailData;
         }
 
-        $mailData['subject'] = 'Your mission recommendation';
+        $mailData['subject'] = trans('mail-subjects.subjects.RECOMMENEDE_MISSION', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
@@ -547,7 +568,6 @@ class SendEmailNotification extends Command
         $inviteDetails = $this->missionInviteRepository->getDetails($notification->entity_id);
         $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
         $tenantDefaultLangId = $this->tenant->language_id;
-        $colleagueLanguageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
 
         $missionName = $this->missionRepository->getMissionTitle(
             $inviteDetails->mission->mission_id,
