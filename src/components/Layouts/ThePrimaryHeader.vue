@@ -555,15 +555,15 @@
                     }
                     let settingArray = []
                     let notificationEmail = 0;
-                   
-                    if(this.getEmailNotificationSelected.includes("1")) {
-                        data.user_settings.push({
+
+
+                    if(this.getEmailNotificationSelected.length != 0) {
+                         data.user_settings.push({
                             'receive_email_notification':1
                         })
                     } else {
                         data.user_settings.push({
-                            'receive_email_notification':0
-                            
+                            'receive_email_notification':0   
                         })
                     }
                    
@@ -585,7 +585,19 @@
                         if (response.error == true) {
                             classVariant = 'danger'
                         } else {
-                            this.cancelsetting()
+                            this.cancelsetting();
+
+                            if(this.getEmailNotificationSelected.length != 0) {
+                                store.commit('changeNotificationFlag',1)
+                            } else {
+                                store.commit('changeNotificationFlag',0)
+                            }
+
+                            this.getEmailNotification = store.state.getEmailNotification;
+                            this.getEmailNotificationSelected = [];
+                            if(store.state.getEmailNotification == 1) {
+                                this.getEmailNotificationSelected.push(store.state.getEmailNotification)
+                            }
                         }
 
                         this.makeToast(classVariant, response.message)
