@@ -298,6 +298,21 @@ header {
     .profile-menu {
         padding-right: 18px;
         margin-right: 0;
+        .profile-menu-user-name {
+            cursor: none;
+            a{
+               font-weight: bold !important;
+            }
+            a >:hover {
+                background: none;
+            cursor: default;
+            }
+            border-bottom: 1px solid #ddd;
+        }
+        .profile-menu-user-name:hover > a {
+            background: none;
+            cursor: default;
+        }
         @include md-max {
             padding-right: 0;
         }

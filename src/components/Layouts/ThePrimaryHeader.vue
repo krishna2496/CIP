@@ -146,8 +146,10 @@
                             <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
                                 <template slot="button-content">
                                     <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
-                                    <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
+                                   
                                 </template>
+                                 <b-dropdown-item class="profile-menu-user-name"> <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
+                                </b-dropdown-item>
                                 <b-dropdown-item :to="{ name: 'dashboard' }">{{ languageData.label.dashboard}}
                                 </b-dropdown-item>
                                 <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
@@ -159,18 +161,20 @@
                             </b-nav-item-dropdown>
                         </b-nav>
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
-                            @show="onPopoverShow" ref="notficationPopover" triggers="click">
+                            ref="notficationPopover" triggers="click" custom-class="notification-popover">
                             <template slot="title">
-                                <b-button class="btn-setting" :title="languageData.label.notification_settings"
-                                    @click="showsetting">
-                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
-                                        alt="Setting icon">
+                                <div>
+                                    <b-button class="btn-setting" :title="languageData.label.notification_settings"
+                                        @click="showsetting">
+                                        <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
+                                            alt="Setting icon">
 
-                                </b-button>
-                                <span class="title">{{languageData.label.notification}}</span>
-                                <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">
-                                    {{languageData.label.clear_all}}
-                                </b-button>
+                                    </b-button>
+                                    <span class="title">{{languageData.label.notification}}</span>
+                                    <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">
+                                        {{languageData.label.clear_all}}
+                                    </b-button>
+                                </div>
                             </template>
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
@@ -354,11 +358,6 @@
 
             },
             methods: {
-                onPopoverShow() {
-                    this.$refs.notficationPopover._toolpop
-                        .getTipElement()
-                        .classList.add("notification-popover");
-                },
                 showclearitem() {
                     let popoverBody = document.querySelector(".popover-body");
                     popoverBody.classList.add("clear-item");

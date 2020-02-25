@@ -91,7 +91,7 @@
             window.scrollTo(0, 0);
             this.signinAdj();
             setTimeout(function () {
-                let selectorList = document.querySelectorAll(".nav-link");
+                let selectorList = document.querySelectorAll(".nav-link, .nav-item.profile-menu");
                 let menuLinkList = document.querySelectorAll(".menu-wrap a");
                 let dropdownList = document.querySelectorAll(".custom-dropdown, .checkbox-select");
                 let notificationButton = document.querySelector(

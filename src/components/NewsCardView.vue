@@ -44,7 +44,7 @@
                                         :title="data.news_content.title"
                                         class="card-title mb-2"
                                         v-if="data.news_content.title"
-                                        >{{data.news_content.title | substring(40)}}
+                                        >{{data.news_content.title | substring(60)}}
                                     </b-link>
                                     <b-card-text v-if="data.news_content.description" v-html="getDescription(data.news_content.description)"> 
                                     </b-card-text>
@@ -83,7 +83,7 @@ export default {
     },
     methods: {
         getDescription(description) {       
-            let data = description.substring(0,150);
+            let data = description.substring(0,105);
             return data
         },
         getDefaultImage() {

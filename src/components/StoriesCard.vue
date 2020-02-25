@@ -43,7 +43,7 @@
                                         :title="data.title"
                                         class="card-title mb-2"
                                         v-if="data.title"
-                                        >{{data.title | substring(40)}}
+                                        >{{data.title | substring(60)}}
                                     </b-link>
                                     <b-card-text v-if="data.description" v-html="getDescription(data.description)"> 
                                     </b-card-text>
@@ -81,7 +81,7 @@ export default {
     },
     methods: {
         getDescription(description) {       
-            let data = description.substring(0,150);
+            let data = description.substring(0,105);
             return data
 		},
 		getMediaPath(data) {

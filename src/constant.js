@@ -54,6 +54,7 @@ export default Object.freeze({
     DECLINED_STORY: "Declined",
     PENDING_STORY: "Pending",
     CONTACT_US: "contact_us_enabled",
+    MESSAGE : "message_enabled",
     MAX_FILE_NUMBER: 20,
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer"
 })
