@@ -286,7 +286,8 @@
         "no_data_available" : "No data available",
 		"total_messages" : "Total messages",
 		"send_message" : "Send message",
-        "receive_email_notification":"Receive notification by email"
+        "receive_email_notification":"Receive notification by email",
+        "fill_up_mandatory_fields_to_access_platform" : "Please fill up mandatory fields to access platform"
     },
 
     "placeholder": {
