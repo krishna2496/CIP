@@ -4,103 +4,103 @@
             <ThePrimaryHeader @exploreMisison="exploreMisison" @getMissions="getMissions" v-if="isShownComponent">
             </ThePrimaryHeader>
             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader"
-                @storeMisisonSearch="storeSearch" @getMissions="getMissions" @clearMissionFilter="clearMissionFilter"
-                v-if="isShownComponent"></TheSecondaryHeader>
+                                @storeMisisonSearch="storeSearch" @getMissions="getMissions" @clearMissionFilter="clearMissionFilter"
+                                v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
-                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall ,'fixed-loader' : true}">
-                    <div class="content-loader"></div>
-                </div>
-                <b-container class="home-content-wrapper">
-                    <div v-if="missionList.length > 0 && isQuickAccessDisplay">
-                        <div class="chip-container" v-if="tags != ''">
+            <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall ,'fixed-loader' : true}">
+                <div class="content-loader"></div>
+            </div>
+            <b-container class="home-content-wrapper">
+                <div v-if="missionList.length > 0 && isQuickAccessDisplay">
+                    <div class="chip-container" v-if="tags != ''">
                             <span v-for="(item , i) in tags.country" v-if="isCountrySelectionSet" :key=i>
                                 <AppCustomChip :textVal="item" :tagId="i" type="country" @updateCall="changeTag" />
                             </span>
-                            <span v-for="(item , i) in tags.city" :key=i>
+                        <span v-for="(item , i) in tags.city" :key=i>
                                 <AppCustomChip :textVal="item" :tagId="i" type="city" @updateCall="changeTag" />
                             </span>
-                            <span v-for="(item , i) in tags.theme" v-if="isThemeDisplay" :key=i>
+                        <span v-for="(item , i) in tags.theme" v-if="isThemeDisplay" :key=i>
                                 <AppCustomChip :textVal="item" :tagId="i" type="theme" @updateCall="changeTag" />
                             </span>
-                            <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay" :key=i>
+                        <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay" :key=i>
                                 <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
                             </span>
-                            <b-button class="clear-btn"
-                                v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
-                                @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
-                        </div>
+                        <b-button class="clear-btn"
+                                  v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
+                                  @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
                     </div>
-                    <div v-bind:class="{ 'heading-section': true, 
+                </div>
+                <div v-bind:class="{ 'heading-section': true,
                         'justify-content-end' : !isTotalMissionDisplay
                                             }" v-if="missionList.length > 0">
-                        <h2 v-if="isTotalMissionDisplay">
-                            <template v-if="rows > 0">{{ languageData.label.explore}}
-                                <strong>{{rows}}</strong>
-                                <strong v-if="rows > 1" class="ml-1">{{ languageData.label.missions}}</strong>
-                                <strong v-else class="ml-1">{{ languageData.label.mission}}</strong>
-                            </template>
-                        </h2>
-                        <div class="right-section" v-if="sortByFilterSet">
-                            <AppCustomDropdown :optionList="sortByOptions" :defaultText="sortByDefault"
-                                translationEnable="true" @updateCall="updateSortTitle" />
-                        </div>
+                    <h2 v-if="isTotalMissionDisplay">
+                        <template v-if="rows > 0">{{ languageData.label.explore}}
+                            <strong>{{rows}}</strong>
+                            <strong v-if="rows > 1" class="ml-1">{{ languageData.label.missions}}</strong>
+                            <strong v-else class="ml-1">{{ languageData.label.mission}}</strong>
+                        </template>
+                    </h2>
+                    <div class="right-section" v-if="sortByFilterSet">
+                        <AppCustomDropdown :optionList="sortByOptions" :defaultText="sortByDefault"
+                                           translationEnable="true" @updateCall="updateSortTitle" />
                     </div>
-                    <!-- Tabing grid view and list view start -->
-                    
-                    <b-tabs class="view-tab">
-                    
-                        <!-- grid view -->
-                        <b-tab class="grid-tab-content">
-                            <template slot="title">
-                                <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
-                                    :title="languageData.label.grid_view" v-if="missionList.length > 0">
-                                    <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
-                                        alt="Down Arrow" />
-                                    <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
-                                        alt="Down Arrow" />
-                                </i>
-                            </template>
-                            <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
-                                :relatedMission=relatedMission
-                                v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                        </b-tab>
-                        <!-- list view -->
-                        <b-tab class="list-tab-content">
-                            <template slot="title">
-                                <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
-                                    :title="languageData.label.list_view" v-if="missionList.length > 0">
-                                    <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
-                                        alt="Down Arrow" />
-                                    <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
-                                        alt="Down Arrow" />
-                                </i>
-                            </template>
-                            <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage"
-                                v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                        </b-tab>
+                </div>
+                <!-- Tabing grid view and list view start -->
 
-                    </b-tabs>
-                    
-                    <!-- Tabing grid view and list view end -->
-                    <!-- Pagination start -->
-                    <div class="pagination-block" v-if="rows > 0 && totalPages > 1">
-                        <b-pagination :hide-ellipsis="hideEllipsis" v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"
-                            :simple="false" :aria-controls="activeView" @change="pageChange">
-                        </b-pagination>
-                    </div>
-                    <!-- Pagination end -->
-                </b-container>
+                <b-tabs class="view-tab" v-model="tabNumber">
+
+                    <!-- grid view -->
+                    <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
+                        <template slot="title">
+                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
+                               :title="languageData.label.grid_view" v-if="missionList.length > 0">
+                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
+                                     alt="Down Arrow" />
+                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
+                                     alt="Down Arrow" />
+                            </i>
+                        </template>
+                        <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
+                                  :relatedMission=relatedMission
+                                  v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
+                    </b-tab>
+                    <!-- list view -->
+                    <b-tab class="list-tab-content" @click="changeCurrentView(1)">
+                        <template slot="title">
+                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
+                               :title="languageData.label.list_view" v-if="missionList.length > 0">
+                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
+                                     alt="Down Arrow" />
+                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
+                                     alt="Down Arrow" />
+                            </i>
+                        </template>
+                        <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage"
+                                  v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
+                    </b-tab>
+
+                </b-tabs>
+
+                <!-- Tabing grid view and list view end -->
+                <!-- Pagination start -->
+                <div class="pagination-block" v-if="rows > 0 && totalPages > 1">
+                    <b-pagination :hide-ellipsis="hideEllipsis" v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"
+                                  :simple="false" :aria-controls="activeView" @change="pageChange">
+                    </b-pagination>
+                </div>
+                <!-- Pagination end -->
+            </b-container>
         </main>
         <footer>
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
-        <back-to-top bottom="34px" right="40px" :title="languageData.label.back_to_top">
+        <back-to-top bottom="50px" right="40px" :title="languageData.label.back_to_top">
             <i class="icon-wrap">
                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
-                    alt="Down Arrow" />
+                     alt="Down Arrow" />
                 <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/down-arrow-black.svg'"
-                    alt="Down Arrow" />
+                     alt="Down Arrow" />
             </i>
         </back-to-top>
     </div>
@@ -114,7 +114,6 @@
     import ListView from "../components/MissionListView";
     import AppCustomDropdown from "../components/AppCustomDropdown";
     import AppCustomChip from "../components/AppCustomChip";
-    import axios from "axios";
     import store from '../store';
     import {
         missionListing,
@@ -122,7 +121,7 @@
         searchUser
     } from '../services/service';
     import constants from '../constant';
-import { setTimeout } from 'timers';
+    import { setTimeout } from 'timers';
 
     export default {
         components: {
@@ -172,7 +171,9 @@ import { setTimeout } from 'timers';
                     "exploreMissionParams": "",
                     "tags": [],
                     "sortBy": "",
+                    "currentView" : 0
                 },
+                tabNumber : 0,
                 tags: "",
                 sortByFilterSet: true,
                 userList: [],
@@ -224,9 +225,11 @@ import { setTimeout } from 'timers';
                 filter.exploreMissionType = store.state.exploreMissionType
                 filter.exploreMissionParams = store.state.exploreMissionParams
                 filter.sortBy = store.state.sortBy
+                filter.currentView = this.tabNumber
                 filter.addLoader = parmas
                 await missionListing(filter).then(response => {
                     if (response.data) {
+                        console.log(response.data)
                         this.missionList = response.data;
                     } else {
                         this.missionList = [];
@@ -254,10 +257,8 @@ import { setTimeout } from 'timers';
                     }
                     if (store.state.sortBy != null && store.state.sortBy != '') {
                         let sortBy = store.state.sortBy;
-                        
+
                         setTimeout(() => {
-                            let labelString = 'label.'
-                            let sortByValue = labelString.concat(sortBy);
                             this.sortByDefault = this.languageData.label[sortBy];
                         }, 200);
                     }
@@ -267,18 +268,25 @@ import { setTimeout } from 'timers';
 
             async missionFilter() {
 
-                await missionFilterListing().then(response => {
+                await missionFilterListing().then(() => {
+                    this.tabNumber = store.state.currentView
                     this.getMissions();
                 });
+            },
+            changeCurrentView(number) {
+                this.tabNumber = number
+                store.commit('changeCurrentView' ,number)
+                this.getMissions();
             },
 
             pageChange(page) {
                 //Change pagination
-                window.scrollTo({
-                    'behavior': 'smooth',
-                    'left': 0,
-                    'top': 0
-                }, 0);
+                setTimeout(() => {
+                    window.scrollTo({
+                        'behavior': 'smooth',
+                        'top': 0
+                    }, 0);
+                });
                 this.currentPage = page;
                 this.getMissions();
             },
@@ -286,22 +294,23 @@ import { setTimeout } from 'timers';
             searchMissions(searchParams, filterParmas) {
 
                 this.filterData.search = searchParams;
-                if (store.state.exploreMissionType == '') {
-                    this.filterData.countryId = filterParmas.countryId;
-                } else {
-                    this.filterData.countryId = '';
-                }
+                // if (store.state.exploreMissionType == '') {
+                this.filterData.countryId = filterParmas.countryId;
+                // } else {
+                //     this.filterData.countryId = '';
+                // }
 
-                if (store.state.exploreMissionType == '') {
-                    this.filterData.cityId = filterParmas.cityId;
-                } else {
-                    this.filterData.cityId = '';
-                }
+                // if (store.state.exploreMissionType == '') {
+                this.filterData.cityId = filterParmas.cityId;
+                // } else {
+                //     this.filterData.cityId = '';
+                // }
 
                 this.filterData.themeId = filterParmas.themeId;
                 this.filterData.skillId = filterParmas.skillId;
                 this.filterData.tags = filterParmas.tags;
                 this.filterData.sortBy = '';
+                this.filterData.currentView = this.tabNumber;
                 if (store.state.sortBy != null) {
                     this.filterData.sortBy = store.state.sortBy;
                 }
@@ -310,7 +319,7 @@ import { setTimeout } from 'timers';
             },
 
             changeView(currentView) {
-                //Change View 
+                //Change View
                 this.activeView = currentView;
             },
 
@@ -333,6 +342,7 @@ import { setTimeout } from 'timers';
                 if (filters.parmas) {
                     filteExplore.exploreMissionParams = filters.parmas;
                 }
+
                 store.commit('userFilter', this.filterData)
                 store.commit('exploreFilter', filteExplore);
                 this.$refs.secondaryHeader.changeSearch();
@@ -358,6 +368,7 @@ import { setTimeout } from 'timers';
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
+
             if (this.$route.params.searchParamsType) {
                 let filteExplore = {};
                 filteExplore.exploreMissionParams = '';
@@ -367,9 +378,11 @@ import { setTimeout } from 'timers';
                 }
                 store.commit('exploreFilter', filteExplore);
                 store.commit('clearFilter')
+
                 this.getMissions();
 
             } else {
+
                 let filteExplore = {};
                 filteExplore.exploreMissionType = '';
                 filteExplore.exploreMissionParams = '';
@@ -377,13 +390,15 @@ import { setTimeout } from 'timers';
                 // Mission listing
                 this.missionFilter();
             }
-            
+
+
             this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
             this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
             this.defaultCountry = store.state.defaultCountryId
+            this.activeView = 'listView'
             searchUser().then(response => {
                 this.userList = response;
             });
