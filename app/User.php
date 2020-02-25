@@ -49,7 +49,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
      'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
       'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
-       'language_id', 'title', 'hours_goal', 'is_profile_complete'];
+       'language_id', 'title', 'hours_goal', 'is_profile_complete', 'receive_email_notification'];
     
     /**
      * The attributes that should be visible in arrays.
@@ -60,7 +60,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'city_id', 'country_id',
      'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'is_profile_complete'];
+    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'is_profile_complete', 'receive_email_notification'];
 
     /**
      * The attributes excluded from the model's JSON form.

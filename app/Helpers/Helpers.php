@@ -330,4 +330,17 @@ class Helpers
         config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
         '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/';
     }
+
+    /**
+     * Get language details
+     * @param int $languageId
+     * @return Object
+     */
+    public function getLanguageDetail(int $languageId): ?Object
+    {
+        $this->switchDatabaseConnection('mysql');
+        $language = $this->db->table('language')->where('language_id', $languageId)->whereNull('deleted_at')->first();
+        $this->switchDatabaseConnection('tenant');
+        return $language;
+    }
 }

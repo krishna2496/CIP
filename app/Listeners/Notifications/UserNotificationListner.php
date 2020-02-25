@@ -2,14 +2,12 @@
 
 namespace App\Listeners\Notifications;
 
-use App\Events\User\UserNotificationEvent;
-use App\Notifiers\AppUserNotifiers\UserDatabaseNotifier;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\User;
 use App\Models\UserNotification;
-use App\Repositories\Notification\NotificationRepository;
+use App\Events\User\UserNotificationEvent;
 use App\Repositories\Mission\MissionRepository;
-use Illuminate\Support\Facades\Log;
+use App\Notifiers\AppUserNotifiers\UserDatabaseNotifier;
+use App\Repositories\Notification\NotificationRepository;
 
 class UserNotificationListner
 {
@@ -44,14 +42,12 @@ class UserNotificationListner
      */
     public function handle(UserNotificationEvent $data): bool
     {
-        if ($data->userId !== null) {
-            $user = User::where('user_id', $data->userId)->first();
-            $data->userId = $data->userId;
-        } else {
+        $userId = null;
+        if (is_null($data->userId)) {
             $users = User::all();
             foreach ($users as $userDetails) {
-                $data->userId = $userDetails->user_id;
-                $this->storeNotificationToDatabase($data);
+                $userId = $userDetails->user_id;
+                $this->storeNotificationToDatabase($data, $userId);
             }
             return true;
         }
@@ -64,11 +60,13 @@ class UserNotificationListner
      * @param UserNotificationEvent $data
      * @return void
      */
-    public function storeNotificationToDatabase(UserNotificationEvent $data)
+    public function storeNotificationToDatabase(UserNotificationEvent $data, int $userId = null)
     {
+        $userId = is_null($userId) ? $data->userId : $userId;
+
         // Checking user have activated notification setting or not
         $isNotificationActive = $this->notificationRepository->userNotificationSetting(
-            $data->userId,
+            $userId,
             $data->notificationTypeId
         );
         if (config('constants.notification_type_keys.NEW_MISSIONS')
@@ -79,14 +77,14 @@ class UserNotificationListner
             // here need to check user's skill and availability match with mission or not.
             $isUserRelatedToMission = $this->missionRepository->checkIsMissionRelatedToUser(
                 $data->entityId,
-                $data->userId
+                $userId
             );
             if ($isUserRelatedToMission > 0) {
-                $this->sendDatabaseNotification($data);
+                $this->sendDatabaseNotification($data, $userId);
             }
         } else {
             if ($isNotificationActive) {
-                $this->sendDatabaseNotification($data);
+                $this->sendDatabaseNotification($data, $userId);
             }
         }
     }
@@ -96,13 +94,18 @@ class UserNotificationListner
      * @param UserNotificationEvent $data
      * @return void
      */
-    public function sendDatabaseNotification(UserNotificationEvent $data)
+    public function sendDatabaseNotification(UserNotificationEvent $data, int $userId)
     {
-        UserDatabaseNotifier::notify(
+        $isEmailNotification = 0;
+        if (User::whereUserId($userId)->where('receive_email_notification', 1)->count()) {
+            $isEmailNotification = 1;
+        }
+        $notification = UserDatabaseNotifier::notify(
             $data->notificationTypeId,
             $data->entityId,
             $data->action,
-            $data->userId
-        );
+            $userId,
+            $isEmailNotification
+        );        
     }
 }
