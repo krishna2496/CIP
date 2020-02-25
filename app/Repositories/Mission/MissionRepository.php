@@ -488,8 +488,7 @@ class MissionRepository implements MissionInterface
                 config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-                config("constants.application_status")["PENDING"]]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -1000,8 +999,7 @@ class MissionRepository implements MissionInterface
             config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['missionApplication as mission_application_count' => function ($query) {
-            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
+            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]])->whereNull('deleted_at');
         }])
         ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id);
@@ -1082,8 +1080,7 @@ class MissionRepository implements MissionInterface
                 config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-                config("constants.application_status")["PENDING"]]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
             }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id);
