@@ -1233,10 +1233,10 @@
 
                         data.filter((item) => {
                             currentData.push({
-                                [mission]: item.title,
-                                [time]: item.time,
-                                [hours]: item.hours,
-                                [organisation]: item.organisation_name,
+                                ['mission']: item.title,
+                                ['time']: item.time,
+                                ['hours']: item.hours,
+                                ['organisation']: item.organisation_name,
                                 ['mission_id']: item.mission_id
                             })
                             this.timesheetRequestItems = currentData;
@@ -1289,9 +1289,9 @@
 
                         data.filter((item) => {
                             currentData.push({
-                                [mission]: item.title,
-                                [action]: item.action,
-                                [organisation]: item.organisation_name,
+                                ['mission']: item.title,
+                                ['action']: item.action,
+                                ['organisation']: item.organisation_name,
                                 ['mission_id']: item.mission_id
                             })
                             this.goalRequestItems = currentData
