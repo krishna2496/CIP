@@ -47,6 +47,7 @@
                                 </div>
                             </b-list-group-item>
                         </b-list-group>
+                        
                         <div class="dashboard-table" v-if="commentItems.length > 0">
                             <div class="table-outer">
                                 <div class="table-inner">
@@ -65,17 +66,17 @@
                                                 <b-tr v-for="(item,key) in commentItems" v-bind:key="key">
                                                     <b-td class="mission-col">
                                                         <a target="_blank" class="table-link"
-                                                            :href="`mission-detail/${item.mission_id}`">{{item.Mission}}</a>
+                                                            :href="`mission-detail/${item.mission_id}`">{{item.mission}}</a>
                                                     </b-td>
                                                      <b-td class="date-col">
-                                                         {{item.Date | formatDate}}
+                                                         {{item.date | formatDate}}
                                                          
                                                     </b-td>
                                                      <b-td class="expand-col remove-truncate">
-                                                         {{item.Comment}}
+                                                         {{item.comment}}
                                                     </b-td>
                                                      <b-td class="status-col">
-                                                          {{item.Status}}
+                                                          {{item.status}}
                                                     </b-td>
                                                      <b-td class="action-col">
                                                         <b-button class="btn-action" v-b-tooltip.hover
@@ -184,10 +185,10 @@
                             if (data.length > 0) {
                                 data.filter((item) => {
                                     currentData.push({
-                                        [mission]: item.title,
-                                        [date]: item.created_at,
-                                        [comment]: item.comment,
-                                        [status]: item.approval_status,
+                                        ['mission']: item.title,
+                                        ['date']: item.created_at,
+                                        ['comment']: item.comment,
+                                        ['status']: item.approval_status,
                                         ['comment_id']: item.comment_id,
                                         ['mission_id']: item.mission_id
                                     })
@@ -272,11 +273,11 @@
             this.commentfields[2].label = this.languageData.label.comment
             this.commentfields[3].label = this.languageData.label.status
             this.commentfields[4].label = this.languageData.label.action
-            this.commentfields[0].key = this.languageData.label.mission
-            this.commentfields[1].key = this.languageData.label.date
-            this.commentfields[2].key = this.languageData.label.comment
-            this.commentfields[3].key = this.languageData.label.status
-            this.commentfields[4].key = this.languageData.label.action
+            this.commentfields[0].key = 'mission'
+            this.commentfields[1].key = 'date'
+            this.commentfields[2].key = 'comment'
+            this.commentfields[3].key = 'status'
+            this.commentfields[4].key = 'action'
             setTimeout(() => {
                 this.getCommentListing()
             }, 50);

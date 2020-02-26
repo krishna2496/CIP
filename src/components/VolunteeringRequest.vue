@@ -7,7 +7,7 @@
                     <b-table-simple  class="volunteery-table" responsive v-if="items.length > 0">
                                             <b-thead>
                                                 <b-tr>                                
-                                                    <b-th>{{languageData.label.requestType}}</b-th>
+                                                    <b-th>{{languageData.label.mission}}</b-th>
                                                     <b-th v-if="requestType =='time'">{{languageData.label.time}}</b-th>
                                                     <b-th v-if="requestType =='time'">{{languageData.label.hours}}</b-th>
                                                     <b-th v-if="requestType == 'goal' ">{{languageData.label.action}}</b-th>
@@ -18,19 +18,19 @@
                                                 <b-tr v-for="(item,key) in items" v-bind:key="key">
                                                     <b-td>
                                                         <a target="_blank" class="table-link"
-                                                            :href="`mission-detail/${item.mission_id}`">{{item.Mission}}</a>
+                                                            :href="`mission-detail/${item.mission_id}`">{{item.mission}}</a>
                                                     </b-td>
                                                      <b-td  v-if="requestType =='time'">
-                                                         {{item.Time}}   
+                                                         {{item.time}}   
                                                     </b-td>
                                                      <b-td  v-if="requestType =='time'">
-                                                         {{item.Hours}}
+                                                         {{item.hours}}
                                                     </b-td>
                                                      <b-td  v-if="requestType =='goal'">
-                                                        {{item.Actions}}
+                                                        {{item.action}}
                                                     </b-td>
                                                      <b-td>
-                                                          {{item.Organisation}}
+                                                          {{item.organisation}}
                                                     </b-td>
                                                                                         
                                                 </b-tr>                                     
