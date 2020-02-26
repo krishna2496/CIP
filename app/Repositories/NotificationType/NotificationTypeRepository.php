@@ -1,10 +1,11 @@
 <?php
 namespace App\Repositories\NotificationType;
 
-use App\Repositories\NotificationType\NotificationTypeInterface;
+use App\User;
 use App\Models\NotificationType;
-use Illuminate\Database\Eloquent\Collection;
 use App\Models\UserNotification;
+use Illuminate\Database\Eloquent\Collection;
+use App\Repositories\NotificationType\NotificationTypeInterface;
 
 class NotificationTypeRepository implements NotificationTypeInterface
 {
@@ -19,16 +20,22 @@ class NotificationTypeRepository implements NotificationTypeInterface
     private $userNotification;
 
     /**
+     * @var App\User
+     */
+    private $user;
+
+    /**
      * Create a new notification type repository instance.
      *
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
      * @return void
      */
-    public function __construct(NotificationType $notificationType, UserNotification $userNotification)
+    public function __construct(NotificationType $notificationType, UserNotification $userNotification, User $user)
     {
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;
+        $this->user = $user;
     }
 
     /**
@@ -78,6 +85,10 @@ class NotificationTypeRepository implements NotificationTypeInterface
                     'value' => $value['value']
                 ]
             );
+        }
+        // Store settings, which are in user table.
+        foreach ($data['user_settings'] as $key => $setting) {
+            $this->user->whereUserId($userId)->update($setting);
         }
         return $notificationSettings;
     }

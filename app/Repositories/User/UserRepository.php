@@ -517,4 +517,13 @@ class UserRepository implements UserInterface
         $userData->update(["is_profile_complete" => $profileComplete]);
         return $userData;
     }
+    
+    public function checkEmailNotificationSettings(int $userId): bool
+    {
+        $user = $this->user->whereUserId($userId)->where('receive_email_notification', 1)->first();
+        if ($user) {
+            return true;
+        }
+        return false;
+    }
 }
