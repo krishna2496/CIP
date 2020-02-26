@@ -386,8 +386,7 @@ class AppMissionRatingTest extends TestCase
           ->seeStatusCode(201);
         
         $params = [
-            'mission_id' => $mission[0]['mission_id'],
-            'rating' => rand(1, 5)
+            'mission_id' => $mission[0]['mission_id']            
         ];
 
         DB::setDefaultConnection('mysql');
@@ -396,7 +395,8 @@ class AppMissionRatingTest extends TestCase
         ->seeStatusCode(422);
 
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->update(['approval_status' => 'AUTOMATICALLY_APPROVED']);
-
+        
+        $params ['rating'] = rand(1, 5);
         // It should add mission rating
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));

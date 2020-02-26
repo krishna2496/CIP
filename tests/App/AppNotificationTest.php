@@ -49,6 +49,11 @@ class AppNotificationTest extends TestCase
                     "notification_type_id" => $notificationTypeId,
                     "value" => 1
                 ]
+            ],
+            "user_settings" => [
+                [
+                    "receive_email_notification"=> 1
+                ]
             ]
         ];
         DB::setDefaultConnection('mysql');
@@ -186,7 +191,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+            "user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Get setting id from master table
@@ -640,7 +650,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+            "user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Save user notification settings
@@ -855,7 +870,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+            "user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Save user notification settings
