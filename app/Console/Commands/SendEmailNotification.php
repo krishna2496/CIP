@@ -222,6 +222,8 @@ class SendEmailNotification extends Command
                     $notification->save();
                 }
             } catch (\Exception $e) {
+                Log::info('Error while seding mail for '. $notificationString);
+                Log::info('User details '. json_encode($user));
                 $notification->is_email_notification = -1;
                 $notification->save();
 
@@ -505,9 +507,9 @@ class SendEmailNotification extends Command
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $response['volunteering_details'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE', [], $language->code)." ".
+        $mailData['volunteering_details'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE', [], $language->code)." ".
         $date." ".trans('general.notification.IS', [], $language->code)." ".$status;
-        return $response;
+        return $mailData;
     }
 
     /**
