@@ -349,12 +349,14 @@ class NotificationService
     public function newNews(
         Notification $notification,
         string $tenantName = null,
-        int $languageId
+        int $languageId,
+        int $defaultTenantLanguageId
     ): array {
         // Get details
         $newsTitle = $this->newsRepository->getNewsTitle(
             $notification->entity_id,
-            $languageId
+            $languageId,
+            $defaultTenantLanguageId
         );
 
         // Create message

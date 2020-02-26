@@ -380,7 +380,8 @@ class SendEmailNotification extends Command
     {
         $languageId = \App\User::whereUserId($notification->user_id)->first()->language_id;
         $language = $this->helpers->getLanguageDetail($languageId);
-        
+        $tenantDefaultLangId = $this->tenant->language_id;
+
         $mailData = [];
         $mailData['subject'] = trans('mail-subjects.subjects.NEW_NEWS', [], $language->code);
         $mailData['logo'] = $this->tenantOptionRepository
@@ -389,7 +390,8 @@ class SendEmailNotification extends Command
         // Get details
         $newsTitle = $this->newsRepository->getNewsTitle(
             $notification->entity_id,
-            $languageId
+            $languageId,
+            $tenantDefaultLangId
         );
 
         // Create message
