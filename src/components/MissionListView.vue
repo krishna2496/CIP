@@ -167,6 +167,8 @@
                                     </div>
                                 </template>
 
+                                
+
                                 <div class="detail-column calendar-col">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
@@ -393,7 +395,7 @@
                         return filteredObj[0].title;
                     } else {
                         let filtereObj = translations.filter((item, i) => {
-							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+							if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
 								return translations[i].title;
 							}
 						});

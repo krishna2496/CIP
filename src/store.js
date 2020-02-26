@@ -56,7 +56,8 @@ export default new Vuex.Store({
         policyPage: localStorage.getItem('policyPage'),
         logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
         isProfileComplete: localStorage.getItem('isProfileComplete'),
-        getEmailNotification : localStorage.getItem('getEmailNotification')
+        getEmailNotification : localStorage.getItem('getEmailNotification'),
+        defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -352,7 +353,12 @@ export default new Vuex.Store({
         changeNotificationFlag(state,data) {
             localStorage.setItem('getEmailNotification',data);
             state.getEmailNotification = data;
-        }
+        },
+        // Set tenant default language code and id data in state and local storage
+        setTenantDefaultLanguage(state, language) {
+            localStorage.setItem('defaultTenantLanguage',language);
+            state.defaultTenantLanguage = language;
+        },
     },
     getters: {},
     actions: {}
