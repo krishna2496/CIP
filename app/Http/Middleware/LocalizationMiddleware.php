@@ -22,6 +22,7 @@ class LocalizationMiddleware
      * Create a new localization middleware instance.
      *
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(LanguageHelper $languageHelper, ResponseHelper $responseHelper)
