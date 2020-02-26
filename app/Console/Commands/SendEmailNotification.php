@@ -10,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Models\Notification;
 use App\Mail\NotificationMail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
@@ -150,24 +151,31 @@ class SendEmailNotification extends Command
     public function handle()
     {
         $this->helpers->switchDatabaseConnection('mysql');
-        $tenants = DB::select('select * from tenant 
-        left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
-        and tenant_language.default = 1
-        where tenant.status = 1 and tenant.deleted_at is null');
+        $tenants = DB::select("
+            select tenant.tenant_id, tenant.name, tenant_language.tenant_language_id 
+            from tenant 
+            left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
+            where tenant.status = '1' 
+            and tenant.background_process_status = '1' 
+            and tenant.deleted_at is null
+            and tenant_language.default = 1 
+            and tenant_language.deleted_at is null
+        ");
 
         if (sizeof($tenants)) {
             $this->warn("\n\nTotal tenants : ". sizeof($tenants));
             foreach ($tenants as $tenant) {
                 // Create connection of tenant one by one
-                if ($this->createConnection($tenant->tenant_id) !== 0) {
-                    try {
+                try {
+                    if ($this->createConnection($tenant->tenant_id) !== 0) {
                         $this->sendEmail($tenant);
-                    } catch (\Exception $e) {
-                        $this->warn("\n \n Error while sending email notification :
-                        $tenant->name (tenant id : $tenant->tenant_id)");
-                        $this->error("\n\n".$e->getMessage());
-                        continue;
                     }
+                } catch (\Exception $e) {
+                    Log::info('Something went wrong while sending email notification to users of tenant : '. json_encode($tenant));
+                    $this->warn("\n \n Error while sending email notification :
+                    $tenant->name (tenant id : $tenant->tenant_id)");
+                    $this->error("\n\n".$e->getMessage());
+                    continue;
                 }
             }
             $this->info("\n \n All notifications sent!");
@@ -335,7 +343,7 @@ class SendEmailNotification extends Command
         ->getOptionWithCondition(['option_name' => 'custom_logo'])->option_value;
 
         // Get details
-        $commentDetails = $this->missionCommentRepository->getCommentDetail($notification->entity_id);        
+        $commentDetails = $this->missionCommentRepository->getCommentDetail($notification->entity_id);
 
         // Get details
         $missionName = $this->missionRepository->getMissionTitle(
