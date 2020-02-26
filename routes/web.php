@@ -171,7 +171,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
 /* Policy pages  */
 $router->get('/app/policy/listing', ['as' => 'policy.listing',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\PolicyPage\PolicyPageController@index']);
 $router->get('/app/policy/{slug}', ['as' => 'policy.show',
     'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
@@ -374,7 +374,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* accept cookie agreement date*/
     $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookie-agreement.accept',
-        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\User\UserController@saveCookieAgreement']);
 
     /* Store or update user notification settings */
@@ -399,7 +399,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch notification settings */
     $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
-        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
           'uses' => 'App\Notification\NotificationTypeController@index']);
 
     /* Store or update user notification settings */
@@ -419,7 +419,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         
     /* Fetch notification settings */
     $router->get('/app/notifications', ['as' => 'app.notifications',
-        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@index']);
 
     /* Read message send by admin */
