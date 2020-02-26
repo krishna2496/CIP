@@ -56,7 +56,7 @@
 							return filteredObj[0].slider_title;
 						} else {
 							let filtereObj = translations.filter((item, i) => {
-								if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+								if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
 									return translations[i].slider_title;
 								}
 							});
@@ -83,7 +83,7 @@
 							return filteredObj[0].slider_description;
 						} else {
 							let filtereObj = translations.filter( (item, i) => {
-								if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+								if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
 									return translations[i].slider_description;
 								}
 							});
