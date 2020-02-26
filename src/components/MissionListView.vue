@@ -167,6 +167,8 @@
                                     </div>
                                 </template>
 
+                                
+
                                 <div class="detail-column calendar-col">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
