@@ -152,7 +152,8 @@ class SendEmailNotification extends Command
         $this->helpers->switchDatabaseConnection('mysql');
         $tenants = DB::select('select * from tenant 
         left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
-        and tenant_language.default = 1');
+        and tenant_language.default = 1
+        where tenant.status = 1 and tenant.deleted_at is null');
 
         if (sizeof($tenants)) {
             $this->warn("\n\nTotal tenants : ". sizeof($tenants));
