@@ -154,8 +154,9 @@ class TimesheetController extends Controller
                     "notes" => "sometimes",
                     "dateVolunteered" => "sometimes|date_format:Y-m-d",
                     "dayVolunteered" => ["sometimes",Rule::in(config('constants.day_volunteered'))],
-                    "hours" => "sometimes|integer",
-                    "minutes" => "sometimes|integer|between:0,59",
+                    'hours' => 'required_if:mission_type,TIME|integer|between:0,23',
+                    'minutes' => 'required_if:mission_type,TIME|integer|between:0,59',
+                    "action" => "required_if:mission_type,GOAL|integer|min:1",
                 ]
             );
 

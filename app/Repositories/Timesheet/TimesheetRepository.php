@@ -303,6 +303,9 @@ class TimesheetRepository implements TimesheetInterface
         if (isset($request['time'])) {
             $valueToUpdate['time'] = $request['time'];
         }
+        if (isset($request['action'])) {
+            $valueToUpdate['action'] = $request['action'];
+        }
 
         return $timesheet->update($valueToUpdate);
     }
