@@ -152,13 +152,13 @@ class SendEmailNotification extends Command
     {
         $this->helpers->switchDatabaseConnection('mysql');
         $tenants = DB::select("
-            select tenant.tenant_id, tenant.name, tenant_language.tenant_language_id 
+            select tenant.tenant_id, tenant.name, tenant_language.language_id 
             from tenant 
             left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
             where tenant.status = '1' 
             and tenant.background_process_status = '1' 
             and tenant.deleted_at is null
-            and tenant_language.default = 1 
+            and tenant_language.default = '1' 
             and tenant_language.deleted_at is null
         ");
 
