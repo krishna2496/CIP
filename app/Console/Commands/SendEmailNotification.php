@@ -151,10 +151,16 @@ class SendEmailNotification extends Command
     public function handle()
     {
         $this->helpers->switchDatabaseConnection('mysql');
-        $tenants = DB::select('select * from tenant 
-        left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
-        and tenant_language.default = 1 and tenant_language.deleted_at is null
-        where tenant.status = 1 and tenant.deleted_at is null');
+        $tenants = DB::select("
+            select tenant.tenant_id, tenant.name, tenant_language.tenant_language_id 
+            from tenant 
+            left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
+            where tenant.status = '1' 
+            and tenant.background_process_status = '1' 
+            and tenant.deleted_at is null
+            and tenant_language.default = 1 
+            and tenant_language.deleted_at is null
+        ");
 
         if (sizeof($tenants)) {
             $this->warn("\n\nTotal tenants : ". sizeof($tenants));
@@ -165,7 +171,7 @@ class SendEmailNotification extends Command
                         $this->sendEmail($tenant);
                     }
                 } catch (\Exception $e) {
-                    Log::info('Something went wrong while sending email notification to users of tenant : '. $tenant);
+                    Log::info('Something went wrong while sending email notification to users of tenant : '. json_encode($tenant));
                     $this->warn("\n \n Error while sending email notification :
                     $tenant->name (tenant id : $tenant->tenant_id)");
                     $this->error("\n\n".$e->getMessage());
