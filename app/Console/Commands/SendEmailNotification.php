@@ -223,6 +223,7 @@ class SendEmailNotification extends Command
                 }
             } catch (\Exception $e) {
                 Log::info('Error while seding mail for '. $notificationString);
+                Log::info('Tenant details '. json_encode($this->tenant));
                 Log::info('User details '. json_encode($user));
                 $notification->is_email_notification = -1;
                 $notification->save();
