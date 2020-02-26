@@ -167,6 +167,8 @@
                                     </div>
                                 </template>
 
+                                
+
                                 <div class="detail-column calendar-col">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
@@ -391,6 +393,16 @@
                     });
                     if (filteredObj[0]) {
                         return filteredObj[0].title;
+                    } else {
+                        let filtereObj = translations.filter((item, i) => {
+							if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+								return translations[i].title;
+							}
+						});
+
+						if (filtereObj[0]) {
+							return filtereObj[0].title;
+						}
                     }
                 }
             },

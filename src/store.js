@@ -55,7 +55,9 @@ export default new Vuex.Store({
         userTimezone: localStorage.getItem('userTimezone'),
         policyPage: localStorage.getItem('policyPage'),
         logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
-        isProfileComplete: localStorage.getItem('isProfileComplete')
+        isProfileComplete: localStorage.getItem('isProfileComplete'),
+        getEmailNotification : localStorage.getItem('getEmailNotification'),
+        defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -72,6 +74,7 @@ export default new Vuex.Store({
             localStorage.setItem('email', data.email)
             localStorage.setItem('userTimezone', data.timezone)
             localStorage.setItem('isProfileComplete',data.is_profile_complete)
+            localStorage.setItem('getEmailNotification',data.receive_email_notification);
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -83,6 +86,7 @@ export default new Vuex.Store({
             state.email = data.email;
             state.userTimezone = data.timezone;
             state.isProfileComplete = data.is_profile_complete;
+            state.getEmailNotification = data.receive_email_notification
         },
         // Remove login data in state and local storage
         logoutUser(state) {
@@ -345,7 +349,16 @@ export default new Vuex.Store({
         changeProfileSetFlag(state,data) {
             localStorage.setItem('isProfileComplete',data);
             state.isProfileComplete = data;
-        }
+        },
+        changeNotificationFlag(state,data) {
+            localStorage.setItem('getEmailNotification',data);
+            state.getEmailNotification = data;
+        },
+        // Set tenant default language code and id data in state and local storage
+        setTenantDefaultLanguage(state, language) {
+            localStorage.setItem('defaultTenantLanguage',language);
+            state.defaultTenantLanguage = language;
+        },
     },
     getters: {},
     actions: {}

@@ -264,7 +264,18 @@
                                                     {{data.notification_type}} </b-form-checkbox>
                                             </b-list-group-item>
                                         </b-form-checkbox-group>
+                                        <b-form-checkbox-group id="checkbox-group-1" v-model="getEmailNotificationSelected"
+                                            name="flavour-1">
+                                         
+                                            <b-list-group-item>
+                                                <b-form-checkbox v-bind:value="getEmailNotification">
+                                                    {{languageData.label.receive_email_notification}} </b-form-checkbox>
+                                            </b-list-group-item>
+                                           
+                                        </b-form-checkbox-group>
                                     </b-list-group>
+
+                                    
                                 </div>
                                 <div class="setting-footer">
                                     <b-button class="btn-bordersecondary" @click="saveNotificationSetting">
@@ -337,7 +348,9 @@
                     isNotificationLoaded: false,
                     submitNewMissionUrl: '',
                     isSubmitNewMissionSet: true,
-					hostUrl: ''
+                    hostUrl: '',
+                    getEmailNotification : 0,
+                    getEmailNotificationSelected : []
                 };
             },
             mounted() {
@@ -536,10 +549,24 @@
                 },
                 saveNotificationSetting() {
                     let data = {
-                        'settings': []
+                        'settings': [],
+                        'user_settings' : []
+
                     }
                     let settingArray = []
+                    let notificationEmail = 0;
 
+
+                    if(this.getEmailNotificationSelected.length != 0) {
+                         data.user_settings.push({
+                            'receive_email_notification':1
+                        })
+                    } else {
+                        data.user_settings.push({
+                            'receive_email_notification':0   
+                        })
+                    }
+                   
                     this.notificationSettingId.filter((data, index) => {
                         let values = 0;
                         if (this.selectedNotification.includes(data)) {
@@ -551,13 +578,26 @@
                         })
 
                     })
-                    data.settings = settingArray
+                    data.settings = settingArray        
+                    
                     updateNotificationSetting(data).then(response => {
                         let classVariant = 'success'
                         if (response.error == true) {
                             classVariant = 'danger'
                         } else {
-                            this.cancelsetting()
+                            this.cancelsetting();
+
+                            if(this.getEmailNotificationSelected.length != 0) {
+                                store.commit('changeNotificationFlag',1)
+                            } else {
+                                store.commit('changeNotificationFlag',0)
+                            }
+
+                            this.getEmailNotification = store.state.getEmailNotification;
+                            this.getEmailNotificationSelected = [];
+                            if(store.state.getEmailNotification == 1) {
+                                this.getEmailNotificationSelected.push(store.state.getEmailNotification)
+                            }
                         }
 
                         this.makeToast(classVariant, response.message)
@@ -610,7 +650,11 @@
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.submitNewMissionUrl = store.state.submitNewMissionUrl
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
-				this.hostUrl = process.env.BASE_URL;
+                this.hostUrl = process.env.BASE_URL;
+                this.getEmailNotification = store.state.getEmailNotification;
+                if(store.state.getEmailNotification == 1) {
+                    this.getEmailNotificationSelected.push(store.state.getEmailNotification)
+                }
                 if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
                 }

@@ -1085,6 +1085,16 @@
                         });
                         if (filteredObj[0]) {
                             return filteredObj[0].title;
+                        } else {
+                            let filtereObj = translations.filter((item, i) => {
+                                if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+                                    return translations[i].title;
+                                }
+                            });
+
+                            if (filtereObj[0]) {
+                                return filtereObj[0].title;
+                            }
                         }
                     }
                 }

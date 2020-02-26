@@ -62,7 +62,9 @@
 									exportUrl="app/volunteer/history/time-mission/export" :perPage="hourRequestPerPage"
 									:nextUrl="hourRequestNextUrl"
 									:fileName="languageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
-									:totalPages="timeMissionTotalPage" />
+									:totalPages="timeMissionTotalPage"
+									requestType="time"
+									 />
 							</b-col>
 							<b-col lg="6" class="table-col">
 								<VolunteeringRequest :headerField="goalMissionTimesheetFields"
@@ -215,10 +217,10 @@
 
 						data.filter( (item) => {
 							this.timeMissionTimesheetItems.push({
-								[mission]: item.title,
-								[time]: item.time,
-								[hours]: item.hours,
-								[organisation]: item.organisation_name,
+								['mission']: item.title,
+								['time']: item.time,
+								['hours']: item.hours,
+								['organisation']: item.organisation_name,
 								['mission_id']: item.mission_id
 							})
 						})
@@ -243,9 +245,9 @@
 
 						data.filter( (item) => {
 							this.goalMissionTimesheetItems.push({
-								[mission]: item.title,
-								[action]: item.action,
-								[organisation]: item.organisation_name,
+								['mission']: item.title,
+								['action']: item.action,
+								['organisation']: item.organisation_name,
 								['mission_id']: item.mission_id
 							})
 						})

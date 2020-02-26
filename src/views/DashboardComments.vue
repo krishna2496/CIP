@@ -47,39 +47,48 @@
                                 </div>
                             </b-list-group-item>
                         </b-list-group>
+                        
                         <div class="dashboard-table" v-if="commentItems.length > 0">
                             <div class="table-outer">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.comment_history}}</h3>
-                                    <b-table :items="commentItems" responsive :fields="commentfields"
-                                        class="history-table">
-                                        <template :slot="languageData.label.mission" slot-scope="data">
-                                            <b-link :to="`/mission-detail/${data.item.mission_id}`" target="_blank"
-                                                class="table-link">
-                                                {{ data.item[languageData.label.mission] }}</b-link>
-                                        </template>
-                                        <template :slot="languageData.label.date" slot-scope="data">
-                                            {{ data.item[languageData.label.date] | formatDate }}
-                                        </template>
-                                        <template :slot="languageData.label.comment" slot-scope="data">
-                                            {{ data.item[languageData.label.comment] }}
-                                        </template>
-                                        <template :slot="languageData.label.status" slot-scope="data">
-                                            {{data.item[languageData.label.status] }}
-                                        </template>
-                                        <template :slot="languageData.label.action" slot-scope="data">
-                                            <!-- <b-button class="btn-action btn-expand"  v-b-tooltip.hover :title="languageData.label.expand">
-												<img :src="$store.state.imagePath+'/assets/images/expand-ic.svg'"
-													alt="Expand" />
-											</b-button> -->
-                                            <b-button class="btn-action" v-b-tooltip.hover
-                                                :title="languageData.label.delete"
-                                                @click="deleteComments(data.item.comment_id)">
-                                                <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
-                                                    alt="Delete" />
-                                            </b-button>
-                                        </template>
-                                    </b-table>
+                                        <b-table-simple  class="history-table" responsive>
+                                            <b-thead>
+                                                <b-tr>                                
+                                                    <b-th>{{languageData.label.mission}}</b-th>
+                                                    <b-th>{{languageData.label.date}}</b-th>
+                                                    <b-th>{{languageData.label.comment}}</b-th>
+                                                    <b-th>{{languageData.label.status}}</b-th>
+                                                    <b-th class="text-right">{{languageData.label.action}}</b-th>
+                                                </b-tr>
+                                            </b-thead>
+                                            <b-tbody >
+                                                <b-tr v-for="(item,key) in commentItems" v-bind:key="key">
+                                                    <b-td class="mission-col">
+                                                        <a target="_blank" class="table-link"
+                                                            :href="`mission-detail/${item.mission_id}`">{{item.mission}}</a>
+                                                    </b-td>
+                                                     <b-td class="date-col">
+                                                         {{item.date | formatDate}}
+                                                         
+                                                    </b-td>
+                                                     <b-td class="expand-col remove-truncate">
+                                                         {{item.comment}}
+                                                    </b-td>
+                                                     <b-td class="status-col">
+                                                          {{item.status}}
+                                                    </b-td>
+                                                     <b-td class="action-col">
+                                                        <b-button class="btn-action" v-b-tooltip.hover
+                                                            :title="languageData.label.delete"
+                                                            @click="deleteComments(item.comment_id)">
+                                                            <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
+                                                                alt="Delete" />
+                                                        </b-button>
+                                                    </b-td>                                        
+                                                </b-tr>                                     
+                                            </b-tbody>
+                                        </b-table-simple>
                                 </div>
                                 <div class="btn-row">
                                     <b-button class="btn-bordersecondary ml-auto" @click="exportFile()">
@@ -176,10 +185,10 @@
                             if (data.length > 0) {
                                 data.filter((item) => {
                                     currentData.push({
-                                        [mission]: item.title,
-                                        [date]: item.created_at,
-                                        [comment]: item.comment,
-                                        [status]: item.approval_status,
+                                        ['mission']: item.title,
+                                        ['date']: item.created_at,
+                                        ['comment']: item.comment,
+                                        ['status']: item.approval_status,
                                         ['comment_id']: item.comment_id,
                                         ['mission_id']: item.mission_id
                                     })
@@ -264,11 +273,11 @@
             this.commentfields[2].label = this.languageData.label.comment
             this.commentfields[3].label = this.languageData.label.status
             this.commentfields[4].label = this.languageData.label.action
-            this.commentfields[0].key = this.languageData.label.mission
-            this.commentfields[1].key = this.languageData.label.date
-            this.commentfields[2].key = this.languageData.label.comment
-            this.commentfields[3].key = this.languageData.label.status
-            this.commentfields[4].key = this.languageData.label.action
+            this.commentfields[0].key = 'mission'
+            this.commentfields[1].key = 'date'
+            this.commentfields[2].key = 'comment'
+            this.commentfields[3].key = 'status'
+            this.commentfields[4].key = 'action'
             setTimeout(() => {
                 this.getCommentListing()
             }, 50);
