@@ -3,13 +3,40 @@
         <div class="table-outer timesheet-table-outer">
             <div class="table-inner">
                 <h3>{{headerLable}}</h3>
-                <b-table v-if="items.length > 0" :items="items" responsive :fields="headerField"
-                    class="volunteery-table">
-                    <template slot="Mission" slot-scope="data">
-                        <b-link :to="`/mission-detail/${data.item.mission_id}`" class="table-link" target="_blank">
-                            {{ data.item.Mission }}</b-link>
-                    </template>
-                </b-table>
+
+                    <b-table-simple  class="volunteery-table" responsive v-if="items.length > 0">
+                                            <b-thead>
+                                                <b-tr>                                
+                                                    <b-th>{{languageData.label.requestType}}</b-th>
+                                                    <b-th v-if="requestType =='time'">{{languageData.label.time}}</b-th>
+                                                    <b-th v-if="requestType =='time'">{{languageData.label.hours}}</b-th>
+                                                    <b-th v-if="requestType == 'goal' ">{{languageData.label.action}}</b-th>
+                                                    <b-th>{{languageData.label.organisation}}</b-th>
+                                                </b-tr>
+                                            </b-thead>
+                                            <b-tbody >
+                                                <b-tr v-for="(item,key) in items" v-bind:key="key">
+                                                    <b-td>
+                                                        <a target="_blank" class="table-link"
+                                                            :href="`mission-detail/${item.mission_id}`">{{item.Mission}}</a>
+                                                    </b-td>
+                                                     <b-td  v-if="requestType =='time'">
+                                                         {{item.Time}}   
+                                                    </b-td>
+                                                     <b-td  v-if="requestType =='time'">
+                                                         {{item.Hours}}
+                                                    </b-td>
+                                                     <b-td  v-if="requestType =='goal'">
+                                                        {{item.Actions}}
+                                                    </b-td>
+                                                     <b-td>
+                                                          {{item.Organisation}}
+                                                    </b-td>
+                                                                                        
+                                                </b-tr>                                     
+                                            </b-tbody>
+                </b-table-simple>
+              
                 <div class="text-center" v-else>
                     <h5>{{languageData.label.no_data_available}}</h5>
                 </div>
@@ -45,7 +72,8 @@
             fileName: String,
             perPage: Number,
             nextUrl: String,
-            totalPages: Number
+            totalPages: Number,
+            requestType : String
         },
         data: function () {
             return {

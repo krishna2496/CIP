@@ -51,35 +51,43 @@
                             <div class="table-outer">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.comment_history}}</h3>
-                                    <b-table :items="commentItems" responsive :fields="commentfields"
-                                        class="history-table">
-                                        <template :slot="languageData.label.mission" slot-scope="data">
-                                            <b-link :to="`/mission-detail/${data.item.mission_id}`" target="_blank"
-                                                class="table-link">
-                                                {{ data.item[languageData.label.mission] }}</b-link>
-                                        </template>
-                                        <template :slot="languageData.label.date" slot-scope="data">
-                                            {{ data.item[languageData.label.date] | formatDate }}
-                                        </template>
-                                        <template :slot="languageData.label.comment" slot-scope="data">
-                                            {{ data.item[languageData.label.comment] }}
-                                        </template>
-                                        <template :slot="languageData.label.status" slot-scope="data">
-                                            {{data.item[languageData.label.status] }}
-                                        </template>
-                                        <template :slot="languageData.label.action" slot-scope="data">
-                                            <!-- <b-button class="btn-action btn-expand"  v-b-tooltip.hover :title="languageData.label.expand">
-												<img :src="$store.state.imagePath+'/assets/images/expand-ic.svg'"
-													alt="Expand" />
-											</b-button> -->
-                                            <b-button class="btn-action" v-b-tooltip.hover
-                                                :title="languageData.label.delete"
-                                                @click="deleteComments(data.item.comment_id)">
-                                                <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
-                                                    alt="Delete" />
-                                            </b-button>
-                                        </template>
-                                    </b-table>
+                                        <b-table-simple  class="history-table" responsive>
+                                            <b-thead>
+                                                <b-tr>                                
+                                                    <b-th>{{languageData.label.mission}}</b-th>
+                                                    <b-th>{{languageData.label.date}}</b-th>
+                                                    <b-th>{{languageData.label.comment}}</b-th>
+                                                    <b-th>{{languageData.label.status}}</b-th>
+                                                    <b-th class="text-right">{{languageData.label.action}}</b-th>
+                                                </b-tr>
+                                            </b-thead>
+                                            <b-tbody >
+                                                <b-tr v-for="(item,key) in commentItems" v-bind:key="key">
+                                                    <b-td class="mission-col">
+                                                        <a target="_blank" class="table-link"
+                                                            :href="`mission-detail/${item.mission_id}`">{{item.Mission}}</a>
+                                                    </b-td>
+                                                     <b-td class="date-col">
+                                                         {{item.Date | formatDate}}
+                                                         
+                                                    </b-td>
+                                                     <b-td class="expand-col remove-truncate">
+                                                         {{item.Comment}}
+                                                    </b-td>
+                                                     <b-td class="status-col">
+                                                          {{item.Status}}
+                                                    </b-td>
+                                                     <b-td class="action-col">
+                                                        <b-button class="btn-action" v-b-tooltip.hover
+                                                            :title="languageData.label.delete"
+                                                            @click="deleteComments(item.comment_id)">
+                                                            <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
+                                                                alt="Delete" />
+                                                        </b-button>
+                                                    </b-td>                                        
+                                                </b-tr>                                     
+                                            </b-tbody>
+                                        </b-table-simple>
                                 </div>
                                 <div class="btn-row">
                                     <b-button class="btn-bordersecondary ml-auto" @click="exportFile()">
