@@ -10,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Models\Notification;
 use App\Mail\NotificationMail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
@@ -164,6 +165,7 @@ class SendEmailNotification extends Command
                         $this->sendEmail($tenant);
                     }
                 } catch (\Exception $e) {
+                    Log::info('Something went wrong while sending email notification to users of tenant : '. $tenant);
                     $this->warn("\n \n Error while sending email notification :
                     $tenant->name (tenant id : $tenant->tenant_id)");
                     $this->error("\n\n".$e->getMessage());
