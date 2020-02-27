@@ -180,7 +180,7 @@
                         {{languageData.label.cancel}}</b-button>
                     <b-button class="btn-bordersecondary" v-bind:class="{
                         disabled:isAjaxCall
-                    }" @click="saveTimeHours()">{{languageData.label.submit}}
+                    }" @click="saveTimeHours()">{{languageData.label.save}}
                     </b-button>
                 </div>
             </div>

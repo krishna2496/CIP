@@ -148,7 +148,7 @@
                         {{languageData.label.cancel}}</b-button>
                     <b-button class="btn-bordersecondary" v-bind:class="{
                             disabled:isAjaxCall
-                        }" @click="saveAction()">{{languageData.label.submit}}
+                        }" @click="saveAction()">{{languageData.label.save}}
                     </b-button>
                 </div>
             </div>
