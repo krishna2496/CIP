@@ -469,7 +469,7 @@ class TimesheetController extends Controller
                 'user_id' => $request->auth->user_id,
                 'mission_id' => null,
             ];
-            // Make activity log and send data to worker
+            // Make activity log and send data to the worker
             foreach ($request->timesheet_entries as $data) {
                 $timesheetId = $data['timesheet_id'];
 
@@ -489,7 +489,7 @@ class TimesheetController extends Controller
                 $timesheetForOptimy['mission_id'] =
                     $this->timesheetRepository->getMissionIdFromTimesheetId($timesheetId);
 
-                // Send data of the new timesheet created to Optimy app using "ciSynchronizer" queue from RabbitMQ
+                // Send data of the timesheet to Optimy app using "ciSynchronizer" queue from RabbitMQ
                 $this->amqp->publish(
                     'ciSynchronizer',
                     json_encode($timesheetForOptimy),
