@@ -248,7 +248,7 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
+                "total_seats" => "sometimes|required|integer|min:1",
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
