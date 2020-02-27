@@ -46,6 +46,16 @@
 						});
 						if (filteredObj.length > 0 && filteredObj[0].slider_title) {
 							return filteredObj[0].slider_title;
+						} else {
+							let filtereObj = translations.filter((item, i) => {
+								if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+									return translations[i].slider_title;
+								}
+							});
+
+							if (filtereObj.length > 0 && filtereObj[0].slider_title) {
+								return filtereObj[0].slider_title;
+							}
 						}
 					}
 				}
@@ -63,6 +73,16 @@
 						});
 						if (filteredObj.length > 0 && filteredObj[0].slider_description) {
 							return filteredObj[0].slider_description;
+						} else {
+							let filtereObj = translations.filter( (item, i) => {
+								if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+									return translations[i].slider_description;
+								}
+							});
+
+							if (filtereObj.length > 0 && filtereObj[0].slider_description) {
+								return filtereObj[0].slider_description;
+							}
 						}
 					}
 				}

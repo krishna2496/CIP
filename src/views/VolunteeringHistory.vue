@@ -62,7 +62,9 @@
 													 exportUrl="app/volunteer/history/time-mission/export" :perPage="hourRequestPerPage"
 													 :nextUrl="hourRequestNextUrl"
 													 :fileName="languageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
-													 :totalPages="timeMissionTotalPage" />
+													 :totalPages="timeMissionTotalPage"
+													 requestType="time"
+								/>
 							</b-col>
 							<b-col lg="6" class="table-col">
 								<VolunteeringRequest :headerField="goalMissionTimesheetFields"
@@ -108,7 +110,6 @@
 	import VolunteerMissionGoals from "../services/VolunteerHistory/VolunteerMissionGoals";
 	import VolunteeringRequest from "../components/VolunteeringRequest";
 	import store from "../store";
-	import Chart from "chart.js";
 	import constants from '../constant';
 
 	export default {
@@ -116,7 +117,6 @@
 			TopHeader,
 			PrimaryFooter,
 			AppCustomDropdown,
-			Chart,
 			DashboardBreadcrumb,
 			HorizontalChart,
 			VolunteeringRequest
@@ -215,12 +215,12 @@
 							this.timeMissionTotalPage = response.pagination.total_pages;
 						}
 
-						data.filter( (item, index) => {
+						data.filter( (item) => {
 							this.timeMissionTimesheetItems.push({
-								[mission]: item.title,
-								[time]: item.time,
-								[hours]: item.hours,
-								[organisation]: item.organisation_name,
+								['mission']: item.title,
+								['time']: item.time,
+								['hours']: item.hours,
+								['organisation']: item.organisation_name,
 								['mission_id']: item.mission_id
 							})
 						})
@@ -229,26 +229,25 @@
 			},
 			getVolunteerMissionsGoals(currentPage) {
 				VolunteerMissionGoals(currentPage).then(response => {
-					let _this = this;
-					_this.goalMissionTimesheetItems = [];
+					this.goalMissionTimesheetItems = [];
 					if (response.data) {
 						let data = response.data;
 						let mission = this.languageData.label.mission;
 						let action = this.languageData.label.actions;
 						let organisation = this.languageData.label.organisation;
 						if (response.pagination) {
-							_this.goalMissionTotalRow = response.pagination.total;
-							_this.goalMissionCurrentPage = response.pagination.current_page;
-							_this.goalRequestPerPage = response.pagination.per_page;
-							_this.goalRequestNextUrl = response.pagination.next_url;
-							_this.goalMissionTotalPage = response.pagination.total_pages;
+							this.goalMissionTotalRow = response.pagination.total;
+							this.goalMissionCurrentPage = response.pagination.current_page;
+							this.goalRequestPerPage = response.pagination.per_page;
+							this.goalRequestNextUrl = response.pagination.next_url;
+							this.goalMissionTotalPage = response.pagination.total_pages;
 						}
 
-						data.filter( (item, index) => {
-							_this.goalMissionTimesheetItems.push({
-								[mission]: item.title,
-								[action]: item.action,
-								[organisation]: item.organisation_name,
+						data.filter( (item) => {
+							this.goalMissionTimesheetItems.push({
+								['mission']: item.title,
+								['action']: item.action,
+								['organisation']: item.organisation_name,
 								['mission_id']: item.mission_id
 							})
 						})
@@ -278,7 +277,7 @@
 				this.languageData.label.organisation,
 			]
 
-			timeRequestFieldArray.filter( (data, index) => {
+			timeRequestFieldArray.filter( (data) => {
 				this.timeMissionTimesheetFields.push({
 					"key": data
 				})
@@ -290,7 +289,7 @@
 				this.languageData.label.organisation,
 			]
 
-			goalRequestFieldArray.filter((data, index) => {
+			goalRequestFieldArray.filter((data) => {
 				this.goalMissionTimesheetFields.push({
 					"key": data
 				})

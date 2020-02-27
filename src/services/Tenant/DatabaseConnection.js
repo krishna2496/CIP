@@ -29,7 +29,7 @@ export default async(langList, defautLang) => {
 
                 // Store language in Local Storage
                 if (data.language) {
-
+                    store.commit('setTenantDefaultLanguage', data.defaultLanguage)
                     let defaultLanguageDataChange = true
 
                     let listOfObjects = Object.entries(data.language);
