@@ -54,7 +54,7 @@ class Timesheet extends Model
     public function getDateVolunteeredAttribute(): ?string
     {
         return ($this->attributes['date_volunteered'] !== null) ?
-        (new Carbon($this->attributes['date_volunteered']))->format('m-d-Y') : null;
+        (new Carbon($this->attributes['date_volunteered']))->format('Y-m-d') : null;
     }
 
     /**

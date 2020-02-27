@@ -150,4 +150,12 @@ interface UserInterface
      * @return string
      */
     public function getUserTimezone(int $userId): string;
+
+    /**
+     * Check profile complete status
+     *
+     * @param int $userId
+     * @return User
+     */
+    public function checkProfileCompleteStatus(int $userId): User;
 }

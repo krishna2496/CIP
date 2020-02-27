@@ -31,7 +31,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'city_id' => $cityId,
         'country_id' => $countryDetail->country_id,
         'profile_text' => str_random(10),
-        'linked_in_url' => 'https://www.'.str_random(10).'.com'
+        'linked_in_url' => 'https://www.'.str_random(10).'.com',
+        'is_profile_complete' => '1'
     ];
 });
 
@@ -141,6 +142,19 @@ $factory->define(App\Models\TimesheetDocument::class, function (Faker\Generator 
         'document_name' => 'volunteer9.png',
         'document_path' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
         'document_type' => 'png'
+    ];
+});
+
+$factory->define(App\Models\Timesheet::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'mission_id' => 1,
+        'time' => '01:01:01',
+        'action' => null,
+        'date_volunteered' => '2020-06-06',
+        'day_volunteered' => 'WORKDAY',
+        'notes' => 'Some Sample Notes',
+        'status' => 'APPROVED'
     ];
 });
 

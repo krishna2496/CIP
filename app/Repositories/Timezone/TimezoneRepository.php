@@ -29,7 +29,7 @@ class TimezoneRepository implements TimezoneInterface
      * @param int $timezone_id
      * @return App\Models\Timezone
      */
-    public function timezoneList(int $timezone_id = null) :Timezone
+    public function timezoneList(int $timezone_id = null) : ?Timezone
     {
         return $this->timezone->where("timezone_id", $timezone_id)->first();
     }
@@ -42,5 +42,25 @@ class TimezoneRepository implements TimezoneInterface
     public function getTimezoneList() :Collection
     {
         return $this->timezone->pluck('timezone', 'timezone_id');
+    }
+
+    /**
+     * Get the timezone instance base on timezone code.
+     *
+     * @param  string  $timezone
+     * @return Object|Boolean
+     */
+    public function getTenantTimezoneByCode($timezone)
+    {
+        $timezone = $this->timezone
+            ->where('timezone', $timezone)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$timezone) {
+            return false;
+        }
+
+        return $timezone;
     }
 }

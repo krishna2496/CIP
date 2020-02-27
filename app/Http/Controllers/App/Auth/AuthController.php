@@ -153,7 +153,6 @@ class AuthController extends Controller
         // Generate JWT token
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        $data["token"] = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
         $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
         $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
         $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
@@ -165,6 +164,13 @@ class AuthController extends Controller
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
         $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone !="") ?
         $userDetail->timezone['timezone'] : '';
+        $data['is_profile_complete'] = ((isset($userDetail->is_profile_complete))
+        && $userDetail->is_profile_complete != "") ? $userDetail->is_profile_complete : '';
+
+        $data['receive_email_notification'] = (
+            (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification !=""
+        ) ?
+        $userDetail->receive_email_notification : '0';
         
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
@@ -180,6 +186,7 @@ class AuthController extends Controller
             null,
             $userDetail->user_id
         ));
+        header('Token: '.$this->helpers->getJwtToken($userDetail->user_id, $tenantName));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     

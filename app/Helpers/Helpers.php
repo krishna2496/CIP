@@ -62,7 +62,7 @@ class Helpers
         $this->switchDatabaseConnection('mysql');
 
         $tenantIdAndSponsorId = $this->db->table('tenant')
-            ->select('tenant_id, sponsor_id')
+            ->select('tenant_id', 'sponsor_id')
             ->where('name', $domain)
             ->whereNull('deleted_at')
             ->first();
@@ -168,15 +168,24 @@ class Helpers
      * @param string $tenantName
      * @return string
      */
-    public static function getJwtToken(int $userId, string $tenantName): string
-    {
+    public static function getJwtToken(
+        int $userId,
+        string $tenantName,
+        bool $isSSO = false,
+        int $duration = 14400
+    ) : string {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60 * 4, // Expiration time
+            'exp' => time() + $duration, // Expiration time
             'fqdn' => $tenantName
         ];
+
+        if ($isSSO) {
+            $payload['sso'] = true;
+        }
+
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
@@ -353,5 +362,18 @@ class Helpers
         return 'https://s3.' . config('constants.AWS_REGION') . '.amazonaws.com/' .
             config('constants.AWS_S3_BUCKET_NAME') . '/' . $tenantName . '/' . config('constants.AWS_S3_ASSETS_FOLDER_NAME') .
             '/' . config('constants.AWS_S3_IMAGES_FOLDER_NAME') . '/';
+    }
+
+    /**
+     * Get language details
+     * @param int $languageId
+     * @return Object
+     */
+    public function getLanguageDetail(int $languageId): ?Object
+    {
+        $this->switchDatabaseConnection('mysql');
+        $language = $this->db->table('language')->where('language_id', $languageId)->whereNull('deleted_at')->first();
+        $this->switchDatabaseConnection('tenant');
+        return $language;
     }
 }

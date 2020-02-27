@@ -49,6 +49,11 @@ class AppNotificationTest extends TestCase
                     "notification_type_id" => $notificationTypeId,
                     "value" => 1
                 ]
+            ],
+            "user_settings" => [
+                [
+                    "receive_email_notification"=> 1
+                ]
             ]
         ];
         DB::setDefaultConnection('mysql');
@@ -186,7 +191,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+            "user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Get setting id from master table
@@ -237,7 +247,9 @@ class AppNotificationTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -638,7 +650,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+            "user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Save user notification settings
@@ -680,7 +697,9 @@ class AppNotificationTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -851,7 +870,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+            "user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Save user notification settings
@@ -893,7 +917,9 @@ class AppNotificationTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'skills' => $skillsArray
+            'skills' => $skillsArray,
+			"city_id" => $cityId,
+			"country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');

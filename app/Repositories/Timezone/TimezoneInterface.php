@@ -12,7 +12,7 @@ interface TimezoneInterface
      * @param int $timezone_id
      * @return App\Models\Timezone
      */
-    public function timezoneList(int $timezone_id = null) :Timezone;
+    public function timezoneList(int $timezone_id = null) :?Timezone;
 
     /**
      * Get timezone list

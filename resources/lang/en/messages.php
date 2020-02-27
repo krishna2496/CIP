@@ -187,6 +187,9 @@ return [
         'MESSAGE_CITY_FOUND' => 'City found successfully',
         'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Tenant language file found sucessfully',
         'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
+        'MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS' => 'User timesheet summarized successfully',
+        'MESSAGE_TENANT_USER_TIMESHEET_SUCCESS' => 'User timesheet listed successfully',
+        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found'
     ],
 
 
@@ -335,6 +338,11 @@ return [
 
         'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
 
-        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
+
+        'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => 'Invalid identity provider.',
+        'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
+        'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
        ]
 ];

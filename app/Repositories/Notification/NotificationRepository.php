@@ -167,4 +167,25 @@ class NotificationRepository implements NotificationInterface
         ->where(['notification_type_id' => $notificationTypeId])
         ->value('notification_type');
     }
+
+    /**
+     * Get notification from notification type id
+     *
+     * @param int $notificationTypeId
+     * @return App\Models\Notification
+     */
+    public function getNotificationByTypeId(int $notificationTypeId): Notification
+    {
+        return $this->notification->where(['notification_type_id' => $notificationTypeId])->first();
+    }
+
+    /**
+     * Get all email notifications
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getEmailNotifications(): Collection
+    {
+        return $this->notification->where('is_email_notification', 1)->get();
+    }
 }

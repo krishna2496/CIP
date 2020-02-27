@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\User;
@@ -36,7 +37,7 @@ class UserCustomFieldValue extends Model
      *
      * @var array
      */
-    protected $visible = ['user_custom_field_value_id', 'field_id', 'user_id', 'value'];
+    protected $visible = ['user_custom_field_value_id', 'field_id', 'user_id', 'value', 'userCustomField'];
 
     /**
      * Store/update specified resource.
@@ -48,5 +49,15 @@ class UserCustomFieldValue extends Model
     public function createOrUpdateCustomFieldValue(array $condition, array $data): UserCustomFieldValue
     {
         return static::updateOrCreate($condition, $data);
+    }
+
+    /**
+     * Defined has many relation for the user_custom_field table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCustomField(): HasMany
+    {
+        return $this->hasMany(UserCustomField::class, 'field_id', 'field_id');
     }
 }

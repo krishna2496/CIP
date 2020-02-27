@@ -114,7 +114,6 @@ class TenantSettingsController extends Controller
                     "value" => "required|in:1,0",
                 ]
             );
-            
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(
