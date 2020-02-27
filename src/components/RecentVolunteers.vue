@@ -4,8 +4,8 @@
 		'no-volunteer' : noVolunteerFound,
 		'hide-pagination' : hidePagination,
 	}">
-		<div v-bind:class="{ 
-			'content-loader-wrap': true, 
+		<div v-bind:class="{
+			'content-loader-wrap': true,
 			'recent-loader': recentVolunterLoader,
 		}">
 			<div class="content-loader"></div>

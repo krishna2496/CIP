@@ -18,11 +18,11 @@ export default async(timeSheetId) => {
             'token': store.state.token,
         }
     })
-        .then((response) => {
-            if (response.data.data) {
-                responseData = response.data.data
-            }
-        })
-        .catch(function() {});
+      .then((response) => {
+          if (response.data.data) {
+              responseData = response.data.data
+          }
+      })
+      .catch(function() {});
     return responseData;
 }

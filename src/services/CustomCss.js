@@ -5,8 +5,8 @@ export default async() => {
     let getDynamicCssUrl = apiUrl + "app/custom-css";
     await axios.get(getDynamicCssUrl).then(response => {
         document
-            .getElementById("customCss")
-            .setAttribute("href", response.data.data.custom_css);
+          .getElementById("customCss")
+          .setAttribute("href", response.data.data.custom_css);
         return new Promise(resolve => {
             setTimeout(() => resolve('I did something'), 1000)
         })

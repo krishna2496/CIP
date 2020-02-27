@@ -99,214 +99,214 @@
 </template>
 
 <script>
-    import store from '../../store';
-    import {
-        cmsPages,
-        cookieAgreement,
-        contactUs,
-        loadLocaleMessages,
-    } from "../../services/service";
-    import constants from '../../constant';
-    import AppCustomDropdown from '../../components/AppCustomDropdown';
-    import {
-        required,
-        email,
-        numeric,
-        minLength
-    } from 'vuelidate/lib/validators';
-    export default {
-        components: {
-            AppCustomDropdown
+  import store from '../../store';
+  import {
+    cmsPages,
+    cookieAgreement,
+    contactUs,
+    loadLocaleMessages,
+  } from "../../services/service";
+  import constants from '../../constant';
+  import AppCustomDropdown from '../../components/AppCustomDropdown';
+  import {
+    required,
+    email,
+    numeric,
+    minLength
+  } from 'vuelidate/lib/validators';
+  export default {
+    components: {
+      AppCustomDropdown
+    },
+    name: "TheSecondaryFooter",
+    data() {
+      return {
+        footerItems: [],
+        isDynamicFooterItemsSet: false,
+        year: new Date().getFullYear(),
+        languageData: [],
+        isCookieHidden: true,
+        cookiePolicyText: '',
+        submitted: false,
+        message : '',
+        contactUs: {
+          'name': '',
+          'email': '',
+          'subject': '',
+          'message': ''
         },
-        name: "TheSecondaryFooter",
-        data() {
-            return {
-                footerItems: [],
-                isDynamicFooterItemsSet: false,
-                year: new Date().getFullYear(),
-                languageData: [],
-                isCookieHidden: true,
-                cookiePolicyText: '',
-                submitted: false,
-                message : '',
-                contactUs: {
-                    'name': '',
-                    'email': '',
-                    'subject': '',
-                    'message': ''
-                },
-                classVariant : '',
-                showDismissibleAlert : false,
-                contactUsDisplay:true,
-                isAjaxCall : false,
-                langList: [],
-                defautLang: '',
-            };
+        classVariant : '',
+        showDismissibleAlert : false,
+        contactUsDisplay:true,
+        isAjaxCall : false,
+        langList: [],
+        defautLang: '',
+      };
+    },
+    validations: {
+      contactUs: {
+        message: {
+          required
         },
-        validations: {
-            contactUs: {
-                message: {
-                    required
-                },
-                subject: {
-                    required
-                }
-            }
-        },
-        created() {
-            this.languageData = JSON.parse(store.state.languageLabel);
-            // Fetching footer CMS pages
-            this.getPageListing();
-            this.footerAdj();
-            this.contactUsDisplay = this.settingEnabled(constants.CONTACT_US);
-            if(!this.contactUsDisplay) {
-                this.contactUsDisplay = false
-            }
-            if (store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
-                this.isCookieHidden = false;
-            }
-            if(!store.state.isLoggedIn) {
-                this.isCookieHidden = true;
-                this.contactUsDisplay = false
-            }
-            this.langList = JSON.parse(store.state.listOfLanguage)
-            this.defautLang = store.state.defaultLanguage
-            setTimeout(() => {
-                let closeCookies = document.querySelector('.cookies-block .close');
-                let agreeBtn = document.querySelector('.cookies-block .btn');
-                let cookiesBlock = document.querySelector('.cookies-block');
-
-                agreeBtn.addEventListener('click', () => {
-                    cookiesBlock.classList.add('hidden')
-                    this.agreeCookie();
-                })
-
-                closeCookies.addEventListener('click', () => {
-                    cookiesBlock.classList.add('hidden')
-                    this.hideCookieBlock();
-                })
-            })
-
-            let cookiePolicyTextArray = JSON.parse(store.state.cookiePolicyText)
-            if (cookiePolicyTextArray) {
-                cookiePolicyTextArray.filter((data, index) => {
-                    if (data.lang == store.state.defaultLanguage.toLowerCase()) {
-                        this.cookiePolicyText = data.message
-                    }
-                })
-            }
-
-            if(store.state.isLoggedIn == true) {
-                this.contactUs.name = store.state.firstName+' '+store.state.lastName
-                this.contactUs.email = store.state.email
-            }
-            window.addEventListener("resize", this.footerAdj);
-        },
-        methods: {
-            async getPageListing() {
-                await cmsPages().then(response => {
-                    this.footerItems = response;
-                    this.isDynamicFooterItemsSet = true;
-                })
-            },
-
-            getTitle(items) {
-                //Get title according to language
-                items = items.pages;
-                if (items) {
-                    let filteredObj = items.filter((item) => {
-                        if (item.language_id == store.state.defaultLanguageId) {
-                            return item;
-                        }
-                    });
-                    if (filteredObj[0]) {
-                        return filteredObj[0].title
-                    }
-                }
-            },
-
-            getUrl(items) {
-                if (items) {
-                    return items.slug
-                }
-            },
-
-            clickHandler() {
-                this.$emit('cmsListing', this.$route.params.slug);
-            },
-
-            footerAdj() {
-                if (document.querySelector("footer") != null) {
-                    let footerH = document.querySelector("footer").offsetHeight;
-                    document.querySelector("footer").style.marginTop = -footerH + "px";
-                    document.querySelector(".inner-pages").style.paddingBottom =
-                        footerH + "px";
-                }
-            },
-            async setLanguage(language) {
-                this.defautLang = language.selectedVal;
-                store.commit('setDefaultLanguage', language);
-                this.$i18n.locale = language.selectedVal.toLowerCase()
-                await loadLocaleMessages(this.$i18n.locale);
-                location.reload();
-            },
-            agreeCookie() {
-                let data = {
-                    "agreement": true
-                }
-                cookieAgreement(data).then(response => {
-                    this.hideCookieBlock();
-                })
-            },
-
-            hideCookieBlock() {
-                this.$store.commit('removeCookieBlock');
-            },
-            showModal() {
-                this.$refs.contactModal.show()
-            },
-
-            submitContact() {
-                this.submitted = true;
-                this.$v.$touch();
-                if (this.$v.$invalid) {
-                    return
-                }
-                this.isAjaxCall = true;
-                let contactData = {
-                    'subject' : '',
-                    'message' : '',
-                    'admin' : null
-                }
-                contactData.subject = this.contactUs.subject;
-                contactData.message = this.contactUs.message;
-                contactUs(contactData).then(response => {
-                    this.showDismissibleAlert = true
-                    this.isAjaxCall = false;
-                    if(response.error == false) {
-                        this.classVariant = 'success';
-                        this.message = response.message
-                        setTimeout(() => {
-                            this.$refs.contactModal.hide()
-                        }, 800);
-                    } else {
-                        this.classVariant = 'danger';
-                        this.message = response.message
-                        this.contactUs.subject =  ''
-                        this.contactUs.message =  ''
-                    }
-                })
-            },
-            hideModal() {
-                this.showDismissibleAlert = false
-                this.submitted = false;
-                this.$v.$reset();
-                this.contactUs.message = '';
-                this.contactUs.subject = '';
-            },
-        },
-        updated() {
-            this.footerAdj();
+        subject: {
+          required
         }
-    };
+      }
+    },
+    created() {
+      this.languageData = JSON.parse(store.state.languageLabel);
+      // Fetching footer CMS pages
+      this.getPageListing();
+      this.footerAdj();
+      this.contactUsDisplay = this.settingEnabled(constants.CONTACT_US);
+      if(!this.contactUsDisplay) {
+        this.contactUsDisplay = false
+      }
+      if (store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
+        this.isCookieHidden = false;
+      }
+      if(!store.state.isLoggedIn) {
+        this.isCookieHidden = true;
+        this.contactUsDisplay = false
+      }
+      this.langList = JSON.parse(store.state.listOfLanguage)
+      this.defautLang = store.state.defaultLanguage
+      setTimeout(() => {
+        let closeCookies = document.querySelector('.cookies-block .close');
+        let agreeBtn = document.querySelector('.cookies-block .btn');
+        let cookiesBlock = document.querySelector('.cookies-block');
+
+        agreeBtn.addEventListener('click', () => {
+          cookiesBlock.classList.add('hidden')
+          this.agreeCookie();
+        })
+
+        closeCookies.addEventListener('click', () => {
+          cookiesBlock.classList.add('hidden')
+          this.hideCookieBlock();
+        })
+      })
+
+      let cookiePolicyTextArray = JSON.parse(store.state.cookiePolicyText)
+      if (cookiePolicyTextArray) {
+        cookiePolicyTextArray.filter((data, index) => {
+          if (data.lang == store.state.defaultLanguage.toLowerCase()) {
+            this.cookiePolicyText = data.message
+          }
+        })
+      }
+
+      if(store.state.isLoggedIn == true) {
+        this.contactUs.name = store.state.firstName+' '+store.state.lastName
+        this.contactUs.email = store.state.email
+      }
+      window.addEventListener("resize", this.footerAdj);
+    },
+    methods: {
+      async getPageListing() {
+        await cmsPages().then(response => {
+          this.footerItems = response;
+          this.isDynamicFooterItemsSet = true;
+        })
+      },
+
+      getTitle(items) {
+        //Get title according to language
+        items = items.pages;
+        if (items) {
+          let filteredObj = items.filter((item) => {
+            if (item.language_id == store.state.defaultLanguageId) {
+              return item;
+            }
+          });
+          if (filteredObj[0]) {
+            return filteredObj[0].title
+          }
+        }
+      },
+
+      getUrl(items) {
+        if (items) {
+          return items.slug
+        }
+      },
+
+      clickHandler() {
+        this.$emit('cmsListing', this.$route.params.slug);
+      },
+
+      footerAdj() {
+        if (document.querySelector("footer") != null) {
+          let footerH = document.querySelector("footer").offsetHeight;
+          document.querySelector("footer").style.marginTop = -footerH + "px";
+          document.querySelector(".inner-pages").style.paddingBottom =
+            footerH + "px";
+        }
+      },
+      async setLanguage(language) {
+        this.defautLang = language.selectedVal;
+        store.commit('setDefaultLanguage', language);
+        this.$i18n.locale = language.selectedVal.toLowerCase()
+        await loadLocaleMessages(this.$i18n.locale);
+        location.reload();
+      },
+      agreeCookie() {
+        let data = {
+          "agreement": true
+        }
+        cookieAgreement(data).then(response => {
+          this.hideCookieBlock();
+        })
+      },
+
+      hideCookieBlock() {
+        this.$store.commit('removeCookieBlock');
+      },
+      showModal() {
+        this.$refs.contactModal.show()
+      },
+
+      submitContact() {
+        this.submitted = true;
+        this.$v.$touch();
+        if (this.$v.$invalid) {
+          return
+        }
+        this.isAjaxCall = true;
+        let contactData = {
+          'subject' : '',
+          'message' : '',
+          'admin' : null
+        }
+        contactData.subject = this.contactUs.subject;
+        contactData.message = this.contactUs.message;
+        contactUs(contactData).then(response => {
+          this.showDismissibleAlert = true
+          this.isAjaxCall = false;
+          if(response.error == false) {
+            this.classVariant = 'success';
+            this.message = response.message
+            setTimeout(() => {
+              this.$refs.contactModal.hide()
+            }, 800);
+          } else {
+            this.classVariant = 'danger';
+            this.message = response.message
+            this.contactUs.subject =  ''
+            this.contactUs.message =  ''
+          }
+        })
+      },
+      hideModal() {
+        this.showDismissibleAlert = false
+        this.submitted = false;
+        this.$v.$reset();
+        this.contactUs.message = '';
+        this.contactUs.subject = '';
+      },
+    },
+    updated() {
+      this.footerAdj();
+    }
+  };
 </script>

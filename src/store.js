@@ -260,7 +260,7 @@ export default new Vuex.Store({
             localStorage.setItem('skillId', '')
             localStorage.setItem('tags', JSON.stringify(tag))
             localStorage.setItem('sortBy', ''),
-                state.search = ''
+              state.search = ''
             state.countryId = ''
             state.cityId = ''
             state.themeId = ''

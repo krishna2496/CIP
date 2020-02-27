@@ -55,21 +55,21 @@ export default async(data) => {
     }
 
     await axios({
-            url: url,
-            method: 'get',
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token
-            },
+        url: url,
+        method: 'get',
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token
+        },
 
-        })
-        .then((response) => {
-            if (response.data.data) {
-                responseData = response.data.data;
-            } else {
-                responseData = ''
-            }
-        })
-        .catch(function() {});
+    })
+      .then((response) => {
+          if (response.data.data) {
+              responseData = response.data.data;
+          } else {
+              responseData = ''
+          }
+      })
+      .catch(function() {});
     return responseData;
 }

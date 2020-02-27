@@ -52,7 +52,7 @@
 			handleClick(e) {
 				e.stopPropagation();
 				let profileToggle = document.querySelector(
-					".profile-menu .dropdown-toggle"
+						".profile-menu .dropdown-toggle"
 				);
 				let profileMenu = document.querySelector(".profile-menu");
 				if (profileMenu != null) {
@@ -61,10 +61,10 @@
 					}
 				}
 				let notificationBtn = document.querySelector(
-					".notification-menu .nav-link .btn-notification"
+						".notification-menu .nav-link .btn-notification"
 				);
 				let notificationPopover = document.querySelector(
-					".notification-popover"
+						".notification-popover"
 				);
 				if (notificationPopover != null) {
 					notificationBtn.click();
@@ -84,7 +84,7 @@
 				let simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
 				if (simplebarOffset != null && window.innerWidth > 991) {
 					let simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue(
-						"width"));
+							"width"));
 					let simplebarWrapper = simplebarOffset.parentNode.parentNode;
 					simplebarWrapper.style.width = simplebarOffset_width + "px";
 					let dropdownList = e.target.parentNode;

@@ -11,23 +11,23 @@ export default async() => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/skill",
-            method: 'GET',
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token,
-            }
-        }).then((response) => {
-            responseData.error = false;
-            responseData.message = response.data.message;
-            if (response.data.data) {
+        url: process.env.VUE_APP_API_ENDPOINT + "app/skill",
+        method: 'GET',
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token,
+        }
+    }).then((response) => {
+        responseData.error = false;
+        responseData.message = response.data.message;
+        if (response.data.data) {
 
-                responseData.data = response.data.data
-            }
-        })
-        .catch(function() {
-            responseData.error = true;
+            responseData.data = response.data.data
+        }
+    })
+      .catch(function() {
+          responseData.error = true;
 
-        });
+      });
     return responseData;
 }
