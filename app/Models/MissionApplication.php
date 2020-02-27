@@ -44,7 +44,9 @@ class MissionApplication extends Model
      * @var array
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
-    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar', 'mission'];
+    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar', 'mission', 'total_active_timesheet'];
+
+    protected $appends = ['total_active_timesheet'];
 
     /**
      * Find listing of a resource.
@@ -185,5 +187,22 @@ class MissionApplication extends Model
             }
         }
         return $countQuery->count();
+    }
+
+    /**
+     * Get the total active timesheet for the mission application.
+     * @return int
+     */
+    public function getTotalActiveTimesheetAttribute()
+    {
+        $missionId = $this->attributes['mission_id'];
+        return $this->select('timesheet.mission_id')
+            ->join('timesheet', 'mission_application.mission_id', 'timesheet.mission_id')
+            ->where('timesheet.mission_id', $missionId)
+            ->where(function($q) {
+                $q->where('timesheet.status', '=', config('constants.timesheet_status.APPROVED'))
+                    ->orWhere('timesheet.status', '=', config('constants.timesheet_status.SUBMIT_FOR_APPROVAL'));
+            })
+            ->count();
     }
 }
