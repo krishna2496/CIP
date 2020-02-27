@@ -80,7 +80,7 @@ router.beforeEach(async(to, from, next) => {
         return;
     }
     if ((to.path === "/" || to.path === "/forgot-password" || to.path === "/reset-password") &&
-        store.state.isLoggedIn) {
+      store.state.isLoggedIn) {
         next({
             name: "home"
         });
@@ -146,7 +146,7 @@ Vue.filter('substring', (value, data) => {
 });
 
 window.addEventListener('storage', function (e) {
-    if (e.key === 'logout-event') {
+    if (event.key == 'logout-event') {
         location.reload();
     }
 },false);

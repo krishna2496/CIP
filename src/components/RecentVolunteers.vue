@@ -1,13 +1,12 @@
 <template>
 	<div v-bind:class="{ 
-	   'recent-volunteer-block': true,
-	   'no-volunteer' : noVolunteerFound,
-	   'hide-pagination' : hidePagination,
+		'recent-volunteer-block': true,
+		'no-volunteer' : noVolunteerFound,
+		'hide-pagination' : hidePagination,
 	}">
-		<div v-bind:class="{ 
-			'content-loader-wrap': true, 
+		<div v-bind:class="{
+			'content-loader-wrap': true,
 			'recent-loader': recentVolunterLoader,
-				
 		}">
 			<div class="content-loader"></div>
 		</div>
@@ -22,7 +21,7 @@
 					</div>
 				</b-list-group-item>
 			</b-list-group>
-			<div class="custom-pagination" v-if="rows > 12">
+			<div class="custom-pagination" v-if="rows > 9">
 				<b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" @change="pageChange">
 				</b-pagination>
 				<span>
@@ -51,7 +50,7 @@
 				rows: 0,
 				volunteerList: [],
 				recentVolunterLoader: true,
-				perPage: 12,
+				perPage: 9,
 				noVolunteerFound: false,
 				hidePagination: true,
 				languageData: [],
@@ -89,7 +88,7 @@
 
 							if (response.pagination) {
 								this.rows = response.pagination.total
-								if (this.rows > 12) {
+								if (this.rows > 9) {
 									this.hidePagination = false;
 								}
 							}

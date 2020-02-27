@@ -90,30 +90,30 @@
                                             <span class="status-label" v-if="data.status != ''">{{data.status}}</span>
                                             <div class="action-block">
                                                 <b-button class="btn-action" v-b-tooltip.hover
-                                                    :title="languageData.label.delete"
-                                                    v-if="getDeleteAction(data.status)"
-                                                    @click="deleteStory(data.story_id)">
+                                                          :title="languageData.label.delete"
+                                                          v-if="getDeleteAction(data.status)"
+                                                          @click="deleteStory(data.story_id)">
                                                     <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
-                                                        alt="Delete" />
+                                                         alt="Delete" />
                                                 </b-button>
                                                 <b-link class="btn-action" v-b-tooltip.hover
-                                                    :title="languageData.label.redirect" target="_blank"
-                                                    :to="'/story-detail/' + data.story_id"
-                                                    v-if="getRedirectAction(data.status)">
+                                                        :title="languageData.label.redirect" target="_blank"
+                                                        :to="'/story-detail/' + data.story_id"
+                                                        v-if="getRedirectAction(data.status)">
                                                     <img :src="$store.state.imagePath+'/assets/images/external-link.svg'"
-                                                        alt="Redirect" />
+                                                         alt="Redirect" />
                                                 </b-link>
                                                 <b-button class="btn-action" v-b-tooltip.hover
-                                                    :title="languageData.label.copy" v-if="getCopyAction(data.status)"
-                                                    @click="copyStory(data.story_id)">
+                                                          :title="languageData.label.copy" v-if="getCopyAction(data.status)"
+                                                          @click="copyStory(data.story_id)">
                                                     <img :src="$store.state.imagePath+'/assets/images/copy.svg'"
-                                                        alt="Copy" />
+                                                         alt="Copy" />
                                                 </b-button>
                                                 <b-link class="btn-action" v-if="getEditAction(data.status)"
-                                                    :to="'/edit-story/' + data.story_id" v-b-tooltip.hover
-                                                    :title="languageData.label.edit">
+                                                        :to="'/edit-story/' + data.story_id" v-b-tooltip.hover
+                                                        :title="languageData.label.edit">
                                                     <img :src="$store.state.imagePath+'/assets/images/edit-ic.svg'"
-                                                        alt="Edit" />
+                                                         alt="Edit" />
                                                 </b-link>
                                             </div>
                                         </div>
@@ -123,11 +123,11 @@
 
                         </b-row>
                         <div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
-                            <b-pagination 
-                                :hide-ellipsis="hideEllipsis"
-                                v-model="pagination.currentPage" :total-rows="pagination.total"
-                                :per-page="pagination.perPage" align="center" @change="pageChange"
-                                aria-controls="my-cardlist"></b-pagination>
+                            <b-pagination
+                                    :hide-ellipsis="hideEllipsis"
+                                    v-model="pagination.currentPage" :total-rows="pagination.total"
+                                    :per-page="pagination.perPage" align="center" @change="pageChange"
+                                    aria-controls="my-cardlist"></b-pagination>
                         </div>
                         <div class="btn-row" v-if="storyData.length > 0">
                             <b-button class="btn-bordersecondary ml-auto" @click="exportFile()">
@@ -144,216 +144,216 @@
 </template>
 
 <script>
-    import constants from '../constant';
-    import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
-    import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-    import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
-    import {
-        myStory,
-        copyStory,
-        deleteStory
-    } from "../services/service";
-    import ExportFile from "../services/ExportFile";
-    import store from '../store';
-    export default {
-        components: {
-            ThePrimaryHeader,
-            TheSecondaryFooter,
-            DashboardBreadcrumb
+  import constants from '../constant';
+  import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+  import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
+  import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
+  import {
+    myStory,
+    copyStory,
+    deleteStory
+  } from "../services/service";
+  import ExportFile from "../services/ExportFile";
+  import store from '../store';
+  export default {
+    components: {
+      ThePrimaryHeader,
+      TheSecondaryFooter,
+      DashboardBreadcrumb
+    },
+    name: "dashboardstories",
+    data() {
+      return {
+        stats: [],
+        storyData: [],
+        languageData: [],
+        pagination: {
+          'currentPage': 1,
+          "total": 0,
+          "perPage": 1,
+          "totalPages": 0,
         },
-        name: "dashboardstories",
-        data() {
-            return {
-                stats: [],
-                storyData: [],
-                languageData: [],
-                pagination: {
-                    'currentPage': 1,
-                    "total": 0,
-                    "perPage": 1,
-                    "totalPages": 0,
-                },
-                storyText: '',
-                isLoaderActive: false,
-                isStoryDisplay: true,
-                hideEllipsis:true
-            };
-        },
-        methods: {
-            pageChange(page) {
-                setTimeout(() => {
-                    window.scrollTo({
-                        'behavior': 'smooth',
-                        'top': 0
-                    }, 0);
-                });
-                this.getMyStory(page);
-            },
-            getMyStory(page) {
-                this.isLoaderActive = true
-                myStory(page).then(response => {
-                    if (response.error == false) {
-                        if (response.data) {
-                            this.stats = response.data.stats
-                            this.storyData = response.data.story_data
-                            this.pagination.currentPage = response.pagination.current_page
-                            this.pagination.total = response.pagination.total
-                            this.pagination.perPage = response.pagination.per_page
-                            this.pagination.totalPages = response.pagination.total_pages
-                        } else {
-                            this.stats = [];
-                            this.storyData = []
-                            this.pagination.currentPage = 1,
-                                this.pagination.total = 0,
-                                this.pagination.perPage = 1,
-                                this.pagination.totalPages = 0
-                            if (page != 1) {
-                                this.getMyStory(this.pagination.currentPage)
-                            }
-                        }
-                    }
-                })
-                this.isLoaderActive = false
-            },
-            publishNewStory() {
-                this.$router.push({
-                    name: 'ShareStory'
-                })
-            },
-            getDescription(description) {
-                let data = description.substring(0, 150);
-                return data
-            },
-            getMediaPath(data) {
-                if (data.storyMedia && data.storyMedia.path != '') {
-                    let media = data.storyMedia;
-
-                    if (media.type == 'video') {
-                        let videoPath = media.path;
-                        let videoId = '';
-                        let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                        let match = videoPath.match(regExp);
-                        if (match && match[2].length == 11) {
-                            videoId = match[2];
-                        }
-                        return "https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg";
-                    } else {
-                        return media.path;
-                    }
-                } else {
-                    return store.state.imagePath + '/assets/images/' + constants.MISSION_DEFAULT_PLACEHOLDER;
-                }
-            },
-            getDeleteAction(status) {
-                if (status != '') {
-                    return true
-                }
-            },
-            getRedirectAction(status) {
-                if (status != '') {
-                    if (status == constants.PUBLISHED_STORY || status == constants.PENDING_STORY) {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-            },
-            getCopyAction(status) {
-                if (status != '') {
-                    if (status == constants.DECLINED_STORY) {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-            },
-
-            getEditAction(status) {
-                if (status != '') {
-                    if (status == constants.DRAFT_STORY || status == constants.PENDING_STORY) {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-            },
-
-            deleteStory(storyId) {
-                    this.$bvModal.msgBoxConfirm(this.languageData.label.delete_story, {
-                        buttonSize: 'md',
-                        okTitle: this.languageData.label.yes,
-                        cancelTitle: this.languageData.label.no,
-                        centered: true,
-                        size: 'md',
-                        buttonSize: 'sm',
-                        okVariant: 'success',
-                        headerClass: 'p-2 border-bottom-0',
-                        footerClass: 'p-2 border-top-0',
-                        centered: true
-                    })
-                    .then(value => {
-                        if (value == true) {
-                            this.isLoaderActive = true
-                            deleteStory(storyId).then(response => {
-                                if (response.error === true) {
-                                    this.makeToast('danger', response.message)
-                                    this.isLoaderActive = false
-                                } else {
-                                    this.makeToast('success', this.languageData.label.story_deleted)
-                                    // this.pagination.currentPage = 1
-                                    this.getMyStory(this.pagination.currentPage);
-                                }
-                            })
-                        }
-                    })
-
-            },
-
-            copyStory(storyId) {
-                this.isLoaderActive = true
-                copyStory(storyId).then(response => {
-                    if (response.error === true) {
-                        this.makeToast('danger', response.message)
-                        this.isLoaderActive = false
-                    } else {
-                        this.makeToast('success', response.message)
-                        this.getMyStory(this.pagination.currentPage);
-                    }
-                })
-            },
-
-            makeToast(variant = null, message) {
-                this.$bvToast.toast(message, {
-                    variant: variant,
-                    solid: true,
-                    autoHideDelay: 3000
-                })
-            },
-            exportFile() {
-                this.isLoaderActive = true
-                let fileName = this.languageData.export_timesheet_file_names.MY_STORIES_XLSX
-                let exportUrl = "app/story/export"
-                ExportFile(exportUrl, fileName);
-                this.isLoaderActive = false
+        storyText: '',
+        isLoaderActive: false,
+        isStoryDisplay: true,
+        hideEllipsis:true
+      };
+    },
+    methods: {
+      pageChange(page) {
+        setTimeout(() => {
+          window.scrollTo({
+            'behavior': 'smooth',
+            'top': 0
+          }, 0);
+        });
+        this.getMyStory(page);
+      },
+      getMyStory(page) {
+        this.isLoaderActive = true
+        myStory(page).then(response => {
+          if (response.error == false) {
+            if (response.data) {
+              this.stats = response.data.stats
+              this.storyData = response.data.story_data
+              this.pagination.currentPage = response.pagination.current_page
+              this.pagination.total = response.pagination.total
+              this.pagination.perPage = response.pagination.per_page
+              this.pagination.totalPages = response.pagination.total_pages
+            } else {
+              this.stats = [];
+              this.storyData = []
+              this.pagination.currentPage = 1,
+                this.pagination.total = 0,
+                this.pagination.perPage = 1,
+                this.pagination.totalPages = 0
+              if (page != 1) {
+                this.getMyStory(this.pagination.currentPage)
+              }
             }
-        },
+          }
+        })
+        this.isLoaderActive = false
+      },
+      publishNewStory() {
+        this.$router.push({
+          name: 'ShareStory'
+        })
+      },
+      getDescription(description) {
+        let data = description.substring(0, 150);
+        return data
+      },
+      getMediaPath(data) {
+        if (data.storyMedia && data.storyMedia.path != '') {
+          let media = data.storyMedia;
 
-        created() {
-            this.getMyStory(this.pagination.currentPage);
-            this.languageData = JSON.parse(store.state.languageLabel);
-            this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
-            if (!this.isStoryDisplay) {
-                this.$router.push('/home')
+          if (media.type == 'video') {
+            let videoPath = media.path;
+            let videoId = '';
+            let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            let match = videoPath.match(regExp);
+            if (match && match[2].length == 11) {
+              videoId = match[2];
             }
-            let storyArray = JSON.parse(store.state.storyDashboardText)
-            if (storyArray) {
-                storyArray.filter((data, index) => {
-                    if (data.lang == store.state.defaultLanguage.toLowerCase()) {
-                        this.storyText = data.message
-                    }
-                })
-            }
+            return "https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg";
+          } else {
+            return media.path;
+          }
+        } else {
+          return store.state.imagePath + '/assets/images/' + constants.MISSION_DEFAULT_PLACEHOLDER;
         }
-    };
+      },
+      getDeleteAction(status) {
+        if (status != '') {
+          return true
+        }
+      },
+      getRedirectAction(status) {
+        if (status != '') {
+          if (status == constants.PUBLISHED_STORY || status == constants.PENDING_STORY) {
+            return true
+          } else {
+            return false
+          }
+        }
+      },
+      getCopyAction(status) {
+        if (status != '') {
+          if (status == constants.DECLINED_STORY) {
+            return true
+          } else {
+            return false
+          }
+        }
+      },
+
+      getEditAction(status) {
+        if (status != '') {
+          if (status == constants.DRAFT_STORY || status == constants.PENDING_STORY) {
+            return true
+          } else {
+            return false
+          }
+        }
+      },
+
+      deleteStory(storyId) {
+        this.$bvModal.msgBoxConfirm(this.languageData.label.delete_story, {
+          buttonSize: 'md',
+          okTitle: this.languageData.label.yes,
+          cancelTitle: this.languageData.label.no,
+          centered: true,
+          size: 'md',
+          buttonSize: 'sm',
+          okVariant: 'success',
+          headerClass: 'p-2 border-bottom-0',
+          footerClass: 'p-2 border-top-0',
+          centered: true
+        })
+          .then(value => {
+            if (value == true) {
+              this.isLoaderActive = true
+              deleteStory(storyId).then(response => {
+                if (response.error === true) {
+                  this.makeToast('danger', response.message)
+                  this.isLoaderActive = false
+                } else {
+                  this.makeToast('success', this.languageData.label.story_deleted)
+                  // this.pagination.currentPage = 1
+                  this.getMyStory(this.pagination.currentPage);
+                }
+              })
+            }
+          })
+
+      },
+
+      copyStory(storyId) {
+        this.isLoaderActive = true
+        copyStory(storyId).then(response => {
+          if (response.error === true) {
+            this.makeToast('danger', response.message)
+            this.isLoaderActive = false
+          } else {
+            this.makeToast('success', response.message)
+            this.getMyStory(this.pagination.currentPage);
+          }
+        })
+      },
+
+      makeToast(variant = null, message) {
+        this.$bvToast.toast(message, {
+          variant: variant,
+          solid: true,
+          autoHideDelay: 3000
+        })
+      },
+      exportFile() {
+        this.isLoaderActive = true
+        let fileName = this.languageData.export_timesheet_file_names.MY_STORIES_XLSX
+        let exportUrl = "app/story/export"
+        ExportFile(exportUrl, fileName);
+        this.isLoaderActive = false
+      }
+    },
+
+    created() {
+      this.getMyStory(this.pagination.currentPage);
+      this.languageData = JSON.parse(store.state.languageLabel);
+      this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+      if (!this.isStoryDisplay) {
+        this.$router.push('/home')
+      }
+      let storyArray = JSON.parse(store.state.storyDashboardText)
+      if (storyArray) {
+        storyArray.filter((data, index) => {
+          if (data.lang == store.state.defaultLanguage.toLowerCase()) {
+            this.storyText = data.message
+          }
+        })
+      }
+    }
+  };
 
 </script>

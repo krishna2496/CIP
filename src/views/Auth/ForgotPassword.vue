@@ -4,7 +4,7 @@
         <div class="signin-form-wrapper">
             <div class="lang-drodown-wrap">
                 <AppCustomDropdown :optionList="langList" :defaultText="defautLang" translationEnable="false"
-                    @updateCall="setLanguage" />
+                                   @updateCall="setLanguage" />
             </div>
             <div class="signin-form-block">
                 <router-link :to="{ name: 'login' }" class="logo-wrap" v-if="this.$store.state.logo">
@@ -22,10 +22,10 @@
                     <b-form-group>
                         <label for>{{ languageData.label.email_address }}</label>
                         <b-form-input id type="email" v-model="forgotPassword.email"
-                            :class="{ 'is-invalid': $v.forgotPassword.email.$error }"
-                            @keypress.enter.prevent="handleSubmit" maxlength="120"
-                            v-bind:placeholder='languageData.placeholder.email_address' ref='email' autofocus
-                            @keydown.space.prevent></b-form-input>
+                                      :class="{ 'is-invalid': $v.forgotPassword.email.$error }"
+                                      @keypress.enter.prevent="handleSubmit" maxlength="120"
+                                      v-bind:placeholder='languageData.placeholder.email_address' ref='email' autofocus
+                                      @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">
                             {{ languageData.errors.email_required }}</div>
                         <div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">
@@ -45,126 +45,121 @@
 </template>
 
 <script>
-    import TheSlider from "../../components/TheSlider";
-    import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
-    import AppCustomDropdown from "../../components/AppCustomDropdown";
-    import {
-        required,
-        email,
-        minLength,
-        between
-    } from "vuelidate/lib/validators";
-    import {
-        loadLocaleMessages,
-        forgotPassword,
-        getUserLanguage,
-        databaseConnection,
-        tenantSetting
-    } from "../../services/service";
-    import store from "../../store";
-    import axios from "axios";
+  import TheSlider from "../../components/TheSlider";
+  import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
+  import AppCustomDropdown from "../../components/AppCustomDropdown";
+  import {
+    required,
+    email
+  } from "vuelidate/lib/validators";
+  import {
+    loadLocaleMessages,
+    forgotPassword,
+    databaseConnection,
+    tenantSetting
+  } from "../../services/service";
+  import store from "../../store";
 
-    export default {
-        components: {
-            TheSlider,
-            ThePrimaryFooter,
-            AppCustomDropdown
+  export default {
+    components: {
+      TheSlider,
+      ThePrimaryFooter,
+      AppCustomDropdown
+    },
+    data() {
+      return {
+        isShowSlider: false,
+        myValue: "",
+        defautLang: "",
+        langList: [],
+        forgotPassword: {
+          email: ""
         },
-        data() {
-            return {
-                isShowSlider: false,
-                myValue: "",
-                defautLang: "",
-                langList: [],
-                forgotPassword: {
-                    email: ""
-                },
-                submitted: false,
-                classVariant: "danger",
-                message: null,
-                showDismissibleAlert: false,
-                languageData: []
-            };
-        },
+        submitted: false,
+        classVariant: "danger",
+        message: null,
+        showDismissibleAlert: false,
+        languageData: []
+      };
+    },
 
-        validations: {
-            forgotPassword: {
-                email: {
-                    required,
-                    email
-                }
-            }
-        },
-        computed: {},
-        methods: {
-            async setLanguage(language) {
-                let _this = this;
-                this.defautLang = language.selectedVal;
-                store.commit("setDefaultLanguage", language);
-                this.$i18n.locale = language.selectedVal.toLowerCase();
-                await loadLocaleMessages(this.$i18n.locale);
-                this.languageData = JSON.parse(store.state.languageLabel);
-                _this.$forceUpdate();
-                _this.$refs.ThePrimaryFooter.$forceUpdate();
-            },
-            async createConnection() {
-                await databaseConnection(this.langList).then(response => {
-                    this.isShowComponent = true;
-                    //Get langauage list from Local Storage
-                    this.langList = JSON.parse(store.state.listOfLanguage);
-                    this.defautLang = store.state.defaultLanguage;
-
-                    // Get tenant setting
-                    tenantSetting();
-
-                    this.isShowSlider = true;
-                    loadLocaleMessages(store.state.defaultLanguage).then(response => {
-                        this.languageData = JSON.parse(store.state.languageLabel);
-                    });
-                });
-            },
-            handleSubmit(e) {
-                this.submitted = true;
-                // Stop here if form is invalid
-                this.$v.$touch();
-                if (this.$v.$invalid) {
-                    return;
-                }
-                // Call to Forgot Password service with params email address and password
-                forgotPassword(this.forgotPassword).then(response => {
-                    if (response.error === true) {
-                        this.message = null;
-                        this.showDismissibleAlert = true;
-                        this.classVariant = "danger";
-                        // Set error message
-                        this.message = response.message;
-                    } else {
-                        this.message = null;
-                        this.showDismissibleAlert = true;
-                        this.classVariant = "success";
-                        // Set success message
-                        this.message = response.message;
-                        //Reset to blank
-                        this.submitted = false;
-                        this.forgotPassword.email = "";
-                        this.$v.$reset();
-                    }
-                });
-            }
-        },
-        mounted() {
-            //Autofocus
-            this.$refs.email.focus();
-        },
-        created() {
-            this.createConnection();
-            this.languageData = JSON.parse(store.state.languageLabel);
-            // Set language list and default language fetch from Local Storage
-            this.langList =
-                localStorage.getItem("listOfLanguage") !== null ?
-                JSON.parse(localStorage.getItem("listOfLanguage")) :
-                [];
-            this.defautLang = localStorage.getItem("defaultLanguage");
+    validations: {
+      forgotPassword: {
+        email: {
+          required,
+          email
         }
-    };
+      }
+    },
+    computed: {},
+    methods: {
+      async setLanguage(language) {
+        this.defautLang = language.selectedVal;
+        store.commit("setDefaultLanguage", language);
+        this.$i18n.locale = language.selectedVal.toLowerCase();
+        await loadLocaleMessages(this.$i18n.locale);
+        this.languageData = JSON.parse(store.state.languageLabel);
+        this.$forceUpdate();
+        this.$refs.ThePrimaryFooter.$forceUpdate();
+      },
+      async createConnection() {
+        await databaseConnection(this.langList).then(() => {
+          this.isShowComponent = true;
+          //Get langauage list from Local Storage
+          this.langList = JSON.parse(store.state.listOfLanguage);
+          this.defautLang = store.state.defaultLanguage;
+
+          // Get tenant setting
+          tenantSetting();
+
+          this.isShowSlider = true;
+          loadLocaleMessages(store.state.defaultLanguage).then(() => {
+            this.languageData = JSON.parse(store.state.languageLabel);
+          });
+        });
+      },
+      handleSubmit() {
+        this.submitted = true;
+        // Stop here if form is invalid
+        this.$v.$touch();
+        if (this.$v.$invalid) {
+          return;
+        }
+        // Call to Forgot Password service with params email address and password
+        forgotPassword(this.forgotPassword).then(response => {
+          if (response.error === true) {
+            this.message = null;
+            this.showDismissibleAlert = true;
+            this.classVariant = "danger";
+            // Set error message
+            this.message = response.message;
+          } else {
+            this.message = null;
+            this.showDismissibleAlert = true;
+            this.classVariant = "success";
+            // Set success message
+            this.message = response.message;
+            //Reset to blank
+            this.submitted = false;
+            this.forgotPassword.email = "";
+            this.$v.$reset();
+          }
+        });
+      }
+    },
+    mounted() {
+      //Autofocus
+      this.$refs.email.focus();
+    },
+    created() {
+      this.createConnection();
+      this.languageData = JSON.parse(store.state.languageLabel);
+      // Set language list and default language fetch from Local Storage
+      this.langList =
+        localStorage.getItem("listOfLanguage") !== null ?
+          JSON.parse(localStorage.getItem("listOfLanguage")) :
+          [];
+      this.defautLang = localStorage.getItem("defaultLanguage");
+    }
+  };
 </script>

@@ -107,309 +107,308 @@
 </template>
 
 <script>
-    import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
-    import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
-    import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-    import GridView from "../components/MissionGridView";
-    import ListView from "../components/MissionListView";
-    import AppCustomDropdown from "../components/AppCustomDropdown";
-    import AppCustomChip from "../components/AppCustomChip";
-    import store from '../store';
-    import {
-        missionListing,
-        missionFilterListing,
-        searchUser
-    } from '../services/service';
-    import constants from '../constant';
-    import { setTimeout } from 'timers';
+  import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+  import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
+  import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
+  import GridView from "../components/MissionGridView";
+  import ListView from "../components/MissionListView";
+  import AppCustomDropdown from "../components/AppCustomDropdown";
+  import AppCustomChip from "../components/AppCustomChip";
+  import store from '../store';
+  import {
+    missionListing,
+    missionFilterListing,
+    searchUser
+  } from '../services/service';
+  import constants from '../constant';
+  import { setTimeout } from 'timers';
 
-    export default {
-        components: {
-            ThePrimaryHeader,
-            TheSecondaryHeader,
-            TheSecondaryFooter,
-            GridView,
-            ListView,
-            AppCustomDropdown,
-            AppCustomChip
+  export default {
+    components: {
+      ThePrimaryHeader,
+      TheSecondaryHeader,
+      TheSecondaryFooter,
+      GridView,
+      ListView,
+      AppCustomDropdown,
+      AppCustomChip
+    },
+
+    name: "home",
+
+    data() {
+      return {
+        rows: 0,
+        relatedMission: false,
+        perPage: 10,
+        currentPage: 1,
+        sortByOptions: [
+          ["newest", "newest"],
+          ["oldest", "oldest"],
+          ["lowest_available_seats", "lowest_available_seats"],
+          ["highest_available_seats", "highest_available_seats"],
+          ["my_favourite", "my_favourite"],
+          ["deadline", "deadline"]
+        ],
+        sortByDefault: '',
+        missionList: [],
+        activeView: "gridView",
+        filter: [],
+        search: "",
+        selectedfilterParams: {
+          countryId: "",
+          cityId: "",
+          themeId: "",
         },
-
-        name: "home",
-
-        data() {
-            return {
-                rows: 0,
-                relatedMission: false,
-                perPage: 10,
-                currentPage: 1,
-                sortByOptions: [
-                    ["newest", "newest"],
-                    ["oldest", "oldest"],
-                    ["lowest_available_seats", "lowest_available_seats"],
-                    ["highest_available_seats", "highest_available_seats"],
-                    ["my_favourite", "my_favourite"],
-                    ["deadline", "deadline"]
-                ],
-                sortByDefault: '',
-                missionList: [],
-                activeView: "gridView",
-                filter: [],
-                search: "",
-                selectedfilterParams: {
-                    countryId: "",
-                    cityId: "",
-                    themeId: "",
-                },
-                isShownComponent: false,
-                filterData: {
-                    "search": "",
-                    "countryId": "",
-                    "cityId": "",
-                    "themeId": "",
-                    "skillId": "",
-                    "exploreMissionType": "",
-                    "exploreMissionParams": "",
-                    "tags": [],
-                    "sortBy": "",
-                    "currentView" : 0
-                },
-                tabNumber : 0,
-                tags: "",
-                sortByFilterSet: true,
-                userList: [],
-                languageData: [],
-                isTotalMissionDisplay: true,
-                isQuickAccessDisplay: true,
-                isThemeDisplay: true,
-                isSkillDisplay: true,
-                isCountrySelectionSet: false,
-                totalPages: 0,
-                defaultCountry: 0,
-                isAjaxCall :true,
-                hideEllipsis:true
-            };
+        isShownComponent: false,
+        filterData: {
+          "search": "",
+          "countryId": "",
+          "cityId": "",
+          "themeId": "",
+          "skillId": "",
+          "exploreMissionType": "",
+          "exploreMissionParams": "",
+          "tags": [],
+          "sortBy": "",
+          "currentView" : 0
         },
+        tabNumber : 0,
+        tags: "",
+        sortByFilterSet: true,
+        userList: [],
+        languageData: [],
+        isTotalMissionDisplay: true,
+        isQuickAccessDisplay: true,
+        isThemeDisplay: true,
+        isSkillDisplay: true,
+        isCountrySelectionSet: false,
+        totalPages: 0,
+        defaultCountry: 0,
+        isAjaxCall :true,
+        hideEllipsis:true
+      };
+    },
 
-        methods: {
-            storeSearch(searchString) {
-                this.search = searchString
-            },
-            handleScroll() {
-                let body = document.querySelector("body");
-                let bheader = document.querySelector("header");
-                let bheaderTop = bheader.offsetHeight;
-                if (window.scrollY > bheaderTop) {
-                    body.classList.add("small-header");
-                } else {
-                    body.classList.remove("small-header");
-                }
-            },
+    methods: {
+      storeSearch(searchString) {
+        this.search = searchString
+      },
+      handleScroll() {
+        let body = document.querySelector("body");
+        let bheader = document.querySelector("header");
+        let bheaderTop = bheader.offsetHeight;
+        if (window.scrollY > bheaderTop) {
+          body.classList.add("small-header");
+        } else {
+          body.classList.remove("small-header");
+        }
+      },
 
-            updateSortTitle(value) {
-                store.commit("sortByFilter", value.selectedId)
-                this.sortByDefault = value.selectedVal;
-                this.getMissions();
-            },
-            //Mission listing
-            async getMissions(parmas = "") {
-                if (store.state.clearFilterSet == "") {
-                    this.isAjaxCall = true
-                }
-                let filter = {};
-                filter.page = this.currentPage
-                filter.search = store.state.search
-                filter.countryId = store.state.countryId
-                filter.cityId = store.state.cityId
-                filter.themeId = store.state.themeId
-                filter.skillId = store.state.skillId
-                filter.exploreMissionType = store.state.exploreMissionType
-                filter.exploreMissionParams = store.state.exploreMissionParams
-                filter.sortBy = store.state.sortBy
-                filter.currentView = this.tabNumber
-                filter.addLoader = parmas
-                await missionListing(filter).then(response => {
-                    if (response.data) {
-                        console.log(response.data)
-                        this.missionList = response.data;
-                    } else {
-                        this.missionList = [];
-                    }
-                    if (response.pagination) {
-                        this.rows = response.pagination.total;
-                        this.perPage = response.pagination.per_page;
-                        this.currentPage = response.pagination.current_page;
-                        this.totalPages = response.pagination.total_pages;
-                    } else {
-                        this.rows = 0;
-                        if (this.currentPage != 1) {
-                            this.currentPage = 1;
-                            this.getMissions();
-                        }
-                    }
-
-                    this.isShownComponent = true;
-                    this.isAjaxCall = false
-                    if (store.state.search != null) {
-                        this.search = store.state.search;
-                    }
-                    if (store.state.tags != null) {
-                        this.tags = JSON.parse(store.state.tags);
-                    }
-                    if (store.state.sortBy != null && store.state.sortBy != '') {
-                        let sortBy = store.state.sortBy;
-
-                        setTimeout(() => {
-                            this.sortByDefault = this.languageData.label[sortBy];
-                        }, 200);
-                    }
-
-                });
-            },
-
-            async missionFilter() {
-
-                await missionFilterListing().then(() => {
-                    this.tabNumber = store.state.currentView
-                    this.getMissions();
-                });
-            },
-            changeCurrentView(number) {
-                this.tabNumber = number
-                store.commit('changeCurrentView' ,number)
-                this.getMissions();
-            },
-
-            pageChange(page) {
-                //Change pagination
-                setTimeout(() => {
-                    window.scrollTo({
-                        'behavior': 'smooth',
-                        'top': 0
-                    }, 0);
-                });
-                this.currentPage = page;
-                this.getMissions();
-            },
-
-            searchMissions(searchParams, filterParmas) {
-
-                this.filterData.search = searchParams;
-                // if (store.state.exploreMissionType == '') {
-                this.filterData.countryId = filterParmas.countryId;
-                // } else {
-                //     this.filterData.countryId = '';
-                // }
-
-                // if (store.state.exploreMissionType == '') {
-                this.filterData.cityId = filterParmas.cityId;
-                // } else {
-                //     this.filterData.cityId = '';
-                // }
-
-                this.filterData.themeId = filterParmas.themeId;
-                this.filterData.skillId = filterParmas.skillId;
-                this.filterData.tags = filterParmas.tags;
-                this.filterData.sortBy = '';
-                this.filterData.currentView = this.tabNumber;
-                if (store.state.sortBy != null) {
-                    this.filterData.sortBy = store.state.sortBy;
-                }
-                store.commit('userFilter', this.filterData)
-                this.getMissions();
-            },
-
-            changeView(currentView) {
-                //Change View
-                this.activeView = currentView;
-            },
-
-            exploreMisison(filters) {
-                let filteExplore = {};
-                filteExplore.exploreMissionType = '';
-                filteExplore.exploreMissionParams = '';
-                this.search = '';
-                this.filterData.search = '';
-                this.filterData.countryId = '';
-                this.filterData.cityId = '';
-                this.filterData.themeId = '';
-                this.filterData.skillId = '';
-                this.filterData.tags = '';
-                this.filterData.sortBy = '';
-                this.sortByDefault = this.languageData.label.sort_by;
-                if (filters.parmasType) {
-                    filteExplore.exploreMissionType = filters.parmasType;
-                }
-                if (filters.parmas) {
-                    filteExplore.exploreMissionParams = filters.parmas;
-                }
-
-                store.commit('userFilter', this.filterData)
-                store.commit('exploreFilter', filteExplore);
-                this.$refs.secondaryHeader.changeSearch();
-                this.getMissions();
-            },
-            changeTag(data) {
-                if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
-                    return
-                }
-                this.$refs.secondaryHeader.removeItems(data);
-            },
-            clearMissionFilter() {
-                this.$refs.secondaryHeader.clearAllFilter();
-            },
-            clearMissionFilterData() {
-                document.body.classList.add("loader-enable");
-                store.commit('clearFilterClick', 'true');
-                this.$refs.secondaryHeader.clearAllFilter();
-                document.body.classList.remove("loader-enable");
-                store.commit('clearFilterClick', '');
+      updateSortTitle(value) {
+        store.commit("sortByFilter", value.selectedId)
+        this.sortByDefault = value.selectedVal;
+        this.getMissions();
+      },
+      //Mission listing
+      async getMissions(parmas = "") {
+        if (store.state.clearFilterSet == "") {
+          this.isAjaxCall = true
+        }
+        let filter = {};
+        filter.page = this.currentPage
+        filter.search = store.state.search
+        filter.countryId = store.state.countryId
+        filter.cityId = store.state.cityId
+        filter.themeId = store.state.themeId
+        filter.skillId = store.state.skillId
+        filter.exploreMissionType = store.state.exploreMissionType
+        filter.exploreMissionParams = store.state.exploreMissionParams
+        filter.sortBy = store.state.sortBy
+        filter.currentView = this.tabNumber
+        filter.addLoader = parmas
+        await missionListing(filter).then(response => {
+          if (response.data) {
+            this.missionList = response.data;
+          } else {
+            this.missionList = [];
+          }
+          if (response.pagination) {
+            this.rows = response.pagination.total;
+            this.perPage = response.pagination.per_page;
+            this.currentPage = response.pagination.current_page;
+            this.totalPages = response.pagination.total_pages;
+          } else {
+            this.rows = 0;
+            if (this.currentPage != 1) {
+              this.currentPage = 1;
+              this.getMissions();
             }
-        },
-        created() {
-            this.languageData = JSON.parse(store.state.languageLabel);
-            this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
+          }
 
-            if (this.$route.params.searchParamsType) {
-                let filteExplore = {};
-                filteExplore.exploreMissionParams = '';
-                filteExplore.exploreMissionType = this.$route.params.searchParamsType;
-                if (this.$route.params.searchParams) {
-                    filteExplore.exploreMissionParams = this.$route.params.searchParams;
-                }
-                store.commit('exploreFilter', filteExplore);
-                store.commit('clearFilter')
-
-                this.getMissions();
-
-            } else {
-
-                let filteExplore = {};
-                filteExplore.exploreMissionType = '';
-                filteExplore.exploreMissionParams = '';
-                store.commit('exploreFilter', filteExplore);
-                // Mission listing
-                this.missionFilter();
-            }
-
-
-            this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
-            this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
-            this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
-            this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-            this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-            this.defaultCountry = store.state.defaultCountryId
-            this.activeView = 'listView'
-            searchUser().then(response => {
-                this.userList = response;
-            });
+          this.isShownComponent = true;
+          this.isAjaxCall = false
+          if (store.state.search != null) {
+            this.search = store.state.search;
+          }
+          if (store.state.tags != null) {
+            this.tags = JSON.parse(store.state.tags);
+          }
+          if (store.state.sortBy != null && store.state.sortBy != '') {
+            let sortBy = store.state.sortBy;
 
             setTimeout(() => {
-                this.sortByDefault = this.languageData.label.sort_by;
+              this.sortByDefault = this.languageData.label[sortBy];
             }, 200);
-            window.addEventListener("scroll", this.handleScroll);
-        },
-        destroyed() {
-            window.removeEventListener("scroll", this.handleScroll);
+          }
+
+        });
+      },
+
+      async missionFilter() {
+
+        await missionFilterListing().then(() => {
+          this.tabNumber = store.state.currentView
+          this.getMissions();
+        });
+      },
+      changeCurrentView(number) {
+        this.tabNumber = number
+        store.commit('changeCurrentView' ,number)
+        this.getMissions();
+      },
+
+      pageChange(page) {
+        //Change pagination
+        setTimeout(() => {
+          window.scrollTo({
+            'behavior': 'smooth',
+            'top': 0
+          }, 0);
+        });
+        this.currentPage = page;
+        this.getMissions();
+      },
+
+      searchMissions(searchParams, filterParmas) {
+
+        this.filterData.search = searchParams;
+        // if (store.state.exploreMissionType == '') {
+        this.filterData.countryId = filterParmas.countryId;
+        // } else {
+        //     this.filterData.countryId = '';
+        // }
+
+        // if (store.state.exploreMissionType == '') {
+        this.filterData.cityId = filterParmas.cityId;
+        // } else {
+        //     this.filterData.cityId = '';
+        // }
+
+        this.filterData.themeId = filterParmas.themeId;
+        this.filterData.skillId = filterParmas.skillId;
+        this.filterData.tags = filterParmas.tags;
+        this.filterData.sortBy = '';
+        this.filterData.currentView = this.tabNumber;
+        if (store.state.sortBy != null) {
+          this.filterData.sortBy = store.state.sortBy;
         }
-    };
+        store.commit('userFilter', this.filterData)
+        this.getMissions();
+      },
+
+      changeView(currentView) {
+        //Change View
+        this.activeView = currentView;
+      },
+
+      exploreMisison(filters) {
+        let filteExplore = {};
+        filteExplore.exploreMissionType = '';
+        filteExplore.exploreMissionParams = '';
+        this.search = '';
+        this.filterData.search = '';
+        this.filterData.countryId = '';
+        this.filterData.cityId = '';
+        this.filterData.themeId = '';
+        this.filterData.skillId = '';
+        this.filterData.tags = '';
+        this.filterData.sortBy = '';
+        this.sortByDefault = this.languageData.label.sort_by;
+        if (filters.parmasType) {
+          filteExplore.exploreMissionType = filters.parmasType;
+        }
+        if (filters.parmas) {
+          filteExplore.exploreMissionParams = filters.parmas;
+        }
+
+        store.commit('userFilter', this.filterData)
+        store.commit('exploreFilter', filteExplore);
+        this.$refs.secondaryHeader.changeSearch();
+        this.getMissions();
+      },
+      changeTag(data) {
+        if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
+          return
+        }
+        this.$refs.secondaryHeader.removeItems(data);
+      },
+      clearMissionFilter() {
+        this.$refs.secondaryHeader.clearAllFilter();
+      },
+      clearMissionFilterData() {
+        document.body.classList.add("loader-enable");
+        store.commit('clearFilterClick', 'true');
+        this.$refs.secondaryHeader.clearAllFilter();
+        document.body.classList.remove("loader-enable");
+        store.commit('clearFilterClick', '');
+      }
+    },
+    created() {
+      this.languageData = JSON.parse(store.state.languageLabel);
+      this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
+
+      if (this.$route.params.searchParamsType) {
+        let filteExplore = {};
+        filteExplore.exploreMissionParams = '';
+        filteExplore.exploreMissionType = this.$route.params.searchParamsType;
+        if (this.$route.params.searchParams) {
+          filteExplore.exploreMissionParams = this.$route.params.searchParams;
+        }
+        store.commit('exploreFilter', filteExplore);
+        store.commit('clearFilter')
+
+        this.getMissions();
+
+      } else {
+
+        let filteExplore = {};
+        filteExplore.exploreMissionType = '';
+        filteExplore.exploreMissionParams = '';
+        store.commit('exploreFilter', filteExplore);
+        // Mission listing
+        this.missionFilter();
+      }
+
+
+      this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
+      this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+      this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+      this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+      this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
+      this.defaultCountry = store.state.defaultCountryId
+      this.activeView = 'listView'
+      searchUser().then(response => {
+        this.userList = response;
+      });
+
+      setTimeout(() => {
+        this.sortByDefault = this.languageData.label.sort_by;
+      }, 200);
+      window.addEventListener("scroll", this.handleScroll);
+    },
+    destroyed() {
+      window.removeEventListener("scroll", this.handleScroll);
+    }
+  };
 </script>

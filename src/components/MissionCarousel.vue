@@ -3,42 +3,44 @@
 		<div v-bind:class="{ 'content-loader-wrap': true, 'slider-loader': carouselLoader}">
 			<div class="content-loader"></div>
 		</div>
-		<div class="thumb-slider" v-if="mediaCarouselList.length > 0">
-			<div v-bind:class="{
+		<div v-if="isCarouselLoaded">
+			<div class="thumb-slider" v-if="mediaCarouselList.length > 0">
+				<div v-bind:class="{
 				'gallery-top' : true,
 				'default-img': deafultImage,
 				'default-video': deafultVideo
 				}">
-				<div class="img-wrap inner-gallery-block">
-					<img :src="mediaCarouselList[0].media_path">
+					<div class="img-wrap inner-gallery-block">
+						<img :src="mediaCarouselList[0].media_path">
+					</div>
+					<div class="video-wrap inner-gallery-block">
+						<iframe id="video" width="560" height="315" :src="getEmbededPath(mediaCarouselList[0])"
+								frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen>
+						</iframe>
+					</div>
 				</div>
-				<div class="video-wrap inner-gallery-block">
-					<iframe id="video" width="560" height="315" :src="getEmbededPath(mediaCarouselList[0])"
-						frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-						allowfullscreen>
-					</iframe>
-				</div>
-			</div>
-			<carousel :nav="true" :dots="false" :items="5" :loop="loop" :mouseDrag="false" class="gallery-thumbs"
-				:margin="8" :responsive="{0:{items:3},576:{items:4},1200:{items:5}}">
-				<div class="thumbs-col" v-bind:class="{
-				'video-block': media.media_type == 'mp4', 
+				<carousel :nav="true" :dots="false" :items="5" :loop="loop" :mouseDrag="false" class="gallery-thumbs"
+						  :margin="8" :responsive="{0:{items:3},576:{items:4},1200:{items:5}}">
+					<div class="thumbs-col" v-bind:class="{
+				'video-block': media.media_type == 'mp4',
 				'img-block': media.media_type != 'mp4'}" v-for="(media , v) in mediaCarouselList" :key="v">
-					<img :src="getMediaPath(media)" v-bind:class="{'video-item': media.media_type == 'mp4'}"
-						:data-src="getEmbededPath(media)">
-					<i v-if="media.media_type == 'mp4'" class="btn-play"></i>
+						<img :src="getMediaPath(media)" v-bind:class="{'video-item': media.media_type == 'mp4'}"
+							 :data-src="getEmbededPath(media)">
+						<i v-if="media.media_type == 'mp4'" class="btn-play"></i>
+					</div>
+				</carousel>
+			</div>
+			<div class="thumb-slider" v-else>
+				<div v-bind:class="{
+					'gallery-top' : true,
+					'default-img': true
+					}">
+					<div class="img-wrap inner-gallery-block">
+						<img :src="getDefaultImage()">
+					</div>
+
 				</div>
-			</carousel>
-		</div>
-		<div class="thumb-slider" v-else>
-			<div v-bind:class="{
-				'gallery-top' : true,
-				'default-img': true
-				}">
-				<div class="img-wrap inner-gallery-block">
-					<img :src="getDefaultImage()">
-				</div>
-				
 			</div>
 		</div>
 	</div>
@@ -64,7 +66,8 @@
 				deafultImage: true,
 				deafultVideo: false,
 				loop: true,
-				defaultMediaPath: ''
+				defaultMediaPath: '',
+				isCarouselLoaded : false
 			}
 		},
 		directives: {},
@@ -75,7 +78,7 @@
 			getDefaultImage() {
 				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
 			},
-			
+
 			getMediaPath(media) {
 				if (media.media_type == 'mp4') {
 					let videoPath = media.media_path;
@@ -153,15 +156,16 @@
 								this.deafultImage = false;
 							}
 							this.defaultMediaPath = this.getMediaPath(this.mediaCarouselList[0]);
-						} 
+						}
 						this.$emit("defaultMediaPathDetail", this.defaultMediaPath);
 					}
+					this.isCarouselLoaded = true
 				})
 			}
-			
+
 			setTimeout(() => {
 				let thumbImg = document.querySelectorAll(
-					".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
+						".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
 				thumbImg.forEach((itemEvent) => {
 					itemEvent.addEventListener("click", this.handleSliderClick);
 				});
@@ -170,7 +174,7 @@
 			window.addEventListener('resize', () =>  {
 				setTimeout(() => {
 					let thumbImg = document.querySelectorAll(
-						".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
+							".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
 					thumbImg.forEach((itemEvent) => {
 						itemEvent.removeEventListener("click", this.handleSliderClick);
 						itemEvent.addEventListener("click", this.handleSliderClick);

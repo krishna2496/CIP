@@ -9,7 +9,7 @@
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{languageData.label.add_your_skills}}</h5>
                 </template>
-                <b-alert show letiant="danger" dismissible v-model="showErrorDiv">
+                <b-alert show variant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
                 <div class="multiselect-options">
@@ -20,7 +20,7 @@
                                 <span>{{fromitem.name}}</span>
                                 <b-button @click="addToList(fromitem.id)">
                                     <img :src="$store.state.imagePath+'/assets/images/plus-ic.svg'"
-                                        :title="languageData.label.add" alt="plus icon sss" />
+                                         :title="languageData.label.add" alt="plus icon sss" />
                                 </b-button>
                             </li>
                         </ul>
@@ -31,7 +31,7 @@
                                 <span>{{toitem.name}}</span>
                                 <b-button @click="removeFromToList(toitem.id)">
                                     <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'"
-                                        :title="languageData.label.remove" alt="cross icon" />
+                                         :title="languageData.label.remove" alt="cross icon" />
                                 </b-button>
                             </li>
                         </ul>
@@ -47,125 +47,121 @@
     </div>
 </template>
 <script>
-    import {
-        setTimeout
-    } from "timers";
-    import store from "../store";
+  import store from "../store";
 
-    export default {
-        name: "Multiselect",
-        props: {
-            fromList: Array,
-            toList: Array,
-        },
-        data() {
-            return {
-                languageData: [],
-                selectedListIndexs: [],
-                updated: false,
-                selectList: [],
-                myclass: ["skill-modal"],
-                showErrorDiv: false,
-                message: '',
-                closeClick: true,
-                dataFromList: this.fromList,
-                dataToList: this.toList,
-                resetButtonDisable:true
-            };
-        },
-        mounted() {
-            let skillModel = this.$refs.skillModal;
-        },
-        methods: {
-            handleclick() {
-                let fromListGroup = document.querySelectorAll(".fromlist-group li");
-                for (let i = 0; i < fromListGroup.length; ++i) {
-                    fromListGroup[i].addEventListener("click", this.handleSelected);
-                }
-            },
-            showSkillModal: function () {
-                let filteredObj = this.toList.filter((toItem, toIndex) => {
-                    let filteredObj = this.fromList.filter( (fromItem, fromIndex) => {
-                        if (toItem.id == fromItem.id) {
-                            this.fromList.splice(fromIndex, 1);
-                        }
-                    });
-                });
-                this.$refs.skillModal.show();
-            },
-            hideModal() {
-                if (this.closeClick) {
-                    if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !==
-                        null) {
-                        this.$emit("resetPreviousData");
-                    } else {
-                        this.dataFromList = [];
-                        this.dataToList = [];
-                        this.$emit("resetData");
-                    }
-                } else {
-                    this.toList = this.toList;
-                }
-            },
-            // Add to list
-            addToList(id) {
-                this.closeClick = true;
-                if (this.toList.length <= 14) {
-                    let filteredObj = this.fromList.filter( (item, i) => {
-                        if (item.id == id) {
-                            this.fromList.splice(i, 1);
-                            return item;
-                        }
-                    });
-                    this.toList.push(filteredObj[0])
-                    this.showErrorDiv = false
-                } else {
-                    this.showErrorDiv = true,
-                    this.message = this.languageData.errors.max_skill_selection
-                }
-                
-                this.resetButtonDisable = false
-            },
-            // Remove data from to list 
-            removeFromToList(id) {
-                this.closeClick = true;
-                let filteredObj = this.toList.filter( (item, i) => {
-                    if (item.id == id) {
-                        this.toList.splice(i, 1);
-                        return item;
-                    }
-                });
-                this.fromList.push(filteredObj[0])
-                this.fromList.sort();
-                this.fromList.sort(function (first, next) {
-                    first = first.name;
-                    next = next.name;
-                    return first < next ? -1 : (first > next ? 1 : 0);
-                });
-                this.resetButtonDisable = false
-            },
-            resetSkill() {
-                if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !==
-                    null) {
-                    this.$emit("resetPreviousData");
-                } else {
-                    this.dataFromList = [];
-                    this.dataToList = [];
-                    this.$emit("resetData");
-                }
-                this.closeClick = false;
-            },
-            saveSkill() {
-                store.commit("saveCurrentSkill", this.toList)
-                store.commit("saveCurrentFromSkill", this.fromList)
-                this.$emit("saveSkillData");
-                this.showErrorDiv = false
-                this.$refs.skillModal.hide();
-                this.closeClick = false;
-            }
-        },
-        created() {
-            this.languageData = JSON.parse(store.state.languageLabel);
+  export default {
+    name: "Multiselect",
+    props: {
+      fromList: Array,
+      toList: Array,
+    },
+    data() {
+      return {
+        languageData: [],
+        selectedListIndexs: [],
+        updated: false,
+        selectList: [],
+        myclass: ["skill-modal"],
+        showErrorDiv: false,
+        message: '',
+        closeClick: true,
+        dataFromList: this.fromList,
+        dataToList: this.toList,
+        resetButtonDisable:true
+      };
+    },
+
+    methods: {
+      handleclick() {
+        let fromListGroup = document.querySelectorAll(".fromlist-group li");
+        for (let i = 0; i < fromListGroup.length; ++i) {
+          fromListGroup[i].addEventListener("click", this.handleSelected);
         }
-    };
+      },
+      showSkillModal: function () {
+        this.toList.filter((toItem) => {
+          this.fromList.filter( (fromItem, fromIndex) => {
+            if (toItem.id == fromItem.id) {
+              this.fromList.splice(fromIndex, 1);
+            }
+          });
+        });
+        this.$refs.skillModal.show();
+      },
+      hideModal() {
+        if (this.closeClick) {
+          if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !==
+            null) {
+            this.$emit("resetPreviousData");
+          } else {
+            this.dataFromList = [];
+            this.dataToList = [];
+            this.$emit("resetData");
+          }
+        } else {
+          this.toList = this.toList;
+        }
+        this.resetButtonDisable = true
+      },
+      // Add to list
+      addToList(id) {
+        this.closeClick = true;
+        if (this.toList.length <= 14) {
+          let filteredObj = this.fromList.filter( (item, i) => {
+            if (item.id == id) {
+              this.fromList.splice(i, 1);
+              return item;
+            }
+          });
+          this.toList.push(filteredObj[0])
+          this.showErrorDiv = false
+        } else {
+          this.showErrorDiv = true,
+            this.message = this.languageData.errors.max_skill_selection
+        }
+
+        this.resetButtonDisable = false
+      },
+      // Remove data from to list
+      removeFromToList(id) {
+        this.closeClick = true;
+        let filteredObj = this.toList.filter( (item, i) => {
+          if (item.id == id) {
+            this.toList.splice(i, 1);
+            return item;
+          }
+        });
+        this.fromList.push(filteredObj[0])
+        this.fromList.sort();
+        this.fromList.sort(function (first, next) {
+          first = first.name;
+          next = next.name;
+          return first < next ? -1 : (first > next ? 1 : 0);
+        });
+        this.resetButtonDisable = false
+      },
+      resetSkill() {
+        if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !==
+          null) {
+          this.$emit("resetPreviousData");
+        } else {
+          this.dataFromList = [];
+          this.dataToList = [];
+          this.$emit("resetData");
+        }
+        this.closeClick = false;
+      },
+      saveSkill() {
+        store.commit("saveCurrentSkill", this.toList)
+        store.commit("saveCurrentFromSkill", this.fromList)
+        this.$emit("saveSkillData");
+        this.showErrorDiv = false
+        this.$refs.skillModal.hide();
+        this.closeClick = false;
+      }
+    },
+    created() {
+      this.languageData = JSON.parse(store.state.languageLabel);
+    }
+  };
 </script>

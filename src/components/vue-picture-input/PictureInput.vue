@@ -3,11 +3,11 @@
 		<div v-if="!supportsUpload" v-html="strings.upload"></div>
 		<div v-else-if="supportsPreview">
 			<div class="preview-container"
-				:style="{maxWidth: previewWidth + 'px', height: previewHeight + 'px', borderRadius: radius + '%'}">
+				 :style="{maxWidth: previewWidth + 'px', height: previewHeight + 'px', borderRadius: radius + '%'}">
 				<img :src="prefillUrl" class="picture-preview" height="100%"
-					@dragstart.stop.prevent="onDragStart"
-					@dragenter.stop.prevent="onDragStart" @dragend.stop.prevent="onDragStop"
-					@dragleave.stop.prevent="onDragStop" @drop.stop.prevent="onFileDrop" @click.prevent="onClick" />
+					 @dragstart.stop.prevent="onDragStart"
+					 @dragenter.stop.prevent="onDragStart" @dragend.stop.prevent="onDragStop"
+					 @dragleave.stop.prevent="onDragStop" @drop.stop.prevent="onFileDrop" @click.prevent="onClick" />
 				<!--  <canvas ref="previewCanvas"
             class="picture-preview"
             :class="computedClasses"
@@ -30,19 +30,19 @@
 			</div>
 			<button @click.prevent="selectImage" class="btn">{{ strings.change }}</button>
 			<button v-if="imageSelected && removable" @click.prevent="removeImage"
-				:class="removeButtonClass">{{ strings.remove }}</button>
+					:class="removeButtonClass">{{ strings.remove }}</button>
 			<button v-if="imageSelected && toggleAspectRatio && width !== height" @click.prevent="rotateImage"
-				:class="aspectButtonClass">{{ strings.aspect }}</button>
+					:class="aspectButtonClass">{{ strings.aspect }}</button>
 		</div>
 		<div v-else>
 			<button v-if="!imageSelected" @click.prevent="selectImage"
-				:class="buttonClass">{{ strings.select }}</button>
+					:class="buttonClass">{{ strings.select }}</button>
 			<div v-else>
 				<div v-html="strings.selected"></div>
 				<button v-if="!hideChangeButton" @click.prevent="selectImage"
-					:class="buttonClass">{{ strings.change }}</button>
+						:class="buttonClass">{{ strings.change }}</button>
 				<button v-if="removable" @click.prevent="removeImage"
-					:class="removeButtonClass">{{ strings.remove }}</button>
+						:class="removeButtonClass">{{ strings.remove }}</button>
 			</div>
 		</div>
 		<input ref="fileInput" type="file" :name="name" :id="id" :accept="accept" @change="onFileChange">
@@ -274,7 +274,7 @@
 					return
 				}
 				if (files[0].name === this.fileName && files[0].size === this.fileSize && this.fileModified === files[0]
-					.lastModified) {
+						.lastModified) {
 					return
 				}
 
@@ -332,9 +332,9 @@
 						this.imageObject.onload = () => {
 							if (this.autoToggleAspectRatio) {
 								let canvasOrientation = this.getOrientation(this.canvasWidth, this
-									.canvasHeight)
+										.canvasHeight)
 								let imageOrientation = this.getOrientation(this.imageObject.width, this
-									.imageObject.height)
+										.imageObject.height)
 								if (canvasOrientation !== imageOrientation) {
 									this.rotateCanvas()
 								}
@@ -558,7 +558,7 @@
 			supportsUpload() {
 				if (navigator.userAgent.match(
 						/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/
-						)) {
+				)) {
 					return false
 				}
 				const el = document.createElement('input')
@@ -571,7 +571,7 @@
 			supportsDragAndDrop() {
 				const div = document.createElement('div')
 				return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && !('ontouchstart' in window ||
-					navigator.msMaxTouchPoints)
+						navigator.msMaxTouchPoints)
 			},
 			computedClasses() {
 				const classObject = {}

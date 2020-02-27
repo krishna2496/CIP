@@ -4,7 +4,7 @@
 			<ThePrimaryHeader></ThePrimaryHeader>
 		</header>
 		<main>
-			
+
 			<b-container>
 				<StoryBanner/>
 				<div class="news-detail-container" v-if="showErrorDiv">
@@ -17,10 +17,10 @@
 						<StoriesCard :storyListing="storyListing"/>
 					</div>
 					<div v-else class="cards-wrapper text-center">
-					 	<h2>{{languageData.label.stories}} {{languageData.label.not_found}}</h2>
+						<h2>{{languageData.label.stories}} {{languageData.label.not_found}}</h2>
 					</div>
 				</div>
-				
+
 				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination
 							:hide-ellipsis="hideEllipsis"
@@ -40,9 +40,9 @@
 		<back-to-top bottom="50px" right="40px" :title="languageData.label.back_to_top">
 			<i class="icon-wrap">
 				<img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
-					alt="Down Arrow" />
+					 alt="Down Arrow" />
 				<img class="img-rollover" :src="$store.state.imagePath+'/assets/images/down-arrow-black.svg'"
-					alt="Down Arrow" />
+					 alt="Down Arrow" />
 			</i>
 		</back-to-top>
 	</div>
@@ -53,8 +53,8 @@
 	import store from '../store';
 	import constants from '../constant';
 	import {
-			storyListing,
-		} from "../services/service";
+		storyListing,
+	} from "../services/service";
 
 	export default {
 		components: {
@@ -109,7 +109,7 @@
 						this.message = response.message
 					}
 					this.isPageLoaded = true
-				}) 
+				})
 			}
 		},
 		created() {

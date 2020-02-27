@@ -8,9 +8,9 @@
 			<div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
 				<div class="content-loader"></div>
 			</div>
-			
+
 			<div class="dashboard-tab-content">
-				
+
 				<b-container>
 					<div v-if="showErrorDiv">
 						<b-alert show variant="danger" dismissible v-model="showErrorDiv">
@@ -22,36 +22,36 @@
 							<div class="heading-section">
 								<h1>{{languageData.label.messages}}</h1>
 								<b-button  class="btn-bordersecondary"
-									@click="handleModal">{{languageData.label.send_message}}</b-button>
+										   @click="handleModal">{{languageData.label.send_message}}</b-button>
 							</div>
 						</div>
-							<div class="inner-content-wrap" v-if="isPageLoaded">
-								<div class="message-count-block">
-									<span class="highlighted-text" v-if="newMessage > 1">({{newMessage}}) {{languageData.label.new}} {{languageData.label.messages | firstLetterSmall}}</span>
-									<span class="highlighted-text" v-else>({{newMessage}}) {{languageData.label.new}} {{languageData.label.message | firstLetterSmall}}  </span>
-									<span v-if="messageCount > 1">({{messageCount}}) {{languageData.label.total_messages}}</span>
-									<span v-else>({{messageCount}}) {{languageData.label.message | firstLetterSmall}}</span>
-								</div>
-								
-								<ul class="message-box" v-if="messageList.length > 0">
-									<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
-										<b-button :title="languageData.label.delete" class="delete-btn" v-if="message.sent_from != 1" v-on:click="deleteMessage($event,message.messageId)" >
-											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete" />
-										</b-button>
-										<div class="title-wrap">
-											<h3>{{message.person }}</h3>
-											<span v-if="message.sent_from == 1"><b-badge href="#" variant="secondary">{{languageData.label.sent}}</b-badge> &nbsp;&nbsp;</span>
-											<span class="date-detail">{{message.date | formatDateTime}}</span>
-										</div>
-										<p>{{message.text}}</p>
-									</li>
-								</ul>
-								<ul v-else class="text-center">
-									<h2>{{languageData.label.no_messages}}</h2>
-								</ul>
+						<div class="inner-content-wrap" v-if="isPageLoaded">
+							<div class="message-count-block">
+								<span class="highlighted-text" v-if="newMessage > 1">({{newMessage}}) {{languageData.label.new}} {{languageData.label.messages | firstLetterSmall}}</span>
+								<span class="highlighted-text" v-else>({{newMessage}}) {{languageData.label.new}} {{languageData.label.message | firstLetterSmall}}  </span>
+								<span v-if="messageCount > 1">({{messageCount}}) {{languageData.label.total_messages}}</span>
+								<span v-else>({{messageCount}}) {{languageData.label.message | firstLetterSmall}}</span>
 							</div>
-							<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
-								<b-pagination
+
+							<ul class="message-box" v-if="messageList.length > 0">
+								<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
+									<b-button :title="languageData.label.delete" class="delete-btn" v-if="message.sent_from != 1" v-on:click="deleteMessage($event,message.messageId)" >
+										<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete" />
+									</b-button>
+									<div class="title-wrap">
+										<h3>{{message.person }}</h3>
+										<span v-if="message.sent_from == 1"><b-badge href="#" variant="secondary">{{languageData.label.sent}}</b-badge> &nbsp;&nbsp;</span>
+										<span class="date-detail">{{message.date | formatDateTime}}</span>
+									</div>
+									<p>{{message.text}}</p>
+								</li>
+							</ul>
+							<ul v-else class="text-center">
+								<h2>{{languageData.label.no_messages}}</h2>
+							</ul>
+						</div>
+						<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
+							<b-pagination
 									:hide-ellipsis="hideEllipsis"
 									v-model="pagination.currentPage"
 									:total-rows="pagination.total"
@@ -59,9 +59,9 @@
 									align="center"
 									@change="pageChange"
 									aria-controls="my-cardlist"
-								></b-pagination>
-							</div>
-						
+							></b-pagination>
+						</div>
+
 					</div>
 				</b-container>
 			</div>
@@ -70,7 +70,7 @@
 			<TheSecondaryFooter></TheSecondaryFooter>
 		</footer>
 		<b-modal  @hidden="hideModal" ref="sendMessageModal" :modal-class="'send-message-modal sm-popup'"
-			hide-footer centered>
+				  hide-footer centered>
 			<template slot="modal-header" slot-scope="{ close }">
 				<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
 				<h5 class="modal-title">{{languageData.label.send_us_a_message}}</h5>
@@ -88,12 +88,12 @@
 			</b-form-group>
 			<b-form-group>
 				<label>{{languageData.label.subject}}</label>
-				<b-form-input id 
-					v-model.trim="contactUs.subject" 
-					maxLength="255"
-					ref="subject"
-					:class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
-					type="text" :placeholder="languageData.placeholder.subject">
+				<b-form-input id
+							  v-model.trim="contactUs.subject"
+							  maxLength="255"
+							  ref="subject"
+							  :class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
+							  type="text" :placeholder="languageData.placeholder.subject">
 				</b-form-input>
 				<div v-if="submitted && !$v.contactUs.subject.required" class="invalid-feedback">
 					{{ languageData.errors.subject_required }}
@@ -101,10 +101,10 @@
 			</b-form-group>
 			<b-form-group>
 				<label>{{languageData.label.message}}</label>
-				<b-form-textarea id :placeholder="languageData.placeholder.message" 
-				v-model.trim="contactUs.message" 
-				:class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"
-				size="lg" no-resize rows="5"></b-form-textarea>
+				<b-form-textarea id :placeholder="languageData.placeholder.message"
+								 v-model.trim="contactUs.message"
+								 :class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"
+								 size="lg" no-resize rows="5"></b-form-textarea>
 				<div v-if="submitted && !$v.contactUs.message.required" class="invalid-feedback">
 					{{ languageData.errors.message_required }}
 				</div>
@@ -130,11 +130,11 @@
 		readMessage
 	} from "../services/service";
 	import {
-        required,
-        email,
-        numeric,
-        minLength
-    } from 'vuelidate/lib/validators';
+		required,
+		email,
+		numeric,
+		minLength
+	} from 'vuelidate/lib/validators';
 	import store from '../store';
 	export default {
 		components: {
@@ -144,24 +144,24 @@
 		},
 		name: "dashboardmessage",
 		validations: {
-            contactUs: {
-                message: {
-                    required
+			contactUs: {
+				message: {
+					required
 				},
 				subject : {
 					required
 				}
-            }
-        },
+			}
+		},
 		data() {
 			return {
 				languageData : [],
-                pagination : {
+				pagination : {
 					'currentPage' :1,
 					"total": 0,
 					"perPage": 1,
 					"totalPages": 0,
-                },
+				},
 				classVariant: 'danger',
 				isLoaderActive:true,
 				newMessage : 0,
@@ -214,23 +214,23 @@
 				})
 			},
 			submitContact() {
-                this.submitted = true;
-                this.$v.$touch();
-                if (this.$v.$invalid) {
-                    return
-                }
-                this.isAjaxCall = true;
-                let contactData = {
-                    'subject' : '',
-                    'message' : '',
-                    'admin' : null
-                }
+				this.submitted = true;
+				this.$v.$touch();
+				if (this.$v.$invalid) {
+					return
+				}
+				this.isAjaxCall = true;
+				let contactData = {
+					'subject' : '',
+					'message' : '',
+					'admin' : null
+				}
 				contactData.message = this.contactUs.message;
 				contactData.subject = this.contactUs.subject;
-                contactUs(contactData).then(response => {
-                    this.showMessageErrorDiv = true
-                    this.isAjaxCall = false;
-                    if(response.error == false) {
+				contactUs(contactData).then(response => {
+					this.showMessageErrorDiv = true
+					this.isAjaxCall = false;
+					if(response.error == false) {
 						this.classVariant = 'success';
 						this.sendMessage = response.message
 						this.contactUs.message =  ''
@@ -240,15 +240,15 @@
 						this.getMessageListing()
 						setTimeout(() => {
 							this.$refs.sendMessageModal.hide();
-							
+
 						},800);
-                    } else {
-                        this.classVariant = 'danger';
-                        this.sendMessage = response.message
-                        contactUs.subject =  ''
-                        contactUs.sendMessage =  ''
-                    }
-                })
+					} else {
+						this.classVariant = 'danger';
+						this.sendMessage = response.message
+						contactUs.subject =  ''
+						contactUs.sendMessage =  ''
+					}
+				})
 			},
 			hideModal() {
 				this.showMessageErrorDiv = false
@@ -260,8 +260,8 @@
 			handleModal() {
 				this.$refs.sendMessageModal.show()
 				setTimeout(() => {
-                    this.$refs.subject.focus();
-                }, 100)
+					this.$refs.subject.focus();
+				}, 100)
 			},
 			getMessageListing() {
 				messageListing(this.pagination.currentPage).then(response => {
@@ -309,8 +309,8 @@
 						} else {
 							if(this.pagination.currentPage != 1) {
 								this.pagination.currentPage = 1;
-                                this.getMessageListing()
-                            }
+								this.getMessageListing()
+							}
 							this.messageList = []
 							this.newMessage = 0
 							this.messageCount = 0
@@ -327,35 +327,35 @@
 			deleteMessage(event ,messageId) {
 				event.stopPropagation();
 				this.$bvModal.msgBoxConfirm(this.languageData.label.delete_message, {
-                        buttonSize: 'md',
-                        okTitle: this.languageData.label.yes,
-                        cancelTitle: this.languageData.label.no,
-                        centered: true,
-                        size: 'md',
-                        buttonSize: 'sm',
-                        okVariant: 'success',
-                        headerClass: 'p-2 border-bottom-0',
-                        footerClass: 'p-2 border-top-0',
-                        centered: true
-                    })
-                    .then(value => {
-						if (value == true) {	
-							this.isLoaderActive = true
-							deleteMessage(messageId).then(response => {
-								let variant = 'success'
-								let message = '';
-								if(response.error == true) {
-									variant = 'danger';
-									this.isLoaderActive = false
-									message = response.message
-								} else {
-									message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
-									this.getMessageListing();
-								}
-								this.makeToast(variant,message)
-							})
-						}
+					buttonSize: 'md',
+					okTitle: this.languageData.label.yes,
+					cancelTitle: this.languageData.label.no,
+					centered: true,
+					size: 'md',
+					buttonSize: 'sm',
+					okVariant: 'success',
+					headerClass: 'p-2 border-bottom-0',
+					footerClass: 'p-2 border-top-0',
+					centered: true
 				})
+						.then(value => {
+							if (value == true) {
+								this.isLoaderActive = true
+								deleteMessage(messageId).then(response => {
+									let variant = 'success'
+									let message = '';
+									if(response.error == true) {
+										variant = 'danger';
+										this.isLoaderActive = false
+										message = response.message
+									} else {
+										message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
+										this.getMessageListing();
+									}
+									this.makeToast(variant,message)
+								})
+							}
+						})
 			},
 
 			readMessages(messageId,isRead) {

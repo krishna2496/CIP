@@ -6,25 +6,25 @@ export default async() => {
     let url = process.env.VUE_APP_API_ENDPOINT + "app/tenant-settings";
 
     await axios({
-            url: url,
-            method: 'get',
-        })
-        .then((response) => {
-            let settingArray = [];
-            if (response.data.data) {
-                let responseDataArray = response.data.data;
-                responseDataArray.filter((module, index) => {
-                    settingArray[index] = module.key
-                });
+        url: url,
+        method: 'get',
+    })
+      .then((response) => {
+          let settingArray = [];
+          if (response.data.data) {
+              let responseDataArray = response.data.data;
+              responseDataArray.filter((module, index) => {
+                  settingArray[index] = module.key
+              });
 
-                responseData = response.data.data;
+              responseData = response.data.data;
 
-            } else {
-                settingArray = null
-            }
-            store.commit("setTenantSetting", settingArray);
+          } else {
+              settingArray = null
+          }
+          store.commit("setTenantSetting", settingArray);
 
-        })
-        .catch(function() {});
+      })
+      .catch(function() {});
     return responseData;
 }

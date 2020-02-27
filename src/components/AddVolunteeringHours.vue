@@ -180,7 +180,7 @@
                         {{languageData.label.cancel}}</b-button>
                     <b-button class="btn-bordersecondary" v-bind:class="{
                         disabled:isAjaxCall
-                    }" @click="saveTimeHours()">{{languageData.label.submit}}
+                    }" @click="saveTimeHours()">{{languageData.label.save}}
                     </b-button>
                 </div>
             </div>
@@ -189,287 +189,287 @@
 </template>
 
 <script>
-    import store from '../store';
-    import moment from 'moment'
-    import DatePicker from "vue2-datepicker";
-    import AppCustomDropdown from "../components/CustomFieldDropdown";
-    import {
-        required,
-        between,
-        numeric
-    } from 'vuelidate/lib/validators';
-    import FileUpload from 'vue-upload-component';
-    import {
-        addVolunteerEntry,
-        removeDocument
-    } from '../services/service';
-    import constants from '../constant';
+  import store from '../store';
+  import moment from 'moment'
+  import DatePicker from "vue2-datepicker";
+  import AppCustomDropdown from "../components/CustomFieldDropdown";
+  import {
+    required,
+    between,
+    numeric
+  } from 'vuelidate/lib/validators';
+  import FileUpload from 'vue-upload-component';
+  import {
+    addVolunteerEntry,
+    removeDocument
+  } from '../services/service';
+  import constants from '../constant';
 
-    export default {
-        name: "VolunteeringHours",
-        components: {
-            DatePicker,
-            AppCustomDropdown,
-            FileUpload
-        },
-        props: {
-            defaultWorkday: String,
-            files: Array,
-            timeEntryDefaultData: Object,
-            workDayList: Array,
-            disableDates: Array,
-            defaultHours: String,
-            defaultMinutes: String
-        },
-        data: function () {
-            return {
-                lang: '',
-                languageData: [],
-                submitted: false,
-                disabledFutureDates: new Date(),
-                fileArray: this.files,
-                showErrorDiv: false,
-                message: null,
-                fileError: "",
-                classVariant: "success",
-                isFileUploadDisplay: false,
-                isAjaxCall: false,
+  export default {
+    name: "VolunteeringHours",
+    components: {
+      DatePicker,
+      AppCustomDropdown,
+      FileUpload
+    },
+    props: {
+      defaultWorkday: String,
+      files: Array,
+      timeEntryDefaultData: Object,
+      workDayList: Array,
+      disableDates: Array,
+      defaultHours: String,
+      defaultMinutes: String
+    },
+    data: function () {
+      return {
+        lang: '',
+        languageData: [],
+        submitted: false,
+        disabledFutureDates: new Date(),
+        fileArray: this.files,
+        showErrorDiv: false,
+        message: null,
+        fileError: "",
+        classVariant: "success",
+        isFileUploadDisplay: false,
+        isAjaxCall: false,
 
-                saveVolunteerHours: {
-                    mission_id: "",
-                    date_volunteered: "",
-                    day_volunteered: "",
-                    notes: "",
-                    hours: "",
-                    minutes: "",
-                    documents: []
-                }
-            }
-        },
-        validations() {
-
-            const requiredHourValidation = (
-                (this.timeEntryDefaultData.hours == '') ||
-                (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
-            ) ? {
-                required
-            } : {};
-
-            const requiredMinuteValidation = (
-                (this.timeEntryDefaultData.minutes == '') ||
-                (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
-            ) ? {
-                required
-            } : {};
-
-            return {
-                timeEntryDefaultData: {
-                    hours: {
-                        required,
-                        numeric,
-                        between: between(0, 23),
-                        requiredHourValidation},
-                    minutes : {
-                        required,
-                        numeric,
-                        between: between(0, 59),
-                        requiredMinuteValidation},
-                    workDay: {
-                        required
-                    },
-                    notes: {
-                        required
-                    },
-                    dateVolunteered: {
-                        required
-                    }
-                }
-            }
-        },
-        methods: {
-            hourChange() {
-                if(this.timeEntryDefaultData.hours == "00") {
-                    this.timeEntryDefaultData.hours = Math.floor(this.timeEntryDefaultData.hours).toString()
-                }
-            },
-            minuteChange() {
-                if(this.timeEntryDefaultData.minutes == "00") {
-                    this.timeEntryDefaultData.minutes = Math.floor(this.timeEntryDefaultData.minutes).toString()
-                }
-            },
-            dateChange() {
-                this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
-            },
-            inputUpdate(files) {
-                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES
-                this.fileError = '';
-                let error = false
-                let duplicateUpload = false
-                let latestUpload = files[files.length - 1];
-                let latestUploadIndex = files.length - 1;
-                let latestUploadName = latestUpload.name
-                let latestUploadSize = latestUpload.size
-                let latestUploadType = latestUpload.type
-
-                files.filter((data, index) => {
-                    let fileName = data.name.split('.');
-                    fileName = fileName[fileName.length - 1].toLowerCase()
-                    if (!allowedFileTypes.includes(fileName)) {
-                        this.fileError = this.languageData.errors.invalid_file_type
-                        error = true
-                    } else {
-                        if (data.size > constants.FILE_MAX_SIZE_BYTE) {
-                            this.fileError = this.languageData.errors.file_max_size
-                            error = true
-                        }
-                    }
-                    if (index != files.length - 1) {
-                        if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
-                            latestUploadType) {
-                            this.fileError = this.languageData.errors.file_already_uploaded
-                            error = true
-                            duplicateUpload = true;
-                        }
-                    }
-                    if(error == true) {
-                        if(duplicateUpload == true) {
-                            files.splice(latestUploadIndex, 1)
-                        } else {
-                            files.splice(index, 1)
-                        }
-                    }
-                });
-            },
-            updateWorkday(value) {
-                let selectedData = {
-                    'selectedVal': '',
-                    'fieldId': ''
-                }
-                selectedData['selectedVal'] = value.selectedVal
-                selectedData['fieldId'] = 'workday';
-                this.timeEntryDefaultData.workDay = value.selectedId
-                this.$emit("updateCall", selectedData)
-            },
-            updateHours(value) {
-                let selectedData = {
-                    'selectedVal': '',
-                    'fieldId': ''
-                }
-                selectedData['selectedVal'] = value.selectedVal
-                selectedData['fieldId'] = 'hours';
-                this.timeEntryDefaultData.hours = value.selectedId
-                this.$emit("updateCall", selectedData)
-            },
-            updateMinutes(value) {
-                let selectedData = {
-                    'selectedVal': '',
-                    'fieldId': ''
-                }
-                selectedData['selectedVal'] = value.selectedVal
-                selectedData['fieldId'] = 'minutes';
-                this.timeEntryDefaultData.minutes = value.selectedId
-                this.$emit("updateCall", selectedData)
-            },
-            saveTimeHours() {
-                this.submitted = true;
-                this.$v.$touch();
-                if (this.$v.$invalid) {
-                    return;
-                }
-
-                if ((this.timeEntryDefaultData.hours == '' || this.timeEntryDefaultData.hours == '0') &&
-                    (this.timeEntryDefaultData.minutes == "0" || this.timeEntryDefaultData.minutes == "")) {
-                    return
-                }
-
-                this.fileError = '';
-                this.isAjaxCall = true;
-                const formData = new FormData();
-                let fileData = []
-                let file = this.fileArray;
-                if (file) {
-                    file.filter((fileItem) => {
-                        fileData.push(fileItem.file);
-                        formData.append('documents[]', fileItem.file);
-                    })
-                }
-                let volunteeredDate = moment(this.timeEntryDefaultData.dateVolunteered, 'YYYY-MM-DD');
-                let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
-                let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
-                formData.append('mission_id', this.timeEntryDefaultData.missionId);
-                formData.append('date_volunteered', volunteeredDate.format('YYYY-MM-DD'));
-                formData.append('day_volunteered', this.timeEntryDefaultData.workDay);
-                formData.append('notes', this.timeEntryDefaultData.notes);
-                formData.append('hours', parseInt(hours, 10));
-                formData.append('minutes', parseInt(minutes, 10));
-
-                addVolunteerEntry(formData).then(response => {
-                    if (response.error === true) {
-                        this.message = null;
-                        this.showErrorDiv = true
-                        this.classVariant = 'danger'
-                        //set error msg
-                        this.message = response.message
-                    } else {
-                        this.message = null;
-                        this.showErrorDiv = true
-                        this.classVariant = 'success'
-                        //set error msg
-                        this.message = response.message
-                        this.submitted = false;
-                        this.$emit("getTimeSheetData");
-                        this.$emit("changeTimeSheetView",volunteeredDate);
-                        setTimeout(()  => {
-                            this.$refs.timeHoursModal.hide();
-                            this.hideModal();
-                        }, 700)
-
-                    }
-                    this.isAjaxCall = false;
-                })
-
-            },
-            deleteFile(timeSheetId, documentId) {
-                let deletFile = {
-                    'timesheet_id': timeSheetId,
-                    'document_id': documentId
-                }
-
-                removeDocument(deletFile).then(response => {
-                    if (response) {
-                        this.message = null;
-                        this.showErrorDiv = true
-                        this.classVariant = 'success'
-                        this.message = this.languageData.errors.file_deleted_successfully
-                        this.timeEntryDefaultData.documents.filter((document, index) => {
-                            if (document.timesheet_document_id == documentId && document.timesheet_id ==
-                                timeSheetId) {
-                                this.timeEntryDefaultData.documents.splice(index, 1);
-                            }
-                        });
-                    } else {
-                        this.message = null;
-                        this.showErrorDiv = true
-                        this.classVariant = 'danger'
-                        this.message = response
-                    }
-
-                })
-            },
-            hideModal() {
-                this.submitted = false;
-                this.showErrorDiv = false
-                this.fileError = ''
-                this.fileArray = [];
-                this.$emit("resetModal");
-                document.querySelector('html').classList.remove('modal-open');
-            }
-
-        },
-        created() {
-            this.languageData = JSON.parse(store.state.languageLabel)
-            this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
-            this.lang = (store.state.defaultLanguage).toLowerCase();
+        saveVolunteerHours: {
+          mission_id: "",
+          date_volunteered: "",
+          day_volunteered: "",
+          notes: "",
+          hours: "",
+          minutes: "",
+          documents: []
         }
-    };
+      }
+    },
+    validations() {
+
+      const requiredHourValidation = (
+        (this.timeEntryDefaultData.hours == '') ||
+        (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
+      ) ? {
+        required
+      } : {};
+
+      const requiredMinuteValidation = (
+        (this.timeEntryDefaultData.minutes == '') ||
+        (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
+      ) ? {
+        required
+      } : {};
+
+      return {
+        timeEntryDefaultData: {
+          hours: {
+            required,
+            numeric,
+            between: between(0, 23),
+            requiredHourValidation},
+          minutes : {
+            required,
+            numeric,
+            between: between(0, 59),
+            requiredMinuteValidation},
+          workDay: {
+            required
+          },
+          notes: {
+            required
+          },
+          dateVolunteered: {
+            required
+          }
+        }
+      }
+    },
+    methods: {
+      hourChange() {
+        if(this.timeEntryDefaultData.hours == "00") {
+          this.timeEntryDefaultData.hours = Math.floor(this.timeEntryDefaultData.hours).toString()
+        }
+      },
+      minuteChange() {
+        if(this.timeEntryDefaultData.minutes == "00") {
+          this.timeEntryDefaultData.minutes = Math.floor(this.timeEntryDefaultData.minutes).toString()
+        }
+      },
+      dateChange() {
+        this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
+      },
+      inputUpdate(files) {
+        let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES
+        this.fileError = '';
+        let error = false
+        let duplicateUpload = false
+        let latestUpload = files[files.length - 1];
+        let latestUploadIndex = files.length - 1;
+        let latestUploadName = latestUpload.name
+        let latestUploadSize = latestUpload.size
+        let latestUploadType = latestUpload.type
+
+        files.filter((data, index) => {
+          let fileName = data.name.split('.');
+          fileName = fileName[fileName.length - 1].toLowerCase()
+          if (!allowedFileTypes.includes(fileName)) {
+            this.fileError = this.languageData.errors.invalid_file_type
+            error = true
+          } else {
+            if (data.size > constants.FILE_MAX_SIZE_BYTE) {
+              this.fileError = this.languageData.errors.file_max_size
+              error = true
+            }
+          }
+          if (index != files.length - 1) {
+            if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
+              latestUploadType) {
+              this.fileError = this.languageData.errors.file_already_uploaded
+              error = true
+              duplicateUpload = true;
+            }
+          }
+          if(error == true) {
+            if(duplicateUpload == true) {
+              files.splice(latestUploadIndex, 1)
+            } else {
+              files.splice(index, 1)
+            }
+          }
+        });
+      },
+      updateWorkday(value) {
+        let selectedData = {
+          'selectedVal': '',
+          'fieldId': ''
+        }
+        selectedData['selectedVal'] = value.selectedVal
+        selectedData['fieldId'] = 'workday';
+        this.timeEntryDefaultData.workDay = value.selectedId
+        this.$emit("updateCall", selectedData)
+      },
+      updateHours(value) {
+        let selectedData = {
+          'selectedVal': '',
+          'fieldId': ''
+        }
+        selectedData['selectedVal'] = value.selectedVal
+        selectedData['fieldId'] = 'hours';
+        this.timeEntryDefaultData.hours = value.selectedId
+        this.$emit("updateCall", selectedData)
+      },
+      updateMinutes(value) {
+        let selectedData = {
+          'selectedVal': '',
+          'fieldId': ''
+        }
+        selectedData['selectedVal'] = value.selectedVal
+        selectedData['fieldId'] = 'minutes';
+        this.timeEntryDefaultData.minutes = value.selectedId
+        this.$emit("updateCall", selectedData)
+      },
+      saveTimeHours() {
+        this.submitted = true;
+        this.$v.$touch();
+        if (this.$v.$invalid) {
+          return;
+        }
+
+        if ((this.timeEntryDefaultData.hours == '' || this.timeEntryDefaultData.hours == '0') &&
+          (this.timeEntryDefaultData.minutes == "0" || this.timeEntryDefaultData.minutes == "")) {
+          return
+        }
+
+        this.fileError = '';
+        this.isAjaxCall = true;
+        const formData = new FormData();
+        let fileData = []
+        let file = this.fileArray;
+        if (file) {
+          file.filter((fileItem) => {
+            fileData.push(fileItem.file);
+            formData.append('documents[]', fileItem.file);
+          })
+        }
+        let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('YYYY-MM-DD');
+        let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
+        let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
+        formData.append('mission_id', this.timeEntryDefaultData.missionId);
+        formData.append('date_volunteered', volunteeredDate);
+        formData.append('day_volunteered', this.timeEntryDefaultData.workDay);
+        formData.append('notes', this.timeEntryDefaultData.notes);
+        formData.append('hours', parseInt(hours, 10));
+        formData.append('minutes', parseInt(minutes, 10));
+
+        addVolunteerEntry(formData).then(response => {
+          if (response.error === true) {
+            this.message = null;
+            this.showErrorDiv = true
+            this.classVariant = 'danger'
+            //set error msg
+            this.message = response.message
+          } else {
+            this.message = null;
+            this.showErrorDiv = true
+            this.classVariant = 'success'
+            //set error msg
+            this.message = response.message
+            this.submitted = false;
+            this.$emit("getTimeSheetData");
+            this.$emit("changeTimeSheetView",volunteeredDate);
+            setTimeout(()  => {
+              this.$refs.timeHoursModal.hide();
+              this.hideModal();
+            }, 700)
+
+          }
+          this.isAjaxCall = false;
+        })
+
+      },
+      deleteFile(timeSheetId, documentId) {
+        let deletFile = {
+          'timesheet_id': timeSheetId,
+          'document_id': documentId
+        }
+
+        removeDocument(deletFile).then(response => {
+          if (response) {
+            this.message = null;
+            this.showErrorDiv = true
+            this.classVariant = 'success'
+            this.message = this.languageData.errors.file_deleted_successfully
+            this.timeEntryDefaultData.documents.filter((document, index) => {
+              if (document.timesheet_document_id == documentId && document.timesheet_id ==
+                timeSheetId) {
+                this.timeEntryDefaultData.documents.splice(index, 1);
+              }
+            });
+          } else {
+            this.message = null;
+            this.showErrorDiv = true
+            this.classVariant = 'danger'
+            this.message = response
+          }
+
+        })
+      },
+      hideModal() {
+        this.submitted = false;
+        this.showErrorDiv = false
+        this.fileError = ''
+        this.fileArray = [];
+        this.$emit("resetModal");
+        document.querySelector('html').classList.remove('modal-open');
+      }
+
+    },
+    created() {
+      this.languageData = JSON.parse(store.state.languageLabel)
+      this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
+      this.lang = (store.state.defaultLanguage).toLowerCase();
+    }
+  };
 </script>
