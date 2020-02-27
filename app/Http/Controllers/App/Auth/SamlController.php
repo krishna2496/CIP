@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\App\Auth;
 
-use App\Exceptions\SamlException;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Http\Controllers\Controller;
@@ -55,8 +54,8 @@ class SamlController extends Controller
     public function sso(Request $request)
     {
         $settings = $this->getIdentityProviderSettings();
-        if ($settings['idp_id'] !== $request->query('t')) {
-            SamlException::throw('ERROR_INVALID_SAML_IDENTITY_PROVIDER');
+        if (!isset($settings['idp_id']) || $settings['idp_id'] !== $request->query('t')) {
+            abort(403, trans('messages.custom_error_message.ERROR_INVALID_SAML_IDENTITY_PROVIDER'));
         }
 
         $auth = new Auth($this->getSamlSettings($settings));
@@ -65,9 +64,10 @@ class SamlController extends Controller
 
     public function acs(Request $request, User $user)
     {
+        $validationErrors = [];
         $settings = $this->getIdentityProviderSettings();
-        if ($settings['idp_id'] !== $request->query('t')) {
-            SamlException::throw('ERROR_INVALID_SAML_IDENTITY_PROVIDER');
+        if (!isset($settings['idp_id']) || $settings['idp_id'] !== $request->query('t')) {
+            abort(403, trans('messages.custom_error_message.ERROR_INVALID_SAML_IDENTITY_PROVIDER'));
         }
 
         $auth = new Auth($this->getSamlSettings($settings));
@@ -91,6 +91,7 @@ class SamlController extends Controller
             'department' => 'department',
             'linkedin' => 'linked_in_url',
             'volunteer' => 'why_i_volunteer',
+            'position' => 'title'
         ];
 
         $validProperties = [
@@ -107,6 +108,7 @@ class SamlController extends Controller
             'department',
             'linked_in_url',
             'why_i_volunteer',
+            'title'
         ];
 
         foreach ($auth->getAttributes() as $key => $attribute) {
@@ -140,7 +142,7 @@ class SamlController extends Controller
             if ($name === 'language_id') {
                 $language = $this->languageHelper->getTenantLanguageByCode($request, $value);
                 if (!$language) {
-                    SamlException::throw('ERROR_INVALID_SAML_ARGS_LANGUAGE');
+                    $validationErrors[] = 'Language';
                 }
                 $value = $language->language_id;
             }
@@ -148,7 +150,7 @@ class SamlController extends Controller
             if ($name === 'timezone_id') {
                 $timezone = $this->timezoneRepository->getTenantTimezoneByCode($value);
                 if (!$timezone) {
-                    SamlException::throw('ERROR_INVALID_SAML_ARGS_TIMEZONE');
+                     $validationErrors[] = 'Timezone';
                 }
                 $value = $timezone->timezone_id;
             }
@@ -156,12 +158,19 @@ class SamlController extends Controller
             if ($name === 'country_id') {
                 $country = $this->countryRepository->getCountryByCode($value);
                 if (!$country) {
-                    SamlException::throw('ERROR_INVALID_SAML_ARGS_COUNTRY');
+                     $validationErrors[] = 'Country';
                 }
                 $value = $country->country_id;
             }
 
             $userData[$name] = $value;
+        }
+
+        if ($validationErrors) {
+            $auth->redirectTo(
+                'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/saml-error',
+                ['errors' => implode(',', $validationErrors)]
+            );
         }
 
         if (isset($userData['city_id']) ) {
@@ -309,13 +318,13 @@ class SamlController extends Controller
             'ci_platform_instance_id' => $settings['ci_platform_instance_id'],
             'contact_info' => [
                 'email' => $userDetail->email,
-                'title' => $userDetail->title,
+                'position' => $userDetail->title,
                 'first_name' => $userDetail->first_name,
                 'last_name' => $userDetail->last_name,
                 'postal_city' => $postalCity,
                 'postal_country' => $country['ISO'],
                 'preferred_language' => $language->code,
-                'department' => $userDetail->department,
+                'department' => $userDetail->department
             ]
         ]);
 
