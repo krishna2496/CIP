@@ -530,12 +530,6 @@ class MissionRepository implements MissionInterface
             });
         }
 
-        //Explore mission by random
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
-            $missionQuery->inRandomOrder();
-        }
-        
         // Explore mission by country
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
             if ($request->input('explore_mission_type') === config('constants.THEME')) {
@@ -629,6 +623,13 @@ class MissionRepository implements MissionInterface
             $missionQuery = $missionQuery->having("average_rating", '>', '0');
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
+
+        //Explore mission by random
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
+            $missionQuery->inRandomOrder();
+        }
+        
         $page = $request->page ?? 1;
         $perPage = $request->perPage;
         $offSet = ($page-1) * $perPage;
