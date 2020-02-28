@@ -29,30 +29,12 @@ export default async(data) => {
 
                       timeSheet.filter((timeSheetItem, timeSheetIndex) => {
 
-                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
+                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'YYYY-MM-DD');
                           let dateVolunteered = momentObj.format('YYYY-MM-DD');
                           response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
                           response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
                           response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
                       });
-
-
-                  });
-              }
-              if (response.data.data) {
-                  let timeData = response.data.data
-                  timeData.filter((toItem, toIndex) => {
-                      let goalSheet = timeData[toIndex].timesheet;
-
-                      goalSheet.filter((timeSheetItem, timeSheetIndex) => {
-                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
-                          let dateVolunteered = momentObj.format('YYYY-MM-DD');
-                          response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
-                          response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
-                          response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
-                      });
-
-
                   });
               }
           }
