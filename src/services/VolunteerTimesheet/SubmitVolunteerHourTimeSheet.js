@@ -21,17 +21,17 @@ export default async(data) => {
             'token': store.state.token,
         }
     })
-        .then((response) => {
-            if (response.data.message) {
-                responseData.error = false
-                responseData.message = response.data.message
-            }
-        })
-        .catch(function(error) {
-            if (error.response.data.errors[0].message) {
-                responseData.error = true;
-                responseData.message = error.response.data.errors[0].message;
-            }
-        });
+      .then((response) => {
+          if (response.data.message) {
+              responseData.error = false
+              responseData.message = response.data.message
+          }
+      })
+      .catch(function(error) {
+          if (error.response.data.errors[0].message) {
+              responseData.error = true;
+              responseData.message = error.response.data.errors[0].message;
+          }
+      });
     return responseData;
 }

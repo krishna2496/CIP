@@ -12,13 +12,13 @@ let routes = [
         path: '/404',
         name: '404',
         component: () =>
-            import ('./views/404.vue')
+          import ('./views/404.vue')
     },
     {
         path: '/',
         name: 'login',
         component: () =>
-            import ('./views/Auth/Login.vue')
+          import ('./views/Auth/Login.vue')
     },
     {
         path: '/auth/sso',
@@ -39,7 +39,7 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/Home.vue')
+          import ('./views/Home.vue')
     },
     {
         path: '/volunteering-timesheet',
@@ -48,7 +48,7 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/VolunteeringTimesheet.vue')
+          import ('./views/VolunteeringTimesheet.vue')
     },
     {
         path: '/volunteering-history',
@@ -57,7 +57,7 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/VolunteeringHistory.vue')
+          import ('./views/VolunteeringHistory.vue')
     },
     {
         path: '/dashboard',
@@ -66,67 +66,67 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/Dashboard.vue')
+          import ('./views/Dashboard.vue')
     },
     {
         path: '/news',
         name: 'News',
         component: () =>
-            import ('./views/News.vue')
+          import ('./views/News.vue')
     },
     {
         path: '/stories',
         name: 'Stories',
         component: () =>
-            import ('./views/Stories.vue')
+          import ('./views/Stories.vue')
     },
     {
         path: '/news-detail/:newsId',
         name: 'NewsDetail',
         component: () =>
-            import ('./views/NewsDetail.vue')
+          import ('./views/NewsDetail.vue')
     },
     {
         path: '/story-detail/:storyId',
         name: 'StoryDetail',
         component: () =>
-            import ('./views/StoryDetail.vue')
+          import ('./views/StoryDetail.vue')
     },
     {
         path: '/story-preview/:storyId',
         name: 'StoryPreview',
         component: () =>
-            import ('./views/StoryDetail.vue')
+          import ('./views/StoryDetail.vue')
     },
     {
         path: '/share-story',
         name: 'ShareStory',
         component: () =>
-            import ('./views/ShareStory.vue')
+          import ('./views/ShareStory.vue')
     },
     {
         path: '/edit-story/:storyId',
         name: 'EditStory',
         component: () =>
-            import ('./views/ShareStory.vue')
+          import ('./views/ShareStory.vue')
     },
     {
         path: '/messages',
         name: 'DashboardMessage',
         component: () =>
-            import ('./views/DashboardMessage.vue')
+          import ('./views/DashboardMessage.vue')
     },
     {
         path: '/comment-history',
         name: 'DashboardComments',
         component: () =>
-            import ('./views/DashboardComments.vue')
+          import ('./views/DashboardComments.vue')
     },
     {
         path: '/my-stories',
         name: 'DashboardStories',
         component: () =>
-            import ('./views/DashboardStories.vue')
+          import ('./views/DashboardStories.vue')
     },
     {
         path: '/home/:searchParamsType/:searchParams',
@@ -135,13 +135,13 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/Home.vue')
+          import ('./views/Home.vue')
     },
     {
         path: '/reset-password/:token',
         name: 'resetPassword',
         component: () =>
-            import ('./views/Auth/ResetPassword.vue')
+          import ('./views/Auth/ResetPassword.vue')
     },
     {
         path: '/my-account',
@@ -150,19 +150,19 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/MyAccount.vue')
+          import ('./views/MyAccount.vue')
     },
     {
         path: '/forgot-password',
         name: 'forgotPassword',
         component: () =>
-            import ('./views/Auth/ForgotPassword.vue')
+          import ('./views/Auth/ForgotPassword.vue')
     },
     {
         path: '/:slug',
         name: 'cms',
         component: () =>
-            import ('./views/Cms.vue')
+          import ('./views/Cms.vue')
     },
     {
         path: '/home/:searchParamsType',
@@ -171,13 +171,13 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/Home.vue')
+          import ('./views/Home.vue')
     },
     {
         path: '/mission-detail/:misisonId',
         name: 'missionDetail',
         component: () =>
-            import ('./views/MissionDetail.vue')
+          import ('./views/MissionDetail.vue')
     },
     {
         path: '/policy/:policyPage',
@@ -186,7 +186,7 @@ let routes = [
             requiresAuth: true
         },
         component: () =>
-            import ('./views/Policy.vue')
+          import ('./views/Policy.vue')
     },
 
 ];

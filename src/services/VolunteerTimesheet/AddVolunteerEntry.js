@@ -22,17 +22,17 @@ export default async(data) => {
             'Content-Type': 'multipart/form-data'
         }
     })
-        .then((response) => {
-            if (response.data.data) {
-                responseData.error = false;
-                responseData.message = response.data.message
-            }
-        })
-        .catch(function(error) {
-            if (error.response.data.errors[0].message) {
-                responseData.error = true;
-                responseData.message = error.response.data.errors[0].message;
-            }
-        });
+      .then((response) => {
+          if (response.data.data) {
+              responseData.error = false;
+              responseData.message = response.data.message
+          }
+      })
+      .catch(function(error) {
+          if (error.response.data.errors[0].message) {
+              responseData.error = true;
+              responseData.message = error.response.data.errors[0].message;
+          }
+      });
     return responseData;
 }

@@ -19,13 +19,18 @@ export default async(exportUrl, fileName) => {
 
         let blob = new Blob([response.data], { type: "application/xlsx" });
 
-        if (navigator.appVersion.toString().indexOf('.NET') > 0){
+        if (navigator.appVersion.toString().indexOf('.NET') > 0) {
             window.navigator.msSaveBlob(blob, fileName);
         } else {
-            var link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-            link.href = URL.createObjectURL(blob);
+
+            let link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+            // Add the element to the DOM
+            link.setAttribute("type", "hidden"); // make it hidden if needed
             link.download = fileName;
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
             link.click();
+            link.remove();
         }
     });
 };

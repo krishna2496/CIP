@@ -16,11 +16,11 @@ export default async(deletFile) => {
             'token': store.state.token,
         }
     })
-        .then((response) => {
-            if (response.data.message) {
-                responseData = response.data.message
-            }
-        })
-        .catch(function() {});
+      .then((response) => {
+          if (response.data.message) {
+              responseData = response.data.message
+          }
+      })
+      .catch(function() {});
     return responseData;
 }

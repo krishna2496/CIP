@@ -1,7 +1,6 @@
 import axios from 'axios'
 import store from '../../store'
 import moment from 'moment';
-import {datesEqual} from "bootstrap-vue/esm/utils/date";
 
 export default async(data) => {
     let responseData = [];
@@ -19,28 +18,47 @@ export default async(data) => {
             'token': store.state.token,
         }
     })
-        .then((response) => {
-            if (response.data.data) {
+      .then((response) => {
 
-                if (response.data.data) {
-                    let timeData = response.data.data
-                    timeData.filter((toItem, toIndex) => {
-                        let timeSheet = timeData[toIndex].timesheet;
-                        timeSheet.filter((timeSheetItem, timeSheetIndex) => {
+          if (response.data.data) {
 
-                            let dateVolunteered = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'YYYY-MM-DD');
-                            response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = dateVolunteered.format('D');
-                            response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = dateVolunteered.format('YYYY');
-                            response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = dateVolunteered.format('M');
-                        });
+              if (response.data.data) {
+                  let timeData = response.data.data
+                  timeData.filter((toItem, toIndex) => {
+                      let timeSheet = timeData[toIndex].timesheet;
+
+                      timeSheet.filter((timeSheetItem, timeSheetIndex) => {
+
+                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
+                          let dateVolunteered = momentObj.format('YYYY-MM-DD');
+                          response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                          response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                          response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
+                      });
 
 
-                    });
-                }
-            }
+                  });
+              }
+              if (response.data.data) {
+                  let timeData = response.data.data
+                  timeData.filter((toItem, toIndex) => {
+                      let goalSheet = timeData[toIndex].timesheet;
 
-            responseData = response.data
-        })
-        .catch(function() {});
+                      goalSheet.filter((timeSheetItem, timeSheetIndex) => {
+                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
+                          let dateVolunteered = momentObj.format('YYYY-MM-DD');
+                          response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                          response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                          response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
+                      });
+
+
+                  });
+              }
+          }
+
+          responseData = response.data
+      })
+      .catch(function() {});
     return responseData;
 }

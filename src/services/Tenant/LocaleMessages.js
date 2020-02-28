@@ -24,8 +24,8 @@ export default async(lang) => {
             store.commit('setlanguageLabel', res.data.data);
             if (res.data) {
                 i18n.setLocaleMessage(
-                    res.data.locale,
-                    res.data.data
+                  res.data.locale,
+                  res.data.data
                 );
                 loadedLanguages.push(res.data.locale)
                 return Promise.resolve(setI18nLanguage(res.data.locale))

@@ -293,492 +293,492 @@
 </template>
 
 <script>
-    import store from '../../store';
-    import {
-        exploreMission,
-        policy,
-        loadLocaleMessages,
-        notificationSettingListing,
-        updateNotificationSetting,
-        clearNotification,
-        readNotification,
-        notificationListing
-    } from '../../services/service';
-    import {
-        eventBus
-    } from "../../main";
-    import constants from '../../constant';
-    import moment from 'moment'
-    import {
-        setTimeout
-    } from 'timers';
-    import AppCustomDropdown from '../../components/AppCustomDropdown';
-    export default {
-        components: {
-            AppCustomDropdown
+  import store from '../../store';
+  import {
+    exploreMission,
+    policy,
+    loadLocaleMessages,
+    notificationSettingListing,
+    updateNotificationSetting,
+    clearNotification,
+    readNotification,
+    notificationListing
+  } from '../../services/service';
+  import {
+    eventBus
+  } from "../../main";
+  import constants from '../../constant';
+  import moment from 'moment'
+  import {
+    setTimeout
+  } from 'timers';
+  import AppCustomDropdown from '../../components/AppCustomDropdown';
+  export default {
+    components: {
+      AppCustomDropdown
+    },
+    name: "PrimaryHeader",
+    data() {
+      return {
+        popoverShow: false,
+        topTheme: [],
+        topCountry: [],
+        topCountryClass: 'no-dropdown',
+        topThemeClass: 'no-dropdown',
+        topOrganizationClass: 'no-dropdown',
+        filterData: [],
+        topOrganization: [],
+        languageData: [],
+        policyPage: [],
+        isThemeDisplay: true,
+        isStoryDisplay: true,
+        isNewsDisplay: true,
+        isPolicyDisplay: true,
+        isNotificationAjaxCall: false,
+        notificationSettingList: [],
+        selectedNotification: [],
+        notificationSettingId: [],
+        notificationListing: {
+          'today': [],
+          'yesterday': [],
+          'older': []
         },
-        name: "PrimaryHeader",
-        data() {
-            return {
-                popoverShow: false,
-                topTheme: [],
-                topCountry: [],
-                topCountryClass: 'no-dropdown',
-                topThemeClass: 'no-dropdown',
-                topOrganizationClass: 'no-dropdown',
-                filterData: [],
-                topOrganization: [],
-                languageData: [],
-                policyPage: [],
-                isThemeDisplay: true,
-                isStoryDisplay: true,
-                isNewsDisplay: true,
-                isPolicyDisplay: true,
-                isNotificationAjaxCall: false,
-                notificationSettingList: [],
-                selectedNotification: [],
-                notificationSettingId: [],
-                notificationListing: {
-                    'today': [],
-                    'yesterday': [],
-                    'older': []
-                },
-                notificationCount: 0,
-                totalNotificationCount: 0,
-                isNotificationLoaded: false,
-                submitNewMissionUrl: '',
-                isSubmitNewMissionSet: true,
-                hostUrl: '',
-                getEmailNotification : 0,
-                getEmailNotificationSelected : []
-            };
-        },
-        mounted() {
+        notificationCount: 0,
+        totalNotificationCount: 0,
+        isNotificationLoaded: false,
+        submitNewMissionUrl: '',
+        isSubmitNewMissionSet: true,
+        hostUrl: '',
+        getEmailNotification : 0,
+        getEmailNotificationSelected : []
+      };
+    },
+    mounted() {
 
 
-        },
-        methods: {
-            showclearitem() {
-                let popoverBody = document.querySelector(".popover-body");
-                popoverBody.classList.add("clear-item");
-                clearNotification().then(response => {
-                    if (response.error == false) {
-                        this.notificationCount = 0
-                        this.getNotificationListing();
-                    }
-                })
-            },
-            showsetting() {
-                setTimeout(() => {
-                    let popoverBody = document.querySelector(".popover-body");
-                    popoverBody.classList.toggle("show-setting");
-                }, 150);
+    },
+    methods: {
+      showclearitem() {
+        let popoverBody = document.querySelector(".popover-body");
+        popoverBody.classList.add("clear-item");
+        clearNotification().then(response => {
+          if (response.error == false) {
+            this.notificationCount = 0
+            this.getNotificationListing();
+          }
+        })
+      },
+      showsetting() {
+        setTimeout(() => {
+          let popoverBody = document.querySelector(".popover-body");
+          popoverBody.classList.toggle("show-setting");
+        }, 150);
 
-                this.getNotificationSettingListing()
-            },
-            cancelsetting() {
-                this.selectedNotification = []
-                let popoverBody = document.querySelector(".popover-body");
-                popoverBody.classList.remove("show-setting");
-                this.$root.$emit("bv::show::popover", "notificationPopover");
-                this.notificationSettingList.filter((data, index) => {
-                    if (data.is_active == 1) {
-                        this.selectedNotification.push(data.notification_type_id)
-                    }
-                })
-            },
-            openMenu() {
-                let body = document.querySelectorAll("body, html");
-                body.forEach(function (e) {
-                    e.classList.add("open-nav");
-                });
-            },
-            closeMenu() {
-                let body = document.querySelectorAll("body, html");
-                body.forEach(function (e) {
-                    e.classList.remove("open-nav");
-                });
-            },
-            searchMenu() {
-                let body = document.querySelectorAll("body, html");
-                body.forEach(function (e) {
-                    e.classList.toggle("open-search");
-                });
-            },
-            logout() {
-                document.querySelector('body').classList.remove('small-header');
-                this.$store.commit('logoutUser');
-            },
-            menuBarclickHandler() {
+        this.getNotificationSettingListing()
+      },
+      cancelsetting() {
+        this.selectedNotification = []
+        let popoverBody = document.querySelector(".popover-body");
+        popoverBody.classList.remove("show-setting");
+        this.$root.$emit("bv::show::popover", "notificationPopover");
+        this.notificationSettingList.filter((data, index) => {
+          if (data.is_active == 1) {
+            this.selectedNotification.push(data.notification_type_id)
+          }
+        })
+      },
+      openMenu() {
+        let body = document.querySelectorAll("body, html");
+        body.forEach(function (e) {
+          e.classList.add("open-nav");
+        });
+      },
+      closeMenu() {
+        let body = document.querySelectorAll("body, html");
+        body.forEach(function (e) {
+          e.classList.remove("open-nav");
+        });
+      },
+      searchMenu() {
+        let body = document.querySelectorAll("body, html");
+        body.forEach(function (e) {
+          e.classList.toggle("open-search");
+        });
+      },
+      logout() {
+        document.querySelector('body').classList.remove('small-header');
+        this.$store.commit('logoutUser');
+      },
+      menuBarclickHandler() {
 
-                if (this.$route.params.searchParamsType) {
-                    this.filterData['parmasType'] = this.$route.params.searchParamsType;
-                }
-                if (this.$route.params.searchParams) {
-                    this.filterData['parmas'] = this.$route.params.searchParams;
-                }
-                eventBus.$emit('clearAllFilters');
-                // async () => {
-                //     await eventBus.$emit('clearAllFilters');
-                // }
-
-                eventBus.$emit('setDefaultText');
-                this.$emit('exploreMisison', this.filterData);
-                let body = document.querySelectorAll("body, html");
-                body.forEach(function (e) {
-                    e.classList.remove("open-nav");
-                });
-            },
-
-            async exploreMissions() {
-                await exploreMission().then(() => {
-                    let menuBar = JSON.parse(store.state.menubar);
-                    this.topTheme = menuBar.top_theme;
-                    this.topCountry = menuBar.top_country;
-                    this.topOrganization = menuBar.top_organization;
-                    if (this.topTheme != null && this.topTheme.length > 0) {
-                        this.topThemeClass = 'has-submenu';
-                    }
-                    if (this.topCountry != null && this.topCountry.length > 0) {
-                        this.topCountryClass = 'has-submenu';
-                    }
-                    if (this.topOrganization != null && this.topOrganization.length > 0) {
-                        this.topOrganizationClass = 'has-submenu';
-                    }
-                });
-            },
-
-            async clearFilter(value) {
-                if (store.state.isLoggedIn) {
-                    this.$router.push({
-                        name: value
-                    })
-                    setTimeout(() => {
-                        location.reload()
-                    }, 15)
-                }
-            },
-
-            getNotificationListing() {
-                notificationListing().then(response => {
-                    if (response.error == false) {
-                        if (response.data) {
-                            if (response.data.notifications) {
-                                this.notificationListing = {
-                                    'today': [],
-                                    'yesterday': [],
-                                    'older': []
-                                }
-                                this.totalNotificationCount = 0;
-                                let notificationData = response.data.notifications;
-                                notificationData.filter((data, index) => {
-
-                                    let notificationDate = moment(data.created_at).format('DD');
-                                    let todaysDate = moment().format('DD');
-                                    if (notificationDate == todaysDate) {
-                                        this.notificationListing.today.push(data)
-                                        this.totalNotificationCount++;
-                                    } else if (notificationDate == (todaysDate - 1)) {
-                                        this.notificationListing.yesterday.push(data)
-                                        this.totalNotificationCount++;
-                                    } else {
-                                        this.notificationListing.older.push(data)
-                                        this.totalNotificationCount++;
-                                    }
-
-                                })
-
-                                //  this.notificationListing
-                            } else {
-                                this.totalNotificationCount = 0;
-                                this.notificationListing = {
-                                    'today': [],
-                                    'yesterday': [],
-                                    'older': []
-                                }
-
-                            }
-                            if (response.data.unread_notifications) {
-                                this.notificationCount = response.data.unread_notifications
-                            } else {
-                                this.notificationCount = 0
-                            }
-                        } else {
-                            this.notificationCount = 0
-                            this.totalNotificationCount = 0;
-                            this.notificationListing = {
-                                'today': [],
-                                'yesterday': [],
-                                'older': []
-                            }
-
-                        }
-
-                    }
-                    this.isNotificationLoaded = true
-                })
-            },
-            getNotificationSettingListing() {
-                setTimeout(() => {
-                    if (this.totalNotificationCount <= 0) {
-                        let popoverBody = document.querySelector(".popover-body");
-                        popoverBody.classList.add("clear-item");
-                    }
-                    this.notificationSettingId = []
-                    this.selectedNotification = []
-                    this.isNotificationAjaxCall = true;
-                    notificationSettingListing().then(response => {
-                        this.isNotificationAjaxCall = false;
-                        if (response.error == false) {
-                            if (response.data) {
-                                this.notificationSettingList = response.data
-                                this.notificationSettingList.filter((data, index) => {
-                                    data.notification_type = this.languageData.label[data
-                                        .notification_type]
-                                    this.notificationSettingId.push(data
-                                        .notification_type_id);
-                                    if (data.is_active == 1) {
-                                        this.selectedNotification.push(data
-                                            .notification_type_id)
-                                    }
-                                })
-                            }
-                        }
-                    })
-                }, 100)
-            },
-            saveNotificationSetting() {
-                let data = {
-                    'settings': [],
-                    'user_settings' : []
-
-                }
-                let settingArray = []
-                let notificationEmail = 0;
-
-
-                if(this.getEmailNotificationSelected.length != 0) {
-                    data.user_settings.push({
-                        'receive_email_notification':1
-                    })
-                } else {
-                    data.user_settings.push({
-                        'receive_email_notification':0
-                    })
-                }
-
-                this.notificationSettingId.filter((data, index) => {
-                    let values = 0;
-                    if (this.selectedNotification.includes(data)) {
-                        values = 1;
-                    }
-                    settingArray.push({
-                        'notification_type_id': data,
-                        'value': values
-                    })
-
-                })
-                data.settings = settingArray
-
-                updateNotificationSetting(data).then(response => {
-                    let classVariant = 'success'
-                    if (response.error == true) {
-                        classVariant = 'danger'
-                    } else {
-                        this.cancelsetting();
-
-                        if(this.getEmailNotificationSelected.length != 0) {
-                            store.commit('changeNotificationFlag',1)
-                        } else {
-                            store.commit('changeNotificationFlag',0)
-                        }
-
-                        this.getEmailNotification = store.state.getEmailNotification;
-                        this.getEmailNotificationSelected = [];
-                        if(store.state.getEmailNotification == 1) {
-                            this.getEmailNotificationSelected.push(store.state.getEmailNotification)
-                        }
-                    }
-
-                    this.makeToast(classVariant, response.message)
-                })
-            },
-            makeToast(variant = null, message) {
-                this.$bvToast.toast(message, {
-                    variant: variant,
-                    solid: true,
-                    autoHideDelay: 3000
-                })
-            },
-            readItem(event, isRead, notificationId, link) {
-                event.stopPropagation();
-                let routeData = this.$router.resolve({
-                    path: link
-                });
-                window.open(routeData.href, '_blank');
-                if (isRead == 0 && notificationId) {
-
-                    readNotification(notificationId).then(response => {
-                        if (response.error == false) {
-                            this.getNotificationListing();
-                        }
-                    })
-                }
-            },
-            readUnreadItem(event, isRead, notificationId) {
-                event.stopPropagation();
-                readNotification(notificationId).then(response => {
-                    if (response.error == false) {
-                        this.getNotificationListing();
-                    }
-                })
-            },
-            getTooltipTitle(isRead) {
-                if (isRead == 0) {
-                    return this.languageData.label.mark_as_read
-                } else {
-                    return this.languageData.label.mark_as_un_read
-                }
-            },
-            submitNewMission() {
-                if (this.submitNewMissionUrl != '') {
-                    window.open(this.submitNewMissionUrl, '_self');
-                }
-            }
-        },
-        created() {
-            this.languageData = JSON.parse(store.state.languageLabel);
-            this.submitNewMissionUrl = store.state.submitNewMissionUrl
-            this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
-            this.hostUrl = process.env.BASE_URL;
-            this.getEmailNotification = store.state.getEmailNotification;
-            if(store.state.getEmailNotification == 1) {
-                this.getEmailNotificationSelected.push(store.state.getEmailNotification)
-            }
-            if (!store.state.isLoggedIn) {
-                this.isSubmitNewMissionSet = false
-            }
-            if (JSON.parse(store.state.policyPage) != null) {
-                this.policyPage = JSON.parse(store.state.policyPage)
-            }
-            setTimeout(function () {
-                let body = document.querySelector("body");
-                let notification_btn = document.querySelector(".btn-notification");
-                body.addEventListener("click", function () {
-                    let notification_popover = document.querySelector(
-                        ".notification-popover"
-                    );
-                    if (notification_popover != null) {
-                        notification_btn.click();
-                    }
-                });
-
-                let notificationMenu = document.querySelector(".notification-menu");
-                if (notificationMenu != null) {
-                    notificationMenu.addEventListener("click", function (e) {
-                        e.stopPropagation();
-                    });
-                }
-                let notifyStatus = document.querySelectorAll(".status");
-                notifyStatus.forEach(function (statusEvent) {
-                    statusEvent.addEventListener("mouseover", function () {
-                        setTimeout(function () {
-                            let tooltip = document.querySelector(".tooltip");
-                            tooltip.classList.add("notify-tooltip");
-                        });
-                    });
-                });
-
-
-
-                let hasmenuList = document.querySelectorAll(".menu-wrap li");
-                for (let i = 0; i < hasmenuList.length; ++i) {
-                    let anchorValue = hasmenuList[i].firstChild;
-                    anchorValue.addEventListener("click", function (e) {
-                        if (screen.width < 992) {
-                            e.stopPropagation();
-                            let parentList = e.target.parentNode;
-                            let parentUl = parentList.parentNode;
-                            let siblingList = parentUl.childNodes;
-                            if (parentList.classList.contains("active")) {
-                                parentList.classList.remove("active");
-                            } else {
-                                parentList.classList.add("active");
-                            }
-                            for (let j = 0; j < siblingList.length; ++j) {
-                                if (siblingList[j] != parentList) {
-                                    siblingList[j].classList.remove("active");
-                                } else {
-                                    let childList = parentList.getElementsByClassName(
-                                        "has-submenu"
-                                    );
-                                    for (let k = 0; k < childList.length; ++k) {
-                                        childList[k].classList.remove("active");
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-                let noMenuList = document.querySelectorAll(".menu-wrap li.no-dropdown");
-                let removeActive = document.querySelector(".navbar-toggler");
-                let breadcrumbDropdown = document.querySelector(
-                    ".breadcrumb-dropdown-wrap"
-                );
-                for (let i = 0; i < noMenuList.length; i++) {
-                    let anchor_val = noMenuList[i].firstChild;
-                    anchor_val.addEventListener("click", function (e) {
-                        if (screen.width < 992) {
-                            let body = document.querySelectorAll("body, html");
-                            body.forEach(function (e) {
-                                e.classList.remove("open-nav");
-                            });
-                        }
-                    });
-                }
-                removeActive.addEventListener("click", function () {
-                    if (screen.width < 992) {
-                        for (let i = 0; i < hasmenuList.length; ++i) {
-                            hasmenuList[i].classList.remove("active");
-                        }
-                    }
-                    if (screen.width < 768) {
-                        if (breadcrumbDropdown != null) {
-                            breadcrumbDropdown.classList.remove("open");
-                        }
-                    }
-                });
-                let backBtn = document.querySelectorAll(".btn-back");
-                backBtn.forEach(function (e) {
-                    e.addEventListener("click", function () {
-                        if (screen.width < 992) {
-                            let activeItem = e.parentNode.parentNode;
-                            activeItem.classList.remove("active");
-                        }
-                    });
-                });
-
-            }, 1000);
-            document.addEventListener("scroll", this.handscroller);
-            this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
-            this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
-            this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
-            this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
-            if (store.state.isLoggedIn) {
-                this.exploreMissions();
-                this.getNotificationListing()
-            }
-
-            window.addEventListener("resize", function () {
-                let body = document.querySelectorAll("body, html");
-                if (screen.width > 991) {
-                    body.forEach(function (e) {
-                        e.classList.remove("open-nav");
-                        e.classList.remove("open-filter");
-                    });
-                }
-            });
+        if (this.$route.params.searchParamsType) {
+          this.filterData['parmasType'] = this.$route.params.searchParamsType;
         }
-    };
+        if (this.$route.params.searchParams) {
+          this.filterData['parmas'] = this.$route.params.searchParams;
+        }
+        eventBus.$emit('clearAllFilters');
+        // async () => {
+        //     await eventBus.$emit('clearAllFilters');
+        // }
+
+        eventBus.$emit('setDefaultText');
+        this.$emit('exploreMisison', this.filterData);
+        let body = document.querySelectorAll("body, html");
+        body.forEach(function (e) {
+          e.classList.remove("open-nav");
+        });
+      },
+
+      async exploreMissions() {
+        await exploreMission().then(() => {
+          let menuBar = JSON.parse(store.state.menubar);
+          this.topTheme = menuBar.top_theme;
+          this.topCountry = menuBar.top_country;
+          this.topOrganization = menuBar.top_organization;
+          if (this.topTheme != null && this.topTheme.length > 0) {
+            this.topThemeClass = 'has-submenu';
+          }
+          if (this.topCountry != null && this.topCountry.length > 0) {
+            this.topCountryClass = 'has-submenu';
+          }
+          if (this.topOrganization != null && this.topOrganization.length > 0) {
+            this.topOrganizationClass = 'has-submenu';
+          }
+        });
+      },
+
+      async clearFilter(value) {
+        if (store.state.isLoggedIn) {
+          this.$router.push({
+            name: value
+          })
+          setTimeout(() => {
+            location.reload()
+          }, 15)
+        }
+      },
+
+      getNotificationListing() {
+        notificationListing().then(response => {
+          if (response.error == false) {
+            if (response.data) {
+              if (response.data.notifications) {
+                this.notificationListing = {
+                  'today': [],
+                  'yesterday': [],
+                  'older': []
+                }
+                this.totalNotificationCount = 0;
+                let notificationData = response.data.notifications;
+                notificationData.filter((data, index) => {
+
+                  let notificationDate = moment(data.created_at).format('DD');
+                  let todaysDate = moment().format('DD');
+                  if (notificationDate == todaysDate) {
+                    this.notificationListing.today.push(data)
+                    this.totalNotificationCount++;
+                  } else if (notificationDate == (todaysDate - 1)) {
+                    this.notificationListing.yesterday.push(data)
+                    this.totalNotificationCount++;
+                  } else {
+                    this.notificationListing.older.push(data)
+                    this.totalNotificationCount++;
+                  }
+
+                })
+
+                //  this.notificationListing
+              } else {
+                this.totalNotificationCount = 0;
+                this.notificationListing = {
+                  'today': [],
+                  'yesterday': [],
+                  'older': []
+                }
+
+              }
+              if (response.data.unread_notifications) {
+                this.notificationCount = response.data.unread_notifications
+              } else {
+                this.notificationCount = 0
+              }
+            } else {
+              this.notificationCount = 0
+              this.totalNotificationCount = 0;
+              this.notificationListing = {
+                'today': [],
+                'yesterday': [],
+                'older': []
+              }
+
+            }
+
+          }
+          this.isNotificationLoaded = true
+        })
+      },
+      getNotificationSettingListing() {
+        setTimeout(() => {
+          if (this.totalNotificationCount <= 0) {
+            let popoverBody = document.querySelector(".popover-body");
+            popoverBody.classList.add("clear-item");
+          }
+          this.notificationSettingId = []
+          this.selectedNotification = []
+          this.isNotificationAjaxCall = true;
+          notificationSettingListing().then(response => {
+            this.isNotificationAjaxCall = false;
+            if (response.error == false) {
+              if (response.data) {
+                this.notificationSettingList = response.data
+                this.notificationSettingList.filter((data, index) => {
+                  data.notification_type = this.languageData.label[data
+                    .notification_type]
+                  this.notificationSettingId.push(data
+                    .notification_type_id);
+                  if (data.is_active == 1) {
+                    this.selectedNotification.push(data
+                      .notification_type_id)
+                  }
+                })
+              }
+            }
+          })
+        }, 100)
+      },
+      saveNotificationSetting() {
+        let data = {
+          'settings': [],
+          'user_settings' : []
+
+        }
+        let settingArray = []
+        let notificationEmail = 0;
+
+
+        if(this.getEmailNotificationSelected.length != 0) {
+          data.user_settings.push({
+            'receive_email_notification':1
+          })
+        } else {
+          data.user_settings.push({
+            'receive_email_notification':0
+          })
+        }
+
+        this.notificationSettingId.filter((data, index) => {
+          let values = 0;
+          if (this.selectedNotification.includes(data)) {
+            values = 1;
+          }
+          settingArray.push({
+            'notification_type_id': data,
+            'value': values
+          })
+
+        })
+        data.settings = settingArray
+
+        updateNotificationSetting(data).then(response => {
+          let classVariant = 'success'
+          if (response.error == true) {
+            classVariant = 'danger'
+          } else {
+            this.cancelsetting();
+
+            if(this.getEmailNotificationSelected.length != 0) {
+              store.commit('changeNotificationFlag',1)
+            } else {
+              store.commit('changeNotificationFlag',0)
+            }
+
+            this.getEmailNotification = store.state.getEmailNotification;
+            this.getEmailNotificationSelected = [];
+            if(store.state.getEmailNotification == 1) {
+              this.getEmailNotificationSelected.push(store.state.getEmailNotification)
+            }
+          }
+
+          this.makeToast(classVariant, response.message)
+        })
+      },
+      makeToast(variant = null, message) {
+        this.$bvToast.toast(message, {
+          variant: variant,
+          solid: true,
+          autoHideDelay: 3000
+        })
+      },
+      readItem(event, isRead, notificationId, link) {
+        event.stopPropagation();
+        let routeData = this.$router.resolve({
+          path: link
+        });
+        window.open(routeData.href, '_blank');
+        if (isRead == 0 && notificationId) {
+
+          readNotification(notificationId).then(response => {
+            if (response.error == false) {
+              this.getNotificationListing();
+            }
+          })
+        }
+      },
+      readUnreadItem(event, isRead, notificationId) {
+        event.stopPropagation();
+        readNotification(notificationId).then(response => {
+          if (response.error == false) {
+            this.getNotificationListing();
+          }
+        })
+      },
+      getTooltipTitle(isRead) {
+        if (isRead == 0) {
+          return this.languageData.label.mark_as_read
+        } else {
+          return this.languageData.label.mark_as_un_read
+        }
+      },
+      submitNewMission() {
+        if (this.submitNewMissionUrl != '') {
+          window.open(this.submitNewMissionUrl, '_self');
+        }
+      }
+    },
+    created() {
+      this.languageData = JSON.parse(store.state.languageLabel);
+      this.submitNewMissionUrl = store.state.submitNewMissionUrl
+      this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
+      this.hostUrl = process.env.BASE_URL;
+      this.getEmailNotification = store.state.getEmailNotification;
+      if(store.state.getEmailNotification == 1) {
+        this.getEmailNotificationSelected.push(store.state.getEmailNotification)
+      }
+      if (!store.state.isLoggedIn) {
+        this.isSubmitNewMissionSet = false
+      }
+      if (JSON.parse(store.state.policyPage) != null) {
+        this.policyPage = JSON.parse(store.state.policyPage)
+      }
+      setTimeout(function () {
+        let body = document.querySelector("body");
+        let notification_btn = document.querySelector(".btn-notification");
+        body.addEventListener("click", function () {
+          let notification_popover = document.querySelector(
+            ".notification-popover"
+          );
+          if (notification_popover != null) {
+            notification_btn.click();
+          }
+        });
+
+        let notificationMenu = document.querySelector(".notification-menu");
+        if (notificationMenu != null) {
+          notificationMenu.addEventListener("click", function (e) {
+            e.stopPropagation();
+          });
+        }
+        let notifyStatus = document.querySelectorAll(".status");
+        notifyStatus.forEach(function (statusEvent) {
+          statusEvent.addEventListener("mouseover", function () {
+            setTimeout(function () {
+              let tooltip = document.querySelector(".tooltip");
+              tooltip.classList.add("notify-tooltip");
+            });
+          });
+        });
+
+
+
+        let hasmenuList = document.querySelectorAll(".menu-wrap li");
+        for (let i = 0; i < hasmenuList.length; ++i) {
+          let anchorValue = hasmenuList[i].firstChild;
+          anchorValue.addEventListener("click", function (e) {
+            if (screen.width < 992) {
+              e.stopPropagation();
+              let parentList = e.target.parentNode;
+              let parentUl = parentList.parentNode;
+              let siblingList = parentUl.childNodes;
+              if (parentList.classList.contains("active")) {
+                parentList.classList.remove("active");
+              } else {
+                parentList.classList.add("active");
+              }
+              for (let j = 0; j < siblingList.length; ++j) {
+                if (siblingList[j] != parentList) {
+                  siblingList[j].classList.remove("active");
+                } else {
+                  let childList = parentList.getElementsByClassName(
+                    "has-submenu"
+                  );
+                  for (let k = 0; k < childList.length; ++k) {
+                    childList[k].classList.remove("active");
+                  }
+                }
+              }
+            }
+          });
+        }
+        let noMenuList = document.querySelectorAll(".menu-wrap li.no-dropdown");
+        let removeActive = document.querySelector(".navbar-toggler");
+        let breadcrumbDropdown = document.querySelector(
+          ".breadcrumb-dropdown-wrap"
+        );
+        for (let i = 0; i < noMenuList.length; i++) {
+          let anchor_val = noMenuList[i].firstChild;
+          anchor_val.addEventListener("click", function (e) {
+            if (screen.width < 992) {
+              let body = document.querySelectorAll("body, html");
+              body.forEach(function (e) {
+                e.classList.remove("open-nav");
+              });
+            }
+          });
+        }
+        removeActive.addEventListener("click", function () {
+          if (screen.width < 992) {
+            for (let i = 0; i < hasmenuList.length; ++i) {
+              hasmenuList[i].classList.remove("active");
+            }
+          }
+          if (screen.width < 768) {
+            if (breadcrumbDropdown != null) {
+              breadcrumbDropdown.classList.remove("open");
+            }
+          }
+        });
+        let backBtn = document.querySelectorAll(".btn-back");
+        backBtn.forEach(function (e) {
+          e.addEventListener("click", function () {
+            if (screen.width < 992) {
+              let activeItem = e.parentNode.parentNode;
+              activeItem.classList.remove("active");
+            }
+          });
+        });
+
+      }, 1000);
+      document.addEventListener("scroll", this.handscroller);
+      this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+      this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+      this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
+      this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
+      if (store.state.isLoggedIn) {
+        this.exploreMissions();
+        this.getNotificationListing()
+      }
+
+      window.addEventListener("resize", function () {
+        let body = document.querySelectorAll("body, html");
+        if (screen.width > 991) {
+          body.forEach(function (e) {
+            e.classList.remove("open-nav");
+            e.classList.remove("open-filter");
+          });
+        }
+      });
+    }
+  };
 
 </script>
