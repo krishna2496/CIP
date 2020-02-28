@@ -218,6 +218,12 @@ class MissionRepository implements MissionInterface
         if (isset($request->organisation['organisation_detail'])) {
             $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
         }
+        if (isset($request->total_seats)) {
+            $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
+            $request->total_seats : null;
+            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+            $request->request->add(['total_seats' => $totalSeats]);
+        }
 
         if (isset($request->total_seats) && ($request->total_seats === '')) {
             $request->request->set('total_seats', null);
