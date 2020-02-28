@@ -3337,6 +3337,39 @@
         }
       }
     },
+    "/tenant-settings/activated": {
+        "get": {
+            "operationId": "GET_team4-cip-api-get-activated-settings",
+            "summary": "Admin - Get tenant activated settings (Milestone - 3)",
+            "description": "List of all the activated tenant settings",
+            "tags":[
+                "Tenant - Admin"
+            ],
+            "consumes": [
+                "multipart/form-data"
+            ],
+            "parameters": [
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "type": "string",
+                    "default": ""
+                }
+            ],
+            "responses": {
+                "200":{  
+                    "description":"Settings listed successfully"
+                },
+                "400":{  
+                    "description":"Bad Request"
+                },
+                "401":{  
+                    "description":"Unauthorized - Invalid API key or secret key"
+                }
+            }
+        }
+    },
 	"/language/{lang}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
