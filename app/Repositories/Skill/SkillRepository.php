@@ -55,47 +55,25 @@ class SkillRepository implements SkillInterface
             $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
         }
 
-        /*
-         * Search on the internal name and the translations of a skill
-         */
-        if ($request->has('search')) {
-            $searchString = $request->search;
-            $skillQuery->where(function ($query) use ($searchString, $request) {
-                $query->where('skill_name', 'like', '%' . $searchString . '%');
-                // if the language is passed through the request, we can also search in the available translation for that language
-                if ($request->has('searchLanguage')) {
-                    $language = $request->searchLanguage;
-                    /*
-                     * Regex searches in the translation of the given language ($language) for the searchString
-                     * ! Search in this won't work if the translation contains numbers or special characters
-                     * "[[:space:]|[:alpha:]]{0,60}' . $searchString . '[[:space:]|[:alpha:]]{0,60}"
-                     * means it only searches for letters and spaces before and after the $searchString
-                     */
-                    $query->orWhereRaw(
-                        'translations regexp \'{s:4:"lang";s:2:"'
-                            . $language
-                            . '";s:5:"title";s:[0-9]{1,2}:"[[:space:]|[:alpha:]]{0,60}'
-                            . $searchString
-                            . '[[:space:]|[:alpha:]]{0,60}";}\''
-                    );
-                }
-            });
-        }
-
-        /*
-         * Filtering on translations
-         * The regex here verifies that we have a translation (so no empty string)
-         * for the given language codes passed in the key 'translations' of the $request
-         */
-        if ($request->has('translations')) {
-            $availableTranslations = $request->translations;
-            $skillQuery->where(function ($query) use ($availableTranslations, $request) {
-                foreach ($availableTranslations as $languageCode) {
+        $skillQuery->when($request->has('search'), function ($query) use ($request) {
+            $query->where('skill_name', 'like', '%'.$request->search.'%');
+            $searchLanguage = $request->searchLanguage ?? '.{0,3}';
+            $query->orWhere(
+                'translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$searchLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$request->search.'[^"]*";}'
+            );
+        })->when($request->has('translations'), function ($query) use ($request) {
+            /*
+             * Filtering on translations
+             * The regex here verifies that we have a translation (so no empty string)
+             * for the given language codes passed in the key 'translations' of the $request
+             */
+            $query->where(function ($query) use ($request) {
+                foreach ($request->translations as $languageCode) {
                     // Regex searches in translations column if the translation in the $languageCode exists and its length is greater than 0
-                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"' . $languageCode . '";s:5:"title";s:[1-9][0-9]{0,1}:"');
+                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'.$languageCode.'";s:5:"title";s:[1-9][0-9]{0,1}:"');
                 }
             });
-        }
+        });
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
