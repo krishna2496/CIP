@@ -52,6 +52,7 @@ class MissionApplicationQuery implements QueryableInterface
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
             || isset($filters[self::FILTER_MISSION_TYPES]);
+
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
         $query = MissionApplication::query();
@@ -67,7 +68,7 @@ class MissionApplicationQuery implements QueryableInterface
             ])
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
-            ->join('mission_language', function ($join) use ($languageId) {
+            ->leftJoin('mission_language', function ($join) use ($languageId) {
                 $join->on('mission_language.mission_id', '=', 'mission.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
             })
@@ -79,7 +80,10 @@ class MissionApplicationQuery implements QueryableInterface
                 $join->on('country_language.country_id', '=', 'mission.country_id')
                     ->where('country_language.language_id', '=', $languageId);
             })
-            ->where('mission_language.language_id', '=', $languageId)
+            ->where(function ($query) use ($languageId) {
+                $query->whereNull('mission_language.language_id')
+                    ->orWhere('mission_language.language_id', '=', $languageId);
+            })
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
