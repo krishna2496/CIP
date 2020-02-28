@@ -112,6 +112,9 @@ trait MissionTransformable
             $mission['description'] = $missionLanguage->description ?? '';
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
+       
+        $mission['label_goal_achieved'] =  $missionLanguage->label_goal_achieved ?? '';
+        $mission['label_goal_objective'] =  $missionLanguage->label_goal_objective ?? '';
         $mission['custom_information'] = $missionLanguage->custom_information ?? null;
         unset($mission['missionLanguage']);
         // Check for apply in mission validity
@@ -196,6 +199,7 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
+      
         return $mission;
     }
 }

@@ -148,6 +148,8 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
+                "mission_detail.*.label_goal_achieved" => 'max:255',
+                "mission_detail.*.label_goal_objective" => 'max:255'
             ]
         );
         
@@ -268,6 +270,8 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
+                "mission_detail.*.label_goal_achieved" => 'max:255',
+                "mission_detail.*.label_goal_objective" => 'max:255'
             ]
         );
         
