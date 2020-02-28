@@ -695,4 +695,14 @@ class TimesheetRepository implements TimesheetInterface
     {
         return $this->timesheet->withTrashed()->where('timesheet_id', $timesheetId)->first();
     }
+
+    /**
+     * Get missionId from timesheetId
+     * @param int $timesheetId
+     * @return int
+     */
+    public function getMissionIdFromTimesheetId(int $timesheetId) : int
+    {
+        return $this->timesheet->where('timesheet_id', $timesheetId)->value('mission_id');
+    }
 }

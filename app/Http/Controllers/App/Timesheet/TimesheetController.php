@@ -300,27 +300,6 @@ class TimesheetController extends Controller
         $request->request->add(['user_id' => $request->auth->user_id]);
         $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
 
-        // Send data of the new timesheet created to Optimy app using "timesheet" queue from RabbitMQ
-        $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
-        $timesheetForOptimy = [
-            'activity_type' => 'timesheet',
-            'tenant_id' => $tenantIdAndSponsorId->tenant_id,
-            'timesheet_id' => $timesheet->timesheet_id,
-            'user_id' => $timesheet->user_id,
-            'mission_id' => $timesheet->mission_id,
-        ];
-        $this->amqp->publish(
-            'ciSynchronizer',
-            json_encode($timesheetForOptimy),
-            [
-                'queue' => 'ciSynchronizer',
-                'queue_properties' => [
-                    'x-dead-letter-exchange' => ['S', ''],
-                    'x-dead-letter-routing-key' => ['S', 'ciSynchronizer.dlq'],
-                ],
-            ]
-        );
-
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
         $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCCESSFULLY')
@@ -482,8 +461,18 @@ class TimesheetController extends Controller
             $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCCESSFULLY');
 
-            // Make activity log
+            $tenantId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request)->tenant_id;
+            $timesheetForOptimy = [
+                'activity_type' => 'timesheet',
+                'tenant_id' => $tenantId,
+                'timesheet_id' => null,
+                'user_id' => $request->auth->user_id,
+                'mission_id' => null,
+            ];
+            // Make activity log and send data to the worker
             foreach ($request->timesheet_entries as $data) {
+                $timesheetId = $data['timesheet_id'];
+
                 event(new UserActivityLogEvent(
                     config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
                     config('constants.activity_log_actions.SUBMIT_FOR_APPROVAL'),
@@ -492,8 +481,26 @@ class TimesheetController extends Controller
                     get_class($this),
                     $request->toArray(),
                     $request->auth->user_id,
-                    $data['timesheet_id']
+                    $timesheetId
                 ));
+
+                $timesheetForOptimy['timesheet_id'] = $timesheetId;
+
+                $timesheetForOptimy['mission_id'] =
+                    $this->timesheetRepository->getMissionIdFromTimesheetId($timesheetId);
+
+                // Send data of the timesheet to Optimy app using "ciSynchronizer" queue from RabbitMQ
+                $this->amqp->publish(
+                    'ciSynchronizer',
+                    json_encode($timesheetForOptimy),
+                    [
+                        'queue' => 'ciSynchronizer',
+                        'queue_properties' => [
+                            'x-dead-letter-exchange' => ['S', ''],
+                            'x-dead-letter-routing-key' => ['S', 'ciSynchronizer.dlq'],
+                        ],
+                    ]
+                );
             }
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
