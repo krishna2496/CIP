@@ -148,10 +148,6 @@ return [
         'MESSAGE_COUNTRY_UPDATED' => 'DE: Country updated successfully',
         'MESSAGE_CITY_DELETED' => 'DE: City deleted successfully',
         'MESSAGE_CITY_UPDATED' => 'DE: City updated successfully',
-        'MESSAGE_STATE_UPDATED' => 'DE: State updated successfully',
-        'MESSAGE_STATE_DELETED' => 'DE: State deleted successfully',
-        'MESSAGE_STATE_LISTING' => 'DE: State listed successfully',
-        'MESSAGE_NO_STATE_FOUND' => 'DE: State not found',
     ],
 
 
@@ -280,7 +276,5 @@ return [
 
         // For city module
         'ERROR_CITY_NOT_FOUND' => 'DE: City not found in system',
-
-        'ERROR_STATE_NOT_FOUND' => 'DE: State not found in the system',
     ]
 ];

@@ -182,11 +182,6 @@ return [
         'MESSAGE_CITY_UPDATED' => 'La ville a été mise à jour avec succès',
         'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Le fichier de langue du locataire a été trouvé avec succès',
         'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Le fichier de langue du locataire a été mis à jour avec succès',
-        'MESSAGE_STATE_CREATED' => 'État créé avec succès',
-        'MESSAGE_STATE_UPDATED' => 'État mis à jour avec succès',
-        'MESSAGE_STATE_DELETED' => 'État supprimé avec succès',
-        'MESSAGE_STATE_LISTING' => 'État répertorié avec succès',
-        'MESSAGE_NO_STATE_FOUND' => 'État non trouvé',
     ],
 
         
@@ -337,8 +332,6 @@ return [
 
         'ERROR_CITY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cette ville car elle est liée à la mission ou à l\'utilisateur',
 
-        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer ce pays car il est lié à la mission ou à l\'utilisateur',
-        'ERROR_STATE_NOT_FOUND' => 'État non trouvé dans le système',
-        'ERROR_STATE_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cet état car il s\'agit soit d\'un lien vers la mission, soit d\'un utilisateur',
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer ce pays car il est lié à la mission ou à l\'utilisateur'
     ]
 ];
