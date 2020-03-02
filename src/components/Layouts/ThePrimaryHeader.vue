@@ -662,17 +662,6 @@
                     this.policyPage = JSON.parse(store.state.policyPage)
                 }
                 setTimeout(function () {
-                    let body = document.querySelector("body");
-                    let notification_btn = document.querySelector(".btn-notification");
-                    body.addEventListener("click", function () {
-                        let notification_popover = document.querySelector(
-                            ".notification-popover"
-                        );
-                        if (notification_popover != null) {
-                            notification_btn.click();
-                        }
-                    });
-
                     let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {
                         notificationMenu.addEventListener("click", function (e) {
