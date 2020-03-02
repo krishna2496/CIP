@@ -15,6 +15,12 @@ let routes = [
           import ('./views/404.vue')
     },
     {
+        path: '/saml-error',
+        name: 'samlError',
+        component: () =>
+            import('./views/SamlError.vue')
+    },
+    {
         path: '/',
         name: 'login',
         component: () =>
