@@ -344,5 +344,6 @@ return [
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
+        'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
        ]
 ];
