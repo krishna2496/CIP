@@ -461,7 +461,7 @@ class TimesheetController extends Controller
             $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCCESSFULLY');
 
-            $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request)->tenant_id;
+            $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
             $timesheetForOptimy = [
                 'activity_type' => 'timesheet',
                 'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
