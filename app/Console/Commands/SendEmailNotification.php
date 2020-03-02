@@ -109,6 +109,7 @@ class SendEmailNotification extends Command
 
     /**
      * Create a new command instance.
+     * @codeCoverageIgnore
      *
      * @return void
      */
@@ -143,6 +144,7 @@ class SendEmailNotification extends Command
 
     /**
      * Execute the console command.
+     * @codeCoverageIgnore
      *
      * @return mixed
      */
@@ -252,6 +254,7 @@ class SendEmailNotification extends Command
 
     /**
      * Create connection with tenant's database
+     * @codeCoverageIgnore
      *
      * @param int $tenantId
      * @return int
