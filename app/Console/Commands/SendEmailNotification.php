@@ -161,7 +161,7 @@ class SendEmailNotification extends Command
                 and tenant_language.deleted_at is null
                 and tenant.tenant_id = ".env('DEFAULT_TENANT_ID')."
             ");
-        } // @codeCoverageIgnoreStart
+        } // @codeCoverageIgnoreStart 
         else {
             $this->helpers->switchDatabaseConnection('mysql');
             $tenants = DB::select("

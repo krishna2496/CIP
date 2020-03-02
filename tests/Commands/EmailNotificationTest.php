@@ -1,4 +1,5 @@
 <?php
+
 use App\Helpers\Helpers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
