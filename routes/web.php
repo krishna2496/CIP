@@ -31,10 +31,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
             'middleware' => 'tenant.connection',
         ],
         function ($router) {
-            $router->get('/sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
-            $router->post('/acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
-            $router->get('/slo', ['as' => 'saml.slo', 'uses' => 'SamlController@slo']);
-            $router->get('/metadata', ['as' => 'saml.metadata', 'uses' => 'SamlController@metadata']);
+            $router->get('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
+            $router->post('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
+            $router->post('acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
+            $router->get('slo', ['as' => 'saml.slo', 'uses' => 'SamlController@slo']);
+            $router->get('metadata', ['as' => 'saml.metadata', 'uses' => 'SamlController@metadata']);
         }
     );
 
@@ -580,6 +581,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
             $router->post('/', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@store']);
+            $router->get('/activated', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@index']);
         }
     );
 
