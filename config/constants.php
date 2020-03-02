@@ -484,10 +484,7 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => '800033',
         'ERROR_TENANT_LANGUAGE_INVALID' => '800034',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => '800035',
-        'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036',
-        'ERROR_STATE_INVALID_DATA' => '800037',
-        'ERROR_STATE_NOT_FOUND' => '800038',
-        'ERROR_STATE_ENABLE_TO_DELETE' => '800039'
+        'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036'
     ],
 
     /**
@@ -582,8 +579,7 @@ return [
         'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
-        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
-        'STATE' => 'STATE'
+        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE'
     ],
 
     'activity_log_actions' => [
