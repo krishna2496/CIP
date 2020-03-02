@@ -6361,7 +6361,20 @@
 										}
 									}
 								}
-							}							
+							},
+							"user_settings": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"receive_email_notification": {
+											"type":"integer",
+											"format":"int32",
+											"enum": [1,0]
+										}
+									}
+								}
+							}									
 						}
 					}
 				}
