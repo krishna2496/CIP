@@ -61,16 +61,16 @@ class StateRepository implements StateInterface
     */
     public function stateLists(Request $request): LengthAwarePaginator
     {
-        $cities = $this->state->with('languages')->paginate($request->perPage);
+        $states = $this->state->with('languages')->paginate($request->perPage);
 
         $languages = $this->languageHelper->getLanguages();
-        foreach ($cities as $key => $value) {
+        foreach ($states as $key => $value) {
             foreach ($value->languages as $languageValue) {
                 $languageData = $languages->where('language_id', $languageValue->language_id)->first();
                 $languageValue->language_code = $languageData->code;
             }
         }
-        return $cities;
+        return $states;
     }
 
     /**
@@ -198,16 +198,16 @@ class StateRepository implements StateInterface
     public function getStateList(Request $request, int $countryId) : LengthAwarePaginator
     {
         $this->country->findOrFail($countryId);
-        $cities = $this->state->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+        $states = $this->state->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
 
         $languages = $this->languageHelper->getLanguages();
-        foreach ($cities as $key => $value) {
+        foreach ($states as $key => $value) {
             foreach ($value->languages as $languageValue) {
                 $languageData = $languages->where('language_id', $languageValue->language_id)->first();
                 $languageValue->language_code = $languageData->code;
             }
         }
-        return $cities;
+        return $states;
     }
 
     /**
