@@ -44,12 +44,12 @@ let entryUrl = null;
 router.beforeEach(async(to, from, next) => {
     if (store.state.isLoggedIn) {
         if(store.state.isProfileComplete != 1) {
-            if(to.path != '/my-account') {
+           if(to.path != '/my-account') {
                 next({
                     name: "myAccount"
                 });
                 return;
-            }
+           }
         }
     }
     // if from path is (/) then we need to call custom css call and wait for its reponse
@@ -80,7 +80,7 @@ router.beforeEach(async(to, from, next) => {
         return;
     }
     if ((to.path === "/" || to.path === "/forgot-password" || to.path === "/reset-password") &&
-      store.state.isLoggedIn) {
+        store.state.isLoggedIn) {
         next({
             name: "home"
         });
@@ -146,7 +146,7 @@ Vue.filter('substring', (value, data) => {
 });
 
 window.addEventListener('storage', function (e) {
-    if (event.key == 'logout-event') {
+    if (event.key === 'logout-event') { 
         location.reload();
     }
 },false);
