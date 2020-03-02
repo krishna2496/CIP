@@ -32,10 +32,10 @@
 				isMessageDisplay : true,
 				languageData: [],
 				items: [{
-						id: 1,
-						name: '',
-						link: "dashboard"
-					},
+					id: 1,
+					name: '',
+					link: "dashboard"
+				},
 					{
 						id: 2,
 						name: '',
@@ -56,7 +56,7 @@
 			handleBreadcrumb() {
 				if (screen.width < 768) {
 					let breadcrumbDropdown = document.querySelector(
-						".breadcrumb-dropdown-wrap"
+							".breadcrumb-dropdown-wrap"
 					);
 					breadcrumbDropdown.classList.toggle("open");
 				}
@@ -66,7 +66,7 @@
 			setTimeout(() => {
 				if (document.querySelector(".breadcrumb") != null) {
 					let currentDashboard = document.querySelector(
-						".breadcrumb .router-link-active"
+							".breadcrumb .router-link-active"
 					).innerHTML;
 					this.currentDashboardPage = currentDashboard;
 					let currentLink = document.querySelector(".breadcrumb-current");
@@ -87,7 +87,7 @@
 			} else {
 				this.items[4].name = this.languageData.label.comment_history
 			}
-			
+
 			if(!this.isStoryDisplay) {
 				this.items.splice(5,1)
 			} else {

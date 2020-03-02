@@ -55,7 +55,7 @@
 			handleClick(e) {
 				e.stopPropagation();
 				let profile_toggle = document.querySelector(
-					".profile-menu .dropdown-toggle"
+						".profile-menu .dropdown-toggle"
 				);
 				let profile_menu = document.querySelector(".profile-menu");
 				if (profile_menu != null) {
@@ -64,10 +64,10 @@
 					}
 				}
 				let notification_btn = document.querySelector(
-					".notification-menu .nav-link .btn-notification"
+						".notification-menu .nav-link .btn-notification"
 				);
 				let notification_popover = document.querySelector(
-					".notification-popover"
+						".notification-popover"
 				);
 				if (notification_popover != null) {
 					notification_btn.click();
@@ -87,7 +87,7 @@
 				let simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
 				if (simplebarOffset != null && window.innerWidth > 1024) {
 					let simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue(
-						"width"));
+							"width"));
 					let simplebarWrapper = simplebarOffset.parentNode.parentNode;
 					simplebarWrapper.style.width = simplebarOffset_width + "px";
 					let dropdown_list = e.target.parentNode;
@@ -104,9 +104,9 @@
 					setTimeout(() => {
 						let dropdown_list_child = dropdown_list.childNodes[1];
 						let optionlist_height = parseInt(window.getComputedStyle(optionlist).getPropertyValue(
-							"height"));
+								"height"));
 						let dropdown_list_height = parseInt(window.getComputedStyle(dropdown_list_child)
-							.getPropertyValue("height"));
+								.getPropertyValue("height"));
 						let minheight_style = dropdown_list.querySelector(".dropdown-option-wrap");
 						if (dropdown_list_height > optionlist_height) {
 							minheight_style.setAttribute("style", "overflow-x:hidden");

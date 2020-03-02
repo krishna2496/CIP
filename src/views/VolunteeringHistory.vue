@@ -17,10 +17,10 @@
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_theme}}</h5>
 										<AppCustomDropdown :optionList="themeYearList" @updateCall="updateThemeYear"
-											:defaultText="ThemeYearText" translationEnable="false" />
+														   :defaultText="ThemeYearText" translationEnable="false" />
 									</div>
 									<div
-										v-bind:class="{ 'content-loader-wrap': true, 'loader-active': updatingThemeYear}">
+											v-bind:class="{ 'content-loader-wrap': true, 'loader-active': updatingThemeYear}">
 										<div class="content-loader"></div>
 									</div>
 									<div class="line-chart" v-if="perHourApiDataTheme.length && !updatingThemeYear">
@@ -37,10 +37,10 @@
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_skill}}</h5>
 										<AppCustomDropdown :optionList="skillYearList" @updateCall="updateSkillYear"
-											:defaultText="skillYearText" translationEnable="false" />
+														   :defaultText="skillYearText" translationEnable="false" />
 									</div>
 									<div
-										v-bind:class="{ 'content-loader-wrap': true, 'loader-active': updatingSkillYear}">
+											v-bind:class="{ 'content-loader-wrap': true, 'loader-active': updatingSkillYear}">
 										<div class="content-loader"></div>
 									</div>
 									<div class="line-chart" v-if="perHourApiDataSkill.length && !updatingSkillYear">
@@ -56,25 +56,25 @@
 						<b-row class="dashboard-table">
 							<b-col lg="6" class="table-col">
 								<VolunteeringRequest :headerField="timeMissionTimesheetFields"
-									:items="timeMissionTimesheetItems" :headerLable="timeMissionTimesheetLabel"
-									:currentPage="timeMissionCurrentPage" :totalRow="timeMissionTotalRow"
-									@updateCall="getVolunteerMissionsHours"
-									exportUrl="app/volunteer/history/time-mission/export" :perPage="hourRequestPerPage"
-									:nextUrl="hourRequestNextUrl"
-									:fileName="languageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
-									:totalPages="timeMissionTotalPage"
-									requestType="time"
-									 />
+													 :items="timeMissionTimesheetItems" :headerLable="timeMissionTimesheetLabel"
+													 :currentPage="timeMissionCurrentPage" :totalRow="timeMissionTotalRow"
+													 @updateCall="getVolunteerMissionsHours"
+													 exportUrl="app/volunteer/history/time-mission/export" :perPage="hourRequestPerPage"
+													 :nextUrl="hourRequestNextUrl"
+													 :fileName="languageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
+													 :totalPages="timeMissionTotalPage"
+													 requestType="time"
+								/>
 							</b-col>
 							<b-col lg="6" class="table-col">
 								<VolunteeringRequest :headerField="goalMissionTimesheetFields"
-									:items="goalMissionTimesheetItems" :headerLable="goalMissionTimesheetLabel"
-									:currentPage="goalMissionCurrentPage" :totalRow="goalMissionTotalRow"
-									:perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
-									@updateCall="getVolunteerMissionsGoals"
-									exportUrl="app/volunteer/history/goal-mission/export"
-									:fileName="languageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
-									:totalPages="goalMissionTotalPage" />
+													 :items="goalMissionTimesheetItems" :headerLable="goalMissionTimesheetLabel"
+													 :currentPage="goalMissionCurrentPage" :totalRow="goalMissionTotalRow"
+													 :perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
+													 @updateCall="getVolunteerMissionsGoals"
+													 exportUrl="app/volunteer/history/goal-mission/export"
+													 :fileName="languageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
+													 :totalPages="goalMissionTotalPage" />
 							</b-col>
 						</b-row>
 					</div>
@@ -82,14 +82,14 @@
 						<p>{{languageData.label.empty_volunteer_history_text}}</p>
 						<div class="btn-row">
 							<b-button :title="languageData.label.start_volunteering" class="btn-bordersecondary"
-								@click="$router.push({ name: 'home' })">{{languageData.label.start_volunteering}}
+									  @click="$router.push({ name: 'home' })">{{languageData.label.start_volunteering}}
 							</b-button>
 						</div>
 					</div>
 				</b-container>
 			</div>
 			<div v-else
-				v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoading}">
+				 v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoading}">
 				<div class="content-loader"></div>
 			</div>
 		</main>
@@ -158,7 +158,7 @@
 				isSkillDisplay: true
 			};
 		},
-		mounted() {			 
+		mounted() {
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
 			yearsList.push([0,this.languageData.label.all]);
@@ -185,7 +185,7 @@
 				}
 				VolunteerHistoryHours(type, year).then(response => {
 					let typeName =
-						"perHourApiData" + type.charAt(0).toUpperCase() + type.slice(1);
+							"perHourApiData" + type.charAt(0).toUpperCase() + type.slice(1);
 					let perHourDataNotFoundForType = "perHourDataNotFoundFor" + type.charAt(0).toUpperCase() + type.slice(1);
 					if (typeof response.data !== "undefined") {
 						this[typeName] = Object.values(response.data);
@@ -265,7 +265,7 @@
 			this.skillYearText = this.languageData.label.all
 			this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
 			this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-			
+
 			this.getVolunteerHistoryHoursOfType("theme");
 			this.getVolunteerHistoryHoursOfType("skill");
 			this.getVolunteerMissionsHours();
@@ -351,7 +351,7 @@
 			isAllVisible: {
 				get: function () {
 					if (this.perHourApiDataTheme.length == 0 && this.perHourApiDataSkill.length == 0 && this
-						.timeMissionTimesheetItems.length == 0 && this.goalMissionTimesheetItems.length == 0) {
+							.timeMissionTimesheetItems.length == 0 && this.goalMissionTimesheetItems.length == 0) {
 						return false;
 					}
 					return true;

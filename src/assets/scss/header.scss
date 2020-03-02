@@ -160,8 +160,8 @@ header {
                 vertical-align: middle;
                 display: inline-flex;
                 align-items: center;
-				justify-content: center;
-				z-index: -1;
+                justify-content: center;
+                z-index: -1;
                 @include md-min {
                     top: 50%;
                     @include transformY(-50%);
@@ -176,7 +176,7 @@ header {
                 &:after {
                     position: absolute;
                     content: "";
-                    background: url($assetUrl+"/down-arrow.svg") no-repeat;
+                    background: url($assetUrl + "/down-arrow.svg") no-repeat;
                     border: none !important;
                     background-size: 11px;
                     width: 11px;
@@ -321,7 +321,7 @@ header {
             &:after {
                 position: absolute;
                 content: "";
-                background: url($assetUrl+"/down-arrow.svg") no-repeat;
+                background: url($assetUrl + "/down-arrow.svg") no-repeat;
                 border: none !important;
                 background-size: 11px;
                 width: 11px;
@@ -348,10 +348,10 @@ header {
         }
         ul {
             li {
-				margin: 0;
-				a{
-					white-space: normal;
-				}
+                margin: 0;
+                a{
+                    white-space: normal;
+                }
             }
         }
         .nav-link {
@@ -429,30 +429,30 @@ header {
                 }
             }
         }
-	}
-	.btn-save-menu {
-		@include sm-max{
-			display: none;
-		}
-	}
-	.btn-save-outer{
-		display: none;
-		margin: 20px;
-		@include sm-max{
-			display: block;
-			.btn-save {
-				min-width: 100%;
-				width: 100%;
-			}
-		}
-	}
+    }
+    .btn-save-menu {
+        @include sm-max{
+            display: none;
+        }
+    }
+    .btn-save-outer{
+        display: none;
+        margin: 20px;
+        @include sm-max{
+            display: block;
+            .btn-save {
+                min-width: 100%;
+                width: 100%;
+            }
+        }
+    }
 }
 
 .menu-wrap {
-	padding-left: 60px;
-	@include lg-max{
-		padding-left: 25px;
-	}
+    padding-left: 60px;
+    @include lg-max{
+        padding-left: 25px;
+    }
     >ul {
         display: flex;
         list-style: none;
@@ -746,7 +746,7 @@ header {
                             &:after {
                                 position: absolute;
                                 content: "";
-                                background: url($assetUrl+"/white-check-ic.svg") no-repeat center center;
+                                background: url($assetUrl + "/white-check-ic.svg") no-repeat center center;
                                 background-size: 8px;
                                 height: 14px;
                                 width: 14px;
@@ -1269,7 +1269,7 @@ header {
                 color: $black-primary;
                 font-size: 16px;
                 font-weight: 300;
-                background: url($assetUrl+"/down-arrow.svg") no-repeat right 12px center/13px 11px;
+                background: url($assetUrl + "/down-arrow.svg") no-repeat right 12px center/13px 11px;
                 border: none;
                 &:focus {
                     box-shadow: none;

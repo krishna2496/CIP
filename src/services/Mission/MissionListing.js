@@ -41,48 +41,48 @@ export default async(data) => {
     url = url + "&current_view=" + data.currentView
 
     await axios({
-            url: url,
-            method: 'get',
-            headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token
-            }
-        })
-        .then((response) => {
-            responseData = response.data;
-            // Set filter data
+        url: url,
+        method: 'get',
+        headers: {
+            'X-localization': defaultLanguage,
+            'token': store.state.token
+        }
+    })
+      .then((response) => {
+          responseData = response.data;
+          // Set filter data
 
-            if (response.data.meta_data.filters) {
-                let filterData = {};
-                filterData.search = response.data.meta_data.filters.search;
-                filterData.countryId = response.data.meta_data.filters.country_id;
-                filterData.cityId = response.data.meta_data.filters.city_id;
-                filterData.themeId = response.data.meta_data.filters.theme_id;
-                filterData.skillId = response.data.meta_data.filters.skill_id;
-                filterData.tags = response.data.meta_data.filters.tags;
-                filterData.sortBy = response.data.meta_data.filters.sort_by;
-                filterData.currentView = parseInt(response.data.meta_data.filters.current_view);
-                store.commit('userFilter', filterData)
-            } else {
-                let filterData = {};
-                filterData.search = '';
-                filterData.countryId = '';
-                filterData.cityId = '';
-                filterData.themeId = '';
-                filterData.skillId = '';
-                filterData.tags = '';
-                filterData.sortBy = '';
-                filterData.currentView = '';
-                store.commit('userFilter', filterData)
-            }
-            if (store.state.clearFilterSet == "") {
-                document.body.classList.remove("loader-enable");
-            }
-        })
-        .catch(function() {
-            // if (store.state.clearFilterSet == "") {
-            //     document.body.classList.remove("loader-enable");
-            // }
-        });
+          if (response.data.meta_data.filters) {
+              let filterData = {};
+              filterData.search = response.data.meta_data.filters.search;
+              filterData.countryId = response.data.meta_data.filters.country_id;
+              filterData.cityId = response.data.meta_data.filters.city_id;
+              filterData.themeId = response.data.meta_data.filters.theme_id;
+              filterData.skillId = response.data.meta_data.filters.skill_id;
+              filterData.tags = response.data.meta_data.filters.tags;
+              filterData.sortBy = response.data.meta_data.filters.sort_by;
+              filterData.currentView = parseInt(response.data.meta_data.filters.current_view);
+              store.commit('userFilter', filterData)
+          } else {
+              let filterData = {};
+              filterData.search = '';
+              filterData.countryId = '';
+              filterData.cityId = '';
+              filterData.themeId = '';
+              filterData.skillId = '';
+              filterData.tags = '';
+              filterData.sortBy = '';
+              filterData.currentView = '';
+              store.commit('userFilter', filterData)
+          }
+          if (store.state.clearFilterSet == "") {
+              document.body.classList.remove("loader-enable");
+          }
+      })
+      .catch(function() {
+          // if (store.state.clearFilterSet == "") {
+          //     document.body.classList.remove("loader-enable");
+          // }
+      });
     return responseData;
 }

@@ -1,9 +1,9 @@
 <template>
 	<div class="signin-slider">
 		<b-carousel id="carousel-1" :fade="slideEffect" :interval="slideInterval" :sliding-start="0" :sliding-end="1" indicators
-			v-if="isDynamicCarsousetSet">
+					v-if="isDynamicCarsousetSet">
 			<b-carousel-slide :no-wrap="wrap" v-for="item in carouselItems" :key="item.sort_order"
-				:caption="getTitle(item.slider_detail)" :text="getDescription(item.slider_detail)" :img-src="item.url">
+							  :caption="getTitle(item.slider_detail)" :text="getDescription(item.slider_detail)" :img-src="item.url">
 			</b-carousel-slide>
 		</b-carousel>
 
