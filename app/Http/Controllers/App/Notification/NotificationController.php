@@ -125,11 +125,12 @@ class NotificationController extends Controller
                 $defaultTenantLanguage->language_id
             );
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-            
-            $notificationDetails['created_at'] =  Carbon::parse($notification->created_at, config('constants.TIMEZONE'))
-            ->setTimezone($timezone)->toDateTimeString();
-            $notificationDetails['notification_id'] = $notification->notification_id;
-            $notificationData['notifications'][] = $notificationDetails;
+            if (!empty($notificationDetails)) {
+				$notificationDetails['created_at'] =  Carbon::parse($notification->created_at, config('constants.TIMEZONE'))
+				->setTimezone($timezone)->toDateTimeString();
+				$notificationDetails['notification_id'] = $notification->notification_id;
+				$notificationData['notifications'][] = $notificationDetails;
+			}
         }
 
         // Set response data

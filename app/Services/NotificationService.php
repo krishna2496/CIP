@@ -158,7 +158,9 @@ class NotificationService
     ): array {
         // Get details
         $inviteDetails = $this->storyInviteRepository->getDetails($notification->entity_id);
-
+		if (is_null($inviteDetails->story) || is_null($inviteDetails->fromUser) || is_null($inviteDetails->toUser)) {
+			return array();
+		}
         $storyTitle = $inviteDetails->story->title;
 
         // Create message
@@ -347,12 +349,14 @@ class NotificationService
     public function newNews(
         Notification $notification,
         string $tenantName = null,
-        int $languageId
+        int $languageId,
+        int $defaultTenantLanguageId
     ): array {
         // Get details
         $newsTitle = $this->newsRepository->getNewsTitle(
             $notification->entity_id,
-            $languageId
+            $languageId,
+            $defaultTenantLanguageId
         );
 
         // Create message

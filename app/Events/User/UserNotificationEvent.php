@@ -42,7 +42,7 @@ class UserNotificationEvent extends Event
     public function __construct(string $notificationType, int $entityId, string $action, int $userId = null)
     {
         $notificationTypeDetails = NotificationType::where('notification_type', $notificationType)->first();
-        
+
         $this->notificationTypeId = $notificationTypeDetails->notification_type_id;
         $this->entityId = $entityId;
         $this->action = $action;

@@ -103,7 +103,8 @@ class MissionRepository implements MissionInterface
                 'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
                 $request->organisation['organisation_detail'] : null,
                 'availability_id' => $request->availability_id,
-                'mission_type' => $request->mission_type
+                'mission_type' => $request->mission_type,
+                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
             );
         
         // Create new record
@@ -216,6 +217,12 @@ class MissionRepository implements MissionInterface
         }
         if (isset($request->organisation['organisation_detail'])) {
             $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
+        }
+        if (isset($request->total_seats)) {
+            $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
+            $request->total_seats : null;
+            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+            $request->request->add(['total_seats' => $totalSeats]);
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -399,7 +406,8 @@ class MissionRepository implements MissionInterface
             'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
-            'mission.organisation_name'
+            'mission.organisation_name',
+            'mission.is_virtual'
         )
         ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
@@ -486,8 +494,7 @@ class MissionRepository implements MissionInterface
                 config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-                config("constants.application_status")["PENDING"]]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -523,12 +530,6 @@ class MissionRepository implements MissionInterface
             });
         }
 
-        //Explore mission by random
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
-            $missionQuery->inRandomOrder();
-        }
-        
         // Explore mission by country
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
             if ($request->input('explore_mission_type') === config('constants.THEME')) {
@@ -622,6 +623,13 @@ class MissionRepository implements MissionInterface
             $missionQuery = $missionQuery->having("average_rating", '>', '0');
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
+
+        //Explore mission by random
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
+            $missionQuery->inRandomOrder();
+        }
+        
         $page = $request->page ?? 1;
         $perPage = $request->perPage;
         $offSet = ($page-1) * $perPage;
@@ -998,8 +1006,7 @@ class MissionRepository implements MissionInterface
             config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['missionApplication as mission_application_count' => function ($query) {
-            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
+            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]])->whereNull('deleted_at');
         }])
         ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id);
@@ -1080,8 +1087,7 @@ class MissionRepository implements MissionInterface
                 config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-                config("constants.application_status")["PENDING"]]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
             }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id);

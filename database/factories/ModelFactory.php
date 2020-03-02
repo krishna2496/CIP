@@ -31,7 +31,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'city_id' => $cityId,
         'country_id' => $countryDetail->country_id,
         'profile_text' => str_random(10),
-        'linked_in_url' => 'https://www.'.str_random(10).'.com'
+        'linked_in_url' => 'https://www.'.str_random(10).'.com',
+        'is_profile_complete' => '1'
     ];
 });
 
