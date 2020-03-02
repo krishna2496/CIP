@@ -98,24 +98,12 @@
             window.scrollTo(0, 0);
             this.signinAdj();
             setTimeout(function () {
-                let selectorList = document.querySelectorAll(".nav-link, .nav-item.profile-menu, .nav-item.profile-menu .nav-link");
+                let selectorList = document.querySelectorAll(".nav-link");
                 let menuLinkList = document.querySelectorAll(".menu-wrap a");
                 let dropdownList = document.querySelectorAll(".custom-dropdown, .checkbox-select");
                 let notificationButton = document.querySelector(
                     ".notification-menu .nav-link .btn-notification");
-                let notificationMenu = document.querySelector(".notification-menu .nav-link");
-                for (let i = 0; i < selectorList.length; i++) {
-                    if (notificationMenu != selectorList[i]) {
-                        let selectorClick = selectorList[i];
-                        selectorClick.addEventListener("click", function () {
-                             let notification_btn = document.querySelector(".btn-notification");
-                            let notificationPopover = document.querySelector(".notification-popover");
-                            if (notificationPopover != null) {
-                                notification_btn.click();
-                            }
-                        });
-                    }
-                }
+                
                 selectorList.forEach(function (event) {
                     event.addEventListener("mouseover", function () {
                         event.removeAttribute("href");
