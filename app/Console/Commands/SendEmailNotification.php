@@ -109,6 +109,7 @@ class SendEmailNotification extends Command
 
     /**
      * Create a new command instance.
+     * @codeCoverageIgnore
      *
      * @return void
      */
@@ -143,39 +144,24 @@ class SendEmailNotification extends Command
 
     /**
      * Execute the console command.
+     * @codeCoverageIgnore
      *
      * @return mixed
      */
     public function handle()
     {
-        if (env('APP_ENV') === 'testing') {
-            $this->helpers->switchDatabaseConnection('mysql');
-            $tenants = DB::select("
-                select tenant.tenant_id, tenant.name, tenant_language.language_id 
-                from tenant 
-                left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
-                where tenant.status = '1' 
-                and tenant.background_process_status = '1' 
-                and tenant.deleted_at is null
-                and tenant_language.default = '1' 
-                and tenant_language.deleted_at is null
-                and tenant.tenant_id = ".env('DEFAULT_TENANT_ID')."
-            ");
-        } // @codeCoverageIgnoreStart
-        else {
-            $this->helpers->switchDatabaseConnection('mysql');
-            $tenants = DB::select("
-                select tenant.tenant_id, tenant.name, tenant_language.language_id 
-                from tenant 
-                left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
-                where tenant.status = '1' 
-                and tenant.background_process_status = '1' 
-                and tenant.deleted_at is null
-                and tenant_language.default = '1' 
-                and tenant_language.deleted_at is null
-            ");
-        }
-        // @codeCoverageIgnoreEnd
+        $this->helpers->switchDatabaseConnection('mysql');
+        $tenants = DB::select("
+            select tenant.tenant_id, tenant.name, tenant_language.language_id 
+            from tenant 
+            left join tenant_language on tenant.tenant_id = tenant_language.tenant_id 
+            where tenant.status = '1' 
+            and tenant.background_process_status = '1' 
+            and tenant.deleted_at is null
+            and tenant_language.default = '1' 
+            and tenant_language.deleted_at is null
+        ");
+
         if (sizeof($tenants)) {
             $this->warn("\n\nTotal tenants : ". sizeof($tenants));
             foreach ($tenants as $tenant) {
@@ -252,6 +238,7 @@ class SendEmailNotification extends Command
 
     /**
      * Create connection with tenant's database
+     * @codeCoverageIgnore
      *
      * @param int $tenantId
      * @return int
