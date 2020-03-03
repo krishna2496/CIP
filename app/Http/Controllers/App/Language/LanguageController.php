@@ -80,7 +80,7 @@ class LanguageController extends Controller
         }
 
         $response['locale'] = $language;
-        $response['data'] = json_decode(file_get_contents($filePath), true);
+        $response['data'] = json_decode($this->helpers->removeUnwantedCharacters($filePath), true);
         return $response;
     }
 }

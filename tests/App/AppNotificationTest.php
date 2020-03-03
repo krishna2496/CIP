@@ -824,7 +824,12 @@ class AppNotificationTest extends TestCase
         }
 
         $params = [
-            "settings" => $notificationTypeArray
+            "settings" => $notificationTypeArray,
+			"user_settings" => [
+                [
+                "receive_email_notification"=> 1
+                ]
+            ]
         ];
 
         // Save user notification settings
