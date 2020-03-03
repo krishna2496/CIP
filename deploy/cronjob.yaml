@@ -1,26 +1,17 @@
-apiVersion: v1
-items:
-- apiVersion: batch/v1beta1
-  kind: CronJob
-  metadata:
-    name: cronjob-api-cli
-    namespace: staging 
-  spec:
-    concurrencyPolicy: Forbid 
-    failedJobsHistoryLimit: 10 
-    jobTemplate:
-      metadata:
-        creationTimestamp: null
-      spec:
-        template:
-          metadata:
-            creationTimestamp: null
-          spec:
-            containers:
-              image: registry.kubernetes.infra.optimy.net/ci/api-ci:{{API_VERSION}}
-              imagePullPolicy: IfNotPresent
-              name: api-cli 
-            restartPolicy: OnFailure
-            terminationGracePeriodSeconds: 30
-    schedule: * * * * *
-    successfulJobsHistoryLimit: 3
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-api-cli
+  namespace: staging 
+spec:
+  concurrencyPolicy: Forbid 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            image: registry.kubernetes.infra.optimy.net/ci/api-ci:{{API_VERSION}}
+            imagePullPolicy: IfNotPresent
+            name: api-cli 
+          restartPolicy: OnFailure
+  schedule: * * * * *
