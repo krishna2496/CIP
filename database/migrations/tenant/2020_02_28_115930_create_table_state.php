@@ -15,7 +15,6 @@ class CreateTableState extends Migration
     {
         Schema::create('state', function (Blueprint $table) {
             $table->bigIncrements('state_id')->unsinged();
-            $table->string('name',255);
             $table->unsignedBigInteger('country_id');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->nullable();
