@@ -220,4 +220,33 @@ class StateRepository implements StateInterface
     {
         return $this->state->with('languages')->findOrFail($id);
     }
+
+    /**
+     * Get state data from stateId
+     *
+     * @param string $stateId
+     * @param int $languageId
+     * @return array
+     */
+    public function getState(string $stateId, int $languageId) : array
+    {
+        $state = $this->state->with('languages')->whereIn("state_id", explode(",", $stateId))->get()->toArray();
+       
+        $stateData = [];
+        if (!empty($state)) {
+            foreach ($state as $key => $value) {
+                $translation = $value['languages'];
+                $stateData[$value['state_id']] =  $translation[0]['name'] ?? '';
+                $translationkey = '';
+                if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
+                    $translationkey = array_search($languageId, array_column($translation, 'language_id'));
+                }
+           
+                if ($translationkey !== '') {
+                    $stateData[$value['state_id']] = $translation[$translationkey]['name'];
+                }
+            }
+        }
+        return $stateData;
+    }
 }

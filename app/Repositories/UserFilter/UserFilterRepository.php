@@ -59,21 +59,27 @@ class UserFilterRepository implements UserFilterInterface
 
         if (!$request->has('state_id')) {
             if (isset($request->auth) && ($request->auth->state_id !== '') && ($request->auth->state_id !== 0)) {
-                $defaultCityId = $request->auth->state_id;
+                $defaultStateId = $request->auth->state_id;
             }
+        }
+
+         
+        if ($request->has('country_id') && (!$request->has('state_id'))) {
+            $defaultStateId = '';
         }
 
         if ($request->has('country_id') && (!$request->has('city_id'))) {
             $defaultCityId = '';
         }
-        
+
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
-            $defaultCountryId = $defaultCityId = '';
+            $defaultCountryId = $defaultCityId = $defaultStateId = '';
         }
 
         $userFilterData["search"] = $request->has('search') ? $request->input('search') : '';
         $userFilterData["country_id"] = $request->has('country_id') ? $request->input('country_id') : $defaultCountryId;
         $userFilterData["city_id"] = $request->has('city_id') ? $request->input('city_id') : $defaultCityId;
+        $userFilterData["state_id"] = $request->has('state_id') ? $request->input('state_id') : $defaultStateId;
         $userFilterData["theme_id"] = $request->has('theme_id') ? $request->input('theme_id') : '';
         $userFilterData["skill_id"] = $request->has('skill_id') ? $request->input('skill_id') : '';
         $userFilterData["sort_by"] = $request->has('sort_by') ? $request->input('sort_by') : '';
