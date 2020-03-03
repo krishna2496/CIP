@@ -165,7 +165,7 @@ class LanguageController extends Controller
         }
 
         // Validate json file data
-        if (json_decode(file_get_contents($file->getRealPath())) === null) {
+        if (json_decode($this->helpers->removeUnwantedCharacters($file->getRealPath())) === null) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
