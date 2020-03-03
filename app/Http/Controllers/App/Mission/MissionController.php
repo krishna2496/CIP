@@ -532,6 +532,18 @@ class MissionController extends Controller
                 }
             }
 
+            if ($filterData["filters"]["state_id"] && $filterData["filters"]["state_id"] !== "") {
+                $cityTag = $this->cityRepository->getCity(
+                    $filterData["filters"]["state_id"],
+                    $languageId
+                );
+                if ($cityTag) {
+                    foreach ($cityTag as $key => $value) {
+                        $filterTagArray["state"][$key] = $value;
+                    }
+                }
+            }
+
             if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
                 $cityTag = $this->cityRepository->getCity(
                     $filterData["filters"]["city_id"],

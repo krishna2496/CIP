@@ -883,7 +883,7 @@ class MissionRepository implements MissionInterface
                         $query->where("mission.country_id", $request->input('country_id'));
                     }
                     if ($request->has('state_id') && $request->input('state_id') !== '') {
-                        $query->where("mission.state_id", $request->input('state_id'));
+                        $query->whereIn("mission.state_id", explode(",", $request->input('state_id')));
                     }
                     if ($request->has('city_id') && $request->input('city_id') !== '') {
                         $query->whereIn("mission.city_id", explode(",", $request->input('city_id')));
