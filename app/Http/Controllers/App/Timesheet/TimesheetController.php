@@ -461,10 +461,11 @@ class TimesheetController extends Controller
             $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCCESSFULLY');
 
-            $tenantId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request)->tenant_id;
+            $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
             $timesheetForOptimy = [
                 'activity_type' => 'timesheet',
-                'tenant_id' => $tenantId,
+                'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+                'tenant_id' => $tenantIdAndSponsorId->tenant_id,
                 'timesheet_id' => null,
                 'user_id' => $request->auth->user_id,
                 'mission_id' => null,
@@ -492,14 +493,7 @@ class TimesheetController extends Controller
                 // Send data of the timesheet to Optimy app using "ciSynchronizer" queue from RabbitMQ
                 $this->amqp->publish(
                     'ciSynchronizer',
-                    json_encode($timesheetForOptimy),
-                    [
-                        'queue' => 'ciSynchronizer',
-                        'queue_properties' => [
-                            'x-dead-letter-exchange' => ['S', ''],
-                            'x-dead-letter-routing-key' => ['S', 'ciSynchronizer.dlq'],
-                        ],
-                    ]
+                    json_encode($timesheetForOptimy), ['queue' => 'ciSynchronizer']
                 );
             }
             return $this->responseHelper->success($apiStatus, $apiMessage);

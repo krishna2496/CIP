@@ -42,7 +42,10 @@ return [
             'queue_exclusive'       => false,
             'queue_auto_delete'     => false,
             'queue_nowait'          => false,
-            'queue_properties'      => ['x-ha-policy' => ['S', 'all']],
+            'queue_properties'      => [
+                'x-dead-letter-exchange' => ['S', ''],
+                'x-dead-letter-routing-key' => ['S', 'ciSynchronizer.dlq'],
+            ],
 
             'consumer_tag'          => '',
             'consumer_no_local'     => false,
