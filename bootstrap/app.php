@@ -57,6 +57,7 @@ $app->singleton(
 |
 */
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Laravel\Lumen\Providers\EventServiceProvider::class);
 
 $app->middleware([
      \App\Http\Middleware\CorsMiddleware::class //cross origin support
@@ -68,7 +69,7 @@ $app->routeMiddleware([
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
     'cors' => \App\Http\Middleware\CorsMiddleware::class,
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
-    'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
+    //'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
     'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
     'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
@@ -100,6 +101,7 @@ $app->register(\Illuminate\Mail\MailServiceProvider::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 $app->alias('mailer', \Illuminateminate\Mail\Mailer::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\MailQueue::class);
+$app->withFacades(true, ['Illuminate\Support\Facades\Notification' => 'Notification']);
 
 // Config cache clear
 $app->register(Orumad\ConfigCache\ServiceProviders\ConfigCacheServiceProvider::class);
@@ -116,7 +118,8 @@ $app->withFacades();
 |
 */
 
- $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
 
 //AMQP Service Provider :
 $app->configure('amqp');
