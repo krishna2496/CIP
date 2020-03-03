@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: cronjob-api-cli
+  name: ci-cronjob-api-cli
   namespace: staging 
 spec:
   concurrencyPolicy: Forbid 
