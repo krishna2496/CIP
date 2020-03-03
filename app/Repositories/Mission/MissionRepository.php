@@ -566,7 +566,7 @@ class MissionRepository implements MissionInterface
         }
 
         if ($userFilterData['state_id'] && $userFilterData['state_id'] !== '') {
-            $missionQuery->where("mission.state_id", $userFilterData['state_id']);
+            $missionQuery->whereIn("mission.state_id", explode(",", $userFilterData['state_id']));
         }
 
         if ($userFilterData['city_id'] && $userFilterData['city_id'] !== '') {
