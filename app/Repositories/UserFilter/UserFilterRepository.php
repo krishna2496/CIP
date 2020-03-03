@@ -57,6 +57,12 @@ class UserFilterRepository implements UserFilterInterface
             }
         }
 
+        if (!$request->has('state_id')) {
+            if (isset($request->auth) && ($request->auth->state_id !== '') && ($request->auth->state_id !== 0)) {
+                $defaultCityId = $request->auth->state_id;
+            }
+        }
+
         if ($request->has('country_id') && (!$request->has('city_id'))) {
             $defaultCityId = '';
         }

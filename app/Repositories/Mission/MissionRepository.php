@@ -791,6 +791,9 @@ class MissionRepository implements MissionInterface
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
                     $missionQuery->where("mission.country_id", $request->input('country_id'));
                 }
+                if ($request->has('state_id') && $request->input('state_id') !== '') {
+                    $missionQuery->where("mission.state_id", $request->input('state_id'));
+                }
                 $missionQuery->groupBy('mission.city_id');
                 $mission = $missionQuery->get();
                 break;
@@ -838,6 +841,9 @@ class MissionRepository implements MissionInterface
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
                     $missionQuery->where("mission.country_id", $request->input('country_id'));
                 }
+                if ($request->has('state_id') && $request->input('state_id') !== '') {
+                    $missionQuery->where("mission.state_id", $request->input('state_id'));
+                }
                 if ($request->has('city_id') && $request->input('city_id') !== '') {
                     $missionQuery->whereIn("mission.city_id", explode(",", $request->input('city_id')));
                 }
@@ -871,6 +877,9 @@ class MissionRepository implements MissionInterface
 
                     if ($request->has('country_id') && $request->input('country_id') !== '') {
                         $query->where("mission.country_id", $request->input('country_id'));
+                    }
+                    if ($request->has('state_id') && $request->input('state_id') !== '') {
+                        $missionQuery->where("mission.state_id", $request->input('state_id'));
                     }
                     if ($request->has('city_id') && $request->input('city_id') !== '') {
                         $query->whereIn("mission.city_id", explode(",", $request->input('city_id')));
@@ -913,7 +922,7 @@ class MissionRepository implements MissionInterface
                 $stateMissionQuery = $this->modelsService->mission->select('*')->where(
                     'publication_status',
                     config("constants.publication_status")["APPROVED"]
-                );                
+                );
                 if ($request->has('search') && $request->input('search') !== '') {
                     $stateMissionQuery->where(function ($query) use ($request) {
                         $query->with('missionLanguage');
