@@ -20,6 +20,7 @@
             onClick() {
                 let dropdownList = document.querySelectorAll(".dropdown-open");
                 let body = document.querySelectorAll("body, html");
+                let notification_btn = document.querySelector(".btn-notification");
                 if (dropdownList.length > 0) {
                     for (let i = 0; i < dropdownList.length; ++i) {
                         dropdownList[i].classList.remove("dropdown-open");
@@ -40,6 +41,12 @@
                             breadcrumbDropdown.classList.remove("open");
                         }
                     });
+                }
+               let notification_popover = document.querySelector(
+                    ".notification-popover"
+                );
+                if (notification_popover != null) {
+                    notification_btn.click();
                 }
             },
             signinAdj() {
@@ -91,23 +98,12 @@
             window.scrollTo(0, 0);
             this.signinAdj();
             setTimeout(function () {
-                let selectorList = document.querySelectorAll(".nav-link, .nav-item.profile-menu");
+                let selectorList = document.querySelectorAll(".nav-link");
                 let menuLinkList = document.querySelectorAll(".menu-wrap a");
                 let dropdownList = document.querySelectorAll(".custom-dropdown, .checkbox-select");
                 let notificationButton = document.querySelector(
                     ".notification-menu .nav-link .btn-notification");
-                let notificationMenu = document.querySelector(".notification-menu .nav-link");
-                for (let i = 0; i < selectorList.length; i++) {
-                    if (notificationMenu != selectorList[i]) {
-                        let selectorClick = selectorList[i];
-                        selectorClick.addEventListener("click", function () {
-                            let notificationPopover = document.querySelector(".notification-popover");
-                            if (notificationPopover != null) {
-                                notificationButton.click();
-                            }
-                        });
-                    }
-                }
+                
                 selectorList.forEach(function (event) {
                     event.addEventListener("mouseover", function () {
                         event.removeAttribute("href");

@@ -662,17 +662,6 @@
                     this.policyPage = JSON.parse(store.state.policyPage)
                 }
                 setTimeout(function () {
-                    let body = document.querySelector("body");
-                    let notification_btn = document.querySelector(".btn-notification");
-                    body.addEventListener("click", function () {
-                        let notification_popover = document.querySelector(
-                            ".notification-popover"
-                        );
-                        if (notification_popover != null) {
-                            notification_btn.click();
-                        }
-                    });
-
                     let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {
                         notificationMenu.addEventListener("click", function (e) {
@@ -757,7 +746,20 @@
                             }
                         });
                     });
-
+                    let selectorList = document.querySelectorAll(".nav-link, .nav-item.profile-menu, .nav-item.profile-menu .nav-link");
+                    let notificationMenuLink = document.querySelector(".notification-menu .nav-link");
+                    for (let i = 0; i < selectorList.length; i++) {
+                        if (notificationMenuLink != selectorList[i]) {
+                            let selectorClick = selectorList[i];
+                            selectorClick.addEventListener("click", function () {
+                                let notification_btn = document.querySelector(".btn-notification");
+                                let notificationPopover = document.querySelector(".notification-popover");
+                                if (notificationPopover != null) {
+                                    notification_btn.click();
+                                }
+                            });
+                        }
+                    }
                 }, 1000);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
@@ -768,7 +770,7 @@
                     this.exploreMissions();
                     this.getNotificationListing()
                 }
-
+                
                 window.addEventListener("resize", function () {
                     let body = document.querySelectorAll("body, html");
                     if (screen.width > 991) {
