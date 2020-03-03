@@ -1,0 +1,11 @@
+FROM registry.kubernetes.infra.optimy.net/tools/cli-ci:7.3
+
+COPY . /optimy
+RUN rm /optimy/Dockerfile
+RUN rm /optimy/Dockerfile.cli
+
+RUN mkdir -p /optimy/database/seeds
+
+RUN cd /optimy && composer install
+
+ENTRYPOINT ["/optimy/run-jobs.sh"]

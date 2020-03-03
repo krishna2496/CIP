@@ -1,0 +1,17 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-api-cli
+  namespace: staging 
+spec:
+  concurrencyPolicy: Forbid 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            image: registry.kubernetes.infra.optimy.net/ci/api-ci:{{API_VERSION}}
+            imagePullPolicy: IfNotPresent
+            name: api-cli 
+          restartPolicy: OnFailure
+  schedule: * * * * *

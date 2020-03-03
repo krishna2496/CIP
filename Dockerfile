@@ -2,6 +2,7 @@ FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
 
 COPY . /optimy
 RUN rm /optimy/Dockerfile
+RUN rm /optimy/Dockerfile.cli
 RUN mkdir -p /optimy/database/seeds
 
 RUN apt-get install curl -y

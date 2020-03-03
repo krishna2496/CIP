@@ -19,6 +19,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
+use App\Exceptions\SamlException;
 
 class SamlController extends Controller
 {
@@ -54,8 +55,10 @@ class SamlController extends Controller
     public function sso(Request $request)
     {
         $settings = $this->getIdentityProviderSettings();
-        if (!isset($settings['idp_id']) || $settings['idp_id'] !== $request->query('t')) {
-            abort(403, trans('messages.custom_error_message.ERROR_INVALID_SAML_IDENTITY_PROVIDER'));
+        if (!isset($settings['idp_id'])) {
+            SamlException::throw('ERROR_INVALID_SAML_IDENTITY_PROVIDER');
+        } elseif ($settings['idp_id'] !== $request->query('t')) {
+            SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
         $auth = new Auth($this->getSamlSettings($settings));
@@ -66,8 +69,10 @@ class SamlController extends Controller
     {
         $validationErrors = [];
         $settings = $this->getIdentityProviderSettings();
-        if (!isset($settings['idp_id']) || $settings['idp_id'] !== $request->query('t')) {
-            abort(403, trans('messages.custom_error_message.ERROR_INVALID_SAML_IDENTITY_PROVIDER'));
+        if (!isset($settings['idp_id'])) {
+            SamlException::throw('ERROR_INVALID_SAML_IDENTITY_PROVIDER');
+        } elseif ($settings['idp_id'] !== $request->query('t')) {
+            SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
         $auth = new Auth($this->getSamlSettings($settings));
