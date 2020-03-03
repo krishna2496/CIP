@@ -24,6 +24,7 @@ use App\Models\UserFilter;
 use App\Transformations\MissionTransformable;
 use App\Events\User\UserActivityLogEvent;
 use App\Repositories\User\UserRepository;
+use App\Repositories\State\StateRepository;
 
 //!  Mission controller
 /*!
@@ -84,6 +85,11 @@ class MissionController extends Controller
     private $userRepository;
 
     /**
+     *@var App\Repositories\State\StateRepository $stateRepository
+     */
+    private $stateRepository;
+
+    /**
      * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -95,7 +101,8 @@ class MissionController extends Controller
      * @param App\Repositories\Skill\SkillRepository $skillRepository
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param App\Repositories\City\CityRepository $cityRepository
-     * @param  App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\State\StateRepository $stateRepository
      * @return void
      */
     public function __construct(
@@ -108,7 +115,8 @@ class MissionController extends Controller
         SkillRepository $skillRepository,
         CountryRepository $countryRepository,
         CityRepository $cityRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        StateRepository $stateRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -120,6 +128,7 @@ class MissionController extends Controller
         $this->countryRepository = $countryRepository;
         $this->cityRepository = $cityRepository;
         $this->userRepository = $userRepository;
+        $this->stateRepository = $stateRepository;
     }
 
     /**
@@ -533,12 +542,12 @@ class MissionController extends Controller
             }
 
             if ($filterData["filters"]["state_id"] && $filterData["filters"]["state_id"] !== "") {
-                $cityTag = $this->cityRepository->getCity(
+                $stateTag = $this->stateRepository->getState(
                     $filterData["filters"]["state_id"],
                     $languageId
                 );
-                if ($cityTag) {
-                    foreach ($cityTag as $key => $value) {
+                if ($stateTag) {
+                    foreach ($stateTag as $key => $value) {
                         $filterTagArray["state"][$key] = $value;
                     }
                 }
