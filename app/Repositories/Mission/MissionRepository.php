@@ -92,6 +92,7 @@ class MissionRepository implements MissionInterface
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
+                'state_id' => $request->location['state_id'],
                 'country_id' => $countryId,
                 'start_date' => (isset($request->start_date)) ? $request->start_date : null,
                 'end_date' => (isset($request->end_date)) ? $request->end_date : null,
@@ -692,7 +693,7 @@ class MissionRepository implements MissionInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function missionFilter(Request $request, string $filterParams): Collection
-    {
+    {        
         // Get  mission filter data
         switch ($filterParams) {
             case config('constants.COUNTRY'):
@@ -906,6 +907,56 @@ class MissionRepository implements MissionInterface
                 $missionSkillQuery->groupBy('skill_id');
                 $missionSkillQuery->orderBy('mission_count', 'desc');
                 $mission = $missionSkillQuery->get();
+                break;
+
+            case config('constants.STATE'):
+                $stateMissionQuery = $this->modelsService->mission->select('*')->where(
+                    'publication_status',
+                    config("constants.publication_status")["APPROVED"]
+                );                
+                if ($request->has('search') && $request->input('search') !== '') {
+                    $stateMissionQuery->where(function ($query) use ($request) {
+                        $query->with('missionLanguage');
+                        $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($request) {
+                            $missionLanguageQuery->where('title', 'like', '%' . $request->input('search') . '%');
+                            $missionLanguageQuery
+                            ->orWhere('short_description', 'like', '%' . $request->input('search') . '%');
+                        });
+                        $query->orWhere(function ($organizationQuery) use ($request) {
+                            $organizationQuery
+                            ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
+                        });
+                    });
+                }
+                if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
+                    if ($request->input('explore_mission_type') === config('constants.THEME')) {
+                        $stateMissionQuery->where("mission.theme_id", $request->input('explore_mission_params'));
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.COUNTRY')) {
+                        $stateMissionQuery->where(function ($query) use ($request) {
+                            $query->wherehas('country', function ($countryQuery) use ($request) {
+                                $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
+                            });
+                        });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
+                        $stateMissionQuery->where(
+                            'organisation_name',
+                            'like',
+                            '%' . $request->input('explore_mission_params') . '%'
+                        );
+                    }
+                }
+
+                $stateMissionQuery->with(['state'=> function ($query) {
+                    $query->with('languages');
+                }])
+                ->selectRaw('COUNT(mission.mission_id) as mission_count');
+                if ($request->has('country_id') && $request->input('country_id') !== '') {
+                    $stateMissionQuery->where("mission.country_id", $request->input('country_id'));
+                }
+                $stateMissionQuery->groupBy('mission.state_id');
+                $mission = $stateMissionQuery->get();
                 break;
         }
         return $mission;

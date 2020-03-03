@@ -317,7 +317,9 @@ class MissionController extends Controller
         $missionTheme = $this->missionRepository->missionFilter($request, config('constants.THEME'));
         // Get Data by skills
         $missionSkill = $this->missionRepository->missionFilter($request, config('constants.SKILL'));
-    
+        // Get Data by state        
+        $missionState = $this->missionRepository->missionFilter($request, config('constants.STATE'));
+
         if (!empty($missionCountry->toArray())) {
             foreach ($missionCountry as $key => $value) {
                 if (isset($value->country)) {
@@ -342,7 +344,6 @@ class MissionController extends Controller
                 }
             }
         }
-
 
         if (!empty($missionCity->toArray())) {
             foreach ($missionCity as $key => $value) {
@@ -403,6 +404,33 @@ class MissionController extends Controller
                 }
                 if (isset($returnData[config('constants.SKILL')])) {
                     $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+                }
+            }
+        }
+
+        if (!empty($missionState->toArray())) {
+            foreach ($missionState as $key => $value) {
+                if (isset($value->state)) {
+                    $translation = $value->state->languages->toArray();
+                    $translationkey = '';
+
+                    $index = array_search($languageId, array_column($translation, 'language_id'));
+                    $language = ($index === false) ? $defaultLanguageId : $languageId;
+                    $translationkey = array_search($language, array_column($translation, 'language_id'));
+
+                    if ($translationkey !== '') {
+                        $returnData[config('constants.STATE')]['title'] =
+                        $translation[$translationkey]['name'];
+                    }
+                    $returnData[config('constants.STATE')]['id'] =
+                    $value->state_id;
+                    $returnData[config('constants.STATE')]['mission_count'] =
+                    $value->mission_count;
+                }
+                if (isset($returnData[config('constants.STATE')])) {
+                    $apiData[config('constants.STATE')] = isset($apiData[config('constants.STATE')]) ?
+                    $apiData[config('constants.STATE')] : [];
+                    array_push($apiData[config('constants.STATE')], $returnData[config('constants.STATE')]);                 
                 }
             }
         }

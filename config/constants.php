@@ -344,6 +344,7 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random-missions',
+    'STATE' => 'state',
 
     /* sort by */
     "NEWEST" => "newest",
