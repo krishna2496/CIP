@@ -10,7 +10,7 @@ spec:
       template:
         spec:
           containers:
-            image: registry.kubernetes.infra.optimy.net/ci/api-ci:{{API_VERSION}}
+          - image: registry.kubernetes.infra.optimy.net/ci/api-ci:{{API_VERSION}}
             imagePullPolicy: IfNotPresent
             name: api-cli 
           restartPolicy: OnFailure
