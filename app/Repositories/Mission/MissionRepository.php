@@ -210,6 +210,9 @@ class MissionRepository implements MissionInterface
         if (isset($request->location['city_id'])) {
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
+        if (isset($request->location['state_id'])) {
+            $request->request->add(['state_id' => $request->location['state_id']]);
+        }
         if (isset($request->organisation['organisation_id'])) {
             $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
         }
@@ -351,6 +354,7 @@ class MissionRepository implements MissionInterface
         with(
             'missionTheme',
             'city.languages',
+            'state.languages',
             'country.languages',
             'missionLanguage',
             'timeMission',
@@ -400,6 +404,7 @@ class MissionRepository implements MissionInterface
             'mission.mission_id',
             'mission.theme_id',
             'mission.city_id',
+            'mission.state_id',
             'mission.country_id',
             'mission.start_date',
             'mission.end_date',
@@ -410,7 +415,8 @@ class MissionRepository implements MissionInterface
             'mission.organisation_name',
             'mission.is_virtual'
         )
-        ->with(['city.languages', 'country.languages', 'missionTheme', 'missionLanguage', 'goalMission', 'timeMission'])
+        ->with(['city.languages', 'country.languages', 'state.languages', 'missionTheme',
+        'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -697,7 +703,7 @@ class MissionRepository implements MissionInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function missionFilter(Request $request, string $filterParams): Collection
-    {        
+    {
         // Get  mission filter data
         switch ($filterParams) {
             case config('constants.COUNTRY'):
