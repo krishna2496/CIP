@@ -397,7 +397,7 @@
                                                     v-if="missionDetail.description && missionDetail.description.length > 0">
                                                 <div v-for="(section, index) in missionDetail.description" :key=index>
                                                     <h2>{{section.title}}</h2>
-                                                    <p v-html="section.description"></p>
+                                                    <p class="mission-description-content" v-html="section.description"></p>
                                                 </div>
                                             </div>
                                             <div
@@ -426,7 +426,7 @@
                                                         </template>
                                                         <!-- xls  xlsx-->
                                                         <template
-                                                                v-if="document.document_type =='xls' || document.document_type =='xlsx ' ">
+                                                            v-if="document.document_type === 'xls' || document.document_type === 'xlsx'">
                                                             <b-link :href="document.document_path" target="_blank"
                                                                     :title="document.document_name">
                                                                 <AppCustomChip :textVal="document.document_name"
@@ -445,7 +445,7 @@
                                         </div>
                                         <b-collapse id="organization" accordion="my-accordion" role="tabpanel"
                                                     class="tab-content">
-                                            <div v-html="missionDetail.organisation_detail"></div>
+                                            <div class="organization-detail" v-html="missionDetail.organisation_detail"></div>
                                         </b-collapse>
                                     </div>
                                     <div class="tabs" v-if="isCommentDisplay">
