@@ -88,6 +88,7 @@ class TimesheetQuery implements QueryableInterface
                 $join->on('country_language.country_id', '=', 'mission.country_id')
                     ->where('country_language.language_id', '=', $languageId);
             })
+            ->whereNotIn('timesheet.status', ['pending'])
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
                     'publication_status', [config("constants.publication_status")["APPROVED"], config("constants.publication_status")["PUBLISHED_FOR_APPLYING"]]
