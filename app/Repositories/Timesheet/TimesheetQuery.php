@@ -61,19 +61,24 @@ class TimesheetQuery implements QueryableInterface
             || isset($filters[self::FILTER_MISSION_CITIES])
             || isset($filters[self::FILTER_MISSION_STATUSES]);
 
+        $hasTypeFilter = isset($filters[self::FILTER_TYPE]);
+        $dataToSelect = [
+            'timesheet.*',
+            'mission_language.title',
+            'city_language.name',
+            'country_language.name'
+        ];
+        if ($hasTypeFilter && $filters[self::FILTER_TYPE] !== 'time') {
+            array_push($dataToSelect, 'goal_mission.goal_objective');
+        }
+
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
         $query = Timesheet::query();
         $timesheets = $query
-            ->select([
-                'timesheet.*',
-                'mission_language.title',
-                'city_language.name',
-                'country_language.name',
-                $filters[self::FILTER_TYPE] !== 'goal' ? 'timesheet.time' :'goal_mission.goal_objective'
-            ])
+            ->select($dataToSelect)
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
-            ->when($filters[self::FILTER_TYPE] === 'goal', function ($query) use ($filters) {
+            ->when($hasTypeFilter && $filters[self::FILTER_TYPE] === 'goal', function ($query) use ($filters) {
                 $query->join('goal_mission', 'goal_mission.mission_id', '=', 'timesheet.mission_id');
             })
             ->join('mission_language', function ($join) use ($languageId) {
@@ -162,8 +167,8 @@ class TimesheetQuery implements QueryableInterface
                     });
                 });
             })
-             ->whereHas('mission', function ($query) use ($filters) {
-                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
+             ->whereHas('mission', function ($query) use ($filters, $hasTypeFilter) {
+                 $query->when($hasTypeFilter, function ($query) use ($filters) {
                      $this->missionType = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
                      $query->where('mission_type', '=', "$this->missionType");
                  });
@@ -224,8 +229,8 @@ class TimesheetQuery implements QueryableInterface
                 }
 
             })
-            ->whereHas('mission', function ($query) use ($filters) {
-                $query->when(isset($filters[self::FILTER_TYPE]), function ($query) {
+            ->whereHas('mission', function ($query) use ($filters, $hasTypeFilter) {
+                $query->when($hasTypeFilter, function ($query) {
                     $query->where('mission_type', '=', "$this->missionType");
                 });
             })
