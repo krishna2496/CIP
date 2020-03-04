@@ -6,7 +6,6 @@ use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -52,7 +51,7 @@ class TimesheetQuery implements QueryableInterface
         $filters = $parameters['filters'];
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
-Log::debug('filters', $filters);
+
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
@@ -60,8 +59,6 @@ Log::debug('filters', $filters);
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
             || isset($filters[self::FILTER_MISSION_STATUSES]);
-
-        $hasTypeFilterAndIsGoal = array_key_exists(self::FILTER_TYPE, $filters) && $filters[self::FILTER_TYPE] === 'goal';
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
         $query = Timesheet::query();
@@ -71,11 +68,11 @@ Log::debug('filters', $filters);
                 'mission_language.title',
                 'city_language.name',
                 'country_language.name',
-                $hasTypeFilterAndIsGoal ? 'goal_mission.goal_objective' : 'timesheet.time'
+                $filters[self::FILTER_TYPE] !== 'goal' ? 'timesheet.time' :'goal_mission.goal_objective'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
-            ->when($hasTypeFilterAndIsGoal, function ($query) use ($filters) {
+            ->when($filters[self::FILTER_TYPE] === 'goal', function ($query) use ($filters) {
                 $query->join('goal_mission', 'goal_mission.mission_id', '=', 'timesheet.mission_id');
             })
             ->join('mission_language', function ($join) use ($languageId) {
