@@ -17,6 +17,7 @@ composer.lock
 storage/*
 !storage/unitTestFiles
 !storage/app
+!storage/defaultLanguage
 
 
 storage/app/*
