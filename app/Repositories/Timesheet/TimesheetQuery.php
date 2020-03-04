@@ -52,7 +52,7 @@ class TimesheetQuery implements QueryableInterface
         $filters = $parameters['filters'];
         $search = $parameters['search'];
         $order = $this->getOrder($parameters['order']);
-
+Log::debug('filters', $filters);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
 
@@ -60,6 +60,8 @@ class TimesheetQuery implements QueryableInterface
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
             || isset($filters[self::FILTER_MISSION_STATUSES]);
+
+        $hasTypeFilterAndIsGoal = array_key_exists(self::FILTER_TYPE, $filters) && $filters[self::FILTER_TYPE] === 'goal';
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
         $query = Timesheet::query();
@@ -69,11 +71,11 @@ class TimesheetQuery implements QueryableInterface
                 'mission_language.title',
                 'city_language.name',
                 'country_language.name',
-                $filters[self::FILTER_TYPE] !== 'goal' ? 'timesheet.time' :'goal_mission.goal_objective'
+                $hasTypeFilterAndIsGoal ? 'goal_mission.goal_objective' : 'timesheet.time'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
-            ->when($filters[self::FILTER_TYPE] === 'goal', function ($query) use ($filters) {
+            ->when($hasTypeFilterAndIsGoal, function ($query) use ($filters) {
                 $query->join('goal_mission', 'goal_mission.mission_id', '=', 'timesheet.mission_id');
             })
             ->join('mission_language', function ($join) use ($languageId) {
@@ -117,6 +119,10 @@ class TimesheetQuery implements QueryableInterface
             // Filter by application start date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function ($query) use ($filters) {
                 $query->where('date_volunteered', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
+            })
+            // Filter by timesheet ids
+            ->when(isset($filters[self::FILTER_TIMESHEET_IDS]), function ($query) use ($filters) {
+                $query->whereIn('timesheet_id', $filters[self::FILTER_TIMESHEET_IDS]);
             })
             // Filter by application end date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function ($query) use ($filters) {
