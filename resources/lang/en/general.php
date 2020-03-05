@@ -17,7 +17,7 @@ return [
         'TIME' => 'Time',
         'HOURS' => 'Hours'
     ],
-        
+
     /**
      * Export story sheet's headings
      */
@@ -39,7 +39,7 @@ return [
         'STATUS' => 'Comment status',
         'PUBLISHED_DATE' => 'Published date',
     ],
-    
+
     'status' => [
         'DRAFT' => 'Draft',
         'PENDING' => 'Pending',
@@ -57,7 +57,8 @@ return [
         'APPROVED' => 'approved',
         'DECLINED' => 'declined',
         'REFUSED' => 'refused',
-        'PUBLISHED' => 'published',        
+        'PUBLISHED' => 'published',
+        'UPDATED' => 'updated',
     ],
 
     'notification' => [
@@ -70,8 +71,8 @@ return [
         'NEW_MESSAGE' => 'New Message',
         'RECOMMENDS_THIS_STORY' => 'Recommends this story',
         'NEW_NEWS' => 'New News',
-        'VOLUNTEERING_REQUEST' => 'Volunteering request has been',   
-        'FOR_THIS_MISSION' => 'for this mission:',  
-        'IS' => 'is',  
+        'VOLUNTEERING_REQUEST' => 'Volunteering request has been',
+        'FOR_THIS_MISSION' => 'for this mission:',
+        'IS' => 'is',
     ],
 ];
