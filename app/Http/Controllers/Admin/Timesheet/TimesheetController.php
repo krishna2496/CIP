@@ -174,7 +174,8 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $this->timesheetRepository->find($timesheetId);
+
+            $oldTimesheet = $this->timesheetRepository->find($timesheetId);
 
             if (isset($request->hours) || isset($request->minutes)) {
                 $time = $request->hours . ":" . $request->minutes;
@@ -191,26 +192,32 @@ class TimesheetController extends Controller
             $apiData = ['timesheet_id' => $timesheetId];
 
             // Send notification to user
-            $timsheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($timesheetId);
-            if ($timsheetDetails->mission->mission_type === config('constants.mission_type.TIME')) {
+            $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($timesheetId);
+            if ($timesheetDetails->mission->mission_type === config('constants.mission_type.TIME')) {
                 $notificationType = config('constants.notification_type_keys.VOLUNTEERING_HOURS');
             } else {
                 $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
             }
 
-            if (isset($request->status)) {
-                $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
-                    config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
-                $action = config('constants.notification_actions.'.$timsheetDetails->status);
+            if ($oldTimesheet->status !== $request->status) {
+                switch ($request->status) {
+                    case config('constants.timesheet_status.APPROVED'):
+                        $activityLogStatus = config('constants.activity_log_actions.APPROVED');
+                        break;
+                    case config('constants.timesheet_status.DECLINED'):
+                        $activityLogStatus = config('constants.activity_log_actions.DECLINED');
+                        break;
+                    default:
+                        $activityLogStatus = config('constants.activity_log_actions.UPDATED');
+                }
+
+                $action = config('constants.notification_actions.' . $timesheetDetails->status);
             } else {
                 $activityLogStatus = config('constants.activity_log_actions.UPDATED');
                 $action = config('constants.notification_actions.UPDATED');
             }
 
-            $entityId = $timesheetId;
-            $userId = $timsheetDetails->user_id;
-
-            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+            event(new UserNotificationEvent($notificationType, $timesheetId, $action, $timesheetDetails->user_id));
 
             // Make activity log
             event(new UserActivityLogEvent(
