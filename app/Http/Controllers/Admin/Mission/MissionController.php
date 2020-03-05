@@ -251,7 +251,7 @@ class MissionController extends Controller
                 "total_seats" => "integer|min:1",
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "theme_id" => "integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
                 "mission_detail.*.custom_information" =>"sometimes|required",
