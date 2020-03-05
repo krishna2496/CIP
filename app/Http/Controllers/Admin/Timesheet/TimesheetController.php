@@ -192,15 +192,22 @@ class TimesheetController extends Controller
             } else {
                 $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
             }
+
+            if (isset($request->status)) {
+                $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
+                    config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
+                $action = config('constants.notification_actions.'.$timsheetDetails->status);
+            } else {
+                $activityLogStatus = config('constants.activity_log_actions.UPDATED');
+                $action = config('constants.notification_actions.UPDATED');
+            }
+
             $entityId = $timesheetId;
-            $action = config('constants.notification_actions.UPDATED');
             $userId = $timsheetDetails->user_id;
 
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
 
             // Make activity log
-            $activityLogStatus = config('constants.activity_log_actions.UPDATED');
-
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
                 $activityLogStatus,
