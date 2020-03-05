@@ -252,7 +252,7 @@
                                             <p class="text-wrap">{{missionDetail.city_name}}</p>
                                         </div>
                                     </b-list-group-item>
-                                    <b-list-group-item v-if="isThemeDisplay">
+                                    <b-list-group-item v-if="isThemeDisplay && getThemeTitle(missionDetail.mission_theme)">
                                         <div>
                                             <i class="img-wrap">
                                                 <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'"

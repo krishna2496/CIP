@@ -138,6 +138,12 @@ Vue.filter('firstLetterSmall', (value) => {
 
 
 Vue.filter('substring', (value, data) => {
+    if (typeof value !== 'string'
+      && typeof value.toString === 'function'
+    ) {
+      value = value.toString();
+    }
+
     if (value.length <= data) {
         return value
     } else {
