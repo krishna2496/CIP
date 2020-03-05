@@ -146,18 +146,23 @@ class TimesheetController extends Controller
     public function update(Request $request, $timesheetId): JsonResponse
     {
         try {
+            $validationRules = [
+                "status" => ["required", Rule::in(config('constants.timesheet_status'))],
+                "notes" => "sometimes",
+                "dateVolunteered" => "sometimes|date_format:Y-m-d",
+                "dayVolunteered" => ["sometimes", Rule::in(config('constants.day_volunteered'))],
+                'hours' => 'required_if:mission_type,TIME|integer|between:0,23',
+                'minutes' => 'required_if:mission_type,TIME|integer|between:0,59',
+            ];
+
+            if ($request->mission_type === 'GOAL') {
+                $validationRules['action'] = 'required|integer|min:1';
+            }
+
             // Server side validations
             $validator = Validator::make(
                 $request->all(),
-                [
-                    "status" => ["sometimes",Rule::in(config('constants.timesheet_status'))],
-                    "notes" => "sometimes",
-                    "dateVolunteered" => "sometimes|date_format:Y-m-d",
-                    "dayVolunteered" => ["sometimes",Rule::in(config('constants.day_volunteered'))],
-                    'hours' => 'required_if:mission_type,TIME|integer|between:0,23',
-                    'minutes' => 'required_if:mission_type,TIME|integer|between:0,59',
-                    "action" => "required_if:mission_type,GOAL|integer|min:1",
-                ]
+                $validationRules
             );
 
             // If request parameter have any error

@@ -6,7 +6,6 @@ use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -69,13 +68,9 @@ class TimesheetQuery implements QueryableInterface
                 'mission_language.title',
                 'city_language.name',
                 'country_language.name',
-                $filters[self::FILTER_TYPE] !== 'goal' ? 'timesheet.time' :'goal_mission.goal_objective'
             ])
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
-            ->when($filters[self::FILTER_TYPE] === 'goal', function ($query) use ($filters) {
-                $query->join('goal_mission', 'goal_mission.mission_id', '=', 'timesheet.mission_id');
-            })
             ->join('mission_language', function ($join) use ($languageId) {
                 $join->on('mission_language.mission_id', '=', 'timesheet.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
@@ -117,6 +112,10 @@ class TimesheetQuery implements QueryableInterface
             // Filter by application start date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['from']), function ($query) use ($filters) {
                 $query->where('date_volunteered', '>=', $filters[self::FILTER_APPLICATION_DATE]['from']);
+            })
+            // Filter by timesheet ids
+            ->when(isset($filters[self::FILTER_TIMESHEET_IDS]), function ($query) use ($filters) {
+                $query->whereIn('timesheet_id', $filters[self::FILTER_TIMESHEET_IDS]);
             })
             // Filter by application end date
             ->when(isset($filters[self::FILTER_APPLICATION_DATE]['to']), function ($query) use ($filters) {
@@ -164,7 +163,7 @@ class TimesheetQuery implements QueryableInterface
             })
              ->whereHas('mission', function ($query) use ($filters) {
                  $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
-                     $this->missionType = $filters[self::FILTER_TYPE] === 'time' ? config('constants.mission_type.TIME') : config('constants.mission_type.GOAL');
+                     $this->missionType = $filters[self::FILTER_TYPE] === 'goal' ?  config('constants.mission_type.GOAL') : config('constants.mission_type.TIME');
                      $query->where('mission_type', '=', "$this->missionType");
                  });
              })
