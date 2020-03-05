@@ -29,7 +29,7 @@ export default async(data) => {
 
                       timeSheet.filter((timeSheetItem, timeSheetIndex) => {
 
-                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'YYYY-MM-DD');
+                          let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
                           let dateVolunteered = momentObj.format('YYYY-MM-DD');
                           response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
                           response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
