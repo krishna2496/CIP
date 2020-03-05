@@ -296,7 +296,7 @@ class UserController extends Controller
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
-            "availability_id" => "integer",
+            "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
             "city_id" => "required|integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",

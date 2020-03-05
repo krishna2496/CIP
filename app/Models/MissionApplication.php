@@ -195,14 +195,17 @@ class MissionApplication extends Model
      */
     public function getTotalActiveTimesheetAttribute()
     {
-        $missionId = $this->attributes['mission_id'];
-        return $this->select('timesheet.mission_id')
-            ->join('timesheet', 'mission_application.mission_id', 'timesheet.mission_id')
-            ->where('timesheet.mission_id', $missionId)
-            ->where(function($q) {
-                $q->where('timesheet.status', '=', config('constants.timesheet_status.APPROVED'))
-                    ->orWhere('timesheet.status', '=', config('constants.timesheet_status.SUBMIT_FOR_APPROVAL'));
-            })
-            ->count();
+        // In some contexts (for instance, loading the volunteers), the key mission_id is not available
+        if (array_key_exists('mission_id', $this->attributes)) {
+            $missionId = $this->attributes['mission_id'];
+            return $this->select('timesheet.mission_id')
+                ->join('timesheet', 'mission_application.mission_id', 'timesheet.mission_id')
+                ->where('timesheet.mission_id', $missionId)
+                ->where(function($q) {
+                    $q->where('timesheet.status', '=', config('constants.timesheet_status.APPROVED'))
+                        ->orWhere('timesheet.status', '=', config('constants.timesheet_status.SUBMIT_FOR_APPROVAL'));
+                })
+                ->count();
+        }
     }
 }
