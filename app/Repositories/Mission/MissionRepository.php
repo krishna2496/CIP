@@ -229,6 +229,10 @@ class MissionRepository implements MissionInterface
             $request->request->set('total_seats', null);
         }
 
+        if (isset($request->theme_id) && ($request->theme_id === '')) {
+            $request->request->set('theme_id', null);
+        }
+
         $mission = $this->modelsService->mission->findOrFail($id);
         $mission->update($request->toArray());
 
