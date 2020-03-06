@@ -15,6 +15,7 @@ class EmailNotificationTest extends TestCase
     public function it_should_run_email_notification_for_all_tenant()
     {
         \DB::setDefaultConnection('tenant');
+        \App\Models\Notification::where('deleted_at', null)->delete();
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;        
         \DB::setDefaultConnection('mysql');
