@@ -59,9 +59,9 @@
                                 </b-button>
                                 <b-button class="add-icon" v-if="isInviteCollegueDisplay"
                                     @click="handleModal(mission.mission_id)" v-b-tooltip.hover
-                                    :title="languageData.label.invite_colleague">
+                                    :title="languageData.label.recommend_to_co_worker">
                                     <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-                                        :alt="languageData.label.invite_colleague">
+                                        :alt="languageData.label.recommend_to_co_worker">
                                 </b-button>
                             </div>
                         </div>
