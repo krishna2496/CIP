@@ -14,7 +14,9 @@ class PaginationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->perPage > config('constants.PER_PAGE_MAX')
+		if ($request->perPage === 'all') {
+			$request->perPage = config('constants.PER_PAGE_ALL');
+		} else if ($request->perPage > config('constants.PER_PAGE_MAX')
         || !is_numeric($request->perPage) && isset($request->perPage)) {
             $request->perPage = config('constants.PER_PAGE_MAX');
         }
