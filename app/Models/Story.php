@@ -87,17 +87,6 @@ class Story extends Model
     }
     
     /**
-     * Get story title
-     *
-     * @param int $storyId
-     * @return string
-     */
-    public function getStoryName(int $storyId): string
-    {
-        return static::select('title')->where(['story_id' => $storyId])->value('title');
-    }
-
-    /**
      * Remove the script tag from description attribute
      *
      * @param string $value

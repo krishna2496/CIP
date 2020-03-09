@@ -54,15 +54,6 @@ interface MissionInterface
     public function missionFavourite(int $userId, int $missionId): ?FavouriteMission;
     
     /**
-     * Get mission name.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, $languageId): string;
-
-    /**
      * Add/update mission rating.
      *
      * @param int $userId
