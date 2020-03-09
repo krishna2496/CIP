@@ -165,7 +165,7 @@ class LanguageController extends Controller
         }
 
         // Validate json file data
-        if (json_decode(file_get_contents($file->getRealPath())) === null) {
+        if (json_decode($this->helpers->removeUnwantedCharacters($file->getRealPath())) === null) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -189,11 +189,11 @@ class LanguageController extends Controller
 
         //Get default file from url
         $defaultFileUrl = $this->s3helper->getDefaultLanguageFile($fileName);
-        $defaultFileContent = json_decode(file_get_contents($defaultFileUrl));
+        $defaultFileContent = json_decode($this->helpers->removeUnwantedCharacters($defaultFileUrl));
         $keyNotExists = array();
         $keyValueNotExists = array();
         $missingKeyValueString = '';
-        $userLanguageFile = json_decode(file_get_contents($file->getRealPath()));
+        $userLanguageFile = json_decode($this->helpers->removeUnwantedCharacters($file->getRealPath()));
         //Code to check file keywords
         foreach ($defaultFileContent as $index => $data) {
             if (isset($userLanguageFile->$index)) {

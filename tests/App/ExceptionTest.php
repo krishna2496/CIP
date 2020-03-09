@@ -70,23 +70,11 @@ class ExceptionTest extends TestCase
      */
     public function it_should_return_internal_server_error_exception()
     {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-
-        DB::setDefaultConnection('tenant');
-
-        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $appEnv = env('APP_ENV');
-        $_ENV["APP_ENV"] = str_random('5');
-        
-        $this->get('/app/filter-data', ['token' => $token])
+        $token = str_random(30);
+        $randomUrl = str_random(5);
+        DB::setDefaultConnection('mysql');
+        $this->get("/app/$randomUrl", ['token' => $token])
         ->seeStatusCode(500);
-        
-        $user->delete();
-
-        $_ENV["APP_ENV"] = $appEnv;
     }
     
     

@@ -52,6 +52,7 @@ return [
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
+	'PER_PAGE_ALL' => '100000',
     /*
      * User custom field types
      */

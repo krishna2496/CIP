@@ -97,7 +97,8 @@ class UserNotificationListner
     public function sendDatabaseNotification(UserNotificationEvent $data, int $userId)
     {
         $isEmailNotification = 0;
-        if (User::whereUserId($userId)->where('receive_email_notification', 1)->count()) {
+        if (User::whereUserId($userId)->where('receive_email_notification', 1)
+        ->whereNull('deleted_at')->count()) {
             $isEmailNotification = 1;
         }
         $notification = UserDatabaseNotifier::notify(
@@ -106,6 +107,6 @@ class UserNotificationListner
             $data->action,
             $userId,
             $isEmailNotification
-        );        
+        );
     }
 }
