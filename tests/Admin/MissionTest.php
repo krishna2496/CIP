@@ -301,6 +301,15 @@ class MissionTest extends TestCase
             "data",
             "message"
         ]);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('missions?perPage=all', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data",
+            "message"
+        ]);
         
     }
 
