@@ -37,15 +37,14 @@ class Helpers
      */
     public function getSubDomainFromRequest(Request $request): string
     {
-        // Check admin request
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
             return $this->getDomainFromUserAPIKeys($request);
+        } else if (!empty($request->query('tenant'))) {
+            return $this->getTenantDomainByTenantId($request->query('tenant'));
+        } else if (in_array(env('APP_ENV'), ['local', 'testing'])) {
+            return env('DEFAULT_TENANT');
         } else {
-            if ((env('APP_ENV') === 'local' || env('APP_ENV') === 'testing')) {
-                return env('DEFAULT_TENANT');
-            } else {
-                return parse_url($request->headers->all()['referer'][0])['host'];
-            }
+            return parse_url($request->headers->all()['referer'][0])['host'];
         }
     }
 
@@ -66,8 +65,6 @@ class Helpers
             ->where('name', $domain)
             ->whereNull('deleted_at')
             ->first();
-
-        $this->switchDatabaseConnection('tenant');
 
         return $tenantIdAndSponsorId;
     }
@@ -400,5 +397,27 @@ class Helpers
 		}
 		
 		return $jsonFileContent;
+    }
+
+    /**
+     * Retrieve tenant's name
+     *
+     * @param Request
+     * @return String
+     */
+    private function getTenantDomainByTenantId($tenantId): String
+    {
+        $connection = Config::get('database.default');
+        $this->switchDatabaseConnection('mysql');
+
+        $tenant = $this->db->table('tenant')
+            ->select('name')
+            ->where('tenant_id', $tenantId)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection($connection);
+
+        return $tenant->name;
     }
 }
