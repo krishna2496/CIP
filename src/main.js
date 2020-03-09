@@ -116,11 +116,7 @@ Vue.filter('filterGoal', (value) => {
 })
 
 Vue.filter('formatTime', (value) => {
-    if (value) {
-        let splitArray = value.split(":");
-
-        return splitArray[0] + ':' + splitArray[1]
-    }
+    return moment(String(value)).format('LT')
 })
 
 Vue.filter('firstLetterCapital', (value) => {

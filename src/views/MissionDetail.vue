@@ -158,7 +158,7 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            <template v-if="missionDetail.application_deadline != null">
+                                            <template>
                                                 <div class="detail-column info-block">
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/clock.svg'"
@@ -172,12 +172,11 @@
                                                         <span class="subtitle-text">{{ languageData.label.deadline }}
                                                         </span>
                                                     </div>
-                                                    <div v-else>
+                                                    <div v-else class="text-wrap">
                                                         <span class="title-text mb-1"
                                                               v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
                                                             <span
-                                                                    v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
-                                                                {{ languageData.label.from }}
+                                                                v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
                                                                 {{missionDetail.application_start_date | formatDate}}
                                                                 {{missionDetail.application_start_time | formatTime}}
                                                             </span>
@@ -189,8 +188,8 @@
                                                             </span>
                                                         </span>
                                                         <span class="subtitle-text"
-                                                              v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
-                                                            <p>{{ languageData.label.deadline }}</p>
+                                                            v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+                                                            {{ languageData.label.registration_period }}
                                                         </span>
                                                     </div>
                                                 </div>

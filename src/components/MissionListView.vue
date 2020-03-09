@@ -10,7 +10,7 @@
                             <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
                                 {{languageData.label.closed}}</b-alert>
                             <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
-                                 :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                                :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
                             </div>
                             <div v-else class="group-img"
@@ -58,10 +58,10 @@
                                     </i>
                                 </b-button>
                                 <b-button class="add-icon" v-if="isInviteCollegueDisplay"
-                                          @click="handleModal(mission.mission_id)" v-b-tooltip.hover
-                                          :title="languageData.label.invite_colleague">
+                                    @click="handleModal(mission.mission_id)" v-b-tooltip.hover
+                                    :title="languageData.label.recommend_to_co_worker">
                                     <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-                                         :alt="languageData.label.invite_colleague">
+                                        :alt="languageData.label.recommend_to_co_worker">
                                 </b-button>
                             </div>
                         </div>

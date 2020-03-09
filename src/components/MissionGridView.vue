@@ -61,10 +61,10 @@
 										</i>
 									</b-button>
 									<b-button class="add-icon" v-if="isInviteCollegueDisplay" v-b-tooltip.hover
-											  :title="languageData.label.invite_colleague"
-											  @click="handleModal(mission.mission_id)">
+										:title="languageData.label.recommend_to_co_worker"
+										@click="handleModal(mission.mission_id)">
 										<img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-											 :alt="languageData.label.invite_colleague">
+											:alt="languageData.label.recommend_to_co_worker">
 									</b-button>
 								</div>
 							</div>
