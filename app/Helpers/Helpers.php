@@ -66,6 +66,8 @@ class Helpers
             ->whereNull('deleted_at')
             ->first();
 
+        $this->switchDatabaseConnection('tenant');
+
         return $tenantIdAndSponsorId;
     }
 
@@ -373,7 +375,7 @@ class Helpers
         $this->switchDatabaseConnection('tenant');
         return $language;
     }
-	
+
 	/**
      * Remove unwanted characters from json
      * @param string $filePath
@@ -384,18 +386,18 @@ class Helpers
         $jsonFileContent = file_get_contents($filePath);
 
 		// This will remove unwanted characters.
-		for ($i = 0; $i <= 31; ++$i) { 
-			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent); 
+		for ($i = 0; $i <= 31; ++$i) {
+			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
 		}
 		$jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
 
 		// This is the most common part
 		// Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
-		// here we detect it and we remove it, basically it's the first 3 characters 
+		// here we detect it and we remove it, basically it's the first 3 characters
 		if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
 		   $jsonFileContent = substr($jsonFileContent, 3);
 		}
-		
+
 		return $jsonFileContent;
     }
 
