@@ -945,18 +945,6 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Get mission name.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, $languageId): string
-    {
-        return $this->modelsService->missionLanguage->getMissionName($missionId, $languageId);
-    }
-
-    /**
      * Add/update mission rating.
      *
      * @param int $userId

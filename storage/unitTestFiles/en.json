@@ -287,7 +287,11 @@
 		"total_messages" : "Total messages",
 		"send_message" : "Send message",
         "receive_email_notification":"Receive notification by email",
-        "fill_up_mandatory_fields_to_access_platform" : "Please fill up mandatory fields to access platform"
+        "fill_up_mandatory_fields_to_access_platform" : "In order to complete your profile, please provide us with the required information",
+        "state" : "State",
+		"registration_period" : "Registration period",
+		"search_mission" : "Search mission",
+		"organisations" : "Organisations"
     },
 
     "placeholder": {
@@ -344,7 +348,6 @@
         "why_i_volunteer_max_length": "Reason for volunteer may not be greater than 255 characters",
         "country_required": "Country is required",
         "city_required": "City is required",
-        "availability_required": "Availability is required",
         "valid_linked_in_url": "Please enter valid linked in url",
         "max_skill_selection": "Skill selection may not be greater than 15",
         "skill_selection": "Skill selection is required",
@@ -377,7 +380,8 @@
         "invalid_image_type": "Invalid file type: valid file types are png, jpg, jpeg",
         "max_image_upload": "Maximum 20 images can be added",
         "max_video_upload": "Maximum 20 videos can be added",
-        "duplicate_video_url": "Duplicate video url are not allowed"
+        "duplicate_video_url": "Duplicate video url are not allowed",
+        "invalid_saml_setting": "The following mapping(s) are required:"
     },
 
     "export_timesheet_file_names": {

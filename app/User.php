@@ -168,17 +168,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Get specified resource.
-     *
-     * @param int $missionId
-     * @return string
-     */
-    public function getUserName(int $userId): string
-    {
-        return static::select('first_name')->where(['user_id' => $userId])->value('first_name');
-    }
-
-    /**
      * Search user
      *
      * @param string $term
