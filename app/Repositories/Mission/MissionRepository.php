@@ -92,7 +92,7 @@ class MissionRepository implements MissionInterface
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
-                'state_id' => $request->location['state_id'],
+                'state_id' => (isset($request->location['state_id'])) ? $request->location['state_id'] : null,
                 'country_id' => $countryId,
                 'start_date' => (isset($request->start_date)) ? $request->start_date : null,
                 'end_date' => (isset($request->end_date)) ? $request->end_date : null,
