@@ -5,6 +5,7 @@
     "scripts": {
         "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",
+        "build-staging": "vue-cli-service build --mode staging",
         "lint": "vue-cli-service lint",
         "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
     },
@@ -12,12 +13,12 @@
         "aos": "^3.0.0-beta.6",
         "axios": "^0.18.1",
         "bootstrap": "^4.3.1",
-        "bootstrap-vue": "^2.0.0-rc.28",
+        "bootstrap-vue": "^2.5.0",
         "chart.js": "^2.8.0",
         "core-js": "^2.6.5",
         "moment": "^2.24.0",
         "moment-timezone": "^0.5.27",
-        "simplebar": "^4.3.0-alpha.0",
+        "simplebar": "^4.2.0",
         "vue": "^2.6.10",
         "vue-autosuggest": "^2.0.1",
         "vue-axios": "^2.1.4",
