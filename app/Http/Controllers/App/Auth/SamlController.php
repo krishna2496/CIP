@@ -61,7 +61,7 @@ class SamlController extends Controller
             SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
-        $auth = new Auth($this->getSamlSettings($settings));
+        $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
         return $auth->login();
     }
 
@@ -75,7 +75,7 @@ class SamlController extends Controller
             SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
-        $auth = new Auth($this->getSamlSettings($settings));
+        $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
         $auth->processResponse();
         if (!$auth->isAuthenticated()) {
             $auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
@@ -240,7 +240,7 @@ class SamlController extends Controller
             );
         }
 
-        $auth = new Auth($this->getSamlSettings($settings));
+        $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
         $sloUrl = $auth->logout(null, [], null, null, true);
 
         $auth->redirectTo(
@@ -259,14 +259,14 @@ class SamlController extends Controller
             );
         }
 
-        $samlSettings = new Settings($this->getSamlSettings($settings));
+        $samlSettings = new Settings($this->getSamlSettings($settings, $request->query('tenant')));
         $metadata = $samlSettings->getSPMetadata();
         $errors = $samlSettings->validateMetadata($metadata);
         return $response->header('Content-Type', 'text/xml')
             ->setContent($metadata);
     }
 
-    private function getSamlSettings(array $settings)
+    private function getSamlSettings(array $settings, $tenantId)
     {
         return [
             'debug' => env('APP_DEBUG'),
@@ -274,15 +274,15 @@ class SamlController extends Controller
             'security' => $settings['security'],
             'idp' => $settings['idp'],
             'sp' => [
-                'entityId' => route('saml.metadata', ['t' => $settings['idp_id']]),
+                'entityId' => route('saml.metadata', ['t' => $settings['idp_id'], 'tenant' => $tenantId]),
                 'singleSignOnService' => [
-                    'url' => route('saml.sso', ['t' => $settings['idp_id']])
+                    'url' => route('saml.sso', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
                 ],
                 'singleLogoutService' => [
-                    'url' => route('saml.slo', ['t' => $settings['idp_id']])
+                    'url' => route('saml.slo', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
                 ],
                 'assertionConsumerService' => [
-                    'url' => route('saml.acs', ['t' => $settings['idp_id']])
+                    'url' => route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
                 ],
                 'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
                 'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
