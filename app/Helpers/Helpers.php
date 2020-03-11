@@ -285,6 +285,7 @@ class Helpers
         $convertedHours = (int) ($totalHours / 60);
         $hours = $convertedHours . "h";
         $minutes = $totalHours % 60;
+        $minutes = sprintf("%02d", $minutes);
         return $hours . $minutes;
     }
 
