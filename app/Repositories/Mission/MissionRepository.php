@@ -122,19 +122,19 @@ class MissionRepository implements MissionInterface
         if ($request->mission_type == "TIME") {
             $timeMissionArray = array(
                 'application_deadline' => (isset($request->application_deadline)
-                && $request->application_deadline != '') ?
+                && $request->application_deadline !== '') ?
                 $request->application_deadline : null,
                 'application_start_date' => (isset($request->application_start_date)
-                && $request->application_start_date != '')
+                && $request->application_start_date !== '')
                 ? $request->application_start_date : null,
                 'application_end_date' => (isset($request->application_end_date)
-                && $request->application_end_date != '')
+                && $request->application_end_date !== '')
                 ? $request->application_end_date : null,
                 'application_start_time' => (isset($request->application_start_time)
-                && $request->application_start_time)
+                && $request->application_start_time !== '')
                 ? $request->application_start_time : null,
                 'application_end_time' => (isset($request->application_end_time)
-                && $request->application_end_time != '')
+                && $request->application_end_time !== '')
                 ? $request->application_end_time : null,
             );
             
