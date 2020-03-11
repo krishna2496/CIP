@@ -65,7 +65,7 @@ spec:
           requests:
             cpu: 10m
       - name: ci-frontend
-        image: registry.kubernetes.infra.optimy.net/ci/frontend:{{FRONTEND_VERSION}}
+        image: registry.kubernetes.infra.optimy.net/ci/frontend-prod:{{FRONTEND_VERSION}}
         imagePullPolicy: Always
         resources:
           requests:
@@ -76,7 +76,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: staging
+  namespace: default
   name: ci-frontend-service
   labels:
     app: ci-frontend
@@ -96,16 +96,16 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: ci-frontend-ingress
-  namespace: staging
+  namespace: default
 spec:
   rules:
-  - host: ci.staging.optimy.net
+  - host: ci.prod.optimy.net
     http:
       paths:
       - backend:
           serviceName: ci-frontend-service
           servicePort: 80
-  - host: '*.front.ci.staging.optimy.net'
+  - host: '*.front.ci.prod.optimy.net'
     http:
       paths:
       - backend:
