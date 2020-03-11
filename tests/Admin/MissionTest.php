@@ -304,6 +304,14 @@ class MissionTest extends TestCase
             "message"
         ]);
 
+        DB::setDefaultConnection('mysql');
+        $this->get('missions?perPage=all', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data",
+            "message"
+        ]);
     }
 
     /**
@@ -1839,12 +1847,12 @@ class MissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-        
+
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
- 
+
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -1912,6 +1920,6 @@ class MissionTest extends TestCase
         $this->patch("missions/".$mission->mission_id, $params,
         ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
-        $mission->delete();        
+        $mission->delete();
     }
 }

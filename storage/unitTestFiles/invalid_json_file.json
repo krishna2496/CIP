@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "Adres e-mail",
 		"password": "Hasło",
@@ -287,7 +287,11 @@
 		"total_messages": "Wiadomości razem",
 		"send_message": "Wyślij wiadomość",
 "receive_email_notification":"Receive notification by email",
-        "fill_up_mandatory_fields_to_access_platform" : "In order to complete your profile, please provide us with the required information"
+		"fill_up_mandatory_fields_to_access_platform" : "In order to complete your profile, please provide us with the required information",
+		"state": "Region",
+		"registration_period": "Registration period",
+		"search_mission": "Search mission",
+		"organisations": "Organizations"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",
@@ -375,7 +379,8 @@
 		"invalid_image_type": "Nieprawidłowy typ pliku: prawidłowe typy plików to png, jpg, jpeg",
 		"max_image_upload": "Można dodać maksymalnie 20 obrazów",
 		"max_video_upload": "Można dodać maksymalnie 20 filmików wideo",
-		"duplicate_video_url": "Duplikaty adresów wideo url nie są dozwolone"
+		"duplicate_video_url": "Duplikaty adresów wideo url nie są dozwolone",
+		"invalid_saml_setting": "The following mapping(s) are required:"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
