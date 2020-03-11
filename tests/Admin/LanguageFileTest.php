@@ -267,5 +267,37 @@ class LanguageFileTest extends TestCase
         $this->seeStatusCode(200);
     }
 
+    /**
+     * @test
+     * 
+     * Language file not found for language file
+     * 
+     * @return void
+     */
+    public function it_should_return_error_tenant_language_file_not_found()
+    {        
+        $tenantId = env('DEFAULT_TENANT_ID');
 
+        $languageData = DB::table('language')
+        ->select('language.language_id', 'language.code')        
+        ->leftJoin('tenant_language', 'language.language_id', '=', 'tenant_language.language_id')
+        ->where('tenant_language.language_id', null)
+        ->first();
+        
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => $languageData->language_id,
+            'default' => '0'
+        ]);
+
+        $res = $this->get("language-file?code=$languageData->code", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);        
+        
+        DB::setDefaultConnection('mysql');
+        
+        DB::table('tenant_language')
+        ->where('tenant_id', $tenantId)
+        ->where('language_id', $languageData->language_id)
+        ->delete();
+    }
 }

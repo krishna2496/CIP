@@ -173,7 +173,7 @@ class AppNotificationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -202,7 +202,7 @@ class AppNotificationTest extends TestCase
         // Get setting id from master table
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
         DB::setDefaultConnection('tenant');
         $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
@@ -220,7 +220,7 @@ class AppNotificationTest extends TestCase
 
         // Add skill
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -237,7 +237,7 @@ class AppNotificationTest extends TestCase
         $skillId = $skill[0]->skill_id;
 
         // Update user and user skills
-        $skillsArray[] = ["skill_id" => $skillId];        
+        $skillsArray[] = ["skill_id" => $skillId];
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -248,8 +248,8 @@ class AppNotificationTest extends TestCase
             'employee_id' => str_random(3),
             'department' => str_random(5),
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -337,7 +337,7 @@ class AppNotificationTest extends TestCase
             'availability_id' => 1
         ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -348,7 +348,7 @@ class AppNotificationTest extends TestCase
             "approval_status" => "AUTOMATICALLY_APPROVED",
         ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
@@ -366,7 +366,7 @@ class AppNotificationTest extends TestCase
             'mission_id' => $mission->mission_id,
             'to_user_id' => $toUser->user_id
         ];
-        DB::setDefaultConnection('mysql'); 
+        DB::setDefaultConnection('mysql');
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -377,12 +377,12 @@ class AppNotificationTest extends TestCase
             'description' => str_random(50),
             'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
         ];
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/story', $params, ['token' => $token])
         ->seeStatusCode(201);
 
         // Submit story for approval
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();        
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
         $this->post('app/story/'.$story->story_id.'/submit', [], ['token' => $token])
         ->seeStatusCode(200);
@@ -448,7 +448,7 @@ class AppNotificationTest extends TestCase
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
-                    [  
+                    [
                         "lang" => "en",
                         "title" => "english_".str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
@@ -481,7 +481,7 @@ class AppNotificationTest extends TestCase
         $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
 
-        // Add timesheet for volunteering hours 
+        // Add timesheet for volunteering hours
         $params = [
             'mission_id' => $mission->mission_id,
             'date_volunteered' => date('Y-m-d'),
@@ -491,7 +491,7 @@ class AppNotificationTest extends TestCase
             'documents[]' =>[]
         ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -565,7 +565,7 @@ class AppNotificationTest extends TestCase
             'minutes' => rand(1, 59),
             'documents[]' =>[]
         ];
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -607,7 +607,7 @@ class AppNotificationTest extends TestCase
         ->seeStatusCode(200);
                 
         // Get notification of to user
-        $token = Helpers::getJwtToken($toUser->user_id , env('DEFAULT_TENANT'));        
+        $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
         DB::setDefaultConnection('mysql');
         $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
         $this->seeStatusCode(200);
@@ -632,7 +632,7 @@ class AppNotificationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -698,8 +698,8 @@ class AppNotificationTest extends TestCase
             'employee_id' => str_random(3),
             'department' => str_random(5),
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -825,7 +825,7 @@ class AppNotificationTest extends TestCase
 
         $params = [
             "settings" => $notificationTypeArray,
-			"user_settings" => [
+            "user_settings" => [
                 [
                 "receive_email_notification"=> 1
                 ]
@@ -857,7 +857,7 @@ class AppNotificationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -923,8 +923,8 @@ class AppNotificationTest extends TestCase
             'employee_id' => str_random(3),
             'department' => str_random(5),
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -1032,5 +1032,196 @@ class AppNotificationTest extends TestCase
 
         $user->delete();
         $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should get notification for deleted story
+     *
+     * @return void
+     */
+    public function it_should_get_notification_for_deleted_story()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+        
+        // Add skill
+        $skillName = str_random(20);
+        $params = [
+            "skill_name" => $skillName,
+            "parent_skill" => 0,
+            "translations" => [
+                [
+                    "lang" => "en",
+                    "title" => "skill testing"
+                ]
+            ]
+        ];
+        DB::setDefaultConnection('mysql');
+        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+
+        $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
+        $skillId = $skill[0]->skill_id;
+
+        // Create goal mission
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => ''
+            ],
+            "location" => [
+                "city_id" => $cityId,
+                "country_code" => $countryDetail->ISO
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ],
+                [
+                    "lang" => "fr",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "default" => "1",
+                    "sort_order" => "1"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2022-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(100, 1000),
+            "total_seats" => rand(10, 1000),
+            "application_deadline" => "2022-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => [
+                [
+                    "skill_id" => $skillId
+                ]
+            ]
+        ];
+
+        DB::setDefaultConnection('mysql');
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+
+        /* Invite user for story and delete it's story after invite */
+        // Create new user for story
+        $connection = 'tenant';
+        $toUserForStory = factory(\App\User::class)->make();
+        $toUserForStory->setConnection($connection);
+        $toUserForStory->save();
+
+        $token = Helpers::getJwtToken($toUserForStory->user_id, env('DEFAULT_TENANT'));
+
+        $skillsArray[] = ["skill_id" => $skillId];
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'skills' => $skillsArray,
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
+        ];
+
+        DB::setDefaultConnection('mysql');
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(200);
+
+        // Add story
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
+        ];
+
+        DB::setDefaultConnection('mysql');
+        
+        $this->post('app/story', $params, ['token' => $token])
+        ->seeStatusCode(201);
+
+        // Submit story for approval
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+        $this->post('app/story/'.$story->story_id.'/submit', [], ['token' => $token])
+        ->seeStatusCode(200);
+        
+        // Update story status
+        DB::setDefaultConnection('mysql');
+        $params = ["status" => config('constants.story_status.PUBLISHED')];
+        $this->patch('stories/'.$story->story_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
+        // Recommend a story to a user
+        $notification = factory(\App\Models\UserNotification::class)->make();
+        $notification->setConnection($connection);
+        $notification->user_id = $toUserForStory->user_id;
+        $notification->notification_type_id = 8;
+        $notification->save();
+
+        $params = [
+            'story_id' => $story->story_id,
+            'to_user_id' => $toUserForStory->user_id
+        ];
+                
+        DB::setDefaultConnection('mysql');
+        $this->post('/app/story/invite', $params, ['token' => $token])
+        ->seeStatusCode(201);
+
+        $story->forceDelete();
+
+        // Get notification of to user
+        $token = Helpers::getJwtToken($toUserForStory->user_id, env('DEFAULT_TENANT'));
+        DB::setDefaultConnection('mysql');
+        $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
+        $this->seeStatusCode(200);
+         
+        $mission->delete();
+        $notification->delete();
+        $toUserForStory->delete();
+        //  App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $setting->tenant_setting_id])->delete();
+        //  App\Models\TenantSetting::where(['setting_id' => $settings[0]->tenant_setting_id])->delete();
     }
 }
