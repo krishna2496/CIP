@@ -305,11 +305,11 @@ class SamlController extends Controller
     {
         $country = $this->countryRepository->getCountryData($userDetail->country_id);
         $language = $this->languageHelper->getLanguage($userDetail->language_id);
+        $postalCity = null;
 
         if ($userDetail->city_id) {
             $city = $this->cityRepository->getCityData($userDetail->city_id);
             $cityLanguages = collect($city['languages']);
-            $postalCity = null;
             if ($cityLanguages->count()) {
                 $postalCity = $cityLanguages->where('language_id', $userDetail->country_id)
                     ->first();
