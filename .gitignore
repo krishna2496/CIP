@@ -22,3 +22,4 @@ storage/*
 
 storage/app/*
 !storage/app/default_theme
+!storage/app/samlCertificate

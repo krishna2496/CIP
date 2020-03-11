@@ -285,8 +285,8 @@ class SamlController extends Controller
                     'url' => route('saml.acs', ['t' => $settings['idp_id']])
                 ],
                 'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
-                'x509cert' => Storage::disk('local')->get('samlCertificate/login.optimyapp.com.cert.pem'),
-                'privateKey' => Storage::disk('local')->get('samlCertificate/login.optimyapp.com.key.pem'),
+                'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
+                'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
             ]
         ];
     }
