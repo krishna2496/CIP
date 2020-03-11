@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Log;
 use Queue;
 use App\Helpers\EmailHelper;
 
@@ -50,37 +51,43 @@ class TenantBackgroundJobsJob extends Job
      */
     public function handle()
     {
-        $this->tenant->update(
-            [
-                'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
-            ]
-        );
+        try {
+            $this->tenant->update(
+                [
+                    'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
+                ]
+            );
 
-        // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-        if (env('APP_ENV')=='testing') {
-            dispatch(new TenantDefaultLanguageJob($this->tenant));
+            // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
+            if (env('APP_ENV')=='testing') {
+                dispatch(new TenantDefaultLanguageJob($this->tenant));
+            }
+
+            // Job dispatched to create new tenant's database and migrations
+            dispatch(new TenantMigrationJob($this->tenant));
+
+            // Copy local default_theme folder
+            dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenant->name));
+
+            // Create assets folder for tenant on AWS s3 bucket
+            dispatch(new CreateFolderInS3BucketJob($this->tenant));
+
+            // Compile CSS file and upload on s3
+            dispatch(new CompileScssFiles($this->tenant));
+
+            $this->tenant->update(
+                [
+                    'background_process_status' => config('constants.background_process_status.COMPLETED')
+                ]
+            );
+
+            // Send success mail notification to admin
+            $this->sendEmailNotification(true);
+
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage(), $exception->getTrace());
+            throw $exception;
         }
-
-        // Job dispatched to create new tenant's database and migrations
-        dispatch(new TenantMigrationJob($this->tenant));
-
-        // Copy local default_theme folder
-        dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenant->name));
-
-        // Create assets folder for tenant on AWS s3 bucket
-        dispatch(new CreateFolderInS3BucketJob($this->tenant));
-
-        // Compile CSS file and upload on s3
-        dispatch(new CompileScssFiles($this->tenant));
-
-        $this->tenant->update(
-            [
-                'background_process_status' => config('constants.background_process_status.COMPLETED')
-            ]
-        );
-
-        // Send success mail notification to admin
-        $this->sendEmailNotification(true);
     }
 
     /**
