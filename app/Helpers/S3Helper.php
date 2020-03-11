@@ -193,13 +193,6 @@ class S3Helper
      */
     public function getLanguageFile(string $tenantName, string $code)
     {
-        if (!Storage::disk('s3')->exists($tenantName)) {
-            throw new BucketNotFoundException(
-                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3'),
-                config('constants.error_codes.ERROR_TENANT_LANGUAGE_FOLDER_NOT_FOUND_ON_S3')
-            );
-        }
-
         $languageFilePath = $tenantName.'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/'.
         $code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
         $languageFileUrl = Storage::disk('s3')->url($languageFilePath);
