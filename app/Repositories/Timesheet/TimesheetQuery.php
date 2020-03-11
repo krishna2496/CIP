@@ -75,18 +75,19 @@ class TimesheetQuery implements QueryableInterface
                 $join->on('mission_language.mission_id', '=', 'timesheet.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
             })
-            ->join('city_language', function($join) use ($languageId) {
+            ->join('city_language', function ($join) use ($languageId) {
                 $join->on('city_language.city_id', '=', 'mission.city_id')
                     ->where('city_language.language_id', '=', $languageId);
             })
-            ->join('country_language', function($join) use ($languageId) {
+            ->join('country_language', function ($join) use ($languageId) {
                 $join->on('country_language.country_id', '=', 'mission.country_id')
                     ->where('country_language.language_id', '=', $languageId);
             })
             ->whereNotIn('timesheet.status', ['pending'])
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
-                    'publication_status', [config("constants.publication_status")["APPROVED"], config("constants.publication_status")["PUBLISHED_FOR_APPLYING"]]
+                    'publication_status',
+                    [config("constants.publication_status")["APPROVED"], config("constants.publication_status")["PUBLISHED_FOR_APPLYING"]]
                 );
             })
             ->whereHas('mission.missionApplication', function ($query) {
@@ -123,7 +124,8 @@ class TimesheetQuery implements QueryableInterface
             })
             // Filter by timesheet status
             ->when(isset($filters[self::FILTER_APPROVAL_STATUS]), function ($query) use ($filters) {
-                $query->whereIn('timesheet.status',
+                $query->whereIn(
+                    'timesheet.status',
                     collect($filters[self::FILTER_APPROVAL_STATUS])->map(function ($val) {
                         return strtoupper($val);
                     })
@@ -144,29 +146,33 @@ class TimesheetQuery implements QueryableInterface
                         $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
                     });
                     // Filter by mission Status
+                    $countFilterMissionStatus = 0;
                     $query->when(isset($filters[self::FILTER_MISSION_STATUSES]), function ($query) use ($filters) {
-                        collect($filters[self::FILTER_MISSION_STATUSES])->map(function ($val) use ($query) {
-                            if ($val === 'active') {
-                                return $query->whereIn('publication_status', [
+                        collect($filters[self::FILTER_MISSION_STATUSES])
+                            ->map(function ($val) use ($query, &$countFilterMissionStatus) {
+                                if ($val === 'active') {
+                                    $countFilterMissionStatus++;
+                                    return $query->whereIn('publication_status', [
                                         config("constants.publication_status")["PUBLISHED_FOR_APPLYING"],
                                         config("constants.publication_status")["APPROVED"]
-                                ]);
-                            } else {
-                                return $query->whereIn('publication_status', [
-                                    config("constants.publication_status")["UNPUBLISHED"],
-                                    config("constants.publication_status")["DRAFT"]
-                                ]);
-                            }
-                        });
+                                    ], $countFilterMissionStatus > 1 ? 'or' : 'and');
+                                } else {
+                                    $countFilterMissionStatus++;
+                                    return $query->whereIn('publication_status', [
+                                        config("constants.publication_status")["UNPUBLISHED"],
+                                        config("constants.publication_status")["DRAFT"]
+                                    ], $countFilterMissionStatus > 1 ? 'or' : 'and');
+                                }
+                            });
                     });
                 });
             })
-             ->whereHas('mission', function ($query) use ($filters) {
-                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
-                     $this->missionType = $filters[self::FILTER_TYPE] === 'goal' ?  config('constants.mission_type.GOAL') : config('constants.mission_type.TIME');
-                     $query->where('mission_type', '=', "$this->missionType");
-                 });
-             })
+            ->whereHas('mission', function ($query) use ($filters) {
+                $query->when(isset($filters[self::FILTER_TYPE]), function ($query) use ($filters) {
+                    $this->missionType = $filters[self::FILTER_TYPE] === 'goal' ? config('constants.mission_type.GOAL') : config('constants.mission_type.TIME');
+                    $query->where('mission_type', '=', "$this->missionType");
+                });
+            })
             // Search
             ->when(!empty($search), function ($query) use ($search, $filters, $languageId) {
                 $searchCallback = function ($query) use ($search, $languageId) {
@@ -216,12 +222,11 @@ class TimesheetQuery implements QueryableInterface
                         });
                 };
 
-                if (isset($filters[self::FILTER_TIMESHEET_IDS])) {
-                    $query->orWhere($searchCallback);
-                } else {
-                    $query->where($searchCallback);
-                }
-
+            if (isset($filters[self::FILTER_TIMESHEET_IDS])) {
+                $query->orWhere($searchCallback);
+            } else {
+                $query->where($searchCallback);
+            }
             })
             ->whereHas('mission', function ($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) {
@@ -286,7 +291,6 @@ class TimesheetQuery implements QueryableInterface
                     $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
                 }
             } else {
-
                 // Default to ASC
                 $order['orderDir'] = self::ALLOWED_SORTING_DIR[0];
             }
@@ -310,5 +314,4 @@ class TimesheetQuery implements QueryableInterface
 
         return $limit;
     }
-
 }
