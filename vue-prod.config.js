@@ -1,4 +1,4 @@
-const host = "api.ci.staging.optimy.net";
+const host = "api.ci.prod.optimy.net";
 const port = 80;
 module.exports = {
     chainWebpack: config => {
