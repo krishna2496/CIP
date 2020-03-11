@@ -164,6 +164,7 @@ trait MissionTransformable
                     }
                 }
             }
+            $returnData = array_map('array_values', $returnData);
             if (!empty($returnData)) {
                 $mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
             }
