@@ -664,6 +664,27 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
+    * Get sum of total hours of all users timesheet
+    *
+    * @return int
+    */
+    public function getSumOfUsersTotalHours(): int
+    {
+        $usersTotalHours = $this->getUsersTotalHours('', '');
+
+        if (empty($usersTotalHours)) {
+            return 0;
+        }
+
+        $totalMinutes = 0;
+        foreach ($usersTotalHours as $userEntry) {
+            $totalMinutes += $userEntry['total_minutes'];
+        }
+
+        return floor($totalMinutes / 60);
+    }
+
+    /**
      * Get details of timesheet from timesheetId
      *
      * @param int $timesheetId
