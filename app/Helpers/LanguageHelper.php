@@ -54,7 +54,7 @@ class LanguageHelper
     {
         $this->helpers->switchDatabaseConnection('mysql');
         $language = $this->db->table('language')
-            ->select('language_id', 'code', 'name', 'default')
+            ->select('language_id', 'code', 'name')
             ->where('language_id', $id)
             ->first();
         $this->helpers->switchDatabaseConnection('tenant');
