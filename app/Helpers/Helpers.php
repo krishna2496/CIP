@@ -37,15 +37,14 @@ class Helpers
      */
     public function getSubDomainFromRequest(Request $request): string
     {
-        // Check admin request
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
             return $this->getDomainFromUserAPIKeys($request);
+        } else if (!empty($request->query('tenant'))) {
+            return $this->getTenantDomainByTenantId($request->query('tenant'));
+        } else if (in_array(env('APP_ENV'), ['local', 'testing'])) {
+            return env('DEFAULT_TENANT');
         } else {
-            if ((env('APP_ENV') === 'local' || env('APP_ENV') === 'testing')) {
-                return env('DEFAULT_TENANT');
-            } else {
-                return parse_url($request->headers->all()['referer'][0])['host'];
-            }
+            return parse_url($request->headers->all()['referer'][0])['host'];
         }
     }
 
@@ -376,7 +375,7 @@ class Helpers
         $this->switchDatabaseConnection('tenant');
         return $language;
     }
-	
+
 	/**
      * Remove unwanted characters from json
      * @param string $filePath
@@ -387,18 +386,40 @@ class Helpers
         $jsonFileContent = file_get_contents($filePath);
 
 		// This will remove unwanted characters.
-		for ($i = 0; $i <= 31; ++$i) { 
-			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent); 
+		for ($i = 0; $i <= 31; ++$i) {
+			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
 		}
 		$jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
 
 		// This is the most common part
 		// Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
-		// here we detect it and we remove it, basically it's the first 3 characters 
+		// here we detect it and we remove it, basically it's the first 3 characters
 		if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
 		   $jsonFileContent = substr($jsonFileContent, 3);
 		}
-		
+
 		return $jsonFileContent;
+    }
+
+    /**
+     * Retrieve tenant's name
+     *
+     * @param Request
+     * @return String
+     */
+    private function getTenantDomainByTenantId($tenantId): String
+    {
+        $connection = Config::get('database.default');
+        $this->switchDatabaseConnection('mysql');
+
+        $tenant = $this->db->table('tenant')
+            ->select('name')
+            ->where('tenant_id', $tenantId)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection($connection);
+
+        return $tenant->name;
     }
 }
