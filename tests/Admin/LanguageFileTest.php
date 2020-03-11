@@ -235,4 +235,37 @@ class LanguageFileTest extends TestCase
         $this->seeStatusCode(422);
         // $this->seeJsonStructure(['status', 'message']);
     }
+
+    /**
+     * @test
+     * 
+     * It should return correct invalid file content
+     * 
+     * @return void
+     */
+    public function it_should_return_correct_invalid_file_content()
+    {
+        $fileName = 'en';
+        $path  = storage_path("unitTestFiles/invalid_json_file.json");
+        $params = [
+            'file_name' => $fileName
+        ];
+        
+        $res = $this->call(
+            'POST',
+            'language-file',
+            $params,
+            [],
+            [
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(200);
+    }
+
+
 }
