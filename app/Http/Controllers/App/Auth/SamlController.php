@@ -303,19 +303,21 @@ class SamlController extends Controller
 
     private function syncContact($userDetail, $settings)
     {
-        $city = $this->cityRepository->getCityData($userDetail->city_id);
         $country = $this->countryRepository->getCountryData($userDetail->country_id);
         $language = $this->languageHelper->getLanguage($userDetail->language_id);
 
-        $cityLanguages = collect($city['languages']);
-        $postalCity = null;
-        if ($cityLanguages->count()) {
-            $postalCity = $cityLanguages->where('language_id', $userDetail->country_id)
-                ->first();
-            if ($postalCity) {
-                $postalCity = $postalCity['name'];
-            } else {
-                $postalCity = $cityLanguages->first()['name'];
+        if ($userDetail->city_id) {
+            $city = $this->cityRepository->getCityData($userDetail->city_id);
+            $cityLanguages = collect($city['languages']);
+            $postalCity = null;
+            if ($cityLanguages->count()) {
+                $postalCity = $cityLanguages->where('language_id', $userDetail->country_id)
+                    ->first();
+                if ($postalCity) {
+                    $postalCity = $postalCity['name'];
+                } else {
+                    $postalCity = $cityLanguages->first()['name'];
+                }
             }
         }
 
@@ -326,7 +328,7 @@ class SamlController extends Controller
                 'position' => $userDetail->title,
                 'first_name' => $userDetail->first_name,
                 'last_name' => $userDetail->last_name,
-                'postal_city' => $postalCity,
+                'postal_city' => $postalCity ?: '',
                 'postal_country' => $country['ISO'],
                 'preferred_language' => $language->code,
                 'department' => $userDetail->department
