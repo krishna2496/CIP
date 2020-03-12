@@ -128,7 +128,7 @@ trait MissionTransformable
         }
 
         if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
-         ($mission['application_deadline'] <= $today)) {
+         ($mission['application_deadline'] < $today)) {
             $mission['set_view_detail'] = 1;
         }
         
