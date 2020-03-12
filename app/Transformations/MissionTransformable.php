@@ -135,7 +135,7 @@ trait MissionTransformable
         if ((!isset($mission['application_deadline'])) && ((isset($mission['application_start_date']) &&
         ($mission['application_start_date'] !== null))
         && (isset($mission['application_end_date']) && ($mission['application_end_date'] !== null)) &&
-         ($mission['application_end_date'] <= $today || $mission['application_start_date'] >= $today))) {
+         ($mission['application_end_date'] < $today || $mission['application_start_date'] > $today))) {
             $mission['set_view_detail'] = 1;
         }
 
