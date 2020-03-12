@@ -26,7 +26,8 @@ export default {
         if (currentUrl[0]) {
             domain = ((currentUrl[0]).split('//'));
             if(domain[1]) {
-                imagePath = constants.IMAGE_PATH + domain[1];
+                // imagePath = constants.IMAGE_PATH + domain[1];
+                imagePath = constants.IMAGE_PATH + "tatva";
                 store.commit('setImagePath', imagePath);
             }
         }
