@@ -236,7 +236,7 @@ return [
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'No seats available for this mission',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Invalid invite mission detail',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'User is already invited for this mission',
-        'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'You cannot apply for this mission',
+        'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'You have already applied for this mission',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
