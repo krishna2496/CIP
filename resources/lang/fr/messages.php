@@ -224,7 +224,7 @@ return [
         'ERROR_SKILL_NOT_FOUND' => 'La compétence ne se trouve pas dans le système',
         'ERROR_INVALID_MISSION_ID' => 'Identifiant de mission invalide',
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'Aucune place disponible pour cette mission',
-        'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'La date limite de candidature est passée. Vous ne pouvez pas postuler pour cette mission',
+        'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'Vous ne pouvez pas postuler pour cette mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'Vous avez déjà postulé pour cette mission',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'L\'application de mission demandée n\'existe pas',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'La création de la note de mission a échoué. Veuillez vérifier les paramètres d`entrée',

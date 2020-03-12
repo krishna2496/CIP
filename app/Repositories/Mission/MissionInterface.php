@@ -235,4 +235,13 @@ interface MissionInterface
      * @return bool
      */
     public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool;
+    
+    /**
+     * Check mission application start and end deadline
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionApplicationStartEndDeadline(Request $request, int $missionId): bool;
 }

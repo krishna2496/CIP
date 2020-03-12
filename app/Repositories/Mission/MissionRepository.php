@@ -1401,4 +1401,53 @@ class MissionRepository implements MissionInterface
         ->whereIn('approval_status', $statusArray)->get();
         return $applicationStatusData->isEmpty() ? true : false;
     }
+
+    /**
+     * Check mission application start and end deadline
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionApplicationStartEndDeadline(Request $request, int $missionId): bool
+    {
+        $missionDetails = $this->getMissionDetail($request, $missionId);
+        $mission = $missionDetails[0];
+        
+        // Check for apply in mission time validity
+        $mission['set_view_detail'] = 0;
+
+        $todayDate = Carbon::parse(date(config("constants.DB_DATE_FORMAT")));
+        $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
+         
+        if (($mission['user_application_count'] > 0) ||
+            ($mission['total_seats'] !== 0 && $mission['total_seats'] === $mission['mission_application_count']) ||
+            ($mission['end_date'] !== null && $mission['end_date'] <= $today)
+            ) {
+                $mission['set_view_detail'] = 1;
+        }
+        if (isset($mission['timeMission']['application_deadline']) && ($mission['timeMission']['application_deadline'] !== null) &&
+        ($mission['timeMission']['application_deadline'] <= $today)) {
+            $mission['set_view_detail'] = 1;
+        }
+   
+        if ((!isset($mission['timeMission']['application_deadline'])) && ((isset($mission['timeMission']['application_start_date']) && ($mission['timeMission']['application_start_date'] !== null)) &&
+            (isset($mission['timeMission']['application_end_date']) && ($mission['timeMission']['application_end_date'] !== null)) &&
+            ($mission['timeMission']['application_end_date'] <= $today || $mission['timeMission']['application_start_date'] >= $today))) {
+                $mission['set_view_detail'] = 1;
+        }
+
+        if ((isset($mission['timeMission']['application_start_time']) && ($mission['timeMission']['application_start_time'] !== null)) &&
+        (isset($mission['timeMission']['application_end_time']) && ($mission['timeMission']['application_end_time'] !== null)) &&
+        ($mission['timeMission']['application_end_time'] <= $todayTime)) {
+            $mission['set_view_detail'] = 1;
+        }
+
+        if ($mission['set_view_detail'] === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
