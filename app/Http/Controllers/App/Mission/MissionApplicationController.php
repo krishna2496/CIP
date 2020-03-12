@@ -128,19 +128,6 @@ class MissionApplicationController extends Controller
             );
         }
 
-        // Check mission application date and time deadline
-        $missionApplicationDeadlineStatus = $this->missionRepository
-            ->checkMissionApplicationStartEndDeadline($request, $request->mission_id);
-        
-        if (!$missionApplicationDeadlineStatus) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_MISSION_APPLICATION_DEADLINE_PASSED'),
-                trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_DEADLINE_PASSED')
-            );
-        }
-
         // Create new mission application
         $missionApplication = $this->missionApplicationRepository->storeApplication(
             $request->all(),
