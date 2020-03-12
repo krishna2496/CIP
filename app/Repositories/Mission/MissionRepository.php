@@ -119,20 +119,25 @@ class MissionRepository implements MissionInterface
         }
 
         // Entry into time_mission table
-        if ($request->mission_type === "TIME") {
+        if ($request->mission_type == "TIME") {
             $timeMissionArray = array(
-                'application_deadline' => (isset($request->application_deadline)) ?
+                'application_deadline' => (isset($request->application_deadline)
+                && $request->application_deadline !== '') ?
                 $request->application_deadline : null,
-                'application_start_date' => (isset($request->application_start_date))
+                'application_start_date' => (isset($request->application_start_date)
+                && $request->application_start_date !== '')
                 ? $request->application_start_date : null,
-                'application_end_date' => (isset($request->application_end_date))
+                'application_end_date' => (isset($request->application_end_date)
+                && $request->application_end_date !== '')
                 ? $request->application_end_date : null,
-                'application_start_time' => (isset($request->application_start_time))
+                'application_start_time' => (isset($request->application_start_time)
+                && $request->application_start_time !== '')
                 ? $request->application_start_time : null,
-                'application_end_time' => (isset($request->application_end_time))
+                'application_end_time' => (isset($request->application_end_time)
+                && $request->application_end_time !== '')
                 ? $request->application_end_time : null,
             );
-
+            
             $mission->timeMission()->create($timeMissionArray);
         }
         // Add mission title
@@ -241,23 +246,23 @@ class MissionRepository implements MissionInterface
             if (!is_null($missionDetail)) {
                 if ((isset($request->application_deadline))) {
                     $missionDetail->application_deadline = ($request->application_deadline !== '') ?
-					$request->application_deadline : null;
+                    $request->application_deadline : null;
                 }
                 if ((isset($request->application_start_date))) {
                     $missionDetail->application_start_date = ($request->application_start_date !== '')
-					? $request->application_start_date : null;
+                    ? $request->application_start_date : null;
                 }
                 if ((isset($request->application_end_date))) {
                     $missionDetail->application_end_date = ($request->application_end_date !== '')
-					? $request->application_end_date : null;
+                    ? $request->application_end_date : null;
                 }
                 if ((isset($request->application_start_time))) {
                     $missionDetail->application_start_time = ($request->application_start_time !== '')
-					? $request->application_start_time : null;
+                    ? $request->application_start_time : null;
                 }
                 if ((isset($request->application_end_time))) {
                     $missionDetail->application_end_time = ($request->application_end_time !== '')
-					? $request->application_end_time : null;
+                    ? $request->application_end_time : null;
                 }
                 $missionDetail->save();
             }
@@ -937,18 +942,6 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Get mission name.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, $languageId): string
-    {
-        return $this->modelsService->missionLanguage->getMissionName($missionId, $languageId);
-    }
-
-    /**
      * Add/update mission rating.
      *
      * @param int $userId
@@ -1011,7 +1004,8 @@ class MissionRepository implements MissionInterface
             config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['missionApplication as mission_application_count' => function ($query) {
-            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]])->whereNull('deleted_at');
+            $query->whereIn('approval_status', [
+            config("constants.application_status")["AUTOMATICALLY_APPROVED"]])->whereNull('deleted_at');
         }])
         ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id);

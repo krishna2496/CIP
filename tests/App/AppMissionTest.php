@@ -117,6 +117,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
+        
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }

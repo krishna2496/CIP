@@ -376,7 +376,7 @@ class SendEmailNotification extends Command
         $icon = ($notification->action === config('constants.notification_status.PUBLISHED')) ?
         Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
                 
-        $mailData['mission_name'] = trans('general.export_sheet_headings.MISSION_NAME', [], $language->code) . $missionName;
+        $mailData['mission_name'] = trans('general.export_sheet_headings.MISSION_NAME', [], $language->code) .' '. $missionName;
         $mailData['comment'] = $commentDetails->comment;
         $mailData['comment_details'] = trans('general.notification.COMMENT_OF', [], $language->code)." "
         .$date." ".trans('general.notification.IS', [], $language->code)." ".$status;
