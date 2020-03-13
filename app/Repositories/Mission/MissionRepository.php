@@ -1167,7 +1167,7 @@ class MissionRepository implements MissionInterface
 
             if ((isset($timeMissionDetails[0]['application_start_time']) && ($timeMissionDetails[0]['application_start_time'] !== null)) &&
             (isset($timeMissionDetails[0]['application_end_time']) && ($timeMissionDetails[0]['application_end_time'] !== null)) &&
-            ($timeMissionDetails[0]['application_end_time'] < $todayTime)) {
+            ($timeMissionDetails[0]['application_end_time'] < $todayTime || $timeMissionDetails[0]['application_start_time'] > $todayTime)) {
                 $applicationStatus = false;
             }
         }
