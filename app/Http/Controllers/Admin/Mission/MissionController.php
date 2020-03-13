@@ -140,7 +140,7 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information" =>"nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -254,7 +254,7 @@ class MissionController extends Controller
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information" =>"nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -280,6 +280,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
