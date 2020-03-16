@@ -270,6 +270,7 @@ class MissionController extends Controller
             [
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
                 "location.city_id" => "required_with:location|integer|exists:city,city_id,deleted_at,NULL",
+                "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL",
                 "location.country_code" => "required_with:location|exists:country,ISO",
                 "mission_detail.*.lang" => "required_with:mission_detail|max:2",
                 "mission_detail.*.title" => "sometimes|required",
