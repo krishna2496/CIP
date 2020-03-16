@@ -73,12 +73,8 @@ return [
     'unique'               => ":attribute ist bereits belegt.",
     'url'                  => ":attribute-Format ist ungültig.",
     'present'              => "Das :attribute-Feld ist erforderlich",
-	'distinct'             => "Das :attribute-Feld verfügt über einen doppelten Wert.",
+    'distinct'             => "Das :attribute-Feld verfügt über einen doppelten Wert.",
 
-
-
-
-    
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -97,13 +93,13 @@ return [
         'documents.*.document_path' => [
             'valid_document_path' => "Bitte geben Sie eine gültige Dokumentendatei ein.",
         ],
-		'media_videos.*.media_path' => [
+        'media_videos.*.media_path' => [
             'valid_video_url' => "Bitte gültige YouTube-URL eingeben",
         ],
-		'avatar' => [
+        'avatar' => [
             'valid_profile_image' => "Ungültige Bilddateien oder Bildtypen sind nicht gestattet. Zulässige Typen: png, jpeg, jpg",
         ],
-		'parent_skill' => [
+        'parent_skill' => [
             'valid_parent_skill' => "Ungültige Parent-Fähigkeit",
         ],
         'url' => [
@@ -115,7 +111,7 @@ return [
         'documents.*' => [
             'valid_timesheet_document_type' => "Bitte wählen Sie ein gültiges Zeitplan-Dokument aus.",
             'max' => "Das Dokument muss folgende Größe haben " .
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+                (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "Sie können keine Zeiteinträge in der Zukunft machen",
@@ -129,7 +125,7 @@ return [
         'story_images.*' => [
             'valid_story_image_type' => "Bitte wählen Sie einen gültigen Bildtyp aus",
             'max' => "Das Bild muss folgende Größe haben " .
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+                (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "Bitte geben Sie eine gültige Video-URL ein",
@@ -174,19 +170,19 @@ return [
         'password_confirmation' => "Passwort bestätigen",
         'translations.*.lang' => "Sprachcode",
         'is_mandatory' => "vorgeschrieben",
-		'page_details.translations.*.sections.*.title' => "Titel",
-		'page_details.translations.*.sections.*.description' => "Beschreibung",
-		'location.city_id' => "Stadt",
-		'location.country_code' => "Ländercode",
-		'organisation.organisation_id' => "Organisations-ID",
-		'mission_detail.*.lang' => "Sprachcode",
+        'page_details.translations.*.sections.*.title' => "Titel",
+        'page_details.translations.*.sections.*.description' => "Beschreibung",
+        'location.city_id' => "Stadt",
+        'location.country_code' => "Ländercode",
+        'organisation.organisation_id' => "Organisations-ID",
+        'mission_detail.*.lang' => "Sprachcode",
         'to_user_id' => "Benutzer-ID",
         'custom_fields.*.field_id' => "Feld-ID",
         'settings.*.tenant_setting_id' => "Mieter-Einstellungs-ID",
         'settings.*.value' => "Wert",
         'option_value.translations.*.lang' => "Sprachcode",
         'timesheet_entries.*.timesheet_id' => "Zeitplan-ID",
-		'mission_detail.*.short_description' => "Kurzbeschreibung",
+        'mission_detail.*.short_description' => "Kurzbeschreibung",
         'news_content.translations' => "Übersetzungen",
         'news_content.translations.*.lang' => "Sprachcode",
         'news_content.translations.*.title' => "Titel",
