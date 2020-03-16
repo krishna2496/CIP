@@ -115,13 +115,15 @@ class Helpers
     public function switchDatabaseConnection(string $connection)
     {
         // Set master connection
-        $this->db->connection('mysql')->getPdo();
-
         $pdo = $this->db->connection('mysql')->getPdo();
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
         Config::set('database.default', 'mysql');
 
         if ($connection == "tenant") {
             $pdo = $this->db->connection('tenant')->getPdo();
+            $pdo->exec('SET NAMES utf8mb4');
+            $pdo->exec('SET CHARACTER SET utf8mb4');
             Config::set('database.default', 'tenant');
         }
     }
@@ -142,6 +144,8 @@ class Helpers
         ));
         // Create connection for the tenant database
         $pdo = $this->db->connection('tenant')->getPdo();
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
         // Set default database
         Config::set('database.default', 'tenant');
     }
