@@ -239,4 +239,14 @@ class TimesheetController extends Controller
             );
         }
     }
+
+    public function getSumOfUsersTotalHours(
+        Request $request,
+        TimesheetRepository $timesheetRepository
+    ): JsonResponse
+    {
+        $totalHours = $timesheetRepository->getSumOfUsersTotalHours();
+        $apiStatus = Response::HTTP_OK;
+        return $this->responseHelper->success($apiStatus, '', ['total_hours' => $totalHours]);
+    }
 }

@@ -640,27 +640,22 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getUsersTotalHours($year, $month): ?array
     {
-        $statusArray = [config('constants.timesheet_status.APPROVED'),
-        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
-
-        $timesheetQuery = $this->timesheet
-        ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
-        sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
-        $timesheetQuery->whereHas('mission');
-        $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
-        ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
-
-        if (isset($year) && $year != '') {
-            $timesheetQuery->whereYear('date_volunteered', $year);
-            if (isset($month) && $month != '') {
-                $timesheetQuery->whereMonth('date_volunteered', $month);
-            }
-        }
-        $timesheetQuery->whereIn('status', $statusArray);
+        $timesheetQuery = $this->getTimesheetQuery($year, $month);
         $timesheetQuery->orderBy(DB::raw("total_minutes"), "DESC");
         $timesheetQuery->groupBy(DB::raw("user_id"));
-
         return $timesheetQuery->get()->toArray();
+    }
+
+    /**
+    * Get sum of total hours of all users timesheet
+    *
+    * @return int
+    */
+    public function getSumOfUsersTotalHours(): int
+    {
+        $timesheetQuery = $this->getTimesheetQuery();
+        $result = $timesheetQuery->get()->first()->toArray();
+        return $result['total_minutes'] ? floor($result['total_minutes'] / 60) : 0;
     }
 
     /**
@@ -705,4 +700,34 @@ class TimesheetRepository implements TimesheetInterface
     {
         return $this->timesheet->where('timesheet_id', $timesheetId)->value('mission_id');
     }
+
+    /**
+     * Prepare a timesheet query
+     * @param  int|null $year
+     * @param  int|null $month
+     * @return Object
+     */
+    private function getTimesheetQuery($year = null, $month = null)
+    {
+        $statusArray = [config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
+
+        $timesheetQuery = $this->timesheet
+        ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
+        sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+        $timesheetQuery->whereHas('mission');
+        $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
+        ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
+
+        if (isset($year) && $year != '') {
+            $timesheetQuery->whereYear('date_volunteered', $year);
+            if (isset($month) && $month != '') {
+                $timesheetQuery->whereMonth('date_volunteered', $month);
+            }
+        }
+        $timesheetQuery->whereIn('status', $statusArray);
+
+        return $timesheetQuery;
+    }
+
 }
