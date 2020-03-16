@@ -322,8 +322,8 @@ class Mission extends Model
         return $this->select('*')
         ->where('mission.mission_id', $missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
-            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]]);
+            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]
+            ]);
         }])->first();
     }
 
