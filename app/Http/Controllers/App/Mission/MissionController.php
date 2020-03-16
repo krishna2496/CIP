@@ -657,10 +657,11 @@ class MissionController extends Controller
             $languageCode = $language->code;
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
+           
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-
+           
             $mission = $missionData->map(
                 function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
                 ) {
@@ -673,7 +674,7 @@ class MissionController extends Controller
                     );
                 }
             )->all();
-
+               
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;
             $apiMessage = (empty($mission)) ? trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND') :

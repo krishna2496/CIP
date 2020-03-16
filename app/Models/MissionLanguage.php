@@ -38,7 +38,9 @@ class MissionLanguage extends Model
         'description',
         'objective',
         'short_description',
-        'custom_information'
+        'custom_information',
+        'label_goal_achieved',
+        'label_goal_objective'
     ];
 
     /**
@@ -54,7 +56,9 @@ class MissionLanguage extends Model
         'objective',
         'short_description',
         'description',
-        'custom_information'
+        'custom_information',
+        'label_goal_achieved',
+        'label_goal_objective'
     ];
 
     /**

@@ -152,7 +152,11 @@ class MissionRepository implements MissionInterface
                     'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
                     'objective' =>  (isset($value['objective'])) ? $value['objective'] : null,
                     'custom_information' => (array_key_exists('custom_information', $value))
-                    ? $value['custom_information'] : null
+                    ? $value['custom_information'] : null,
+                    'label_goal_achieved' => (isset($value['label_goal_achieved'])) ? $value['label_goal_achieved']
+                    : null,
+                    'label_goal_objective' => (isset($value['label_goal_objective'])) ? $value['label_goal_objective']
+                    : null
                 );
 
             $this->modelsService->missionLanguage->create($missionLanguage);
@@ -292,6 +296,15 @@ class MissionRepository implements MissionInterface
                 if (array_key_exists('objective', $value)) {
                     $missionLanguage['objective'] = $value['objective'];
                 }
+
+                if (array_key_exists('label_goal_achieved', $value)) {
+                    $missionLanguage['label_goal_achieved'] = $value['label_goal_achieved'];
+                }
+
+                if (array_key_exists('label_goal_objective', $value)) {
+                    $missionLanguage['label_goal_objective'] = $value['label_goal_objective'];
+                }
+                 
                 if (array_key_exists('section', $value)) {
                     if (empty($value['section'])) {
                         $this->modelsService->missionLanguage->deleteMissionLanguage($id, $language->language_id);
@@ -501,7 +514,9 @@ class MissionRepository implements MissionInterface
                     'title',
                     'short_description',
                     'objective',
-                    'custom_information'
+                    'custom_information',
+                    'label_goal_achieved',
+                    'label_goal_objective'
                 );
             }])
             ->with(['city.languages'])
@@ -1064,7 +1079,9 @@ class MissionRepository implements MissionInterface
                 'language_id',
                 'title',
                 'short_description',
-                'objective'
+                'objective',
+                'label_goal_achieved',
+                'label_goal_objective'
             );
         }])
         ->with(['city.languages'])
@@ -1146,7 +1163,9 @@ class MissionRepository implements MissionInterface
                     'short_description',
                     'objective',
                     'description',
-                    'custom_information'
+                    'custom_information',
+                    'label_goal_achieved',
+                    'label_goal_objective'
                 );
             }])
             ->with(['city.languages'])
