@@ -38,24 +38,31 @@ class CityController extends Controller
     private $languageHelper;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param \Illuminate\Http\Request $request
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
         CityRepository $cityRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         Request $request
     ) {
         $this->cityRepository = $cityRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
