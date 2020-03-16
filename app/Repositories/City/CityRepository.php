@@ -194,6 +194,9 @@ class CityRepository implements CityInterface
             $cityDetail['country_id'] = $request['country_id'];
         }
         
+        if (isset($request['state_id'])) {
+            $cityDetail['state_id'] = $request['state_id'];
+        }
         // Update city
         $cityData = $this->city->findOrFail($id);
         $cityData->update($cityDetail);
