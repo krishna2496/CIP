@@ -22,7 +22,7 @@ import customCss from './services/CustomCss'
 import 'vue-search-select/dist/VueSearchSelect.css'
 
 Vue.use(Vuelidate, VueAxios, axios);
-Vue.config.devtools = true
+Vue.config.devtools = process.env.NODE_ENV !== 'production'
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
