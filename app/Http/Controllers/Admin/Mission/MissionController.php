@@ -174,7 +174,6 @@ class MissionController extends Controller
         ->getAllTenantActivatedSetting($request);
         
         $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-        $stateEnabled = 'skills_enabled';
         if (in_array($stateEnabled, $getActivatedTenantSettings)) {
             $stateValidator = Validator::make(
                 $request->all(),
