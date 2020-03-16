@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 use Illuminate\Validation\Rule;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  City controller
 /*!
