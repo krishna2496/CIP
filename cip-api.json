@@ -4027,6 +4027,36 @@
         }
       }
     },
+    "/timesheet/total-hours": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",
+        "summary": "Admin - Fetch sum of all users total hours timesheet data",
+        "description": "Fetch approved mission applications sum of all users total hours to show on OptimyApp dashboard page",
+        "tags":[
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400":{
+              "description":"Bad Request"
+            },
+            "401":{
+              "description":"Unauthorized - Invalid API key or secret key"
+            }
+        }
+      },
+    },
 	"/timesheet/{userId}?status={status}&type={type}": {
       "get": {
         "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",
