@@ -189,7 +189,12 @@ return [
         'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
         'MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS' => 'User timesheet summarized successfully',
         'MESSAGE_TENANT_USER_TIMESHEET_SUCCESS' => 'User timesheet listed successfully',
-        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found'
+        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found',
+        'MESSAGE_STATE_CREATED' => 'État créé avec succès',
+        'MESSAGE_STATE_UPDATED' => 'État mis à jour avec succès',
+        'MESSAGE_STATE_DELETED' => 'État supprimé avec succès',
+        'MESSAGE_STATE_LISTING' => 'État répertorié avec succès',
+        'MESSAGE_NO_STATE_FOUND' => 'État non trouvé'
     ],
 
 
@@ -345,5 +350,7 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_STATE_NOT_FOUND' => 'État non trouvé dans le système',
+        'ERROR_STATE_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cet état car il s\'agit soit d\'un lien vers la mission, soit d\'un utilisateur',
        ]
 ];

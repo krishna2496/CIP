@@ -189,7 +189,11 @@ return [
         'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
         'MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS' => 'User timesheet summarized successfully',
         'MESSAGE_TENANT_USER_TIMESHEET_SUCCESS' => 'User timesheet listed successfully',
-        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found'
+        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found',
+        'MESSAGE_STATE_UPDATED' => 'State updated successfully',
+        'MESSAGE_STATE_DELETED' => 'State deleted successfully',
+        'MESSAGE_STATE_LISTING' => 'State listed successfully',
+        'MESSAGE_NO_STATE_FOUND' => 'State not found'
     ],
 
 
@@ -345,5 +349,6 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_STATE_NOT_FOUND' => 'State not found in the system'
        ]
 ];

@@ -211,6 +211,9 @@ return [
         'mission_detail.*.section' => "section",
         'mission_detail.*.section.*.title' => "titre",
         'mission_detail.*.section.*.description' => "description",
+        'states.*.translations.*.lang' => 'language code',
+        'states.*.translations.*.name' => 'name',
+        'states.*.translations' => 'translations',
 		],
 
 ];

@@ -3,12 +3,12 @@ namespace App\Models;
 
 use App\User;
 use App\Models\Mission;
-use App\Models\CityLanguage;
+use App\Models\StateLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class City extends Model
+class State extends Model
 {
     use SoftDeletes;
 
@@ -17,37 +17,37 @@ class City extends Model
      *
      * @var string
      */
-    protected $table = 'city';
+    protected $table = 'state';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'city_id';
+    protected $primaryKey = 'state_id';
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['city_id', 'country_id', 'name','translations', 'languages','state_id'];
+    protected $visible = ['state_id', 'country_id', 'name','translations', 'languages'];
 
     /**
     * The attributes that are mass assignable.
     *
     * @var array
     */
-    protected $fillable = ['city_id', 'country_id','state_id'];
+    protected $fillable = ['state_id', 'country_id'];
 
     /**
-     * Get the city translation associated with the city.
+     * Get the state translation associated with the state.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function languages(): HasMany
     {
-        return $this->hasMany(CityLanguage::class, 'city_id', 'city_id');
+        return $this->hasMany(StateLanguage::class, 'state_id', 'state_id');
     }
 
     /**
@@ -56,39 +56,28 @@ class City extends Model
      * @param  int $id
      * @return bool
      */
-    public function deleteCity(int $id): bool
+    public function deleteState(int $id): bool
     {
         return static::findOrFail($id)->delete();
     }
 
     /**
-     * Get the mission which belongs to City
+     * Get the mission which belongs to State
      *
      * @return void
      */
     public function mission()
     {
-        return $this->belongsTo(Mission::class, 'city_id', 'city_id');
+        return $this->belongsTo(Mission::class, 'state_id', 'state_id');
     }
 
     /**
-     * Get the user which belongs to City
+     * Get the user which belongs to State
      *
      * @return void
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'city_id', 'city_id');
+        return $this->belongsTo(User::class, 'state_id', 'state_id');
     }
-
-    /**
-     * Get state associated with the citys.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function state()
-    {
-        return $this->hasMany(State::class, 'state_id', 'state_id');
-    }
-
 }
