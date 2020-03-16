@@ -46,7 +46,7 @@ return [
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
-    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+//    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
