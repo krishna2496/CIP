@@ -321,7 +321,8 @@ class MissionController extends Controller
             $stateValidator = Validator::make(
                 $request->all(),
                 [
-                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
+                    "location.state_id" =>
+                    "sometimes|required_with:location|integer|exists:state,state_id,deleted_at,NULL"
                 ]
             );
             if ($stateValidator->fails()) {
