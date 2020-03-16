@@ -38,24 +38,31 @@ class CityController extends Controller
     private $languageHelper;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param \Illuminate\Http\Request $request
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
         CityRepository $cityRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         Request $request
     ) {
         $this->cityRepository = $cityRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -96,7 +103,6 @@ class CityController extends Controller
             $request->all(),
             [
                 "country_id" => 'required|exists:country,country_id,deleted_at,NULL',
-                "state_id" => 'sometimes|required|exists:state,state_id,deleted_at,NULL',
                 "cities" => 'required',
                 "cities.*.translations" => 'required|array',
                 "cities.*.translations.*.lang" => 'required|min:2|max:2',
@@ -113,7 +119,29 @@ class CityController extends Controller
                 $validator->errors()->first()
             );
         }
-     
+
+        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+        
+        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+
+        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            $stateValidator = Validator::make(
+                $request->all(),
+                [
+                    "location.state_id" =>  'sometimes|required|exists:state,state_id,deleted_at,NULL',
+                ]
+            );
+            if ($stateValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    $stateValidator->errors()->first()
+                );
+            }
+        }
+
         // Add cities one by one
         $createdCity = [];
         foreach ($request->cities as $key => $city) {
