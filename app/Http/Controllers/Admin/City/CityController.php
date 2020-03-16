@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 use Illuminate\Validation\Rule;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  City controller
 /*!
@@ -126,12 +127,14 @@ class CityController extends Controller
         $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
 
         if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            
             $stateValidator = Validator::make(
                 $request->all(),
                 [
-                    "location.state_id" =>  'sometimes|required|exists:state,state_id,deleted_at,NULL',
+                    "state_id" =>  'required|exists:state,state_id,deleted_at,NULL',
                 ]
             );
+            
             if ($stateValidator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
