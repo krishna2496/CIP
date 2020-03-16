@@ -216,6 +216,8 @@ return [
         'states.*.translations.*.lang' => 'language code',
         'states.*.translations.*.name' => 'name',
         'states.*.translations' => 'translations',
+        'mission_detail.*.label_goal_objective' => 'label goal objective',
+        'mission_detail.*.label_goal_achieved' => 'label goal achieved',
 		],
 
 ];
