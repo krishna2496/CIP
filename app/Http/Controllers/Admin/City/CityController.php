@@ -222,6 +222,29 @@ class CityController extends Controller
                     $validator->errors()->first()
                 );
             }
+            $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+            
+            $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+    
+            if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+                
+                $stateValidator = Validator::make(
+                    $request->all(),
+                    [
+                        "state_id" =>  'sometimes|required|exists:state,state_id,deleted_at,NULL',
+                    ]
+                );
+                
+                if ($stateValidator->fails()) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                        $stateValidator->errors()->first()
+                    );
+                }
+            }
             // Get all countries
             $languages = $this->languageHelper->getLanguages($request);
 
