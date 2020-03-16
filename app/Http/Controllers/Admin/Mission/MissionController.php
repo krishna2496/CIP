@@ -18,6 +18,7 @@ use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  Mission controller
 /*!
@@ -52,6 +53,11 @@ class MissionController extends Controller
     private $missionMediaRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -59,6 +65,7 @@ class MissionController extends Controller
      * @param Illuminate\Http\Request $request
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -66,13 +73,15 @@ class MissionController extends Controller
         ResponseHelper $responseHelper,
         Request $request,
         LanguageHelper $languageHelper,
-        MissionMediaRepository $missionMediaRepository
+        MissionMediaRepository $missionMediaRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
         $this->languageHelper = $languageHelper;
         $this->missionMediaRepository = $missionMediaRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -163,8 +172,28 @@ class MissionController extends Controller
             );
         }
 
+        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+        
+        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            $stateValidator = Validator::make(
+                $request->all(),
+                [
+                    "location.state_id" => "required|exists:state,state_id,deleted_at,NULL"
+                ]
+            );
+            if ($stateValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    $stateValidator->errors()->first()
+                );
+            }
+        }
+
         $mission = $this->missionRepository->store($request);
-                    
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
@@ -192,7 +221,6 @@ class MissionController extends Controller
             null,
             $mission->mission_id
         ));
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -243,6 +271,7 @@ class MissionController extends Controller
             [
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
                 "location.city_id" => "required_with:location|integer|exists:city,city_id,deleted_at,NULL",
+                "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL",
                 "location.country_code" => "required_with:location|exists:country,ISO",
                 "mission_detail.*.lang" => "required_with:mission_detail|max:2",
                 "mission_detail.*.title" => "sometimes|required",
@@ -284,6 +313,28 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
+        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+        
+        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+
+        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            $stateValidator = Validator::make(
+                $request->all(),
+                [
+                    "location.state_id" => "required|exists:state,state_id,deleted_at,NULL"
+                ]
+            );
+            if ($stateValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    $stateValidator->errors()->first()
+                );
+            }
+        }
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {

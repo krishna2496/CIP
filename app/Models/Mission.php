@@ -1,26 +1,27 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\MissionDocument;
-use App\Models\MissionMedia;
-use App\Models\MissionLanguage;
-use App\Models\MissionApplication;
+use Carbon\Carbon;
+use App\Models\State;
+use App\Models\Comment;
 use App\Models\Country;
-use App\Models\FavouriteMission;
+use App\Models\Timesheet;
+use App\Models\GoalMission;
+use App\Models\TimeMission;
+use App\Models\Availability;
+use App\Models\MissionMedia;
 use App\Models\MissionInvite;
 use App\Models\MissionRating;
+use App\Models\MissionDocument;
+use App\Models\MissionLanguage;
+use App\Models\FavouriteMission;
+use App\Models\MissionApplication;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
-use App\Models\GoalMission;
-use App\Models\TimeMission;
-use App\Models\Comment;
-use App\Models\Availability;
-use App\Models\Timesheet;
-use Illuminate\Notifications\Notifiable;
 
 class Mission extends Model
 {
@@ -52,7 +53,7 @@ class Mission extends Model
      *
      * @var array
      */
-    protected $fillable = ['theme_id', 'city_id',
+    protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
     'organisation_detail', 'availability_id', 'is_virtual'];
@@ -62,7 +63,7 @@ class Mission extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_id', 'theme_id', 'city_id',
+    protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
@@ -77,7 +78,7 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'label_goal_achieved',
-    'label_goal_objective'];
+    'label_goal_objective','state'];
     
     /**
      * Get the document record associated with the mission.
@@ -367,8 +368,8 @@ class Mission extends Model
     {
         return $this->hasMany('App\User', 'availability_id', 'availability_id');
     }
-	
-	/**
+    
+    /**
      * Set is virtual attribute on the model.
      *
      * @param $value
@@ -377,7 +378,18 @@ class Mission extends Model
     public function setIsVirtualAttribute($value): void
     {
         if (!is_null($value)) {
-		    $this->attributes['is_virtual'] = (string)$value;
+            $this->attributes['is_virtual'] = (string)$value;
         }
+    }
+
+    /**
+     * Get state associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function state(): HasOne
+    {
+        return $this->hasOne(State::class, 'state_id', 'state_id')
+         ->select('state_id');
     }
 }

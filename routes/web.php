@@ -812,3 +812,18 @@ $router->group(['middleware' => 'localization'], function ($router) {
             'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
         }
     );
+
+    /* State management */
+    $router->group(
+        ['prefix' => 'entities/states', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\State\StateController@index']);
+            $router->get('/country/{countryId}', ['uses' => 'Admin\State\StateController@fetchState',
+            'middleware' => ['PaginationMiddleware']]);
+            $router->get('/{stateId}', ['uses' => 'Admin\State\StateController@show',
+            'middleware' => ['PaginationMiddleware']]);
+            $router->post('/', ['uses' => 'Admin\State\StateController@store']);
+            $router->patch('/{stateId}', ['uses' => 'Admin\State\StateController@update']);
+            $router->delete('/{stateId}', ['uses' => 'Admin\State\StateController@destroy']);
+        }
+    );

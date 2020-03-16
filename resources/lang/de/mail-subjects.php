@@ -2,15 +2,16 @@
 
 return [
     "subjects" => [
-        "NEW_MISSIONS" => "New mission created",
-        "NEW_MESSAGES" => "New message received",
-        "MY_COMMENTS" => "Your comment on mission",
-        "NEW_NEWS" => "New news published",
-        "MISSION_APPLICATION" => "Your mission application update",
-        "MY_STORIES" => "Your story status",
-        "VOLUNTEERING_GOALS" => "Your timesheet status",
-        "VOLUNTEERING_HOURS" => "Your timesheet status",
-        "RECOMMENDED_STORY" => "Your story recommendation",
-        "RECOMMENEDE_MISSION" => "Your mission recommendation",
+        "NEW_MISSIONS" => "Neuer Auftrag erstellt",
+        "NEW_MESSAGES" => "Neue Mitteilung erhalten",
+        "MY_COMMENTS" => "Ihr Kommentar zum Auftrag",
+        "NEW_NEWS" => "Neue Nachrichten veröffentlicht",
+        "MISSION_APPLICATION" => "Aktualisierung Ihrer Auftragsanwendung",
+        "MY_STORIES" => "Ihr Story-Status",
+        "VOLUNTEERING_GOALS" => "Ihr Zeitplan-Status",
+        "VOLUNTEERING_HOURS" => "Ihr Zeitplan-Status",
+        "RECOMMENDED_STORY" => "Ihre Story-Empfehlung",
+        "RECOMMENEDE_MISSION" => "Ihre Auftragsempfehlungen",
     ]
 ];
+?>

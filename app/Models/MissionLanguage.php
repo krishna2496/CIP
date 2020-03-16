@@ -98,19 +98,6 @@ class MissionLanguage extends Model
     }
 
     /**
-     * Get specified resource.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, int $languageId): string
-    {
-        return static::select('title')
-        ->where(['mission_id' => $missionId, 'language_id' => $languageId])->value('title');
-    }
-
-    /**
      * Set custom conformation attribute on the model.
      *
      * @param $value

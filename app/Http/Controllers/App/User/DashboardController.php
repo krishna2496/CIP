@@ -130,6 +130,7 @@ class DashboardController extends Controller
         $volunteeringRank = $this->dashboardService->getvolunteeringRank($allUsersTimesheetData, $userId);
         
         $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
+        // dd($apiData);
         $apiData['volunteering_rank'] = (int)$volunteeringRank;
         $apiData['open_volunteering_requests'] = $pendingApplicationCount;
         $apiData['mission_count'] = $approvedApplicationCount;

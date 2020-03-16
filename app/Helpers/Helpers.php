@@ -285,6 +285,7 @@ class Helpers
         $convertedHours = (int) ($totalHours / 60);
         $hours = $convertedHours . "h";
         $minutes = $totalHours % 60;
+        $minutes = sprintf("%02d", $minutes);
         return $hours . $minutes;
     }
 
@@ -342,5 +343,30 @@ class Helpers
         $language = $this->db->table('language')->where('language_id', $languageId)->whereNull('deleted_at')->first();
         $this->switchDatabaseConnection('tenant');
         return $language;
+    }
+	
+	/**
+     * Remove unwanted characters from json
+     * @param string $filePath
+     * @return string
+     */
+    public function removeUnwantedCharacters(string $filePath): string
+    {
+        $jsonFileContent = file_get_contents($filePath);
+
+		// This will remove unwanted characters.
+		for ($i = 0; $i <= 31; ++$i) { 
+			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent); 
+		}
+		$jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
+
+		// This is the most common part
+		// Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
+		// here we detect it and we remove it, basically it's the first 3 characters 
+		if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
+		   $jsonFileContent = substr($jsonFileContent, 3);
+		}
+		
+		return $jsonFileContent;
     }
 }

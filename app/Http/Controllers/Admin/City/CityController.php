@@ -90,11 +90,13 @@ class CityController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+       
         // Server side validations
         $validator = Validator::make(
             $request->all(),
             [
                 "country_id" => 'required|exists:country,country_id,deleted_at,NULL',
+                "state_id" => 'sometimes|required|exists:state,state_id,deleted_at,NULL',
                 "cities" => 'required',
                 "cities.*.translations" => 'required|array',
                 "cities.*.translations.*.lang" => 'required|min:2|max:2',
@@ -111,14 +113,12 @@ class CityController extends Controller
                 $validator->errors()->first()
             );
         }
-
-        $countryId = $request->country_id;
-
+     
         // Add cities one by one
         $createdCity = [];
         foreach ($request->cities as $key => $city) {
             // Add country id into city table
-            $cityDetails = $this->cityRepository->store($countryId);
+            $cityDetails = $this->cityRepository->store($request);
 
             // Add all translations add into city_translation table
             $createdCity[$key]['city_id'] = $city['city_id'] = $cityDetails->city_id;
