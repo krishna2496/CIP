@@ -75,6 +75,7 @@ return [
     'present'              => "Das :attribute-Feld ist erforderlich",
 	'distinct'             => "Das :attribute-Feld verfügt über einen doppelten Wert.",
 
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -110,7 +111,7 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "Bitte wählen Sie ein gültiges Zeitplan-Dokument aus.",
-            'max' => "Das Dokument muss folgende Größe haben "
+            'max' => "Das Dokument muss folgende Größe haben " .
             (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
         ],
         'date_volunteered' => [
@@ -124,7 +125,7 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "Bitte wählen Sie einen gültigen Bildtyp aus",
-            'max' => "Das Bild muss folgende Größe haben "
+            'max' => "Das Bild muss folgende Größe haben " .
             (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
         ],
         'story_videos' => [

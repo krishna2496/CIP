@@ -1155,11 +1155,29 @@ class MissionRepository implements MissionInterface
     public function checkMissionApplicationDeadline(int $missionId): bool
     {
         $mission = $this->modelsService->mission->findOrFail($missionId);
+        $applicationStatus = true;
         if ($mission->mission_type === config('constants.mission_type.TIME')) {
             $applicationDeadline = $this->modelsService->timeMission->getApplicationDeadLine($missionId);
-            return (is_null($applicationDeadline) || $applicationDeadline > Carbon::now()) ? true : false;
+            $applicationStatus = (is_null($applicationDeadline) || $applicationDeadline > Carbon::now()) ? true : false;
+            
+            $timeMissionDetails = $this->modelsService->timeMission->getTimeMissionDetails($missionId)->toArray();
+            $todayDate = Carbon::parse(date(config("constants.DB_DATE_FORMAT")));
+            $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+            $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
+             
+            if ((!isset($timeMissionDetails[0]['application_deadline'])) && ((isset($timeMissionDetails[0]['application_start_date']) && ($timeMissionDetails[0]['application_start_date'] !== null)) &&
+            (isset($timeMissionDetails[0]['application_end_date']) && ($timeMissionDetails[0]['application_end_date'] !== null)) &&
+            ($timeMissionDetails[0]['application_end_date'] < $today || $timeMissionDetails[0]['application_start_date'] > $today))) {
+                $applicationStatus = false;
+            }
+
+            if ((isset($timeMissionDetails[0]['application_start_time']) && ($timeMissionDetails[0]['application_start_time'] !== null)) &&
+            (isset($timeMissionDetails[0]['application_end_time']) && ($timeMissionDetails[0]['application_end_time'] !== null)) &&
+            ($timeMissionDetails[0]['application_end_time'] < $todayTime || $timeMissionDetails[0]['application_start_time'] > $todayTime)) {
+                $applicationStatus = false;
+            }
         }
-        return true;
+        return $applicationStatus;
     }
 
     /**
