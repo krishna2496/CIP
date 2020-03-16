@@ -75,6 +75,10 @@ return [
     'present'              => "Das :attribute-Feld ist erforderlich",
 	'distinct'             => "Das :attribute-Feld verfügt über einen doppelten Wert.",
 
+
+
+
+    
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
