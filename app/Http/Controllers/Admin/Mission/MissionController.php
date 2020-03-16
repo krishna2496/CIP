@@ -157,8 +157,8 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
-                "mission_detail.*.label_goal_achieved" => 'max:255',
-                "mission_detail.*.label_goal_objective" => 'max:255'
+                "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
         
@@ -180,7 +180,7 @@ class MissionController extends Controller
             $stateValidator = Validator::make(
                 $request->all(),
                 [
-                    "location.state_id" => "required|exists:state,state_id,deleted_at,NULL"
+                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
                 ]
             );
             if ($stateValidator->fails()) {
@@ -271,7 +271,6 @@ class MissionController extends Controller
             [
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
                 "location.city_id" => "required_with:location|integer|exists:city,city_id,deleted_at,NULL",
-                "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL",
                 "location.country_code" => "required_with:location|exists:country,ISO",
                 "mission_detail.*.lang" => "required_with:mission_detail|max:2",
                 "mission_detail.*.title" => "sometimes|required",
@@ -299,8 +298,8 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
-                "mission_detail.*.label_goal_achieved" => 'max:255',
-                "mission_detail.*.label_goal_objective" => 'max:255'
+                "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
         
@@ -322,7 +321,7 @@ class MissionController extends Controller
             $stateValidator = Validator::make(
                 $request->all(),
                 [
-                    "location.state_id" => "required|exists:state,state_id,deleted_at,NULL"
+                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
                 ]
             );
             if ($stateValidator->fails()) {
