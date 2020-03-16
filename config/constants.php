@@ -30,8 +30,8 @@ return [
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
     'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
-    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
-    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+//    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
+//    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
     'AWS_S3_DOCUMENTS_FOLDER_NAME' => 'documents',
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
@@ -40,13 +40,13 @@ return [
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
-    'AWS_REGION' => 'eu-central-1',
-    'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
+//    'AWS_REGION' => 'eu-central-1',
+//    'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
-    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+//    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
@@ -627,7 +627,7 @@ return [
         'API' => 'API',
         'REGULAR' => 'REGULAR'
     ],
-    
+
     'profile_required_fields'=> [
         'first_name',
         'last_name',
