@@ -382,6 +382,8 @@ class ThemeTest extends TestCase
      */
     public function it_should_return_error_for_invalid_api_key_and_secret_key()
     {
+        $defaultTenant = env('DEFAULT_TENANT');
+        $_ENV["DEFAULT_TENANT"] = str_random('5');        
         $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode(':'.env('API_SECRET'))])
         ->seeStatusCode(401)
         ->seeJsonStructure([
@@ -394,6 +396,7 @@ class ThemeTest extends TestCase
                 ]
             ]
         ]);
+        $_ENV["DEFAULT_TENANT"] = $defaultTenant;
     }
 
 }

@@ -5,75 +5,75 @@ return [
      * General labels
      */
     'labels' => [
-        'TEXT_STORY_COPY_OF' => 'DE: Copy of '
+        'TEXT_STORY_COPY_OF' => "Kopie von "
     ],
-    
     /**
      * Export sheet's headings
      */
     'export_sheet_headings' => [
-        'MISSION_NAME' => 'DE: Mission Name',
-        'ORGANIZATION_NAME' => 'DE: Organization Name',
-        'ACTIONS' => 'DE: Actions',
-        'TIME' => 'DE: Time',
-        'HOURS' => 'DE: Hours'
+        'MISSION_NAME' => "Auftragsbezeichnung",
+        'ORGANIZATION_NAME' => "Name der Organisation",
+        'ACTIONS' => "Aktionen",
+        'TIME' => "Zeit",
+        'HOURS' => "Stunden"
     ],
-        
+
     /**
      * Export story sheet's headings
      */
     'export_story_headings' => [
-        'STORY_TITLE' => 'DE: Story title',
-        'STORY_DESCRIPTION' => 'DE: Story description',
-        'STORY_STATUS' => 'DE: Story status',
-        'MISSION_TITLE' => 'DE: Mission title',
-		'PUBLISHED_DATE' => 'DE: Published date',
-        'CREATED_DATE' => 'DE: Created date',
+        'STORY_TITLE' => "Titel der Story",
+        'STORY_DESCRIPTION' => "Beschreibung der Story",
+        'STORY_STATUS' => "Status der Story",
+        'MISSION_TITLE' => "Titel des Auftrags",
+        'PUBLISHED_DATE' => "Datum der Veröffentlichung",
+        'CREATED_DATE' => "Erstelldatum",
     ],
-	
-	/**
-	 * Export user comment sheet's headings
-	 */
-	'export_mission_comment_headings' => [
-		'MISSION_TITLE' => 'DE: Mission title',
-		'COMMENT' => 'DE: Comment',
-        'STATUS' => 'DE: Comment status',
-        'PUBLISHED_DATE' => 'DE: Published date',
-	],
+
+    /**
+     * Export user comment sheet's headings
+     */
+    'export_mission_comment_headings' => [
+        'MISSION_TITLE' => "Titel des Auftrags",
+        'COMMENT' => "Kommentar",
+        'STATUS' => "Kommentar-Status",
+        'PUBLISHED_DATE' => "Datum der Veröffentlichung",
+    ],
 
     'status' => [
-        'DRAFT' => 'DE: Draft',
-        'PENDING' => 'DE: Pending',
-        'PUBLISHED' => 'DE: Published',
-        'DECLINED' => 'DE: Declined',
+        'DRAFT' => "Entwurf",
+        'PENDING' => "Ausstehend",
+        'PUBLISHED' => "Veröffentlicht",
+        'DECLINED' => "Abgelehnt",
     ],
 
     /*
      * Notification status
      */
     'notification_status' => [
-        'DRAFT' => 'DE: draft',
-        'AUTOMATICALLY_APPROVED' => 'DE: approved',
-        'PENDING' => 'DE: pending',
-        'APPROVED' => 'DE: approved',
-        'DECLINED' => 'DE: declined',
-        'REFUSED' => 'DE: refused',
-        'PUBLISHED' => 'DE: published',
-        
+        'DRAFT' => "Entwurf",
+        'AUTOMATICALLY_APPROVED' => "genehmigt",
+        'PENDING' => "ausstehend",
+        'APPROVED' => "genehmigt",
+        'DECLINED' => "abgelehnt",
+        'REFUSED' => "verweigert",
+        'PUBLISHED' => "veröffentlicht",
+        'UPDATED' => "aktualisiert",
     ],
 
     'notification' => [
-        'RECOMMENDS_THIS_MISSION' => 'DE: Recommends this mission',
-        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'DE: Volunteering hours submitted the',
-        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'DE: Volunteering goals submitted the',
-        'COMMENT_OF' => 'DE: Comment of',
-        'STORY' => 'DE: Story',
-        'NEW_MISSION' => 'DE: New mission',
-        'NEW_MESSAGE' => 'DE: New Message',
-        'RECOMMENDS_THIS_STORY' => 'DE: Recommends this story',
-        'NEW_NEWS' => 'DE: New News',
-        'VOLUNTEERING_REQUEST' => 'DE: Volunteering request has been',   
-        'FOR_THIS_MISSION' => 'DE: for this mission:',  
-        'IS' => 'DE: is',  
+        'RECOMMENDS_THIS_MISSION' => "Empfiehlt diesen Auftrag",
+        'VOLUNTEERING_HOURS_SUBMITTED_THE' => "Stundenanzahl der Freiwilligentätigkeit eingereicht am",
+        'VOLUNTEERING_GOALS_SUBMITTED_THE' => "Ziele der Freiwilligentätigkeit eingereicht am",
+        'COMMENT_OF' => "Kommentar von",
+        'STORY' => "Story",
+        'NEW_MISSION' => "Neuer Auftrag",
+        'NEW_MESSAGE' => "Neue Mitteilung",
+        'RECOMMENDS_THIS_STORY' => "Empfiehlt diese Story",
+        'NEW_NEWS' => "Neue Nachrichten",
+        'VOLUNTEERING_REQUEST' => "Das Freiwilligenangebot wurde",
+        'FOR_THIS_MISSION' => "für diesen Auftrag:",
+        'IS' => "ist",
     ],
 ];
+?>

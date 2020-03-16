@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class TimeMission extends Model
 {
@@ -173,5 +174,16 @@ class TimeMission extends Model
     public function getApplicationDeadLine(int $missionId): ?string
     {
         return $this->where('mission_id', $missionId)->value('application_deadline');
+    }
+    
+    /**
+    * Get time mission details for mission application.
+    *
+    * @param int $missionId
+    * @return Collection
+    */
+    public function getTimeMissionDetails(int $missionId): Collection
+    {
+        return $this->where('mission_id', $missionId)->get();
     }
 }

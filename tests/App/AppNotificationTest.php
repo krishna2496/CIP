@@ -173,7 +173,7 @@ class AppNotificationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -202,7 +202,7 @@ class AppNotificationTest extends TestCase
         // Get setting id from master table
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
         DB::setDefaultConnection('tenant');
         $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
@@ -220,7 +220,7 @@ class AppNotificationTest extends TestCase
 
         // Add skill
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -237,7 +237,7 @@ class AppNotificationTest extends TestCase
         $skillId = $skill[0]->skill_id;
 
         // Update user and user skills
-        $skillsArray[] = ["skill_id" => $skillId];        
+        $skillsArray[] = ["skill_id" => $skillId];
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -248,8 +248,8 @@ class AppNotificationTest extends TestCase
             'employee_id' => str_random(3),
             'department' => str_random(5),
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -337,7 +337,7 @@ class AppNotificationTest extends TestCase
             'availability_id' => 1
         ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -348,7 +348,7 @@ class AppNotificationTest extends TestCase
             "approval_status" => "AUTOMATICALLY_APPROVED",
         ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
@@ -366,7 +366,7 @@ class AppNotificationTest extends TestCase
             'mission_id' => $mission->mission_id,
             'to_user_id' => $toUser->user_id
         ];
-        DB::setDefaultConnection('mysql'); 
+        DB::setDefaultConnection('mysql');
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -377,12 +377,12 @@ class AppNotificationTest extends TestCase
             'description' => str_random(50),
             'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
         ];
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/story', $params, ['token' => $token])
         ->seeStatusCode(201);
 
         // Submit story for approval
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();        
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
         $this->post('app/story/'.$story->story_id.'/submit', [], ['token' => $token])
         ->seeStatusCode(200);
@@ -448,7 +448,7 @@ class AppNotificationTest extends TestCase
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
-                    [  
+                    [
                         "lang" => "en",
                         "title" => "english_".str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
@@ -481,7 +481,7 @@ class AppNotificationTest extends TestCase
         $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
 
-        // Add timesheet for volunteering hours 
+        // Add timesheet for volunteering hours
         $params = [
             'mission_id' => $mission->mission_id,
             'date_volunteered' => date('Y-m-d'),
@@ -491,7 +491,7 @@ class AppNotificationTest extends TestCase
             'documents[]' =>[]
         ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -565,7 +565,7 @@ class AppNotificationTest extends TestCase
             'minutes' => rand(1, 59),
             'documents[]' =>[]
         ];
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(201);
 
@@ -607,7 +607,7 @@ class AppNotificationTest extends TestCase
         ->seeStatusCode(200);
                 
         // Get notification of to user
-        $token = Helpers::getJwtToken($toUser->user_id , env('DEFAULT_TENANT'));        
+        $token = Helpers::getJwtToken($toUser->user_id, env('DEFAULT_TENANT'));
         DB::setDefaultConnection('mysql');
         $this->call('GET', 'app/notifications', [], [], [], ['HTTP_token' => $token, 'HTTP_X-localization' => 'test']);
         $this->seeStatusCode(200);
@@ -632,7 +632,7 @@ class AppNotificationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -698,8 +698,8 @@ class AppNotificationTest extends TestCase
             'employee_id' => str_random(3),
             'department' => str_random(5),
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
@@ -825,7 +825,7 @@ class AppNotificationTest extends TestCase
 
         $params = [
             "settings" => $notificationTypeArray,
-			"user_settings" => [
+            "user_settings" => [
                 [
                 "receive_email_notification"=> 1
                 ]
@@ -857,7 +857,7 @@ class AppNotificationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -923,8 +923,8 @@ class AppNotificationTest extends TestCase
             'employee_id' => str_random(3),
             'department' => str_random(5),
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
         ];
 
         DB::setDefaultConnection('mysql');
