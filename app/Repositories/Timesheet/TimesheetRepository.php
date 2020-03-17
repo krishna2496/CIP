@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Timesheet;
 
+use Bschmitt\Amqp\Amqp;
 use DB;
 use Carbon\Carbon;
 use App\Models\Mission;
@@ -67,6 +68,11 @@ class TimesheetRepository implements TimesheetInterface
     private $userRepository;
 
     /**
+     * @var Bschmitt\Amqp\Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new Timesheet repository instance.
      *
      * @param  App\Models\Timesheet $timesheet
@@ -78,6 +84,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param  App\Helpers\S3Helper $s3helper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Repositories\User\UserRepository $userRepository
+     * @param Amqp $amqp
      * @return void
      */
     public function __construct(
@@ -89,7 +96,8 @@ class TimesheetRepository implements TimesheetInterface
         LanguageHelper $languageHelper,
         S3Helper $s3helper,
         TenantOptionRepository $tenantOptionRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        Amqp $amqp
     ) {
         $this->timesheet = $timesheet;
         $this->mission = $mission;
@@ -100,6 +108,7 @@ class TimesheetRepository implements TimesheetInterface
         $this->s3helper = $s3helper;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->userRepository = $userRepository;
+        $this->amqp = $amqp;
     }
 
     /**
@@ -328,6 +337,21 @@ class TimesheetRepository implements TimesheetInterface
                 if ($timesheetDetails["status"] === config('constants.timesheet_status.PENDING')) {
                     $timesheetData->status = config('constants.timesheet_status.SUBMIT_FOR_APPROVAL');
                     $status = $timesheetData->update();
+
+                    $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
+                    $timesheetForOptimy = [
+                        'activity_type' => 'timesheet',
+                        'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+                        'tenant_id' => $tenantIdAndSponsorId->tenant_id,
+                        'timesheet_id' => $timesheetDetails['timesheet_id'],
+                        'user_id' => $timesheetDetails['user_id'],
+                        'mission_id' => $timesheetDetails['mission_id'],
+                    ];
+                    // Send data of the timesheet to Optimy app using "ciSynchronizer" queue from RabbitMQ
+                    $this->amqp->publish(
+                        'ciSynchronizer',
+                        json_encode($timesheetForOptimy), ['queue' => 'ciSynchronizer']
+                    );
                 }
             }
         }
