@@ -209,6 +209,8 @@ class SamlController extends Controller
             }
         }
 
+        $userData['email'] = $email;
+
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
