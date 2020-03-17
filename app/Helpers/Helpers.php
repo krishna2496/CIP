@@ -116,8 +116,6 @@ class Helpers
     {
         // Set master connection
         $pdo = $this->db->connection('mysql')->getPdo();
-        $pdo->exec('SET NAMES utf8mb4');
-        $pdo->exec('SET CHARACTER SET utf8mb4');
         Config::set('database.default', 'mysql');
 
         if ($connection == "tenant") {
