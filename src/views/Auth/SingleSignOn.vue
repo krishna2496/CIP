@@ -37,7 +37,7 @@ export default {
           const token = this.$route.query.token;
           store.commit('setToken', token);
           let userDetail = await getUserDetail();
-          loadLocaleMessages(store.state.defaultLanguage)
+          await loadLocaleMessages(store.state.defaultLanguage);
           store.commit('loginUser', userDetail.data);
           redirect = 'home';
         }
