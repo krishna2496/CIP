@@ -73,7 +73,7 @@ return [
     'unique'               => ":attribute ist bereits belegt.",
     'url'                  => ":attribute-Format ist ungültig.",
     'present'              => "Das :attribute-Feld ist erforderlich",
-	'distinct'             => "Das :attribute-Feld verfügt über einen doppelten Wert.",
+    'distinct'             => "Das :attribute-Feld verfügt über einen doppelten Wert.",
 
 
     /*
@@ -94,13 +94,13 @@ return [
         'documents.*.document_path' => [
             'valid_document_path' => "Bitte geben Sie eine gültige Dokumentendatei ein.",
         ],
-		'media_videos.*.media_path' => [
+        'media_videos.*.media_path' => [
             'valid_video_url' => "Bitte gültige YouTube-URL eingeben",
         ],
-		'avatar' => [
+        'avatar' => [
             'valid_profile_image' => "Ungültige Bilddateien oder Bildtypen sind nicht gestattet. Zulässige Typen: png, jpeg, jpg",
         ],
-		'parent_skill' => [
+        'parent_skill' => [
             'valid_parent_skill' => "Ungültige Parent-Fähigkeit",
         ],
         'url' => [
@@ -183,7 +183,7 @@ return [
         'settings.*.value' => "Wert",
         'option_value.translations.*.lang' => "Sprachcode",
         'timesheet_entries.*.timesheet_id' => "Zeitplan-ID",
-		'mission_detail.*.short_description' => "Kurzbeschreibung",
+        'mission_detail.*.short_description' => "Kurzbeschreibung",
         'news_content.translations' => "Übersetzungen",
         'news_content.translations.*.lang' => "Sprachcode",
         'news_content.translations.*.title' => "Titel",
@@ -206,13 +206,11 @@ return [
         'countries.*.translations.*.name' => "Name",
         'countries.*.translations' => "Übersetzungen",
         'countries.*.iso' => "ISO",
-        'translations.*.lang' => "Sprachcode",
         'translations.*.name' => "Name",
         'translations' => "Übersetzungen",
         'mission_detail.*.section' => "Abschnitt",
         'mission_detail.*.section.*.title' => "Titel",
         'mission_detail.*.section.*.description' => "Beschreibung",
-		],
-
+    ],
 ];
 ?>
