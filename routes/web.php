@@ -653,7 +653,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/total-hours', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalHours']);
+            $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);
             $router->get('/details', ['middleware' => ['PaginationMiddleware'],
                     'uses' => 'Admin\Timesheet\TimesheetController@getTimesheetsDetails']);
             $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],

@@ -675,11 +675,11 @@ class TimesheetRepository implements TimesheetInterface
     *
     * @return int
     */
-    public function getSumOfUsersTotalHours(): int
+    public function getSumOfUsersTotalMinutes(): int
     {
         $timesheetQuery = $this->getTimesheetQuery();
         $result = $timesheetQuery->get()->first()->toArray();
-        return $result['total_minutes'] ? floor($result['total_minutes'] / 60) : 0;
+        return $result['total_minutes'] ?: 0;
     }
 
     /**
