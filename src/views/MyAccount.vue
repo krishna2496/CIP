@@ -805,21 +805,23 @@
           return
         }
 
-        this.saveProfileData.first_name = this.profile.firstName,
-          this.saveProfileData.last_name = this.profile.lastName,
-          this.saveProfileData.title = this.profile.title,
-          this.saveProfileData.timezone_id = this.profile.time,
-          this.saveProfileData.language_id = this.profile.language,
-          this.saveProfileData.availability_id = this.profile.availability,
-          this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
-          this.saveProfileData.employee_id = this.profile.employeeId,
-          this.saveProfileData.department = this.profile.department,
-          this.saveProfileData.city_id = this.profile.city,
-          this.saveProfileData.country_id = this.profile.country,
-          this.saveProfileData.profile_text = this.profile.profileText,
-          this.saveProfileData.linked_in_url = this.profile.linkedInUrl,
-          this.saveProfileData.custom_fields = []
-        this.saveProfileData.skills = []
+        this.saveProfileData.first_name = this.profile.firstName;
+        this.saveProfileData.last_name = this.profile.lastName;
+        this.saveProfileData.title = this.profile.title;
+        this.saveProfileData.timezone_id = this.profile.time;
+        this.saveProfileData.language_id = this.profile.language;
+        if (this.profile.availability) {
+            this.saveProfileData.availability_id = this.profile.availability;
+        }
+        this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
+        this.saveProfileData.employee_id = this.profile.employeeId;
+        this.saveProfileData.department = this.profile.department;
+        this.saveProfileData.city_id = this.profile.city;
+        this.saveProfileData.country_id = this.profile.country;
+        this.saveProfileData.profile_text = this.profile.profileText;
+        this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
+        this.saveProfileData.custom_fields = [];
+        this.saveProfileData.skills = [];
 
         Object.keys(this.returnCustomFeildData).map((key) => {
           let customValue = this.returnCustomFeildData[key];
