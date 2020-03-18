@@ -174,6 +174,7 @@
                                     {{languageData.label.submit_for_approval}}
                                 </li>
                             </ul>
+                            <div class="timesheet-Request">
                             <VolunteeringRequest :headerField="timesheetRequestFields" requestType="time"
                                                  :items="timesheetRequestItems" :headerLable="timeRequestLabel"
                                                  :currentPage="hourRequestCurrentPage" :totalRow="hourRequestTotalRow"
@@ -181,7 +182,7 @@
                                                  :perPage="hourRequestPerPage" :nextUrl="hourRequestNextUrl"
                                                  :fileName="languageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
                                                  :totalPages="timeMissionTotalPage" />
-
+                            </div>
                             <VolunteeringRequest :headerField="goalRequestFields" requestType="goal"
                                                  :items="goalRequestItems" :headerLable="goalRequestLabel"
                                                  :currentPage="goalRequestCurrentPage" :totalRow="goalRequestTotalRow"

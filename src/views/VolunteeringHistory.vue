@@ -74,7 +74,7 @@
 													 @updateCall="getVolunteerMissionsGoals"
 													 exportUrl="app/volunteer/history/goal-mission/export"
 													 :fileName="languageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
-													 :totalPages="goalMissionTotalPage" />
+													 :totalPages="goalMissionTotalPage" requestType="goal"/>
 							</b-col>
 						</b-row>
 					</div>
