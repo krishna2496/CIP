@@ -240,13 +240,12 @@ class TimesheetController extends Controller
         }
     }
 
-    public function getSumOfUsersTotalHours(
-        Request $request,
+    public function getSumOfUsersTotalMinutes(
         TimesheetRepository $timesheetRepository
     ): JsonResponse
     {
-        $totalHours = $timesheetRepository->getSumOfUsersTotalHours();
+        $totalMinutes = $timesheetRepository->getSumOfUsersTotalMinutes();
         $apiStatus = Response::HTTP_OK;
-        return $this->responseHelper->success($apiStatus, '', ['total_hours' => $totalHours]);
+        return $this->responseHelper->success($apiStatus, '', ['total_minutes' => $totalMinutes]);
     }
 }
