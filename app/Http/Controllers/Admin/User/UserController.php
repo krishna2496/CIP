@@ -154,8 +154,8 @@ class UserController extends Controller
         $user = $this->userRepository->store($request->all());
 
         // Check profile complete status
-        $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id);
-
+        $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
+		
         // Set response data
         $apiData = ['user_id' => $user->user_id];
         $apiStatus = Response::HTTP_CREATED;
