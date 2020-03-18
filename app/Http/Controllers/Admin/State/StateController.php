@@ -246,7 +246,7 @@ class StateController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        if ($this->stateRepository->hasMission($id) || $this->stateRepository->hasUser($id)) {
+        if ($this->stateRepository->hasMission($id)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
