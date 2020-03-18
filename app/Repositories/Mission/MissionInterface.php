@@ -7,7 +7,6 @@ use App\Models\Mission;
 use App\Models\FavouriteMission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\GoalMission;
 use App\Models\MissionApplication;
 
 interface MissionInterface
@@ -54,15 +53,6 @@ interface MissionInterface
      */
     public function missionFavourite(int $userId, int $missionId): ?FavouriteMission;
     
-    /**
-     * Get mission name.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, $languageId): string;
-
     /**
      * Add/update mission rating.
      *
@@ -190,4 +180,50 @@ interface MissionInterface
      * @return string
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
+    
+    /**
+     * Check mission status
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionStatus(int $missionId): bool;
+      
+    /**
+     * Remove mission media
+     *
+     * @param int $mediaId
+     *
+     * @return bool
+     */
+    public function deleteMissionMedia(int $mediaId): bool;
+
+    /**
+     * Remove mission document
+     *
+     * @param int $documentId
+     *
+     * @return bool
+     */
+    public function deleteMissionDocument(int $documentId): bool;
+    
+    /**
+     * Get media details
+     *
+     * @param int $mediaId
+     *
+     * @return Collection
+     */
+    public function getMediaDetails(int $mediaId): Collection;
+
+    /**
+     * Check mission user mission application status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param array $statusArray
+     *
+     * @return bool
+     */
+    public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool;
 }

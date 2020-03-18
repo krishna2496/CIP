@@ -27,6 +27,7 @@ class TenantConnectionMiddleware
     public function __construct(Helpers $helpers)
     {
         $this->helpers = $helpers;
+        $this->db = app()->make('db');
     }
 
     /**
@@ -40,8 +41,8 @@ class TenantConnectionMiddleware
     {
         $domain = $this->helpers->getSubDomainFromRequest($request);
         
-        $this->helpers->switchDatabaseConnection('mysql', $request);
-        $tenant = DB::table('tenant')->select('tenant_id')
+        $this->helpers->switchDatabaseConnection('mysql');
+        $tenant = $this->db->table('tenant')->select('tenant_id')
         ->where('name', $domain)->whereNull('deleted_at')->first();
         
         if (!$tenant) {

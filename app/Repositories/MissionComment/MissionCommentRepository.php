@@ -121,6 +121,7 @@ class MissionCommentRepository implements MissionCommentInterface
      *
      * @param int $userId
      * @param int $languageId
+     * @param int $defaultTenantLanguageId
      * @return array
      */
     public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array
@@ -175,5 +176,16 @@ class MissionCommentRepository implements MissionCommentInterface
     public function getCommentById(int $commentId): Comment
     {
         return $this->comment->with('user')->findOrFail($commentId);
+    }
+
+    /**
+     * Get comment detail
+     *
+     * @param int $commentId
+     * @return App\Models\Comment
+     */
+    public function getCommentDetail(int $commentId): Comment
+    {
+        return $this->comment->withTrashed()->find($commentId);
     }
 }

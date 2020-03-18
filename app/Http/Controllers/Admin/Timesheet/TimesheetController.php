@@ -11,11 +11,15 @@ use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Timesheet\TimesheetRepository;
 use Validator;
-use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
+use Illuminate\Validation\Rule;
 
+//!  Timesheet controller
+/*!
+This controller is responsible for handling timesheet listing and update operations.
+ */
 class TimesheetController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -61,7 +65,6 @@ class TimesheetController extends Controller
         $this->userApiKey =$request->header('php-auth-user');
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -79,16 +82,16 @@ class TimesheetController extends Controller
             );
         }
 
-        $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
-        foreach ($userTimesheet as $value) {
-            if ($value->missionLanguage) {
-                $value->setAttribute('title', $value->missionLanguage[0]->title);
-                unset($value->missionLanguage);
+        $userTimesheetData = $this->timesheetRepository->getUserTimesheet($userId, $request);
+        foreach ($userTimesheetData as $userTimesheet) {
+            if ($userTimesheet->missionLanguage) {
+                $userTimesheet->setAttribute('title', $userTimesheet->missionLanguage[0]->title);
+                unset($userTimesheet->missionLanguage);
             }
-            $value->setAppends([]);
+            $userTimesheet->setAppends([]);
         }
 
-        $apiData = $userTimesheet->toArray();
+        $apiData = $userTimesheetData->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (!empty($apiData)) ?
         trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
@@ -110,7 +113,7 @@ class TimesheetController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "status_id" => "required|numeric|exists:timesheet_status,timesheet_status_id"
+                    "status" => ["required",Rule::in(config('constants.timesheet_status'))]
                 ]
             );
 
@@ -124,7 +127,7 @@ class TimesheetController extends Controller
                 );
             }
             $this->timesheetRepository->find($timesheetId);
-            $this->timesheetRepository->updateTimesheetStatus($request->status_id, $timesheetId);
+            $this->timesheetRepository->updateTimesheetStatus($request->status, $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
@@ -138,13 +141,13 @@ class TimesheetController extends Controller
                 $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
             }
             $entityId = $timesheetId;
-            $action = config('constants.notification_actions.'.$timsheetDetails->timesheetStatus->status);
+            $action = config('constants.notification_actions.'.$timsheetDetails->status);
             $userId = $timsheetDetails->user_id;
             
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             // Make activity log
-            $activityLogStatus = $request->status_id == config('constants.timesheet_status_id.APPROVED') ?
+            $activityLogStatus = $request->status == config('constants.timesheet_status.APPROVED') ?
                 config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
 
             event(new UserActivityLogEvent(

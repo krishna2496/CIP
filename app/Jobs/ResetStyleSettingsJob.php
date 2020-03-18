@@ -30,7 +30,7 @@ class ResetStyleSettingsJob extends Job
         dispatch(new CopySCSSFolderInS3BucketJob($this->tenantName));
 
         // Copy tenant folder to local
-        dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenantName));
+        dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenantName));
         
         // Compile downloaded files and update css on s3
         dispatch(new CompileScssFiles($this->tenantName));

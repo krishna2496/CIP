@@ -17,6 +17,11 @@ use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use Validator;
 
+//!  Tenant option controller
+/*!
+This controller is responsible for handling tenant option listing, custom css listing
+and get tenant option value operations.
+ */
 class TenantOptionController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -101,7 +106,7 @@ class TenantOptionController extends Controller
 
         if ($tenantLanguages->count() > 0) {
             foreach ($tenantLanguages as $key => $value) {
-                if ($value->default == 1) {
+                if ($value->default === "1") {
                     $optionData['defaultLanguage'] = strtoupper($value->code);
                     $optionData['defaultLanguageId'] = $value->language_id;
                 }

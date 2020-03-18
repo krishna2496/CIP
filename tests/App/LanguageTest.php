@@ -11,34 +11,40 @@ class LanguageTest extends TestCase
      */
     public function it_should_return_language_details_by_laguage_code()
     {
+        // Upload language file 
+
+        //Get language file details
         $this->get('language/en', [])
-          ->seeJsonStructure([
-                "locale",
-                "data" => [
-                    "label",
-                    "placeholder",
-                    "errors"
-                ]
-            ]);
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "locale",
+            "data" => [
+                "label",
+                "placeholder",
+                "errors"
+            ]
+        ]);
     }
 
     /**
      * @test
      *
-     * Get language file with invalid language code
+     * Return error with invalid language code
      *
      * @return void
      */
-    public function it_should_return_language_details_by_invalid_laguage_code()
+    public function it_should_return_error_for_invalid_laguage_code()
     {
         $this->get('language/eq', [])
-          ->seeJsonStructure([
-                "locale",
-                "data" => [
-                    "label",
-                    "placeholder",
-                    "errors"
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message"
                 ]
-            ]);
+            ]
+        ]);
     }
 }

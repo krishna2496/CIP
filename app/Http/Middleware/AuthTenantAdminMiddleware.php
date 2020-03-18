@@ -36,6 +36,7 @@ class AuthTenantAdminMiddleware
     {
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
+        $this->db = app()->make('db');
     }
  
     /**
@@ -48,7 +49,7 @@ class AuthTenantAdminMiddleware
     public function handle($request, Closure $next)
     {
         // Check basic auth passed or not
-        if ($request->header('php-auth-user') == null && $request->header('php-auth-pw') == null
+        if ($request->header('php-auth-user') === null && $request->header('php-auth-pw') === null
             || (empty($request->header('php-auth-user')) && empty($request->header('php-auth-pw')))
         ) {
             return $this->responseHelper->error(
@@ -59,7 +60,7 @@ class AuthTenantAdminMiddleware
             );
         }
         // authenticate api user based on basic auth parameters
-        $apiUser = DB::table('api_user')
+        $apiUser = $this->db->table('api_user')
                     ->where('api_key', base64_encode($request->header('php-auth-user')))
                     ->where('status', '1')
                     ->whereNull('deleted_at')

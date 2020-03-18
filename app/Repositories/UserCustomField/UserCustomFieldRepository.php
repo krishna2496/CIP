@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use App\Models\UserCustomField;
-use DB;
 
 class UserCustomFieldRepository implements UserCustomFieldInterface
 {

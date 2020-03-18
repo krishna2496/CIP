@@ -5,11 +5,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\User;
 use App\Helpers\Helpers;
-use App\Helpers\ResponseHelper;
 use App\Models\UserSkill;
 use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
@@ -39,11 +37,6 @@ class UserRepository implements UserInterface
     public $availability;
     
     /**
-     * @var App\Helpers\ResponseHelper
-     */
-    private $responseHelper;
-
-    /**
      * @var App\Helpers\Helpers
      */
     private $helpers;
@@ -55,7 +48,6 @@ class UserRepository implements UserInterface
      * @param  App\Models\UserSkill $userSkill
      * @param  App\Models\UserCustomFieldValue $userCustomFieldValue
      * @param  App\Models\Availability $availability
-     * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
      * @return void
      */
@@ -64,14 +56,12 @@ class UserRepository implements UserInterface
         UserSkill $userSkill,
         UserCustomFieldValue $userCustomFieldValue,
         Availability $availability,
-        ResponseHelper $responseHelper,
         Helpers $helpers
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
         $this->userCustomFieldValue = $userCustomFieldValue;
         $this->availability = $availability;
-        $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
     }
     
@@ -202,17 +192,6 @@ class UserRepository implements UserInterface
     }
 
     /**
-     * Get username
-     *
-     * @param int $userId
-     * @return string
-     */
-    public function getUserName(int $userId): string
-    {
-        return $this->user->getUserName($userId);
-    }
-
-    /**
      * List all the users
      *
      * @param int $userId
@@ -220,7 +199,7 @@ class UserRepository implements UserInterface
      */
     public function listUsers(int $userId) : Collection
     {
-        return $this->user->where('user_id', '<>', $userId)->get();
+        return $this->user->where([['user_id', '<>', $userId],['is_profile_complete', '1']])->get();
     }
 
     /**
@@ -327,6 +306,17 @@ class UserRepository implements UserInterface
     }
 
     /**
+     * Get user's detail by email
+     *
+     * @param string $email
+     * @return null||App/User
+     */
+    public function findUserByEmail(string $email): ?User
+    {
+        return $this->user->where('email', $email)->first();
+    }
+    
+    /**
      * Get user goal hours
      *
      * @param int $userId
@@ -359,5 +349,32 @@ class UserRepository implements UserInterface
     public function getUserTimezone(int $userId): string
     {
         return $this->user->with('timezone')->where('user_id', $userId)->first()->timezone['timezone'];
+    }
+
+    /**
+     * Check profile complete status
+     *
+     * @param int $userId
+     * @return User
+     */
+    public function checkProfileCompleteStatus(int $userId): User
+    {
+        $profileStatus = true;
+        $requiredFieldsArray = config('constants.profile_required_fields');
+        $userData = $this->find($userId);
+        $dataArray = $userData->toArray();
+        foreach ($requiredFieldsArray as $value) {
+            if ($dataArray[$value] === null) {
+                $profileStatus = false;
+            }
+        }
+
+        $profileComplete = '0';
+        if ($profileStatus) {
+            $profileComplete = '1';
+        }
+
+        $userData->update(["is_profile_complete" => $profileComplete]);
+        return $userData;
     }
 }

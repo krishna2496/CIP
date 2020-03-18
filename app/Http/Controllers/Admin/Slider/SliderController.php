@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Slider controller
+/*!
+This controller is responsible for handling slider listing, store, update and delete operations.
+ */
 class SliderController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -94,56 +98,46 @@ class SliderController extends Controller
             );
         }
 
-        try {
-            // Get total count of "slider"
-            $sliderCount = $this->sliderRepository->getAllSliderCount();
+        // Get total count of "slider"
+        $sliderCount = $this->sliderRepository->getAllSliderCount();
 
-            // Prevent data insertion if user is trying to insert more than defined slider limit records
-            if ($sliderCount >= config('constants.SLIDER_LIMIT')) {
-                // Set response data
-                return $this->responseHelper->error(
-                    Response::HTTP_FORBIDDEN,
-                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    config('constants.error_codes.ERROR_SLIDER_LIMIT'),
-                    trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
-                );
-            } else {
-                // Upload slider image on S3 server
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                $imageUrl = "";
-                $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
-                $request->merge(['url' => $imageUrl]);
-                
-                // Create new slider
-                $slider = $this->sliderRepository->storeSlider($request->toArray());
-
-                // Set response data
-                $apiData = ['slider_id' => $slider->slider_id];
-                $apiStatus = Response::HTTP_CREATED;
-                $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
-
-                // Make activity log
-                event(new UserActivityLogEvent(
-                    config('constants.activity_log_types.SLIDER'),
-                    config('constants.activity_log_actions.CREATED'),
-                    config('constants.activity_log_user_types.API'),
-                    $this->userApiKey,
-                    get_class($this),
-                    $request->toArray(),
-                    null,
-                    $slider->slider_id
-                ));
-
-                return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-            }
-        } catch (\ErrorException $e) {
-            // Response error unable to upload file on S3
+        // Prevent data insertion if user is trying to insert more than defined slider limit records
+        if ($sliderCount >= config('constants.SLIDER_LIMIT')) {
+            // Set response data
             return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_SLIDER_LIMIT'),
+                trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
             );
+        } else {
+            // Upload slider image on S3 server
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $imageUrl = "";
+            $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+            $request->merge(['url' => $imageUrl]);
+            
+            // Create new slider
+            $slider = $this->sliderRepository->storeSlider($request->toArray());
+
+            // Set response data
+            $apiData = ['slider_id' => $slider->slider_id];
+            $apiStatus = Response::HTTP_CREATED;
+            $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.SLIDER'),
+                config('constants.activity_log_actions.CREATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $slider->slider_id
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }
     }
     

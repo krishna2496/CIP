@@ -22,9 +22,14 @@ class AppNewsTest extends TestCase
             $news->setConnection($connection);
             $news->save();
 
+            $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+            $newsCategory->setConnection($connection);
+            $newsCategory->save();
+            
             $newsToCategory = factory(\App\Models\NewsToCategory::class)->make();
             $newsToCategory->setConnection($connection);
             $newsToCategory->news_id = $news->news_id;
+            $newsToCategory->news_category_id = $newsCategory->news_category_id;
             $newsToCategory->save();
 
             $newsLanguage = factory(\App\Models\NewsLanguage::class)->make();
@@ -41,9 +46,13 @@ class AppNewsTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));        
-        $response = $this->get('app/news', ['token' => $token])->seeStatusCode(200);
+        $response = $this->get('app/news', ['token' => $token, 'X-localization' => 'test'])->seeStatusCode(200);
+
+        \DB::setDefaultConnection('mysql');
+        $response = $this->get('app/news?order=test', ['token' => $token])->seeStatusCode(400);
         
         News::whereIn('news_id', $newsIdsArray)->delete();
+        $newsCategory->delete();
     }
 
     /**
@@ -59,13 +68,17 @@ class AppNewsTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
+        $newsCategory = factory(\App\Models\NewsCategory::class)->make();
+        $newsCategory->setConnection($connection);
+        $newsCategory->save();
+        
         DB::setDefaultConnection('tenant');
         $params = [
             "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
             "user_name" => str_random('5'),
             "user_title" => strtoupper(str_random('3')),
             "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
-            "news_category_id" => NewsCategory::all()->random(1)->first()->news_category_id,
+            "news_category_id" => $newsCategory->news_category_id,
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
@@ -93,6 +106,7 @@ class AppNewsTest extends TestCase
 
         $response = $this->get('app/news/'.$newsId, ['token' => $token])
         ->seeStatusCode(200);
+        $newsCategory->delete();
     }
 
     /**

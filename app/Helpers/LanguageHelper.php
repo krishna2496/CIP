@@ -17,6 +17,11 @@ class LanguageHelper
     private $helpers;
 
     /**
+     * @var DB
+     */
+    private $db;
+
+    /**
      * Create a new helper instance.
      *
      * @param App\Helpers\Helpers $helpers
@@ -25,22 +30,22 @@ class LanguageHelper
     public function __construct(Helpers $helpers)
     {
         $this->helpers = $helpers;
+        $this->db = app()->make('db');
     }
 
     /**
      * Get languages from `ci_admin` table
      *
-     * @param Illuminate\Http\Request $request
      * @return Illuminate\Support\Collection
      */
-    public function getLanguages(Request $request): Collection
+    public function getLanguages(): Collection
     {
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->whereNull('deleted_at')->get();
+        $this->helpers->switchDatabaseConnection('mysql');
+        $languages = $this->db->table('language')->whereNull('deleted_at')->get();
         
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
 
         return $languages;
     }
@@ -55,16 +60,18 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
         
-        $tenantLanguages = DB::table('tenant_language')
+        $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
+        ->whereNull('tenant_language.deleted_at')
+        ->whereNull('language.deleted_at')
         ->get();
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
         
         return $tenantLanguages;
     }
@@ -79,14 +86,14 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
         
-        $tenantLanguage = DB::table('tenant_language')
+        $tenantLanguage = $this->db->table('tenant_language')
         ->where('tenant_id', $tenant->tenant_id)
         ->where('language_id', $request->language_id);
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
         
         return ($tenantLanguage->count() > 0) ? true : false;
     }
@@ -101,16 +108,16 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
 
-        $tenantLanguages = DB::table('tenant_language')
+        $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
         ->pluck('language.name', 'language.language_id');
 
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
         
         return $tenantLanguages;
     }
@@ -125,15 +132,16 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
-        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $this->helpers->switchDatabaseConnection('mysql');
 
-        $tenantLanguagesCodes = DB::table('tenant_language')
+        $tenantLanguagesCodes = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
+		->whereNull('tenant_language.deleted_at')
         ->pluck('language.code', 'language.language_id');
         // Connect tenant database
-        $this->helpers->switchDatabaseConnection('tenant', $request);
+        $this->helpers->switchDatabaseConnection('tenant');
 
         return $tenantLanguagesCodes;
     }
@@ -163,12 +171,7 @@ class LanguageHelper
         $request->header('X-localization') : $this->getDefaultTenantLanguage($request);
         
         $language = $languages->where('code', $languageCode)->first();
-
-        if (!is_null($language)) {
-            return $language;
-        }
-        
-        return $this->getDefaultTenantLanguage($request);
+        return (!is_null($language)) ? $language : $this->getDefaultTenantLanguage($request);
     }
 
     /**
@@ -224,4 +227,21 @@ class LanguageHelper
         }
         return $language;
     }
+	
+	/**
+     * Check language code is valid for tenant
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String $request
+     * @return Object
+     */
+	 public function isValidTenantLanguageCode(Request $request, string $languageCode)
+	 {
+		 $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
+		 if (!in_array($languageCode, $tenantLanguageCodes->toArray())) {
+			return false;
+		 } else {
+			 return true;
+		 }
+	 }
 }

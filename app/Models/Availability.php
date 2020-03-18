@@ -30,14 +30,14 @@ class Availability extends Model
      *
      * @var array
      */
-    protected $fillable = ['type'];
+    protected $fillable = ['type','translations'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['availability_id', 'type'];
+    protected $visible = ['availability_id', 'type', 'translations'];
             
     /**
      * Get all resources.
@@ -46,6 +46,39 @@ class Availability extends Model
      */
     public function getAvailability(): SupportCollection
     {
-        return static::pluck('type', 'availability_id');
+        return static::select('translations', 'availability_id')->get();
+    }
+    
+    /**
+     * Set translations attribute on the model.
+     *
+     * @param  array $value
+     * @return void
+     */
+    public function setTranslationsAttribute(array $value): void
+    {
+        $this->attributes['translations'] = serialize($value);
+    }
+    
+    /**
+     * Get an attribute from the model.
+     *
+     * @param  string $value
+     * @return array
+     */
+    public function getTranslationsAttribute(string $value): array
+    {
+        return unserialize($value);
+    }
+    
+    /**
+     * Delete availability details.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function deleteAvailability(int $id): bool
+    {
+        return static::findOrFail($id)->delete();
     }
 }

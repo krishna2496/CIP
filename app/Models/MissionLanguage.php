@@ -38,7 +38,9 @@ class MissionLanguage extends Model
         'description',
         'objective',
         'short_description',
-        'custom_information'
+        'custom_information',
+        'label_goal_achieved',
+        'label_goal_objective'
     ];
 
     /**
@@ -49,11 +51,14 @@ class MissionLanguage extends Model
     protected $visible = [
         'lang',
         'language_id',
+        'language_code',
         'title',
         'objective',
         'short_description',
         'description',
-        'custom_information'
+        'custom_information',
+        'label_goal_achieved',
+        'label_goal_objective'
     ];
 
     /**
@@ -93,19 +98,6 @@ class MissionLanguage extends Model
     }
 
     /**
-     * Get specified resource.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, int $languageId): string
-    {
-        return static::select('title')
-        ->where(['mission_id' => $missionId, 'language_id' => $languageId])->value('title');
-    }
-
-    /**
      * Set custom conformation attribute on the model.
      *
      * @param $value
@@ -113,7 +105,7 @@ class MissionLanguage extends Model
      */
     public function setCustomInformationAttribute($value)
     {
-        $this->attributes['custom_information'] = isset($value) ? serialize($value) : NULL;
+        $this->attributes['custom_information'] = isset($value) ? serialize($value) : null;
     }
     
     /**
@@ -127,5 +119,17 @@ class MissionLanguage extends Model
         if ($value) {
             return unserialize($value);
         }
+    }
+
+    /**
+     * Delete mission language.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return bool
+     */
+    public function deleteMissionLanguage(int $missionId, int $languageId): bool
+    {
+        return static::where(['mission_id'=> $missionId, 'language_id' => $languageId])->delete();
     }
 }

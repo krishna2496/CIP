@@ -359,4 +359,42 @@ class MissionApplicationTest extends TestCase
         $user->delete(); 
         $mission->delete();
     }
+
+    /**
+    * @test
+    *
+    * Get all mission applications
+    *
+    * @return void
+    */
+    public function it_should_return_mission_applications_with_search()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $status = config('constants.application_status.PENDING');
+        $missionApplication = new App\Models\MissionApplication();
+        $motivation = str_random(10);
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = 1;
+        $missionApplication->motivation = $motivation;
+        $missionApplication->approval_status = $status;
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
+        
+        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC&status='.$status.'&user_id='.$user->user_id.'&type='.config("constants.mission_type.GOAL"),
+        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        $missionApplication->delete(); 
+        $user->delete(); 
+        $mission->delete(); 
+    }
 }

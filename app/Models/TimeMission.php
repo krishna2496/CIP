@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class TimeMission extends Model
 {
@@ -47,7 +48,7 @@ class TimeMission extends Model
      */
     public function setApplicationDeadlineAttribute($value)
     {
-        $this->attributes['application_deadline'] = ($value != null) ?
+        $this->attributes['application_deadline'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -72,7 +73,7 @@ class TimeMission extends Model
      */
     public function setApplicationStartDateAttribute($value)
     {
-        $this->attributes['application_start_date'] = ($value != null) ?
+        $this->attributes['application_start_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -97,7 +98,7 @@ class TimeMission extends Model
      */
     public function setApplicationEndDateAttribute($value)
     {
-        $this->attributes['application_end_date'] = ($value != null) ?
+        $this->attributes['application_end_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -122,7 +123,7 @@ class TimeMission extends Model
      */
     public function setApplicationStartTimeAttribute($value)
     {
-        $this->attributes['application_start_time'] = ($value != null) ?
+        $this->attributes['application_start_time'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -135,7 +136,7 @@ class TimeMission extends Model
     {
         if (isset($this->attributes['application_start_time']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_start_time'])
-            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_TIME_FORMAT'));
+            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
     }
 
@@ -147,7 +148,7 @@ class TimeMission extends Model
      */
     public function setApplicationEndTimeAttribute($value)
     {
-        $this->attributes['application_end_time'] = ($value != null) ?
+        $this->attributes['application_end_time'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -160,7 +161,7 @@ class TimeMission extends Model
     {
         if (isset($this->attributes['application_end_time']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_end_time'])
-            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_TIME_FORMAT'));
+            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
     }
 
@@ -173,5 +174,16 @@ class TimeMission extends Model
     public function getApplicationDeadLine(int $missionId): ?string
     {
         return $this->where('mission_id', $missionId)->value('application_deadline');
+    }
+    
+    /**
+    * Get time mission details for mission application.
+    *
+    * @param int $missionId
+    * @return Collection
+    */
+    public function getTimeMissionDetails(int $missionId): Collection
+    {
+        return $this->where('mission_id', $missionId)->get();
     }
 }

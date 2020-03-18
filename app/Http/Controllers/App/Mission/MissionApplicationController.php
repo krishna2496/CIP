@@ -14,6 +14,10 @@ use Validator;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\Helpers;
 
+//!  Mission application controller
+/*!
+This controller is responsible for handling mission application apply to mission and get volunteer list operations.
+ */
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -67,16 +71,20 @@ class MissionApplicationController extends Controller
      */
     public function missionApplication(Request $request): JsonResponse
     {
+        $missionStatus = config("constants.publication_status")["APPROVED"];
         // Server side validataions
-        $status = config("constants.publication_status")["APPROVED"];
         $validator = Validator::make(
             $request->all(),
             [
-                "mission_id" =>
-                "integer|required|exists:mission,mission_id,deleted_at,NULL,publication_status,".$status,
+                "mission_id" => [
+                    "integer",
+                    "required",
+                    "exists:mission,mission_id,deleted_at,NULL,publication_status,".$missionStatus
+                ],
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL"
             ]
         );
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -155,7 +163,7 @@ class MissionApplicationController extends Controller
     public function getVolunteers(Request $request, int $missionId): JsonResponse
     {
         try {
-            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId); 
+            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
             
             // Get default user avatar
             $tenantName = $this->helpers->getSubDomainFromRequest($request);

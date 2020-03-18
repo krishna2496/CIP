@@ -30,7 +30,7 @@ class Notification extends Model
      * @var array
      */
     protected $fillable = ['notification_id', 'notification_type_id',
-    'user_id', 'is_read', 'entity_id', 'action'];
+    'user_id', 'is_read', 'entity_id', 'action', 'is_email_notification'];
 
     /**
      * The attributes that should be visible in arrays.

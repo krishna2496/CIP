@@ -1,20 +1,25 @@
 <?php
 namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\UserFilter\UserFilterRepository;
-use App\Repositories\Skill\SkillRepository;
-use App\Repositories\MissionTheme\MissionThemeRepository;
-use App\Repositories\Country\CountryRepository;
-use App\Repositories\City\CityRepository;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Repositories\City\CityRepository;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Repositories\Skill\SkillRepository;
+use App\Repositories\State\StateRepository;
+use App\Repositories\Country\CountryRepository;
+use App\Repositories\UserFilter\UserFilterRepository;
+use App\Repositories\MissionTheme\MissionThemeRepository;
 
+//!  User filter controller
+/*!
+This controller is responsible for handling user filter listing operation.
+ */
 class UserFilterController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -80,7 +85,8 @@ class UserFilterController extends Controller
         LanguageHelper $languageHelper,
         Helpers $helper,
         CountryRepository $countryRepository,
-        CityRepository $cityRepository
+        CityRepository $cityRepository,
+        StateRepository $stateRepository
     ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
@@ -90,6 +96,7 @@ class UserFilterController extends Controller
         $this->helper = $helper;
         $this->countryRepository = $countryRepository;
         $this->cityRepository = $cityRepository;
+        $this->stateRepository = $stateRepository;
     }
     
     /**
@@ -101,9 +108,12 @@ class UserFilterController extends Controller
      */
     public function index(Request $request):JsonResponse
     {
+        
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
-        
+        $languageId = $language->language_id;
+        $filterData = [];
+
         // Get data of user's filter
         $filterTagArray = $filterData = [];
         $language = ($request->hasHeader('X-localization')) ?
@@ -114,15 +124,21 @@ class UserFilterController extends Controller
         }
 
         if (!empty($filterData["filters"])) {
-            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
-                $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
+            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
+                $countryTag = $this->countryRepository->getCountry(
+                    $filterData["filters"]["country_id"],
+                    $languageId
+                );
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                 }
             }
 
-            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
-                $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
+            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
+                $cityTag = $this->cityRepository->getCity(
+                    $filterData["filters"]["city_id"],
+                    $languageId
+                );
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
                         $filterTagArray["city"][$key] = $value;
@@ -130,7 +146,19 @@ class UserFilterController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
+            if (isset($filterData["filters"]["state_id"]) && $filterData["filters"]["state_id"] !== "") {
+                $cityTag = $this->stateRepository->getState(
+                    $filterData["filters"]["state_id"],
+                    $languageId
+                );
+                if ($cityTag) {
+                    foreach ($cityTag as $key => $value) {
+                        $filterTagArray["state"][$key] = $value;
+                    }
+                }
+            }
+
+            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
                 $themeTag = $this->theme->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 
                 if ($themeTag) {
@@ -146,7 +174,7 @@ class UserFilterController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
+            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] !== "") {
                 $skillTag = $this->skill->skillList($request, $filterData["filters"]["skill_id"]);
                 if ($skillTag) {
                     foreach ($skillTag as $value) {

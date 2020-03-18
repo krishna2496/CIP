@@ -15,6 +15,10 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use App\Events\User\UserActivityLogEvent;
 
+//!  User custom field controller
+/*!
+This controller is responsible for handling user custom field listing, show, store, update and delete operations.
+ */
 class UserCustomFieldController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -95,8 +99,8 @@ class UserCustomFieldController extends Controller
             "translations" => "required",
             "translations.*.lang" => "max:2",
             "translations.*.values" => Rule::requiredIf(
-                $request->type == config('constants.custom_field_types.DROP-DOWN') ||
-                $request->type == config('constants.custom_field_types.RADIO')
+                $request->type === config('constants.custom_field_types.DROP-DOWN') ||
+                $request->type === config('constants.custom_field_types.RADIO')
             ),
             ]
         );
@@ -157,8 +161,8 @@ class UserCustomFieldController extends Controller
                     Rule::in(config('constants.custom_field_types'))],
                 "translations.*.lang" => "max:2",
                 "translations.*.values" =>
-                Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
-                    || $request->type == config('constants.custom_field_types.RADIO')),
+                Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
+                    || $request->type === config('constants.custom_field_types.RADIO')),
                 ]
             );
             // If post parameter have any missing parameter

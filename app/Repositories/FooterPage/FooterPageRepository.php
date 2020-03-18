@@ -8,7 +8,6 @@ use App\Models\FooterPage;
 use App\Models\FooterPagesLanguage;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
-use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -63,7 +62,7 @@ class FooterPageRepository implements FooterPageInterface
         // Create new cms page
         $footerPage = $this->page->create($page);
         
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
         foreach ($postData['translations'] as $value) {
             // Get language_id from language code - It will fetch data from `ci_admin` database
             $language = $languages->where('code', $value['lang'])->first();
@@ -104,7 +103,7 @@ class FooterPageRepository implements FooterPageInterface
         $footerPage = $this->page->findOrFail($id);
         $footerPage->update($page);
         
-        $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages();
                  
         if (isset($postData['translations'])) {
             foreach ($postData['translations'] as $value) {

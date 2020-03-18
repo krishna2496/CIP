@@ -102,7 +102,7 @@ class JwtMiddleware
         $user = User::find($credentials->sub);
 
         $timezone = '';
-        $timezone = $this->timezoneRepository->timezoneList($request, $user->timezone_id);
+        $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
         if ($timezone) {
             $timezone = $timezone->timezone;
         }

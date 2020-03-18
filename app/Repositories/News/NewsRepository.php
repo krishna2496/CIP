@@ -82,7 +82,6 @@ class NewsRepository implements NewsInterface
      */
     public function getNewsList(
         Request $request,
-        int $languageId = null,
         string $newsStatus = null
     ): LengthAwarePaginator {
         $newsData = $this->news
@@ -92,29 +91,24 @@ class NewsRepository implements NewsInterface
             }]);
         }]);
 
-        if ($languageId) {
-            $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
-                $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
+       
+        // Search filters for admin side
+        if ($request->has('search')) {
+            $newsData
+            ->whereHas('newsLanguage', function ($query) use ($request) {
+                $query->select('news_id', 'language_id', 'title', 'description')
+                ->where('title', 'like', '%' . $request->input('search') . '%');
+            })
+            ->with(['newsLanguage' => function ($query) use ($request) {
+                $query->select('news_id', 'language_id', 'title', 'description')
+                ->where('title', 'like', '%' . $request->input('search') . '%');
             }]);
         } else {
-            // Search filters for admin side
-            if ($request->has('search')) {
-                $newsData
-                ->whereHas('newsLanguage', function ($query) use ($request) {
-                    $query->select('news_id', 'language_id', 'title', 'description')
-                    ->where('title', 'like', '%' . $request->input('search') . '%');
-                })
-                ->with(['newsLanguage' => function ($query) use ($request) {
-                    $query->select('news_id', 'language_id', 'title', 'description')
-                    ->where('title', 'like', '%' . $request->input('search') . '%');
-                }]);
-            } else {
-                $newsData->with(['newsLanguage' => function ($query) {
-                    $query->select('news_id', 'language_id', 'title', 'description');
-                }]);
-            }
+            $newsData->with(['newsLanguage' => function ($query) {
+                $query->select('news_id', 'language_id', 'title', 'description');
+            }]);
         }
-        
+
         // Order by filters for admin side
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
@@ -160,7 +154,7 @@ class NewsRepository implements NewsInterface
         
         // Insert into news_language
         if ($request->has('news_content')) {
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -206,7 +200,7 @@ class NewsRepository implements NewsInterface
         
         // Update into news_language
         if ($request->has('news_content')) {
-            $languages = $this->languageHelper->getLanguages($request);
+            $languages = $this->languageHelper->getLanguages();
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
@@ -229,24 +223,17 @@ class NewsRepository implements NewsInterface
      * Get news details.
      *
      * @param int $id
-     * @param int $languageId
      * @param string $newsStatus
      * @return App\Models\News
      */
-    public function getNewsDetails(int $id, int $languageId = null, string $newsStatus = null): News
+    public function getNewsDetails(int $id, string $newsStatus = null): News
     {
         $newsQuery = $this->news
         ->with(['newsToCategory' => function ($query) {
             $query->with('newsCategory');
         }]);
     
-        if ($languageId) {
-            $newsQuery->with(['newsLanguage' => function ($query) use ($languageId) {
-                $query->where('language_id', $languageId);
-            }]);
-        } else {
-            $newsQuery->with('newsLanguage');
-        }
+        $newsQuery->with('newsLanguage');
 
         if ($newsStatus) {
             $newsQuery->where('status', $newsStatus);
@@ -264,14 +251,7 @@ class NewsRepository implements NewsInterface
     public function delete(int $id): bool
     {
         $news = $this->news->findOrFail($id);
-        $newsStatus = $news->delete();
-        // Delete news language data
-        $news->newsLanguage()->delete();
-
-        //Delete news_to_category data
-        $news->newsToCategory()->delete();
-        
-        return $newsStatus;
+        return $news->delete();
     }
 
     /** Get news title
@@ -283,17 +263,19 @@ class NewsRepository implements NewsInterface
      */
     public function getNewsTitle(int $newsId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->newsLanguage->select('title')
-        ->where(['news_id' => $newsId, 'language_id' => $languageId])
+        $languageData = $this->newsLanguage->withTrashed()->select('title', 'language_id')
+        ->where(['news_id' => $newsId])
         ->get();
+     
+        $title = '';
+
         if ($languageData->count() > 0) {
-            return $languageData[0]->title;
-        } else {
-            $defaultTenantLanguageData = $this->newsLanguage
-                ->select('title')
-                ->where(['news_id' => $newsId, 'language_id' => $defaultTenantLanguageId])
-                ->get();
-            return $defaultTenantLanguageData[0]->title;
+            $index = array_search($languageId, array_column($languageData->toArray(), 'language_id'));
+            $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
+            $newsLanguage = $languageData->where('language_id', $language)->first();
+            $title =  $newsLanguage->title;
         }
+        
+        return $title;
     }
 }

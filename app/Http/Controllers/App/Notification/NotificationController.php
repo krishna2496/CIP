@@ -19,6 +19,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Notification controller
+/*!
+This controller is responsible for handling notification listing, read/unread and clear all operations.
+ */
 class NotificationController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -121,11 +125,12 @@ class NotificationController extends Controller
                 $defaultTenantLanguage->language_id
             );
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-            
-            $notificationDetails['created_at'] =  Carbon::parse($notification->created_at, config('constants.TIMEZONE'))
-            ->setTimezone($timezone)->toDateTimeString();
-            $notificationDetails['notification_id'] = $notification->notification_id;
-            $notificationData['notifications'][] = $notificationDetails;
+            if (!empty($notificationDetails)) {
+				$notificationDetails['created_at'] =  Carbon::parse($notification->created_at, config('constants.TIMEZONE'))
+				->setTimezone($timezone)->toDateTimeString();
+				$notificationDetails['notification_id'] = $notification->notification_id;
+				$notificationData['notifications'][] = $notificationDetails;
+			}
         }
 
         // Set response data

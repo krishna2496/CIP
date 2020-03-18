@@ -16,6 +16,10 @@ use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Volunteerhistory controller
+/*!
+This controller is responsible for handling volunteerhistory theme, goal, time history and export operations.
+ */
 class VolunteerHistoryController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -126,8 +130,8 @@ class VolunteerHistoryController extends Controller
     public function timeMissionHistory(Request $request): JsonResponse
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
@@ -148,8 +152,8 @@ class VolunteerHistoryController extends Controller
     public function goalMissionHistory(Request $request): JsonResponse
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
@@ -170,8 +174,8 @@ class VolunteerHistoryController extends Controller
     public function exportGoalMissionHistory(Request $request): Object
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
@@ -191,8 +195,8 @@ class VolunteerHistoryController extends Controller
 
             foreach ($goalMissionList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->action
                 ]);
             }
@@ -216,7 +220,7 @@ class VolunteerHistoryController extends Controller
         }
     
         $apiStatus = Response::HTTP_OK;
-        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -229,8 +233,8 @@ class VolunteerHistoryController extends Controller
     public function exportTimeMissionHistory(Request $request): Object
     {
         $statusArray = [
-            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-            config('constants.timesheet_status_id.APPROVED')
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
         ];
 
         $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
@@ -251,8 +255,8 @@ class VolunteerHistoryController extends Controller
 
             foreach ($timeRequestList as $mission) {
                 $excel->appendRow([
-                    $mission->title,
-                    $mission->organisation_name,
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
                     $mission->time,
                     $mission->hours
                 ]);

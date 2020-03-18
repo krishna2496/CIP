@@ -2,29 +2,30 @@
 
 return [
     /**
-    * Recommonded mission
+    * Recommended mission
     */
     'recommonded_mission' => [
-        'HAS_RECOMMENDED_A_MISSION_TO_YOU' => 'DE: has recommended a mission to you',
-        'MISSION' => 'DE: MISSION :',
-        'ALL_RIGHTS_RESERVED' => 'DE: All Rights Reserved.',
-        'MAIL_MISSION_RECOMMENDATION' => 'DE: Mission Recommendation'
+        'HAS_RECOMMENDED_A_MISSION_TO_YOU' => "hat Ihnen einen Auftrag empfohlen",
+        'MISSION' => "AUFTRAG:",
+        'ALL_RIGHTS_RESERVED' => "Alle Rechte vorbehalten.",
+        'MAIL_MISSION_RECOMMENDATION' => "Auftragsempfehlungen"
     ],
     'forgot_password' => [
-        'HEADING_ONE' => 'Changing your',
-        'HEADING_TWO' => 'Optimy password',
-        'PARAGRAPH_ONE' => 'Need to reset your password? No Problem. Just click below to get started.',
-        'RESET_PASSWORD_BUTTON' => 'Reset my password',
-        'PARAGRAPH_TWO' => "If you didn’t request to change your optimy password, you don’t have to do anything. So that’s easy.",
-        'FOOTER_TEXT' => "If you’re having trouble clicking the “Reset Password” button, copy and paste the URL below into your web browser."
+        'HEADING_ONE' => "Änderung Ihres",
+        'HEADING_TWO' => "Optimy-Passworts",
+        'PARAGRAPH_ONE' => "Möchten Sie Ihr Passwort zurücksetzen? Kein Problem. Klicken Sie einfach unten, um damit zu beginnen.",
+        'RESET_PASSWORD_BUTTON' => "Mein Passwort zurücksetzen",
+        'PARAGRAPH_TWO' => "Falls Sie nicht darum gebeten haben, Ihr Passwort zurückzusetzen, müssen Sie nichts tun. So einfach ist das.",
+        'FOOTER_TEXT' => "Wenn Sie nicht auf die Taste „Passwort zurücksetzen“ klicken können, kopieren Sie die folgende URL in Ihren Web-Browser."
     ],
     'other_text' => [
-        'ALL_RIGHTS_RESERVED' => 'All Rights Reserved.'
+        'ALL_RIGHTS_RESERVED' => "Alle Rechte vorbehalten."
     ],
     'recommonded_story' => [
-        'HAS_RECOMMENDED_A_STORY_TO_YOU' => 'DE: has recommended a story to you',
-        'STORY' => 'DE: STORY :',
-        'ALL_RIGHTS_RESERVED' => 'DE: All Rights Reserved.',
-        'MAIL_STORY_RECOMMENDATION' => 'DE: Story Recommendation'
+        'HAS_RECOMMENDED_A_STORY_TO_YOU' => "hat Ihnen eine Story empfohlen",
+        'STORY' => "STORY:",
+        'ALL_RIGHTS_RESERVED' => "Alle Rechte vorbehalten.",
+        'MAIL_STORY_RECOMMENDATION' => "Story-Empfehlungen"
     ],
 ];
+?>

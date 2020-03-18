@@ -63,7 +63,7 @@ class TenantActivatedSetting extends Model
      */
     public function storeSettings(int $tenantSettingId, int $value): bool
     {
-        if ($value == 1) {
+        if ($value === 1) {
             return static::firstOrNew(array('tenant_setting_id' => $tenantSettingId))->save();
         } else {
             return static::where(['tenant_setting_id' => $tenantSettingId])->delete();

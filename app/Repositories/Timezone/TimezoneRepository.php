@@ -2,12 +2,8 @@
 namespace App\Repositories\Timezone;
 
 use App\Repositories\Timezone\TimezoneInterface;
-use Illuminate\Http\Request;
 use App\Models\Timezone;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use DB;
 
 class TimezoneRepository implements TimezoneInterface
 {
@@ -30,11 +26,10 @@ class TimezoneRepository implements TimezoneInterface
     /**
      * Display timezone
      *
-     * @param \Illuminate\Http\Request $request
      * @param int $timezone_id
      * @return App\Models\Timezone
      */
-    public function timezoneList(Request $request, int $timezone_id = null) :Timezone
+    public function timezoneList(int $timezone_id = null) : ?Timezone
     {
         return $this->timezone->where("timezone_id", $timezone_id)->first();
     }

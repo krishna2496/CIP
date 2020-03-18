@@ -9,12 +9,15 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
+//!  Footerpage controller
+/*!
+This controller is responsible for handling footerpage store, update, listing, show and delete operations.
+ */
 class FooterPageController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -89,7 +92,7 @@ class FooterPageController extends Controller
             [
                 "page_details" => "required",
                 "page_details.slug" =>
-                    "required|max:255|alpha_dash|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
+                "required|max:255|alpha_dash|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
                 "page_details.translations" => "required",
                 "page_details.translations.*.lang" => "required|max:2",
                 "page_details.translations.*.title" => "required",
