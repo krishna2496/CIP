@@ -223,7 +223,7 @@ class SamlController extends Controller
             $userDetail->user_id,
             $tenantName,
             true,
-            10
+            60
         );
 
         $auth->redirectTo(
