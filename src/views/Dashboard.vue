@@ -38,7 +38,7 @@
                                         <img :src="$store.state.imagePath+'/assets/images/certified-ic.svg'" alt />
                                     </i>
                                     <p>
-                                        <span>{{languageData.label.top}}
+                                        <span>
                                             {{stats.volunteeringRank}}%</span>{{languageData.label.volunteering_rank}}
                                     </p>
                                 </div>

@@ -5,6 +5,7 @@ import {
   databaseConnection,
   getUserDetail,
   loadLocaleMessages,
+  policy,
   tenantSetting,
 } from '../../services/service';
 import constants from '../../constant';
@@ -39,6 +40,17 @@ export default {
           let userDetail = await getUserDetail();
           await loadLocaleMessages(store.state.defaultLanguage);
           store.commit('loginUser', userDetail.data);
+          await policy().then(response => {
+            if (response.error == false) {
+              if(response.data.length > 0) {
+                store.commit('policyPage',response.data)
+              } else {
+                store.commit('policyPage',null)
+              }
+            } else {
+              store.commit('policyPage',null)
+            }
+          });
           redirect = 'home';
         }
 

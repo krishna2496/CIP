@@ -1027,7 +1027,7 @@
                 if (response.data[0].end_date != '' && response.data[0].end_date != null) {
                   let missionEndDate = moment(response.data[0].end_date).format(
                     "YYYY-MM-DD HH::mm:ss");
-                  if (currentDate > missionEndDate) {
+                  if (currentDate > missionEndDate && response.data[0].set_view_detail == 1) {
                     this.hideApply = true
                   }
                 }
@@ -1035,7 +1035,7 @@
                   .application_deadline != null) {
                   let missionDeadline = moment(response.data[0].application_deadline).format(
                     "YYYY-MM-DD HH::mm:ss");
-                  if (currentDate > missionDeadline) {
+                  if (currentDate > missionDeadline && response.data[0].set_view_detail == 1) {
                     this.hideApply = true
                   }
                 }

@@ -114,14 +114,10 @@
                         <b-row>
                             <b-col sm="12">
                                 <b-form-group>
-                                    <label for>{{languageData.label.notes}}*</label>
+                                    <label for>{{languageData.label.notes}}</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
-                                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
                                                      :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
-                                    <div v-if="submitted && !$v.timeEntryDefaultData.notes.required"
-                                         class="invalid-feedback">
-                                        {{ languageData.errors.notes }}</div>
                                 </b-form-group>
 
                             </b-col>
@@ -275,9 +271,6 @@
             between: between(0, 59),
             requiredMinuteValidation},
           workDay: {
-            required
-          },
-          notes: {
             required
           },
           dateVolunteered: {
