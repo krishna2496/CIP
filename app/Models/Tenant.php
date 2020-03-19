@@ -7,10 +7,11 @@ use App\Models\TenantLanguage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Tenant extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -39,7 +40,7 @@ class Tenant extends Model
      * @var array
      */
     protected $dates = ['created_at','updated_at','deleted_at'];
-
+    
     /**
      * The attributes that should be visible in arrays.
      *
@@ -48,7 +49,13 @@ class Tenant extends Model
     protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status',
     'settings', 'tenantLanguages', 'tenantLanguages.language','background_process_status'];
 
-     
+    /**
+     * Iatstuti\Database\Support\CascadeSoftDeletes
+     *
+     * @var array
+     */
+    protected $cascadeDeletes = ['settings','tenantLanguages','apiUsers'];
+    
     /**
      * Variable which contains softDelete true.
      *
