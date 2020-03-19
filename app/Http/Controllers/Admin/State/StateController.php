@@ -89,8 +89,8 @@ class StateController extends Controller
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $stateList);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_COUNTRY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_COUNTRY_NOT_FOUND')
+                config('constants.error_codes.ERROR_STATE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STATE_NOT_FOUND')
             );
         }
     }
@@ -111,7 +111,7 @@ class StateController extends Controller
                 "states" => 'required',
                 "states.*.translations" => 'required|array',
                 "states.*.translations.*.lang" => 'required|min:2|max:2',
-                "states.*.translations.*.name" => 'required'
+                "states.*.translations.*.name" => 'required|max:255'
             ]
         );
         
@@ -175,7 +175,7 @@ class StateController extends Controller
                     "country_id" => 'sometimes|required|exists:country,country_id,deleted_at,NULL',
                     "translations" => 'sometimes|required|array',
                     "translations.*.lang" => 'required|min:2|max:2',
-                    "translations.*.name" => 'required'
+                    "translations.*.name" => 'required|max:255'
                 ]
             );
             
@@ -228,7 +228,7 @@ class StateController extends Controller
             $stateList = $this->stateRepository->getStateDetails($cityId);
            
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_STATE_LISTING');
+            $apiMessage = trans('messages.success.MESSAGE_STATE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $stateList->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

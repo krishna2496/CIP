@@ -193,7 +193,8 @@ return [
         'MESSAGE_STATE_CREATED' => 'State created successfully',
         'MESSAGE_STATE_UPDATED' => 'State updated successfully',
         'MESSAGE_STATE_DELETED' => 'State deleted successfully',
-        'MESSAGE_STATE_LISTING' => 'State listed successfully',
+        'MESSAGE_STATE_LISTING' => 'States listed successfully',
+        'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
     ],
 

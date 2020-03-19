@@ -194,6 +194,7 @@ return [
         'MESSAGE_STATE_UPDATED' => 'État mis à jour avec succès',
         'MESSAGE_STATE_DELETED' => 'État supprimé avec succès',
         'MESSAGE_STATE_LISTING' => 'État répertorié avec succès',
+        'MESSAGE_STATE_FOUND' => 'État trouvé avec succès',
         'MESSAGE_NO_STATE_FOUND' => 'État non trouvé'
     ],
 
