@@ -204,7 +204,7 @@
 						</b-card-body>
 
 						<b-card-footer>
-							<b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission.mission_id)">
+							<b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission)">
 								<b-button class="btn-bordersecondary icon-btn">
 									<span>{{ languageData.label.apply }}</span>
 									<i>
@@ -543,10 +543,10 @@
 				});
 			},
 			// Apply for mission
-			applyForMission(missionId) {
+			applyForMission(mission) {
 				let missionData = {};
-				missionData.mission_id = missionId;
-				missionData.availability_id = 1;
+				missionData.mission_id = mission.mission_id;
+				missionData.availability_id = mission.availability_id;
 				applyMission(missionData).then(response => {
 					if (response.error == true) {
 						this.makeToast("danger", response.message);
