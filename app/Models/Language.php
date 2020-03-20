@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection;
 
 class Language extends Model
@@ -36,4 +37,15 @@ class Language extends Model
      * @var array
      */
     protected $visible = ['language_id', 'name', 'code', 'status'];
+
+    /**
+     * Defined has one relation for the tenanat langauge
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tenantLanguage(): HasMany
+    {
+        return $this->hasMany(TenantLanguage::class, 'language_id', 'language_id');
+    }
+
 }
