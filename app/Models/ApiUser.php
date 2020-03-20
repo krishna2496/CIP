@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Tenant;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class ApiUser extends Model
 {
-    use SoftDeletes, CascadeSoftDeletes;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.

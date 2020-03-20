@@ -5,11 +5,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Language extends Model
 {
-    use SoftDeletes, CascadeSoftDeletes;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -38,11 +37,6 @@ class Language extends Model
      * @var array
      */
     protected $visible = ['language_id', 'name', 'code', 'status'];
-
-    /*
-    * Iatstuti\Database\Support\CascadeSoftDeletes;
-    */
-    protected $cascadeDeletes = ['tenantLanguage'];
 
     /**
      * Defined has one relation for the tenanat langauge
