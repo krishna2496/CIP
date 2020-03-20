@@ -39,7 +39,7 @@ class Tenant extends Model
      * @var array
      */
     protected $dates = ['created_at','updated_at','deleted_at'];
-
+    
     /**
      * The attributes that should be visible in arrays.
      *
@@ -48,7 +48,7 @@ class Tenant extends Model
     protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status',
     'settings', 'tenantLanguages', 'tenantLanguages.language','background_process_status'];
 
-     
+    
     /**
      * Variable which contains softDelete true.
      *
