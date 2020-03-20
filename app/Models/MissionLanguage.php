@@ -38,7 +38,9 @@ class MissionLanguage extends Model
         'description',
         'objective',
         'short_description',
-        'custom_information'
+        'custom_information',
+        'label_goal_achieved',
+        'label_goal_objective'
     ];
 
     /**
@@ -54,7 +56,9 @@ class MissionLanguage extends Model
         'objective',
         'short_description',
         'description',
-        'custom_information'
+        'custom_information',
+        'label_goal_achieved',
+        'label_goal_objective'
     ];
 
     /**
@@ -91,19 +95,6 @@ class MissionLanguage extends Model
     public function createOrUpdateLanguage(array $condition, array $data): MissionLanguage
     {
         return static::updateOrCreate($condition, $data);
-    }
-
-    /**
-     * Get specified resource.
-     *
-     * @param int $missionId
-     * @param int $languageId
-     * @return string
-     */
-    public function getMissionName(int $missionId, int $languageId): string
-    {
-        return static::select('title')
-        ->where(['mission_id' => $missionId, 'language_id' => $languageId])->value('title');
     }
 
     /**

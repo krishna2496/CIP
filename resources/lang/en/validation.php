@@ -166,6 +166,7 @@ return [
         'slider_detail.translations.*.lang' => 'language code',
         'skills.*.skill_id' => 'skill id',  
         'location.city' => 'city', 
+        'location.state' => 'state', 
         'location.country' => 'country',   
         'password_confirmation' => 'confirm password',         
         'translations.*.lang' => 'language code',         
@@ -173,6 +174,7 @@ return [
 		'page_details.translations.*.sections.*.title' => 'title',
 		'page_details.translations.*.sections.*.description' => 'description',
 		'location.city_id' => 'city',
+        'location.state_id' => 'state', 
 		'location.country_code' => 'country code',
 		'organisation.organisation_id' => 'organisation id',
 		'mission_detail.*.lang' => 'language code',
@@ -211,6 +213,11 @@ return [
         'mission_detail.*.section' => 'section',
         'mission_detail.*.section.*.title' => 'title',
         'mission_detail.*.section.*.description' => 'description',
+        'states.*.translations.*.lang' => 'language code',
+        'states.*.translations.*.name' => 'name',
+        'states.*.translations' => 'translations',
+        'mission_detail.*.label_goal_objective' => 'label goal objective',
+        'mission_detail.*.label_goal_achieved' => 'label goal achieved',
 		],
 
 ];

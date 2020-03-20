@@ -18,6 +18,7 @@ use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  Mission controller
 /*!
@@ -52,6 +53,11 @@ class MissionController extends Controller
     private $missionMediaRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -59,6 +65,7 @@ class MissionController extends Controller
      * @param Illuminate\Http\Request $request
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -66,13 +73,15 @@ class MissionController extends Controller
         ResponseHelper $responseHelper,
         Request $request,
         LanguageHelper $languageHelper,
-        MissionMediaRepository $missionMediaRepository
+        MissionMediaRepository $missionMediaRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
         $this->languageHelper = $languageHelper;
         $this->missionMediaRepository = $missionMediaRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -148,6 +157,8 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
+                "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
         
@@ -161,8 +172,28 @@ class MissionController extends Controller
             );
         }
 
+        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+        
+        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            $stateValidator = Validator::make(
+                $request->all(),
+                [
+                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
+                ]
+            );
+            if ($stateValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    $stateValidator->errors()->first()
+                );
+            }
+        }
+
         $mission = $this->missionRepository->store($request);
-                    
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
@@ -190,7 +221,6 @@ class MissionController extends Controller
             null,
             $mission->mission_id
         ));
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -268,6 +298,8 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
+                "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
         
@@ -280,6 +312,29 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
+        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+        
+        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+
+        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            $stateValidator = Validator::make(
+                $request->all(),
+                [
+                    "location.state_id" =>
+                    "sometimes|required_with:location|integer|exists:state,state_id,deleted_at,NULL"
+                ]
+            );
+            if ($stateValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    $stateValidator->errors()->first()
+                );
+            }
+        }
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {

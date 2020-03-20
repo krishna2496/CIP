@@ -13,6 +13,7 @@ use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
+use App\Repositories\UserCustomField\UserCustomFieldRepository;
 
 class UserRepository implements UserInterface
 {
@@ -40,6 +41,11 @@ class UserRepository implements UserInterface
      * @var App\Helpers\Helpers
      */
     private $helpers;
+	
+	/**
+     * @var App\Repositories\UserCustomField\UserCustomFieldRepository
+     */
+    private $userCustomFieldRepository;
 
     /**
      * Create a new User repository instance.
@@ -56,13 +62,15 @@ class UserRepository implements UserInterface
         UserSkill $userSkill,
         UserCustomFieldValue $userCustomFieldValue,
         Availability $availability,
-        Helpers $helpers
+        Helpers $helpers,
+		UserCustomFieldRepository $userCustomFieldRepository
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
         $this->userCustomFieldValue = $userCustomFieldValue;
         $this->availability = $availability;
         $this->helpers = $helpers;
+		$this->userCustomFieldRepository = $userCustomFieldRepository;
     }
     
     /**
@@ -189,17 +197,6 @@ class UserRepository implements UserInterface
     {
         $this->user->findOrFail($userId);
         return $this->userSkill->with('skill')->where('user_id', $userId)->get();
-    }
-
-    /**
-     * Get username
-     *
-     * @param int $userId
-     * @return string
-     */
-    public function getUserName(int $userId): string
-    {
-        return $this->user->getUserName($userId);
     }
 
     /**
@@ -366,9 +363,10 @@ class UserRepository implements UserInterface
      * Check profile complete status
      *
      * @param int $userId
+     * @param Request $request
      * @return User
      */
-    public function checkProfileCompleteStatus(int $userId): User
+    public function checkProfileCompleteStatus(int $userId, Request $request): User
     {
         $profileStatus = true;
         $requiredFieldsArray = config('constants.profile_required_fields');
@@ -379,7 +377,13 @@ class UserRepository implements UserInterface
                 $profileStatus = false;
             }
         }
-
+		
+		$customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
+		
+		if (in_array(1, array_column($customFields->toArray(), 'is_mandatory'))) {
+			$profileStatus = false;
+		}
+		
         $profileComplete = '0';
         if ($profileStatus) {
             $profileComplete = '1';
@@ -387,14 +391,5 @@ class UserRepository implements UserInterface
 
         $userData->update(["is_profile_complete" => $profileComplete]);
         return $userData;
-    }
-    
-    public function checkEmailNotificationSettings(int $userId): bool
-    {
-        $user = $this->user->whereUserId($userId)->where('receive_email_notification', 1)->first();
-        if ($user) {
-            return true;
-        }
-        return false;
     }
 }

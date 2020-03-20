@@ -192,10 +192,13 @@ class TimesheetRepository implements TimesheetInterface
                     $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                     $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
                     $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
                     // Set mission title
                     $missionTitle = $missionLanguage->title ?? '';
+                    $goalObjective = $missionLanguage->objective ?? '';
+                    $labelGoalObjective = $missionLanguage->label_goal_objective ?? '';
                     $value->setAttribute('title', $missionTitle);
+                    $value->setAttribute('objective', $goalObjective);
+                    $value->setAttribute('label_goal_objective', $labelGoalObjective);
                     unset($value->missionLanguage);
                 }
             }
@@ -450,7 +453,14 @@ class TimesheetRepository implements TimesheetInterface
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         })
         ->with(['missionLanguage' => function ($query) {
-            $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
+            $query->select(
+                'mission_language_id',
+                'mission_id',
+                'objective',
+                'title',
+                'language_id',
+                'label_goal_objective'
+            );
         }]);
 
         if ($missionType === config('constants.mission_type.TIME')) {

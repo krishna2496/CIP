@@ -73,14 +73,10 @@ class LanguageController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 		
-        try {
-            $filePath = $this->s3helper->getLanguageFile($tenantName, $language);
-        } catch (BucketNotFoundException $e) {
-            throw $e;
-        }
+        $filePath = $this->s3helper->getLanguageFile($tenantName, $language);
 
         $response['locale'] = $language;
-        $response['data'] = json_decode(file_get_contents($filePath), true);
+        $response['data'] = json_decode($this->helpers->removeUnwantedCharacters($filePath), true);
         return $response;
     }
 }

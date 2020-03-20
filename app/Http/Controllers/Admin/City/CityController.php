@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
 use Illuminate\Validation\Rule;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  City controller
 /*!
@@ -38,24 +39,31 @@ class CityController extends Controller
     private $languageHelper;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param \Illuminate\Http\Request $request
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
         CityRepository $cityRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         Request $request
     ) {
         $this->cityRepository = $cityRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -90,6 +98,7 @@ class CityController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+       
         // Server side validations
         $validator = Validator::make(
             $request->all(),
@@ -112,13 +121,35 @@ class CityController extends Controller
             );
         }
 
-        $countryId = $request->country_id;
+        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+        ->getAllTenantActivatedSetting($request);
+        
+        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+
+        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+            
+            $stateValidator = Validator::make(
+                $request->all(),
+                [
+                    "state_id" =>  'required|exists:state,state_id,deleted_at,NULL',
+                ]
+            );
+            
+            if ($stateValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    $stateValidator->errors()->first()
+                );
+            }
+        }
 
         // Add cities one by one
         $createdCity = [];
         foreach ($request->cities as $key => $city) {
             // Add country id into city table
-            $cityDetails = $this->cityRepository->store($countryId);
+            $cityDetails = $this->cityRepository->store($request);
 
             // Add all translations add into city_translation table
             $createdCity[$key]['city_id'] = $city['city_id'] = $cityDetails->city_id;
@@ -190,6 +221,29 @@ class CityController extends Controller
                     config('constants.error_codes.ERROR_CITY_INVALID_DATA'),
                     $validator->errors()->first()
                 );
+            }
+            $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+            
+            $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
+    
+            if (in_array($stateEnabled, $getActivatedTenantSettings)) {
+                
+                $stateValidator = Validator::make(
+                    $request->all(),
+                    [
+                        "state_id" =>  'sometimes|required|exists:state,state_id,deleted_at,NULL',
+                    ]
+                );
+                
+                if ($stateValidator->fails()) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                        $stateValidator->errors()->first()
+                    );
+                }
             }
             // Get all countries
             $languages = $this->languageHelper->getLanguages($request);

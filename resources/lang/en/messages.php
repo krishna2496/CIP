@@ -189,7 +189,13 @@ return [
         'MESSAGE_CITY_DELETED' => 'City deleted successfully',
         'MESSAGE_CITY_UPDATED' => 'City updated successfully',
         'MESSAGE_TENANT_LANGUAGE_FILE_FOUND' => 'Tenant language file found sucessfully',
-        'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',     
+        'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
+        'MESSAGE_STATE_CREATED' => 'State created successfully',
+        'MESSAGE_STATE_UPDATED' => 'State updated successfully',
+        'MESSAGE_STATE_DELETED' => 'State deleted successfully',
+        'MESSAGE_STATE_LISTING' => 'States listed successfully',
+        'MESSAGE_STATE_FOUND' => 'State found successfully',
+        'MESSAGE_NO_STATE_FOUND' => 'State not found',
     ],
 
         
@@ -338,6 +344,8 @@ return [
 
         'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
         
-        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user'
+        'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
+        'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
+        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
        ]
 ];

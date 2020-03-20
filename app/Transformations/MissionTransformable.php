@@ -23,7 +23,6 @@ trait MissionTransformable
         int $defaultTenantLanguage,
         string $timezone
     ): Mission {
-       
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
         }
@@ -112,6 +111,9 @@ trait MissionTransformable
             $mission['description'] = $missionLanguage->description ?? '';
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
+       
+        $mission['label_goal_achieved'] =  $missionLanguage->label_goal_achieved ?? '';
+        $mission['label_goal_objective'] =  $missionLanguage->label_goal_objective ?? '';
         $mission['custom_information'] = $missionLanguage->custom_information ?? null;
         unset($mission['missionLanguage']);
         // Check for apply in mission validity
@@ -129,19 +131,20 @@ trait MissionTransformable
         }
 
         if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
-         ($mission['application_deadline'] <= $today)) {
+         ($mission['application_deadline'] < $today)) {
             $mission['set_view_detail'] = 1;
         }
         
-        if ((isset($mission['application_start_date']) && ($mission['application_start_date'] !== null)) &&
-         (isset($mission['application_end_date']) && ($mission['application_end_date'] !== null)) &&
-         ($mission['application_end_date'] <= $today)) {
+        if ((!isset($mission['application_deadline'])) && ((isset($mission['application_start_date']) &&
+        ($mission['application_start_date'] !== null))
+        && (isset($mission['application_end_date']) && ($mission['application_end_date'] !== null)) &&
+         ($mission['application_end_date'] < $today || $mission['application_start_date'] > $today))) {
             $mission['set_view_detail'] = 1;
         }
 
         if ((isset($mission['application_start_time']) && ($mission['application_start_time'] !== null)) &&
          (isset($mission['application_end_time']) && ($mission['application_end_time'] !== null)) &&
-         ($mission['application_end_time'] <= $todayTime)) {
+         ($mission['application_end_time'] < $todayTime || $mission['application_start_time'] > $todayTime)) {
             $mission['set_view_detail'] = 1;
         }
         
@@ -164,6 +167,7 @@ trait MissionTransformable
                     }
                 }
             }
+            $returnData = array_map('array_values', $returnData);
             if (!empty($returnData)) {
                 $mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
             }
@@ -196,6 +200,7 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
+      
         return $mission;
     }
 }

@@ -82,8 +82,8 @@ class AppCityTest extends TestCase
         $countryId = App\Models\Country::get()->random()->country_id;
 
         $token = str_random(50);
-        $this->get('/app/city/', ['token' => $token])
-        ->seeStatusCode(500)
+        $req =$this->get('/app/city/'.$countryId, ['token' => $token])
+        ->seeStatusCode(401)
         ->seeJsonStructure([
             "errors" => [
                 [

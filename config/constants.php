@@ -52,6 +52,7 @@ return [
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
+	'PER_PAGE_ALL' => '100000',
     /*
      * User custom field types
      */
@@ -330,7 +331,8 @@ return [
         'INVITE_COLLEAGUE' => 'invite_colleague',
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
-        'MISSION_COMMENTS' => 'mission_comments'
+        'MISSION_COMMENTS' => 'mission_comments',
+        'STATE_ENABLED' => 'state_selection'
     ],
     
     'TOP_THEME' => "top_themes",
@@ -344,6 +346,7 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random-missions',
+    'STATE' => 'state',
 
     /* sort by */
     "NEWEST" => "newest",
@@ -484,7 +487,10 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT' => '800033',
         'ERROR_TENANT_LANGUAGE_INVALID' => '800034',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => '800035',
-        'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036'
+        'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036',
+        'ERROR_STATE_INVALID_DATA' => '800037',
+        'ERROR_STATE_NOT_FOUND' => '800038',
+        'ERROR_STATE_ENABLE_TO_DELETE' => '800039'
     ],
 
     /**
@@ -579,7 +585,8 @@ return [
         'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
-        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE'
+        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
+        'STATE' => 'STATE'
     ],
 
     'activity_log_actions' => [
