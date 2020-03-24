@@ -400,15 +400,20 @@ class UserRepository implements UserInterface
                 ) as total_timesheet_action,
                 COUNT(*) as total_timesheet
             ')
+            ->leftjoin('timesheet', 'timesheet.mission_id', '=', 'mission.mission_id')
             ->where('publication_status', $publicationStatus['APPROVED'])
+            ->where('timesheet.user_id', $userId)
+            ->whereIn('timesheet.status', [
+                config("constants.timesheet_status.APPROVED"),
+                config("constants.timesheet_status.AUTOMATICALLY_APPROVED"),
+            ])
             ->whereHas('missionApplication', function ($query) use ($userId, $applicationStatus) {
                 $query->where('user_id', $userId);
                 $query->where([
                     'user_id' => $userId,
                     'approval_status' => $applicationStatus["AUTOMATICALLY_APPROVED"]
                 ]);
-            })
-            ->leftjoin('timesheet', 'timesheet.mission_id', '=', 'mission.mission_id');
+            });
 
         if ($request->has('day_volunteered') && $request->get('day_volunteered')) {
             $timesheet->where('timesheet.day_volunteered', strtoupper($request->get('day_volunteered')));
@@ -455,7 +460,15 @@ class UserRepository implements UserInterface
                 ) as total_timesheet_action,
                 COUNT(*) as total_timesheet
             ')
+            ->leftJoin('mission_language', 'mission_language.mission_id', '=', 'mission.mission_id')
+            ->leftJoin('timesheet', 'timesheet.mission_id', '=', 'mission.mission_id')
             ->where('publication_status', $publicationStatus['APPROVED'])
+            ->where('mission_language.language_id', $languageId)
+            ->where('timesheet.user_id', $userId)
+            ->whereIn('timesheet.status', [
+                config("constants.timesheet_status.APPROVED"),
+                config("constants.timesheet_status.AUTOMATICALLY_APPROVED"),
+            ])
             ->whereHas('missionApplication', function ($query) use ($userId, $applicationStatus) {
                 $query->where('user_id', $userId);
                 $query->where([
@@ -463,10 +476,7 @@ class UserRepository implements UserInterface
                     'approval_status' => $applicationStatus["AUTOMATICALLY_APPROVED"]
                 ]);
             })
-            ->leftJoin('mission_language', 'mission_language.mission_id', '=', 'mission.mission_id')
-            ->leftJoin('timesheet', 'timesheet.mission_id', '=', 'mission.mission_id')
-            ->groupBy('mission.mission_id')
-            ->where('mission_language.language_id', $languageId);
+            ->groupBy('mission.mission_id');
 
         if ($request->has('day_volunteered') && $request->get('day_volunteered')) {
             $timesheet->where('timesheet.day_volunteered', strtoupper($request->get('day_volunteered')));
