@@ -28,7 +28,7 @@ class StateLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['state_language_id', 'state_id', 'language_id', 'language_code', 'name'];
+    protected $visible = ['state_language_id','language_id', 'language_code', 'name'];
 
     /**
      * The attributes that are mass assignable.
