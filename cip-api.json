@@ -2023,6 +2023,75 @@
         }
       }
     },
+    "/users/{userId}/timesheet": {
+        "get": {
+            "operationId": "GET_team4-cip-api-users-timesheets",
+            "summary": "Admin - Get tenant user timesheets",
+            "description": "List of all the tenant user timesheet",
+            "tags":[
+                "User"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "type": "string",
+                    "default": ""
+                }
+            ],
+            "responses": {
+                "200":{  
+                    "description":"User timesheet listed successfully"
+                },
+                "400":{  
+                    "description":"Bad Request"
+                },
+                "404" : {
+                	"description": "User timesheets not found"
+                },
+                "401":{  
+                    "description":"Unauthorized - Invalid API key or secret key"
+                }
+            }
+        }
+    },
+    "/users/{userId}/timesheet-summary": {
+        "get": {
+            "operationId": "GET_team4-cip-api-users-timesheet-summary",
+            "summary": "Admin - Get tenant user timesheet summary",
+            "description": "List of the tenant user timesheet summary",
+            "tags":[
+                "User"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "type": "string",
+                    "default": ""
+                }
+            ],
+            "responses": {
+                "200":{  
+                    "description":"User timesheet summarized successfully"
+                },
+                "400":{  
+                    "description":"Bad Request"
+                },
+                "401":{  
+                    "description":"Unauthorized - Invalid API key or secret key"
+                }
+            }
+        }
+    },
 	"/metadata/users/custom_fields": {
 	  "get": {
         "operationId": "GET_team4-cip-api-metadata-users-custom_fields",
