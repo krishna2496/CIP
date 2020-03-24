@@ -689,6 +689,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
             $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
             $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
+            $router->get('/{countryId}/states', ['uses' => 'Admin\State\StateController@fetchState',
+            'middleware' => ['PaginationMiddleware']]);
         }
     );
     
