@@ -350,7 +350,7 @@ class UserController extends Controller
         $user = $this->userRepository->update($request->toArray(), $id);
         
         // Check profile complete status
-        $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id);
+        $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
 
         // Update user custom fields
         if (!empty($request->custom_fields) && isset($request->custom_fields)) {
