@@ -538,7 +538,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/{userId}/skills', ['uses' => 'Admin\User\UserController@userSkills']);
+            $router->get('/{userId}/skills', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\User\UserController@userSkills']);
             $router->post('/{userId}/skills', ['uses' => 'Admin\User\UserController@linkSkill']);
             $router->delete('/{userId}/skills', ['uses' => 'Admin\User\UserController@unlinkSkill']);
         }
@@ -560,7 +560,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'tenant-settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
             $router->post('/', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@store']);
         }
@@ -642,6 +642,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get(
                 '/{missionId}/comments',
                 [
+                    'middleware' => ['PaginationMiddleware'],
                     'as' => 'missions.comments',
                     'uses' => 'Admin\Mission\MissionCommentController@index',
                 ]
@@ -649,6 +650,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get(
                 '/{missionId}/comments/{commentId}',
                 [
+                    'middleware' => ['PaginationMiddleware'],
                     'as' => 'missions.comments.detail',
                     'uses' => 'Admin\Mission\MissionCommentController@show',
                 ]
