@@ -124,7 +124,21 @@ class StateController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+       
+        if (!empty($request->states)) {
+            foreach ($request->states[0]['translations'] as $key => $value) {
+                $languageCode = $value['lang'];
+                // Check for valid language code
+                if (!$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                        trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+                    );
+                }
+            }
+        }
         $countryId = $request->country_id;
 
         // Add state one by one
@@ -178,6 +192,20 @@ class StateController extends Controller
                     "translations.*.name" => 'required|max:255'
                 ]
             );
+            if (!empty($request->translations)) {
+                foreach ($request->translations as $key => $value) {
+                    $languageCode = $value['lang'];
+                    // Check for valid language code
+                    if (!$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                        return $this->responseHelper->error(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                            config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                            trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+                        );
+                    }
+                }
+            }
             
             // If request parameter have any error
             if ($validator->fails()) {
