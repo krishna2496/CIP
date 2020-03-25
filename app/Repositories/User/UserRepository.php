@@ -379,8 +379,8 @@ class UserRepository implements UserInterface
         }
 		
 		$customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
-		
-		if (in_array(1, array_column($customFields->toArray(), 'is_mandatory'))) {
+        
+        if (in_array(1, array_column($customFields->toArray(), 'is_mandatory')) && $request->isMethod('post')) {
 			$profileStatus = false;
 		}
 		
