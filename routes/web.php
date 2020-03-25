@@ -538,7 +538,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/{userId}/skills', ['uses' => 'Admin\User\UserController@userSkills']);
+            $router->get('/{userId}/skills', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\User\UserController@userSkills']);
             $router->post('/{userId}/skills', ['uses' => 'Admin\User\UserController@linkSkill']);
             $router->delete('/{userId}/skills', ['uses' => 'Admin\User\UserController@unlinkSkill']);
         }
@@ -560,7 +560,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'tenant-settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
             $router->post('/', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@store']);
         }
@@ -642,6 +642,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get(
                 '/{missionId}/comments',
                 [
+                    'middleware' => ['PaginationMiddleware'],
                     'as' => 'missions.comments',
                     'uses' => 'Admin\Mission\MissionCommentController@index',
                 ]
@@ -649,6 +650,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get(
                 '/{missionId}/comments/{commentId}',
                 [
+                    'middleware' => ['PaginationMiddleware'],
                     'as' => 'missions.comments.detail',
                     'uses' => 'Admin\Mission\MissionCommentController@show',
                 ]
@@ -685,7 +687,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'entities/countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/', ['uses' => 'Admin\Country\CountryController@index']);
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\Country\CountryController@index']);
             $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
             $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
             $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
@@ -698,8 +700,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/', ['uses' => 'Admin\City\CityController@index']);
-            $router->get('/{countryId}', ['uses' => 'Admin\City\CityController@fetchCity',
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\City\CityController@index']);
+            $router->get('/{countryId}', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\City\CityController@fetchCity',
             'middleware' => ['PaginationMiddleware']]);
             $router->post('/', ['uses' => 'Admin\City\CityController@store']);
             $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);
@@ -819,8 +821,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'entities/states', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/', ['uses' => 'Admin\State\StateController@index']);
-            $router->get('/{stateId}', ['uses' => 'Admin\State\StateController@show',
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\State\StateController@index']);
+            $router->get('/{stateId}', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\State\StateController@show',
             'middleware' => ['PaginationMiddleware']]);
             $router->post('/', ['uses' => 'Admin\State\StateController@store']);
             $router->patch('/{stateId}', ['uses' => 'Admin\State\StateController@update']);
