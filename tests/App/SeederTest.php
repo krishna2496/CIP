@@ -42,11 +42,33 @@ class SeederTest extends TestCase
         /* Add country end */
         
         \DB::setDefaultConnection('mysql');
+        /* Add state details start */     
+        $stateName = str_random(5);   
+        $params = [
+            "country_id" => $countryId,
+            "states" => [ 
+                [ 
+                    "translations" => [ 
+                        [ 
+                            "lang" => "en",
+                            "name" => $stateName
+                        ]
+                    ]
+                ]         
+            ]
+        ];
+
+        $response = $this->post("entities/states", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
+
+        \DB::setDefaultConnection('mysql');
 
         /* Add city details start */     
         $cityName = str_random(5);   
         $params = [
             "country_id" => $countryId,
+            "state_id" => $stateId,
             "cities" => [ 
                 [ 
                     "translations" => [ 
@@ -61,9 +83,8 @@ class SeederTest extends TestCase
 
         $response = $this->post("entities/cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-
         $cityId = json_decode($response->response->getContent())->data->city_ids[0]->city_id;
-        
+
         \DB::setDefaultConnection('mysql');
         /* Add city details end */
     }

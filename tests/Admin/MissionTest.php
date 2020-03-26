@@ -31,6 +31,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -46,7 +47,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -93,7 +95,6 @@ class MissionTest extends TestCase
                     ],
                     "media_images" => [[
                             "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "internal_note" => "internal note for image",
                             "default" => "1",
                             "sort_order" => "1"
                         ],
@@ -111,7 +112,6 @@ class MissionTest extends TestCase
                     "media_videos"=> [[
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
-                        "internal_note" => "internal note for video",
                         "sort_order" => "1"
                         ]
                     ],
@@ -198,6 +198,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $description = str_random(20);
@@ -209,7 +210,8 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->ISO,
+                'state_id' => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -312,6 +314,7 @@ class MissionTest extends TestCase
             "data",
             "message"
         ]);
+
     }
 
     /**
@@ -326,6 +329,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -341,7 +345,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -389,7 +394,6 @@ class MissionTest extends TestCase
                     "media_images" => [[
                             "media_id" => "",
                             "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "internal_note" => "internal note for image",
                             "default" => "1",
                             "sort_order" => "1"
                         ],
@@ -410,7 +414,6 @@ class MissionTest extends TestCase
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
-                        "internal_note" => "internal note for video",
                         "sort_order" => "1"
                         ]
                     ],
@@ -540,6 +543,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $params = [
@@ -550,7 +554,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -760,6 +765,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $params = [
@@ -770,7 +776,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -858,6 +865,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -873,7 +881,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -982,6 +991,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -997,7 +1007,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -1098,6 +1109,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -1113,7 +1125,8 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->ISO,
+                'state_id' => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1195,7 +1208,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -1299,6 +1313,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $params = [
@@ -1318,7 +1333,8 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->ISO,
+                'state_id' => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1337,31 +1353,18 @@ class MissionTest extends TestCase
                     ]
                 ]
             ],
-            "media_images" => [
-                [
+            "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1",
                     "sort_order" => "1"
-                ],
-                [
+                ], [
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "0",
-                    "sort_order" => "4"
-                ],
-                [
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "0",
-                    "sort_order" => "3"
+                    "sort_order" => "1"
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [
-                [
-                    "media_path" => "https://www.youtube.com/watch?v=mWOpppkOIvY",
-                    "media_name" => "video.mp4",
-                    "sort_order" => "2"
-                ]
-            ],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1401,21 +1404,22 @@ class MissionTest extends TestCase
         ]);
 
         $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
-
-        // Should update next image media as default if default mission media is deleted
+        // Return error if you are trying to delete default mission media
         DB::setDefaultConnection('mysql');
         $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(204);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        App\Models\Mission::where("mission_id", $missionId)->delete();
 
-        $nextImageMedia = App\Models\MissionMedia::where([
-                ['mission_id', $missionId],
-                ['sort_order', 3]
-            ])
-            ->first();
-        $this->assertSame($nextImageMedia['default'], '1');
-
-        App\Models\Mission::where('mission_id', $missionId)->delete();
-        App\Models\MissionMedia::where('mission_id', $missionId)->delete();
     }
 
     /**
@@ -1430,6 +1434,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $params = [
@@ -1449,7 +1454,8 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->ISO,
+                'state_id' => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1532,6 +1538,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -1547,7 +1554,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -1622,6 +1630,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -1637,7 +1646,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -1846,6 +1856,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        $stateId = $countryDetail->city[0]->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -1861,7 +1872,8 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
+                        'country_code' => $countryDetail->ISO,
+                        'state_id' => $stateId
                     ],
                     "mission_detail" => [[
                             "lang" => "en",

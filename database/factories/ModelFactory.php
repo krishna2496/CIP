@@ -253,6 +253,12 @@ $factory->define(App\Models\Country::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Models\State::class, function (Faker\Generator $faker) {
+    return [
+        "country_id"=>1
+    ];
+});
+
 
 $factory->define(App\Models\City::class, function (Faker\Generator $faker) {
     return [

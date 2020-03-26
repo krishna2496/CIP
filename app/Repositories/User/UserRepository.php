@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use App\Models\Mission;
 use App\Helpers\LanguageHelper;
+use App\Repositories\UserCustomField\UserCustomFieldRepository;
 
 class UserRepository implements UserInterface
 {
@@ -42,6 +43,11 @@ class UserRepository implements UserInterface
      * @var App\Helpers\Helpers
      */
     private $helpers;
+
+	/**
+     * @var App\Repositories\UserCustomField\UserCustomFieldRepository
+     */
+    private $userCustomFieldRepository;
 
     /**
      * @var App\Models\Mission
@@ -72,7 +78,8 @@ class UserRepository implements UserInterface
         Availability $availability,
         LanguageHelper $languageHelper,
         Mission $mission,
-        Helpers $helpers
+        Helpers $helpers,
+		UserCustomFieldRepository $userCustomFieldRepository
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
@@ -81,6 +88,7 @@ class UserRepository implements UserInterface
         $this->languageHelper = $languageHelper;
         $this->mission = $mission;
         $this->helpers = $helpers;
+		$this->userCustomFieldRepository = $userCustomFieldRepository;
     }
 
     /**
@@ -494,9 +502,10 @@ class UserRepository implements UserInterface
       * Check profile complete status
      *
      * @param int $userId
+     * @param Request $request
      * @return User
      */
-    public function checkProfileCompleteStatus(int $userId): User
+    public function checkProfileCompleteStatus(int $userId, Request $request): User
     {
         $profileStatus = true;
         $requiredFieldsArray = config('constants.profile_required_fields');
@@ -507,6 +516,12 @@ class UserRepository implements UserInterface
                 $profileStatus = false;
             }
         }
+
+		$customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
+
+        if (in_array(1, array_column($customFields->toArray(), 'is_mandatory')) && $request->isMethod('post')) {
+			$profileStatus = false;
+		}
 
         $profileComplete = '0';
         if ($profileStatus) {
