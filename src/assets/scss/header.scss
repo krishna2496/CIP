@@ -489,7 +489,7 @@ header {
             .dropdown-menu {
                 top: 90%;
                 border: 1px solid $primary-border-color;
-                width: 195px;
+                width: 240px;
                 padding: 5px 0;
                 margin-top: 0;
                 left: 25px;
@@ -1088,6 +1088,34 @@ header {
             display: flex;
         }
     }
+    &.four-filters {
+        .search-block {
+            @include md-min {
+                flex: 0 0 33.33%;
+                max-width: 33.33%;
+            }
+            @include lg-min {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        .filter-block {
+            .list-group {
+                .list-group-item {
+                    max-width: 25%;
+                    flex: 0 0 25%;
+                }
+            }
+            @include md-min {
+                flex: 0 0 66.66%;
+                max-width: 66.66%;
+            }
+            @include lg-min {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+    }
     &.three-filters {
         .search-block {
             @include md-min {
@@ -1242,8 +1270,8 @@ header {
         .list-group-item {
             display: inline-flex;
             align-items: center;
-            max-width: 25%;
-            flex: 0 0 25%;
+            max-width: 20%;
+            flex: 0 0 20%;
             height: 100%;
             padding: 0;
             border: none;

@@ -176,12 +176,12 @@
                             </ul>
                             <div class="timesheet-Request">
                             <VolunteeringRequest :headerField="timesheetRequestFields" requestType="time"
-                                                 :items="timesheetRequestItems" :headerLable="timeRequestLabel"
-                                                 :currentPage="hourRequestCurrentPage" :totalRow="hourRequestTotalRow"
-                                                 @updateCall="getTimeRequest" exportUrl="app/timesheet/time-requests/export"
-                                                 :perPage="hourRequestPerPage" :nextUrl="hourRequestNextUrl"
-                                                 :fileName="languageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
-                                                 :totalPages="timeMissionTotalPage" />
+                                :items="timesheetRequestItems" :headerLable="timeRequestLabel"
+                                :currentPage="hourRequestCurrentPage" :totalRow="hourRequestTotalRow"
+                                @updateCall="getTimeRequest" exportUrl="app/timesheet/time-requests/export"
+                                :perPage="hourRequestPerPage" :nextUrl="hourRequestNextUrl"
+                                :fileName="languageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                                :totalPages="timeMissionTotalPage" />
                             </div>
                             <VolunteeringRequest :headerField="goalRequestFields" requestType="goal"
                                                  :items="goalRequestItems" :headerLable="goalRequestLabel"
@@ -224,130 +224,132 @@
 </template>
 
 <script>
-  import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
-  import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-  import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
-  import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
-  import AddVolunteeringHours from "../components/AddVolunteeringHours";
-  import AddVolunteeringAction from "../components/AddVolunteeringAction";
-  import VolunteeringRequest from "../components/VolunteeringRequest";
-  import store from '../store';
+    import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+    import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
+    import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
+    import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
+    import AddVolunteeringHours from "../components/AddVolunteeringHours";
+    import AddVolunteeringAction from "../components/AddVolunteeringAction";
+    import VolunteeringRequest from "../components/VolunteeringRequest";
+    import store from '../store';
 
-  import {
-    volunteerTimesheetHours,
-    fetchTimeSheetDocuments,
-    submitVolunteerHourTimeSheet,
-    timeRequest,
-    goalRequest
-  } from '../services/service';
-  import moment from 'moment'
-  import {
-    setTimeout
-  } from 'timers';
+    import {
+        volunteerTimesheetHours,
+        fetchTimeSheetDocuments,
+        submitVolunteerHourTimeSheet,
+        timeRequest,
+        goalRequest
+    } from '../services/service';
+    import moment from 'moment'
+    import {
+        setTimeout
+    } from 'timers';
 
-  export default {
-    components: {
-      ThePrimaryHeader,
-      TheSecondaryFooter,
-      DashboardBreadcrumb,
-      VolunteeringTimesheetTableHeader,
-      AddVolunteeringAction,
-      AddVolunteeringHours,
-      VolunteeringRequest
-    },
-    name: "DashboardTimesheet",
-    data() {
-      return {
-        files: [],
-        tableLoaderActive: true,
-        goalTableLoaderActive: true,
-        languageData: [],
-        VolunteeringRequest: [],
-        timesheetRequestFields: [],
-        timesheetRequestItems: [],
-        hourRequestCurrentPage: 1,
-        goalRequestCurrentPage: 1,
-        hourRequestTotalRow: 0,
-        goalRequestTotalRow: 0,
-        goalRequestFields: [],
-        goalRequestItems: [],
-        timeMissionTotalPage: null,
-        goalMissionTotalPage: null,
-        defaultWorkday: "",
-        workDayList: [
-          ["WORKDAY", "workday"],
-          ["WEEKEND", "weekend"],
-          ["HOLIDAY", "holiday"],
-        ],
-        rows: 25,
-        perPage: 2,
-        currentPage: 1,
-        volunteeringHoursCurrentMonth: '',
-        volunteeringHoursCurrentYear: '',
-        volunteeringHoursWeeks: [],
-        volunteeringHoursWeekName: [],
-        volunteeringHoursMonthArray: [],
-        volunteeringHoursYearArray: [],
-        volunteeringGoalMonthArray: [],
-        volunteeringGoalYearArray: [],
-        volunteeringGoalCurrentMonth: '',
-        volunteeringGoalCurrentYear: '',
-        volunteeringGoalWeeks: [],
-        volunteeringGoalWeekName: [],
-        timeMissionData: [],
-        goalMissionData: [],
-        timeRequestLabel: "",
-        goalRequestLabel: "",
-        currentTimeData: {
-          missionId: '',
-          hours: '',
-          minutes: '',
-          dateVolunteered: '',
-          workDay: '',
-          notes: '',
-          day: '',
-          timeSheetId: '',
-          documents: [],
-          disabledPastDates: '',
-          disabledFutureDates: '',
-          missionName: '',
-          action: ''
+    export default {
+        components: {
+            ThePrimaryHeader,
+            TheSecondaryFooter,
+            DashboardBreadcrumb,
+            VolunteeringTimesheetTableHeader,
+            AddVolunteeringAction,
+            AddVolunteeringHours,
+            VolunteeringRequest
         },
-        timeEntryDefaultData: null,
-        isTimeEntryModelShown: false,
-        volunteerHourDisableDates: [],
-        defaultHours: '',
-        defaultMinutes: '',
-        futureDates: new Date(),
-        enableSubmitGoalTimeSheet: true,
-        enableSubmitTimeTimeSheet: true,
-        isShownComponent: false,
-        hourRequestPerPage: 5,
-        goalRequestPerPage: 5,
-        hourRequestNextUrl: null,
-        goalRequestNextUrl: null,
-        isAllVisible: false,
-        isCurrentDate: false,
-        todaysDate: moment().format("D"),
-        currentYear: moment().format("YYYY"),
-        currentMonth: moment().format("M"),
-        isComponentLoaded: false,
-        timeSheetHourCurrentDate: moment().week(),
-        timeSheetGoalCurrentDate: moment().week(),
-        timeSheetStartDate: '',
-        timeSheetEndDate: '',
-        userTimezone: '',
-        hideEllipsis: true,
-        timeTotalPages: 0,
-        timePage: 1,
-        timeTotalRow: 0,
-        timePerPage: 0,
-        goalTotalPages: 0,
-        goalPage: 1,
-        goalTotalRow: 0,
-        goalPerPage: 0,
-        goalsTableLoaderActive : true
-      };
+        name: "DashboardTimesheet",
+        data() {
+            return {
+                files: [],
+                tableLoaderActive: true,
+                goalTableLoaderActive: true,
+                languageData: [],
+                VolunteeringRequest: [],
+                timesheetRequestFields: [],
+                timesheetRequestItems: [],
+                hourRequestCurrentPage: 1,
+                goalRequestCurrentPage: 1,
+                hourRequestTotalRow: 0,
+                goalRequestTotalRow: 0,
+                goalRequestFields: [],
+                goalRequestItems: [],
+                timeMissionTotalPage: null,
+                goalMissionTotalPage: null,
+                defaultWorkday: "",
+                workDayList: [
+                    ["WORKDAY", "workday"],
+                    ["WEEKEND", "weekend"],
+                    ["HOLIDAY", "holiday"],
+                ],
+                rows: 25,
+                perPage: 2,
+                currentPage: 1,
+                volunteeringHoursCurrentMonth: '',
+                volunteeringHoursCurrentYear: '',
+                volunteeringHoursWeeks: [],
+                volunteeringHoursWeekName: [],
+                volunteeringHoursMonthArray: [],
+                volunteeringHoursYearArray: [],
+                volunteeringGoalMonthArray: [],
+                volunteeringGoalYearArray: [],
+                volunteeringGoalCurrentMonth: '',
+                volunteeringGoalCurrentYear: '',
+                volunteeringGoalWeeks: [],
+                volunteeringGoalWeekName: [],
+                timeMissionData: [],
+                goalMissionData: [],
+                timeRequestLabel: "",
+                goalRequestLabel: "",
+                currentTimeData: {
+                    missionId: '',
+                    hours: '',
+                    minutes: '',
+                    dateVolunteered: '',
+                    workDay: '',
+                    notes: '',
+                    day: '',
+                    timeSheetId: '',
+                    documents: [],
+                    disabledPastDates: '',
+                    disabledFutureDates: '',
+                    missionName: '',
+                    action: '',
+                    goal:'',
+                    goalLabel :""
+                },
+                timeEntryDefaultData: null,
+                isTimeEntryModelShown: false,
+                volunteerHourDisableDates: [],
+                defaultHours: '',
+                defaultMinutes: '',
+                futureDates: new Date(),
+                enableSubmitGoalTimeSheet: true,
+                enableSubmitTimeTimeSheet: true,
+                isShownComponent: false,
+                hourRequestPerPage: 5,
+                goalRequestPerPage: 5,
+                hourRequestNextUrl: null,
+                goalRequestNextUrl: null,
+                isAllVisible: false,
+                isCurrentDate: false,
+                todaysDate: moment().format("D"),
+                currentYear: moment().format("YYYY"),
+                currentMonth: moment().format("M"),
+                isComponentLoaded: false,
+                timeSheetHourCurrentDate: moment().week(),
+                timeSheetGoalCurrentDate: moment().week(),
+                timeSheetStartDate: '',
+                timeSheetEndDate: '',
+                userTimezone: '',
+                hideEllipsis: true,
+                timeTotalPages: 0,
+                timePage: 1,
+                timeTotalRow: 0,
+                timePerPage: 0,
+                goalTotalPages: 0,
+                goalPage: 1,
+                goalTotalRow: 0,
+                goalPerPage: 0,
+                goalsTableLoaderActive : true
+            };
     },
     updated() {
 

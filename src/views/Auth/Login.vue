@@ -48,7 +48,7 @@
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
             </div>
-            <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent"/>
+            <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent" :key="componentKey"/>
         </div>
     </div>
 </template>
@@ -69,23 +69,24 @@
       TheSlider,
     },
     data() {
-      return {
-        flag: false,
-        myValue: '',
-        defautLang: '',
-        langList: [],
-        login: {
-          email: '',
-          password: '',
-        },
-        submitted: false,
-        classVariant: 'danger',
-        message: null,
-        showDismissibleAlert: false,
-        isShowComponent : false,
-        languageData : [],
-        isPageShown : false
-      };
+        return {
+            flag: false,
+            myValue: '',
+            defautLang: '',
+            langList: [],
+            login: {
+                email: '',
+                password: '',
+            },
+            submitted: false,
+            classVariant: 'danger',
+            message: null,
+            showDismissibleAlert: false,
+            isShowComponent : false,
+            languageData : [],
+            isPageShown : false,
+            componentKey : 0
+        };
     },
     validations: {
       login: {
@@ -120,6 +121,7 @@
         this.languageData = JSON.parse(store.state.languageLabel);
         this.$forceUpdate();
         this.$refs.ThePrimaryFooter.$forceUpdate()
+      this.componentKey += 1;
       },
 
       handleSubmit() {

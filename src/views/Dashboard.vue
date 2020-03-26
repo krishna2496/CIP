@@ -59,7 +59,9 @@
                                         <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt />
                                     </i>
                                     <p>
-                                        <span>{{stats.missionCount}}</span>{{languageData.label.mission}}
+                                        <span>{{stats.missionCount}}</span>
+                                        <p v-if="stats.missionCount <= 1">{{languageData.label.mission}}</p>
+                                        <p v-else>{{languageData.label.missions}}</p>
                                     </p>
                                 </div>
                             </b-list-group-item>
@@ -69,7 +71,9 @@
                                         <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt />
                                     </i>
                                     <p>
-                                        <span>{{stats.organizationCount}}</span>{{languageData.label.organisation}}
+                                        <span>{{stats.organizationCount}}</span>
+                                        <p v-if="stats.organizationCount <= 1">{{languageData.label.organisation}}</p>
+                                        <p v-else>{{languageData.label.organisations}}</p>
                                     </p>
                                 </div>
                             </b-list-group-item>

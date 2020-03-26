@@ -159,7 +159,7 @@
                                                 </div>
                                             </template>
                                             <template>
-                                                <div class="detail-column info-block">
+                                                <div class="detail-column info-block" v-if="(missionDetail.application_deadline != '' && missionDetail.application_deadline != null) || (missionDetail.application_start_date != null && missionDetail.application_end_date != null )">
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/clock.svg'"
                                                              alt="user">
@@ -232,9 +232,15 @@
                                                 </i>
                                                 <div class="text-wrap">
                                                     <b-progress :value="parseInt(missionDetail.achieved_goal)"
-                                                                :max="missionDetail.goal_objective" class="mb-2"></b-progress>
-                                                    <span class="subtitle-text">{{missionDetail.achieved_goal}}
-                                                        {{ languageData.label.achieved}}</span>
+                                                        :max="missionDetail.goal_objective" class="mb-2"></b-progress>
+                                                        <span class="subtitle-text">
+                                                        {{missionDetail.achieved_goal}}
+                                                        <span 
+                                                            v-if="missionDetail.label_goal_achieved != ''">
+                                                            {{ missionDetail.label_goal_achieved }}
+                                                        </span>
+                                                        <span v-else>{{ languageData.label.achieved }}</span>
+                                                        </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -351,7 +357,6 @@
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
                                 </ul>
-
                                 <div class="tab-content-wrap">
                                     <div class="tabs">
                                         <div class="tab-title">
@@ -364,12 +369,20 @@
                                                  v-if="!checkMissionTypeTime(missionDetail.mission_type)">
                                                 <div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
                                                     <div class="mission-tab-inner">
-                                                        <p v-if="missionDetail.goal_objective">
-                                                            {{missionDetail.goal_objective}}<span>
-                                                                {{languageData.label.goal_objective }}
-                                                            </span></p>
+                                                        <p v-if="missionDetail.goal_objective">  
+                                                            {{missionDetail.goal_objective}}
+                                                            <span v-if="missionDetail.label_goal_objective != ''">
+                                                                {{missionDetail.label_goal_objective}}
+                                                            </span>
+                                                            <span v-else>{{ languageData.label.goal_objective }}
+                                                            </span>
+                                                        </p>
                                                         <p v-else>
-                                                            0<span>{{ languageData.label.goal_objective }}</span>
+                                                            0 <span v-if="missionDetail.label_goal_objective != ''">
+                                                                {{missionDetail.label_goal_objective}}
+                                                            </span>
+                                                            <span v-else>{{ languageData.label.goal_objective }}
+                                                            </span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -377,10 +390,19 @@
                                                     <div class="mission-tab-inner">
                                                         <p v-if="missionDetail.achieved_goal">
                                                             {{missionDetail.achieved_goal}}
-                                                            <span>{{ languageData.label.achieved }}</span>
+                                                            <span 
+                                                                v-if="missionDetail.label_goal_achieved != ''">
+                                                                {{ missionDetail.label_goal_achieved }}
+                                                            </span>
+                                                            <span v-else>{{ languageData.label.achieved }}</span>
                                                         </p>
                                                         <p v-else>
-                                                            0<span>{{ languageData.label.achieved }}</span>
+                                                            0
+                                                            <span 
+                                                                v-if="missionDetail.label_goal_achieved != ''">
+                                                                {{ missionDetail.label_goal_achieved }}
+                                                            </span>
+                                                            <span v-else>{{ languageData.label.achieved }}</span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1283,7 +1305,6 @@
         this.isMissionGoalDisplay = false
         this.isCurrentStatusDisplay = false
         this.isRemainingGoalDisplay = false
-        this.isSkillDispaly = false
         this.isQuickAccessFilterDisplay = false
         this.relatedMissionsDisplay = false
         this.timeSheetId = false

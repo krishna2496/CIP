@@ -18,8 +18,8 @@
                             <b-col sm="12">
                                 <b-form-group>
                                     <label for>{{languageData.label.mission}}</label>
-                                    <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
-                                                  class="disabled"></b-form-input>
+                                    <b-form-input id type="text" disabled v-model.trim="timeEntryDefaultData.missionName"
+                                        class="disabled"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -116,7 +116,7 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.notes}}</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
-                                                     :placeholder="languageData.placeholder.notes" size="lg" rows="5">
+                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
                                 </b-form-group>
 
@@ -257,6 +257,53 @@
       ) ? {
         required
       } : {};
+
+        return {
+            timeEntryDefaultData: {
+                hours: {
+                    required,
+                    numeric,
+                    between: between(0, 23),
+                    requiredHourValidation},
+                minutes : {
+                    required,
+                    numeric,
+                    between: between(0, 59),
+                    requiredMinuteValidation},
+                workDay: {
+                    required
+                },
+                dateVolunteered: {
+                    required
+                }
+            }
+        }
+        },
+        methods: {
+            hourChange() {
+                if(this.timeEntryDefaultData.hours == "00") {
+                    this.timeEntryDefaultData.hours = Math.floor(this.timeEntryDefaultData.hours).toString()
+                }
+            },
+            minuteChange() {
+                if(this.timeEntryDefaultData.minutes == "00") {
+                    this.timeEntryDefaultData.minutes = Math.floor(this.timeEntryDefaultData.minutes).toString()
+                }
+            },
+            dateChange() {
+                this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
+            },
+            inputUpdate(files) {
+                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES 
+                this.fileError = '';
+                let error = false
+                let duplicateUpload = false
+                let latestUpload = files[files.length - 1];
+                let latestUploadIndex = files.length - 1;
+                let latestUploadName = latestUpload.name
+                let latestUploadSize = latestUpload.size
+                let latestUploadType = latestUpload.type
+>>>>>>> 4cc4863865c75b4e541aa7f042a9340126fdb3c9
 
       return {
         timeEntryDefaultData: {
