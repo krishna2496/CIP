@@ -79,6 +79,7 @@ $router->patch(
 $router->get(
     '/{missionId}/comments',
     [
+        'middleware' => ['PaginationMiddleware'],
         'as' => 'missions.comments',
         'uses' => 'Admin\Mission\MissionCommentController@index',
     ]
@@ -87,6 +88,7 @@ $router->get(
 $router->get(
     '/{missionId}/comments/{commentId}',
     [
+        'middleware' => ['PaginationMiddleware'],
         'as' => 'missions.comments.detail',
         'uses' => 'Admin\Mission\MissionCommentController@show',
     ]
