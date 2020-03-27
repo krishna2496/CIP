@@ -193,35 +193,6 @@
             hideEllipsis:true
         };
     },
-        isShownComponent: false,
-        filterData: {
-          "search": "",
-          "countryId": "",
-          "cityId": "",
-          "themeId": "",
-          "skillId": "",
-          "exploreMissionType": "",
-          "exploreMissionParams": "",
-          "tags": [],
-          "sortBy": "",
-          "currentView" : 0
-        },
-        tabNumber : 0,
-        tags: "",
-        sortByFilterSet: true,
-        userList: [],
-        languageData: [],
-        isTotalMissionDisplay: true,
-        isQuickAccessDisplay: true,
-        isThemeDisplay: true,
-        isSkillDisplay: true,
-        isCountrySelectionSet: false,
-        totalPages: 0,
-        defaultCountry: 0,
-        isAjaxCall :true,
-        hideEllipsis:true
-      };
-    },
     methods: {
         storeSearch(searchString) {
             this.search = searchString
