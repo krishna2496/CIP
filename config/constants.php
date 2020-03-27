@@ -331,7 +331,8 @@ return [
         'INVITE_COLLEAGUE' => 'invite_colleague',
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
-        'MISSION_COMMENTS' => 'mission_comments'
+        'MISSION_COMMENTS' => 'mission_comments',
+        'STATE_ENABLED' => 'state_selection'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -345,6 +346,7 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random-missions',
+    'STATE' => 'state',
 
     /* sort by */
     "NEWEST" => "newest",
@@ -486,7 +488,9 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID' => '800034',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => '800035',
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036',
-
+        'ERROR_STATE_INVALID_DATA' => '800037',
+        'ERROR_STATE_NOT_FOUND' => '800038',
+        'ERROR_STATE_ENABLE_TO_DELETE' => '800039',
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
@@ -587,7 +591,8 @@ return [
         'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
-        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE'
+        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
+        'STATE' => 'STATE'
     ],
 
     'activity_log_actions' => [

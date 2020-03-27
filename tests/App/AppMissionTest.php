@@ -16,6 +16,8 @@ class AppMissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id; 
+        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $stateId = $cityDetail->state->first()->state_id;
         App\Models\Mission::whereNull('deleted_at')->delete();
         \DB::setDefaultConnection('mysql');
 
@@ -46,6 +48,7 @@ class AppMissionTest extends TestCase
             "location" => [
                 "city_id" => $cityId,
                 "country_code" => $countryDetail->ISO
+                
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -97,9 +100,9 @@ class AppMissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-
+        dd($res);
         DB::setDefaultConnection('mysql');
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
@@ -2202,7 +2205,9 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
+        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $stateId = $cityDetail->state->first()->state_id;     
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2226,7 +2231,8 @@ class AppMissionTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $countryDetail->ISO
+                "country_code" => $countryDetail->ISO,
+                "state_id" => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2281,7 +2287,7 @@ class AppMissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/filter-data?search=title&country_id='.$mission->country_id.'&city_id='.$mission->city_id.'&theme_id=1', ['token' => $token])
+        $this->get('app/filter-data?search=title&country_id='.$mission->country_id.'&state_id='.$mission->state_id.'&city_id='.$mission->city_id.'&theme_id=1', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -2617,7 +2623,9 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
+        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $stateId = $cityDetail->state->first()->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2646,7 +2654,8 @@ class AppMissionTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $countryDetail->ISO
+                "country_code" => $countryDetail->ISO,
+                "state_id" => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2728,7 +2737,9 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
+        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $stateId = $cityDetail->state->first()->state_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2757,7 +2768,8 @@ class AppMissionTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $countryDetail->ISO
+                "country_code" => $countryDetail->ISO,
+                "state_id" => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -2944,7 +2956,9 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
+        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $stateId = $cityDetail->state->first()->state_id;      
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2973,7 +2987,8 @@ class AppMissionTest extends TestCase
             ],
             "location" => [
                 "city_id" => $cityId,
-                "country_code" => $countryDetail->ISO
+                "country_code" => $countryDetail->ISO,
+                "state_id" => $stateId
             ],
             "mission_detail" => [[
                     "lang" => "en",
