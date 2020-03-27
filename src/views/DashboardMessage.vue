@@ -101,10 +101,10 @@
 			</b-form-group>
 			<b-form-group>
 				<label>{{languageData.label.message}}</label>
-				<b-form-textarea id :placeholder="languageData.placeholder.message"
-								 v-model.trim="contactUs.message"
-								 :class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"
-								 size="lg" rows="5"></b-form-textarea>
+				<b-form-textarea id :placeholder="languageData.placeholder.message" 
+				v-model.trim="contactUs.message" 
+				:class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"
+				size="lg" rows="5"></b-form-textarea>
 				<div v-if="submitted && !$v.contactUs.message.required" class="invalid-feedback">
 					{{ languageData.errors.message_required }}
 				</div>

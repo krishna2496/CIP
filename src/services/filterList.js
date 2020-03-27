@@ -13,9 +13,16 @@ export default async(data) => {
     if (data.countryId != '') {
         url = url + "?country_id=" + data.countryId
     }
-
-    if (data.cityId != '') {
+    if (data.stateId != '') {
         if (data.countryId != '') {
+            url = url + "&state_id=" + data.stateId
+        } else {
+            url = url + "?state_id=" + data.stateId
+        }
+    }
+    
+    if (data.cityId != '') {
+        if (data.countryId != '' ||  data.stateId != '') {
             url = url + "&city_id=" + data.cityId
         } else {
             url = url + "?city_id=" + data.cityId
@@ -23,7 +30,7 @@ export default async(data) => {
     }
 
     if (data.themeId != '') {
-        if (data.countryId != '' || data.cityId != '') {
+        if (data.countryId != '' ||  data.stateId != '' || data.cityId != '') {
             url = url + "&theme_id=" + data.themeId
         } else {
             url = url + "?theme_id=" + data.themeId
@@ -31,7 +38,7 @@ export default async(data) => {
     }
 
     if (data.search != '') {
-        if (data.countryId != '' || data.cityId != '' || data.themeId != '') {
+        if (data.countryId != '' ||  data.stateId != '' || data.cityId != '' || data.themeId != '') {
             url = url + "&search=" + data.search
         } else {
             url = url + "?search=" + data.search

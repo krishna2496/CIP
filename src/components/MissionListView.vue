@@ -161,7 +161,12 @@
                                             <b-progress :value="mission.achieved_goal | filterGoal"
                                                         :max="mission.goal_objective" class="mb-2"></b-progress>
                                             <span class="subtitle-text">
-                                                {{mission.achieved_goal}} {{ languageData.label.achieved}}
+                                                    {{mission.achieved_goal}}
+                                                    <span 
+                                                        v-if="mission.label_goal_achieved != ''">
+                                                        {{ mission.label_goal_achieved }}
+                                                    </span>
+                                                    <span v-else>{{ languageData.label.achieved }}</span>
                                             </span>
                                         </div>
                                     </div>
@@ -186,7 +191,7 @@
                                     </i>
                                     <div class="text-wrap">
                                         <span class="title-text">{{ languageData.label.skills }}</span>
-                                        <span class="subtitle-text">{{getSkills(mission.skill)}}</span>
+                                        <span class="subtitle-text skill-text-wrap">{{getSkills(mission.skill)}}</span>
                                     </div>
                                 </div>
 

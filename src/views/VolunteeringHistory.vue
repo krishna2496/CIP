@@ -68,13 +68,13 @@
 							</b-col>
 							<b-col lg="6" class="table-col">
 								<VolunteeringRequest :headerField="goalMissionTimesheetFields"
-													 :items="goalMissionTimesheetItems" :headerLable="goalMissionTimesheetLabel"
-													 :currentPage="goalMissionCurrentPage" :totalRow="goalMissionTotalRow"
-													 :perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
-													 @updateCall="getVolunteerMissionsGoals"
-													 exportUrl="app/volunteer/history/goal-mission/export"
-													 :fileName="languageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
-													 :totalPages="goalMissionTotalPage" requestType="goal"/>
+									:items="goalMissionTimesheetItems" :headerLable="goalMissionTimesheetLabel"
+									:currentPage="goalMissionCurrentPage" :totalRow="goalMissionTotalRow"
+									:perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
+									@updateCall="getVolunteerMissionsGoals"
+									exportUrl="app/volunteer/history/goal-mission/export"
+									:fileName="languageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
+									:totalPages="goalMissionTotalPage" requestType="goal"/>
 							</b-col>
 						</b-row>
 					</div>

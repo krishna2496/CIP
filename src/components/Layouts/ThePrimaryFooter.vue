@@ -30,7 +30,7 @@
 			return {
 				footerItems: [],
 				isDynamicFooterItemsSet: false,
-				languageData: [],
+				languageData: []
 			};
 		},
 		mounted() {},
@@ -38,6 +38,7 @@
 			this.languageData = JSON.parse(store.state.languageLabel);
 			// Fetching footer CMS pages
 			this.getPageListing();
+			this.isLabelChange = true;
 		},
 		methods: {
 			async getPageListing() {

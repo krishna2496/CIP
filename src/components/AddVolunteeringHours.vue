@@ -18,8 +18,8 @@
                             <b-col sm="12">
                                 <b-form-group>
                                     <label for>{{languageData.label.mission}}</label>
-                                    <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
-                                                  class="disabled"></b-form-input>
+                                    <b-form-input id type="text" disabled v-model.trim="timeEntryDefaultData.missionName"
+                                        class="disabled"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -116,7 +116,7 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.notes}}</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
-                                                     :placeholder="languageData.placeholder.notes" size="lg" rows="5">
+                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
                                 </b-form-group>
 
@@ -258,81 +258,81 @@
         required
       } : {};
 
-      return {
-        timeEntryDefaultData: {
-          hours: {
-            required,
-            numeric,
-            between: between(0, 23),
-            requiredHourValidation},
-          minutes : {
-            required,
-            numeric,
-            between: between(0, 59),
-            requiredMinuteValidation},
-          workDay: {
-            required
-          },
-          dateVolunteered: {
-            required
-          }
+        return {
+            timeEntryDefaultData: {
+                hours: {
+                    required,
+                    numeric,
+                    between: between(0, 23),
+                    requiredHourValidation},
+                minutes : {
+                    required,
+                    numeric,
+                    between: between(0, 59),
+                    requiredMinuteValidation},
+                workDay: {
+                    required
+                },
+                dateVolunteered: {
+                    required
+                }
+            }
         }
-      }
-    },
-    methods: {
-      hourChange() {
-        if(this.timeEntryDefaultData.hours == "00") {
-          this.timeEntryDefaultData.hours = Math.floor(this.timeEntryDefaultData.hours).toString()
-        }
-      },
-      minuteChange() {
-        if(this.timeEntryDefaultData.minutes == "00") {
-          this.timeEntryDefaultData.minutes = Math.floor(this.timeEntryDefaultData.minutes).toString()
-        }
-      },
-      dateChange() {
-        this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
-      },
-      inputUpdate(files) {
-        let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES
-        this.fileError = '';
-        let error = false
-        let duplicateUpload = false
-        let latestUpload = files[files.length - 1];
-        let latestUploadIndex = files.length - 1;
-        let latestUploadName = latestUpload.name
-        let latestUploadSize = latestUpload.size
-        let latestUploadType = latestUpload.type
+        },
+        methods: {
+            hourChange() {
+                if(this.timeEntryDefaultData.hours == "00") {
+                    this.timeEntryDefaultData.hours = Math.floor(this.timeEntryDefaultData.hours).toString()
+                }
+            },
+            minuteChange() {
+                if(this.timeEntryDefaultData.minutes == "00") {
+                    this.timeEntryDefaultData.minutes = Math.floor(this.timeEntryDefaultData.minutes).toString()
+                }
+            },
+            dateChange() {
+                this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
+            },
+            inputUpdate(files) {
+                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES 
+                this.fileError = '';
+                let error = false
+                let duplicateUpload = false
+                let latestUpload = files[files.length - 1];
+                let latestUploadIndex = files.length - 1;
+                let latestUploadName = latestUpload.name
+                let latestUploadSize = latestUpload.size
+                let latestUploadType = latestUpload.type
 
-        files.filter((data, index) => {
-          let fileName = data.name.split('.');
-          fileName = fileName[fileName.length - 1].toLowerCase()
-          if (!allowedFileTypes.includes(fileName)) {
-            this.fileError = this.languageData.errors.invalid_file_type
-            error = true
-          } else {
-            if (data.size > constants.FILE_MAX_SIZE_BYTE) {
-              this.fileError = this.languageData.errors.file_max_size
-              error = true
-            }
-          }
-          if (index != files.length - 1) {
-            if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
-              latestUploadType) {
-              this.fileError = this.languageData.errors.file_already_uploaded
-              error = true
-              duplicateUpload = true;
-            }
-          }
-          if(error == true) {
-            if(duplicateUpload == true) {
-              files.splice(latestUploadIndex, 1)
-            } else {
-              files.splice(index, 1)
-            }
-          }
-        });
-      },
+                files.filter((data, index) => {
+                    let fileName = data.name.split('.');
+                    fileName = fileName[fileName.length - 1].toLowerCase()
+                    if (!allowedFileTypes.includes(fileName)) {
+                        this.fileError = this.languageData.errors.invalid_file_type
+                        error = true
+                    } else {
+                        if (data.size > constants.FILE_MAX_SIZE_BYTE) {
+                            this.fileError = this.languageData.errors.file_max_size
+                            error = true
+                        }
+                    }
+                    if (index != files.length - 1) {
+                        if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
+                            latestUploadType) {
+                            this.fileError = this.languageData.errors.file_already_uploaded
+                            error = true
+                            duplicateUpload = true;
+                        }
+                    }
+                    if(error == true) {
+                        if(duplicateUpload == true) {
+                            files.splice(latestUploadIndex, 1)
+                        } else {
+                            files.splice(index, 1)
+                        }
+                    }
+                });
+            },
       updateWorkday(value) {
         let selectedData = {
           'selectedVal': '',

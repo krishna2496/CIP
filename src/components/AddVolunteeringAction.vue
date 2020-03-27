@@ -18,26 +18,35 @@
                             <b-col sm="12">
                                 <b-form-group>
                                     <label for>{{languageData.label.mission}}</label>
-                                    <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
-                                                  class="disabled"></b-form-input>
+                                    <b-form-input id type="text" disabled v-model.trim="timeEntryDefaultData.missionName"
+                                        class="disabled"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group>
                                     <b-row>
-                                        <b-col sm="12">
+                                        <b-col sm="6">
                                             <b-form-group>
-                                                <label for>{{languageData.label.actions}}*</label>
-                                                <b-form-input v-model.trim="timeEntryDefaultData.action"
-                                                              :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
-                                                              type="text" :placeholder="languageData.placeholder.action">
+                                                <label for v-if="timeEntryDefaultData.goalLabel != ''">{{timeEntryDefaultData.goalLabel}}</label>
+                                                <label for v-else>{{languageData.label.goal_objective}}</label>
+                                                <b-form-input id type="text" disabled v-model.trim="timeEntryDefaultData.goal"
+                                                class="disabled">
+                                                </b-form-input>
+                                            </b-form-group>
+                                            </b-col>
+                                                <b-col sm="6">
+                                                    <b-form-group>
+                                                    <label for>{{languageData.label.actions}}*</label>
+                                                    <b-form-input v-model.trim="timeEntryDefaultData.action"
+                                                    :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
+                                                    type="text" :placeholder="languageData.placeholder.action">
                                                 </b-form-input>
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
-                                                     class="invalid-feedback">
+                                                class="invalid-feedback">
                                                     {{ languageData.errors.action_required }}
                                                 </div>
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue"
-                                                     class="invalid-feedback">
+                                                class="invalid-feedback">
                                                     {{ languageData.errors.minimum_action }}
                                                 </div>
                                             </b-form-group>
@@ -85,8 +94,9 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.notes}}</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
-                                                     :placeholder="languageData.placeholder.notes" size="lg" rows="5">
+                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
+                                    
                                 </b-form-group>
 
                             </b-col>

@@ -57,7 +57,8 @@ export default new Vuex.Store({
         logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
         isProfileComplete: localStorage.getItem('isProfileComplete'),
         getEmailNotification : localStorage.getItem('getEmailNotification'),
-        defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage')
+        defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage'),
+        stateId: localStorage.getItem('stateId')
     },
     mutations: {
         setToken(state, data) {
@@ -154,6 +155,11 @@ export default new Vuex.Store({
         userFilter(state, filters) {
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
+            if (filters.stateId) {
+                localStorage.setItem('stateId',filters.stateId)
+            } else {
+                localStorage.setItem('stateId','')
+            }
             localStorage.setItem('cityId', filters.cityId)
             localStorage.setItem('themeId', filters.themeId)
             localStorage.setItem('skillId', filters.skillId)
@@ -168,6 +174,11 @@ export default new Vuex.Store({
             }
             state.search = filters.search
             state.countryId = filters.countryId
+            if (filters.stateId) {
+                state.stateId = filters.stateId
+            } else {
+                state.stateId = ''
+            }
             state.cityId = filters.cityId
             state.themeId = filters.themeId
             state.skillId = filters.skillId
@@ -258,13 +269,15 @@ export default new Vuex.Store({
             let tag = []
             localStorage.setItem('search', '')
             localStorage.setItem('countryId', '')
+            localStorage.setItem('stateId','')
             localStorage.setItem('cityId', '')
             localStorage.setItem('themeId', '')
             localStorage.setItem('skillId', '')
             localStorage.setItem('tags', JSON.stringify(tag))
             localStorage.setItem('sortBy', ''),
-              state.search = ''
+            state.search = ''
             state.countryId = ''
+            state.stateId = ''
             state.cityId = ''
             state.themeId = ''
             state.skillId = ''
@@ -276,7 +289,6 @@ export default new Vuex.Store({
             localStorage.setItem('defaultLanguage', language);
             state.defaultLanguage = language;
         },
-
         timeSheetEntryDetail(state, data) {
             localStorage.setItem('missionId', data.missionId)
             localStorage.setItem('missionType', data.missionType)

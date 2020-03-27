@@ -810,9 +810,11 @@
         this.saveProfileData.title = this.profile.title;
         this.saveProfileData.timezone_id = this.profile.time;
         this.saveProfileData.language_id = this.profile.language;
-        if (this.profile.availability) {
-            this.saveProfileData.availability_id = this.profile.availability;
-        }
+          if (this.profile.availability != 0) {
+              this.saveProfileData.availability_id = this.profile.availability
+          } else {
+              delete this.saveProfileData['availability_id'];
+          }
         this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
         this.saveProfileData.employee_id = this.profile.employeeId;
         this.saveProfileData.department = this.profile.department;
