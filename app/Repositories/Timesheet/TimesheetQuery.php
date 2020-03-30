@@ -175,7 +175,7 @@ class TimesheetQuery implements QueryableInterface
             })
             // Search
             ->when(!empty($search), function ($query) use ($search, $filters, $languageId) {
-                $searchCallback = function ($query) use ($search, $languageId) {
+                $searchCallback = function ($query) use ($search, $languageId, $filters) {
 
                     $query
                         ->where('timesheet.status', 'like', "%${search}%")
@@ -219,6 +219,10 @@ class TimesheetQuery implements QueryableInterface
                                     ['name', 'like', "%${search}%"],
                                     ['language_id', '=', $languageId],
                                 ]);
+                        })
+                        ->orwhereHas('mission.missionTheme', function ($query) use ($search, $filters) {
+                            $codeLanguage = $filters['language'];
+                            $query->where('translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$codeLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$search.'[^"]*";}');
                         });
                 };
 
