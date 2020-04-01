@@ -7,6 +7,7 @@ use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
@@ -31,7 +32,7 @@ class MissionApplicationQuery implements QueryableInterface
         'missionCityId' => 'city_language.name',
         'applicationDate' => 'mission_application.applied_at',
         'applicationSkills' => 'applicant_skills',
-        'missionName' => 'mission_language.title',
+        'missionName' => 'mission_language_title',
     ];
 
     const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
@@ -47,6 +48,10 @@ class MissionApplicationQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
+        $defaultLanguage = $tenantLanguages->filter(function ($language) {
+            return $language->default === '1';
+        })->first();
+        $defaultLanguageId = (is_null($defaultLanguage)) ? 1 : $defaultLanguage->language_id;
 
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
@@ -57,20 +62,24 @@ class MissionApplicationQuery implements QueryableInterface
 
         $query = MissionApplication::query();
         $applications = $query
-            ->select([
-                'mission_application.*',
-                'user.last_name',
-                'user.email',
-                'mission.mission_type',
-                'mission_language.title',
-                'city_language.name',
-                'country_language.name'
-            ])
+            ->select(DB::raw("
+                mission_application.*,
+                user.last_name,
+                user.email,
+                mission.mission_type,
+                COALESCE(mission_language.title, mission_language_fallback.title) AS mission_language_title,
+                city_language.name,
+                country_language.name
+            "))
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
             ->leftJoin('mission_language', function ($join) use ($languageId) {
                 $join->on('mission_language.mission_id', '=', 'mission.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
+            })
+            ->leftJoin('mission_language AS mission_language_fallback', function ($join) use ($defaultLanguageId) {
+                $join->on('mission_language_fallback.mission_id', '=', 'mission.mission_id')
+                    ->where('mission_language_fallback.language_id', '=', $defaultLanguageId);
             })
             ->join('city_language', function($join) use ($languageId) {
                 $join->on('city_language.city_id', '=', 'mission.city_id')
@@ -80,17 +89,11 @@ class MissionApplicationQuery implements QueryableInterface
                 $join->on('country_language.country_id', '=', 'mission.country_id')
                     ->where('country_language.language_id', '=', $languageId);
             })
-            ->where(function ($query) use ($languageId) {
-                $query->whereNull('mission_language.language_id')
-                    ->orWhere('mission_language.language_id', '=', $languageId);
-            })
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
                 'mission',
-                'mission.missionLanguage' => function ($query) use ($languageId) {
-                    $query->where('language_id', '=', $languageId);
-                },
+                'mission.missionLanguage',
                 'mission.missionSkill',
                 'mission.country.languages' => function ($query) use ($languageId) {
                     $query->where('language_id', '=', $languageId);
