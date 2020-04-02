@@ -6,6 +6,7 @@ use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -28,7 +29,7 @@ class TimesheetQuery implements QueryableInterface
         'missionCountryCode' => 'country_language.name',
         'approvalStatus' => 'status',
         'missionCityId' => 'city_language.name',
-        'appliedTo' => 'mission_language.title',
+        'appliedTo' => 'mission_language_title',
         'reviewedObjective' => 'action',
         'notes' => 'notes',
         'applicantFirstName' => 'user.first_name',
@@ -54,6 +55,10 @@ class TimesheetQuery implements QueryableInterface
 
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
+        $defaultLanguage = $tenantLanguages->filter(function ($language) {
+            return $language->default === '1';
+        })->first();
+        $defaultLanguageId = (is_null($defaultLanguage)) ? 1 : $defaultLanguage->language_id;
 
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
@@ -63,17 +68,21 @@ class TimesheetQuery implements QueryableInterface
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
         $query = Timesheet::query();
         $timesheets = $query
-            ->select([
-                'timesheet.*',
-                'mission_language.title',
-                'city_language.name',
-                'country_language.name',
-            ])
+            ->select(DB::raw("
+                timesheet.*,
+                COALESCE(mission_language.title, mission_language_fallback.title) AS mission_language_title,
+                city_language.name,
+                country_language.name
+            "))
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
-            ->join('mission_language', function ($join) use ($languageId) {
+            ->leftJoin('mission_language', function ($join) use ($languageId) {
                 $join->on('mission_language.mission_id', '=', 'timesheet.mission_id')
                     ->where('mission_language.language_id', '=', $languageId);
+            })
+            ->leftJoin('mission_language AS mission_language_fallback', function ($join) use ($defaultLanguageId) {
+                $join->on('mission_language_fallback.mission_id', '=', 'mission.mission_id')
+                    ->where('mission_language_fallback.language_id', '=', $defaultLanguageId);
             })
             ->join('city_language', function ($join) use ($languageId) {
                 $join->on('city_language.city_id', '=', 'mission.city_id')
@@ -96,10 +105,7 @@ class TimesheetQuery implements QueryableInterface
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
-                'mission.missionLanguage' => function ($query) use ($languageId) {
-                    $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'objective')
-                        ->where('language_id', $languageId);
-                },
+                'mission.missionLanguage',
                 'mission.goalMission',
                 'mission.missionSkill',
                 'mission.country.languages' => function ($query) use ($languageId) {
@@ -242,7 +248,6 @@ class TimesheetQuery implements QueryableInterface
 
         return $timesheets;
     }
-
 
     /**
      * @param array $filters
