@@ -163,12 +163,25 @@ class MissionApplicationQuery implements QueryableInterface
                             ->orWhere('last_name', 'like', "%${search}%")
                             ->orWhere('email', 'like', "%${search}%");
                     })
-                        ->orwhere('mission_language.title', 'like', "%${search}%")
-                        ->orwhere('mission_language_fallback.title', 'like', "%${search}%")
-                        ->orwhere('city_language.name', 'like', "%${search}%")
-                        ->orwhere('city_language_fallback.name', 'like', "%${search}%")
-                        ->orwhere('country_language.name', 'like', "%${search}%")
-                        ->orwhere('country_language_fallback.name', 'like', "%${search}%");
+                        ->orWhere('mission_language.title', 'like', "%${search}%")
+                        ->orWhere(function ($query) use ($search) {
+                            $query
+                                ->whereNull('mission_language.title')
+                                ->where('mission_language_fallback.title', 'like', "%${search}%");
+                        })
+                        ->orWhere('city_language.name', 'like', "%${search}%")
+                        ->orWhere(function ($query) use ($search) {
+                            $query
+                                ->whereNull('city_language.name')
+                                ->where('city_language_fallback.name', 'like', "%${search}%");
+
+                        })
+                        ->orWhere('country_language.name', 'like', "%${search}%")
+                        ->orWhere(function ($query) use ($search) {
+                            $query
+                                ->whereNull('country_language.name')
+                                ->where('country_language_fallback.name', 'like', "%${search}%");
+                        });
                 };
 
                 if (isset($filters[self::FILTER_APPLICATION_IDS])) {
