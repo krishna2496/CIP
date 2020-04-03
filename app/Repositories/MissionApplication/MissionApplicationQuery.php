@@ -27,9 +27,9 @@ class MissionApplicationQuery implements QueryableInterface
         'applicantFirstName' => 'user.first_name',
         'applicantEmail' => 'user.email',
         'missionType' => 'mission.mission_type',
-        'missionCountryCode' => 'country_language.name',
+        'missionCountryCode' => 'country_language_name',
         'status' => 'mission_application.approval_status',
-        'missionCityId' => 'city_language.name',
+        'missionCityId' => 'city_language_name',
         'applicationDate' => 'mission_application.applied_at',
         'applicationSkills' => 'applicant_skills',
         'missionName' => 'mission_language_title',
@@ -68,8 +68,8 @@ class MissionApplicationQuery implements QueryableInterface
                 user.email,
                 mission.mission_type,
                 COALESCE(mission_language.title, mission_language_fallback.title) AS mission_language_title,
-                city_language.name,
-                country_language.name
+                COALESCE(city_language.name, city_language_fallback.name) city_language_name,
+                COALESCE(country_language.name, country_language_fallback.name) country_language_name
             "))
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
@@ -81,13 +81,21 @@ class MissionApplicationQuery implements QueryableInterface
                 $join->on('mission_language_fallback.mission_id', '=', 'mission.mission_id')
                     ->where('mission_language_fallback.language_id', '=', $defaultLanguageId);
             })
-            ->join('city_language', function($join) use ($languageId) {
+            ->leftJoin('city_language', function($join) use ($languageId) {
                 $join->on('city_language.city_id', '=', 'mission.city_id')
                     ->where('city_language.language_id', '=', $languageId);
             })
-            ->join('country_language', function($join) use ($languageId) {
+            ->leftJoin('city_language AS city_language_fallback', function($join) use ($defaultLanguageId) {
+                $join->on('city_language_fallback.city_id', '=', 'mission.city_id')
+                    ->where('city_language_fallback.language_id', '=', $defaultLanguageId);
+            })
+            ->leftJoin('country_language', function($join) use ($languageId) {
                 $join->on('country_language.country_id', '=', 'mission.country_id')
                     ->where('country_language.language_id', '=', $languageId);
+            })
+            ->leftJoin('country_language AS country_language_fallback', function($join) use ($defaultLanguageId) {
+                $join->on('country_language_fallback.country_id', '=', 'mission.country_id')
+                    ->where('country_language_fallback.language_id', '=', $defaultLanguageId);
             })
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
@@ -95,12 +103,8 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission',
                 'mission.missionLanguage',
                 'mission.missionSkill',
-                'mission.country.languages' => function ($query) use ($languageId) {
-                    $query->where('language_id', '=', $languageId);
-                },
-                'mission.city.languages' => function ($query) use ($languageId) {
-                    $query->where('language_id', '=', $languageId);
-                },
+                'mission.country.languages',
+                'mission.city.languages',
             ])
             // Filter by application ID
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
