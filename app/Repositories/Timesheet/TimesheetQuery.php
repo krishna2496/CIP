@@ -7,6 +7,7 @@ use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -26,9 +27,9 @@ class TimesheetQuery implements QueryableInterface
         'note' => 'notes',
         'appliedDay' => 'day_volunteered',
         'applicantEmailAddress' => 'user.email',
-        'missionCountryCode' => 'country_language.name',
+        'missionCountryCode' => 'country_language_name',
         'approvalStatus' => 'status',
-        'missionCityId' => 'city_language.name',
+        'missionCityId' => 'city_language_name',
         'appliedTo' => 'mission_language_title',
         'reviewedObjective' => 'action',
         'notes' => 'notes',
@@ -71,8 +72,8 @@ class TimesheetQuery implements QueryableInterface
             ->select(DB::raw("
                 timesheet.*,
                 COALESCE(mission_language.title, mission_language_fallback.title) AS mission_language_title,
-                city_language.name,
-                country_language.name
+                COALESCE(country_language.name, country_language_fallback.name) AS country_language_name,
+                COALESCE(city_language.name, city_language_fallback.name) AS city_language_name
             "))
             ->join('user', 'user.user_id', '=', 'timesheet.user_id')
             ->join('mission', 'mission.mission_id', '=', 'timesheet.mission_id')
@@ -84,13 +85,21 @@ class TimesheetQuery implements QueryableInterface
                 $join->on('mission_language_fallback.mission_id', '=', 'mission.mission_id')
                     ->where('mission_language_fallback.language_id', '=', $defaultLanguageId);
             })
-            ->join('city_language', function ($join) use ($languageId) {
+            ->leftJoin('country_language', function ($join) use ($languageId) {
+                $join->on('country_language.country_id', '=', 'mission.country_id')
+                    ->where('country_language.language_id', '=', $languageId);
+            })
+            ->leftJoin('country_language AS country_language_fallback', function ($join) use ($defaultLanguageId) {
+                $join->on('country_language_fallback.country_id', '=', 'mission.country_id')
+                    ->where('country_language_fallback.language_id', '=', $defaultLanguageId);
+            })
+            ->leftJoin('city_language', function ($join) use ($languageId) {
                 $join->on('city_language.city_id', '=', 'mission.city_id')
                     ->where('city_language.language_id', '=', $languageId);
             })
-            ->join('country_language', function ($join) use ($languageId) {
-                $join->on('country_language.country_id', '=', 'mission.country_id')
-                    ->where('country_language.language_id', '=', $languageId);
+            ->leftJoin('city_language AS city_language_fallback', function ($join) use ($defaultLanguageId) {
+                $join->on('city_language_fallback.city_id', '=', 'mission.city_id')
+                    ->where('city_language_fallback.language_id', '=', $defaultLanguageId);
             })
             ->whereNotIn('timesheet.status', ['pending'])
             ->whereHas('mission', function ($query) {
@@ -108,12 +117,8 @@ class TimesheetQuery implements QueryableInterface
                 'mission.missionLanguage',
                 'mission.goalMission',
                 'mission.missionSkill',
-                'mission.country.languages' => function ($query) use ($languageId) {
-                    $query->where('language_id', '=', $languageId);
-                },
-                'mission.city.languages' => function ($query) use ($languageId) {
-                    $query->where('language_id', '=', $languageId);
-                },
+                'mission.country.languages',
+                'mission.city.languages',
                 'timesheetDocument',
             ])
             // Filter by application start date
@@ -182,7 +187,6 @@ class TimesheetQuery implements QueryableInterface
             // Search
             ->when(!empty($search), function ($query) use ($search, $filters, $languageId) {
                 $searchCallback = function ($query) use ($search, $languageId) {
-
                     $query
                         ->where('timesheet.status', 'like', "%${search}%")
                         ->orWhere('timesheet.time', 'like', "%${search}%")
@@ -200,31 +204,33 @@ class TimesheetQuery implements QueryableInterface
                                 ->orWhere('last_name', 'like', "%${search}%")
                                 ->orWhere('email', 'like', "%${search}%");
                         })
-                        ->orwhereHas('mission.missionLanguage', function ($query) use ($search, $languageId) {
+                        ->orwhere('mission_language.title', 'like', "%${search}%")
+                        ->orwhere('mission_language.objective', 'like', "%${search}%")
+                        ->orwhere(function ($query) use ($search) {
                             $query
-                                ->where([
-                                    ['title', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId]
-                                ])
-                                ->orWhere('objective', 'like', "%${search}%");
+                                ->whereNull('mission_language.title')
+                                ->whereNull('mission_language.objective')
+                                ->where(function ($query) use ($search) {
+                                    $query
+                                        ->where('mission_language_fallback.title', 'like', "%${search}%")
+                                        ->orWhere('mission_language_fallback.objective', 'like', "%${search}%");
+                                });
                         })
                         ->orwhereHas('mission.goalMission', function ($query) use ($search) {
                             $query
                                 ->where('goal_objective', 'like', "%${search}%");
                         })
-                        ->orwhereHas('mission.city.languages', function ($query) use ($search, $languageId) {
+                        ->orwhere('city_language.name', 'like', "%${search}%")
+                        ->orwhere(function ($query) use ($search) {
                             $query
-                                ->where([
-                                    ['name', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId],
-                                ]);
+                                ->whereNull('city_language.name')
+                                ->where('city_language_fallback.name', 'like', "%${search}%");
                         })
-                        ->orwhereHas('mission.country.languages', function ($query) use ($search, $languageId) {
+                        ->orwhere('country_language.name', 'like', "%${search}%")
+                        ->orwhere(function ($query) use ($search) {
                             $query
-                                ->where([
-                                    ['name', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId],
-                                ]);
+                                ->whereNull('country_language.name')
+                                ->where('country_language_fallback.name', 'like', "%${search}%");
                         });
                 };
 
@@ -245,6 +251,8 @@ class TimesheetQuery implements QueryableInterface
             })
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
+
+        Log::debug($query->toSql());
 
         return $timesheets;
     }
