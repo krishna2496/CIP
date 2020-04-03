@@ -7,7 +7,6 @@ use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class TimesheetQuery implements QueryableInterface
 {
@@ -251,8 +250,6 @@ class TimesheetQuery implements QueryableInterface
             })
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
-
-        Log::debug($query->toSql());
 
         return $timesheets;
     }
