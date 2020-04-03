@@ -163,27 +163,12 @@ class MissionApplicationQuery implements QueryableInterface
                             ->orWhere('last_name', 'like', "%${search}%")
                             ->orWhere('email', 'like', "%${search}%");
                     })
-                        ->orwhereHas('mission.missionLanguage', function($query) use ($search, $languageId) {
-                            $query
-                                ->where([
-                                    ['title', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId]
-                                ]);
-                        })
-                        ->orwhereHas('mission.city.languages', function($query) use ($search, $languageId) {
-                            $query
-                                ->where([
-                                    ['name', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId]
-                                ]);
-                        })
-                        ->orwhereHas('mission.country.languages', function($query) use ($search, $languageId) {
-                            $query
-                                ->where([
-                                    ['name', 'like', "%${search}%"],
-                                    ['language_id', '=', $languageId]
-                                ]);
-                        });
+                        ->orwhere('mission_language.title', 'like', "%${search}%")
+                        ->orwhere('mission_language_fallback.title', 'like', "%${search}%")
+                        ->orwhere('city_language.name', 'like', "%${search}%")
+                        ->orwhere('city_language_fallback.name', 'like', "%${search}%")
+                        ->orwhere('country_language.name', 'like', "%${search}%")
+                        ->orwhere('country_language_fallback.name', 'like', "%${search}%");
                 };
 
                 if (isset($filters[self::FILTER_APPLICATION_IDS])) {
