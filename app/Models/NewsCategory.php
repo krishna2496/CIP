@@ -44,19 +44,19 @@ class NewsCategory extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = serialize($value);
+        $this->attributes['translations'] = json_encode($value);
     }
     
     /**
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return array
+     * @return null|array
      */
-    public function getTranslationsAttribute(string $value): array
+    public function getTranslationsAttribute(string $value): ?array
     {
-        $data = @unserialize($value);
-        return ($data !== false) ? unserialize($value) : [];
+        $data = @json_decode($value);
+        return ($data !== false) ? json_decode($value, true) : [];
     }
 
     /**

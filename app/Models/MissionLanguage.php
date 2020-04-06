@@ -69,7 +69,7 @@ class MissionLanguage extends Model
      */
     public function setDescriptionAttribute(array $value)
     {
-        $this->attributes['description'] = serialize($value);
+        $this->attributes['description'] = json_encode($value);
     }
     
     /**
@@ -81,7 +81,7 @@ class MissionLanguage extends Model
     public function getDescriptionAttribute($value)
     {
         if ($value) {
-            return unserialize($value);
+            return json_decode($value, true);
         }
     }
 
@@ -105,7 +105,7 @@ class MissionLanguage extends Model
      */
     public function setCustomInformationAttribute($value)
     {
-        $this->attributes['custom_information'] = isset($value) ? serialize($value) : null;
+        $this->attributes['custom_information'] = isset($value) ? json_encode($value) : null;
     }
     
     /**
@@ -117,7 +117,7 @@ class MissionLanguage extends Model
     public function getCustomInformationAttribute($value)
     {
         if ($value) {
-            return unserialize($value);
+            return json_decode($value, true);
         }
     }
 

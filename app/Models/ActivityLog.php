@@ -40,7 +40,7 @@ class ActivityLog extends Model
     public function setObjectValueAttribute(array $value = null)
     {
         if (!is_null($value)) {
-            $this->attributes['object_value'] = serialize($value);
+            $this->attributes['object_value'] = json_encode($value);
         }
     }
     
@@ -52,7 +52,7 @@ class ActivityLog extends Model
      */
     public function getObjectValueAttribute(string $value = null): array
     {
-        $data = @unserialize($value);
-        return ($data !== false && !is_null($value)) ? unserialize($value): array();
+        $data = @json_decode($value);
+        return ($data !== false && !is_null($value)) ? json_decode($value, true): array();
     }
 }
