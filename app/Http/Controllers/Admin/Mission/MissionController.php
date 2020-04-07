@@ -181,8 +181,10 @@ class MissionController extends Controller
             );
         }
 
-        $city = $this->cityRepository->getState($request->location['city_id']);
-        $request->request->add(['state_id' => $city[0]['state_id']]);
+        $city = $this->cityRepository->getCityData($request->location['city_id']);
+        if ($city && $city['state_id']) {
+            $request->request->add(['state_id' =>  $city['state_id']]);
+        }
 
         $mission = $this->missionRepository->store($request);
         // Set response data
@@ -304,8 +306,10 @@ class MissionController extends Controller
             );
         }
         
-        $city = $this->cityRepository->getState($request->location['city_id']);
-        $request->request->add(['state_id' =>  $city[0]['state_id']]);
+        $city = $this->cityRepository->getCityData($request->location['city_id']);
+        if ($city && $city['state_id']) {
+            $request->request->add(['state_id' =>  $city['state_id']]);
+        }
  
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {

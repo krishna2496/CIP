@@ -277,14 +277,22 @@ class CityRepository implements CityInterface
 
     
     /**
-     * Get state_id data from cityId
-     *
-     * @param string $cityId
-     * @return array
+     * Search city with language and country restriction
+     * @param  string $search
+     * @param  int    $languageId
+     * @param  int    $countryId
+     * @return Object
      */
-    public function getState(string $cityId) : array
-    {
-        $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
-        return $city;
+    public function searchCity(
+        string $cityName,
+        int $languageId,
+        int $countryId
+    ) {
+        return $this->city
+            ->join('city_language', 'city_language.city_id', '=', 'city.city_id')
+            ->where('city.country_id', $countryId)
+            ->where('city_language.language_id', $languageId)
+            ->take(1)
+            ->first();
     }
 }
