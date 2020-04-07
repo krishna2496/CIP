@@ -30,8 +30,8 @@ return [
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
     'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
-    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
-    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+//    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
+//    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
     'AWS_S3_DOCUMENTS_FOLDER_NAME' => 'documents',
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
@@ -40,13 +40,13 @@ return [
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
-    'AWS_REGION' => 'eu-central-1',
-    'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
+//    'AWS_REGION' => 'eu-central-1',
+//    'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
-    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+//    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
@@ -62,11 +62,11 @@ return [
         'DROP-DOWN' => 'drop-down',
         'RADIO' => 'radio'
      ],
-     
+
      /*
       * Language constants
       */
-     
+
     'DEFAULT_LANGUAGE' => 'EN',
     'FRONTEND_LANGUAGE_FOLDER' => 'front_end',
 
@@ -135,7 +135,7 @@ return [
         'JPG' => 'jpg',
         'JPEG' => 'jpeg',
     ],
-    
+
     /*
      * Slider image types
      */
@@ -145,7 +145,7 @@ return [
         'image/jpg',
         'image/svg+xml'
     ],
-    
+
     /*
      * User profile image allowed MIME types
      */
@@ -181,7 +181,7 @@ return [
         'application/pdf',
         'text/plain'
     ],
-    
+
     /*
      * Timesheet document types
      */
@@ -216,9 +216,9 @@ return [
         'APPROVED' => 'APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ],
-    
+
     'ALLOW_TIMESHEET_ENTRY' => 2,
-    
+
     /**
      * Export timesheet file names
      */
@@ -236,8 +236,8 @@ return [
         'PUBLISHED' => 'PUBLISHED',
         'UNPUBLISHED' => 'UNPUBLISHED'
     ],
-        
-        
+
+
     /*
      * Story status
      */
@@ -261,7 +261,7 @@ return [
     'export_mission_comment_file_names' => [
         'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
     ],
-        
+
     /*
      * Folder name s3
      */
@@ -311,7 +311,7 @@ return [
         'MISSION_APPLICATION' => 'Mission Application',
         'NEW_NEWS' => 'New News'
     ],
-    
+
     /**
      * notification status
      */
@@ -334,7 +334,7 @@ return [
         'MISSION_COMMENTS' => 'mission_comments',
         'STATE_ENABLED' => 'state_selection'
     ],
-    
+
     'TOP_THEME' => "top_themes",
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",
@@ -435,7 +435,7 @@ return [
         'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
         'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => '400050',
-        
+
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
         'ERROR_NEWS_REQUIRED_FIELDS_EMPTY' => '500003',
@@ -450,12 +450,12 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
-                              
+
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
         'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
-                
+
         'ERROR_INVALID_JSON' => '900000',
 
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
@@ -490,7 +490,12 @@ return [
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036',
         'ERROR_STATE_INVALID_DATA' => '800037',
         'ERROR_STATE_NOT_FOUND' => '800038',
-        'ERROR_STATE_ENABLE_TO_DELETE' => '800039'
+        'ERROR_STATE_ENABLE_TO_DELETE' => '800039',
+        'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
+        'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
+        'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
+        'ERROR_INVALID_SAML_ACCESS' => '800104',
     ],
 
     /**
@@ -523,6 +528,7 @@ return [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
         'DELETED' => 'DELETED',
+        'UPDATED' => 'UPDATED',
         'REFUSED' => 'REFUSED',
         'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING'
     ],
@@ -535,7 +541,7 @@ return [
         'DECLINED' => 'warning.png',
         'NEW' => 'circle-plus.png',
     ],
-    
+
     'notification_status' => [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'PENDING' => 'PENDING',
@@ -626,7 +632,7 @@ return [
         'API' => 'API',
         'REGULAR' => 'REGULAR'
     ],
-    
+
     'profile_required_fields'=> [
         'first_name',
         'last_name',

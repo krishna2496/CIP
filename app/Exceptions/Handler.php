@@ -12,6 +12,7 @@ use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\TenantDomainNotFoundException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use App\Exceptions\SamlException;
 
 class Handler extends ExceptionHandler
 {
@@ -26,6 +27,7 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        SamlException::class,
     ];
 
     /**
@@ -50,6 +52,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if (env('APP_ENV') === 'local' && env('APP_DEBUG')) {
+            dd($exception);
+        }
         if ($exception instanceof MethodNotAllowedHttpException) {
             return $this->methodNotAllowedHttp();
         }
@@ -62,6 +67,10 @@ class Handler extends ExceptionHandler
         if ($exception instanceof TenantDomainNotFoundException) {
             return $this->tenantDomainNotFound($exception->getCode(), $exception->getMessage());
         }
+        if ($exception instanceof SamlException) {
+            return $this->samlError($exception->getCode(), $exception->getMessage());
+        }
+
         return $this->internalServerError(trans('messages.custom_error_message.ERROR_INTERNAL_SERVER_ERROR'));
     }
 }

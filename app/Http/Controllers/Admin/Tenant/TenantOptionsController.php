@@ -41,7 +41,7 @@ class TenantOptionsController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -94,16 +94,16 @@ class TenantOptionsController extends Controller
     {
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-    
+
         // Database connection with master database
         $this->helpers->switchDatabaseConnection('mysql');
-        
+
         // Dispatch job, that will store in master database
         dispatch(new ResetStyleSettingsJob($tenantName));
 
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant');
-        
+
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
@@ -120,7 +120,7 @@ class TenantOptionsController extends Controller
     {
         $isVariableScss = 0;
         $fileName = '';
-        
+
         if (!$request->hasFile('custom_scss_file') && empty($request->primary_color)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -149,10 +149,10 @@ class TenantOptionsController extends Controller
                 ));
             }
         }
-        
+
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
+
         if ($request->hasFile('custom_scss_file')) {
             $response = $this->customStylingService->uploadImage($request);
             if (!is_null($response)) {
@@ -160,9 +160,9 @@ class TenantOptionsController extends Controller
             }
 
             $fileName = $request->custom_scss_file_name;
-            $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
+            $filePath = $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.
                 config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
-                
+
             /* Check user uploading custom style variable file,
             then we need to make it as high priority instead of passed colors. */
             if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
@@ -171,14 +171,14 @@ class TenantOptionsController extends Controller
         }
 
         $options['isVariableScss'] = $isVariableScss;
-        
+
         if (isset($request->primary_color) && $request->primary_color!='') {
             $options['primary_color'] = $request->primary_color;
         }
 
         // Database connection with master database
         $this->helpers->switchDatabaseConnection('mysql');
-        
+
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
@@ -203,7 +203,7 @@ class TenantOptionsController extends Controller
 
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant');
-        
+
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');
@@ -227,7 +227,7 @@ class TenantOptionsController extends Controller
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
-        
+
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
@@ -272,12 +272,12 @@ class TenantOptionsController extends Controller
         $file = $request->file('image_file');
         $fileName = $request->image_name;
         $fileNameExtension = substr(strrchr($fileName, '.'), 1);
-        
+
         $validateResponse = $this->customStylingService->checkFileValidations($request);
         if (!is_null($validateResponse)) {
             return $validateResponse;
         }
-       
+
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
@@ -323,13 +323,13 @@ class TenantOptionsController extends Controller
             null,
             null
         ));
-                  
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_IMAGE_UPLOADED_SUCCESSFULLY');
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
-    
+
     /**
      * Store tenant option values
      *
@@ -357,7 +357,7 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         $data = $request->toArray();
         $data['option_value'] =
         (gettype($request->option_value)=="array") ? serialize($request->option_value) :
@@ -366,7 +366,7 @@ class TenantOptionsController extends Controller
         $tenantOption = $this->tenantOptionRepository->store($data);
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.TENANT_OPTION'),
@@ -410,7 +410,7 @@ class TenantOptionsController extends Controller
         }
         try {
             $data['option_name'] = $request->option_name;
-            
+
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
             $updateData['option_value'] = (gettype($request->option_value)=="array")
@@ -419,7 +419,7 @@ class TenantOptionsController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.TENANT_OPTION'),
@@ -451,7 +451,7 @@ class TenantOptionsController extends Controller
     {
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
+
         // Copy default theme folder to tenant folder on s3
         dispatch(new CopyDefaultThemeImagesToTenantImagesJob($tenantName));
 
@@ -459,5 +459,41 @@ class TenantOptionsController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_ASSET_IMAGES_RESET_SUCCESS');
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Display tenant option value
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function fetchTenantOptionValue(Request $request): JsonResponse
+    {
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+
+        // Fetch tenant option value
+        $tenantOptionDetail = $this->tenantOptionRepository->getOptionValue($request->option_name);
+        $apiMessage = ($tenantOptionDetail->isEmpty())
+        ? trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+        : trans('messages.success.MESSAGE_TENANT_OPTION_FOUND');
+        $apiStatus = Response::HTTP_OK;
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
     }
 }

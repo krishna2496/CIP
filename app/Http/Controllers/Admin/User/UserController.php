@@ -99,6 +99,62 @@ class UserController extends Controller
     }
 
     /**
+     * Display specific user timesheet summary
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function timesheetSummary(Request $request, $userId): JsonResponse
+    {
+
+        try {
+            $user = $this->userRepository->find($userId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        }
+       
+        $timesheet = $this->userRepository->getTimesheetSummary($request, $userId);
+
+        $data = $timesheet->first()->toArray();
+        $status = Response::HTTP_OK;
+        $message = trans('messages.success.MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS');
+
+        return $this->responseHelper->success($status, $message, $data);
+
+    }
+
+    /**
+     * Display specific user timesheet
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function timesheet(Request $request, $userId): JsonResponse
+    {
+
+        try {
+            $user = $this->userRepository->find($userId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        }
+       
+        $timesheets = $this->userRepository->getMissionTimesheet($request, $userId);
+
+        $data = $timesheets->toArray();
+        $status = $timesheets->isEmpty() ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;
+        $message = $timesheets->isEmpty() ? trans('messages.success.MESSAGE_TENANT_USER_TIMESHEET_EMPTY') : trans('messages.success.MESSAGE_TENANT_USER_TIMESHEET_SUCCESS');
+
+        return $this->responseHelper->success($status, $message, $data);
+
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request

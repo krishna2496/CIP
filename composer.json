@@ -18,11 +18,13 @@
         "league/flysystem": " ~1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "nicolaslopezj/searchable": "^1.11",
+        "onelogin/php-saml": "^3.4",
         "orumad/lumen-config-cache": "^1.0",
         "ramsey/uuid": "^3.8",
         "scssphp/scssphp": "^1.0",
         "squizlabs/php_codesniffer": "^3.4",
-        "vlucas/phpdotenv": "^3.3"
+        "vlucas/phpdotenv": "^3.3",
+        "bschmitt/laravel-amqp": "^2.0.8"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

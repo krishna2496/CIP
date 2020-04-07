@@ -76,14 +76,12 @@ class TenantSettingsController extends Controller
                 $index = $adminTenantSettings->search(function ($value, $key) use ($tenantSetting) {
                     return $value->tenant_setting_id === $tenantSetting->setting_id;
                 });
-                
-                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSetting
-                ->tenant_setting_id;
-                $tenantSettingData[$index]['key'] = $adminTenantSettings[$index]->key;
-                $tenantSettingData[$index]['description'] = $adminTenantSettings[$index]
-                ->description;
-                $tenantSettingData[$index]['title'] = $adminTenantSettings[$index]
-                ->title;
+                $tenantSettingData[] = [
+                    'tenant_setting_id' => $tenantSetting->tenant_setting_id,
+                    'key' => $adminTenantSettings[$index]->key,
+                    'description' => $adminTenantSettings[$index]->description,
+                    'title' => $adminTenantSettings[$index]->title
+                ];
             }
         }
         $apiData = $tenantSettingData;
@@ -114,7 +112,6 @@ class TenantSettingsController extends Controller
                     "value" => "required|in:1,0",
                 ]
             );
-            
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(

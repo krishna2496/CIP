@@ -23,7 +23,7 @@ interface TimesheetInterface
      * @return int
      */
     public function getSubmittedActions(int $missionId): int;
-  
+
     /**
      * Fetch timesheet details
      *
@@ -93,12 +93,12 @@ interface TimesheetInterface
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param string $status
+     * @param Request $request
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(string $status, int $timesheet): bool;
-    
+    public function updateTimesheet(Request $request, int $timesheet): bool;
+
     /**
      * Get timesheet entries
      *

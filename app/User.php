@@ -50,7 +50,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
       'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
        'language_id', 'title', 'hours_goal', 'is_profile_complete', 'receive_email_notification'];
-    
+
     /**
      * The attributes that should be visible in arrays.
      *
@@ -60,7 +60,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'city_id', 'country_id',
      'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'is_profile_complete', 'receive_email_notification'];
+    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'skills', 'is_profile_complete', 'receive_email_notification'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -70,7 +70,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
-  
+
     /**
      * Searchable rules.
      *
@@ -93,7 +93,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(City::class, 'city_id', 'city_id');
     }
-    
+
     /**
     * Defined has one relation for the country table.
     *
@@ -113,7 +113,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Availability::class, 'availability_id', 'availability_id');
     }
-    
+
     /**
     * Defined has one relation for the timezone table.
     *
@@ -123,7 +123,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Timezone::class, 'timezone_id', 'timezone_id');
     }
-    
+
     /**
      * Defined has many relation for the user_custom_field_value table.
      *
@@ -144,7 +144,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         $this->attributes['password'] = Hash::make($password);
     }
-    
+
     /**
      * Find the specified resource.
      *
@@ -153,9 +153,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUser(int $id)
     {
-        return static::with('city', 'country', 'timezone')->findOrFail($id);
+        return static::with('city', 'country', 'timezone', 'userCustomFieldValue.userCustomField')->findOrFail($id);
     }
-    
+
     /**
      * Delete the specified resource.
      *
@@ -219,5 +219,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function notification()
     {
         return $this->hasMany(Notification::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function skills()
+    {
+        return $this->hasMany('App\Models\UserSkill', 'user_id', 'user_id');
     }
 }

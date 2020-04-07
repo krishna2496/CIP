@@ -2,8 +2,6 @@
 namespace App\Repositories\MissionApplication;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Repositories\MissionApplication\MissionApplicationInterface;
 use App\Helpers\ResponseHelper;
 use App\Models\MissionApplication;
 use App\Models\TimeMission;
@@ -15,27 +13,32 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class MissionApplicationRepository implements MissionApplicationInterface
 {
     /**
-     * @var App\Helpers\ResponseHelper
+     * @var ResponseHelper
      */
     private $responseHelper;
 
     /**
-     * @var App\Models\MissionApplication
+     * @var MissionApplication
      */
     public $missionApplication;
 
     /**
-     * @var App\Models\TimeMission
+     * @var TimeMission
      */
     public $timeMission;
-   
+
+    /**
+     * @var Mission
+     */
+    public $mission;
+
     /**
      * Create a new MissionApplication repository instance.
      *
-     * @param  App\Models\Mission $mission
-     * @param  App\Models\TimeMission $timeMission
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
-     * @param  App\Models\MissionApplication $missionApplication
+     * @param  Mission $mission
+     * @param  TimeMission $timeMission
+     * @param  ResponseHelper $responseHelper
+     * @param  MissionApplication $missionApplication
      * @return void
      */
     public function __construct(
@@ -49,7 +52,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $this->responseHelper = $responseHelper;
         $this->missionApplication = $missionApplication;
     }
-    
+
     /*
      * Check already applied for a mission or not.
      *
@@ -67,7 +70,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      *
      * @param array $request
      * @param int $userId
-     * @return App\Models\MissionApplication
+     * @return MissionApplication
      */
     public function storeApplication(array $request, int $userId): MissionApplication
     {
@@ -81,13 +84,13 @@ class MissionApplicationRepository implements MissionApplicationInterface
         );
         return $this->missionApplication->create($application);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $missionId
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
     {
@@ -109,10 +112,10 @@ class MissionApplicationRepository implements MissionApplicationInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param int $missionId
      * @param int $applicationId
-     * @return App\Models\MissionApplication
+     * @return MissionApplication
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId): MissionApplication
     {
@@ -137,9 +140,9 @@ class MissionApplicationRepository implements MissionApplicationInterface
     /**
      * Get recent volunteers
      *
-     * @param Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $missionId
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function missionVolunteerDetail(Request $request, int $missionId): LengthAwarePaginator
     {

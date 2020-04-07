@@ -60,7 +60,7 @@ class LanguageController extends Controller
     public function fetchLanguageFile(Request $request, String $language)
     {
 		// Check for valid language code
-		if (!$this->languageHelper->isValidTenantLanguageCode($request, $language)) {
+		if (!$this->languageHelper->getTenantLanguageByCode($request, $language)) {
 			return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

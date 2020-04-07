@@ -139,6 +139,29 @@ trait RestExceptionHandlerTrait
             $message
         );
     }
+
+    /**
+     * Returns json response for SAML errors
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function samlError(string $customErrorCode, string $message)
+    {
+        $statusCode = $customErrorCode === config('constants.error_codes.ERROR_INVALID_SAML_IDENTITY_PROVIDER') ?
+            Response::HTTP_BAD_REQUEST :
+            Response::HTTP_FORBIDDEN;
+
+        return $this->jsonResponse(
+            $statusCode,
+            Response::$statusTexts[$statusCode],
+            $customErrorCode,
+            $message
+        );
+    }
+
     /**
      * Returns json response.
      *

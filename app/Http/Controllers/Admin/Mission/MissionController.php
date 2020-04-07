@@ -32,12 +32,12 @@ class MissionController extends Controller
      * @var App\Repositories\Mission\MissionRepository
      */
     private $missionRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var string
      */
@@ -131,7 +131,7 @@ class MissionController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "theme_id" => "integer|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "theme_id" => "integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
                 "location" => "required",
                 "location.city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
@@ -158,7 +158,7 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information" =>"nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -170,7 +170,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -185,6 +185,7 @@ class MissionController extends Controller
         $request->request->add(['state_id' => $city[0]['state_id']]);
 
         $mission = $this->missionRepository->store($request);
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
@@ -226,7 +227,7 @@ class MissionController extends Controller
         try {
             // Get data for parent table
             $mission = $this->missionRepository->find($id);
-            
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
@@ -272,10 +273,10 @@ class MissionController extends Controller
                 "total_seats" => "integer|min:1",
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information" =>"nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -293,7 +294,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -353,7 +354,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_MEDIA_ID_DOSENT_EXIST')
             );
         }
-              
+
         try {
             if (isset($request->documents) && count($request->documents) > 0) {
                 foreach ($request->documents as $mediaDocuments) {
@@ -403,11 +404,11 @@ class MissionController extends Controller
         }
 
         $this->missionRepository->update($request, $id);
-        
+
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION'),
@@ -419,7 +420,7 @@ class MissionController extends Controller
             null,
             $id
         ));
-        
+
         // Send notification to user if mission publication status is PUBLISHED
         $approved = config('constants.publication_status.APPROVED');
         $publishedForApplying = config('constants.publication_status.PUBLISHED_FOR_APPLYING');
@@ -435,7 +436,7 @@ class MissionController extends Controller
         }
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -480,17 +481,6 @@ class MissionController extends Controller
     public function removeMissionMedia(int $mediaId): JsonResponse
     {
         try {
-            // Fetch mission media details
-            $missionMediaDetails = $this->missionRepository->getMediaDetails($mediaId);
-            if (($missionMediaDetails->count() > 0) && ($missionMediaDetails[0]['default'] == "1")) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED'),
-                    trans('messages.custom_error_message.ERROR_MEDIA_DEFAULT_IMAGE_CANNOT_DELETED')
-                );
-            }
-                     
             $this->missionRepository->deleteMissionMedia($mediaId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_DELETED');

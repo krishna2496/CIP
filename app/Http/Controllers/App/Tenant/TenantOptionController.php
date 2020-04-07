@@ -39,7 +39,7 @@ class TenantOptionController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\LanguageHelper
      */
@@ -73,7 +73,7 @@ class TenantOptionController extends Controller
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
     }
-    
+
     /**
      * Get tenant options from table `tenant_options`
      *
@@ -86,7 +86,7 @@ class TenantOptionController extends Controller
 
         // Find custom data
         $data = $this->tenantOptionRepository->getOptions();
-        
+
         if ($data) {
             foreach ($data as $key => $value) {
                 $optionData[$value->option_name] = $value->option_value;
@@ -116,7 +116,7 @@ class TenantOptionController extends Controller
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTIONS_LIST');
-        
+
         return $this->responseHelper->success($apiStatus, '', $optionData);
     }
 
@@ -125,13 +125,29 @@ class TenantOptionController extends Controller
      *
      * @return JsonResponse
      */
-    public function getCustomCss(): JsonResponse
+    public function getCustomCss(Request $request): JsonResponse
     {
         $tenantCustomCss = '';
         // find custom css
-        $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
-        if ($tenantOptions) {
-            $tenantCustomCss = $tenantOptions->option_value;
+        try {
+            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
+            if ($tenantOptions) {
+                $tenantCustomCss = $tenantOptions->option_value;
+            }
+        } catch (\Exception $e) {
+            $awsRegion = env('AWS_REGION');
+            $bucketName = env('AWS_S3_BUCKET_NAME');
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
+            $customCssName = env('S3_CUSTOME_CSS_NAME');
+
+            $tenantCustomCss =
+                'https://s3.'
+                . $awsRegion . '.amazonaws.com/'
+                . $bucketName . '/'
+                . $tenantName . '/'
+                . $assetsFolder . '/'
+                . 'css/' . $customCssName;
         }
 
         $apiData = ['custom_css' => $tenantCustomCss];
@@ -139,7 +155,7 @@ class TenantOptionController extends Controller
 
         return $this->responseHelper->success($apiStatus, '', $apiData);
     }
-    
+
     /**
      * Display tenant option value
      *
@@ -165,14 +181,14 @@ class TenantOptionController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Fetch tenant option value
         $tenantOptionDetail = $this->tenantOptionRepository->getOptionValue($request->option_name);
         $apiMessage = ($tenantOptionDetail->isEmpty())
         ? trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
         : trans('messages.success.MESSAGE_TENANT_OPTION_FOUND');
         $apiStatus = Response::HTTP_OK;
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
     }
 }

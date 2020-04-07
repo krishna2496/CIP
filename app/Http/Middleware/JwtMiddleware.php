@@ -101,6 +101,14 @@ class JwtMiddleware
         }
         $user = User::find($credentials->sub);
 
+        if (isset($credentials->sso) && $credentials->sso) {
+            $newToken = $this->helpers->getJwtToken(
+                $user->user_id,
+                $this->helpers->getSubDomainFromRequest($request),
+            );
+            header('Token: '.$newToken);
+        }
+
         $timezone = '';
         $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
         if ($timezone) {

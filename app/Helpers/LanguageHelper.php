@@ -43,11 +43,22 @@ class LanguageHelper
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql');
         $languages = $this->db->table('language')->whereNull('deleted_at')->get();
-        
+
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
 
         return $languages;
+    }
+
+    public function getLanguage(int $id)
+    {
+        $this->helpers->switchDatabaseConnection('mysql');
+        $language = $this->db->table('language')
+            ->select('language_id', 'code', 'name')
+            ->where('language_id', $id)
+            ->first();
+        $this->helpers->switchDatabaseConnection('tenant');
+        return $language;
     }
 
     /**
@@ -61,7 +72,7 @@ class LanguageHelper
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql');
-        
+
         $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
@@ -72,10 +83,9 @@ class LanguageHelper
 
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
-        
         return $tenantLanguages;
     }
-    
+
     /**
      * Check for valid language_id from `ci_admin` table
      *
@@ -87,14 +97,13 @@ class LanguageHelper
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql');
-        
+
         $tenantLanguage = $this->db->table('tenant_language')
         ->where('tenant_id', $tenant->tenant_id)
         ->where('language_id', $request->language_id);
 
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
-        
         return ($tenantLanguage->count() > 0) ? true : false;
     }
 
@@ -118,7 +127,6 @@ class LanguageHelper
 
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
-        
         return $tenantLanguages;
     }
 
@@ -145,7 +153,7 @@ class LanguageHelper
 
         return $tenantLanguagesCodes;
     }
-    
+
     /**
      * Get language id from request
      *
@@ -169,7 +177,7 @@ class LanguageHelper
         $languages = $this->getTenantLanguages($request);
         $languageCode = ($request->hasHeader('X-localization')) ?
         $request->header('X-localization') : $this->getDefaultTenantLanguage($request);
-        
+
         $language = $languages->where('code', $languageCode)->first();
         return (!is_null($language)) ? $language : $this->getDefaultTenantLanguage($request);
     }
@@ -227,21 +235,17 @@ class LanguageHelper
         }
         return $language;
     }
-	
-	/**
-     * Check language code is valid for tenant
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param String $request
-     * @return Object
+
+    /**
+     * Search for the tenant language using language code
+     * @param  Request $request
+     * @param  string  $languageCode
+     * @return Array
      */
-	 public function isValidTenantLanguageCode(Request $request, string $languageCode)
-	 {
-		 $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
-		 if (!in_array($languageCode, $tenantLanguageCodes->toArray())) {
-			return false;
-		 } else {
-			 return true;
-		 }
-	 }
-}
+    public function getTenantLanguageByCode(Request $request, string $languageCode)
+    {
+        $tenantLanguages = $this->getTenantLanguages($request);
+        return $tenantLanguages->where('code', $languageCode)
+            ->first();
+    }
+ }

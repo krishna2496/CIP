@@ -35,8 +35,7 @@ class Timesheet extends Model
      * @var array
      */
     protected $fillable = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
-        'day_volunteered',
-        'notes', 'status'];
+        'day_volunteered', 'notes', 'status'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -45,8 +44,8 @@ class Timesheet extends Model
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered', 'notes', 'timesheetDocument', 'mission', 'month', 'total_hours',
-        'total_minutes', 'status'];
-    
+        'total_minutes', 'status', 'updated_at', 'user'];
+
     /**
      * Get date volunteered attribute on the model.
      *
@@ -89,7 +88,7 @@ class Timesheet extends Model
     {
         return ($this->attributes['time'] !== null) ? date('H:i', strtotime($this->attributes['time'])) : null;
     }
-    
+
     /**
      * Set note attribute on the model.
      *

@@ -169,6 +169,22 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Mission\MissionController@getUserMissions']);
 });
 
+/* SAML */
+$router->group(
+ [
+     'prefix' => '/app/saml',
+     'namespace' => 'App\Auth',
+     'middleware' => 'tenant.connection',
+ ],
+ function ($router) {
+     $router->get('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
+     $router->post('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
+     $router->post('acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
+     $router->get('slo', ['as' => 'saml.slo', 'uses' => 'SamlController@slo']);
+     $router->get('metadata', ['as' => 'saml.metadata', 'uses' => 'SamlController@metadata']);
+ }
+);
+
 /* Policy pages  */
 $router->get('/app/policy/listing', ['as' => 'policy.listing',
     'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -302,12 +318,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
         'uses' => 'App\Story\StoryController@publishedStories']);
-        
+
     /* Export all Story Data */
     $router->get('/app/story/export', ['as' => 'app.story.export',
          'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
          'uses' => 'App\Story\StoryController@exportStories']);
-        
+
     /* Copy declined story */
     $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copystory',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
@@ -322,7 +338,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Story\StoryController@update']);
-        
+
     /* Fetch story details */
     $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
      'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
@@ -356,7 +372,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Mission\MissionCommentController@destroy']);
-        
+
     /* Export user mission comments */
     $router->get('/app/dashboard/comments/export', [
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
@@ -386,7 +402,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/message/send', ['as' => 'app.message.send',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware',
         'uses' => 'App\Message\MessageController@sendMessage']);
-            
+
     /* Get User's message Listing*/
     $router->get('/app/messages', ['as' => 'app.message.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
@@ -416,7 +432,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/notifications/clear', ['as' => 'app.user-notifications.clear',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
-        
+
     /* Fetch notification settings */
     $router->get('/app/notifications', ['as' => 'app.notifications',
         'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -448,6 +464,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/', ['as' => 'users', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\User\UserController@index']);
             $router->get('/{userId}', ['as' => 'users.show', 'uses' => 'Admin\User\UserController@show']);
+            $router->get('/{userId}/timesheet', ['as' => 'users.timesheet', 'uses' => 'Admin\User\UserController@timesheet']);
+            $router->get('/{userId}/timesheet-summary', ['as' => 'users.timesheet-summary', 'uses' => 'Admin\User\UserController@timesheetSummary']);
             $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
             $router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
             $router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
@@ -563,6 +581,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
             $router->post('/', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@store']);
+            $router->get('/activated', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@index']);
         }
     );
 
@@ -582,6 +601,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'tenant-option', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
+            $router->get('/', ['uses' => 'Admin\Tenant\TenantOptionsController@fetchTenantOptionValue']);
             $router->post('/', ['uses' => 'Admin\Tenant\TenantOptionsController@storeTenantOption']);
             $router->patch('/', ['uses' => 'Admin\Tenant\TenantOptionsController@updateTenantOption']);
         }
@@ -617,58 +637,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
-    /* Set mission data for tenant specific */
+    /*
+    |--------------------------------------------------------------------------
+    | Api Missions
+    |--------------------------------------------------------------------------
+    */
     $router->group(
         ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
-                'uses' => 'Admin\Mission\MissionController@index']);
-            $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
-            $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
-            $router->patch('/{missionId}', ['as' => 'missions.update',
-                'uses' => 'Admin\Mission\MissionController@update']);
-            $router->delete('/{missionId}', ['as' => 'missions.delete',
-                'uses' => 'Admin\Mission\MissionController@destroy']);
-            $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
-                'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
-            $router->get(
-                '/{missionId}/applications/{applicationId}',
-                ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
-            );
-            $router->patch(
-                '/{missionId}/applications/{applicationId}',
-                ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
-            );
-            $router->get(
-                '/{missionId}/comments',
-                [
-                    'middleware' => ['PaginationMiddleware'],
-                    'as' => 'missions.comments',
-                    'uses' => 'Admin\Mission\MissionCommentController@index',
-                ]
-            );
-            $router->get(
-                '/{missionId}/comments/{commentId}',
-                [
-                    'middleware' => ['PaginationMiddleware'],
-                    'as' => 'missions.comments.detail',
-                    'uses' => 'Admin\Mission\MissionCommentController@show',
-                ]
-            );
-            $router->patch(
-                '/{missionId}/comments/{commentId}',
-                [
-                    'as' => 'missions.comments.update',
-                    'uses' => 'Admin\Mission\MissionCommentController@update',
-                ]
-            );
-            $router->delete(
-                '/{missionId}/comments/{commentId}',
-                [
-                    'as' => 'missions.comments.delete',
-                    'uses' => 'Admin\Mission\MissionCommentController@destroy',
-                ]
-            );
+            require base_path('routes/api/missions.php');
         }
     );
 
@@ -676,9 +653,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
+            $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);
+            $router->get('/details', ['middleware' => ['PaginationMiddleware'],
+                    'uses' => 'Admin\Timesheet\TimesheetController@getTimesheetsDetails']);
             $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Timesheet\TimesheetController@index']);
-            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
+            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet',
                 'uses' => 'Admin\Timesheet\TimesheetController@update']);
         }
     );
@@ -688,6 +668,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
         ['prefix' => 'entities/countries', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\Country\CountryController@index']);
+            $router->get('/{countryId}', ['uses' => 'Admin\Country\CountryController@show']);
+            $router->get('/{countryId}/cities', ['uses' => 'Admin\City\CityController@fetchCity']);
             $router->post('/', ['uses' => 'Admin\Country\CountryController@store']);
             $router->patch('/{countryId}', ['uses' => 'Admin\Country\CountryController@update']);
             $router->delete('/{countryId}', ['uses' => 'Admin\Country\CountryController@destroy']);
@@ -695,21 +677,20 @@ $router->group(['middleware' => 'localization'], function ($router) {
             'middleware' => ['PaginationMiddleware']]);
         }
     );
-    
+
     /* Get cities by country id */
     $router->group(
         ['prefix' => 'entities/cities', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\City\CityController@index']);
-            $router->get('/{countryId}', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\City\CityController@fetchCity',
-            'middleware' => ['PaginationMiddleware']]);
+            $router->get('/{countryId}', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\City\CityController@fetchCity']);
             $router->post('/', ['uses' => 'Admin\City\CityController@store']);
             $router->patch('/{cityId}', ['uses' => 'Admin\City\CityController@update']);
             $router->delete('/{cityId}', ['uses' => 'Admin\City\CityController@destroy']);
         }
     );
 
-    
+
     /* News category management */
     $router->group(
         ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
@@ -754,7 +735,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             $router->post('/send', ['as' => 'message.send','middleware' => ['JsonApiMiddleware'],
             'uses' => 'Admin\Message\MessageController@sendMessage']);
-            
+
             $router->delete('/{messageId}', ['as' => 'message.destroy',
                 'uses' => 'Admin\Message\MessageController@destroy']);
 
@@ -787,13 +768,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
             /* Store availability */
             $router->post('/entities/availability', ['as' => 'availability.store',
                 'uses' => 'Admin\Availability\AvailabilityController@store']);
-            
+
             $router->delete('/entities/availability/{availabilityId}', ['as' => 'availability.destroy',
                 'uses' => 'Admin\Availability\AvailabilityController@destroy']);
-            
+
             $router->patch('/entities/availability/{availabilityId}', ['as' => 'availability.update',
                 'uses' => 'Admin\Availability\AvailabilityController@update']);
-                
+
             $router->get(
                 '/entities/availability/{availabilityId}',
                 ['uses' => 'Admin\Availability\AvailabilityController@show']
