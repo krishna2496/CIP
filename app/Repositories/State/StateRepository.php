@@ -52,7 +52,7 @@ class StateRepository implements StateInterface
         $this->stateLanguage = $stateLanguage;
         $this->languageHelper = $languageHelper;
     }
-    
+
     /**
     * Get listing of all state.
     *
@@ -93,19 +93,19 @@ class StateRepository implements StateInterface
     public function storeStateLanguage(array $stateData)
     {
         $languages = $this->languageHelper->getLanguages();
-        
+
         foreach ($stateData['translations'] as $key => $state) {
             $data = [];
             $languageId = $languages->where('code', $state['lang'])->first()->language_id;
-            
+
             $data['state_id'] = $stateData['state_id'];
             $data['language_id'] = $languageId;
             $data['name'] = $state['name'];
-            
+
             $this->stateLanguage->create($data);
         }
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -131,13 +131,13 @@ class StateRepository implements StateInterface
         if (isset($request['country_id'])) {
             $stateDetail['country_id'] = $request['country_id'];
         }
-        
+
         // Update state
         $stateData = $this->state->findOrFail($id);
         $stateData->update($stateDetail);
-        
+
         $languages = $this->languageHelper->getLanguages();
-                 
+
         if (isset($request['translations'])) {
             foreach ($request['translations'] as $value) {
                 $language = $languages->where('code', $value['lang'])->first();
@@ -176,7 +176,7 @@ class StateRepository implements StateInterface
     {
         return $this->state->whereHas('mission')->whereStateId($id)->count() ? true : false;
     }
-    
+
     /**
      * It will check is state belongs to any user or not
      *
@@ -218,7 +218,13 @@ class StateRepository implements StateInterface
      */
     public function getStateDetails(int $id): State
     {
-        return $this->state->with('languages')->findOrFail($id);
+        $state = $this->state->with('languages')->findOrFail($id);
+        $languages = $this->languageHelper->getLanguages();
+        foreach ($state->languages as $language) {
+            $languageData = $languages->where('language_id', $language->language_id)->first();
+            $language->language_code = $languageData->code;
+        }
+        return $state;
     }
 
     /**
@@ -231,7 +237,7 @@ class StateRepository implements StateInterface
     public function getState(string $stateId, int $languageId) : array
     {
         $state = $this->state->with('languages')->whereIn("state_id", explode(",", $stateId))->get()->toArray();
-       
+
         $stateData = [];
         if (!empty($state)) {
             foreach ($state as $key => $value) {
@@ -241,7 +247,7 @@ class StateRepository implements StateInterface
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
                 }
-           
+
                 if ($translationkey !== '') {
                     $stateData[$value['state_id']] = $translation[$translationkey]['name'];
                 }
