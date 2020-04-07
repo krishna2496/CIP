@@ -275,6 +275,7 @@ class CityRepository implements CityInterface
         return $cities;
     }
 
+    
     /**
      * Get state_id data from cityId
      *
