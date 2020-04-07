@@ -305,9 +305,6 @@ class MissionController extends Controller
         }
         
         $city = $this->cityRepository->getState($request->location['city_id']);
-        $request->request->add(['state_id' => $city[0]['state_id']]);
-
-        $city = $this->cityRepository->getState($request->location['city_id']);
         $request->request->add(['state_id' =>  $city[0]['state_id']]);
  
         try {
