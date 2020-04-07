@@ -19,7 +19,7 @@ use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-
+use App\Repositories\City\CityRepository;
 //!  Mission controller
 /*!
 This controller is responsible for handling mission listing, show, store, update and delete operations.
@@ -58,6 +58,11 @@ class MissionController extends Controller
     private $tenantActivatedSettingRepository;
 
     /**
+     * @var App\Repositories\City\CityRepository
+     */
+    private $cityRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -66,6 +71,7 @@ class MissionController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
+     * @param App\Repositories\City\CityRepository $CityRepository
      * @return void
      */
     public function __construct(
@@ -74,7 +80,8 @@ class MissionController extends Controller
         Request $request,
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        CityRepository $cityRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -82,6 +89,7 @@ class MissionController extends Controller
         $this->languageHelper = $languageHelper;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->cityRepository =  $cityRepository;
     }
 
     /**
@@ -172,26 +180,8 @@ class MissionController extends Controller
             );
         }
 
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-        
-        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
-            $stateValidator = Validator::make(
-                $request->all(),
-                [
-                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
-                ]
-            );
-            if ($stateValidator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                    $stateValidator->errors()->first()
-                );
-            }
-        }
+        $city = $this->cityRepository->getState($request->location['city_id']);
+        $request->request->add(['state_id' => $city[0]['state_id']]);
 
         $mission = $this->missionRepository->store($request);
         // Set response data
@@ -312,28 +302,9 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
         
-        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-
-        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
-            $stateValidator = Validator::make(
-                $request->all(),
-                [
-                    "location.state_id" =>
-                    "sometimes|required_with:location|integer|exists:state,state_id,deleted_at,NULL"
-                ]
-            );
-            if ($stateValidator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                    $stateValidator->errors()->first()
-                );
-            }
-        }
+        $city = $this->cityRepository->getState($request->location['city_id']);
+        $request->request->add(['state_id' => $city[0]['state_id']]);
 
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
