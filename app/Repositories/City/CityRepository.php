@@ -274,4 +274,17 @@ class CityRepository implements CityInterface
         }
         return $cities;
     }
+
+    
+    /**
+     * Get state_id data from cityId
+     *
+     * @param string $cityId
+     * @return array
+     */
+    public function getState(string $cityId) : array
+    {
+        $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
+        return $city;
+    }
 }

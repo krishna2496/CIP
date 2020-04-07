@@ -92,7 +92,7 @@ class MissionRepository implements MissionInterface
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
-                'state_id' => (isset($request->location['state_id'])) ? $request->location['state_id'] : null,
+                'state_id' => (isset($request->state_id)) ? $request->state_id : null,
                 'country_id' => $countryId,
                 'start_date' => (isset($request->start_date)) ? $request->start_date : null,
                 'end_date' => (isset($request->end_date)) ? $request->end_date : null,
@@ -219,8 +219,8 @@ class MissionRepository implements MissionInterface
         if (isset($request->location['city_id'])) {
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
-        if (isset($request->location['state_id'])) {
-            $request->request->add(['state_id' => $request->location['state_id']]);
+        if (isset($request->state_id)) {
+            $request->request->add(['state_id' => $request->state_id]);
         }
         if (isset($request->organisation['organisation_id'])) {
             $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
@@ -596,6 +596,7 @@ class MissionRepository implements MissionInterface
             $missionQuery->where("mission.country_id", $userFilterData['country_id']);
         }
 
+        
         if ($userFilterData['state_id'] && $userFilterData['state_id'] !== '') {
             $missionQuery->whereIn("mission.state_id", explode(",", $userFilterData['state_id']));
         }
