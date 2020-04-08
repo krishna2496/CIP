@@ -385,7 +385,6 @@
         languageData: [],
         skillListing: [],
         resetSkillList: [],
-        clientImage: "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
         newUrl: "",
         isPrefilLoaded: true,
         prefilImageType: {

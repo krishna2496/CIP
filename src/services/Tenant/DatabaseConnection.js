@@ -17,7 +17,7 @@ export default async(langList, defautLang) => {
               let data = response.data.data;
 
               // Add default imagePath to store
-              store.commit('setImagePath', constants.IMAGE_PATH + data.tenantName);
+              store.commit('setImagePath', process.env.VUE_APP_S3_IMAGE_PATH + data.tenantName);
 
               // Store slider in Local Storage
               if (data.sliders) {
