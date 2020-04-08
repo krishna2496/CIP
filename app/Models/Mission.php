@@ -352,7 +352,7 @@ class Mission extends Model
     {
         if (!is_null($value) && ($value !== '')) {
             $data = @json_decode($value);
-            if ($data !== false) {
+            if ($data !== null) {
                 return (!is_null($value) && ($value !== '')) ? json_decode($value, true) : null;
             }
         }

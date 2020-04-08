@@ -53,6 +53,6 @@ class ActivityLog extends Model
     public function getObjectValueAttribute(string $value = null): array
     {
         $data = @json_decode($value);
-        return ($data !== false && !is_null($value)) ? json_decode($value, true): array();
+        return ($data !== null && !is_null($value)) ? json_decode($value, true): array();
     }
 }

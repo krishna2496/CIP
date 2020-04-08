@@ -58,7 +58,7 @@ class MissionTheme extends Model
     public function getTranslationsAttribute(string $value): ?array
     {
         $data = @json_decode($value);
-        return ($data !== false) ? json_decode($value, true): array();
+        return ($data !== null) ? json_decode($value, true): array();
     }
 
     /**
