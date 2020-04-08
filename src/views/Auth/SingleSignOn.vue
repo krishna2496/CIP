@@ -21,17 +21,6 @@ export default {
     async created() {
         document.body.classList.add("loader-enable");
         await this.createConnection();
-        let domain = '';
-        let imagePath = '';
-        let currentUrl = (((window.location.origin).split('.')));
-        if (currentUrl[0]) {
-            domain = ((currentUrl[0]).split('//'));
-            if(domain[1]) {
-                // imagePath = constants.IMAGE_PATH + domain[1];
-                imagePath = constants.IMAGE_PATH + "tatva";
-                store.commit('setImagePath', imagePath);
-            }
-        }
 
         let redirect = '/';
         if (this.$route.query.token) {
