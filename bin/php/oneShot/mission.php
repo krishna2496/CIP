@@ -1,0 +1,54 @@
+<?php
+
+require_once('bootstrap/app.php');
+
+$db = app()->make('db');
+
+$db->connection('mysql')->getPdo();
+
+$pdo = $db->connection('mysql')->getPdo();
+
+\Illuminate\Support\Facades\Config::set('database.default', 'mysql');
+$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+
+if (count($tenants) > 0) {
+    foreach ($tenants as $tenant) {
+        $tenantId = $tenant['tenant_id'];
+        $db->purge('tenant');
+        // Create connection to tenant
+        \Illuminate\Support\Facades\Config::set('database.connections.tenant', array(
+            'driver' => 'mysql',
+            'host' => env('DB_HOST'),
+            'database' => 'ci_tenant_'.$tenantId,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+        ));
+        // Create connection for the tenant database
+        $pdo = $db->connection('tenant')->getPdo();
+        
+        // Set default database
+        \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
+
+        $missions = $pdo->query('select * from mission')->fetchAll();
+        if (!empty($missions)) {
+            foreach ($missions as $mission) {
+                $data = @unserialize($mission['organisation_detail']);
+           
+                if ($data !== false) {
+                    $missionArray = unserialize($mission['organisation_detail']);
+                    $jsonData  = json_encode($missionArray);
+
+                    $pdo->prepare('
+                        UPDATE mission
+                        SET `organisation_detail` = :organisation_detail
+                        WHERE mission_id = :id
+                    ')
+                        ->execute([
+                            'organisation_detail' => $jsonData,
+                            'id' => $mission['mission_id']
+                        ]);
+                }
+            }
+        }
+    }
+}
