@@ -91,7 +91,7 @@ class CityController extends Controller
     }
 
     /**
-     * Display the specified country detail.
+     * Fetch city by city id
      *
      * @param int $id
      * @return Illuminate\Http\JsonResponse
