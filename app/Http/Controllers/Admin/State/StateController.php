@@ -55,7 +55,7 @@ class StateController extends Controller
         $this->languageHelper = $languageHelper;
         $this->userApiKey = $request->header('php-auth-user');
     }
-   
+
     /**
      * Fetch all state
      *
@@ -82,7 +82,7 @@ class StateController extends Controller
     {
         try {
             $stateList = $this->stateRepository->getStateList($request, $countryId);
-           
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($stateList->count() > 0) ? trans('messages.success.MESSAGE_STATE_LISTING')
             : trans('messages.success.MESSAGE_NO_STATE_FOUND');
@@ -94,7 +94,7 @@ class StateController extends Controller
             );
         }
     }
-    
+
     /**
      * Store a newly created states.
      *
@@ -114,7 +114,7 @@ class StateController extends Controller
                 "states.*.translations.*.name" => 'required|max:255'
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -124,7 +124,7 @@ class StateController extends Controller
                 $validator->errors()->first()
             );
         }
-       
+
         if (!empty($request->states)) {
             foreach ($request->states[0]['translations'] as $key => $value) {
                 $languageCode = $value['lang'];
@@ -156,7 +156,7 @@ class StateController extends Controller
         $apiData = ['state_ids' => $createdState];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_STATE_CREATED');
-                
+
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.STATE'),
             config('constants.activity_log_actions.CREATED'),
@@ -170,7 +170,7 @@ class StateController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-    
+
     /**
      * Update state data resource.
      *
@@ -206,7 +206,7 @@ class StateController extends Controller
                     }
                 }
             }
-            
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -216,13 +216,13 @@ class StateController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             $this->stateRepository->update($request, $id);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STATE_UPDATED');
-                    
+
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.STATE'),
                 config('constants.activity_log_actions.UPDATED'),
@@ -244,17 +244,17 @@ class StateController extends Controller
     }
 
     /**
-    * Fetch state by city Id
+    * Fetch state by state Id
     *
     * @param Illuminate\Http\Request $request
-    * @param int $cityId
+    * @param int $stateId
     * @return Illuminate\Http\JsonResponse
     */
-    public function show(int $cityId): JsonResponse
+    public function show(int $stateId): JsonResponse
     {
         try {
-            $stateList = $this->stateRepository->getStateDetails($cityId);
-           
+            $stateList = $this->stateRepository->getStateDetails($stateId);
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STATE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $stateList->toArray());
@@ -284,7 +284,7 @@ class StateController extends Controller
         }
         try {
             $this->stateRepository->delete($id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_STATE_DELETED');

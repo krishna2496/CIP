@@ -248,4 +248,18 @@ class LanguageHelper
         return $tenantLanguages->where('code', $languageCode)
             ->first();
     }
+
+    /**
+     * Check language code is valid for tenant
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String $request
+     * @return Object
+     */
+    public function isValidTenantLanguageCode(Request $request, string $languageCode)
+    {
+        $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
+        return in_array($languageCode, $tenantLanguageCodes->toArray());
+    }
+    
  }
