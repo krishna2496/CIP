@@ -164,18 +164,7 @@
     },
     created() {
       //Database connection and fetching tenant options api
-      this.createConnection()
-      let domain = '';
-      let imagePath = '';
-      let currentUrl = (((window.location.origin).split('.')));
-      if (currentUrl[0]) {
-        domain = ((currentUrl[0]).split('//'));
-        if(domain[1]) {
-          // imagePath = constants.IMAGE_PATH + domain[1];
-          imagePath = constants.IMAGE_PATH + "tatva";
-          store.commit('setImagePath', imagePath);
-        }
-      }
+      this.createConnection();
     },
     beforeCreate() {
       document.body.classList.remove("loader-enable");

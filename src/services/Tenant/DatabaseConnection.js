@@ -1,5 +1,6 @@
 import store from '../../store'
 import axios from 'axios'
+import constants from "../../constant";
 
 export default async(langList, defautLang) => {
     let responseData = {}
@@ -14,6 +15,10 @@ export default async(langList, defautLang) => {
           if (response.data.data) {
 
               let data = response.data.data;
+
+              // Add default imagePath to store
+              store.commit('setImagePath', constants.IMAGE_PATH + data.tenantName);
+
               // Store slider in Local Storage
               if (data.sliders) {
                   // Convert slider object to array
@@ -65,7 +70,6 @@ export default async(langList, defautLang) => {
               }
 
               //Set logo in local storage
-
               if (data.custom_logo) {
                   logo = data.custom_logo;
               }
