@@ -261,4 +261,5 @@ class LanguageHelper
         $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
         return in_array($languageCode, $tenantLanguageCodes->toArray());
     }
+    
  }
