@@ -44,18 +44,18 @@ class UserFilter extends Model
      */
     public function setFiltersAttribute($value) : void
     {
-        $this->attributes['filters'] = serialize($value);
+        $this->attributes['filters'] = json_encode($value);
     }
     
     /**
      * Get an attribute from the model.
      *
      * @param  string  $value
-     * @return array
+     * @return null|array
      */
-    public function getFiltersAttribute($value): array
+    public function getFiltersAttribute($value): ?array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**

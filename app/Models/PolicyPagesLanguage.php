@@ -46,29 +46,29 @@ class PolicyPagesLanguage extends Model
      */
     public function setDescriptionAttribute(array $value): void
     {
-        $this->attributes['description'] = serialize($value);
+        $this->attributes['description'] = json_encode($value);
     }
     
     /**
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return array
+     * @return null|array
      */
-    public function getDescriptionAttribute(string $value): array
+    public function getDescriptionAttribute(string $value): ?array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return array
+     * @return null|array
      */
-    public function getSectionsAttribute(string $value): array
+    public function getSectionsAttribute(string $value): ?array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**
