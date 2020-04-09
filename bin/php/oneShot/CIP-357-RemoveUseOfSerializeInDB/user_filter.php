@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $footerPageLanguages = $pdo->query('select * from footer_pages_language')->fetchAll();
-        if (!empty($footerPageLanguages)) {
-            foreach ($footerPageLanguages as $footerPageLanguage) {
-                $data = @unserialize($footerPageLanguage['description']);
+        $userFilters = $pdo->query('select filters,user_filter_id from user_filter')->fetchAll();
+        if (!empty($userFilters)) {
+            foreach ($userFilters as $userFilter) {
+                $data = @unserialize($userFilter['filters']);
            
                 if ($data !== false) {
-                    $footerPageLanguageArray = unserialize($footerPageLanguage['description']);
-                    $jsonData  = json_encode($footerPageLanguageArray);
+                    $userFilterArray = unserialize($userFilter['filters']);
+                    $jsonData  = json_encode($userFilterArray);
 
                     $pdo->prepare('
-                        UPDATE footer_pages_language
-                        SET `description` = :description
-                        WHERE id = :id
+                        UPDATE user_filter
+                        SET `filters` = :filters
+                        WHERE user_filter_id = :id
                     ')
                         ->execute([
-                            'description' => $jsonData,
-                            'id' => $footerPageLanguage['id']
+                            'filters' => $jsonData,
+                            'id' => $userFilter['user_filter_id']
                         ]);
                 }
             }

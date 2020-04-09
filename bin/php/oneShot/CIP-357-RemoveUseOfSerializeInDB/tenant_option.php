@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select * from slider')->fetchAll();
+        $tenantOptions = $pdo->query('select tenant_option_id,option_value from tenant_option')->fetchAll();
         if (!empty($tenantOptions)) {
             foreach ($tenantOptions as $tenantOption) {
-                $data = @unserialize($tenantOption['translations']);
+                $data = @unserialize($tenantOption['option_value']);
            
                 if ($data !== false) {
-                    $tenantOptionArray = unserialize($tenantOption['translations']);
+                    $tenantOptionArray = unserialize($tenantOption['option_value']);
                     $jsonData  = json_encode($tenantOptionArray);
 
                     $pdo->prepare('
-                        UPDATE slider
-                        SET `translations` = :translations
-                        WHERE slider_id = :id
+                        UPDATE tenant_option
+                        SET `option_value` = :option_value
+                        WHERE tenant_option_id = :id
                     ')
                         ->execute([
-                            'translations' => $jsonData,
-                            'id' => $tenantOption['slider_id']
+                            'option_value' => $jsonData,
+                            'id' => $tenantOption['tenant_option_id']
                         ]);
                 }
             }

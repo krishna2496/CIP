@@ -29,23 +29,24 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $newsCategories = $pdo->query('select * from news_category')->fetchAll();
-        if (!empty($newsCategories)) {
-            foreach ($newsCategories as $newsCategory) {
-                $data = @unserialize($newsCategory['translations']);
+        $tenantOptions = $pdo->query('select activity_log_id,object_value from activity_log')->fetchAll();
+       
+        if (!empty($tenantOptions)) {
+            foreach ($tenantOptions as $tenantOption) {
+                $data = @unserialize($tenantOption['object_value']);
            
                 if ($data !== false) {
-                    $newsCategoryArray = unserialize($newsCategory['translations']);
-                    $jsonData  = json_encode($newsCategoryArray);
+                    $tenantOptionArray = unserialize($tenantOption['object_value']);
+                    $jsonData  = json_encode($tenantOptionArray);
 
                     $pdo->prepare('
-                        UPDATE news_category
-                        SET `translations` = :translations
-                        WHERE news_category_id = :news_category_id
+                        UPDATE activity_log
+                        SET `object_value` = :object_value
+                        WHERE activity_log_id = :id
                     ')
                         ->execute([
-                            'translations' => $jsonData,
-                            'news_category_id' => $newsCategory['news_category_id']
+                            'object_value' => $jsonData,
+                            'id' => $tenantOption['activity_log_id']
                         ]);
                 }
             }

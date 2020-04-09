@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $policyPageLanguages = $pdo->query('select * from policy_pages_language')->fetchAll();
-        if (!empty($policyPageLanguages)) {
-            foreach ($policyPageLanguages as $policyPageLanguage) {
-                $data = @unserialize($policyPageLanguage['description']);
+        $skills = $pdo->query('select translations,skill_id from skill')->fetchAll();
+        if (!empty($skills)) {
+            foreach ($skills as $skill) {
+                $data = @unserialize($skill['translations']);
            
                 if ($data !== false) {
-                    $policyPageLanguageArray = unserialize($policyPageLanguage['description']);
-                    $jsonData  = json_encode($policyPageLanguageArray);
+                    $skillArray = unserialize($skill['translations']);
+                    $jsonData  = json_encode($skillArray);
 
                     $pdo->prepare('
-                        UPDATE policy_pages_language
-                        SET `description` = :description
-                        WHERE id = :id
+                        UPDATE skill
+                        SET `translations` = :translations
+                        WHERE skill_id = :skill_id
                     ')
                         ->execute([
-                            'description' => $jsonData,
-                            'id' => $policyPageLanguage['id']
+                            'translations' => $jsonData,
+                            'skill_id' => $skill['skill_id']
                         ]);
                 }
             }

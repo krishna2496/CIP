@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select * from activity_log')->fetchAll();
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @unserialize($tenantOption['object_value']);
+        $policyPageLanguages = $pdo->query('select id,description from policy_pages_language')->fetchAll();
+        if (!empty($policyPageLanguages)) {
+            foreach ($policyPageLanguages as $policyPageLanguage) {
+                $data = @unserialize($policyPageLanguage['description']);
            
                 if ($data !== false) {
-                    $tenantOptionArray = unserialize($tenantOption['object_value']);
-                    $jsonData  = json_encode($tenantOptionArray);
+                    $policyPageLanguageArray = unserialize($policyPageLanguage['description']);
+                    $jsonData  = json_encode($policyPageLanguageArray);
 
                     $pdo->prepare('
-                        UPDATE activity_log
-                        SET `object_value` = :object_value
-                        WHERE activity_log_id = :id
+                        UPDATE policy_pages_language
+                        SET `description` = :description
+                        WHERE id = :id
                     ')
                         ->execute([
-                            'object_value' => $jsonData,
-                            'id' => $tenantOption['activity_log_id']
+                            'description' => $jsonData,
+                            'id' => $policyPageLanguage['id']
                         ]);
                 }
             }

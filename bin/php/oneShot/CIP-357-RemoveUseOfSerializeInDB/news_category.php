@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $missions = $pdo->query('select * from mission')->fetchAll();
-        if (!empty($missions)) {
-            foreach ($missions as $mission) {
-                $data = @unserialize($mission['organisation_detail']);
+        $newsCategories = $pdo->query('select news_category_id,translations from news_category')->fetchAll();
+        if (!empty($newsCategories)) {
+            foreach ($newsCategories as $newsCategory) {
+                $data = @unserialize($newsCategory['translations']);
            
                 if ($data !== false) {
-                    $missionArray = unserialize($mission['organisation_detail']);
-                    $jsonData  = json_encode($missionArray);
+                    $newsCategoryArray = unserialize($newsCategory['translations']);
+                    $jsonData  = json_encode($newsCategoryArray);
 
                     $pdo->prepare('
-                        UPDATE mission
-                        SET `organisation_detail` = :organisation_detail
-                        WHERE mission_id = :id
+                        UPDATE news_category
+                        SET `translations` = :translations
+                        WHERE news_category_id = :news_category_id
                     ')
                         ->execute([
-                            'organisation_detail' => $jsonData,
-                            'id' => $mission['mission_id']
+                            'translations' => $jsonData,
+                            'news_category_id' => $newsCategory['news_category_id']
                         ]);
                 }
             }

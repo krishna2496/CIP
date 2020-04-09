@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $userCustomFields = $pdo->query('select * from user_custom_field')->fetchAll();
-        if (!empty($userCustomFields)) {
-            foreach ($userCustomFields as $userCustomField) {
-                $data = @unserialize($userCustomField['translations']);
+        $footerPageLanguages = $pdo->query('select id,description from footer_pages_language')->fetchAll();
+        if (!empty($footerPageLanguages)) {
+            foreach ($footerPageLanguages as $footerPageLanguage) {
+                $data = @unserialize($footerPageLanguage['description']);
            
                 if ($data !== false) {
-                    $userCustomFieldArray = unserialize($userCustomField['translations']);
-                    $jsonData  = json_encode($userCustomFieldArray);
+                    $footerPageLanguageArray = unserialize($footerPageLanguage['description']);
+                    $jsonData  = json_encode($footerPageLanguageArray);
 
                     $pdo->prepare('
-                        UPDATE user_custom_field
-                        SET `translations` = :translations
-                        WHERE field_id = :id
+                        UPDATE footer_pages_language
+                        SET `description` = :description
+                        WHERE id = :id
                     ')
                         ->execute([
-                            'translations' => $jsonData,
-                            'id' => $userCustomField['field_id']
+                            'description' => $jsonData,
+                            'id' => $footerPageLanguage['id']
                         ]);
                 }
             }

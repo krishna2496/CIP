@@ -29,7 +29,7 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $missionLanguages = $pdo->query('select * from mission_language')->fetchAll();
+        $missionLanguages = $pdo->query('select mission_language_id,description,custom_information from mission_language')->fetchAll();
         if (!empty($missionLanguages)) {
             foreach ($missionLanguages as $missionLanguage) {
                 //description

@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $userFilters = $pdo->query('select * from user_filter')->fetchAll();
-        if (!empty($userFilters)) {
-            foreach ($userFilters as $userFilter) {
-                $data = @unserialize($userFilter['filters']);
+        $missions = $pdo->query('select mission_id,organisation_detail from mission')->fetchAll();
+        if (!empty($missions)) {
+            foreach ($missions as $mission) {
+                $data = @unserialize($mission['organisation_detail']);
            
                 if ($data !== false) {
-                    $userFilterArray = unserialize($userFilter['filters']);
-                    $jsonData  = json_encode($userFilterArray);
+                    $missionArray = unserialize($mission['organisation_detail']);
+                    $jsonData  = json_encode($missionArray);
 
                     $pdo->prepare('
-                        UPDATE user_filter
-                        SET `filters` = :filters
-                        WHERE user_filter_id = :id
+                        UPDATE mission
+                        SET `organisation_detail` = :organisation_detail
+                        WHERE mission_id = :id
                     ')
                         ->execute([
-                            'filters' => $jsonData,
-                            'id' => $userFilter['user_filter_id']
+                            'organisation_detail' => $jsonData,
+                            'id' => $mission['mission_id']
                         ]);
                 }
             }

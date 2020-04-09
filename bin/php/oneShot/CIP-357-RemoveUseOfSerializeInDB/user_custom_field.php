@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $skills = $pdo->query('select * from skill')->fetchAll();
-        if (!empty($skills)) {
-            foreach ($skills as $skill) {
-                $data = @unserialize($skill['translations']);
+        $userCustomFields = $pdo->query('select translations,field_id from user_custom_field')->fetchAll();
+        if (!empty($userCustomFields)) {
+            foreach ($userCustomFields as $userCustomField) {
+                $data = @unserialize($userCustomField['translations']);
            
                 if ($data !== false) {
-                    $skillArray = unserialize($skill['translations']);
-                    $jsonData  = json_encode($skillArray);
+                    $userCustomFieldArray = unserialize($userCustomField['translations']);
+                    $jsonData  = json_encode($userCustomFieldArray);
 
                     $pdo->prepare('
-                        UPDATE skill
+                        UPDATE user_custom_field
                         SET `translations` = :translations
-                        WHERE skill_id = :skill_id
+                        WHERE field_id = :id
                     ')
                         ->execute([
                             'translations' => $jsonData,
-                            'skill_id' => $skill['skill_id']
+                            'id' => $userCustomField['field_id']
                         ]);
                 }
             }

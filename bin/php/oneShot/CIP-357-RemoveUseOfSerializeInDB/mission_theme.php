@@ -29,23 +29,23 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select * from tenant_option')->fetchAll();
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @unserialize($tenantOption['option_value']);
+        $missionThemes = $pdo->query('select mission_theme_id,translations from mission_theme')->fetchAll();
+        if (!empty($missionThemes)) {
+            foreach ($missionThemes as $missionTheme) {
+                $data = @unserialize($missionTheme['translations']);
            
                 if ($data !== false) {
-                    $tenantOptionArray = unserialize($tenantOption['option_value']);
-                    $jsonData  = json_encode($tenantOptionArray);
+                    $missionThemeArray = unserialize($missionTheme['translations']);
+                    $jsonData  = json_encode($missionThemeArray);
 
                     $pdo->prepare('
-                        UPDATE tenant_option
-                        SET `option_value` = :option_value
-                        WHERE tenant_option_id = :id
+                        UPDATE mission_theme
+                        SET `translations` = :translations
+                        WHERE mission_theme_id = :mission_theme_id
                     ')
                         ->execute([
-                            'option_value' => $jsonData,
-                            'id' => $tenantOption['tenant_option_id']
+                            'translations' => $jsonData,
+                            'mission_theme_id' => $missionTheme['mission_theme_id']
                         ]);
                 }
             }
