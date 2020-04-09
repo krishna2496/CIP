@@ -26,7 +26,7 @@ class AlterSkillTableChangeDataTypeOfTranslationsColumn extends Migration
     public function down()
     {
         Schema::table('skill', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `skill` CHANGE `translations` `translations` JSON");
+            \DB::statement("ALTER TABLE `skill` CHANGE `translations` `translations` TEXT");
         });
     }
 }

@@ -26,7 +26,7 @@ class AlterMissionLanguageTableChangeDataTypeOfDescriptionColumn extends Migrati
     public function down()
     {
         Schema::table('mission_language', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `mission_language` CHANGE `description` `description` JSON");
+            \DB::statement("ALTER TABLE `mission_language` CHANGE `description` `description` TEXT");
        });
     }
 }

@@ -26,7 +26,7 @@ class AlterMissionTableChangeDataTypeOfOrganisationDetailColumn extends Migratio
     public function down()
     {
         Schema::table('mission', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `mission` CHANGE `organisation_detail` `organisation_detail` JSON");
+            \DB::statement("ALTER TABLE `mission` CHANGE `organisation_detail` `organisation_detail` TEXT");
        });
     }
 }

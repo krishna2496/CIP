@@ -26,7 +26,7 @@ class AlterUserFilterTableChangeDataTypeOfFiltersColumn extends Migration
     public function down()
     {
         Schema::table('user_filter', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `user_filter` CHANGE `filters` `filters` JSON");
+            \DB::statement("ALTER TABLE `user_filter` CHANGE `filters` `filters` TEXT");
        });
     }
 }

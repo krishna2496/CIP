@@ -26,7 +26,7 @@ class AlterUserCustomFieldTableChangeDataTypeOfTranslationsColumn extends Migrat
     public function down()
     {
         Schema::table('user_custom_field', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `user_custom_field` CHANGE `translations` `translations` JSON");
+            \DB::statement("ALTER TABLE `user_custom_field` CHANGE `translations` `translations` TEXT");
         });
     }
 }

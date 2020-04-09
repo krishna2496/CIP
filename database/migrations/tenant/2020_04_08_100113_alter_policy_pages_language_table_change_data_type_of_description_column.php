@@ -26,7 +26,7 @@ class AlterPolicyPagesLanguageTableChangeDataTypeOfDescriptionColumn extends Mig
     public function down()
     {
         Schema::table('policy_pages_language', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `policy_pages_language` CHANGE `description` `description` JSON");
+            \DB::statement("ALTER TABLE `policy_pages_language` CHANGE `description` `description` TEXT");
        });
     }
 }

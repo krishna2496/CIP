@@ -26,7 +26,7 @@ class AlterMissionLanguageTableChangeDataTypeOfCustomInformationColumn extends M
     public function down()
     {
         Schema::table('mission_language', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `mission_language` CHANGE `custom_information` `custom_information` JSON");
+            \DB::statement("ALTER TABLE `mission_language` CHANGE `custom_information` `custom_information` TEXT");
         });
     }
 }

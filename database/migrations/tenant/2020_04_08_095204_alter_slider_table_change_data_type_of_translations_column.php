@@ -26,7 +26,7 @@ class AlterSliderTableChangeDataTypeOfTranslationsColumn extends Migration
     public function down()
     {
         Schema::table('slider', function (Blueprint $table) {
-             \DB::statement("ALTER TABLE `slider` CHANGE `translations` `translations` JSON");
+             \DB::statement("ALTER TABLE `slider` CHANGE `translations` `translations` TEXT");
         });
     }
 }

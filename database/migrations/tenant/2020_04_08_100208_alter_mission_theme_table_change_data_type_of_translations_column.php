@@ -26,7 +26,7 @@ class AlterMissionThemeTableChangeDataTypeOfTranslationsColumn extends Migration
     public function down()
     {
         Schema::table('mission_theme', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `mission_theme` CHANGE `translations` `translations` JSON");
+            \DB::statement("ALTER TABLE `mission_theme` CHANGE `translations` `translations` TEXT");
        });
     }
 }

@@ -26,7 +26,7 @@ class AlterActivityLogTableChangeDataTypeOfObjectValueColumn extends Migration
     public function down()
     {
         Schema::table('activity_log', function (Blueprint $table) {
-             \DB::statement("ALTER TABLE `activity_log` CHANGE `object_value` `object_value` JSON");
+             \DB::statement("ALTER TABLE `activity_log` CHANGE `object_value` `object_value` TEXT");
         });
     }
 }
