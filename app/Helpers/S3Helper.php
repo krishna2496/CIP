@@ -76,7 +76,7 @@ class S3Helper
                 && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                     $scssFilesArray['scss_files'][$i++] = [
                         "scss_file_path" =>
-                        'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'.env('AWS_S3_BUCKET_NAME').'/'.$file,
+                        'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/'.$file,
                         "scss_file_name" => basename($file)
                     ];
                 }
@@ -84,8 +84,7 @@ class S3Helper
                 && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                     $scssFilesArray['image_files'][$j++] = [
                         "image_file_path" =>
-                        'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME')
-                        . '/'.$file,
+                        'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/' .$file,
                         "image_file_name" => basename($file)
                     ];
                 }

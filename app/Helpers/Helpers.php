@@ -208,7 +208,7 @@ class Helpers
         $imagesFolder = env('AWS_S3_IMAGES_FOLDER_NAME');
         $defaultProfileImage = config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
 
-        return 'https://s3.' . $awsRegion . '.amazonaws.com/' . $bucketName . '/' . $tenantName . '/' . $assetsFolder .
+        return 'https://' . $bucketName . '.s3.' . $awsRegion . '.amazonaws.com/' . $tenantName . '/' . $assetsFolder .
             '/' . $imagesFolder . '/' . $defaultProfileImage;
     }
 
@@ -363,8 +363,8 @@ class Helpers
      */
     public function getAssetsUrl(string $tenantName): string
     {
-        return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' .
-            env('AWS_S3_BUCKET_NAME') . '/' . $tenantName . '/' . env('AWS_S3_ASSETS_FOLDER_NAME') .
+        return 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/' .
+            $tenantName . '/' . env('AWS_S3_ASSETS_FOLDER_NAME') .
             '/' . env('AWS_S3_IMAGES_FOLDER_NAME') . '/';
     }
 

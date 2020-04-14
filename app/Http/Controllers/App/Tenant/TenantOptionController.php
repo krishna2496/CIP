@@ -147,9 +147,8 @@ class TenantOptionController extends Controller
             $customCssName = env('S3_CUSTOME_CSS_NAME');
 
             $tenantCustomCss =
-                'https://s3.'
+                'https://' . $bucketName . '.s3.'
                 . $awsRegion . '.amazonaws.com/'
-                . $bucketName . '/'
                 . $tenantName . '/'
                 . $assetsFolder . '/'
                 . 'css/' . $customCssName;
