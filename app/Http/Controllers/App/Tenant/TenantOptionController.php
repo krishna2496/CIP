@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\App\Tenant;
 
+use App\Helpers\S3Helper;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Models\TenantOption;
@@ -140,18 +141,14 @@ class TenantOptionController extends Controller
                 $tenantCustomCss = $tenantOptions->option_value;
             }
         } catch (\Exception $e) {
-            $awsRegion = env('AWS_REGION');
-            $bucketName = env('AWS_S3_BUCKET_NAME');
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
             $customCssName = env('S3_CUSTOME_CSS_NAME');
 
-            $tenantCustomCss =
-                'https://' . $bucketName . '.s3.'
-                . $awsRegion . '.amazonaws.com/'
-                . $tenantName . '/'
-                . $assetsFolder . '/'
-                . 'css/' . $customCssName;
+            $tenantCustomCss = S3Helper::makeTenantS3BaseUrl($tenantName)
+                . $assetsFolder
+                . '/css/'
+                . $customCssName;
         }
 
         $apiData = ['custom_css' => $tenantCustomCss];

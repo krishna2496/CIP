@@ -44,11 +44,12 @@ class S3Helper
             file_get_contents($url, false, $context)
         );
 
-        $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME')
-            .'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.$fileName;
-
-        return $pathInS3;
+        return self::makeTenantS3BaseUrl($tenantName)
+            . env('AWS_S3_ASSETS_FOLDER_NAME')
+            . '/'
+            . env('AWS_S3_IMAGES_FOLDER_NAME')
+            . '/'
+            . $fileName;
     }
 
     /**
@@ -76,7 +77,7 @@ class S3Helper
                 && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                     $scssFilesArray['scss_files'][$i++] = [
                         "scss_file_path" =>
-                        'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/'.$file,
+                        'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/' . $file,
                         "scss_file_name" => basename($file)
                     ];
                 }
@@ -84,7 +85,7 @@ class S3Helper
                 && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                     $scssFilesArray['image_files'][$j++] = [
                         "image_file_path" =>
-                        'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/' .$file,
+                        'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.' . env('AWS_REGION') . '.amazonaws.com/' . $file,
                         "image_file_name" => basename($file)
                     ];
                 }
@@ -140,9 +141,8 @@ class S3Helper
         );
         $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
         $documentName = $fileName . '.' . $fileExtension;
-        $documentPath = $tenantName . '/users/' . $userId . '/'.$folderName.'/' . $documentName;
-        $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
-        . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
+        $documentPath = '/users/' . $userId . '/'.$folderName.'/' . $documentName;
+        $pathInS3 = S3Helper::makeTenantS3BaseUrl($tenantName) . $documentPath;
 
         $disk->put($documentPath, @file_get_contents($file, false, $context));
         return $pathInS3;
@@ -178,10 +178,13 @@ class S3Helper
             .'/'.$fileName,
             file_get_contents($url, false, $context)
         );
-        $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME')
-            .'/'.config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME').'/'.$fileName;
-        return $pathInS3;
+
+        return S3Helper::makeTenantS3BaseUrl($tenantName)
+            . env('AWS_S3_ASSETS_FOLDER_NAME')
+            . '/'
+            . config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME')
+            . '/'
+            . $fileName;
     }
 
     /**
@@ -216,5 +219,20 @@ class S3Helper
         $code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
         $languageFileUrl = Storage::disk('s3')->url($defaultLanguagePath);
         return $languageFileUrl;
+    }
+
+    /**
+     * @param string $tenantName
+     * @return string
+     */
+    static function makeTenantS3BaseUrl(string $tenantName): string
+    {
+        return 'https://'
+            . env('AWS_S3_BUCKET_NAME')
+            . '.s3.'
+            . env('AWS_REGION')
+            . '.amazonaws.com/'
+            . $tenantName
+            .'/';
     }
 }

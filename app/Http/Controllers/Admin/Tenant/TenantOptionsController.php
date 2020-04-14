@@ -303,8 +303,7 @@ class TenantOptionsController extends Controller
                     'mimetype' => $file->getMimeType()
                 ]
             );
-            $requestArray['image_file'] = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/assets/images/'.$fileName;
+            $requestArray['image_file'] = S3Helper::makeTenantS3BaseUrl($tenantName) . 'assets/images/' . $fileName;
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
