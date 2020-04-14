@@ -13,7 +13,7 @@ class CreateFolderInS3BucketJob extends Job
      * @var App\Models\Tenant
      */
     private $tenant;
-    
+
     /**
      * @var App\Helpers\DatabaseHelper
      */
@@ -64,15 +64,15 @@ class CreateFolderInS3BucketJob extends Job
 
             // Copy and paste file into tenant's folders
             Storage::disk('s3')->copy($file, $this->tenant->name.'/'.$sourcePath);
-            
+
             // Insert default logo image in database
             if (strpos(
                 $file,
                 env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME')
             )) {
-                $logoPathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
-                env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
-                '/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME');
+                $logoPathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'.env('AWS_REGION').'.amazonaws.com/'.
+                    $this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
+                    '/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME');
 
                 // Connect with tenant database
                 $tenantOptionData['option_name'] = "custom_logo";
@@ -89,9 +89,8 @@ class CreateFolderInS3BucketJob extends Job
             }
             // style.css file store into database with full path
             if (basename($file) === env('S3_CUSTOME_CSS_NAME')) {
-                $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
-                env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.''.$sourcePath;
-                
+                $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'.env('AWS_REGION').'.amazonaws.com/'. $this->tenant->name.''.$sourcePath;
+
                 // Connect with tenant database
                 $tenantOptionData['option_name'] = "custom_css";
                 $tenantOptionData['option_value'] = $pathInS3;
