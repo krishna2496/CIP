@@ -109,6 +109,11 @@ spec:
       - backend:
           serviceName: ci-frontend-service
           servicePort: 80
-          
+  - host: vpdemo.ci.prod.optimy.net
+    http:
+      paths:
+      - backend:
+          serviceName: ci-frontend-service
+          servicePort: 80          
 status:
   loadBalancer: {}
