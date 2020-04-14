@@ -346,9 +346,9 @@ class Mission extends Model
      * Get organisation detail in unserialize form
      *
      * @param string|null $value
-     * @return null|array
+     * @return array
      */
-    public function getOrganisationDetailAttribute($value)
+    public function getOrganisationDetailAttribute($value): array
     {
         if (!is_null($value) && ($value !== '')) {
             $data = @json_decode($value);

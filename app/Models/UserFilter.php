@@ -53,7 +53,7 @@ class UserFilter extends Model
      * @param  string  $value
      * @return null|array
      */
-    public function getFiltersAttribute($value): ?array
+    public function getFiltersAttribute($value): array
     {
         return json_decode($value, true);
     }

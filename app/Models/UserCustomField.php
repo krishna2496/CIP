@@ -54,7 +54,7 @@ class UserCustomField extends Model
      * @param  string $value
      * @return array
      */
-    public function getTranslationsAttribute(string $value): ?array
+    public function getTranslationsAttribute(string $value): array
     {
         return json_decode($value, true);
     }

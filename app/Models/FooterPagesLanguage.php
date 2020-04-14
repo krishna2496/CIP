@@ -53,9 +53,9 @@ class FooterPagesLanguage extends Model
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return null|array
+     * @return array
      */
-    public function getDescriptionAttribute(string $value)
+    public function getDescriptionAttribute(string $value): array
     {
         return json_decode($value, true);
     }
@@ -66,7 +66,7 @@ class FooterPagesLanguage extends Model
      * @param  string  $value
      * @return array
      */
-    public function getSectionsAttribute(string $value)
+    public function getSectionsAttribute(string $value): array
     {
         return json_decode($value, true);
     }

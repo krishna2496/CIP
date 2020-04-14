@@ -49,7 +49,7 @@ class TenantOption extends Model
         return $tenantOption->update(['option_value' => $colorData['option_value']]);
     }
 
-    public function getOptionValueAttribute($value)
+    public function getOptionValueAttribute($value): array
     {
         return (@json_decode($value) === false) ? $value : json_decode($value, true);
     }

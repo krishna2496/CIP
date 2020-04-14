@@ -55,7 +55,7 @@ class PolicyPagesLanguage extends Model
      * @param  string $value
      * @return null|array
      */
-    public function getDescriptionAttribute(string $value): ?array
+    public function getDescriptionAttribute(string $value): array
     {
         return json_decode($value, true);
     }
@@ -66,7 +66,7 @@ class PolicyPagesLanguage extends Model
      * @param  string $value
      * @return null|array
      */
-    public function getSectionsAttribute(string $value): ?array
+    public function getSectionsAttribute(string $value): array
     {
         return json_decode($value, true);
     }

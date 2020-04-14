@@ -76,9 +76,9 @@ class MissionLanguage extends Model
      * Get an attribute from the model.
      *
      * @param $value
-     * @return null|array
+     * @return array
      */
-    public function getDescriptionAttribute($value)
+    public function getDescriptionAttribute($value): array
     {
         if ($value) {
             return json_decode($value, true);
