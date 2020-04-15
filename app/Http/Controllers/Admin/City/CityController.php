@@ -91,7 +91,7 @@ class CityController extends Controller
     }
 
     /**
-     * Display the specified country detail.
+     * Fetch city by city id
      *
      * @param int $id
      * @return Illuminate\Http\JsonResponse
@@ -99,12 +99,12 @@ class CityController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $countryDetails = $this->cityRepository->getCityData($id);
+            $cityDetails = $this->cityRepository->getCityData($id);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CITY_FOUND');
             
-            return $this->responseHelper->success($apiStatus, $apiMessage, $countryDetails);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $cityDetails);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_CITY_NOT_FOUND'),
