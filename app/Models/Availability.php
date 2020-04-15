@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection as SupportCollection;
+use App\User;
 
 class Availability extends Model
 {
@@ -64,9 +65,9 @@ class Availability extends Model
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return null|array
+     * @return array
      */
-    public function getTranslationsAttribute(string $value): ?array
+    public function getTranslationsAttribute(string $value): array
     {
         return json_decode($value, true);
     }
@@ -80,5 +81,25 @@ class Availability extends Model
     public function deleteAvailability(int $id): bool
     {
         return static::findOrFail($id)->delete();
+    }
+
+    /**
+     * Get the mission which belongs to availability
+     *
+     * @return void
+     */
+    public function mission()
+    {
+        return $this->belongsTo(Mission::class, 'availability_id', 'availability_id');
+    }
+
+    /**
+     * Get the user which belongs to availability
+     *
+     * @return void
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'availability_id', 'availability_id');
     }
 }

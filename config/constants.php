@@ -490,7 +490,10 @@ return [
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036',
         'ERROR_STATE_INVALID_DATA' => '800037',
         'ERROR_STATE_NOT_FOUND' => '800038',
-        'ERROR_STATE_ENABLE_TO_DELETE' => '800039'
+        'ERROR_STATE_ENABLE_TO_DELETE' => '800039',
+        'ERROR_THEME_ENABLE_TO_DELETE' => '800040',
+        'ERROR_SKILL_ENABLE_TO_DELETE' => '800041',
+        'ERROR_AVAILABILITY_ENABLE_TO_DELETE' => '800042'
     ],
 
     /**
@@ -635,6 +638,22 @@ return [
         'country_id',
         'timezone_id',
         'language_id'
-    ]
+    ],
+
+    /*
+     * User notification types
+     */
+    'notification_type_id' => [
+        'RECOMMENDED_MISSIONS' => 1,
+        'VOLUNTEERING_HOURS' => 2,
+        'VOLUNTEERING_GOALS' => 3,
+        'MY_COMMENTS' => 4,
+        'MY_STORIES' => 5,
+        'NEW_MISSIONS' => 6,
+        'NEW_MESSAGES' => 7,
+        'RECOMMENDED_STORY' => 8,
+        'MISSION_APPLICATION' => 9,
+        'NEW_NEWS' => 10
+    ],
 
 ];

@@ -22,10 +22,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Mission extends Model
 {
-    use SoftDeletes, Notifiable;
+    use SoftDeletes, Notifiable, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -80,6 +81,14 @@ class Mission extends Model
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'label_goal_achieved',
     'label_goal_objective','state'];
     
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
+        'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
+        'goalMission','timeMission','comment','timesheet'
+    ];
+
     /**
      * Get the document record associated with the mission.
      *
@@ -391,5 +400,9 @@ class Mission extends Model
     {
         return $this->hasOne(State::class, 'state_id', 'state_id')
          ->select('state_id');
+    }
+
+    public function deleteNotification($reqest) {
+
     }
 }

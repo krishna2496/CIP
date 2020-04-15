@@ -110,4 +110,26 @@ class SkillRepository implements SkillInterface
     {
         return $this->skill->deleteSkill($id);
     }
+
+    /**
+     * It will check is skill belongs to any mission or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasMissionSkill(int $id): bool
+    {
+        return $this->skill->whereHas('missionSkill')->whereSkillId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is skill belongs to any user or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasUserSkill(int $id): bool
+    {
+        return $this->skill->whereHas('userSkill')->whereSkillId($id)->count() ? true : false;
+    }
 }

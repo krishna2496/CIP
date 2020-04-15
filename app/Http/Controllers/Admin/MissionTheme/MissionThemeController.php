@@ -221,6 +221,14 @@ class MissionThemeController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        if ($this->missionThemeRepository->hasMission($id)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_THEME_ENABLE_TO_DELETE'),
+                trans('messages.custom_error_message.ERROR_THEME_ENABLE_TO_DELETE')
+            );
+        }
         try {
             $missionTheme = $this->missionThemeRepository->delete($id);
             

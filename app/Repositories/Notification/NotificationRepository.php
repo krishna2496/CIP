@@ -188,4 +188,91 @@ class NotificationRepository implements NotificationInterface
     {
         return $this->notification->where('is_email_notification', 1)->get();
     }
+
+    /**
+     * Delete mission related notifications
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteMissionNotifications($missionId): bool
+    {
+        return $this->notification
+        ->whereIn('notification_type_id', [
+            config("constants.notification_type_id")["NEW_MISSIONS"],
+            config("constants.notification_type_id")["MISSION_APPLICATION"],
+            config("constants.notification_type_id")["RECOMMENDED_MISSIONS"],
+            config("constants.notification_type_id")["VOLUNTEERING_HOURS"],
+            config("constants.notification_type_id")["VOLUNTEERING_GOALS"],
+            config("constants.notification_type_id")["MY_COMMENTS"]
+        ])->where([
+            'entity_id' => $missionId
+        ])->delete();
+    }
+
+    /**
+     * Delete news related notifications
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteNewsNotifications($newsId): bool
+    {
+        return $this->notification
+        ->whereIn('notification_type_id', [
+            config("constants.notification_type_id")["NEW_NEWS"]
+        ])->where([
+            'entity_id' => $newsId
+        ])->delete();
+    }
+
+    /**
+     * Delete story related notifications
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteStoryNotifications($storyId): bool
+    {
+        return $this->notification
+        ->whereIn('notification_type_id', [
+            config("constants.notification_type_id")["MY_STORIES"],
+            config("constants.notification_type_id")["RECOMMENDED_STORY"]
+        ])->where([
+            'entity_id' => $storyId
+        ])->delete();
+    }
+
+    /**
+     * Delete comment related notifications
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteCommentNotifications($commentId): bool
+    {
+        return $this->notification
+        ->whereIn('notification_type_id', [
+            config("constants.notification_type_id")["MY_COMMENTS"]
+        ])->where([
+            'entity_id' => $commentId
+        ])->delete();
+    }
+
+    /**
+     * Delete message related notifications
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteMessageNotifications($messageId): bool
+    {
+        return $this->notification
+        ->whereIn('notification_type_id', [
+            config("constants.notification_type_id")["NEW_MESSAGES"]
+        ])->where([
+            'entity_id' => $messageId
+        ])->delete();
+    }
+    
 }

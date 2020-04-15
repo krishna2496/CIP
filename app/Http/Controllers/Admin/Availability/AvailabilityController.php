@@ -230,6 +230,16 @@ class AvailabilityController extends Controller
     public function destroy(int $availabilityId): JsonResponse
     {
         try {
+            
+            if ($this->availabilityRepository->hasMission($availabilityId) || $this->availabilityRepository->hasUser($availabilityId)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_AVAILABILITY_ENABLE_TO_DELETE'),
+                    trans('messages.custom_error_message.ERROR_AVAILABILITY_ENABLE_TO_DELETE')
+                );
+            }
+
             $availability = $this->availabilityRepository->delete($availabilityId);
             
             // Set response data

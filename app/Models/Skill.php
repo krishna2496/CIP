@@ -92,4 +92,24 @@ class Skill extends Model
     {
         return $this->belongsTo(static::class, 'parent_skill');
     }
+
+    /**
+     * Get the mission which belongs to Skill
+     *
+     * @return void
+     */
+    public function missionSkill()
+    {
+        return $this->belongsTo(MissionSkill::class, 'skill_id', 'skill_id');
+    }
+
+    /**
+     * Get the user which belongs to Skill
+     *
+     * @return void
+     */
+    public function userSkill()
+    {
+        return $this->belongsTo(UserSkill::class, 'skill_id', 'skill_id');
+    }
 }
