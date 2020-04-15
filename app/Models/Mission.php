@@ -401,8 +401,4 @@ class Mission extends Model
         return $this->hasOne(State::class, 'state_id', 'state_id')
          ->select('state_id');
     }
-
-    public function deleteNotification($reqest) {
-
-    }
 }
