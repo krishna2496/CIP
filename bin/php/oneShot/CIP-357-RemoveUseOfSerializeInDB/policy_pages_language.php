@@ -4,8 +4,6 @@ require_once('bootstrap/app.php');
 
 $db = app()->make('db');
 
-$db->connection('mysql')->getPdo();
-
 $pdo = $db->connection('mysql')->getPdo();
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
