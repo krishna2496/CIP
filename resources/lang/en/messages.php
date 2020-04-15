@@ -52,7 +52,8 @@ return [
         'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Atleast one default language is required',
         'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'Invalid file extension',
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'You can not delete default tenant language',
-        'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name'
+        'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
+        'ERROR_LANGUAGE_ENABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.'
     ],
     'email_text' => [
         'ERROR' => 'Error',

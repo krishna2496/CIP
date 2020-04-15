@@ -63,4 +63,20 @@ class ActivityLogRepository implements ActivityLogInterface
 
         return $activityLogQuery->orderBy('created_at', $order)->paginate($request->perPage);
     }
+
+    /**
+     * Delete activity log related tenant
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteTenantActivityLog($tenantId): bool
+    {
+        return $this->activityLog
+        ->whereIn('type', [
+            config("constants.activity_log_types")["TENANT"]
+        ])->where([
+            'object_id' => $tenantId
+        ])->delete();
+    }
 }
