@@ -51,7 +51,7 @@ return [
         'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'extension de fichier invalide',
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'Vous ne pouvez pas supprimer la langue du locataire par défaut',
         'ERROR_INVALID_FQDN_NAME' => 'Nom de locataire non valide',
-        'ERROR_LANGUAGE_ENABLE_TO_DELETE' => 'La langue ne peut pas être supprimée car elle est actuellement utilisée.'
+        'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'La langue ne peut pas être supprimée car elle est actuellement utilisée.'
     ]
     
 ];

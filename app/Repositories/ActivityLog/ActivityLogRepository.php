@@ -67,7 +67,7 @@ class ActivityLogRepository implements ActivityLogInterface
     /**
      * Delete activity log related tenant
      *
-     * @param int $userId
+     * @param int $tenantId
      * @return bool
      */
     public function deleteTenantActivityLog($tenantId): bool
