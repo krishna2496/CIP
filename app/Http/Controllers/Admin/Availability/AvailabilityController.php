@@ -235,8 +235,8 @@ class AvailabilityController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_AVAILABILITY_ENABLE_TO_DELETE'),
-                    trans('messages.custom_error_message.ERROR_AVAILABILITY_ENABLE_TO_DELETE')
+                    config('constants.error_codes.ERROR_AVAILABILITY_UNABLE_TO_DELETE'),
+                    trans('messages.custom_error_message.ERROR_AVAILABILITY_UNABLE_TO_DELETE')
                 );
             }
 

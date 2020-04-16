@@ -351,7 +351,7 @@ return [
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
         'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
-        'ERROR_THEME_ENABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
-        'ERROR_SKILL_ENABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
+        'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
+        'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
     ]
 ];

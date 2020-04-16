@@ -346,9 +346,9 @@ return [
         
         'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
         'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
-        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
-        'ERROR_THEME_ENABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
-        'ERROR_SKILL_ENABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
-        'ERROR_AVAILABILITY_ENABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
+        'ERROR_STATE_UNABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
+        'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
+        'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
        ]
 ];
