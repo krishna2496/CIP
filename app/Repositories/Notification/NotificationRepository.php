@@ -192,7 +192,7 @@ class NotificationRepository implements NotificationInterface
     /**
      * Delete mission related notifications
      *
-     * @param int $userId
+     * @param int $missionId
      * @return bool
      */
     public function deleteMissionNotifications($missionId): bool
@@ -213,7 +213,7 @@ class NotificationRepository implements NotificationInterface
     /**
      * Delete news related notifications
      *
-     * @param int $userId
+     * @param int $newsId
      * @return bool
      */
     public function deleteNewsNotifications($newsId): bool
@@ -229,7 +229,7 @@ class NotificationRepository implements NotificationInterface
     /**
      * Delete story related notifications
      *
-     * @param int $userId
+     * @param int $storyId
      * @return bool
      */
     public function deleteStoryNotifications($storyId): bool
@@ -246,7 +246,7 @@ class NotificationRepository implements NotificationInterface
     /**
      * Delete comment related notifications
      *
-     * @param int $userId
+     * @param int $commentId
      * @return bool
      */
     public function deleteCommentNotifications($commentId): bool
@@ -262,7 +262,7 @@ class NotificationRepository implements NotificationInterface
     /**
      * Delete message related notifications
      *
-     * @param int $userId
+     * @param int $messageId
      * @return bool
      */
     public function deleteMessageNotifications($messageId): bool
