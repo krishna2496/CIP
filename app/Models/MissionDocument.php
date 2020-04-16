@@ -36,7 +36,14 @@ class MissionDocument extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_document_id', 'document_name', 'document_type', 'document_path', 'sort_order'];
+    protected $visible = [
+        'mission_document_id',
+        'document_name',
+        'document_type',
+        'document_path',
+        'sort_order',
+        'updated_at'
+    ];
 
     /**
      * Store/update specified resource.

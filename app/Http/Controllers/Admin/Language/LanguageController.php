@@ -101,7 +101,7 @@ class LanguageController extends Controller
         }
         
         // Check for valid language code
-        if (!$this->languageHelper->isValidTenantLanguageCode($request, $request->code)) {
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $request->code)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -175,7 +175,7 @@ class LanguageController extends Controller
         }
         
         // Check for valid language code
-        if (!$this->languageHelper->isValidTenantLanguageCode($request, $fileName)) {
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $fileName)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

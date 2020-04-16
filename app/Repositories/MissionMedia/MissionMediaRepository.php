@@ -32,7 +32,7 @@ class MissionMediaRepository implements MissionMediaInterface
         $this->missionMedia = $missionMedia;
         $this->s3helper = $s3helper;
     }
-    
+
     /**
      * Save media images
      *
@@ -53,7 +53,7 @@ class MissionMediaRepository implements MissionMediaInterface
                 $media = array('default' => '0');
                 $this->missionMedia->where('mission_id', $missionId)->update($media);
             }
-          
+
             $missionMedia = array(
                     'mission_id' => $missionId,
                     'media_name' => basename($filePath),
@@ -62,15 +62,25 @@ class MissionMediaRepository implements MissionMediaInterface
                     'default' => $default,
                     'sort_order' => $value['sort_order']
                 );
+            if (isset($value['internal_note'])) {
+                $missionMedia['internal_note'] = $value['internal_note'];
+            }
             $this->missionMedia->create($missionMedia);
             unset($missionMedia);
         }
 
         if ($isDefault ===  0) {
-            $mediaData = $this->missionMedia->where('mission_id', $missionId)
-            ->orderBy('mission_media_id', 'ASC')->first();
+            $mediaData = $this->missionMedia
+                ->where([
+                    ['mission_id', '=', $missionId],
+                    ['media_type', '<>', 'mp4']
+                ])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
             $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            $this->missionMedia
+                ->where('mission_media_id', $mediaData->mission_media_id)
+                ->update($missionMedia);
         }
     }
 
@@ -89,6 +99,9 @@ class MissionMediaRepository implements MissionMediaInterface
                                   'media_type' => 'mp4',
                                   'media_path' => $value['media_path'],
                                   'sort_order' => $value['sort_order']);
+            if (isset($value['internal_note'])) {
+                $missionMedia['internal_note'] = $value['internal_note'];
+            }
             $this->missionMedia->create($missionMedia);
             unset($missionMedia);
         }
@@ -125,17 +138,26 @@ class MissionMediaRepository implements MissionMediaInterface
             if (isset($value['sort_order'])) {
                 $missionMedia['sort_order'] = $value['sort_order'];
             }
+            if (isset($value['internal_note'])) {
+                $missionMedia['internal_note'] = $value['internal_note'];
+            }
             $this->missionMedia->createOrUpdateMedia(['mission_id' => $missionId,
                 'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
         }
         $defaultData = $this->missionMedia->where('mission_id', $missionId)->where('default', '1')->count();
-                                    
+
         if (($isDefault === 0) && ($defaultData === 0)) {
-            $mediaData = $this->missionMedia->where('mission_id', $missionId)
-                        ->orderBy('mission_media_id', 'ASC')->first();
-            $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            $mediaData = $this->missionMedia
+                ->where([
+                    ['mission_id', '=', $missionId],
+                    ['media_type', '<>', 'mp4']
+                ])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
+            $this->missionMedia
+                ->where('mission_media_id', $mediaData->mission_media_id)
+                ->update(['default' => '1']);
         }
     }
 
@@ -160,6 +182,9 @@ class MissionMediaRepository implements MissionMediaInterface
             if (isset($value['sort_order'])) {
                 $missionMedia['sort_order'] = $value['sort_order'];
             }
+            if (isset($value['internal_note'])) {
+                $missionMedia['internal_note'] = $value['internal_note'];
+            }
             $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
              'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
@@ -174,9 +199,25 @@ class MissionMediaRepository implements MissionMediaInterface
      */
     public function deleteMedia(int $mediaId): bool
     {
+        $mediaDetails = $this->getMediaDetails($mediaId);
+        if ($mediaDetails->count() > 0 && $mediaDetails[0]['default'] == '1') {
+            $firstImageMedia = $this->missionMedia
+                ->where([
+                    ['mission_id', '=', $mediaDetails[0]['mission_id']],
+                    ['media_type', '<>', 'mp4'],
+                    ['mission_media_id', '<>', $mediaId]
+                ])
+                ->orderBy('sort_order', 'ASC')
+                ->first();
+            if ($firstImageMedia) {
+                $this->missionMedia
+                    ->where('mission_media_id', $firstImageMedia->mission_media_id)
+                    ->update(['default' => '1']);
+            }
+        }
         return $this->missionMedia->deleteMedia($mediaId);
     }
-    
+
     /**
      * Get mission media details
      *

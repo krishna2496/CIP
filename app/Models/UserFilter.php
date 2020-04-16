@@ -46,7 +46,7 @@ class UserFilter extends Model
     {
         $this->attributes['filters'] = json_encode($value);
     }
-    
+
     /**
      * Get an attribute from the model.
      *

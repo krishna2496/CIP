@@ -1,6 +1,12 @@
 <?php
 namespace App\Http\Controllers\App\User;
 
+use InvalidArgumentException;
+use App\Transformations\UserTransformable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -12,12 +18,6 @@ use App\Repositories\City\CityRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
-use InvalidArgumentException;
-use App\Transformations\UserTransformable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Helpers\LanguageHelper;
-use App\Helpers\Helpers;
-use Validator;
 use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +36,7 @@ class UserController extends Controller
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
-    
+
     /**
      * @var App\Repositories\UserCustomField\UserCustomFieldRepository
      */
@@ -51,12 +51,12 @@ class UserController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
-    
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -66,7 +66,7 @@ class UserController extends Controller
      * @var App\Helpers\S3Helper
      */
     private $s3helper;
-    
+
     /**
      * @var App\Repositories\UserFilter\UserFilterRepository
      */
@@ -104,7 +104,7 @@ class UserController extends Controller
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -186,7 +186,7 @@ class UserController extends Controller
         $userCustomFieldData = [];
         $userSkillData = [];
         $customFieldsData = $customFields->toArray();
-        
+
         $customFieldsValue = $userDetail->userCustomFieldValue;
         unset($userDetail->userCustomFieldValue);
 
@@ -240,18 +240,17 @@ class UserController extends Controller
         $availabilityData = [];
         foreach ($availabilityList as $availability) {
             $arrayKey = array_search($languageCode, array_column($availability['translations'], 'lang'));
-            if ($arrayKey  !== '') {
+            if ($arrayKey  !== '' && isset($availability['translations'][$arrayKey]['title'])) {
                 $availabilityData[$availability['availability_id']] = $availability
                 ['translations'][$arrayKey]['title'];
             }
         }
         $availabilityList = $availabilityData;
-
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
+
         // Get tenant default language
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        
+
         // Get language id
         $languageId = $this->languageHelper->getLanguageId($request);
         if (!$cityList->isEmpty()) {
@@ -269,13 +268,13 @@ class UserController extends Controller
         $apiData['language_list'] = $tenantLanguages;
         $apiData['language_code_list'] = $tenantLanguageCodes;
         $apiData['availability_list'] = $availabilityList;
-        
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-    
+
     /**
      * Update user data
      *
@@ -348,7 +347,7 @@ class UserController extends Controller
 
         // Update user
         $user = $this->userRepository->update($request->toArray(), $id);
-        
+
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
 
@@ -367,7 +366,7 @@ class UserController extends Controller
         $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
-        
+
         // Store Activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USER_PROFILE'),
@@ -382,7 +381,7 @@ class UserController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-    
+
     /**
      * Upload profile image of user
      *
@@ -409,14 +408,14 @@ class UserController extends Controller
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
         $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
-        
+
         $userData['avatar'] = $imagePath;
         $this->userRepository->update($userData, $userId);
-        
+
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
         $apiStatus = Response::HTTP_OK;
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USER_PROFILE_IMAGE'),
@@ -441,7 +440,7 @@ class UserController extends Controller
     public function saveCookieAgreement(Request $request): JsonResponse
     {
         $userId = $request->auth->user_id;
-        
+
         // Update cookie agreement date
         $this->userRepository->updateCookieAgreement($userId);
 
@@ -449,7 +448,7 @@ class UserController extends Controller
         $apiData = ['user_id' => $userId];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USER_COOKIE_AGREEMENT'),

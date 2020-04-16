@@ -43,4 +43,24 @@ class TimezoneRepository implements TimezoneInterface
     {
         return $this->timezone->pluck('timezone', 'timezone_id');
     }
+
+    /**
+     * Get the timezone instance base on timezone code.
+     *
+     * @param  string  $timezone
+     * @return Object|Boolean
+     */
+    public function getTenantTimezoneByCode($timezone)
+    {
+        $timezone = $this->timezone
+            ->where('timezone', $timezone)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$timezone) {
+            return false;
+        }
+
+        return $timezone;
+    }
 }
