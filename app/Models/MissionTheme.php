@@ -46,9 +46,9 @@ class MissionTheme extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = json_encode($value);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -71,7 +71,7 @@ class MissionTheme extends Model
     {
         return static::findOrFail($id);
     }
-    
+
     /**
      * Delete the specified resource.
      *

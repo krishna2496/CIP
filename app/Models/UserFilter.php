@@ -44,7 +44,7 @@ class UserFilter extends Model
      */
     public function setFiltersAttribute($value) : void
     {
-        $this->attributes['filters'] = json_encode($value);
+        $this->attributes['filters'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**

@@ -69,9 +69,9 @@ class MissionLanguage extends Model
      */
     public function setDescriptionAttribute(array $value)
     {
-        $this->attributes['description'] = json_encode($value);
+        $this->attributes['description'] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -83,6 +83,8 @@ class MissionLanguage extends Model
         if ($value) {
             return json_decode($value, true);
         }
+
+        return [];
     }
 
     /**
@@ -105,20 +107,22 @@ class MissionLanguage extends Model
      */
     public function setCustomInformationAttribute($value)
     {
-        $this->attributes['custom_information'] = isset($value) ? json_encode($value) : null;
+        $this->attributes['custom_information'] = isset($value) ? json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
     }
-    
+
     /**
      * Get an attribute from the model.
      *
      * @param $value
-     * @return null|array
+     * @return array
      */
     public function getCustomInformationAttribute($value)
     {
         if ($value) {
             return json_decode($value, true);
         }
+
+        return [];
     }
 
     /**

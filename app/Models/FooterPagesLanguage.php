@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class FooterPagesLanguage extends Model
 {
     use SoftDeletes;
-    
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'footer_pages_language';
-    
+
     /**
      * The primary key for the model.
      *
@@ -30,14 +30,14 @@ class FooterPagesLanguage extends Model
      * @var array
      */
     protected $fillable = ['page_id', 'language_id', 'title', 'description'];
-    
+
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
     protected $visible = ['page_id', 'language_id', 'title', 'description', 'sections'];
-        
+
     /**
      * Set description attribute on the model.
      *
@@ -46,9 +46,9 @@ class FooterPagesLanguage extends Model
      */
     public function setDescriptionAttribute(array $value): void
     {
-        $this->attributes['description'] = json_encode($value);
+        $this->attributes['description'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *

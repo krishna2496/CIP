@@ -338,22 +338,21 @@ class Mission extends Model
     public function setOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && !empty($value)) {
-            $this->attributes['organisation_detail'] = json_encode($value);
+            $this->attributes['organisation_detail'] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
     }
 
     /**
-     * Get organisation detail in unserialize form
-     *
-     * @param string|null $value
-     * @return array
+     * @param $value
+     * @return mixed|null
      */
-    public function getOrganisationDetailAttribute($value): array
+    public function getOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && ($value !== '')) {
             $data = @json_decode($value);
+
             if ($data !== false) {
-                return (!is_null($value) && ($value !== '')) ? json_decode($value, true) : null;
+                return json_decode($value, true);
             }
         }
         return null;

@@ -15,7 +15,7 @@ class UserCustomField extends Model
      * @var string
      */
     protected $table = 'user_custom_field';
-    
+
     /**
      * The primary key for the model.
      *
@@ -29,14 +29,14 @@ class UserCustomField extends Model
     * @var array
     */
     protected $fillable = ['name', 'type', 'translations', 'is_mandatory'];
-    
+
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
     protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory'];
-    
+
     /**
      * Set translations attribute on the model.
      *
@@ -45,9 +45,9 @@ class UserCustomField extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = json_encode($value);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -58,7 +58,7 @@ class UserCustomField extends Model
     {
         return json_decode($value, true);
     }
-    
+
     /**
      * Delete the specified resource.
      *

@@ -40,10 +40,10 @@ class ActivityLog extends Model
     public function setObjectValueAttribute(array $value = null)
     {
         if (!is_null($value)) {
-            $this->attributes['object_value'] = json_encode($value);
+            $this->attributes['object_value'] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
     }
-    
+
     /**
      * Set value in serialize form
      *
