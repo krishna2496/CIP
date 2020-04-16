@@ -23,7 +23,9 @@ if (count($tenants) > 0) {
         ));
         // Create connection for the tenant database
         $pdo = $db->connection('tenant')->getPdo();
-        
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
+
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
@@ -31,10 +33,13 @@ if (count($tenants) > 0) {
         if (!empty($footerPageLanguages)) {
             foreach ($footerPageLanguages as $footerPageLanguage) {
                 $data = @unserialize($footerPageLanguage['description']);
-           
+
                 if ($data !== false) {
                     $footerPageLanguageArray = unserialize($footerPageLanguage['description']);
-                    $jsonData  = json_encode($footerPageLanguageArray);
+                    $jsonData  = json_encode($footerPageLanguageArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+                    $pdo->exec('SET NAMES utf8mb4');
+                    $pdo->exec('SET CHARACTER SET utf8mb4');
 
                     $pdo->prepare('
                         UPDATE footer_pages_language

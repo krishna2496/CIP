@@ -5,6 +5,9 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
+$pdo->exec('SET NAMES utf8mb4');
+$pdo->exec('SET CHARACTER SET utf8mb4');
+
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 $tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
@@ -23,19 +26,21 @@ if (count($tenants) > 0) {
         ));
         // Create connection for the tenant database
         $pdo = $db->connection('tenant')->getPdo();
-        
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
+
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
         $tenantOptions = $pdo->query('select activity_log_id,object_value from activity_log')->fetchAll();
-       
+
         if (!empty($tenantOptions)) {
             foreach ($tenantOptions as $tenantOption) {
                 $data = @unserialize($tenantOption['object_value']);
-           
+
                 if ($data !== false) {
                     $tenantOptionArray = unserialize($tenantOption['object_value']);
-                    $jsonData  = json_encode($tenantOptionArray);
+                    $jsonData  = json_encode($tenantOptionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE activity_log

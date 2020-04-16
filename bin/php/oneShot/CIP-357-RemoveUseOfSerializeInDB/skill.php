@@ -5,6 +5,8 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
+$pdo->exec('SET NAMES utf8mb4');
+$pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 $tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
@@ -23,7 +25,9 @@ if (count($tenants) > 0) {
         ));
         // Create connection for the tenant database
         $pdo = $db->connection('tenant')->getPdo();
-        
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
+
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
@@ -31,10 +35,10 @@ if (count($tenants) > 0) {
         if (!empty($skills)) {
             foreach ($skills as $skill) {
                 $data = @unserialize($skill['translations']);
-           
+
                 if ($data !== false) {
                     $skillArray = unserialize($skill['translations']);
-                    $jsonData  = json_encode($skillArray);
+                    $jsonData  = json_encode($skillArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE skill

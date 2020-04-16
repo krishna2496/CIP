@@ -5,6 +5,8 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
+$pdo->exec('SET NAMES utf8mb4');
+$pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 $tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
@@ -23,7 +25,9 @@ if (count($tenants) > 0) {
         ));
         // Create connection for the tenant database
         $pdo = $db->connection('tenant')->getPdo();
-        
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
+
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
@@ -32,10 +36,10 @@ if (count($tenants) > 0) {
             foreach ($missionLanguages as $missionLanguage) {
                 //description
                 $data = @unserialize($missionLanguage['description']);
-           
+
                 if ($data !== false) {
                     $missionLanguageArray = unserialize($missionLanguage['description']);
-                    $jsonData  = json_encode($missionLanguageArray);
+                    $jsonData  = json_encode($missionLanguageArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE mission_language
@@ -49,10 +53,10 @@ if (count($tenants) > 0) {
                 }
                 //custom information
                 $customInformationData = @unserialize($missionLanguage['custom_information']);
-           
+
                 if ($customInformationData !== false) {
                     $missionLanguageArray = unserialize($missionLanguage['custom_information']);
-                    $jsonData  = json_encode($missionLanguageArray);
+                    $jsonData  = json_encode($missionLanguageArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE mission_language

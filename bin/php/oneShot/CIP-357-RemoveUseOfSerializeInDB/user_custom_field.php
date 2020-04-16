@@ -5,6 +5,8 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
+$pdo->exec('SET NAMES utf8mb4');
+$pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 $tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
@@ -23,7 +25,9 @@ if (count($tenants) > 0) {
         ));
         // Create connection for the tenant database
         $pdo = $db->connection('tenant')->getPdo();
-        
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
+
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
@@ -31,10 +35,10 @@ if (count($tenants) > 0) {
         if (!empty($userCustomFields)) {
             foreach ($userCustomFields as $userCustomField) {
                 $data = @unserialize($userCustomField['translations']);
-           
+
                 if ($data !== false) {
                     $userCustomFieldArray = unserialize($userCustomField['translations']);
-                    $jsonData  = json_encode($userCustomFieldArray);
+                    $jsonData  = json_encode($userCustomFieldArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE user_custom_field
