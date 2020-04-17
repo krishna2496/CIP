@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Skill;
+
 class SkillTest extends TestCase
 {
     /**
@@ -122,6 +124,62 @@ class SkillTest extends TestCase
             ],
             "message"
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * Get skill list with specific id given
+     *
+     * @return void
+     */
+    public function it_should_return_all_skills_with_specific_id_given()
+    {
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        // Create three skill record.
+
+        DB::setDefaultConnection('tenant');
+
+        $skills = factory('App\Models\Skill', 3)->create();
+
+        // Get two skill id on created three skills
+
+        $ids = $skills->take(2)->modelKeys();
+
+        $idParams = implode('&id[]=', $ids);
+
+        // Get only the two ids on the params
+
+        DB::setDefaultConnection('mysql');
+
+        $response = $this->get("entities/skills?id[]=$idParams", $authorization)
+            ->seeStatusCode(200)->seeJsonStructure([
+            'status',
+            'data' => [
+               '*' => [
+                    'skill_id',
+                    'skill_name',
+                    'translations'
+                ]
+            ],
+            'message'
+        ]);
+
+        $result = json_decode($response->response->getContent());
+
+        $this->assertSame($result->pagination->total, 2);
+
+        foreach ($result->data as $key => $data) {
+            $this->assertTrue(in_array($data->skill_id, $ids));
+        }
+
+        // Forced Delete all created skills. It will not softdelete skills
+        Skill::whereIn('skill_id', $skills->modelKeys())->forceDelete();
+
     }
 
     /**

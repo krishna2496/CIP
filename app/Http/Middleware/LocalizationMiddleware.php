@@ -17,7 +17,7 @@ class LocalizationMiddleware
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * Create a new localization middleware instance.
      *
@@ -30,7 +30,7 @@ class LocalizationMiddleware
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
     }
-    
+
     /**
      * Handle an incoming request.
      *
@@ -42,6 +42,7 @@ class LocalizationMiddleware
     {
         // Set localization to config locale
         config(['app.locale' => $request->header('X-localization')]);
+
         try {
             // Get tenant language base on localization or default language of tenant from database
             $language = $this->languageHelper->checkTenantLanguage($request);
@@ -54,11 +55,11 @@ class LocalizationMiddleware
                 trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
             );
         }
-        
+
         // set laravel localization
         app('translator')->setLocale($language->code);
         config(['app.locale' => $language->code]);
-        
+
         // continue request
         return $next($request);
     }

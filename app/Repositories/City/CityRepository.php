@@ -52,7 +52,7 @@ class CityRepository implements CityInterface
         $this->cityLanguage = $cityLanguage;
         $this->languageHelper = $languageHelper;
     }
-    
+
     /**
     * Get listing of all city.
     *
@@ -84,7 +84,7 @@ class CityRepository implements CityInterface
     public function getCity(string $cityId, int $languageId) : array
     {
         $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
-       
+
         $cityData = [];
         if (!empty($city)) {
             foreach ($city as $key => $value) {
@@ -94,7 +94,7 @@ class CityRepository implements CityInterface
                 if (array_search($languageId, array_column($translation, 'language_id')) !== false) {
                     $translationkey = array_search($languageId, array_column($translation, 'language_id'));
                 }
-           
+
                 if ($translationkey !== '') {
                     $cityData[$value['city_id']] = $translation[$translationkey]['name'];
                 }
@@ -102,7 +102,30 @@ class CityRepository implements CityInterface
         }
         return $cityData;
     }
-    
+
+    /**
+     * Get city detail from city_id with all languages
+     *
+     * @param int  $cityId
+     * @return array
+     */
+    public function getCityData(int $cityId) : array
+    {
+        $city = $this->city
+            ->with('languages')
+            ->where('city_id', $cityId)
+            ->firstOrFail();
+
+        $languages = $this->languageHelper->getLanguages();
+
+        foreach ($city->languages as $lang) {
+            $languageData = $languages->where('language_id', $lang->language_id)->first();
+            $lang->language_code = $languageData->code;
+        }
+
+        return $city->toArray();
+    }
+
     /**
      * Store city data
      *
@@ -127,15 +150,15 @@ class CityRepository implements CityInterface
     public function storeCityLanguage(array $cityData)
     {
         $languages = $this->languageHelper->getLanguages();
-        
+
         foreach ($cityData['translations'] as $key => $city) {
             $data = [];
             $languageId = $languages->where('code', $city['lang'])->first()->language_id;
-            
+
             $data['city_id'] = $cityData['city_id'];
             $data['language_id'] = $languageId;
             $data['name'] = $city['name'];
-            
+
             $this->cityLanguage->create($data);
         }
     }
@@ -167,7 +190,7 @@ class CityRepository implements CityInterface
         }
         return $cities;
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -193,16 +216,17 @@ class CityRepository implements CityInterface
         if (isset($request['country_id'])) {
             $cityDetail['country_id'] = $request['country_id'];
         }
-        
+
         if (isset($request['state_id'])) {
             $cityDetail['state_id'] = $request['state_id'];
         }
+
         // Update city
         $cityData = $this->city->findOrFail($id);
         $cityData->update($cityDetail);
-        
+
         $languages = $this->languageHelper->getLanguages();
-                 
+
         if (isset($request['translations'])) {
             foreach ($request['translations'] as $value) {
                 $language = $languages->where('code', $value['lang'])->first();
@@ -263,7 +287,17 @@ class CityRepository implements CityInterface
     public function getCityList(Request $request, int $countryId) : LengthAwarePaginator
     {
         $this->country->findOrFail($countryId);
-        $cities = $this->city->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+
+        $cities = $this->city->with(['languages'])
+            ->where('country_id', $countryId);
+
+        if ($request->has('search') && $request->input('search') != '') {
+            $cities->wherehas('languages', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+
+        $cities = $cities->paginate($request->perPage);
 
         $languages = $this->languageHelper->getLanguages();
         foreach ($cities as $key => $value) {
@@ -275,16 +309,23 @@ class CityRepository implements CityInterface
         return $cities;
     }
 
-    
     /**
-     * Get state_id data from cityId
-     *
-     * @param string $cityId
-     * @return array
+     * Search city with language and country restriction
+     * @param  string $search
+     * @param  int    $languageId
+     * @param  int    $countryId
+     * @return Object
      */
-    public function getState(string $cityId) : array
-    {
-        $city = $this->city->with('languages')->whereIn("city_id", explode(",", $cityId))->get()->toArray();
-        return $city;
+    public function searchCity(
+        string $cityName,
+        int $languageId,
+        int $countryId
+    ) {
+        return $this->city
+            ->join('city_language', 'city_language.city_id', '=', 'city.city_id')
+            ->where('city.country_id', $countryId)
+            ->where('city_language.language_id', $languageId)
+            ->take(1)
+            ->first();
     }
 }

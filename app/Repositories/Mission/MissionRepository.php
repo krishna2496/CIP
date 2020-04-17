@@ -90,7 +90,7 @@ class MissionRepository implements MissionInterface
         $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $missionData = array(
-                'theme_id' => $request->theme_id,
+                'theme_id' => $request->theme_id != "" ? $request->theme_id : null,
                 'city_id' => $request->location['city_id'],
                 'state_id' => (isset($request->state_id)) ? $request->state_id : null,
                 'country_id' => $countryId,
@@ -236,6 +236,14 @@ class MissionRepository implements MissionInterface
             $request->total_seats : null;
             $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
             $request->request->add(['total_seats' => $totalSeats]);
+        }
+
+        if (isset($request->total_seats) && ($request->total_seats === '')) {
+            $request->request->set('total_seats', null);
+        }
+
+        if (isset($request->theme_id) && ($request->theme_id === '')) {
+            $request->request->set('theme_id', null);
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -623,10 +631,10 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] === config('constants.LOWEST_AVAILABLE_SEATS')) {
-                $missionQuery->orderByRaw('total_seats - mission_application_count asc');
+                $missionQuery->orderByRaw('total_seats IS NULL, total_seats - mission_application_count ASC');
             }
             if ($userFilterData['sort_by'] === config('constants.HIGHEST_AVAILABLE_SEATS')) {
-                $missionQuery->orderByRaw('total_seats - mission_application_count desc');
+                $missionQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application_count DESC');
             }
             if ($userFilterData['sort_by'] === config('constants.MY_FAVOURITE')) {
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
@@ -1221,13 +1229,11 @@ class MissionRepository implements MissionInterface
     public function checkAvailableSeats(int $missionId): bool
     {
         $mission = $this->modelsService->mission->checkAvailableSeats($missionId);
-        if ($mission['total_seats'] !== 0) {
-            $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
-            return ($seatsLeft === 0 || $mission['total_seats'] === $mission['mission_application_count'])
-            ? false : true;
-        } else {
-            return false;
+        if ($mission['total_seats'] !== null) {
+            $seatsLeft = $mission['total_seats'] - $mission['mission_application_count'];
+            return $seatsLeft > 0;
         }
+        return true;
     }
     
     /**

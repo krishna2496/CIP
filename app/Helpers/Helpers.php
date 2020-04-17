@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use stdClass;
 class Helpers
 {
     use RestExceptionHandlerTrait;
-    
+
     /**
      * @var DB
      */
@@ -30,22 +31,44 @@ class Helpers
     }
 
     /**
-    * It will return tenant name from request
-    * @param Illuminate\Http\Request $request
-    * @return string
-    */
-    public function getSubDomainFromRequest(Request $request) : string
+     * It will return tenant name from request
+     * @param Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getSubDomainFromRequest(Request $request): string
     {
-        // Check admin request
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
             return $this->getDomainFromUserAPIKeys($request);
+        } else if (!empty($request->query('tenant'))) {
+            return $this->getTenantDomainByTenantId($request->query('tenant'));
+        } else if (in_array(env('APP_ENV'), ['local', 'testing'])) {
+            return env('DEFAULT_TENANT');
         } else {
-            if ((env('APP_ENV') === 'local' || env('APP_ENV') === 'testing')) {
-                return env('DEFAULT_TENANT');
-            } else {
-                return parse_url($request->headers->all()['referer'][0])['host'];
-            }
+            return parse_url($request->headers->all()['referer'][0])['host'];
         }
+    }
+
+    /**
+     * It will retrieve tenant id and sponsor id from tenant table
+     *
+     * @param Request $request
+     * @return object $tenant
+     */
+    public function getTenantIdAndSponsorIdFromRequest(Request $request): object
+    {
+        $domain = $this->getSubDomainFromRequest($request);
+
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantIdAndSponsorId = $this->db->table('tenant')
+            ->select('tenant_id', 'sponsor_id')
+            ->where('name', $domain)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection('tenant');
+
+        return $tenantIdAndSponsorId;
     }
 
     /**
@@ -58,7 +81,7 @@ class Helpers
     {
         if (isset($request->headers->all()['referer'])) {
             $parseUrl = parse_url($request->headers->all()['referer'][0]);
-            return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
+            return $parseUrl['scheme'] . '://' . $parseUrl['host'] . env('APP_PATH');
         } else {
             return env('APP_MAIL_BASE_URL');
         }
@@ -92,13 +115,15 @@ class Helpers
     public function switchDatabaseConnection(string $connection)
     {
         // Set master connection
-        $this->db->connection('mysql')->getPdo();
-
         $pdo = $this->db->connection('mysql')->getPdo();
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
         Config::set('database.default', 'mysql');
 
-        if ($connection=="tenant") {
+        if ($connection == "tenant") {
             $pdo = $this->db->connection('tenant')->getPdo();
+            $pdo->exec('SET NAMES utf8mb4');
+            $pdo->exec('SET CHARACTER SET utf8mb4');
             Config::set('database.default', 'tenant');
         }
     }
@@ -119,6 +144,8 @@ class Helpers
         ));
         // Create connection for the tenant database
         $pdo = $this->db->connection('tenant')->getPdo();
+        $pdo->exec('SET NAMES utf8mb4');
+        $pdo->exec('SET CHARACTER SET utf8mb4');
         // Set default database
         Config::set('database.default', 'tenant');
     }
@@ -144,15 +171,24 @@ class Helpers
      * @param string $tenantName
      * @return string
      */
-    public static function getJwtToken(int $userId, string $tenantName) : string
-    {
+    public static function getJwtToken(
+        int $userId,
+        string $tenantName,
+        bool $isSSO = false,
+        int $duration = 14400
+    ) : string {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60 * 4, // Expiration time
+            'exp' => time() + $duration, // Expiration time
             'fqdn' => $tenantName
         ];
+
+        if ($isSSO) {
+            $payload['sso'] = true;
+        }
+
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
@@ -166,14 +202,14 @@ class Helpers
      */
     public function getUserDefaultProfileImage(string $tenantName): string
     {
-        $awsRegion = config('constants.AWS_REGION');
-        $bucketName = config('constants.AWS_S3_BUCKET_NAME');
-        $assetsFolder = config('constants.AWS_S3_ASSETS_FOLDER_NAME');
-        $imagesFolder = config('constants.AWS_S3_IMAGES_FOLDER_NAME');
+        $awsRegion = env('AWS_REGION');
+        $bucketName = env('AWS_S3_BUCKET_NAME');
+        $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
+        $imagesFolder = env('AWS_S3_IMAGES_FOLDER_NAME');
         $defaultProfileImage = config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
 
-        return 'https://s3.'.$awsRegion.'.amazonaws.com/'.$bucketName.'/'.$tenantName.'/'.$assetsFolder.
-        '/'.$imagesFolder.'/'.$defaultProfileImage;
+        return 'https://s3.' . $awsRegion . '.amazonaws.com/' . $bucketName . '/' . $tenantName . '/' . $assetsFolder .
+            '/' . $imagesFolder . '/' . $defaultProfileImage;
     }
 
     /**
@@ -211,30 +247,30 @@ class Helpers
         $tenant = $this->getTenantDetail($request);
         // Connect master database to get tenant settings
         $this->switchDatabaseConnection('mysql');
-        
+
         $tenantSetting = $this->db->table('tenant_has_setting')
-        ->select(
-            'tenant_has_setting.tenant_setting_id',
-            'tenant_setting.key',
-            'tenant_setting.tenant_setting_id',
-            'tenant_setting.description',
-            'tenant_setting.title'
-        )
-        ->leftJoin(
-            'tenant_setting',
-            'tenant_setting.tenant_setting_id',
-            '=',
-            'tenant_has_setting.tenant_setting_id'
-        )
-        ->whereNull('tenant_has_setting.deleted_at')
-        ->whereNull('tenant_setting.deleted_at')
-        ->where('tenant_id', $tenant->tenant_id)
-        ->orderBy('tenant_has_setting.tenant_setting_id')
-        ->get();
+            ->select(
+                'tenant_has_setting.tenant_setting_id',
+                'tenant_setting.key',
+                'tenant_setting.tenant_setting_id',
+                'tenant_setting.description',
+                'tenant_setting.title'
+            )
+            ->leftJoin(
+                'tenant_setting',
+                'tenant_setting.tenant_setting_id',
+                '=',
+                'tenant_has_setting.tenant_setting_id'
+            )
+            ->whereNull('tenant_has_setting.deleted_at')
+            ->whereNull('tenant_setting.deleted_at')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->orderBy('tenant_has_setting.tenant_setting_id')
+            ->get();
 
         // Connect tenant database
         $this->switchDatabaseConnection('tenant');
-        
+
         return $tenantSetting;
     }
 
@@ -250,13 +286,13 @@ class Helpers
         $this->switchDatabaseConnection('mysql');
         // authenticate api user based on basic auth parameters
         $apiUser = $this->db->table('api_user')
-                    ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
-                    ->where('api_key', base64_encode($request->header('php-auth-user')))
-                    ->where('api_user.status', '1')
-                    ->where('tenant.status', '1')
-                    ->whereNull('api_user.deleted_at')
-                    ->whereNull('tenant.deleted_at')
-                    ->first();
+            ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
+            ->where('api_key', base64_encode($request->header('php-auth-user')))
+            ->where('api_user.status', '1')
+            ->where('tenant.status', '1')
+            ->whereNull('api_user.deleted_at')
+            ->whereNull('tenant.deleted_at')
+            ->first();
 
         $this->switchDatabaseConnection('tenant');
         return $apiUser->name;
@@ -282,7 +318,7 @@ class Helpers
      */
     public function convertInReportTimeFormat(string $totalHours): string
     {
-        $convertedHours = (int) ($totalHours / 60);
+        $convertedHours = (int)($totalHours / 60);
         $hours = $convertedHours . "h";
         $minutes = $totalHours % 60;
         $minutes = sprintf("%02d", $minutes);
@@ -297,10 +333,10 @@ class Helpers
      */
     public function convertInReportHoursFormat(string $totalHours): string
     {
-        $hours = (int) ($totalHours / 60);
+        $hours = (int)($totalHours / 60);
         $minutes = ($totalHours % 60) / 60;
         $totalHours = $hours + $minutes;
-        return number_format((float) $totalHours, 2, '.', '');
+        return number_format((float)$totalHours, 2, '.', '');
     }
 
     /**
@@ -314,7 +350,7 @@ class Helpers
     {
         $phrase_array = explode(' ', $phrase);
         if (count($phrase_array) > $maxWords && $maxWords > 0) {
-            $phrase = implode(' ', array_slice($phrase_array, 0, $maxWords)).'...';
+            $phrase = implode(' ', array_slice($phrase_array, 0, $maxWords)) . '...';
         }
         return $phrase;
     }
@@ -327,9 +363,9 @@ class Helpers
      */
     public function getAssetsUrl(string $tenantName): string
     {
-        return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
-        config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
-        '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/';
+        return 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' .
+            env('AWS_S3_BUCKET_NAME') . '/' . $tenantName . '/' . env('AWS_S3_ASSETS_FOLDER_NAME') .
+            '/' . env('AWS_S3_IMAGES_FOLDER_NAME') . '/';
     }
 
     /**
@@ -344,7 +380,7 @@ class Helpers
         $this->switchDatabaseConnection('tenant');
         return $language;
     }
-	
+
 	/**
      * Remove unwanted characters from json
      * @param string $filePath
@@ -355,18 +391,40 @@ class Helpers
         $jsonFileContent = file_get_contents($filePath);
 
 		// This will remove unwanted characters.
-		for ($i = 0; $i <= 31; ++$i) { 
-			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent); 
+		for ($i = 0; $i <= 31; ++$i) {
+			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
 		}
 		$jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
 
 		// This is the most common part
 		// Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
-		// here we detect it and we remove it, basically it's the first 3 characters 
+		// here we detect it and we remove it, basically it's the first 3 characters
 		if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
 		   $jsonFileContent = substr($jsonFileContent, 3);
 		}
-		
+
 		return $jsonFileContent;
+    }
+
+    /**
+     * Retrieve tenant's name
+     *
+     * @param Request
+     * @return String
+     */
+    private function getTenantDomainByTenantId($tenantId): String
+    {
+        $connection = Config::get('database.default');
+        $this->switchDatabaseConnection('mysql');
+
+        $tenant = $this->db->table('tenant')
+            ->select('name')
+            ->where('tenant_id', $tenantId)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection($connection);
+
+        return $tenant->name;
     }
 }
