@@ -66,7 +66,7 @@ class Story extends Model
      */
     public function mission(): HasOne
     {
-        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+        return $this->hasOne(Mission::class, 'mission_id', 'mission_id')->withTrashed();
     }
 
     /**
