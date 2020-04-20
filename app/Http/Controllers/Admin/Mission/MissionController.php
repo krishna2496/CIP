@@ -181,11 +181,6 @@ class MissionController extends Controller
             );
         }
 
-        $city = $this->cityRepository->getCityData($request->location['city_id']);
-        if ($city && $city['state_id']) {
-            $request->request->add(['state_id' =>  $city['state_id']]);
-        }
-
         $mission = $this->missionRepository->store($request);
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
@@ -304,11 +299,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
-        }
-        
-        $city = $this->cityRepository->getCityData($request->location['city_id']);
-        if ($city && $city['state_id']) {
-            $request->request->add(['state_id' =>  $city['state_id']]);
         }
  
         try {

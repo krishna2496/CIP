@@ -419,8 +419,10 @@ class MissionController extends Controller
 
         if (!empty($missionState->toArray())) {
             foreach ($missionState as $key => $value) {
-                if (isset($value->state)) {
-                    $translation = $value->state->languages->toArray();
+               
+                if (isset($value->city->state)) {
+                    
+                    $translation = $value->city->state->languages->toArray();
                     $translationkey = '';
 
                     $index = array_search($languageId, array_column($translation, 'language_id'));
@@ -432,7 +434,7 @@ class MissionController extends Controller
                         $translation[$translationkey]['name'];
                     }
                     $returnData[config('constants.STATE')]['id'] =
-                    $value->state_id;
+                    $value->city->state_id;
                     $returnData[config('constants.STATE')]['mission_count'] =
                     $value->mission_count;
                 }
