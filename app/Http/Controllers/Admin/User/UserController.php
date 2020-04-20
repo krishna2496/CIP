@@ -217,9 +217,8 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
 
-        // Convert request to an array and deleted the password before logging it
-        $requestToBeLogged = $request->toArray();
-        unset($requestToBeLogged['password']);
+        // Remove password before logging it
+        $request->request->remove("password");
         
         // Make activity log
         event(new UserActivityLogEvent(
@@ -228,7 +227,7 @@ class UserController extends Controller
             config('constants.activity_log_user_types.API'),
             $this->userApiKey,
             get_class($this),
-            $requestToBeLogged,
+            $request->toArray(),
             null,
             $user->user_id
         ));
@@ -330,6 +329,9 @@ class UserController extends Controller
             $apiData = ['user_id' => $user->user_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
+
+            // Remove password before logging it
+            $request->request->remove("password");
             
             // Make activity log
             event(new UserActivityLogEvent(
