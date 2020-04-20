@@ -334,6 +334,11 @@ class AuthController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
         $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        // Remove password before logging it
+        $request->request->remove("password");
+        $request->request->remove("password_confirmation");
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
@@ -413,6 +418,10 @@ class AuthController extends Controller
         $apiData = array('token' => $newToken);
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
+        // Remove password before logging it
+        $request->request->remove("password");
+        $request->request->remove("confirm_password");
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
@@ -424,18 +433,6 @@ class AuthController extends Controller
             $request->auth->user_id
         ));
 
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        
-        // Update password
-        $passwordChange = $this->userRepository->changePassword($request->auth->user_id, $request->password);
-        
-        // Get new token
-        $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
-        
-        // Send response
-        $apiStatus = Response::HTTP_OK;
-        $apiData = array('token' => $newToken);
-        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }
