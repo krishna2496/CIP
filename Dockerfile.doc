@@ -1,0 +1,5 @@
+FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
+
+COPY . /optimy
+RUN chown -R www-data:www-data /optimy/
+ENV SWAGGER_JSON="/optimy/cip-api.json"
