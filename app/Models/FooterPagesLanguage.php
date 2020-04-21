@@ -46,7 +46,7 @@ class FooterPagesLanguage extends Model
      */
     public function setDescriptionAttribute(array $value): void
     {
-        $this->attributes['description'] = json_encode($value);
+        $this->attributes['description'] = serialize($value);
     }
     
     /**
@@ -57,7 +57,7 @@ class FooterPagesLanguage extends Model
      */
     public function getDescriptionAttribute(string $value)
     {
-        return json_decode($value, true);
+        return unserialize($value);
     }
 
     /**
@@ -68,7 +68,7 @@ class FooterPagesLanguage extends Model
      */
     public function getSectionsAttribute(string $value)
     {
-        return json_decode($value, true);
+        return unserialize($value);
     }
 
     /**

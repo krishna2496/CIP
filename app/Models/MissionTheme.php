@@ -46,7 +46,7 @@ class MissionTheme extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = json_encode($value);
+        $this->attributes['translations'] = serialize($value);
     }
     
     /**
@@ -55,10 +55,10 @@ class MissionTheme extends Model
      * @param  string $value
      * @return array
      */
-    public function getTranslationsAttribute(string $value): ?array
+    public function getTranslationsAttribute(string $value): array
     {
-        $data = @json_decode($value);
-        return ($data !== null) ? json_decode($value, true): array();
+        $data = @unserialize($value);
+        return ($data !== false) ? unserialize($value): array();
     }
 
     /**

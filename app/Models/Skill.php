@@ -45,18 +45,18 @@ class Skill extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = json_encode($value);
+        $this->attributes['translations'] = serialize($value);
     }
 
     /**
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return null|array
+     * @return array
      */
-    public function getTranslationsAttribute(string $value): ?array
+    public function getTranslationsAttribute(string $value): array
     {
-        return json_decode($value, true);
+        return unserialize($value);
     }
 
     /**

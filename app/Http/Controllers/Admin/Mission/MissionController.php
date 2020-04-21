@@ -190,9 +190,6 @@ class MissionController extends Controller
             );
         }
 
-        $city = $this->cityRepository->getState($request->location['city_id']);
-        $request->request->add(['state_id' => $city[0]['state_id']]);
-
         $mission = $this->missionRepository->store($request);
 
         // Set response data
@@ -313,10 +310,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-        
-        $city = $this->cityRepository->getState($request->location['city_id']);
-        $request->request->add(['state_id' =>  $city[0]['state_id']]);
- 
+       
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {

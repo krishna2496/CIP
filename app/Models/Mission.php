@@ -347,7 +347,7 @@ class Mission extends Model
     public function setOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && !empty($value)) {
-            $this->attributes['organisation_detail'] = json_encode($value);
+            $this->attributes['organisation_detail'] = serialize($value);
         }
     }
 
@@ -360,9 +360,9 @@ class Mission extends Model
     public function getOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && ($value !== '')) {
-            $data = @json_decode($value);
-            if ($data !== null) {
-                return (!is_null($value) && ($value !== '')) ? json_decode($value, true) : null;
+            $data = @unserialize($value);
+            if ($data !== false) {
+                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
             }
         }
         return null;
