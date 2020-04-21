@@ -190,31 +190,8 @@ class MissionController extends Controller
             );
         }
 
-<<<<<<< HEAD
         $city = $this->cityRepository->getState($request->location['city_id']);
         $request->request->add(['state_id' => $city[0]['state_id']]);
-=======
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-
-        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
-            $stateValidator = Validator::make(
-                $request->all(),
-                [
-                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
-                ]
-            );
-            if ($stateValidator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                    $stateValidator->errors()->first()
-                );
-            }
-        }
->>>>>>> 78c5fce607d4ee3bf4dc57bec9ffed77c32b772c
 
         $mission = $this->missionRepository->store($request);
 
@@ -336,37 +313,10 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-<<<<<<< HEAD
         
         $city = $this->cityRepository->getState($request->location['city_id']);
         $request->request->add(['state_id' =>  $city[0]['state_id']]);
  
-=======
-
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-
-        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-
-        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
-            $stateValidator = Validator::make(
-                $request->all(),
-                [
-                    "location.state_id" =>
-                    "sometimes|required_with:location|integer|exists:state,state_id,deleted_at,NULL"
-                ]
-            );
-            if ($stateValidator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                    $stateValidator->errors()->first()
-                );
-            }
-        }
-
->>>>>>> 78c5fce607d4ee3bf4dc57bec9ffed77c32b772c
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
