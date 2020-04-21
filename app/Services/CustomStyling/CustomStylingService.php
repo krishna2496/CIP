@@ -86,7 +86,7 @@ class CustomStylingService
     {
         $isVariableScssFile = false;
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        $fileName = $request->custom_scss_file_name ?: '';
+        $fileName = $request->custom_scss_file_name;
 
 
         // Update primary and secondary color, if any

@@ -11,7 +11,7 @@ class CustomStyleFilenames
         'cms-content.scss',
         'error-page.scss',
         'footer.scss',
-        'form-elements.scss',
+        'form-element.scss',
         'header.scss',
         'layout.scss',
         'loader.scss',
