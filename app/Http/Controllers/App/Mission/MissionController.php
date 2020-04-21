@@ -418,6 +418,7 @@ class MissionController extends Controller
         }
 
         if (!empty($missionState->toArray())) {
+            $stateIdArray = [];
             foreach ($missionState as $key => $value) {
                
                 if (isset($value->city->state)) {
@@ -441,7 +442,14 @@ class MissionController extends Controller
                 if (isset($returnData[config('constants.STATE')])) {
                     $apiData[config('constants.STATE')] = isset($apiData[config('constants.STATE')]) ?
                     $apiData[config('constants.STATE')] : [];
-                    array_push($apiData[config('constants.STATE')], $returnData[config('constants.STATE')]);                 
+                    if(in_array($value->city->state_id, $stateIdArray)) {
+                        $statekey = array_search($value->city->state_id, array_column($apiData[config('constants.STATE')], 'id'));
+                        $apiData[config('constants.STATE')][$statekey]['mission_count'] = 
+                        $apiData[config('constants.STATE')][$statekey]['mission_count'] + $value->mission_count;
+                    } else {
+                        array_push($apiData[config('constants.STATE')], $returnData[config('constants.STATE')]);
+                    }
+                    array_push($stateIdArray,$value->city->state_id);                
                 }
             }
         }
