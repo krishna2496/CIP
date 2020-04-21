@@ -13,6 +13,7 @@ use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Repositories\Slider\SliderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use Validator;
@@ -82,7 +83,9 @@ class TenantOptionController extends Controller
      */
     public function getTenantOption(Request $request): JsonResponse
     {
-        $data = $optionData = $slider = array();
+        $optionData = [
+            'tenantName' => $this->helpers->getTenantDetail($request)->name
+        ];
 
         // Find custom data
         $data = $this->tenantOptionRepository->getOptions();
@@ -114,10 +117,12 @@ class TenantOptionController extends Controller
             }
         }
 
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTIONS_LIST');
-
-        return $this->responseHelper->success($apiStatus, '', $optionData);
+        return $this->responseHelper
+            ->success(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_TENANT_OPTIONS_LIST'),
+                $optionData
+            );
     }
 
     /**
