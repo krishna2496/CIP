@@ -102,7 +102,7 @@ class CustomStylingService
                 trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION')
             );
         }
-        
+
         if ($file->isValid()) {
             $fileName = $request->custom_scss_file_name;
 
@@ -118,10 +118,10 @@ class CustomStylingService
             }
             // Need to upload file on S3 and that function will return uploaded file URL.
             $file = $request->file('custom_scss_file');
-            
-            $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
+
+            $filePath = $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.
             config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
-            
+
             Storage::disk('s3')->put($filePath, file_get_contents($file));
         }
         return null;

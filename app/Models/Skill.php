@@ -3,8 +3,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\UserSkill;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Skill extends Model
@@ -49,7 +47,7 @@ class Skill extends Model
     {
         $this->attributes['translations'] = serialize($value);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -60,7 +58,7 @@ class Skill extends Model
     {
         return unserialize($value);
     }
-    
+
     /**
      * Find the specified resource.
      *
@@ -82,7 +80,7 @@ class Skill extends Model
     {
         return static::findOrFail($id)->delete();
     }
-    
+
     /**
      * Find the parent resource.
      *

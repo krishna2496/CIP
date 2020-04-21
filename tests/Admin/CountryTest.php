@@ -57,6 +57,386 @@ class CountryTest extends TestCase
     /**
      * @test
      *
+     * Get country
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_a_country()
+    {
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        // 1: Create new country
+
+        $mockCountry = $this->getMockCountryPostPayload();
+
+        $reqCountry = $this->post(
+            'entities/countries', 
+            $mockCountry, 
+            $authorization
+        )->seeStatusCode(201);
+
+        // 2: Get the created country id
+
+        $countryId = json_decode($reqCountry->response->getContent())->data->country_ids[0]->country_id;
+
+        // 3: Get the specific country id using the endpoint
+
+        DB::setDefaultConnection('mysql');
+
+        $reqSpecificCountry = $this->get(
+            "entities/countries/$countryId",
+            $authorization
+        )->seeStatusCode(200);
+
+        // 4: assert if all fields is equal to the expected data
+
+        $actualResult = json_decode($reqSpecificCountry->response->getContent());
+
+        $this->assertEquals(strtoupper($mockCountry['countries'][0]['iso']), $actualResult->data->ISO);
+        $this->assertEquals(count($mockCountry['countries'][0]['translations']), count($actualResult->data->languages));
+
+        foreach ($mockCountry['countries'][0]['translations'] as $key => $trans) {
+            $this->assertEquals($trans['lang'], $actualResult->data->languages[$key]->language_code);
+            $this->assertEquals($trans['name'], $actualResult->data->languages[$key]->name);
+        }
+
+        // 5: Delete created country
+
+        DB::setDefaultConnection('mysql');
+
+        $this->delete(
+            "entities/countries/$countryId",
+            [],
+            $authorization
+        )->seeStatusCode(204);
+
+    }
+
+    /**
+     * @test
+     *
+     * Get invalid country
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_invalid_country()
+    {
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        DB::setDefaultConnection('mysql');
+
+        $reqSpecificCountry = $this->get(
+            'entities/countries/0',
+            $authorization
+        )->seeStatusCode(404)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message'
+                ]
+            ]
+        ]);
+
+        $actualResult = json_decode($reqSpecificCountry->response->getContent());
+
+        $this->assertEquals($actualResult->errors[0]->type, 'Not Found');
+        $this->assertEquals($actualResult->errors[0]->code, config('constants.error_codes.ERROR_COUNTRY_NOT_FOUND'));
+
+    }
+
+    /**
+     * @test
+     *
+     * Must return error 401 Unauthorized request
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_unauthorized_request_for_get_country()
+    {
+
+        DB::setDefaultConnection('mysql');
+
+        $reqCountryCities = $this->get(
+            'entities/countries'
+        )->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message'
+                ]
+            ]
+        ]);
+
+    }
+
+    /**
+     * @test
+     *
+     * Get country cities
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_list_of_country_cities()
+    {
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        // 1: Create new country
+
+        $mockCountry = $this->getMockCountryPostPayload();
+
+        $reqCountry = $this->post(
+            'entities/countries', 
+            $mockCountry, 
+            $authorization
+        )->seeStatusCode(201);
+
+        // 2: Get the created country id
+
+        $countryId = json_decode($reqCountry->response->getContent())->data->country_ids[0]->country_id;
+
+        // 3: Create a city based on the created country id
+
+        DB::setDefaultConnection('mysql');
+
+        $mockCities = $this->getMockCityPostPayload($countryId, 2);
+
+        $reqCity = $this->post(
+            'entities/cities', 
+            $mockCities, 
+            $authorization
+        )->seeStatusCode(201);
+
+        $reqCityResponse = json_decode($reqCity->response->getContent());
+
+        // 4: Get all cities of the created country
+
+        DB::setDefaultConnection('mysql');
+
+        $reqCountryCities = $this->get(
+            "entities/countries/$countryId/cities",
+            $authorization
+        )->seeStatusCode(200);
+
+        $reqCountryCitiesRes = json_decode($reqCountryCities->response->getContent());
+
+
+        // 5: assert if all fields is equal to the expected data
+
+        foreach ($mockCities['cities'] as $key => $city) {
+            foreach ($city['translations'] as $transKey => $trans) {
+                $this->assertEquals($trans['lang'], $reqCountryCitiesRes->data[$key]->languages[$transKey]->language_code);
+                $this->assertEquals($trans['name'], $reqCountryCitiesRes->data[$key]->languages[$transKey]->name);
+            }
+        }
+
+        // 6: Delete created city and country
+
+        foreach ($reqCityResponse->data->city_ids as $key => $item) {
+
+            $cityId = $item->city_id;
+            
+            DB::setDefaultConnection('mysql');
+
+            $this->delete(
+                "entities/cities/$cityId",
+                [],
+                $authorization
+            )->seeStatusCode(204);
+
+        }
+
+        DB::setDefaultConnection('mysql');
+
+        $this->delete(
+            "entities/countries/$countryId",
+            [],
+            $authorization
+        )->seeStatusCode(204);
+
+    }
+
+    /**
+     * @test
+     *
+     * Must return country id error on get country cities
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_error_for_invalid_country_id_on_country_cities()
+    {
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        DB::setDefaultConnection('mysql');
+
+        $reqCountryCities = $this->get(
+            'entities/countries/0/cities',
+            $authorization
+        )->seeStatusCode(404)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message'
+                ]
+            ]
+        ]);
+
+    }
+
+    /**
+     * @test
+     *
+     * Get no cities
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_no_city_found()
+    {
+
+        $authorization = [
+            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+        ];
+
+        // 1: Create new country
+
+        $mockCountry = $this->getMockCountryPostPayload();
+
+        $reqCountry = $this->post(
+            'entities/countries', 
+            $mockCountry, 
+            $authorization
+        )->seeStatusCode(201);
+
+        // 2: Get the created country id
+
+        $countryId = json_decode($reqCountry->response->getContent())->data->country_ids[0]->country_id;
+
+        // 4: Get all cities of the created country
+
+        DB::setDefaultConnection('mysql');
+
+        $reqCountryCities = $this->get(
+            "entities/countries/$countryId/cities",
+            $authorization
+        )->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "data",
+            "message"
+        ]);
+
+        $reqCountryCitiesRes = json_decode($reqCountryCities->response->getContent());
+
+        $this->assertEquals($reqCountryCitiesRes->data, []);
+        $this->assertEquals($reqCountryCitiesRes->message, 'City not found');
+
+        // Delete created country
+
+        DB::setDefaultConnection('mysql');
+
+        $this->delete(
+            "entities/countries/$countryId",
+            [],
+            $authorization
+        )->seeStatusCode(204);
+
+    }
+
+    /**
+     * @test
+     *
+     * Must return error 401 Unauthorized request
+     *
+     * @return void
+     */
+    public function country_test_it_should_return_unauthorized_request_for_country_cities()
+    {
+
+        DB::setDefaultConnection('mysql');
+
+        $reqCountryCities = $this->get(
+            'entities/countries/0/cities'
+        )->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message'
+                ]
+            ]
+        ]);
+
+    }
+
+    /**
+     * Get country post parameters
+     *
+     * @return array
+     */
+    private function getMockCountryPostPayload()
+    {
+        return [
+            'countries' => [
+                [
+                    'iso' => str_random(2),
+                    'translations'=> [
+                        [
+                            'lang'=> 'en',
+                            'name'=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Get city post parameters
+     *
+     * @return array
+     */
+    private function getMockCityPostPayload($countryId, $count = 1)
+    {
+        $data = [
+            'country_id' => $countryId,
+            'cities' => []
+        ];
+
+        for ($i = 1; $i <= $count; $i++) { 
+            $data['cities'][] = [ 
+                'translations' => [ 
+                    [ 
+                        'lang' => 'en',
+                        'name' => uniqid()
+                    ]
+                ]
+            ];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @test
+     *
      * No data found for Country
      *
      * @return void
@@ -65,28 +445,6 @@ class CountryTest extends TestCase
     {
         $this->get('/entities/countries', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
-    }
-
-    /**
-     * @test
-     *
-     * Return error for invalid token
-     *
-     * @return void
-     */
-    public function city_test_it_should_return_error_for_invalid_authorization_token_for_get_country()
-    {
-        $this->get('/app/country', ['Authorization' => ''])
-        ->seeStatusCode(401)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message"
-                ]
-            ]
-        ]);
     }
 
     /**

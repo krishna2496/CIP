@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Timesheet;
 
+use Bschmitt\Amqp\Amqp;
 use DB;
 use Carbon\Carbon;
 use App\Models\Mission;
@@ -17,6 +18,7 @@ use App\Repositories\User\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use Illuminate\Support\Facades\Log;
 
 class TimesheetRepository implements TimesheetInterface
 {
@@ -66,6 +68,11 @@ class TimesheetRepository implements TimesheetInterface
     private $userRepository;
 
     /**
+     * @var Bschmitt\Amqp\Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new Timesheet repository instance.
      *
      * @param  App\Models\Timesheet $timesheet
@@ -77,6 +84,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param  App\Helpers\S3Helper $s3helper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Repositories\User\UserRepository $userRepository
+     * @param Amqp $amqp
      * @return void
      */
     public function __construct(
@@ -88,7 +96,8 @@ class TimesheetRepository implements TimesheetInterface
         LanguageHelper $languageHelper,
         S3Helper $s3helper,
         TenantOptionRepository $tenantOptionRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        Amqp $amqp
     ) {
         $this->timesheet = $timesheet;
         $this->mission = $mission;
@@ -99,8 +108,9 @@ class TimesheetRepository implements TimesheetInterface
         $this->s3helper = $s3helper;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->userRepository = $userRepository;
+        $this->amqp = $amqp;
     }
-    
+
     /**
      * Store/Update timesheet
      *
@@ -147,7 +157,7 @@ class TimesheetRepository implements TimesheetInterface
         $languageId = $this->languageHelper->getLanguageId($request);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-        
+
         if ($type === 'hour') {
             $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
@@ -156,7 +166,7 @@ class TimesheetRepository implements TimesheetInterface
                     $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                     $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
                     $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                     // Set mission title
                     $missionTitle = $missionLanguage->title ?? '';
                     $value->setAttribute('title', $missionTitle);
@@ -192,6 +202,7 @@ class TimesheetRepository implements TimesheetInterface
                     $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                     $language = ($index === false) ? $defaultTenantLanguageId : $languageId;
                     $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
+
                     // Set mission title
                     $missionTitle = $missionLanguage->title ?? '';
                     $goalObjective = $missionLanguage->objective ?? '';
@@ -206,7 +217,7 @@ class TimesheetRepository implements TimesheetInterface
         }
         return $timesheetEntries;
     }
-    
+
     /**
      * Fetch timesheet details
      *
@@ -229,7 +240,7 @@ class TimesheetRepository implements TimesheetInterface
     {
         return $this->timesheet->findTimesheet($timesheetId, $userId);
     }
-    
+
     /**
     * Remove the timesheet document.
     *
@@ -282,14 +293,34 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Update timesheet field value, based on timesheet_id condition
      *
-     * @param string $status
+     * @param Request $request
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetStatus(string $status, int $timesheetId): bool
+    public function updateTimesheet(Request $request, int $timesheetId): bool
     {
-        return $this->timesheet->where('timesheet_id', $timesheetId)
-        ->update(['status' => $status]);
+        $valueToUpdate = [];
+        $timesheet = $this->timesheet->where('timesheet_id', $timesheetId);
+        if (isset($request['status'])) {
+            $valueToUpdate['status'] = $request['status'];
+        }
+        if (isset($request['notes'])) {
+            $valueToUpdate['notes'] = $request['notes'];
+        }
+        if (isset($request['dateVolunteered'])) {
+            $valueToUpdate['date_volunteered'] = $request['dateVolunteered'];
+        }
+        if (isset($request['dayVolunteered'])) {
+            $valueToUpdate['day_volunteered'] = $request['dayVolunteered'];
+        }
+        if (isset($request['time'])) {
+            $valueToUpdate['time'] = $request['time'];
+        }
+        if (isset($request['action'])) {
+            $valueToUpdate['action'] = $request['action'];
+        }
+
+        return $timesheet->update($valueToUpdate);
     }
 
     /** Update timesheet status on submit
@@ -310,6 +341,21 @@ class TimesheetRepository implements TimesheetInterface
                 if ($timesheetDetails["status"] === config('constants.timesheet_status.PENDING')) {
                     $timesheetData->status = config('constants.timesheet_status.SUBMIT_FOR_APPROVAL');
                     $status = $timesheetData->update();
+
+                    $tenantIdAndSponsorId = $this->helpers->getTenantIdAndSponsorIdFromRequest($request);
+                    $timesheetForOptimy = [
+                        'activity_type' => 'timesheet',
+                        'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+                        'tenant_id' => $tenantIdAndSponsorId->tenant_id,
+                        'timesheet_id' => $timesheetDetails['timesheet_id'],
+                        'user_id' => $timesheetDetails['user_id'],
+                        'mission_id' => $timesheetDetails['mission_id'],
+                    ];
+                    // Send data of the timesheet to Optimy app using "ciSynchronizer" queue from RabbitMQ
+                    $this->amqp->publish(
+                        'ciSynchronizer',
+                        json_encode($timesheetForOptimy), ['queue' => 'ciSynchronizer']
+                    );
                 }
             }
         }
@@ -330,7 +376,7 @@ class TimesheetRepository implements TimesheetInterface
         $languageId = $language->language_id;
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-        
+
         $timeRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
         $timeRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
@@ -358,16 +404,16 @@ class TimesheetRepository implements TimesheetInterface
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                 $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
                 $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                 // Set title
                 $missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
                 unset($value->missionLanguage);
             }
-            
+
             $value->time = $this->helpers->convertInReportTimeFormat($value->total_hours);
             $value->hours = $this->helpers->convertInReportHoursFormat($value->total_hours);
-            
+
             unset($value->total_hours);
             $value->setAppends([]);
         }
@@ -388,7 +434,7 @@ class TimesheetRepository implements TimesheetInterface
         $languageId = $language->language_id;
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-       
+
         $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
         $goalRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
@@ -416,7 +462,7 @@ class TimesheetRepository implements TimesheetInterface
                 $key = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));
                 $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
                 $missionLanguage = $value->missionLanguage->where('language_id', $language)->first();
-                
+
                 // Set title
                 $missionTitle = $missionLanguage->title ?? '';
                 $value->setAttribute('title', $missionTitle);
@@ -437,12 +483,12 @@ class TimesheetRepository implements TimesheetInterface
     public function getTimesheetEntries(Request $request, string $missionType): LengthAwarePaginator
     {
         $userId = $request->auth->user_id;
-        
+
         // Fetch tenant options value
         $tenantOptionData = $this->tenantOptionRepository->getOptionValue('ALLOW_TIMESHEET_ENTRY');
         $extraWeeks = isset($tenantOptionData[0]['option_value'])
         ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
-     
+
         $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
         ->where([
             'publication_status' => config("constants.publication_status")["APPROVED"],
@@ -514,7 +560,7 @@ class TimesheetRepository implements TimesheetInterface
         config('constants.timesheet_status.AUTOMATICALLY_APPROVED')))
         ->sum('action')) ?? 0;
     }
-    
+
     /**
      * Get user timesheet total hours data
      *
@@ -629,27 +675,22 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getUsersTotalHours($year, $month): ?array
     {
-        $statusArray = [config('constants.timesheet_status.APPROVED'),
-        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
-
-        $timesheetQuery = $this->timesheet
-        ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
-        sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
-        $timesheetQuery->whereHas('mission');
-        $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
-        ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
-
-        if (isset($year) && $year != '') {
-            $timesheetQuery->whereYear('date_volunteered', $year);
-            if (isset($month) && $month != '') {
-                $timesheetQuery->whereMonth('date_volunteered', $month);
-            }
-        }
-        $timesheetQuery->whereIn('status', $statusArray);
+        $timesheetQuery = $this->getTimesheetQuery($year, $month);
         $timesheetQuery->orderBy(DB::raw("total_minutes"), "DESC");
         $timesheetQuery->groupBy(DB::raw("user_id"));
-
         return $timesheetQuery->get()->toArray();
+    }
+
+    /**
+    * Get sum of total hours of all users timesheet
+    *
+    * @return int
+    */
+    public function getSumOfUsersTotalMinutes(): int
+    {
+        $timesheetQuery = $this->getTimesheetQuery();
+        $result = $timesheetQuery->get()->first()->toArray();
+        return $result['total_minutes'] ?: 0;
     }
 
     /**
@@ -684,4 +725,44 @@ class TimesheetRepository implements TimesheetInterface
     {
         return $this->timesheet->withTrashed()->where('timesheet_id', $timesheetId)->first();
     }
+
+    /**
+     * Get missionId from timesheetId
+     * @param int $timesheetId
+     * @return int
+     */
+    public function getMissionIdFromTimesheetId(int $timesheetId) : int
+    {
+        return $this->timesheet->where('timesheet_id', $timesheetId)->value('mission_id');
+    }
+
+    /**
+     * Prepare a timesheet query
+     * @param  int|null $year
+     * @param  int|null $month
+     * @return Object
+     */
+    private function getTimesheetQuery($year = null, $month = null)
+    {
+        $statusArray = [config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED')];
+
+        $timesheetQuery = $this->timesheet
+        ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
+        sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+        $timesheetQuery->whereHas('mission');
+        $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
+        ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
+
+        if (isset($year) && $year != '') {
+            $timesheetQuery->whereYear('date_volunteered', $year);
+            if (isset($month) && $month != '') {
+                $timesheetQuery->whereMonth('date_volunteered', $month);
+            }
+        }
+        $timesheetQuery->whereIn('status', $statusArray);
+
+        return $timesheetQuery;
+    }
+
 }

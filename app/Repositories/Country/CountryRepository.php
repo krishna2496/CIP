@@ -94,6 +94,29 @@ class CountryRepository implements CountryInterface
     }
 
     /**
+     * Get country detail from country_id with all languages
+     *
+     * @param int  $countryId
+     * @return array
+     */
+    public function getCountryData(int $countryId) : array
+    {
+        $country = $this->country
+            ->with('languages')
+            ->where('country_id', $countryId)
+            ->firstOrFail();
+
+        $languages = $this->languageHelper->getLanguages();
+
+        foreach ($country->languages as $lang) {
+            $languageData = $languages->where('language_id', $lang->language_id)->first();
+            $lang->language_code = $languageData->code;
+        }
+        
+        return $country->toArray();
+    }
+
+    /**
      * Store a newly created resource in storage
      *
      * @param array $countryData
@@ -190,6 +213,11 @@ class CountryRepository implements CountryInterface
             $countryQuery->wherehas('languages', function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->input('search') . '%');
             });
+            $countryQuery->orWhere('ISO', 'like', '%' . $request->input('search') . '%');
+            // Make the record with exaclty the same search value and ISO value first
+            $countryQuery->orderByRaw('FIELD(ISO, ?) DESC', [
+                $request->input('search')
+            ]);
         }
 
         $countries = $countryQuery->paginate($request->perPage);
@@ -224,5 +252,25 @@ class CountryRepository implements CountryInterface
     public function hasUser(int $id): bool
     {
         return $this->country->whereHas('user')->whereCountryId($id)->count() ? true : false;
+    }
+
+    /**
+      * Get country by ISO code
+      *
+      * @param  string $isoCode
+      * @return Object|Boolean
+      */
+    public function getCountryByCode(string $isoCode)
+    {
+        $country = $this->country
+            ->where('ISO', $isoCode)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$country) {
+            return false;
+        }
+
+        return $country;
     }
 }
