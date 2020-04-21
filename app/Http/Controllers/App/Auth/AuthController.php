@@ -418,10 +418,6 @@ class AuthController extends Controller
         $apiData = array('token' => $newToken);
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
-        // Remove password before logging it
-        $request->request->remove("password");
-        $request->request->remove("confirm_password");
-
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
@@ -429,7 +425,7 @@ class AuthController extends Controller
             config('constants.activity_log_user_types.REGULAR'),
             $request->auth->email,
             get_class($this),
-            $request->toArray(),
+            null,
             $request->auth->user_id
         ));
 
