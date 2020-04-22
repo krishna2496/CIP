@@ -67,8 +67,8 @@ class MissionApplicationQuery implements QueryableInterface
                 user.email,
                 mission.mission_type,
                 COALESCE(mission_language.title, mission_language_fallback.title) AS mission_language_title,
-                COALESCE(city_language.name, city_language_fallback.name) city_language_name,
-                COALESCE(country_language.name, country_language_fallback.name) country_language_name
+                COALESCE(city_language.name, city_language_fallback.name) AS city_language_name,
+                COALESCE(country_language.name, country_language_fallback.name) AS country_language_name
             "))
             ->join('user', 'user.user_id', '=', 'mission_application.user_id')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
