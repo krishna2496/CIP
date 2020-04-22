@@ -420,7 +420,7 @@ class MissionController extends Controller
         if (!empty($missionState->toArray())) {
             $stateIdArray = [];
             foreach ($missionState as $key => $value) {
-               
+
                 if (isset($value->city->state)) {
                     
                     $translation = $value->city->state->languages->toArray();
@@ -449,7 +449,7 @@ class MissionController extends Controller
                     } else {
                         array_push($apiData[config('constants.STATE')], $returnData[config('constants.STATE')]);
                     }
-                    array_push($stateIdArray,$value->city->state_id);                
+                    array_push($stateIdArray, $value->city->state_id);
                 }
             }
         }
