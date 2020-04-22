@@ -9,7 +9,7 @@ use App\Exceptions\FileNotFoundException;
 class S3Helper
 {
     use RestExceptionHandlerTrait;
-   
+
     /**
      * Upload file on AWS s3 bucket
      *
@@ -29,25 +29,25 @@ class S3Helper
         } else { // Get name from base name
             $fileName = basename($url);
         }
-        
+
         set_time_limit(0);
         $context = stream_context_create(array('http'=> array(
             'timeout' => 1200
         )));
-        
+
         $disk = Storage::disk('s3');
-        
+
         $disk->put(
-            $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'
-            .config('constants.AWS_S3_IMAGES_FOLDER_NAME')
+            $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'
+            .env('AWS_S3_IMAGES_FOLDER_NAME')
             .'/'.$fileName,
             file_get_contents($url, false, $context)
         );
-        
+
         $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME')
-            .'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.$fileName;
-            
+            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME')
+            .'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.$fileName;
+
         return $pathInS3;
     }
 
@@ -64,8 +64,8 @@ class S3Helper
                 config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
             );
         }
-        
-        $allFiles = Storage::disk('s3')->allFiles($tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME'));
+
+        $allFiles = Storage::disk('s3')->allFiles($tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME'));
         $scssFilesArray = [];
         $i = $j = 0;
 
@@ -110,7 +110,7 @@ class S3Helper
         $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
 
         $type = explode('/', $mime_type);
-        
+
         $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
         Storage::disk('s3')->put($imagePath, base64_decode($avatar), 'public');
         $filePath =  Storage::disk('s3')->url($imagePath);
@@ -132,7 +132,7 @@ class S3Helper
         $context = stream_context_create(array('http'=> array(
             'timeout' => 1200
         )));
-        
+
         $disk = Storage::disk('s3');
         $fileName = preg_replace(
             "/[^A-Za-z0-9\-]/",
@@ -174,17 +174,17 @@ class S3Helper
         )));
         $disk = Storage::disk('s3');
         $disk->put(
-            $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'
+            $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'
             .config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME')
             .'/'.$fileName,
             file_get_contents($url, false, $context)
         );
         $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME')
+            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME')
             .'/'.config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME').'/'.$fileName;
         return $pathInS3;
     }
-    
+
     /**
      * Get language file url from S3 bucket
      *
@@ -196,7 +196,7 @@ class S3Helper
         $languageFilePath = $tenantName.'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/'.
         $code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
         $languageFileUrl = Storage::disk('s3')->url($languageFilePath);
-		
+
 		if (!Storage::disk('s3')->exists($languageFilePath)) {
 			$defaultLanguagePath = config('constants.AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME').'/'.
 			$code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin\Tenant;
 
+use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Models\TenantActivatedSetting;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Helpers\ResponseHelper;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\RestExceptionHandlerTrait;
-use App\Models\TenantActivatedSetting;
 use Validator;
-use App\Events\User\UserActivityLogEvent;
 
 //!  Tenant activated setting controller
 /*!
@@ -33,6 +34,11 @@ class TenantActivatedSettingController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
@@ -41,10 +47,46 @@ class TenantActivatedSettingController extends Controller
      */
     public function __construct(
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
+    }
+
+    /**
+     * Display a listing of activated tenant settings.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        // Fetch all tenant settings details from super admin
+        $tenantSettings = $this->helpers->getAllTenantSetting($request);
+
+        // Fetch all activated tenant settings data
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository->fetchAllTenantSettings();
+
+        $tenantSettings = $tenantSettings->filter(function ($setting) use ($activatedTenantSettings) {
+            return in_array($setting->tenant_setting_id, $activatedTenantSettings->pluck('settings.setting_id')->toArray());
+        })->toArray();
+
+        $tenantSettingsData = [];
+
+        foreach ($tenantSettings as $key => $setting) {
+            $activated = $activatedTenantSettings->where('settings.setting_id', $setting->tenant_setting_id)->first();
+            $setting->tenant_setting_id = $activated->tenant_setting_id;
+            $tenantSettingsData[] = $setting;
+        }
+
+        // Set response data
+        $apiData = empty($tenantSettingsData) ? [] : $tenantSettingsData;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = empty($tenantSettingsData) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
        

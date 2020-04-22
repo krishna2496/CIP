@@ -17,7 +17,9 @@ composer.lock
 storage/*
 !storage/unitTestFiles
 !storage/app
+!storage/defaultLanguage
 
 
 storage/app/*
 !storage/app/default_theme
+!storage/app/samlCertificate

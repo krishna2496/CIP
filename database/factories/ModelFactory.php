@@ -145,6 +145,19 @@ $factory->define(App\Models\TimesheetDocument::class, function (Faker\Generator 
     ];
 });
 
+$factory->define(App\Models\Timesheet::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'mission_id' => 1,
+        'time' => '01:01:01',
+        'action' => null,
+        'date_volunteered' => '2020-06-06',
+        'day_volunteered' => 'WORKDAY',
+        'notes' => 'Some Sample Notes',
+        'status' => 'APPROVED'
+    ];
+});
+
 $factory->define(App\Models\UserSkill::class, function (Faker\Generator $faker) {
     return [
         'user_id' => 1,

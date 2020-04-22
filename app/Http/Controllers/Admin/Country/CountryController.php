@@ -81,6 +81,27 @@ class CountryController extends Controller
     }
 
     /**
+     * Display the specified country detail.
+     *
+     * @param int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $countryDetails = $this->countryRepository->getCountryData($id);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_COUNTRY_FOUND');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $countryDetails);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_COUNTRY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_COUNTRY_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
      * Store a newly created resource.
      *
      * @param \Illuminate\Http\Request $request
