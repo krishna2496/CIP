@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'mission_theme_id' => $missionTheme['mission_theme_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'mission_theme',
+                                'column' => 'translations',
+                                'id' => $missionTheme['mission_theme_id']
+                            ])
+                    );
                 }
             }
         }

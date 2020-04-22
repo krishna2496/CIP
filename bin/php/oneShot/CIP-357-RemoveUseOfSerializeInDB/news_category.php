@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'news_category_id' => $newsCategory['news_category_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'news_category',
+                                'column' => 'translations',
+                                'id' => $newsCategory['news_category_id']
+                            ])
+                    );
                 }
             }
         }

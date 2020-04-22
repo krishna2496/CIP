@@ -50,7 +50,18 @@ if (count($tenants) > 0) {
                             'description' => $jsonData,
                             'id' => $missionLanguage['mission_language_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                        [
+                            'tenantId' => $tenantId,
+                            'table' => 'missionLanguage',
+                            'column' => 'description',
+                            'id' => $missionLanguage['mission_language_id']
+                        ])
+                    );
                 }
+
                 //custom information
                 $customInformationData = @unserialize($missionLanguage['custom_information']);
 
@@ -67,6 +78,16 @@ if (count($tenants) > 0) {
                             'custom_information' => $jsonData,
                             'id' => $missionLanguage['mission_language_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'missionLanguage',
+                                'column' => 'custom_information',
+                                'id' => $missionLanguage['mission_language_id']
+                            ])
+                    );
                 }
             }
         }

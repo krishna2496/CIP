@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'availability_id' => $availability['availability_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'availability',
+                                'column' => 'translations',
+                                'id' => $availability['availability_id']
+                            ])
+                    );
                 }
             }
         }

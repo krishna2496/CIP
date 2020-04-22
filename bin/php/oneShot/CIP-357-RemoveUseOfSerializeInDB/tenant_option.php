@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'option_value' => $jsonData,
                             'id' => $tenantOption['tenant_option_id']
                         ]);
+                }  else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'tenant_option',
+                                'column' => 'option_value',
+                                'id' => $tenantOption['tenant_option_id']
+                            ])
+                    );
                 }
             }
         }

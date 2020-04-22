@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'id' => $userCustomField['field_id']
                         ]);
+                }  else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'user_custom_field',
+                                'column' => 'translations',
+                                'id' => $userCustomField['field_id']
+                            ])
+                    );
                 }
             }
         }

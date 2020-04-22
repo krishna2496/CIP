@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'id' => $tenantOption['slider_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'slider',
+                                'column' => 'translations',
+                                'id' => $tenantOption['slider_id']
+                            ])
+                    );
                 }
             }
         }

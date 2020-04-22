@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'organisation_detail' => $jsonData,
                             'id' => $mission['mission_id']
                         ]);
+                }  else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'mission',
+                                'column' => 'organisation_detail',
+                                'id' => $mission['mission_id']
+                            ])
+                    );
                 }
             }
         }

@@ -3,7 +3,6 @@
 require_once('bootstrap/app.php');
 
 $db = app()->make('db');
-
 $pdo = $db->connection('mysql')->getPdo();
 $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
@@ -51,6 +50,16 @@ if (count($tenants) > 0) {
                             'object_value' => $jsonData,
                             'id' => $tenantOption['activity_log_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'activity_log',
+                                'column' => 'object_value',
+                                'id' => $tenantOption['activity_log_id']
+                            ])
+                    );
                 }
             }
         }

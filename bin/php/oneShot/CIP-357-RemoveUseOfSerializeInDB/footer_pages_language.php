@@ -50,6 +50,16 @@ if (count($tenants) > 0) {
                             'description' => $jsonData,
                             'id' => $footerPageLanguage['id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'footer_pages_language',
+                                'column' => 'description',
+                                'id' => $footerPageLanguage['id']
+                            ])
+                    );
                 }
             }
         }

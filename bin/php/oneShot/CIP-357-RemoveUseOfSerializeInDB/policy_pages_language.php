@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'description' => $jsonData,
                             'id' => $policyPageLanguage['id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'policy_pages_language',
+                                'column' => 'description',
+                                'id' => $policyPageLanguage['id']
+                            ])
+                    );
                 }
             }
         }

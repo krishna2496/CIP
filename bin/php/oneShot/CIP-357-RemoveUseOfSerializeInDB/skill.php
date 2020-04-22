@@ -49,6 +49,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'skill_id' => $skill['skill_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'skill',
+                                'column' => 'translations',
+                                'id' => $skill['skill_id']
+                            ])
+                    );
                 }
             }
         }
