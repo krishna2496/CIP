@@ -48,10 +48,9 @@ class MissionApplicationQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
-        $defaultLanguage = $tenantLanguages->filter(function ($language) {
+        $defaultLanguageId = $tenantLanguages->filter(function ($language) {
             return $language->default === '1';
-        })->first();
-        $defaultLanguageId = (is_null($defaultLanguage)) ? 1 : $defaultLanguage->language_id;
+        })->first()->language_id;
 
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
