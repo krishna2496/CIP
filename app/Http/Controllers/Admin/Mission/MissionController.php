@@ -19,7 +19,6 @@ use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Repositories\City\CityRepository;
 
 //!  Mission controller
 /*!
@@ -59,11 +58,6 @@ class MissionController extends Controller
     private $tenantActivatedSettingRepository;
 
     /**
-     * @var App\Repositories\City\CityRepository
-     */
-    private $cityRepository;
-
-    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -72,7 +66,6 @@ class MissionController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
-     * @param App\Repositories\City\CityRepository $CityRepository
      * @return void
      */
     public function __construct(
@@ -81,8 +74,7 @@ class MissionController extends Controller
         Request $request,
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        CityRepository $cityRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -90,7 +82,6 @@ class MissionController extends Controller
         $this->languageHelper = $languageHelper;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
-        $this->cityRepository =  $cityRepository;
     }
 
     /**
