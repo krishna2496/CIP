@@ -198,14 +198,17 @@ class NotificationRepository implements NotificationInterface
     public function deleteMissionNotifications($missionId): bool
     {
         return $this->notification
-        ->whereIn('notification_type_id', [
-            config("constants.notification_type_id")["NEW_MISSIONS"],
-            config("constants.notification_type_id")["MISSION_APPLICATION"],
-            config("constants.notification_type_id")["RECOMMENDED_MISSIONS"],
-            config("constants.notification_type_id")["VOLUNTEERING_HOURS"],
-            config("constants.notification_type_id")["VOLUNTEERING_GOALS"],
-            config("constants.notification_type_id")["MY_COMMENTS"]
-        ])->where([
+        ->with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["NEW_MISSIONS"],
+                config("constants.notification_type")["MISSION_APPLICATION"],
+                config("constants.notification_type")["RECOMMENDED_MISSIONS"],
+                config("constants.notification_type")["VOLUNTEERING_HOURS"],
+                config("constants.notification_type")["VOLUNTEERING_GOALS"],
+                config("constants.notification_type")["MY_COMMENTS"]
+            ]);
+        }])
+        ->where([
             'entity_id' => $missionId
         ])->delete();
     }
@@ -219,9 +222,12 @@ class NotificationRepository implements NotificationInterface
     public function deleteNewsNotifications($newsId): bool
     {
         return $this->notification
-        ->whereIn('notification_type_id', [
-            config("constants.notification_type_id")["NEW_NEWS"]
-        ])->where([
+        ->with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["NEW_NEWS"]
+            ]);
+        }])
+        ->where([
             'entity_id' => $newsId
         ])->delete();
     }
@@ -235,10 +241,13 @@ class NotificationRepository implements NotificationInterface
     public function deleteStoryNotifications($storyId): bool
     {
         return $this->notification
-        ->whereIn('notification_type_id', [
-            config("constants.notification_type_id")["MY_STORIES"],
-            config("constants.notification_type_id")["RECOMMENDED_STORY"]
-        ])->where([
+        ->with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["MY_STORIES"],
+                config("constants.notification_type")["RECOMMENDED_STORY"]
+            ]);
+        }])
+        ->where([
             'entity_id' => $storyId
         ])->delete();
     }
@@ -252,9 +261,12 @@ class NotificationRepository implements NotificationInterface
     public function deleteCommentNotifications($commentId): bool
     {
         return $this->notification
-        ->whereIn('notification_type_id', [
-            config("constants.notification_type_id")["MY_COMMENTS"]
-        ])->where([
+        ->with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["MY_COMMENTS"]
+            ]);
+        }])
+        ->where([
             'entity_id' => $commentId
         ])->delete();
     }
@@ -268,9 +280,12 @@ class NotificationRepository implements NotificationInterface
     public function deleteMessageNotifications($messageId): bool
     {
         return $this->notification
-        ->whereIn('notification_type_id', [
-            config("constants.notification_type_id")["NEW_MESSAGES"]
-        ])->where([
+        ->with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["NEW_MESSAGES"]
+            ]);
+        }])
+        ->where([
             'entity_id' => $messageId
         ])->delete();
     }

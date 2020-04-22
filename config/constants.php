@@ -647,20 +647,5 @@ return [
         'language_id'
     ],
 
-    /*
-     * User notification types
-     */
-    'notification_type_id' => [
-        'RECOMMENDED_MISSIONS' => 1,
-        'VOLUNTEERING_HOURS' => 2,
-        'VOLUNTEERING_GOALS' => 3,
-        'MY_COMMENTS' => 4,
-        'MY_STORIES' => 5,
-        'NEW_MISSIONS' => 6,
-        'NEW_MESSAGES' => 7,
-        'RECOMMENDED_STORY' => 8,
-        'MISSION_APPLICATION' => 9,
-        'NEW_NEWS' => 10
-    ],
 
 ];
