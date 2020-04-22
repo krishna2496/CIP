@@ -645,7 +645,6 @@ return [
         'country_id',
         'timezone_id',
         'language_id'
-    ],
-
+    ]
 
 ];
