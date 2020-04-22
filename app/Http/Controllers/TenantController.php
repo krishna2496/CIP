@@ -228,8 +228,11 @@ class TenantController extends Controller
     public function destroy(int $id): JsonResponse
     {
         try {
-            $this->tenantRepository->delete($id);
+
             $this->activityLogRepository->deleteTenantActivityLog($id);
+            $this->activityLogRepository->deleteTenantApiUserActivityLog($id);
+            $this->activityLogRepository->deleteTenantLanguageActivityLog($id);
+            
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_DELETED');
