@@ -58,7 +58,7 @@ class NewsCategory extends Model
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return null|array
+     * @return array
      */
     public function getTranslationsAttribute(string $value): array
     {
