@@ -228,7 +228,7 @@ class TenantController extends Controller
     public function destroy(int $id): JsonResponse
     {
         try {
-
+            $this->tenantRepository->delete($id);
             $this->activityLogRepository->deleteTenantActivityLog($id);
             $this->activityLogRepository->deleteTenantApiUserActivityLog($id);
             $this->activityLogRepository->deleteTenantLanguageActivityLog($id);
