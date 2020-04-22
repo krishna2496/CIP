@@ -443,7 +443,7 @@ class MissionRepository implements MissionInterface
             'mission.organisation_name',
             'mission.is_virtual'
         )
-        ->with(['city.languages','city.state','city.state.languages', 'country.languages', 'missionTheme',
+        ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
         'missionLanguage', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
@@ -524,7 +524,7 @@ class MissionRepository implements MissionInterface
                     'label_goal_objective'
                 );
             }])
-            ->with(['city.languages','city.state','city.state.languages'])
+            ->with(['city.languages', 'city.state', 'city.state.languages'])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
                 ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
@@ -1013,7 +1013,7 @@ class MissionRepository implements MissionInterface
                     $missionQuery->where("mission.country_id", $request->input('country_id'));
                 }
                 $missionQuery->groupBy('mission.city_id');
-                $missionQuery->with(['city.state','city.state.languages']);
+                $missionQuery->with(['city.state', 'city.state.languages']);
                 $mission = $missionQuery->get();
                 break;
         }
