@@ -19,7 +19,6 @@ use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Repositories\City\CityRepository;
 use App\Repositories\Notification\NotificationRepository;
 
 //!  Mission controller
@@ -60,11 +59,6 @@ class MissionController extends Controller
     private $tenantActivatedSettingRepository;
 
     /**
-     * @var App\Repositories\City\CityRepository
-     */
-    private $cityRepository;
-
-    /**
      * @var App\Repositories\Notification\NotificationRepository
      */
     private $notificationRepository;
@@ -78,7 +72,6 @@ class MissionController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
-     * @param App\Repositories\City\CityRepository $CityRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
@@ -89,7 +82,6 @@ class MissionController extends Controller
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        CityRepository $cityRepository,
         NotificationRepository $notificationRepository
     ) {
         $this->missionRepository = $missionRepository;
@@ -98,7 +90,6 @@ class MissionController extends Controller
         $this->languageHelper = $languageHelper;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
-        $this->cityRepository =  $cityRepository;
         $this->notificationRepository = $notificationRepository;
     }
 
@@ -199,8 +190,7 @@ class MissionController extends Controller
             $stateValidator = Validator::make(
                 $request->all(),
                 [
-                    "location.state_id" =>
-                    "sometimes|required_with:location|integer|exists:state,state_id,deleted_at,NULL"
+                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
                 ]
             );
             if ($stateValidator->fails()) {

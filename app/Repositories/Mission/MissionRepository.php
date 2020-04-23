@@ -604,7 +604,6 @@ class MissionRepository implements MissionInterface
             $missionQuery->where("mission.country_id", $userFilterData['country_id']);
         }
 
-        
         if ($userFilterData['state_id'] && $userFilterData['state_id'] !== '') {
             $missionQuery->whereIn("mission.state_id", explode(",", $userFilterData['state_id']));
         }
