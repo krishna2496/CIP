@@ -11,7 +11,7 @@
                                 {{languageData.label.closed}}</b-alert>
                             <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                 :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
-                                <img src="mission.default_media_path" alt="mission.default_media_path">
+                                <img :src="getMediaPath(mission.default_media_path)" alt="">
                             </div>
                             <div v-else class="group-img"
                                  :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
