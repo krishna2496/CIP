@@ -184,7 +184,6 @@ trait MissionTransformable
         }
         
         $mission['city_name'] = $mission['city']['name'];
-
         //Get city name from translation
         $cityTranslation = $mission['city']->languages->toArray();
         if ($cityTranslation) {

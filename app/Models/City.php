@@ -31,7 +31,7 @@ class City extends Model
      *
      * @var array
      */
-    protected $visible = ['city_id', 'country_id', 'name','translations', 'languages','state_id'];
+    protected $visible = ['city_id', 'country_id', 'name','translations', 'languages','state_id','state'];
 
     /**
     * The attributes that are mass assignable.
@@ -88,7 +88,7 @@ class City extends Model
      */
     public function state()
     {
-        return $this->hasMany(State::class, 'state_id', 'state_id');
+        return $this->hasOne(State::class, 'state_id', 'state_id');
     }
 
 }
