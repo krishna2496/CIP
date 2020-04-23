@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../../bootstrap/app.php');
+require_once('../../../../bootstrap/app.php');
 
 $db = app()->make('db');
 
@@ -23,6 +23,8 @@ $pdo = $db->connection('mysql')->getPdo();
 $tenants = $pdo->query('select tenant_id from tenant where deleted_at is null')->fetchAll();
 
 foreach ($tenants as $tenant) {
+    echo 'Processing tenant ' . $tenant['tenant_id'] . "... \n";
+
     // Create connection to the tenant
     \Illuminate\Support\Facades\Config::set('database.connections.tenant', array(
         'driver' => 'mysql',
@@ -54,6 +56,8 @@ foreach ($tenants as $tenant) {
         'password_confirmation'
     ];
 
+    $numberOfDeletedLog = 0;
+
     foreach ($activitiesLog as $activityLog) {
         $id = $activityLog['activity_log_id'];
         $log = unserialize($activityLog['object_value']);
@@ -75,7 +79,9 @@ foreach ($tenants as $tenant) {
                 WHERE `activity_log_id` = :id
             ')
                     ->execute(['object_value' => serialize($log), 'id' => $id]);
+                $numberOfDeletedLog++;
             }
         }
     }
+    echo 'Deleted ' . $numberOfDeletedLog . " password(s) in activity_log table for this tenant. \n \n";
 }
