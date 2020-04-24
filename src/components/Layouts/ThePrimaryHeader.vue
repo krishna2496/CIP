@@ -21,6 +21,13 @@
                             <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt>
                         </b-button>
                         <ul v-if="this.$store.state.isLoggedIn">
+                            <li v-if="this.$store.state.logoRedirectUrl !== 'home'">
+                                <router-link :to="{ path: '/home'}">
+                                    <img class="home-icon"
+                                        :src="$store.state.imagePath+'/assets/images/home.svg'"  
+                                    />
+                                </router-link>
+                            </li>
                             <li class="has-menu">
                                 <a href="Javascript:void(0)"
                                     :title='languageData.label.explore'>{{ languageData.label.explore}}</a>

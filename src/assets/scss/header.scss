@@ -450,6 +450,9 @@ header {
 
 .menu-wrap {
     padding-left: 60px;
+    .home-icon {
+        width : 30px
+    }
     @include lg-max{
         padding-left: 25px;
     }
