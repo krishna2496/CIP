@@ -78,7 +78,7 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective','state'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name'];
 
     /**
      * Get the document record associated with the mission.
@@ -128,7 +128,7 @@ class Mission extends Model
     public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id')
-         ->select('city_id');
+         ->select('city_id', 'state_id');
     }
 
     /**
@@ -382,14 +382,4 @@ class Mission extends Model
         }
     }
 
-    /**
-     * Get state associated with the mission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function state(): HasOne
-    {
-        return $this->hasOne(State::class, 'state_id', 'state_id')
-         ->select('state_id');
-    }
 }

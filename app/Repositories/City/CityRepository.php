@@ -309,6 +309,7 @@ class CityRepository implements CityInterface
         return $cities;
     }
 
+    
     /**
      * Search city with language and country restriction
      * @param  string $search
