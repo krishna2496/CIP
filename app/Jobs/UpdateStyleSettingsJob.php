@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use ScssPhp\ScssPhp\Compiler;
 
@@ -93,13 +94,7 @@ class UpdateStyleSettingsJob extends Job
         $scss = new Compiler();
         $scss->addImportPath(realpath(storage_path() . '/app/' . $this->tenantName . self::SCSS_PATH));
 
-        $assetUrl = 'https://'
-            . env('AWS_S3_BUCKET_NAME')
-            . '.s3.'
-            . env('AWS_REGION')
-            . '.amazonaws.com/'
-            . $this->tenantName
-            . '/assets/images';
+        $assetUrl = S3Helper::makeTenantS3BaseUrl($this->tenantName) . 'assets/images';
 
         $importScss = '@import "_variables";';
 
