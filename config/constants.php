@@ -347,7 +347,7 @@ return [
     'SKILL' => "skill",
     'RANDOM' => 'random-missions',
     'STATE' => 'state',
-
+    'VIRTUAL' => 'virtual-missions',
     /* sort by */
     "NEWEST" => "newest",
     "OLDEST" => "oldest",

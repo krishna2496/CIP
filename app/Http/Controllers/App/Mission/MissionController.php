@@ -158,7 +158,7 @@ class MissionController extends Controller
             $exploreMissionType = $request->input('explore_mission_type');
             $authorizedMissionTypes = array(config('constants.TOP_RECOMMENDED'), config('constants.RANDOM'),
                 config('constants.THEME'), config('constants.COUNTRY'), config('constants.ORGANIZATION'),
-                config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'));
+                config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'), config('constants.VIRTUAL'));
                 
             if (!in_array($exploreMissionType, $authorizedMissionTypes)
             ) {
