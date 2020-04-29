@@ -92,7 +92,7 @@
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/virtual-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{languageData.label.virtual_mission}}
+                                            {{languageData.label.virtual_missions}}
                                         </router-link>
                                     </li>
                                 </ul>

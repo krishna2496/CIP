@@ -101,8 +101,8 @@
                             </div>
                         </div>
                         <div class="content-block">
-                            <div class="mission-label">
-                              <span>virtual mission</span>
+                            <div class="mission-label" v-if="mission.is_virtual == 1">
+                              <span>{{languageData.label.virtual_mission}}</span>
                             </div>
                             <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
                                     class="card-title mb-2">
