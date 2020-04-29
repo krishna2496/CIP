@@ -4114,6 +4114,11 @@
 					  "type": "integer",
 					  "description": "Add minutes",
 					  "example": "45"
+				  },
+				  "action": {
+					  "type": "integer",
+					  "description": "Add action",
+					  "example": "45"
 				  }
 			  }
 			}
