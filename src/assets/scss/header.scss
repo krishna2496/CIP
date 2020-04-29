@@ -450,9 +450,6 @@ header {
 
 .menu-wrap {
     padding-left: 60px;
-    .home-icon {
-        width : 30px
-    }
     @include lg-max{
         padding-left: 25px;
     }
@@ -465,6 +462,26 @@ header {
             position: relative;
             cursor: pointer;
             >a {
+				&.home-icon{
+					width: 20px;
+					height: 20px;
+					@include md-max{
+						width: auto;
+						height: auto;
+					}
+					span{
+						display: none;
+						@include md-max{
+							display: block;
+						}
+					}
+					img{
+						vertical-align: top;
+						@include md-max{
+							display: none;
+						}
+					}
+				}
                 &.router-link-active {
                     color: $black;
                     &:before {
