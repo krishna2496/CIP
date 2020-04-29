@@ -9,6 +9,7 @@ use App\Helpers\LanguageHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\State;
 use App\Models\StateLanguage;
+use App\Models\Mission;
 
 class StateRepository implements StateInterface
 {
@@ -33,24 +34,32 @@ class StateRepository implements StateInterface
     private $languageHelper;
 
     /**
+     * @var App\Models\Mission
+     */
+    public $mission;
+
+    /**
      * Create a new repository instance.
      *
      * @param App\Models\State $state
      * @param App\Models\Country $country
      * @param App\Models\StateLanguage $stateLanguage
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Models\Mission $mission
      * @return void
      */
     public function __construct(
         State $state,
         Country $country,
         StateLanguage $stateLanguage,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Mission $mission
     ) {
         $this->state = $state;
         $this->country = $country;
         $this->stateLanguage = $stateLanguage;
         $this->languageHelper = $languageHelper;
+        $this->mission = $mission;
     }
 
     /**
@@ -174,7 +183,9 @@ class StateRepository implements StateInterface
      */
     public function hasMission(int $id): bool
     {
-        return $this->state->whereHas('mission')->whereStateId($id)->count() ? true : false;
+        return $this->mission->whereHas('city', function ($query) use ($id) {
+            $query->where('state_id', $id);
+        })->count() ? true : false;
     }
 
     /**
