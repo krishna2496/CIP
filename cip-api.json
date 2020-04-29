@@ -5,10 +5,10 @@
     "title": "CI Platform",
     "description": ""
   },
-  "host":"localhost:7004",
-  "basePath":"/",
-  "tags":[
-      {
+  "host":"ci-api-doc-service",
+  "basePath":"/team4/cip-api",
+  "tags":[  
+      {  
          "name":"Mission",
 	  },
 	  {
@@ -2023,6 +2023,75 @@
         }
       }
     },
+    "/users/{userId}/timesheet": {
+        "get": {
+            "operationId": "GET_team4-cip-api-users-timesheets",
+            "summary": "Admin - Get tenant user timesheets",
+            "description": "List of all the tenant user timesheet",
+            "tags":[
+                "User"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "type": "string",
+                    "default": ""
+                }
+            ],
+            "responses": {
+                "200":{  
+                    "description":"User timesheet listed successfully"
+                },
+                "400":{  
+                    "description":"Bad Request"
+                },
+                "404" : {
+                	"description": "User timesheets not found"
+                },
+                "401":{  
+                    "description":"Unauthorized - Invalid API key or secret key"
+                }
+            }
+        }
+    },
+    "/users/{userId}/timesheet-summary": {
+        "get": {
+            "operationId": "GET_team4-cip-api-users-timesheet-summary",
+            "summary": "Admin - Get tenant user timesheet summary",
+            "description": "List of the tenant user timesheet summary",
+            "tags":[
+                "User"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "type": "string",
+                    "default": ""
+                }
+            ],
+            "responses": {
+                "200":{  
+                    "description":"User timesheet summarized successfully"
+                },
+                "400":{  
+                    "description":"Bad Request"
+                },
+                "401":{  
+                    "description":"Unauthorized - Invalid API key or secret key"
+                }
+            }
+        }
+    },
 	"/metadata/users/custom_fields": {
 	  "get": {
         "operationId": "GET_team4-cip-api-metadata-users-custom_fields",
@@ -3337,6 +3406,39 @@
         }
       }
     },
+    "/tenant-settings/activated": {
+        "get": {
+            "operationId": "GET_team4-cip-api-get-activated-settings",
+            "summary": "Admin - Get tenant activated settings (Milestone - 3)",
+            "description": "List of all the activated tenant settings",
+            "tags":[
+                "Tenant - Admin"
+            ],
+            "consumes": [
+                "multipart/form-data"
+            ],
+            "parameters": [
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "type": "string",
+                    "default": ""
+                }
+            ],
+            "responses": {
+                "200":{  
+                    "description":"Settings listed successfully"
+                },
+                "400":{  
+                    "description":"Bad Request"
+                },
+                "401":{  
+                    "description":"Unauthorized - Invalid API key or secret key"
+                }
+            }
+        }
+    },
 	"/language/{lang}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
@@ -3993,6 +4095,36 @@
 			}
         }
       }
+    },
+    "/timesheet/total-hours": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",
+        "summary": "Admin - Fetch sum of all users total hours timesheet data",
+        "description": "Fetch approved mission applications sum of all users total hours to show on OptimyApp dashboard page",
+        "tags":[
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400":{
+              "description":"Bad Request"
+            },
+            "401":{
+              "description":"Unauthorized - Invalid API key or secret key"
+            }
+        }
+      },
     },
 	"/timesheet/{userId}?status={status}&type={type}": {
       "get": {
