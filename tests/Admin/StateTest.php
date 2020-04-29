@@ -55,7 +55,7 @@ class StateTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/states/country/'.$countryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -552,45 +552,6 @@ class StateTest extends TestCase
     /**
      * @test
      *
-     * Delete state api, will return error. If state belongs to mission or user
-     *
-     * @return void
-     */
-    public function state_test_it_return_error_not_able_to_delete_state_it_belongs_to_user()
-    {
-        $connection = 'tenant';
-        $country = factory(\App\Models\Country::class)->make();
-        $country->setConnection($connection);
-        $country->save();
-        $countryId = $country->country_id;
-
-        $state = factory(\App\Models\State::class)->make();
-        $state->setConnection($connection);
-        $state->save();
-        $state->country_id = $countryId;
-        $state->update();
-        
-        DB::setDefaultConnection('mysql');
-
-        // Add user for this country and state
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-        $user->state_id = $state->state_id;
-        $user->country_id = $countryId;
-        $user->update();
-
-        $this->delete("entities/states/".$state->state_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
-
-        App\User::where('user_id', $user->user_id)->delete();
-        App\Models\state::where('state_id', $state->state_id)->delete();
-        App\Models\Country::where('country_id', $countryId)->delete();
-    }
-
-    /**
-     * @test
-     *
      * Delete country api, will return error. If country belongs to mission
      *
      * @return void
@@ -606,8 +567,16 @@ class StateTest extends TestCase
         $state = factory(\App\Models\State::class)->make();
         $state->setConnection($connection);
         $state->save();
+        $stateId = $state->state_id;
         $state->country_id = $countryId;
         $state->update();
+        
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->state_id = $state->state_id;
+        $city->update();
+        $cityId = $city->city_id;
         
         DB::setDefaultConnection('mysql');
 
@@ -615,13 +584,12 @@ class StateTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        $mission->state_id = $state->state_id;
+        $mission->city_id = $city->city_id;
         $mission->country_id = $countryId;
         $mission->update();
 
-        $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);        
-
+        $res = $this->delete("entities/states/".$stateId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
         App\Models\state::where('state_id', $state->state_id)->delete();
         App\Models\Country::where('country_id', $countryId)->delete();
