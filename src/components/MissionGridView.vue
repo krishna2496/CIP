@@ -75,6 +75,9 @@
 
 						<b-card-body>
 							<div class="content-block">
+								<div class="mission-label">
+									<span>virtual mission</span>
+								</div>
 								<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
 										class="card-title mb-2">
 									{{mission.title | substring(60)}}
