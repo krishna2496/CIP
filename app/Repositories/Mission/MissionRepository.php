@@ -1019,7 +1019,7 @@ class MissionRepository implements MissionInterface
                         });
                     }
                     if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-                        $stateMissionQuery->where("mission.is_virtual", "1");
+                        $missionQuery->where("mission.is_virtual", "1");
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
