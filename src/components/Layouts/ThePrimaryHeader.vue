@@ -22,8 +22,8 @@
                         </b-button>
                         <ul v-if="this.$store.state.isLoggedIn">
                             <li v-if="this.$store.state.logoRedirectUrl !== 'home'" class="has-menu no-dropdown">
-                                <router-link :to="{ path: '/home'}" title="Home" class="home-icon">
-                                <span>Home</span>
+                                <router-link :to="{ path: '/home'}" 
+                                    :title="languageData.label.home" class="home-icon">
                                     <img class="home-icon"
                                         :src="$store.state.imagePath+'/assets/images/home-ic.svg'"  
                                     />
