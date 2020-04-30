@@ -819,4 +819,5 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 '/',
                 ['uses' => 'App\Timezone\TimezoneController@index']
             );
+        }
     );
