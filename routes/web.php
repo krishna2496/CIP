@@ -796,3 +796,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
             'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
         }
     );
+
+    $router->group(
+        ['prefix' => '/timezone', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get(
+                '/',
+                ['uses' => 'App\Timezone\TimezoneController@index']
+            );
+        }
+    );
