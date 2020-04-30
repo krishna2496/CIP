@@ -7939,7 +7939,7 @@
               },
               "sort_order": {
                 "type": "integer",
-                "description": "Mission media sort order",
+                "description": "Mission media sort order ",
                 "format": "int64"
               }
             }
