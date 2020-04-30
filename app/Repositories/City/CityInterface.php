@@ -28,10 +28,10 @@ interface CityInterface
     /**
      * Store city data
      *
-     * @param string $countryId
+     * @param Request $request
      * @return City
      */
-    public function store(string $countryId): City;
+    public function store(Request $request): City;
 
     /**
      * Get listing of all city.

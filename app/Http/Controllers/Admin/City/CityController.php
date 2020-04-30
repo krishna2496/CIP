@@ -83,7 +83,7 @@ class CityController extends Controller
     }
 
     /**
-     * Display the specified country detail.
+     * Fetch city by city id
      *
      * @param int $id
      * @return Illuminate\Http\JsonResponse
@@ -91,12 +91,12 @@ class CityController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $countryDetails = $this->cityRepository->getCityData($id);
+            $cityDetails = $this->cityRepository->getCityData($id);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CITY_FOUND');
             
-            return $this->responseHelper->success($apiStatus, $apiMessage, $countryDetails);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $cityDetails);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_CITY_NOT_FOUND'),
@@ -113,11 +113,13 @@ class CityController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+       
         // Server side validations
         $validator = Validator::make(
             $request->all(),
             [
                 "country_id" => 'required|exists:country,country_id,deleted_at,NULL',
+                "state_id" =>  'sometimes|required|exists:state,state_id,deleted_at,NULL',
                 "cities" => 'required',
                 "cities.*.translations" => 'required|array',
                 "cities.*.translations.*.lang" => 'required|min:2|max:2',
@@ -135,13 +137,11 @@ class CityController extends Controller
             );
         }
 
-        $countryId = $request->country_id;
-
         // Add cities one by one
         $createdCity = [];
         foreach ($request->cities as $key => $city) {
             // Add country id into city table
-            $cityDetails = $this->cityRepository->store($countryId);
+            $cityDetails = $this->cityRepository->store($request);
 
             // Add all translations add into city_translation table
             $createdCity[$key]['city_id'] = $city['city_id'] = $cityDetails->city_id;
@@ -199,6 +199,7 @@ class CityController extends Controller
                 $request->all(),
                 [
                     "country_id" => 'sometimes|required|exists:country,country_id,deleted_at,NULL',
+                    "state_id" =>  'sometimes|required|exists:state,state_id,deleted_at,NULL',
                     "translations" => 'sometimes|required|array',
                     "translations.*.lang" => 'required|min:2|max:2',
                     "translations.*.name" => 'required'
@@ -214,6 +215,7 @@ class CityController extends Controller
                     $validator->errors()->first()
                 );
             }
+            
             // Get all countries
             $languages = $this->languageHelper->getLanguages($request);
 

@@ -1,19 +1,20 @@
 <?php
 namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\UserFilter\UserFilterRepository;
-use App\Repositories\Skill\SkillRepository;
-use App\Repositories\MissionTheme\MissionThemeRepository;
-use App\Repositories\Country\CountryRepository;
-use App\Repositories\City\CityRepository;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Repositories\City\CityRepository;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Repositories\Skill\SkillRepository;
+use App\Repositories\State\StateRepository;
+use App\Repositories\Country\CountryRepository;
+use App\Repositories\UserFilter\UserFilterRepository;
+use App\Repositories\MissionTheme\MissionThemeRepository;
 
 //!  User filter controller
 /*!
@@ -84,7 +85,8 @@ class UserFilterController extends Controller
         LanguageHelper $languageHelper,
         Helpers $helper,
         CountryRepository $countryRepository,
-        CityRepository $cityRepository
+        CityRepository $cityRepository,
+        StateRepository $stateRepository
     ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
@@ -94,6 +96,7 @@ class UserFilterController extends Controller
         $this->helper = $helper;
         $this->countryRepository = $countryRepository;
         $this->cityRepository = $cityRepository;
+        $this->stateRepository = $stateRepository;
     }
     
     /**
@@ -139,6 +142,18 @@ class UserFilterController extends Controller
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
                         $filterTagArray["city"][$key] = $value;
+                    }
+                }
+            }
+
+            if (isset($filterData["filters"]["state_id"]) && $filterData["filters"]["state_id"] !== "") {
+                $cityTag = $this->stateRepository->getState(
+                    $filterData["filters"]["state_id"],
+                    $languageId
+                );
+                if ($cityTag) {
+                    foreach ($cityTag as $key => $value) {
+                        $filterTagArray["state"][$key] = $value;
                     }
                 }
             }

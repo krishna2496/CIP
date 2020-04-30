@@ -9,6 +9,7 @@ use App\Models\MissionSkill;
 use App\Models\TimeMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
+use App\Models\City;
 
 class ModelsService
 {
@@ -53,6 +54,11 @@ class ModelsService
     public $missionApplication;
 
     /**
+     * @var App\Models\City
+     */
+    public $city;
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -63,7 +69,7 @@ class ModelsService
      * @param  App\Models\MissionSkill $missionSkill
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
-     *
+     * @param  App\Models\City $city
      * @return void
      */
     public function __construct(
@@ -74,7 +80,8 @@ class ModelsService
         FavouriteMission $favouriteMission,
         MissionSkill $missionSkill,
         MissionRating $missionRating,
-        MissionApplication $missionApplication
+        MissionApplication $missionApplication,
+        City $city
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -84,5 +91,6 @@ class ModelsService
         $this->missionSkill = $missionSkill;
         $this->missionRating = $missionRating;
         $this->missionApplication = $missionApplication;
+        $this->city = $city;
     }
 }

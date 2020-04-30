@@ -24,7 +24,7 @@ This controller is responsible for handling language file listing operation.
 class LanguageController extends Controller
 {
     use RestExceptionHandlerTrait;
-   
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -89,7 +89,7 @@ class LanguageController extends Controller
                 "code" => "required|max:2|min:2"
             ]
         );
-        
+
         // If post parameter have any missing parameter
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -99,7 +99,7 @@ class LanguageController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Check for valid language code
         if (!$this->languageHelper->getTenantLanguageByCode($request, $request->code)) {
             return $this->responseHelper->error(
@@ -109,7 +109,7 @@ class LanguageController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
             );
         }
-        
+
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
@@ -120,7 +120,7 @@ class LanguageController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_FILE_FOUND');
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-        
+
     /**
      * It will update language file on S3
      *
@@ -173,7 +173,7 @@ class LanguageController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_JSON_FORMAT')
             );
         }
-        
+
         // Check for valid language code
         if (!$this->languageHelper->getTenantLanguageByCode($request, $fileName)) {
             return $this->responseHelper->error(
@@ -229,13 +229,12 @@ class LanguageController extends Controller
         $context = stream_context_create(array('http'=> array(
             'timeout' => 1200
         )));
-        
+
         $disk = Storage::disk('s3');
         $documentName = $fileName . '.' . $fileExtension;
-        $documentPath =  $tenantName .'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/' . $documentName;
-        $disk->put($documentPath, @file_get_contents($file, false, $context));
-        $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
-        . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
+        $documentPath =  config('constants.AWS_S3_LANGUAGES_FOLDER_NAME') . '/' . $documentName;
+        $disk->put($tenantName . '/' . $documentPath, @file_get_contents($file, false, $context));
+        $pathInS3 = S3Helper::makeTenantS3BaseUrl($tenantName) . $documentPath;
 
         $fileDetail = array();
         $fileDetail['file_name'] = $documentName;

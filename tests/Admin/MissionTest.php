@@ -1,7 +1,7 @@
 <?php
 
 class MissionTest extends TestCase
-{
+{   
     /**
      * @test (priority=1)
      *
@@ -18,7 +18,7 @@ class MissionTest extends TestCase
             "message"
         ]);
     }
-
+    
     /**
      * @test
      *
@@ -31,13 +31,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -93,7 +94,6 @@ class MissionTest extends TestCase
                     ],
                     "media_images" => [[
                             "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "internal_note" => "internal note for image",
                             "default" => "1",
                             "sort_order" => "1"
                         ],
@@ -111,7 +111,6 @@ class MissionTest extends TestCase
                     "media_videos"=> [[
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
-                        "internal_note" => "internal note for video",
                         "sort_order" => "1"
                         ]
                     ],
@@ -130,9 +129,9 @@ class MissionTest extends TestCase
                         ]
                     ]
                 ];
-
-        \DB::setDefaultConnection('mysql');
-
+        
+        \DB::setDefaultConnection('mysql');       
+        
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201)
         ->seeJsonStructure([
@@ -143,7 +142,7 @@ class MissionTest extends TestCase
             'status',
         ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-
+        
     }
 
     /**
@@ -185,7 +184,7 @@ class MissionTest extends TestCase
             ]
         ]);
     }
-
+    
     /**
      * @test
      *
@@ -198,8 +197,9 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
-
+        
         $description = str_random(20);
         $params = [
             "organisation" => [
@@ -312,6 +312,7 @@ class MissionTest extends TestCase
             "data",
             "message"
         ]);
+        
     }
 
     /**
@@ -326,13 +327,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
-
+        
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -389,7 +391,6 @@ class MissionTest extends TestCase
                     "media_images" => [[
                             "media_id" => "",
                             "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "internal_note" => "internal note for image",
                             "default" => "1",
                             "sort_order" => "1"
                         ],
@@ -410,7 +411,6 @@ class MissionTest extends TestCase
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
-                        "internal_note" => "internal note for video",
                         "sort_order" => "1"
                         ]
                     ],
@@ -447,7 +447,7 @@ class MissionTest extends TestCase
             'status',
             ]);
         $mission->delete();
-
+        
     }
 
     /**
@@ -477,7 +477,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+        ]); 
     }
 
     /**
@@ -525,7 +525,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+        ]); 
     }
 
     /**
@@ -540,6 +540,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $params = [
@@ -608,7 +609,7 @@ class MissionTest extends TestCase
                 ]
             ]
         ]);
-
+        
     }
 
     /**
@@ -620,8 +621,8 @@ class MissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_type()
     {
-        $params = [
-                    "mission_type" => "GOAL1",
+        $params = [                    
+                    "mission_type" => "GOAL1",                   
                 ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -635,7 +636,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+        ]); 
     }
 
     /**
@@ -683,7 +684,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+        ]); 
     }
 
     /**
@@ -715,7 +716,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+        ]); 
         $mission->delete();
     }
 
@@ -760,6 +761,7 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $params = [
@@ -843,7 +845,7 @@ class MissionTest extends TestCase
             'status',
         ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-
+        
     }
 
     /**
@@ -858,13 +860,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
-
+        
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -967,7 +970,7 @@ class MissionTest extends TestCase
             'status',
             ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-
+        
     }
 
     /**
@@ -982,13 +985,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -1083,7 +1087,7 @@ class MissionTest extends TestCase
             'status',
             ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-
+        
     }
 
     /**
@@ -1098,13 +1102,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -1113,7 +1118,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->I
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1182,7 +1187,7 @@ class MissionTest extends TestCase
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-
+        
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
         DB::setDefaultConnection('mysql');
@@ -1283,10 +1288,10 @@ class MissionTest extends TestCase
             'message',
             'status',
             ]);
-
+        
     }
 
-
+    
     /**
      * @test
      *
@@ -1295,22 +1300,23 @@ class MissionTest extends TestCase
      * @return void
      */
     public function it_should_delete_mission_media()
-    {
+    {   
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
-
+             
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [
-                    [
+                "organisation_detail" => [  
+                    [  
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [
+                    [  
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1318,7 +1324,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->I
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1337,31 +1343,18 @@ class MissionTest extends TestCase
                     ]
                 ]
             ],
-            "media_images" => [
-                [
+            "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1",
                     "sort_order" => "1"
-                ],
-                [
+                ], [
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "0",
-                    "sort_order" => "4"
-                ],
-                [
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-                    "default" => "0",
-                    "sort_order" => "3"
+                    "sort_order" => "1"
                 ]
-            ],
+            ],            
             "documents" => [],
-            "media_videos"=> [
-                [
-                    "media_path" => "https://www.youtube.com/watch?v=mWOpppkOIvY",
-                    "media_name" => "video.mp4",
-                    "sort_order" => "2"
-                ]
-            ],
+            "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1398,24 +1391,25 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+        ]); 
 
         $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
-
-        // Should update next image media as default if default mission media is deleted
+        // Return error if you are trying to delete default mission media
         DB::setDefaultConnection('mysql');
         $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(204);
-
-        $nextImageMedia = App\Models\MissionMedia::where([
-                ['mission_id', $missionId],
-                ['sort_order', 3]
-            ])
-            ->first();
-        $this->assertSame($nextImageMedia['default'], '1');
-
-        App\Models\Mission::where('mission_id', $missionId)->delete();
-        App\Models\MissionMedia::where('mission_id', $missionId)->delete();
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        App\Models\Mission::where("mission_id", $missionId)->delete();
+        
     }
 
     /**
@@ -1426,22 +1420,23 @@ class MissionTest extends TestCase
      * @return void
      */
     public function it_should_delete_mission_document()
-    {
+    {    
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [
-                    [
+                "organisation_detail" => [  
+                    [  
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [
+                    [  
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1449,7 +1444,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'country_code' => $countryDetail->I
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1473,7 +1468,7 @@ class MissionTest extends TestCase
                     "default" => "1",
                     "sort_order" => "1"
                 ]
-            ],
+            ],            
             "documents" => [[
                     "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
                     "sort_order" => "1"
@@ -1516,8 +1511,8 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
-        App\Models\Mission::where("mission_id", $missionId)->delete();
+        ]); 
+        App\Models\Mission::where("mission_id", $missionId)->delete();        
     }
 
     /**
@@ -1532,13 +1527,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -1603,11 +1599,11 @@ class MissionTest extends TestCase
                         ]
                     ]
                 ];
-
-        \DB::setDefaultConnection('mysql');
-
+        
+        \DB::setDefaultConnection('mysql');       
+        
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(422);        
     }
 
     /**
@@ -1622,13 +1618,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
-
+        
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -1831,7 +1828,7 @@ class MissionTest extends TestCase
         ->seeStatusCode(422);
 
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-
+        
     }
 
     /**
@@ -1846,13 +1843,14 @@ class MissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
+        
         \DB::setDefaultConnection('mysql');
-
+        
         $connection = 'tenant';
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -1920,6 +1918,6 @@ class MissionTest extends TestCase
         $this->patch("missions/".$mission->mission_id, $params,
         ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
-        $mission->delete();
+        $mission->delete();        
     }
 }

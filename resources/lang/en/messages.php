@@ -189,7 +189,13 @@ return [
         'MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY' => 'Tenant language file updated sucessfully',
         'MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS' => 'User timesheet summarized successfully',
         'MESSAGE_TENANT_USER_TIMESHEET_SUCCESS' => 'User timesheet listed successfully',
-        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found'
+        'MESSAGE_TENANT_USER_TIMESHEET_EMPTY' => 'User timesheets not found',
+        'MESSAGE_STATE_CREATED' => 'State created successfully',
+        'MESSAGE_STATE_UPDATED' => 'State updated successfully',
+        'MESSAGE_STATE_DELETED' => 'State deleted successfully',
+        'MESSAGE_STATE_LISTING' => 'States listed successfully',
+        'MESSAGE_STATE_FOUND' => 'State found successfully',
+        'MESSAGE_NO_STATE_FOUND' => 'State not found',
     ],
 
 
@@ -339,7 +345,8 @@ return [
         'ERROR_CITY_ENABLE_TO_DELETE' => 'You can not delete this city as it is either link to mission or user',
 
         'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
-
+        'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
+        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => 'Invalid identity provider.',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',

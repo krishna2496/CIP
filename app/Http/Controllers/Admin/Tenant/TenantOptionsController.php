@@ -1,25 +1,25 @@
 <?php
 namespace App\Http\Controllers\Admin\Tenant;
 
+use App\Events\EventLogger;
+use App\Services\CustomStyling\CustomStyleFilenames;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
+use Illuminate\Validation\Rule;
 use Validator;
-use App\Jobs\DownloadAssestFromLocalDefaultThemeToLocalStorageJob;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
-use App\Exceptions\FileNotFoundException;
-use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Jobs\ResetStyleSettingsJob;
-use App\Jobs\UpdateStyleSettingsJob;
 use App\Services\CustomStyling\CustomStylingService;
 use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Events\User\UserActivityLogEvent;
@@ -118,97 +118,53 @@ class TenantOptionsController extends Controller
      */
     public function updateStyleSettings(Request $request): JsonResponse
     {
-        $isVariableScss = 0;
-        $fileName = '';
+        try {
+            $validationRules = [
+                'primary_color' => 'required_without:custom_scss_file',
+                'custom_scss_file' => 'required_without:primary_color|file',
+                'custom_scss_file_name' => ['required_with:custom_scss_file', Rule::in(CustomStyleFilenames::EDITABLE_FILES)],
+            ];
 
-        if (!$request->hasFile('custom_scss_file') && empty($request->primary_color)) {
+            $validator = Validator::make($request->toArray(), $validationRules);
+            if ($validator->fails()) {
+                throw new \InvalidArgumentException(
+                    $validator->errors()->first(),
+                    config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA')
+                );
+            }
+
+            $file = $request->file('custom_scss_file');
+            if ($file && $file->getClientOriginalExtension() !== CustomStyleFilenames::VALID_FILE_EXTENSION) {
+                throw new \InvalidArgumentException(
+                    trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION'),
+                    config('constants.error_codes.ERROR_NOT_VALID_EXTENSION')
+                );
+            }
+
+            $this->customStylingService->updateCustomStyle($request);
+
+            EventLogger::logCustomStyleUpdate($this->userApiKey, $request->toArray());
+
+            return $this->responseHelper->success(Response::HTTP_OK, trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS'));
+
+        } catch (\InvalidArgumentException $exception) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING'),
-                trans('messages.custom_error_message.ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING')
+                $exception->getCode(),
+                $exception->getMessage()
+            );
+
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage(), $request->toArray());
+
+            return $this->responseHelper->error(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+                500,
+                'An unexpected error occurred'
             );
         }
-
-        $updatedTenantOptionIds = $this->tenantOptionRepository->updateStyleSettings($request);
-
-        if (!empty($updatedTenantOptionIds)) {
-            $requestArray = $request->toArray();
-            foreach ($updatedTenantOptionIds as $tenantOptionId) {
-                $requestArray['custom_scss_file'] = '';
-                // Make activity log for tenant option primary key or secondary key
-                event(new UserActivityLogEvent(
-                    config('constants.activity_log_types.STYLE'),
-                    config('constants.activity_log_actions.UPDATED'),
-                    config('constants.activity_log_user_types.API'),
-                    $this->userApiKey,
-                    get_class($this),
-                    $requestArray,
-                    null,
-                    $tenantOptionId
-                ));
-            }
-        }
-
-        // Get domain name from request and use as tenant name.
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-        if ($request->hasFile('custom_scss_file')) {
-            $response = $this->customStylingService->uploadImage($request);
-            if (!is_null($response)) {
-                return $response;
-            }
-
-            $fileName = $request->custom_scss_file_name;
-            $filePath = $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.
-                config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
-
-            /* Check user uploading custom style variable file,
-            then we need to make it as high priority instead of passed colors. */
-            if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
-                $isVariableScss = 1;
-            }
-        }
-
-        $options['isVariableScss'] = $isVariableScss;
-
-        if (isset($request->primary_color) && $request->primary_color!='') {
-            $options['primary_color'] = $request->primary_color;
-        }
-
-        // Database connection with master database
-        $this->helpers->switchDatabaseConnection('mysql');
-
-        // Create new job that will take tenantName, options, and uploaded file path as an argument.
-        // Dispatch job, that will store in master database
-        dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
-        $this->helpers->switchDatabaseConnection('tenant');
-
-        if (!empty($fileName)) {
-            $requestArray = $request->toArray();
-            $requestArray['custom_scss_file'] = $filePath;
-
-            // Make activity log
-            event(new UserActivityLogEvent(
-                config('constants.activity_log_types.STYLE'),
-                config('constants.activity_log_actions.UPDATED'),
-                config('constants.activity_log_user_types.API'),
-                $this->userApiKey,
-                get_class($this),
-                $requestArray,
-                null,
-                null
-            ));
-        }
-
-        // Database connection with tenant database
-        $this->helpers->switchDatabaseConnection('tenant');
-
-        // Set response data
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');
-
-        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
@@ -303,8 +259,7 @@ class TenantOptionsController extends Controller
                     'mimetype' => $file->getMimeType()
                 ]
             );
-            $requestArray['image_file'] = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/assets/images/'.$fileName;
+            $requestArray['image_file'] = S3Helper::makeTenantS3BaseUrl($tenantName) . 'assets/images/' . $fileName;
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),

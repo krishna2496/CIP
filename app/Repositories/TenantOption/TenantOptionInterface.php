@@ -11,9 +11,9 @@ interface TenantOptionInterface
      * Update style settings.
      *
      * @param  Illuminate\Http\Request $request
-     * @return Array
+     * @return bool
      */
-    public function updateStyleSettings(Request $request): Array;
+    public function updateStyleSettings(Request $request): bool;
 
     /**
      * Store tenant option data

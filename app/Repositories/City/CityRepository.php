@@ -129,12 +129,16 @@ class CityRepository implements CityInterface
     /**
      * Store city data
      *
-     * @param string $countryId
+     * @param Request $request
      * @return City
      */
-    public function store(string $countryId): City
+    public function store(Request $request): City
     {
-        return $this->city->create(['country_id' => $countryId]);
+        $stateId = null;
+        if ($request->state_id) {
+            $stateId = $request->state_id;
+        }
+        return $this->city->create(['country_id' => $request->country_id,'state_id' => $stateId]);
     }
 
     /**
@@ -211,6 +215,10 @@ class CityRepository implements CityInterface
         $cityDetail = array();
         if (isset($request['country_id'])) {
             $cityDetail['country_id'] = $request['country_id'];
+        }
+
+        if (isset($request['state_id'])) {
+            $cityDetail['state_id'] = $request['state_id'];
         }
 
         // Update city
@@ -301,6 +309,7 @@ class CityRepository implements CityInterface
         return $cities;
     }
 
+    
     /**
      * Search city with language and country restriction
      * @param  string $search

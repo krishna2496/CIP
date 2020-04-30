@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\S3Helper;
 use ScssPhp\ScssPhp\Compiler;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Storage;
@@ -57,9 +58,8 @@ class CompileScssFiles extends Job
         $scss = new Compiler();
         $scss->addImportPath(realpath(storage_path().'/app/'.$this->tenantName.'/assets/scss'));
 
-        $assetUrl = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
-        .env("AWS_REGION", "eu-central-1").'.amazonaws.com/'.$this->tenantName.'/assets/images';
-                
+        $assetUrl = S3Helper::makeTenantS3BaseUrl($this->tenantName) . 'assets/images';
+
         $importScss =
         '@import "_assets";
         $assetUrl: "'.$assetUrl.'";
@@ -69,7 +69,7 @@ class CompileScssFiles extends Job
         @import "custom";';
 
         $css = $scss->compile($importScss);
-    
+
         // Put compiled css file into local storage
         Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css);
         // Copy default theme folder to tenant folder on s3

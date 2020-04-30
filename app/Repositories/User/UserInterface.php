@@ -155,7 +155,8 @@ interface UserInterface
      * Check profile complete status
      *
      * @param int $userId
+     * @param Request $request
      * @return User
      */
-    public function checkProfileCompleteStatus(int $userId): User;
+    public function checkProfileCompleteStatus(int $userId, Request $request): User;
 }

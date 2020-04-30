@@ -30,8 +30,6 @@ return [
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
     'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
-//    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
-//    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
     'AWS_S3_DOCUMENTS_FOLDER_NAME' => 'documents',
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
@@ -40,13 +38,10 @@ return [
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
-//    'AWS_REGION' => 'eu-central-1',
-//    'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
-//    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
@@ -331,7 +326,8 @@ return [
         'INVITE_COLLEAGUE' => 'invite_colleague',
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
-        'MISSION_COMMENTS' => 'mission_comments'
+        'MISSION_COMMENTS' => 'mission_comments',
+        'STATE_ENABLED' => 'state_selection'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -345,6 +341,7 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random-missions',
+    'STATE' => 'state',
 
     /* sort by */
     "NEWEST" => "newest",
@@ -486,7 +483,9 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID' => '800034',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => '800035',
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => '800036',
-
+        'ERROR_STATE_INVALID_DATA' => '800037',
+        'ERROR_STATE_NOT_FOUND' => '800038',
+        'ERROR_STATE_ENABLE_TO_DELETE' => '800039',
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
@@ -587,7 +586,8 @@ return [
         'CITY' => 'CITY',
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
-        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE'
+        'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
+        'STATE' => 'STATE'
     ],
 
     'activity_log_actions' => [
