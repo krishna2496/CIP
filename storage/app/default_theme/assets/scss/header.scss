@@ -460,11 +460,14 @@ header {
             margin: 0;
             padding: 20px 24px;
             position: relative;
-            cursor: pointer;
+			cursor: pointer;
+			&.home-link{
+				padding-right: 0;
+			}
             >a {
 				&.home-icon{
-					width: 20px;
-					height: 20px;
+					width: 22px;
+					height: 22px;
 					@include md-max{
 						width: auto;
 						height: auto;
