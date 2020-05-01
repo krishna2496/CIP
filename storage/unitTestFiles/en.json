@@ -291,7 +291,8 @@
 		"state": "Region",
 		"registration_period": "Registration period",
 		"search_mission": "Search mission",
-		"organisations": "Organizations"
+		"organisations": "Organizations",
+		"home": "Home"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
