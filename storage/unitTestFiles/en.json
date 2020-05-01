@@ -293,8 +293,7 @@
 		"search_mission": "Search mission",
 		"organisations": "Organizations",
 		"virtual_mission" : "Virtual mission",
-		"virtual_missions" : "Virtual missions",
-		"home": "Home"
+		"virtual_missions" : "Virtual missions"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
