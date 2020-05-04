@@ -20,28 +20,33 @@ class UserTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-        
+
         $name = str_random(10);
         $params = [
-                'first_name' => $name,
-                'last_name' => str_random(10),
-                'email' => str_random(10).'@email.com',
-                'password' => str_random(10),
-                'timezone_id' => 1,
-                'language_id' => 1,
-                'availability_id' => 1,
-                'why_i_volunteer' => str_random(10),
-                'employee_id' => str_random(10),
-                'department' => str_random(10),
-                'city_id' => $cityId,
-                'country_id' => $countryDetail->country_id,
-                'profile_text' => str_random(10),
-                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
-            ];
+            'first_name' => $name,
+            'last_name' => str_random(10),
+            'email' => str_random(10).'@email.com',
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
+            'expiry' => '2030-01-01 11:00:00'
+        ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post(
+            'users/',
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -50,8 +55,167 @@ class UserTest extends TestCase
             'message',
             'status',
         ]);
-        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();        
-        
+
+        $user = App\User::orderBy('user_id', 'DESC')
+            ->first();
+        $this->assertSame($user->first_name, $params['first_name']);
+        $this->assertSame($user->last_name, $params['last_name']);
+        $this->assertSame($user->email, $params['email']);
+        $this->assertSame($user->timezone_id, $params['timezone_id']);
+        $this->assertSame($user->language_id, $params['language_id']);
+        $this->assertSame($user->availability_id, $params['availability_id']);
+        $this->assertSame($user->why_i_volunteer, $params['why_i_volunteer']);
+        $this->assertSame($user->employee_id, $params['employee_id']);
+        $this->assertSame($user->country_id, $params['country_id']);
+        $this->assertSame($user->profile_text, $params['profile_text']);
+        $this->assertSame($user->linked_in_url, $params['linked_in_url']);
+        $this->assertSame($user->expiry, $params['expiry']);
+
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Should successfully create the user with null expiry
+     *
+     * @return void
+     */
+    public function it_should_create_user_even_if_expiry_is_null()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+            'first_name' => $name,
+            'last_name' => str_random(10),
+            'email' => str_random(10).'@email.com',
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
+            'expiry' => null
+        ];
+
+        $this->post(
+            'users/',
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(201);
+
+        $user = App\User::orderBy('user_id', 'DESC')
+            ->first();
+        $this->assertNull($user->expiry);
+
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Should successfully create the user without expiry
+     *
+     * @return void
+     */
+    public function it_should_create_user_even_if_expiry_is_not_provided()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+            'first_name' => $name,
+            'last_name' => str_random(10),
+            'email' => str_random(10).'@email.com',
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
+        ];
+
+        $this->post(
+            'users/',
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(201);
+
+        $user = App\User::orderBy('user_id', 'DESC')
+            ->first();
+        $this->assertNull($user->expiry);
+
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Should return an error if expiry is not a valid date
+     *
+     * @return void
+     */
+    public function it_should_not_create_the_user_if_expiry_is_not_a_valid_date()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+            'first_name' => $name,
+            'last_name' => str_random(10),
+            'email' => str_random(10),
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
+            'expiry' => 'foo'
+        ];
+
+        $this->post(
+            'users/',
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message',
+                    'code'
+                ]
+            ]
+        ]);
     }
 
     /**
@@ -67,37 +231,41 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $search = substr($user->first_name, 1,3);
+        $search = substr($user->first_name, 1, 3);
 
-        $this->get('users?search='.$search, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                "*" => [
-                    "user_id",
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "avatar",
-                    "timezone_id",
-                    "availability_id",
-                    "why_i_volunteer",
-                    "employee_id",
-                    "department",
-                    "profile_text",
-                    "linked_in_url",
-                    "status",
-                    "timezone" => [
-                        "timezone_id",
-                        "timezone",
-                        "offset",
-                        "status"
+        $this->get(
+                'users?search='.$search,
+                ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            )
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                'status',
+                'data' => [
+                    '*' => [
+                        'user_id',
+                        'first_name',
+                        'last_name',
+                        'email',
+                        'avatar',
+                        'timezone_id',
+                        'availability_id',
+                        'why_i_volunteer',
+                        'employee_id',
+                        'department',
+                        'profile_text',
+                        'linked_in_url',
+                        'status',
+                        'expiry',
+                        'timezone' => [
+                            'timezone_id',
+                            'timezone',
+                            'offset',
+                            'status'
+                        ]
                     ]
-                ]
-            ],
-            "message"
-        ]);
+                ],
+                'message'
+            ]);
         $user->delete();
     }
 
@@ -132,33 +300,37 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->get('users/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                "user_id",
-                "first_name",
-                "last_name",
-                "email",
-                "avatar",
-                "timezone_id",
-                "availability_id",
-                "why_i_volunteer",
-                "employee_id",
-                "department",
-                "profile_text",
-                "linked_in_url",
-                "status",
-                "timezone" => [
-                    "timezone_id",
-                    "timezone",
-                    "offset",
-                    "status"
-                ]
-            ],
-            "message"
-        ]);
+        $this->get(
+                'users/'.$user->user_id,
+                ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            )
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                'status',
+                'data' => [
+                    'user_id',
+                    'first_name',
+                    'last_name',
+                    'email',
+                    'avatar',
+                    'timezone_id',
+                    'availability_id',
+                    'why_i_volunteer',
+                    'employee_id',
+                    'department',
+                    'profile_text',
+                    'linked_in_url',
+                    'status',
+                    'expiry',
+                    'timezone' => [
+                        'timezone_id',
+                        'timezone',
+                        'offset',
+                        'status'
+                    ]
+                ],
+                'message'
+            ]);
         $user->delete();
     }
 
@@ -199,7 +371,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-        
+
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -214,7 +386,8 @@ class UserTest extends TestCase
             'city_id' => $cityId,
             'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
+            'expiry' => '2020-01-01 11:00:00'
         ];
 
         $connection = 'tenant';
@@ -222,7 +395,11 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            'users/'.$user->user_id,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -230,11 +407,94 @@ class UserTest extends TestCase
             ],
             'message',
             'status',
-            ]);
-        $user->delete();        
-        
+        ]);
+
+        $updatedUser = App\User::where('user_id', $user->user_id)
+            ->first();
+
+        $this->assertSame($updatedUser->first_name, $params['first_name']);
+        $this->assertSame($updatedUser->last_name, $params['last_name']);
+        $this->assertSame($updatedUser->email, $params['email']);
+        $this->assertSame($updatedUser->timezone_id, $params['timezone_id']);
+        $this->assertSame($updatedUser->language_id, $params['language_id']);
+        $this->assertSame($updatedUser->availability_id, $params['availability_id']);
+        $this->assertSame($updatedUser->why_i_volunteer, $params['why_i_volunteer']);
+        $this->assertSame($updatedUser->employee_id, $params['employee_id']);
+        $this->assertSame($updatedUser->country_id, $params['country_id']);
+        $this->assertSame($updatedUser->profile_text, $params['profile_text']);
+        $this->assertSame($updatedUser->linked_in_url, $params['linked_in_url']);
+        $this->assertSame($updatedUser->expiry, $params['expiry']);
+
+        $updatedUser->delete();
     }
-    
+
+    /**
+     * @test
+     *
+     * Should successfully update user expiry to null
+     *
+     * @return void
+     */
+    public function it_should_update_user_expiry_to_null()
+    {
+        \DB::setDefaultConnection('mysql');
+
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->expiry = '2020-03-01 12:00:00';
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->patch(
+            'users/'.$user->user_id,
+            ['expiry' => null],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'data' => [
+                'user_id',
+            ],
+            'message',
+            'status',
+        ]);
+
+        $updatedUser = App\User::where('user_id', $user->user_id)
+            ->first();
+        $this->assertNull($updatedUser->expiry);
+
+        $updatedUser->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Should return error if expiry is not a valid date
+     *
+     * @return void
+     */
+    public function it_should_not_update_user_if_expiry_is_not_a_valid_date()
+    {
+        \DB::setDefaultConnection('mysql');
+
+        $this->patch(
+            'users/1',
+            ['expiry' => 'foo'],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message',
+                    'code'
+                ]
+            ]
+        ]);
+    }
+
     /**
      * @test
      *
@@ -247,7 +507,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-        
+
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -281,7 +541,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
-        
+
     }
 
     /**
@@ -331,7 +591,7 @@ class UserTest extends TestCase
             ]
         ]);
     }
-    
+
     /**
      * @test
      *
@@ -341,7 +601,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_data_is_empty_for_create_user()
     {
-        
+
         $params = [
                 'first_name' => '',
                 'last_name' => '',
@@ -386,7 +646,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-        
+
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -417,7 +677,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
-        
+
     }
 
     /**
@@ -456,7 +716,7 @@ class UserTest extends TestCase
      */
     public function it_should_update_user_without_email_update()
     {
-       
+
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
@@ -481,7 +741,7 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        
+
         $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -492,7 +752,7 @@ class UserTest extends TestCase
             'status',
             ]);
         $user->delete();
-        
+
     }
 
     /**
@@ -508,7 +768,7 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        
+
         $this->get('users/'.$user->user_id.'/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -541,7 +801,7 @@ class UserTest extends TestCase
             ]
         ]);
     }
-    
+
     /**
      * @test
      *
@@ -555,7 +815,7 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        
+
         $this->get('users/'.$user->user_id.'/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -578,7 +838,7 @@ class UserTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
- 
+
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
@@ -614,7 +874,7 @@ class UserTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
- 
+
         $params = [
             'skills' => [
                 [
@@ -649,7 +909,7 @@ class UserTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
- 
+
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
@@ -685,7 +945,7 @@ class UserTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
- 
+
         $params = [
             'skills' => [
                 [
@@ -720,7 +980,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-        
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -757,7 +1017,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
-        
+
     }
 
     /**
@@ -796,7 +1056,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-            
+
         $name = str_random(10);
         $params = [
                 'first_name' => $name,
@@ -827,7 +1087,7 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
-        
+
     }
 
     /**
@@ -843,7 +1103,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-            
+
         $params = [
             'first_name' => '',
             'last_name' => str_random(10),
@@ -879,9 +1139,9 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
-        
+
     }
- 
+
         /**
      * @test
      *
@@ -895,7 +1155,7 @@ class UserTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-            
+
         $params = [
             'last_name' => str_random(10),
             'email' => str_random(10).'@email.com',
@@ -930,7 +1190,7 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
-        
+
     }
 
     /**
@@ -943,7 +1203,7 @@ class UserTest extends TestCase
     public function it_should_return_error_for_invalid_data_for_link_skill_to_user()
     {
         $connection = 'tenant';
- 
+
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
@@ -975,7 +1235,7 @@ class UserTest extends TestCase
     public function it_should_return_error_for_invalid_data_for_unlink_skill_to_user()
     {
         $connection = 'tenant';
- 
+
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();

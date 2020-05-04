@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\App\Auth;
 
 use Validator;
+use DateTime;
 use DB;
 use App\User;
 use Firebase\JWT\JWT;
@@ -41,7 +42,7 @@ class AuthController extends Controller
      * @var \Illuminate\Http\Request
      */
     private $request;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -63,7 +64,7 @@ class AuthController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
-    
+
     /**
      * @var App\Repositories\User\UserRepository
      */
@@ -73,7 +74,7 @@ class AuthController extends Controller
      * @var App\Models\PasswordReset
      */
     private $passwordReset;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -128,7 +129,7 @@ class AuthController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Fetch user by email address
         $userDetail = $user->with('timezone')->where('email', $this->request->input('email'))->first();
 
@@ -149,7 +150,19 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
-        
+
+        if ($userDetail->expiry) {
+            $userExpirationDate = new DateTime($userDetail->expiry);
+            if ($userExpirationDate < new DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                );
+            }
+        }
+
         // Generate JWT token
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
@@ -171,7 +184,7 @@ class AuthController extends Controller
             (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification !=""
         ) ?
         $userDetail->receive_email_notification : '0';
-        
+
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
@@ -189,7 +202,7 @@ class AuthController extends Controller
         header('Token: '.$this->helpers->getJwtToken($userDetail->user_id, $tenantName));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-    
+
     /**
      * Forgot password - Send Reset password link to user's email address
      *
@@ -203,7 +216,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->toArray(), [
             'email' => 'required|email'
         ]);
-        
+
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -214,7 +227,7 @@ class AuthController extends Controller
         }
 
         $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
-        
+
         if (!$userDetail) {
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
@@ -224,22 +237,34 @@ class AuthController extends Controller
             );
         }
 
+        if ($userDetail->expiry) {
+            $userExpirationDate = new DateTime($userDetail->expiry);
+            if ($userExpirationDate < new DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                );
+            }
+        }
+
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
         config(['app.user_language_code' => $languageCode]);
-        
+
         $refererUrl = $this->helpers->getRefererFromRequest($request);
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
         //set tenant logo
         $tenantLogo = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_logo']);
         config(['app.tenant_logo' => $tenantLogo->option_value]);
-    
+
         // Verify email address and send reset password link
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );
-        
+
         // If reset password link didn't sent
         if (!$response === $this->passwordReset->RESET_LINK_SENT) {
             return $this->responseHelper->error(
@@ -263,7 +288,7 @@ class AuthController extends Controller
             $request->toArray(),
             $userDetail->user_id
         ));
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -276,7 +301,7 @@ class AuthController extends Controller
     public function passwordReset(Request $request): JsonResponse
     {
         $request->merge(['token'=>$request->reset_password_token]);
-    
+
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
                 'email' => 'required|email',
@@ -284,7 +309,7 @@ class AuthController extends Controller
                 'password' => 'required|min:8',
                 'password_confirmation' => 'required|min:8|same:password',
         ]);
-        
+
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -301,7 +326,7 @@ class AuthController extends Controller
             '>',
             Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME'))
         )->first();
-        
+
         //if record not found
         if (!$record) {
             return $this->responseHelper->error(
@@ -320,7 +345,7 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_RESET_PASSWORD_LINK')
             );
         }
-        
+
         // Reset the password
         $response = $this->broker()->reset(
             $this->credentials($request),
@@ -329,7 +354,7 @@ class AuthController extends Controller
                 $user->save();
             }
         );
-    
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
@@ -367,7 +392,7 @@ class AuthController extends Controller
     {
         return $this->passwordBrokerManager->broker();
     }
-    
+
     /**
      * Change password from user edit profile page
      *
@@ -381,7 +406,7 @@ class AuthController extends Controller
             'password' => 'required|min:8',
             'confirm_password' => 'required|min:8|same:password',
         ]);
-        
+
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -400,14 +425,14 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_OLD_PASSWORD_NOT_MATCHED')
             );
         }
-        
+
         // Update password
         $passwordChange = $this->userRepository->changePassword($request->auth->user_id, $request->password);
-        
+
         // Get new token
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id, $tenantName) : '';
-        
+
         // Send response
         $apiStatus = Response::HTTP_OK;
         $apiData = array('token' => $newToken);
@@ -425,13 +450,13 @@ class AuthController extends Controller
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        
+
         // Update password
         $passwordChange = $this->userRepository->changePassword($request->auth->user_id, $request->password);
-        
+
         // Get new token
         $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
-        
+
         // Send response
         $apiStatus = Response::HTTP_OK;
         $apiData = array('token' => $newToken);

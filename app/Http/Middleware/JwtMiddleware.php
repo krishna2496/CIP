@@ -2,6 +2,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use DateTime;
 use Firebase\JWT\JWT;
 use App\User;
 use App\Helpers\ResponseHelper;
@@ -100,6 +101,18 @@ class JwtMiddleware
             );
         }
         $user = User::find($credentials->sub);
+
+        if ($user->expiry) {
+            $userExpirationDate = new DateTime($user->expiry);
+            if ($userExpirationDate < new DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                );
+            }
+        }
 
         if (isset($credentials->sso) && $credentials->sso) {
             $newToken = $this->helpers->getJwtToken(
