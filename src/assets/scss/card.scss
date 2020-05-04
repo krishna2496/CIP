@@ -394,6 +394,10 @@
 							}
 						}
 
+						&.progress-bar-block {
+							width: 100% !important;
+						}
+
 						&.progress-block {
 							width: 67%;
 
@@ -401,6 +405,7 @@
 								width: 60%;
 							}
 						}
+						
 					}
 				}
 			}
