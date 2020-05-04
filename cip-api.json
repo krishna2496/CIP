@@ -7189,6 +7189,42 @@
         }
       }
     },
+    "/entities/countries/{countryId}/cities": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-all-cities-by-country",
+        "summary": "Admin - Get cities by country id (Milestone - 3)",
+        "tags": [
+          "City"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "countryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Not found - Requested country does not exist"
+          }
+        }
+      }
+    },
     "/entities/cities": {
       "post": {
         "operationId": "POST_team4-cip-api-admin-add-city",
@@ -7253,42 +7289,6 @@
         "responses": {
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
-          }
-        }
-      }
-    },
-    "/entities/countries/{countryId}/cities": {
-      "get": {
-        "operationId": "GET_team4-cip-api-get-all-cities-by-country",
-        "summary": "Admin - Get cities by country id (Milestone - 3)",
-        "tags": [
-          "City"
-        ],
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "default": ""
-          },
-          {
-            "name": "countryId",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized - Invalid API key or secret key"
-          },
-          "404": {
-            "description": "Not found - Requested country does not exist"
           }
         }
       }
