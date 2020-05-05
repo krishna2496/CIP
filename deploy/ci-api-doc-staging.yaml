@@ -76,7 +76,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: default
+  namespace: staging
   name: ci-api-doc-service
   labels:
     app: ci-api-doc
@@ -96,7 +96,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: ci-api-doc-ingress
-  namespace: default
+  namespace: staging
   annotations:
     ingress.kubernetes.io/auth-type: "basic"
     ingress.kubernetes.io/auth-secret: "ci-api-doc"
