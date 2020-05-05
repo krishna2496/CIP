@@ -29,12 +29,12 @@ class UserController extends Controller
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\LanguageHelper
      */
@@ -49,7 +49,7 @@ class UserController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -73,7 +73,7 @@ class UserController extends Controller
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -84,7 +84,7 @@ class UserController extends Controller
     {
         try {
             $users = $this->userRepository->userList($request);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
@@ -115,7 +115,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-       
+
         $timesheet = $this->userRepository->getTimesheetSummary($request, $userId);
 
         $data = $timesheet->first()->toArray();
@@ -143,7 +143,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-       
+
         $timesheets = $this->userRepository->getMissionTimesheet($request, $userId);
 
         $data = $timesheets->toArray();
@@ -192,7 +192,7 @@ class UserController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Check language id is set and valid or not
         if (isset($request->language_id)) {
             if (!$this->languageHelper->validateLanguageId($request)) {
@@ -204,8 +204,8 @@ class UserController extends Controller
                 );
             }
         }
-        
-        
+
+
         // Create new user
         $user = $this->userRepository->store($request->all());
 
@@ -216,7 +216,7 @@ class UserController extends Controller
         $apiData = ['user_id' => $user->user_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USERS'),
@@ -228,6 +228,12 @@ class UserController extends Controller
             null,
             $user->user_id
         ));
+
+        if ($user) {
+            $this->helpers
+                ->syncOptimyVolunteer($request, $user->user_id);
+        }
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -242,14 +248,14 @@ class UserController extends Controller
     {
         try {
             $userDetail = $this->userRepository->find($id);
-                
+
             $apiData = $userDetail->toArray();
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
             $this->helpers->getUserDefaultProfileImage($tenantName);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -293,7 +299,7 @@ class UserController extends Controller
                 "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
                 "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL"]
             );
-                        
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -303,7 +309,7 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Check language id
             if (isset($request->language_id)) {
                 if (!$this->languageHelper->validateLanguageId($request)) {
@@ -321,12 +327,12 @@ class UserController extends Controller
 
             // Check profile complete status
             $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
-            
+
             // Set response data
             $apiData = ['user_id' => $user->user_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.USERS'),
@@ -338,6 +344,11 @@ class UserController extends Controller
                 null,
                 $user->user_id
             ));
+
+            if ($user) {
+                $this->helpers
+                    ->syncOptimyVolunteer($request, $user->user_id);
+            }
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
@@ -358,11 +369,11 @@ class UserController extends Controller
     {
         try {
             $user = $this->userRepository->delete($id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
-           
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.USERS'),
@@ -409,7 +420,7 @@ class UserController extends Controller
                 );
             }
             $linkedSkills = $this->userRepository->linkSkill($request->toArray(), $id);
-            
+
             foreach ($linkedSkills as $linkedSkill) {
                 // Make activity log
                 event(new UserActivityLogEvent(
@@ -479,7 +490,7 @@ class UserController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
