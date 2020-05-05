@@ -4123,7 +4123,7 @@
     },
     "/timesheet/{userId}?status={status}&type={type}": {
       "get": {
-        "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",
+        "operationId": "GET_team4-cip-api-fetch-user-timesheet-data-admin",
         "summary": "Admin - Fetch user's timesheet data (Milestone - 3)",
         "description": "Fetch approved mission applications to show on volunteering timesheet page",
         "tags": [
