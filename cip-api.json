@@ -7733,6 +7733,42 @@
           }
         }
       }
+    },
+    "/entities/countries/{countryId}/states": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-all-cities-by-country",
+        "summary": "Admin - Get states by country id (Milestone - 3)",
+        "tags": [
+          "State"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "countryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Not found - Requested country does not exist"
+          }
+        }
+      }
     }
   },
   "definitions": {
