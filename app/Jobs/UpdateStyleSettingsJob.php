@@ -10,6 +10,7 @@ class UpdateStyleSettingsJob extends Job
 {
     private const SCSS_PATH = '/assets/scss';
     private const COMPILED_STYLES_CSS_PATH = '\assets\css\style.css';
+    private const DEFAULT_THEME_SCSS_PATH = '/scss/default_theme/';
 
     /**
      * @var string
@@ -56,34 +57,34 @@ class UpdateStyleSettingsJob extends Job
          * - Trigger the compilation
          * - Push the updated compiled style.css to S3 customer assets folder.
          */
-        $tenantStylesExistLocally = Storage::disk('local')->exists($this->tenantName);
-        if (!$tenantStylesExistLocally) {
-            $defaultThemeFolderName = env('AWS_S3_DEFAULT_THEME_FOLDER_NAME');
-            $stylesheets = Storage::disk('s3')->allFiles($this->tenantName . self::SCSS_PATH)
-                ?: Storage::disk('local')->allFiles($defaultThemeFolderName . self::SCSS_PATH);
 
-            // $stylesheets will never be empty
-            $filesComeFromS3 = strpos($stylesheets[0], $this->tenantName) !== false;
+        $buildFolderName = $this->tenantName;
+        $tenantScssFolderName = $this->tenantName . self::SCSS_PATH;
+        $tenantCompiledCssFolderName = $this->tenantName . self::COMPILED_STYLES_CSS_PATH;
 
-            foreach ($stylesheets as $stylesheet) {
-                $destinationPath = str_replace($defaultThemeFolderName, $this->tenantName, $stylesheet);
-                $file = $filesComeFromS3 ? Storage::disk('s3')->get($stylesheet) : Storage::disk('local')->get($stylesheet);
-                Storage::disk('local')->put($destinationPath, $file);
-            }
+        // Create/empty the temporary directory
+        Storage::disk('local')->deleteDirectory($buildFolderName);
+        Storage::disk('local')->makeDirectory($buildFolderName);
+
+        // Copy default theme SCSS in the temporary folder
+        $defaultThemeScssFiles = Storage::disk('resources')->allFiles(self::DEFAULT_THEME_SCSS_PATH);
+        foreach ($defaultThemeScssFiles as $scssFile) {
+            $scssContent = Storage::disk('resources')->get($scssFile);
+            Storage::disk('local')->put($buildFolderName . '/' . basename($scssFile), $scssContent);
         }
 
-        // if we update a file, we need to load it from S3 to allow compiling with the recent changes
-        if (!empty($this->fileName)) {
-            $filePath = $this->tenantName . self::SCSS_PATH . '/' . $this->fileName;
-            $file = Storage::disk('s3')->get($filePath);
-            Storage::disk('local')->put($filePath, $file);
+        // Download the tenant's custom SCSS from S3 into the temporary folder
+        $customScssFiles = Storage::disk('s3')->allFiles($tenantScssFolderName);
+        foreach ($customScssFiles as $customScssFile) {
+            $customScssContent = Storage::disk('s3')->get($customScssFile);
+            Storage::disk('local')->put($buildFolderName . '/' . basename($customScssFile), $customScssContent);
         }
 
-        // Second compile SCSS files and upload generated CSS file on S3
-        $css = $this->compileLocalScss();
+        // Compile SCSS files
+        $compiledCss = $this->compileLocalScss();
 
         // Push compiled styles to S3
-        Storage::disk('s3')->put($this->tenantName . self::COMPILED_STYLES_CSS_PATH, $css);
+        Storage::disk('s3')->put($tenantCompiledCssFolderName, $compiledCss);
     }
 
     /**
