@@ -221,6 +221,15 @@ class SamlController extends Controller
 
         $this->syncContact($userDetail, $settings);
 
+        if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_BLOCKED'),
+                trans('messages.custom_error_message.ERROR_USER_BLOCKED')
+            );
+        }
+
         if ($userDetail->expiry) {
             $userExpirationDate = new DateTime($userDetail->expiry);
             if ($userExpirationDate < new DateTime()) {

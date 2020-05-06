@@ -151,6 +151,15 @@ class AuthController extends Controller
             );
         }
 
+        if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_BLOCKED'),
+                trans('messages.custom_error_message.ERROR_USER_BLOCKED')
+            );
+        }
+
         if ($userDetail->expiry) {
             $userExpirationDate = new DateTime($userDetail->expiry);
             if ($userExpirationDate < new DateTime()) {
@@ -234,6 +243,15 @@ class AuthController extends Controller
                 Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
                 trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+
+        if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_BLOCKED'),
+                trans('messages.custom_error_message.ERROR_USER_BLOCKED')
             );
         }
 

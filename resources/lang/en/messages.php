@@ -219,6 +219,7 @@ return [
         'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         'ERROR_USER_EXPIRED' => 'Your account has expired. Please contact your administrator.',
+        'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
 
 

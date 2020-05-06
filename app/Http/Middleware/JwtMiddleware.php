@@ -102,6 +102,15 @@ class JwtMiddleware
         }
         $user = User::find($credentials->sub);
 
+        if ($user->status !== config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_BLOCKED'),
+                trans('messages.custom_error_message.ERROR_USER_BLOCKED')
+            );
+        }
+
         if ($user->expiry) {
             $userExpirationDate = new DateTime($user->expiry);
             if ($userExpirationDate < new DateTime()) {

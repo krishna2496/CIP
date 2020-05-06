@@ -58,18 +58,19 @@ class UserTest extends TestCase
 
         $user = App\User::orderBy('user_id', 'DESC')
             ->first();
-        $this->assertSame($user->first_name, $params['first_name']);
-        $this->assertSame($user->last_name, $params['last_name']);
-        $this->assertSame($user->email, $params['email']);
-        $this->assertSame($user->timezone_id, $params['timezone_id']);
-        $this->assertSame($user->language_id, $params['language_id']);
-        $this->assertSame($user->availability_id, $params['availability_id']);
-        $this->assertSame($user->why_i_volunteer, $params['why_i_volunteer']);
-        $this->assertSame($user->employee_id, $params['employee_id']);
-        $this->assertSame($user->country_id, $params['country_id']);
-        $this->assertSame($user->profile_text, $params['profile_text']);
-        $this->assertSame($user->linked_in_url, $params['linked_in_url']);
-        $this->assertSame($user->expiry, $params['expiry']);
+        $this->assertSame($params['first_name'], $user->first_name);
+        $this->assertSame($params['last_name'], $user->last_name);
+        $this->assertSame($params['email'], $user->email);
+        $this->assertSame($params['timezone_id'], $user->timezone_id);
+        $this->assertSame($params['language_id'], $user->language_id);
+        $this->assertSame($params['availability_id'], $user->availability_id);
+        $this->assertSame($params['why_i_volunteer'], $user->why_i_volunteer);
+        $this->assertSame($params['employee_id'], $user->employee_id);
+        $this->assertSame($params['country_id'], $user->country_id);
+        $this->assertSame($params['profile_text'], $user->profile_text);
+        $this->assertSame($params['linked_in_url'], $user->linked_in_url);
+        $this->assertSame($params['expiry'], $user->expiry);
+        $this->assertSame(config('constants.user_statuses.ACTIVE'), $user->status);
 
         $user->delete();
     }
@@ -198,6 +199,104 @@ class UserTest extends TestCase
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
             'expiry' => 'foo'
+        ];
+
+        $this->post(
+            'users/',
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message',
+                    'code'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Should successfully create the user with status provided
+     *
+     * @return void
+     */
+    public function it_should_create_user_with_provided_status()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+            'first_name' => $name,
+            'last_name' => str_random(10),
+            'email' => str_random(10).'@email.com',
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
+            'status' => config('constants.user_statuses.INACTIVE')
+        ];
+
+        $this->post(
+            'users/',
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(201);
+
+        $user = App\User::orderBy('user_id', 'DESC')
+            ->first();
+        $this->assertSame(config('constants.user_statuses.INACTIVE'), $user->status);
+
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Should return an error if status parameter is not valid
+     *
+     * @return void
+     */
+    public function it_should_not_create_the_user_if_status_is_not_valid()
+    {
+        \DB::setDefaultConnection('tenant');
+        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        \DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+            'first_name' => $name,
+            'last_name' => str_random(10),
+            'email' => str_random(10),
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'city_id' => $cityId,
+            'country_id' => $countryDetail->country_id,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
+            'status' => 'foo'
         ];
 
         $this->post(
@@ -387,7 +486,8 @@ class UserTest extends TestCase
             'country_id' => $countryDetail->country_id,
             'profile_text' => str_random(10),
             'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b',
-            'expiry' => '2020-01-01 11:00:00'
+            'expiry' => '2020-01-01 11:00:00',
+            'status' => config('constants.user_statuses.INACTIVE')
         ];
 
         $connection = 'tenant';
@@ -412,18 +512,19 @@ class UserTest extends TestCase
         $updatedUser = App\User::where('user_id', $user->user_id)
             ->first();
 
-        $this->assertSame($updatedUser->first_name, $params['first_name']);
-        $this->assertSame($updatedUser->last_name, $params['last_name']);
-        $this->assertSame($updatedUser->email, $params['email']);
-        $this->assertSame($updatedUser->timezone_id, $params['timezone_id']);
-        $this->assertSame($updatedUser->language_id, $params['language_id']);
-        $this->assertSame($updatedUser->availability_id, $params['availability_id']);
-        $this->assertSame($updatedUser->why_i_volunteer, $params['why_i_volunteer']);
-        $this->assertSame($updatedUser->employee_id, $params['employee_id']);
-        $this->assertSame($updatedUser->country_id, $params['country_id']);
-        $this->assertSame($updatedUser->profile_text, $params['profile_text']);
-        $this->assertSame($updatedUser->linked_in_url, $params['linked_in_url']);
-        $this->assertSame($updatedUser->expiry, $params['expiry']);
+        $this->assertSame($params['first_name'], $updatedUser->first_name);
+        $this->assertSame($params['last_name'], $updatedUser->last_name);
+        $this->assertSame($params['email'], $updatedUser->email);
+        $this->assertSame($params['timezone_id'], $updatedUser->timezone_id);
+        $this->assertSame($params['language_id'], $updatedUser->language_id);
+        $this->assertSame($params['availability_id'], $updatedUser->availability_id);
+        $this->assertSame($params['why_i_volunteer'], $updatedUser->why_i_volunteer);
+        $this->assertSame($params['employee_id'], $updatedUser->employee_id);
+        $this->assertSame($params['country_id'], $updatedUser->country_id);
+        $this->assertSame($params['profile_text'], $updatedUser->profile_text);
+        $this->assertSame($params['linked_in_url'], $updatedUser->linked_in_url);
+        $this->assertSame($params['expiry'], $updatedUser->expiry);
+        $this->assertSame($params['status'], $updatedUser->status);
 
         $updatedUser->delete();
     }
@@ -480,6 +581,35 @@ class UserTest extends TestCase
         $this->patch(
             'users/1',
             ['expiry' => 'foo'],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'message',
+                    'code'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Should return error if status is not valid
+     *
+     * @return void
+     */
+    public function it_should_not_update_user_if_status_is_not_valid()
+    {
+        \DB::setDefaultConnection('mysql');
+
+        $this->patch(
+            'users/1',
+            ['status' => 'foo'],
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
         ->seeStatusCode(422)
