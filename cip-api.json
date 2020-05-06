@@ -8199,6 +8199,10 @@
         "linked_in_url": {
           "type": "string"
         },
+        "status": {
+          "type": "string",
+          "description": "0 for inactive; 1 for active"
+        },
         "language_id": {
           "type": "integer",
           "format": "int32"
