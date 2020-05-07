@@ -42,9 +42,30 @@ class Timesheet extends Model
      *
      * @var array
      */
-    protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
-        'day_volunteered', 'notes', 'timesheetDocument', 'mission', 'month', 'total_hours',
-        'total_minutes', 'status', 'updated_at', 'user'];
+    protected $visible = [
+        'timesheet_id', 
+        'user_id', 
+        'mission_id', 
+        'time', 
+        'action', 
+        'date_volunteered',
+        'day_volunteered', 
+        'notes', 
+        'timesheetDocument', 
+        'mission', 
+        'month',
+        'total_hours',
+        'total_minutes',
+        'status',
+        'updated_at',
+        'user',
+        'total_timesheet',
+        'first_volunteered_date',
+        'total_goal_hours',
+        'total_timesheet_action',
+        'total_timesheet_time',
+        'total_time_seconds'
+    ];
 
     /**
      * Get date volunteered attribute on the model.
@@ -119,4 +140,22 @@ class Timesheet extends Model
     {
         return $this->hasOne(User::class, 'user_id', 'user_id');
     }
+
+    /**
+     * Scope a query all the approved timesheets
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+
+    public function scopeApproved($query)
+    {
+        $status = [
+            config("constants.timesheet_status.APPROVED"),
+            config("constants.timesheet_status.AUTOMATICALLY_APPROVED")
+        ];
+
+        return $query->whereIn('status', $status);
+    }
+
 }

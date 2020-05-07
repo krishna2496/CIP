@@ -765,4 +765,44 @@ class TimesheetRepository implements TimesheetInterface
         return $timesheetQuery;
     }
 
+    /**
+     * Get specific user timesheets stats
+     *
+     * @param App\User $user
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function summary($user): Collection
+    {
+        return $user->timesheets()
+            ->selectRaw('
+                COUNT(*) as total_timesheet,
+                MIN(date_volunteered) as first_volunteered_date,
+                SUM(timesheet.action) as total_timesheet_action,
+                SEC_TO_TIME(SUM(
+                    TIME_TO_SEC(timesheet.time)
+                )) as total_timesheet_time,
+                SUM(
+                    TIME_TO_SEC(timesheet.time)
+                ) as total_time_seconds
+            ')
+            ->approved()
+            ->get();
+    }
+
+    /**
+     * Get specific user timesheets stats
+     *
+     * @param App\User $user
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function findByUser($user): Collection
+    {
+        return $user->timesheets()
+            ->approved()
+            ->orderBy('date_volunteered', 'ASC')
+            ->get();
+    }
+
 }

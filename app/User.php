@@ -228,4 +228,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany('App\Models\UserSkill', 'user_id', 'user_id');
     }
+
+    /**
+    * Defined has one relation for the timezone table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function timesheets(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'user_id');
+    }
 }
