@@ -7780,9 +7780,6 @@
         "tags":[
           "Timezone"
         ],
-        "consumes": [
-          "multipart/form-data"
-        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -7795,9 +7792,6 @@
         "responses": {
           "401":{
             "description":"Unauthorized - Invalid API key or secret key"
-          },
-          "404":{
-            "description":"Not found - Tenant language file not found"
           }
         }
       }
