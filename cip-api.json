@@ -79,6 +79,9 @@
     },
     {
       "name": "Language File"
+    },
+    {
+      "name": "Timezone"
     }
   ],
   "paths": {
@@ -7766,6 +7769,29 @@
           },
           "404": {
             "description": "Not found - Requested country does not exist"
+          }
+        }
+      }
+    },
+    "/timezone": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-timezone",
+        "summary": "Admin - Fetch timezone list",
+        "tags":[
+          "Timezone"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+        ],
+        "responses": {
+          "401":{
+            "description":"Unauthorized - Invalid API key or secret key"
           }
         }
       }
