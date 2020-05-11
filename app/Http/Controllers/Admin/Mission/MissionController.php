@@ -181,28 +181,6 @@ class MissionController extends Controller
             );
         }
 
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-
-        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-
-        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
-            $stateValidator = Validator::make(
-                $request->all(),
-                [
-                    "location.state_id" => "required_with:location|integer|exists:state,state_id,deleted_at,NULL"
-                ]
-            );
-            if ($stateValidator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                    $stateValidator->errors()->first()
-                );
-            }
-        }
-
         $mission = $this->missionRepository->store($request);
 
         // Set response data
@@ -323,30 +301,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-        
-        $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
-        ->getAllTenantActivatedSetting($request);
-
-        $stateEnabled = config('constants.tenant_settings.STATE_ENABLED');
-
-        if (in_array($stateEnabled, $getActivatedTenantSettings)) {
-            $stateValidator = Validator::make(
-                $request->all(),
-                [
-                    "location.state_id" =>
-                    "sometimes|required_with:location|integer|exists:state,state_id,deleted_at,NULL"
-                ]
-            );
-            if ($stateValidator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                    $stateValidator->errors()->first()
-                );
-            }
-        }
-        
+ 
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
