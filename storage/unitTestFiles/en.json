@@ -291,7 +291,9 @@
 		"state": "Region",
 		"registration_period": "Registration period",
 		"search_mission": "Search mission",
-		"organisations": "Organizations"
+		"organisations": "Organizations",
+		"virtual_mission" : "Virtual mission",
+		"virtual_missions" : "Virtual missions"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
