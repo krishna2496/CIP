@@ -116,6 +116,34 @@ class UserController extends Controller
     }
 
     /**
+     * Display specific user content statistics
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function contentStatistics(Request $request, $userId): JsonResponse
+    {
+
+        try {
+            $user = $this->userService->findById($userId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        }
+       
+        $statistics = $this->userService->statistics($user, $request->all());
+
+        $data = $statistics;
+        $status = Response::HTTP_OK;
+        $message = trans('messages.success.MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS');
+
+        return $this->responseHelper->success($status, $message, $data);
+
+    }
+
+    /**
      * Display specific user timesheet summary
      *
      * @param \Illuminate\Http\Request $request
