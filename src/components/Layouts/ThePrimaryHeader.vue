@@ -89,6 +89,12 @@
                                             {{languageData.label.random}}
                                         </router-link>
                                     </li>
+                                    <li class="no-dropdown">
+                                        <router-link :to="{ path: '/home/virtual-missions'}"
+                                            @click.native="menuBarclickHandler">
+                                            {{languageData.label.virtual_missions}}
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
