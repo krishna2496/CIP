@@ -364,6 +364,19 @@
 				padding-left: 10px;
 				padding-right: 10px;
 			}
+			.mission-label{
+				margin-bottom: 10px;
+				span{
+					font-size: 13px;
+					line-height: 18px;
+					display: inline-block;
+					color: #fff;
+					text-transform: uppercase;
+					padding: 4px 13px;
+					border-radius: 14px;
+					background: $secondary;
+				}
+			}
 		}
 
 		.group-details {
