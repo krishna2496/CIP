@@ -13,6 +13,7 @@ class DashboardService
     {
         $userRankArray = array();
         $userTimesheetMinutes = 0;
+        
         foreach ($allUsersTimesheetData as $allUsersTimesheet) {
             array_push($userRankArray, $allUsersTimesheet['total_minutes']);
             if ($userId == $allUsersTimesheet['user_id']) {
@@ -23,6 +24,12 @@ class DashboardService
         $userRankIndex = array_search($userTimesheetMinutes, $userRank);
         $volunteeringRank = (count($allUsersTimesheetData) !== 0) ?
         (100/count($allUsersTimesheetData)) * ($userRankIndex+1) : 0;
+        $key = array_search($userId, array_column($allUsersTimesheetData, 'user_id'));
+        if ($key === false) {
+            $volunteeringRank = 0;
+        }
+        
         return $volunteeringRank;
+
     }
 }
