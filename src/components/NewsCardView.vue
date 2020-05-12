@@ -46,7 +46,8 @@
                                             v-if="data.news_content.title"
                                     >{{data.news_content.title | substring(60)}}
                                     </b-link>
-                                    <b-card-text v-if="data.news_content.description" v-html="getDescription(data.news_content.description)">
+                                    <b-card-text v-if="data.news_content.description">
+                                        {{data.news_content.description | substring(105)}}
                                     </b-card-text>
                                 </div>
                                 <div class="bottom-block">
@@ -82,10 +83,6 @@
       };
     },
     methods: {
-      getDescription(description) {
-        let data = description.substring(0,105);
-        return data
-      },
       getDefaultImage() {
         return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
       }
