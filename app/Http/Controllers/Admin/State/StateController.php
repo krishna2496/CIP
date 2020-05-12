@@ -278,8 +278,8 @@ class StateController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_STATE_ENABLE_TO_DELETE'),
-                trans('messages.custom_error_message.ERROR_STATE_ENABLE_TO_DELETE')
+                config('constants.error_codes.ERROR_STATE_UNABLE_TO_DELETE'),
+                trans('messages.custom_error_message.ERROR_STATE_UNABLE_TO_DELETE')
             );
         }
         try {

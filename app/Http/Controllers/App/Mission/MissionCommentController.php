@@ -17,6 +17,7 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
 use App\Events\User\UserActivityLogEvent;
 use Carbon\Carbon;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  Mission comment controller
 /*!
@@ -52,6 +53,11 @@ class MissionCommentController extends Controller
     private $userRepository;
     
     /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
@@ -60,6 +66,7 @@ class MissionCommentController extends Controller
      * @param App\Helpers\Helpers
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
@@ -68,7 +75,8 @@ class MissionCommentController extends Controller
         ResponseHelper $responseHelper,
         Helpers $helpers,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        NotificationRepository $notificationRepository
     ) {
         $this->missionCommentRepository = $missionCommentRepository;
         $this->userRepository = $userRepository;
@@ -76,6 +84,7 @@ class MissionCommentController extends Controller
         $this->helpers = $helpers;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->languageHelper = $languageHelper;
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -89,13 +98,23 @@ class MissionCommentController extends Controller
     {
         try {
             $comments = $this->missionCommentRepository->getComments($missionId);
-            
-            foreach ($comments as $comment) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultUserImage = $this->helpers->getUserDefaultProfileImage($tenantName);
+            foreach ($comments as $key => $comment) {
+                if ($comment->user == null) {
+                    unset($comment->user);
+                    $user = array(
+                        "user_id" => null,
+                        "first_name" => null,
+                        "last_name" =>  null,
+                        "avatar" => $defaultUserImage
+                    );
+                    $comments[$key]->user = $user;
+                }
                 $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
                 $comment->created_at =  Carbon::parse($comment->created_at, config('constants.TIMEZONE'))
                 ->setTimezone($timezone)->toDateTimeString();
             }
-
             $apiData = $comments;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($apiData->count() > 0) ? trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING')
@@ -209,7 +228,7 @@ class MissionCommentController extends Controller
     {
         try {
             $apiData = $this->missionCommentRepository->deleteUsersComment($commentId, $request->auth->user_id);
-
+            $this->notificationRepository->deleteCommentNotifications($commentId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
             

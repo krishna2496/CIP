@@ -18,6 +18,7 @@ use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserActivityLogEvent;
 use App\Repositories\Mission\MissionRepository;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  Story controller
 /*!
@@ -58,6 +59,11 @@ class StoryController extends Controller
     private $missionRepository;
     
     /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
+    /**
      * Create a new Story controller instance
      *
      * @param App\Repositories\Story\StoryRepository $storyRepository
@@ -66,6 +72,7 @@ class StoryController extends Controller
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
@@ -74,7 +81,8 @@ class StoryController extends Controller
         ResponseHelper $responseHelper,
         Helpers $helpers,
         LanguageHelper $languageHelper,
-        MissionRepository $missionRepository
+        MissionRepository $missionRepository,
+        NotificationRepository $notificationRepository
     ) {
         $this->storyRepository = $storyRepository;
         $this->storyVisitorRepository = $storyVisitorRepository;
@@ -82,6 +90,7 @@ class StoryController extends Controller
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
         $this->missionRepository = $missionRepository;
+        $this->notificationRepository = $notificationRepository;
     }
        
     /**
@@ -264,7 +273,7 @@ class StoryController extends Controller
     {
         try {
             $this->storyRepository->delete($storyId, $request->auth->user_id);
-           
+            $this->notificationRepository->deleteStoryNotifications($storyId);
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_STORY_DELETED');

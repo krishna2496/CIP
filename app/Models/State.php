@@ -7,10 +7,11 @@ use App\Models\StateLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class State extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -39,6 +40,11 @@ class State extends Model
     * @var array
     */
     protected $fillable = ['state_id', 'country_id'];
+
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['languages'];
 
     /**
      * Get the state translation associated with the state.
