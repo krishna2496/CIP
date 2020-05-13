@@ -86,8 +86,8 @@
                                     </div>
                                     <div class="progress-chart">
                                         <span class="progress-status">{{languageData.label.completed}}:
-                                            {{ completedGoalHours }} {{languageData.label.hours}}</span>
-                                        <b-progress :max="totalGoalHours">
+                                          ghg  {{ completedGoalHours }} {{languageData.label.hours}}</span>
+                                        <b-progress :max="totalGoalHoursLast">
                                             <b-progress-bar :value="completedGoalHours">
                                             </b-progress-bar>
                                         </b-progress>
@@ -231,6 +231,7 @@
           'organizationCount': 0
         },
         totalGoalHours: 0,
+        totalGoalHoursLast : 0,
         completedGoalHours: 0,
         chartStep: 0,
         chartMaxValue: 0,
@@ -370,6 +371,7 @@
                   xValue = xValue + this.max;
                   this.xvalues.push(xValue)
                 }
+                this.totalGoalHoursLast = this.xvalues[this.xvalues.length - 1];;
               }
               if (response.data.chart) {
                 let chartData = response.data.chart;
