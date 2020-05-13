@@ -34,6 +34,9 @@ foreach ($tenants as $tenant) {
         'password' => env('DB_PASSWORD'),
     ));
 
+    // As we are in a loop, we need to purge the connection to clear the cache
+    $db->purge('tenant');
+
     // Create connection for the tenant database
     $pdo = $db->connection('tenant')->getPdo();
 
