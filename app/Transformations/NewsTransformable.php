@@ -43,7 +43,7 @@ trait NewsTransformable
                     $newsContent[$key]['language_id'] = $value['language_id'];
                     $newsContent[$key]['title'] = $value['title'];
                     $newsContent[$key]['description'] = ($sortDescription) ?
-                    $this->helpers->trimText(strip_tags($value['description']), $wordLimit) : $value['description'];
+                    strip_tags($value['description']) : $value['description'];
                 }
             } else {
                 $key = array_search($languageId, array_column($news['newsLanguage']->toArray(), 'language_id'));
@@ -54,7 +54,7 @@ trait NewsTransformable
                 $newsContent['language_id'] = $newsLanguage->language_id;
                 $newsContent['title'] = $newsLanguage->title;
                 $newsContent['description'] = ($sortDescription) ?
-                $this->helpers->trimText(strip_tags($description), $wordLimit) : $description;
+                strip_tags($description) : $description;
             }
             $transformedNews['news_content'] = $newsContent;
         }
