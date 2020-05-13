@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\RecompileCustomStylesJob;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RecompileCustomStyles extends MultiTenantAware
 {
@@ -45,11 +46,11 @@ class RecompileCustomStyles extends MultiTenantAware
             if ($isCustomCssDisabled) {
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (ModelNotFoundException $e) {
             /*
-             * If we encounter an error while trying to retrieve the option, it means
-             * we cannot be sure if custom CSS are enabled or not, it might be safer
-             * to therefore skip the recompilation for this one
+             * If we cannot find the option record,
+             * we consider that custom CSS is not enabled
+             * and we skip the recompilation for this tenant
              */
             return;
         }
