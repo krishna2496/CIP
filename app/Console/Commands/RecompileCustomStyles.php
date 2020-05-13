@@ -19,7 +19,7 @@ class RecompileCustomStyles extends MultiTenantAware
      *
      * @var string
      */
-    protected $description = "This email notification to users";
+    protected $description = "Recompile every custom CSS for tenants that enabled it.";
 
     /**
      * @var TenantOptionRepository
