@@ -7,7 +7,11 @@ use App\Repositories\TenantOption\TenantOptionRepository;
 
 class RecompileCustomStyles extends MultiTenantAware
 {
-
+    /**
+     * The console command name.
+     *
+     * @var string
+     */
     protected $signature = 'styles:custom:recompile';
 
     /**
