@@ -8,12 +8,20 @@
                         </b-link>
                     </div>
                     <b-navbar-brand
-                        :href="this.$store.state.logoRedirectUrl === 'home' ? hostUrl+'home' : this.$store.state.logoRedirectUrl"
+                        :href="hostUrl+'home'"
                         :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
-                        v-if="this.$store.state.isLoggedIn">
+                        v-if="this.$store.state.isLoggedIn && this.$store.state.logoRedirectUrl === 'home'">
+                    </b-navbar-brand>
+                    <b-navbar-brand
+                        target="_blank"
+                        :href="this.$store.state.logoRedirectUrl"
+                        :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
+                        v-if="this.$store.state.isLoggedIn && this.$store.state.logoRedirectUrl !== 'home'">
                     </b-navbar-brand>
                     <b-navbar-brand :to="{ name: 'login' }"
-                        :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" v-else>
+                        :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" 
+                        v-if="!this.$store.state.isLoggedIn"
+                    >
                     </b-navbar-brand>
 
                     <div class="menu-wrap" @click.stop>
