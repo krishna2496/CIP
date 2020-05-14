@@ -44,7 +44,7 @@ class TimesheetService
     public function summary($user, $params = null): Array
     {
         // get all the timesheet stasts
-        $timesheets = $this->timesheetRepository->summary($user);
+        $timesheets = $this->timesheetRepository->summary($user, $params);
 
         $data = $timesheets
             ->first()
@@ -72,8 +72,10 @@ class TimesheetService
     {
         $ranks = [];
         $minutes = 0;
+        $year = $params['year'] ?? null;
+        $month = $params['month'] ?? null;
 
-        $timesheets = $this->timesheetRepository->getUsersTotalHours(null, null);
+        $timesheets = $this->timesheetRepository->getUsersTotalHours($year, $month);
 
         foreach ($timesheets as $timesheet) {
             array_push($ranks, $timesheet['total_minutes']);

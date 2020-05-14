@@ -148,7 +148,7 @@ class Timesheet extends Model
      * @return \Illuminate\Database\Eloquent\Builder
      */
 
-    public function scopeApproved($query)
+    public function scopeIsApproved($query)
     {
         $status = [
             config("constants.timesheet_status.APPROVED"),
@@ -156,6 +156,40 @@ class Timesheet extends Model
         ];
 
         return $query->whereIn('status', $status);
+    }
+
+    /**
+     * Scope a query all by timesheets year
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Int  $year
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+
+    public function scopeIsYear($query, $year = null)
+    {
+        if (!$year) {
+            return $query;
+        }
+
+        return $query->whereYear('created_at', $year);
+    }
+
+    /**
+     * Scope a query all by timesheets month
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Int $month
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+
+    public function scopeIsMonth($query, $month = null)
+    {
+        if (!$month) {
+            return $query;
+        }
+
+        return $query->whereMonth('created_at', $month);
     }
 
 }
