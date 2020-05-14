@@ -18,6 +18,7 @@ use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 use App\Services\UserService;
 use App\Services\TimesheetService;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  User controller
 /*!
@@ -61,6 +62,11 @@ class UserController extends Controller
      * @var string
      */
     private $userApiKey;
+
+    /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
     
     /**
      * Create a new controller instance.
@@ -71,6 +77,7 @@ class UserController extends Controller
      * @param App\Services\UserService $userService
      * @param App\Helpers\Helpers $helpers
      * @param Illuminate\Http\Request $request
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
@@ -80,7 +87,8 @@ class UserController extends Controller
         UserService $userService,
         TimesheetService $timesheetService,
         Helpers $helpers,
-        Request $request
+        Request $request,
+        NotificationRepository $notificationRepository
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
@@ -89,6 +97,7 @@ class UserController extends Controller
         $this->timesheetService = $timesheetService;
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->notificationRepository = $notificationRepository;
     }
     
     /**
@@ -233,6 +242,9 @@ class UserController extends Controller
         $apiData = ['user_id' => $user->user_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+
+        // Remove password before logging it
+        $request->request->remove("password");
         
         // Make activity log
         event(new UserActivityLogEvent(
@@ -343,6 +355,9 @@ class UserController extends Controller
             $apiData = ['user_id' => $user->user_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
+
+            // Remove password before logging it
+            $request->request->remove("password");
             
             // Make activity log
             event(new UserActivityLogEvent(
@@ -375,7 +390,7 @@ class UserController extends Controller
     {
         try {
             $user = $this->userRepository->delete($id);
-            
+            $this->notificationRepository->deleteAllNotifications($id);
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
