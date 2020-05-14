@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Story extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -43,6 +44,11 @@ class Story extends Model
      */
     protected $fillable = ['user_id', 'mission_id', 'title', 'description', 'status', 'published_at'];
 
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['storyMedia','storyInvite','storyVisitor'];
+
     /**
      * Defined has one relation for the user table.
      *
@@ -50,7 +56,7 @@ class Story extends Model
      */
     public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'user_id', 'user_id');
+        return $this->hasOne(User::class, 'user_id', 'user_id')->withTrashed();
     }
 
     /**
@@ -60,7 +66,7 @@ class Story extends Model
      */
     public function mission(): HasOne
     {
-        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+        return $this->hasOne(Mission::class, 'mission_id', 'mission_id')->withTrashed();
     }
 
     /**
@@ -96,4 +102,25 @@ class Story extends Model
     {
         $this->attributes['description'] = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $value);
     }
+
+    /**
+     * Get the story invite record associated with the story.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function storyInvite(): HasMany
+    {
+        return $this->hasMany(StoryInvite::class, 'story_id', 'story_id');
+    }
+
+     /**
+     * Get the media record associated with the story.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function storyVisitor(): HasMany
+    {
+        return $this->hasMany(StoryVisitor::class, 'story_id', 'story_id');
+    }
+
 }
