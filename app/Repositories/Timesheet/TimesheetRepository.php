@@ -769,10 +769,11 @@ class TimesheetRepository implements TimesheetInterface
      * Get specific user timesheets stats
      *
      * @param App\User $user
+     * @param Array|null $params
      *
      * @return Illuminate\Support\Collection
      */
-    public function summary($user): Collection
+    public function summary($user, $params = null): Collection
     {
         return $user->timesheets()
             ->selectRaw('
@@ -786,7 +787,9 @@ class TimesheetRepository implements TimesheetInterface
                     TIME_TO_SEC(timesheet.time)
                 ) as total_time_seconds
             ')
-            ->approved()
+            ->isApproved()
+            ->isYear($params['year'] ?? null)
+            ->isMonth($params['month'] ?? null)
             ->get();
     }
 
@@ -800,7 +803,7 @@ class TimesheetRepository implements TimesheetInterface
     public function findByUser($user): Collection
     {
         return $user->timesheets()
-            ->approved()
+            ->isApproved()
             ->orderBy('date_volunteered', 'ASC')
             ->get();
     }

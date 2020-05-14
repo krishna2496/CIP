@@ -34,7 +34,7 @@ class TimesheetServiceTest extends TestCase
         $timesheetRepository
             ->shouldReceive('summary')
             ->once()
-            ->with($user)
+            ->with($user, $request->all())
             ->andReturn($methodResponseFirst);
         $timesheetRepository
             ->shouldReceive('getUsersTotalHours')
