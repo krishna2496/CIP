@@ -21,15 +21,23 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
 use App\Models\Notification;
+use App\Models\Comment;
+use App\Models\FavouriteMission;
 use App\Models\Message;
 use App\Models\MissionApplication;
-use App\Models\Comment;
+use App\Models\MissionInvite;
+use App\Models\MissionRating;
 use App\Models\Story;
 use App\Models\StoryInvite;
+use App\Models\UserFilter;
+use App\Models\UserNotification;
+use App\Models\UserSkill;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
-    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait;
+    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait,
+    CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -93,6 +101,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'stories_count',
         'stories_views_count',
         'stories_invites_count'
+    ];
+
+     /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['FavouriteMission','Message','missionApplication',
+    'missionInviteFromUserId','missionInviteToUserId','notification','missionRating',
+    'timesheet','userCustomFieldValue','userFilter','userNotification','userSkill'
     ];
 
     /**
@@ -253,6 +269,108 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Notification::class, 'user_id', 'user_id');
     }
+   
+    /**
+     * Defined has many relation for the favorite_mission table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function FavouriteMission(): HasMany
+    {
+        return $this->hasMany(FavouriteMission::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the Message table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Message(): HasMany
+    {
+        return $this->hasMany(Message::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the mission_application table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionApplication(): HasMany
+    {
+        return $this->hasMany(missionApplication::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the mission_application table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionInviteFromUserId(): HasMany
+    {
+        return $this->hasMany(MissionInvite::class, 'from_user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the mission_application table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionInviteToUserId(): HasMany
+    {
+        return $this->hasMany(MissionInvite::class, 'to_user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the mission_rating table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionRating(): HasMany
+    {
+        return $this->hasMany(MissionRating::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the timesheet table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheet(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the user_skill table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userSkill(): HasMany
+    {
+        return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the user_filter table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userFilter(): HasMany
+    {
+        return $this->hasMany(UserFilter::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the user_notification table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userNotification(): HasMany
+    {
+        return $this->hasMany(UserNotification::class, 'user_id', 'user_id');
+    }
+
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -280,16 +398,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class, 'user_id');
-    }
-
-    /**
-    * Defined has many relation for the mission application table.
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    */
-    public function missionApplication(): HasMany
-    {
-        return $this->hasMany(MissionApplication::class, 'user_id');
     }
 
     /**

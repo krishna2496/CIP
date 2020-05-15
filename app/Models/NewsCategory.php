@@ -3,10 +3,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class NewsCategory extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -35,6 +37,11 @@ class NewsCategory extends Model
      * @var array
      */
     protected $fillable = ['category_name', 'translations'];
+
+     /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['newsToCategory'];
 
     /**
      * Set translations attribute on the model.
@@ -79,5 +86,15 @@ class NewsCategory extends Model
     public function deleteNewsCategory(int $id): bool
     {
         return static::findOrFail($id)->delete();
+    }
+
+    /**
+     * Get the news to category record associated with the news category.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function newsToCategory(): HasMany
+    {
+        return $this->hasMany(NewsToCategory::class, 'news_category_id', 'news_category_id');
     }
 }

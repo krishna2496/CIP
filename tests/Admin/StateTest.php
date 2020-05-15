@@ -31,36 +31,27 @@ class StateTest extends TestCase
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         /* Add country end */
-        
+
         \DB::setDefaultConnection('mysql');
-        /* Add state details start */     
-        $stateName = str_random(5);   
+        /* Add state details start */
+        $stateName = str_random(5);
         $params = [
             "country_id" => $countryId,
-            "states" => [ 
-                [ 
-                    "translations" => [ 
-                        [ 
+            "states" => [
+                [
+                    "translations" => [
+                        [
                             "lang" => "en",
                             "name" => $stateName
                         ]
                     ]
-                ]         
+                ]
             ]
         ];
 
         $response = $this->post("entities/states", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
         $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
-
-        DB::setDefaultConnection('mysql');
-
-        $this->get('/entities/states/country/'.$countryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);        
 
         DB::setDefaultConnection('mysql');
         // Get all states
@@ -71,7 +62,7 @@ class StateTest extends TestCase
         // Get all states
         $this->get('/entities/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
-        
+
         /* Delete state details start */
         DB::setDefaultConnection('mysql');
 
@@ -91,7 +82,7 @@ class StateTest extends TestCase
     /**
      * @test
      *
-     * No data found for state 
+     * No data found for state
      *
      * @return void
      */
@@ -115,7 +106,7 @@ class StateTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void
@@ -140,7 +131,7 @@ class StateTest extends TestCase
         $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
-        
+
         DB::setDefaultConnection('mysql');
 
         $this->get('/entities/states/'.$countryId, ['Authorization' => ''])
@@ -166,7 +157,7 @@ class StateTest extends TestCase
     /**
      * @test
      *
-     * No data found for state 
+     * No data found for state
      *
      * @return void
      */
@@ -191,12 +182,12 @@ class StateTest extends TestCase
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         /* Add country end */
-        
+
         DB::setDefaultConnection('mysql');
 
         $this->get('/entities/states/'.$countryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404);
-          
+
         /* Delete country language start */
         DB::setDefaultConnection('mysql');
 
@@ -232,24 +223,24 @@ class StateTest extends TestCase
         /* Add country end */
 
         \DB::setDefaultConnection('mysql');
-        /* Add state details start */     
-        $stateName = str_random(5);   
+        /* Add state details start */
+        $stateName = str_random(5);
         $params = [
             "country_id" => $countryId,
-            "states" => [ 
-                [ 
-                    "translations" => [ 
-                        [ 
+            "states" => [
+                [
+                    "translations" => [
+                        [
                             "lang" => "en",
                             "name" => ''
                         ]
                     ]
-                ]         
+                ]
             ]
         ];
 
         $response = $this->post("entities/states", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);  
+        ->seeStatusCode(422);
 
         DB::setDefaultConnection('mysql');
 
@@ -283,19 +274,19 @@ class StateTest extends TestCase
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         /* Add country end */
         \DB::setDefaultConnection('mysql');
-        /* Add state details start */     
-        $stateName = str_random(5);   
+        /* Add state details start */
+        $stateName = str_random(5);
         $params = [
             "country_id" => $countryId,
-            "states" => [ 
-                [ 
-                    "translations" => [ 
-                        [ 
+            "states" => [
+                [
+                    "translations" => [
+                        [
                             "lang" => str_random(5),
                             "name" => $stateName
                         ]
                     ]
-                ]         
+                ]
             ]
         ];
 
@@ -333,21 +324,21 @@ class StateTest extends TestCase
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         /* Add country end */
-        
+
         \DB::setDefaultConnection('mysql');
-        /* Add state details start */     
-        $stateName = str_random(5);   
+        /* Add state details start */
+        $stateName = str_random(5);
         $params = [
             "country_id" => $countryId,
-            "states" => [ 
-                [ 
-                    "translations" => [ 
-                        [ 
+            "states" => [
+                [
+                    "translations" => [
+                        [
                             "lang" => "en",
                             "name" => $stateName
                         ]
                     ]
-                ]         
+                ]
             ]
         ];
 
@@ -376,21 +367,21 @@ class StateTest extends TestCase
     {
         $countryId = rand(800000000,8000000000);
         /* Add country end */
-        
+
         DB::setDefaultConnection('mysql');
 
-        /* Add state details start */        
+        /* Add state details start */
         $params = [
             "country_id" => $countryId,
-            "states" => [ 
-                [ 
-                    "translations" => [ 
-                        [ 
+            "states" => [
+                [
+                    "translations" => [
+                        [
                             "lang" => "en",
                             "name" => str_random(5)
                         ]
                     ]
-                ]         
+                ]
             ]
         ];
 
@@ -399,7 +390,7 @@ class StateTest extends TestCase
 
         /* Add state details end */
     }
-    
+
     /**
      * @test
      *
@@ -408,7 +399,7 @@ class StateTest extends TestCase
      * @return void
      */
     public function state_test_it_should_update_state()
-    {        
+    {
         $connection = 'tenant';
         $country = factory(\App\Models\Country::class)->make();
         $country->setConnection($connection);
@@ -423,8 +414,8 @@ class StateTest extends TestCase
 
         $params = [
             "country_id"=> $countryId,
-            "translations"=>[ 
-                [ 
+            "translations"=>[
+                [
                     "lang"=>"en",
                     "name"=>str_random(10)
                 ]
@@ -449,7 +440,7 @@ class StateTest extends TestCase
      * @return void
      */
     public function state_test_it_should_return_error_if_data_is_invalid_for_update_state()
-    {        
+    {
         $connection = 'tenant';
         $country = factory(\App\Models\Country::class)->make();
         $country->setConnection($connection);
@@ -464,8 +455,8 @@ class StateTest extends TestCase
 
         $params = [
                 "country_id" => "",
-                "translations" => [ 
-                   [ 
+                "translations" => [
+                   [
                       "lang" => "test",
                       "name" => ""
                    ]
@@ -495,7 +486,7 @@ class StateTest extends TestCase
      * @return void
      */
     public function state_test_it_should_return_error_if_id_is_invalid_for_update_state()
-    { 
+    {
         $this->patch("entities/states/".rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -529,7 +520,7 @@ class StateTest extends TestCase
         $state->save();
         $state->country_id = $countryId;
         $state->update();
-                
+
         DB::setDefaultConnection('mysql');
         $this->delete("entities/states/".$state->state_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(204);
@@ -569,7 +560,7 @@ class StateTest extends TestCase
         $state->save();
         $state->country_id = $countryId;
         $state->update();
-        
+
         DB::setDefaultConnection('mysql');
 
         // Add user for this country and state
@@ -608,7 +599,7 @@ class StateTest extends TestCase
         $state->save();
         $state->country_id = $countryId;
         $state->update();
-        
+
         DB::setDefaultConnection('mysql');
 
         // Add user for this country and state
@@ -620,7 +611,7 @@ class StateTest extends TestCase
         $mission->update();
 
         $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);        
+        ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
         App\Models\state::where('state_id', $state->state_id)->delete();

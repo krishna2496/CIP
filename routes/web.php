@@ -811,3 +811,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/{stateId}', ['uses' => 'Admin\State\StateController@destroy']);
         }
     );
+
+    /* Timezone */
+    $router->group(
+        ['prefix' => '/timezone', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get(
+                '/',
+                ['uses' => 'App\Timezone\TimezoneController@index']
+            );
+        }
+    );

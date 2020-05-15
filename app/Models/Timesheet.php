@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\User;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Timesheet extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -66,6 +67,11 @@ class Timesheet extends Model
         'total_timesheet_time',
         'total_time_seconds'
     ];
+
+    /*
+    * Iatstuti\Database\Support\CascadeSoftDeletes;
+    */
+    protected $cascadeDeletes = ['timesheetDocument'];
 
     /**
      * Get date volunteered attribute on the model.
