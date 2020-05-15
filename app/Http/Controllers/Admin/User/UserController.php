@@ -190,7 +190,12 @@ class UserController extends Controller
                 "department" => "max:16",
                 "linked_in_url" => "url|valid_linkedin_url",
                 "why_i_volunteer" => "sometimes|required",
-                "expiry" => "sometimes|date|nullable"
+                "expiry" => "sometimes|date|nullable",
+                "status" => [
+                    "sometimes",
+                    "string",
+                    Rule::in(config('constants.user_statuses'))
+                ]
             ]
         );
 
@@ -215,7 +220,6 @@ class UserController extends Controller
                 );
             }
         }
-
 
         // Create new user
         $user = $this->userRepository->store($request->all());
@@ -307,7 +311,12 @@ class UserController extends Controller
                     "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                     "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
                     "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL",
-                    "expiry" => "sometimes|date|nullable"
+                    "expiry" => "sometimes|date|nullable",
+                    "status" => [
+                        "sometimes",
+                        "string",
+                        Rule::in(config('constants.user_statuses'))
+                    ]
                 ]
             );
 
