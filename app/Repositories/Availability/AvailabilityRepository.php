@@ -94,4 +94,26 @@ class AvailabilityRepository implements AvailabilityInterface
     {
         return $this->availability->findOrFail($id);
     }
+
+    /**
+     * It will check is availability belongs to any mission or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasMission(int $id): bool
+    {
+        return $this->availability->whereHas('mission')->whereAvailabilityId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is availability belongs to any user or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasUser(int $id): bool
+    {
+        return $this->availability->whereHas('user')->whereAvailabilityId($id)->count() ? true : false;
+    }
 }

@@ -198,7 +198,15 @@ class StateRepository implements StateInterface
     public function getStateList(Request $request, int $countryId) : LengthAwarePaginator
     {
         $this->country->findOrFail($countryId);
-        $states = $this->state->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+        $states = $this->state->with('languages')->where('country_id', $countryId);
+
+        if ($request->has('search') && $request->input('search') != '') {
+            $states->wherehas('languages', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+
+        $states = $states->paginate($request->perPage);
 
         $languages = $this->languageHelper->getLanguages();
         foreach ($states as $key => $value) {

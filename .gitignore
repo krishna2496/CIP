@@ -9,8 +9,6 @@ Homestead.yaml
 /.htaccess
 /node_modules
 /package-lock.json
-/composer.lock
-composer.lock
 /storage/reports
 
 
