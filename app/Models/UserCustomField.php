@@ -5,10 +5,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\UserCustomFieldValue;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class UserCustomField extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
     /**
      * The table associated with the model.
      *
@@ -36,6 +37,11 @@ class UserCustomField extends Model
      * @var array
      */
     protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
+    
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['userCustomFieldValue'];
 
     /**
      * Set translations attribute on the model.
@@ -68,5 +74,15 @@ class UserCustomField extends Model
     public function deleteCustomField(int $id): bool
     {
         return static::findOrFail($id)->delete();
+    }
+
+    /**
+     * Defined has one relation for the user custom field value
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCustomFieldValue(): HasMany
+    {
+        return $this->hasMany(UserCustomFieldValue::class, 'field_id', 'field_id');
     }
 }
