@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
 use App\Models\Notification;
+use App\Models\ActivityLog;
 use App\Models\Comment;
 use App\Models\FavouriteMission;
 use App\Models\Message;
@@ -100,7 +101,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'comments_count',
         'stories_count',
         'stories_views_count',
-        'stories_invites_count'
+        'stories_invites_count',
+        'last_login',
+        'last_volunteer',
+        'open_volunteer_request',
+        'mission',
+        'favourite_mission'
     ];
 
      /*

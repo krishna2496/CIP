@@ -564,6 +564,68 @@ class UserRepository implements UserInterface
     }
 
     /**
+     * Get user's volunteer summary
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    public function volunteerSummary($user, $params = null)
+    {
+        return $this->user
+            ->selectRaw("
+                MAX(timesheet.date_volunteered) as last_volunteer,
+                MAX(activity_log.date) as last_login
+            ")
+            ->join('activity_log', function ($join) {
+                $join->on('user.user_id', '=', 'activity_log.user_id')
+                    ->where('activity_log.action', 'LOGIN')
+                    ->where('activity_log.type', 'AUTH');
+            })
+            ->join('timesheet', 'user.user_id', '=', 'timesheet.user_id')
+            ->where('user.user_id', $user->user_id)
+            ->get();
+    }
+
+    /**
+     * Get user's missions
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    public function getMissionCount($user, $params = null)
+    {
+        return $this->user
+            ->selectRaw("
+                SUM(IF(mission_application.approval_status = 'PENDING', 1, 0)) as open_volunteer_request,
+                SUM(IF(mission_application.approval_status = 'AUTOMATICALLY_APPROVED', 1, 0)) as mission
+            ")
+            ->join('mission_application', 'user.user_id', '=', 'mission_application.user_id')
+            ->where('user.user_id', $user->user_id)
+            ->get();
+    }
+
+    /**
+     * Get user's favorite mission
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    public function getFavoriteMission($user, $params = null)
+    {
+        return $this->user
+            ->selectRaw('COUNT(favorite_mission.favourite_mission_id) as favourite_mission')
+            ->leftJoin('favorite_mission', 'user.user_id', '=', 'favorite_mission.user_id')
+            ->where('user.user_id', $user->user_id)
+            ->get();
+    }
+
+    /**
      * Get specific user organization ccunt
      *
      * @param App\User $user

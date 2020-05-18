@@ -467,6 +467,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/{userId}/timesheet', ['as' => 'users.timesheet', 'uses' => 'Admin\User\UserController@timesheet']);
             $router->get('/{userId}/timesheet-summary', ['as' => 'users.timesheet-summary', 'uses' => 'Admin\User\UserController@timesheetSummary']);
             $router->get('/{userId}/content-statistics', ['as' => 'users.content-statistics', 'uses' => 'Admin\User\UserController@contentStatistics']);
+            $router->get('/{userId}/volunteer-summary', ['as' => 'users/volunteer-summary', 'uses' => 'Admin\User\UserController@volunteerSummary']);
             $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
             $router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
             $router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
