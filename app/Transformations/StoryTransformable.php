@@ -144,6 +144,7 @@ trait StoryTransformable
         string $defaultAvatar,
         int $languageId
     ):array {
+        
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
         $storyData['title'] = $story->title;
