@@ -8331,9 +8331,6 @@
             "textarea"
           ]
         },
-        "is_mandatory": {
-          "type": "boolean"
-        },
         "translations": {
           "type": "array",
           "items": {
@@ -8351,6 +8348,12 @@
               }
             }
           }
+        },
+        "is_mandatory": {
+          "type": "boolean"
+        },
+        "internal_note": {
+          "type": "string"
         }
       }
     },
