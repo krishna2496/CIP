@@ -2094,6 +2094,39 @@
         }
       }
     },
+    "/users/{userId}/volunteer-summary": {
+      "get": {
+        "operationId": "GET_team4-cip-api-users-volunteer-summary",
+        "summary": "Admin - Get tenant user volunteer summary",
+        "description": "List of the tenant user volunteer summary",
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteer summary retrieved successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
     "/metadata/users/custom_fields": {
       "get": {
         "operationId": "GET_team4-cip-api-metadata-users-custom_fields",
