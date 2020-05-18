@@ -573,18 +573,20 @@ class UserRepository implements UserInterface
      */
     public function volunteerSummary($user, $params = null)
     {
-        return $this->user
+        $activityLogAction = config('constants.activity_log_actions.LOGIN');
+        $activityLogType = config('constants.activity_log_types.AUTH');
+
+        return $user
             ->selectRaw("
                 MAX(timesheet.date_volunteered) as last_volunteer,
                 MAX(activity_log.date) as last_login
             ")
-            ->join('activity_log', function ($join) {
+            ->join('activity_log', function ($join) use ($activityLogAction, $activityLogType) {
                 $join->on('user.user_id', '=', 'activity_log.user_id')
-                    ->where('activity_log.action', 'LOGIN')
-                    ->where('activity_log.type', 'AUTH');
+                    ->where('activity_log.action', $activityLogAction)
+                    ->where('activity_log.type', $activityLogType);
             })
             ->join('timesheet', 'user.user_id', '=', 'timesheet.user_id')
-            ->where('user.user_id', $user->user_id)
             ->get();
     }
 
@@ -598,13 +600,15 @@ class UserRepository implements UserInterface
      */
     public function getMissionCount($user, $params = null)
     {
-        return $this->user
+        $pendingStatus = config('constants.application_status.PENDING');
+        $approveStatus = config('constants.application_status.AUTOMATICALLY_APPROVED');
+
+        return $user
             ->selectRaw("
-                SUM(IF(mission_application.approval_status = 'PENDING', 1, 0)) as open_volunteer_request,
-                SUM(IF(mission_application.approval_status = 'AUTOMATICALLY_APPROVED', 1, 0)) as mission
-            ")
-            ->join('mission_application', 'user.user_id', '=', 'mission_application.user_id')
-            ->where('user.user_id', $user->user_id)
+                SUM(IF(mission_application.approval_status = ?, 1, 0)) as open_volunteer_request,
+                SUM(IF(mission_application.approval_status = ?, 1, 0)) as mission
+            ", [$pendingStatus, $approveStatus])
+            ->missionApplication()
             ->get();
     }
 
@@ -618,10 +622,9 @@ class UserRepository implements UserInterface
      */
     public function getFavoriteMission($user, $params = null)
     {
-        return $this->user
+        return $user
             ->selectRaw('COUNT(favorite_mission.favourite_mission_id) as favourite_mission')
-            ->leftJoin('favorite_mission', 'user.user_id', '=', 'favorite_mission.user_id')
-            ->where('user.user_id', $user->user_id)
+            ->FavouriteMission()
             ->get();
     }
 
