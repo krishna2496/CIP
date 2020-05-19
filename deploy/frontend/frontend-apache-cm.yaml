@@ -6,9 +6,9 @@ data:
 
     AddDefaultCharset utf-8
 
-    DocumentRoot /optimy/frontend
+    DocumentRoot /optimy/frontend/public
 
-    <Directory /optimy/frontend>
+    <Directory /optimy/frontend/public>
         Require all granted
         AllowOverride All
     </Directory>
