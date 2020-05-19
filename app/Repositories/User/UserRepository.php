@@ -608,7 +608,7 @@ class UserRepository implements UserInterface
                 SUM(IF(mission_application.approval_status = ?, 1, 0)) as open_volunteer_request,
                 SUM(IF(mission_application.approval_status = ?, 1, 0)) as mission
             ", [$pendingStatus, $approveStatus])
-            ->missionApplication()
+            ->join('mission_application', 'user.user_id', '=', 'mission_application.user_id')
             ->get();
     }
 
@@ -623,8 +623,8 @@ class UserRepository implements UserInterface
     public function getFavoriteMission($user, $params = null)
     {
         return $user
-            ->selectRaw('COUNT(favorite_mission.favourite_mission_id) as favourite_mission')
             ->FavouriteMission()
+            ->selectRaw('COUNT(favorite_mission.favourite_mission_id) as favourite_mission')
             ->get();
     }
 
