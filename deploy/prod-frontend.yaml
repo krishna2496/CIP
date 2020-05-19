@@ -114,6 +114,13 @@ spec:
       paths:
       - backend:
           serviceName: ci-frontend-service
+          servicePort: 80   
+  - host: engagement.societegenerale.com
+    http:
+      paths:
+      - backend:
+          serviceName: ci-frontend-service
           servicePort: 80          
+        
 status:
   loadBalancer: {}
