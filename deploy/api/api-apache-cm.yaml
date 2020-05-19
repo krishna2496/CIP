@@ -48,4 +48,3 @@ data:
 kind: ConfigMap
 metadata:
   name: cip-api-apache-config
-  namespace: staging

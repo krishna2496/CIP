@@ -64,8 +64,9 @@ spec:
         resources:
           requests:
             cpu: 10m
-      - name: cip-frontend
-        image: registry.kubernetes.infra.optimy.net/ci/frontend-staging:{{FRONTEND_VERSION}}
+            
+      - image: registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
+        name: cip-frontend
         imagePullPolicy: Always
         resources:
           requests:
@@ -77,10 +78,18 @@ spec:
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
           name: cip-frontend-apache-config
           subPath: 000-default.conf
-      volumes:
-        - mountPath: /cip-sources
+        
+      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{VERSION}}
+        name: cip-source
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /optimy
           name: source
-        - configMap:
+
+      volumes:
+      - name: source
+        emptyDir: {}
+      - configMap:
           defaultMode: 420
           name: cip-frontend-apache-config
         name: cip-config

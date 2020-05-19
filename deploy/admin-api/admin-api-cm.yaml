@@ -49,5 +49,4 @@ data:
 kind: ConfigMap
 metadata:
   name: cip-admin-api-config
-  namespace: staging
 
