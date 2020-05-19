@@ -153,7 +153,6 @@ class Timesheet extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-
     public function scopeIsApproved($query)
     {
         $status = [
@@ -171,7 +170,6 @@ class Timesheet extends Model
      * @param  Int  $year
      * @return \Illuminate\Database\Eloquent\Builder
      */
-
     public function scopeIsYear($query, $year = null)
     {
         if (!$year) {
@@ -188,7 +186,6 @@ class Timesheet extends Model
      * @param  Int $month
      * @return \Illuminate\Database\Eloquent\Builder
      */
-
     public function scopeIsMonth($query, $month = null)
     {
         if (!$month) {
