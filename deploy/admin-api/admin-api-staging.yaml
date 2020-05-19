@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: ci-admin-api-deployment
+  name: cip-admin-api-deployment
   labels:
-    app: ci-admin-api
+    app: cip-admin-api
     deployment: {{DEPLOYMENT}}
 spec:
-  replicas: {{CI_ADMIN_API_REPLICA_COUNT}}
+  replicas: {{CIP_ADMIN_API_REPLICA_COUNT}}
   selector:
     matchLabels:
-      app: ci-admin-api
+      app: cip-admin-api
   template:
     metadata:
       labels:
-        app: ci-admin-api
+        app: cip-admin-api
         deployment: {{DEPLOYMENT}}
     spec:
       affinity:
@@ -42,7 +42,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - ci-admin-api
+                  - cip-admin-api
               topologyKey: failure-domain.beta.kubernetes.io/zone
             weight: 10
           - podAffinityTerm:
@@ -51,7 +51,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - ci-admin-api
+                  - cip-admin-api
               topologyKey: kubernetes.io/hostname
             weight: 20
       containers:
@@ -64,8 +64,8 @@ spec:
         resources:
           requests:
             cpu: 10m
-      - name: ci-admin-api
-        image: registry.kubernetes.infra.optimy.net/ci/admin-api:{{ADMIN_API_VERSION}}
+      - name: cip-admin-api
+        image: registry.kubernetes.infra.optimy.net/cip/admin-api:{{ADMIN_API_VERSION}}
         imagePullPolicy: Always
         resources:
           requests:
@@ -80,31 +80,42 @@ spec:
         #     - cat
         #     - /optimy/sync.ok
         volumeMounts:
-        - mountPath: /optimy/.env
-          name: ci-config
+        - mountPath: /optimy/admin-api/.env
+          name: cip-config
           subPath: .env
+        - mountPath: /etc/apache2/sites-enabled/000-default.conf
+          name: cip-admin-api-apache-config
+          subPath: 000-default.conf
+        - mountPath: /optimy
+          name: source
         ports:
         - containerPort: 80
       volumes:
       - configMap:
           defaultMode: 420
-          name: ci-admin-api-config
-        name: ci-config
+          name: cip-admin-api-config
+      - configMap:
+          defaultMode: 420
+          name: cip-admin-api-apache-config
+        name: cip-config
+      - mountPath: /cip-sources
+        name: source
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: ci-admin-api-service
+  namespace: staging
+  name: cip-admin-api-service
   labels:
-    app: ci-admin-api
+    app: cip-admin-api
 spec:
   selector:
-    app: ci-admin-api
+    app: cip-admin-api
   ports:
     - protocol: TCP
       port: 80
-      name: ci-admin-api-service
+      name: cip-admin-api-service
     - protocol: TCP
       port: 9117
       name: exporter
@@ -116,14 +127,15 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/whitelist-source-range: 109.88.0.88/32, 87.66.0.172/32,
       94.225.245.228/32, 52.57.232.26/32, 51.38.187.3/32, 212.161.79.81/29, 52.29.166.205/32, 112.199.89.162/32, 203.177.98.75/32, 210.213.230.26/32, 210.213.242.66/32
-  name: ci-api-admin-ingress
+  name: cip-api-admin-ingress
+  namespace: staging
 spec:
   rules:
-  - host: admin-api.ci.prod.optimy.net
+  - host: admin-api.cip.staging.optimy.net
     http:
       paths:
       - backend:
-          serviceName: ci-admin-api-service
+          serviceName: cip-admin-api-service
           servicePort: 80
 status:
   loadBalancer: {}

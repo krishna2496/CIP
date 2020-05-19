@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: ci-api-deployment
+  name: cip-frontend-deployment
   labels:
-    app: ci-api
+    app: cip-frontend
     deployment: {{DEPLOYMENT}}
 spec:
-  replicas: {{CI_API_REPLICA_COUNT}}
+  replicas: {{CIP_FRONTEND_REPLICA_COUNT}}
   selector:
     matchLabels:
-      app: ci-api
+      app: cip-frontend
   template:
     metadata:
       labels:
-        app: ci-api
+        app: cip-frontend
         deployment: {{DEPLOYMENT}}
     spec:
       affinity:
@@ -42,7 +42,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - ci-api
+                  - cip-frontend
               topologyKey: failure-domain.beta.kubernetes.io/zone
             weight: 10
           - podAffinityTerm:
@@ -51,7 +51,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - ci-api
+                  - ci-frontend
               topologyKey: kubernetes.io/hostname
             weight: 20
       containers:
@@ -64,48 +64,43 @@ spec:
         resources:
           requests:
             cpu: 10m
-      - name: ci-api
-        image: registry.kubernetes.infra.optimy.net/ci/api:{{API_VERSION}}
+      - name: cip-frontend
+        image: registry.kubernetes.infra.optimy.net/ci/frontend-staging:{{FRONTEND_VERSION}}
         imagePullPolicy: Always
         resources:
           requests:
             cpu: 40m
             memory: 128Mi
-          # limits:
-          #   cpu: 120m
-          #   memory: 384Mi
-        # readinessProbe:
-        #   exec:
-        #     command:
-        #     - cat
-        #     - /optimy/sync.ok
-        volumeMounts:
-        - mountPath: /optimy/.env
-          name: ci-config
-          subPath: .env
-        ports:
-        - containerPort: 80
+      volumeMounts:
+        - mountPath: /optimy
+          name: source
+        - mountPath: /etc/apache2/sites-enabled/000-default.conf
+          name: cip-frontend-apache-config
+          subPath: 000-default.conf
       volumes:
-      - configMap:
+        - mountPath: /cip-sources
+          name: source
+        - configMap:
           defaultMode: 420
-          name: ci-api-config
-        name: ci-config
-
+          name: cip-frontend-apache-config
+        name: cip-config
+      
+       
 ---
 kind: Service
 apiVersion: v1
 metadata:
   namespace: staging
-  name: ci-api-service
+  name: cip-frontend-service
   labels:
-    app: ci-api
+    app: cip-frontend
 spec:
   selector:
-    app: ci-api
+    app: cip-frontend
   ports:
     - protocol: TCP
       port: 80
-      name: ci-api-service
+      name: cip-frontend-service
     - protocol: TCP
       port: 9117
       name: exporter
@@ -114,15 +109,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ci-api-ingress
+  name: cip-frontend-ingress
   namespace: staging
 spec:
   rules:
-  - host: api.ci.staging.optimy.net
+  - host: cip.staging.optimy.net
     http:
       paths:
       - backend:
-          serviceName: ci-api-service
+          serviceName: cip-frontend-service
           servicePort: 80
+  - host: '*.front.cip.staging.optimy.net'
+    http:
+      paths:
+      - backend:
+          serviceName: cip-frontend-service
+          servicePort: 80
+          
 status:
   loadBalancer: {}

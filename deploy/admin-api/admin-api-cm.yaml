@@ -5,7 +5,7 @@ data:
     APP_ENV=local
     APP_KEY=base64:Hv1MJoXfz4TI0DC0Mq8eITq9slkKk8ay3G4lwWRXKWA=
     APP_DEBUG=true
-    APP_URL=http://admin-api.ci.staging.optimy.net
+    APP_URL=http://admin-api.cip.staging.optimy.net
     APP_TIMEZONE=UTC
   
     LOG_CHANNEL=stdout
@@ -48,6 +48,6 @@ data:
 
 kind: ConfigMap
 metadata:
-  name: ci-admin-api-config
+  name: cip-admin-api-config
   namespace: staging
 
