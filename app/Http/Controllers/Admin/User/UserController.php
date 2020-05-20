@@ -196,9 +196,7 @@ class UserController extends Controller
             );
         }
 
-        $timesheet = $this->timesheetService->summary($user, $request->all());
-
-        $data = $timesheet;
+        $data = $this->timesheetService->summary($user, $request->all());
         $status = Response::HTTP_OK;
         $message = trans('messages.success.MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS');
 
