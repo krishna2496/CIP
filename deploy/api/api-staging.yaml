@@ -6,7 +6,7 @@ metadata:
     app: cip-api
     deployment: {{DEPLOYMENT}}
 spec:
-  replicas: {{CIP_API_REPLICA_COUNT}}
+  replicas: 1
   selector:
     matchLabels:
       app: cip-api

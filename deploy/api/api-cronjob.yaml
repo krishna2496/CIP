@@ -9,7 +9,7 @@ spec:
       template:
         spec:
           containers:
-          - image: registry.kubernetes.infra.optimy.net/ci/api-cli:{{API_VERSION}}
+          - image: registry.kubernetes.infra.optimy.net/ci/api-cli:{{VERSION}}
             imagePullPolicy: IfNotPresent
             name: api-cli 
             volumeMounts:
