@@ -95,10 +95,11 @@ spec:
       - configMap:
           defaultMode: 420
           name: cip-admin-api-config
+        name: cip-admin-api-config
       - configMap:
           defaultMode: 420
           name: cip-admin-api-apache-config
-        name: cip-config
+        name: cip-admin-api-apache-config
       - name: source
         emptyDir: {}
 

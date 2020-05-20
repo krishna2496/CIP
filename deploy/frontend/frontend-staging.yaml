@@ -92,7 +92,7 @@ spec:
       - configMap:
           defaultMode: 420
           name: cip-frontend-apache-config
-        name: cip-config
+        name: cip-frontend-apache-config
       
        
 ---
