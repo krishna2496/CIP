@@ -17,6 +17,7 @@ use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use Queue;
 use App\Events\ActivityLogEvent;
 use App\Helpers\Helpers;
+use App\Repositories\ActivityLog\ActivityLogRepository;
 
 //!  Tenant controller
 /*!
@@ -42,21 +43,29 @@ class TenantController extends Controller
     private $helpers;
 
     /**
+     * @var App\Repositories\ActivityLog\ActivityLogRepository;
+     */
+    private $activityLogRepository;
+
+    /**
      * Create a new Tenant controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
+     * @param  App\Repositories\ActivityLog\ActivityLogRepository $activityLogRepository
      * @return void
      */
     public function __construct(
         TenantRepository $tenantRepository,
         ResponseHelper $responseHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        ActivityLogRepository $activityLogRepository
     ) {
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
+        $this->activityLogRepository = $activityLogRepository;
     }
     
     /**
@@ -220,6 +229,9 @@ class TenantController extends Controller
     {
         try {
             $this->tenantRepository->delete($id);
+            $this->activityLogRepository->deleteTenantActivityLog($id);
+            $this->activityLogRepository->deleteTenantApiUserActivityLog($id);
+            $this->activityLogRepository->deleteTenantLanguageActivityLog($id);
             
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
