@@ -86,13 +86,13 @@
                                     </div>
                                     <div class="progress-chart">
                                         <span class="progress-status">{{languageData.label.completed}}:
-                                            {{ completedGoalHours }} {{languageData.label.hours}}</span>
+                                          {{ completedGoalHours }} {{languageData.label.hours}}</span>
                                         <b-progress :max="totalGoalHours">
                                             <b-progress-bar :value="completedGoalHours">
                                             </b-progress-bar>
                                         </b-progress>
                                         <ul class="progress-axis">
-                                            <li v-for="xvalue in xvalues" :key="xvalue">{{xvalue}}</li>
+                                            <li v-for="xvalue in xvalues" :key="xvalue">{{xvalue}}%</li>
                                         </ul>
                                         <p class="progress-label">{{languageData.label.goal}}: {{ totalGoalHours }}
                                             {{languageData.label.hours}}</p>
@@ -231,6 +231,7 @@
           'organizationCount': 0
         },
         totalGoalHours: 0,
+        totalGoalHoursMax : 0,
         completedGoalHours: 0,
         chartStep: 0,
         chartMaxValue: 0,
@@ -367,9 +368,13 @@
                 let xValue = 0;
 
                 for (var i = 0; i < this.goalHourPart; i++) {
-                  xValue = xValue + this.max;
+                  xValue = (i+1) * 10;
+                  if(this.goalHourPart == 5) {
+                    xValue = (i+1) * 20;
+                  }
                   this.xvalues.push(xValue)
                 }
+                this.totalGoalHoursMax = this.xvalues[this.xvalues.length - 1];;
               }
               if (response.data.chart) {
                 let chartData = response.data.chart;
@@ -532,7 +537,10 @@
           let xValue = 0;
 
           for (var i = 0; i < this.goalHourPart; i++) {
-            xValue = xValue + this.max;
+            xValue = (i+1) * 10;
+            if(this.goalHourPart == 5) {
+              xValue = (i+1) * 20;
+            }
             this.xvalues.push(xValue)
           }
         }
