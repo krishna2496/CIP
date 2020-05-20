@@ -65,7 +65,7 @@ spec:
           requests:
             cpu: 10m
 
-      - image: registry.kubernetes.infra.optimy.net/tools/web-ci:7.3  
+      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
         name: cip-admin-api
         imagePullPolicy: Always
         resources:
@@ -73,23 +73,14 @@ spec:
             cpu: 40m
             memory: 128Mi
         volumeMounts:
-        - mountPath: /optimy/admin-api/.env
-          name: cip-admin-api-config
-          subPath: .env
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
           name: cip-admin-api-apache-config
           subPath: 000-default.conf
-        - mountPath: /optimy
-          name: source
+        - mountPath: /optimy/admin-api/.env
+          name: cip-admin-api-config
+          subPath: .env
         ports:
         - containerPort: 80
-
-      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
-        name: cip-source
-        imagePullPolicy: Always
-        volumeMounts:
-        - mountPath: /optimy
-          name: source
 
       volumes:
       - configMap:
@@ -100,8 +91,6 @@ spec:
           defaultMode: 420
           name: cip-admin-api-apache-config
         name: cip-admin-api-apache-config
-      - name: source
-        emptyDir: {}
 
 ---
 kind: Service
