@@ -85,7 +85,7 @@ spec:
         - containerPort: 80
 
       - name: cip-source
-        image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{VERSION}}
+        image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
         imagePullPolicy: Always
         volumeMounts:
         - mountPath: /optimy

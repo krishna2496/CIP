@@ -72,14 +72,14 @@ spec:
           requests:
             cpu: 40m
             memory: 128Mi
-      volumeMounts:
+        volumeMounts:
         - mountPath: /optimy
           name: source
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
           name: cip-frontend-apache-config
           subPath: 000-default.conf
         
-      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{VERSION}}
+      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
         name: cip-source
         imagePullPolicy: Always
         volumeMounts:
