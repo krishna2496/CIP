@@ -100,22 +100,30 @@ class JwtMiddleware
             );
         }
         $user = User::find($credentials->sub);
+        if ($user) {
+            if (isset($credentials->sso) && $credentials->sso) {
+                $newToken = $this->helpers->getJwtToken(
+                    $user->user_id,
+                    $this->helpers->getSubDomainFromRequest($request),
+                );
+                header('Token: '.$newToken);
+            }
 
-        if (isset($credentials->sso) && $credentials->sso) {
-            $newToken = $this->helpers->getJwtToken(
-                $user->user_id,
-                $this->helpers->getSubDomainFromRequest($request),
+            $timezone = '';
+            $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
+            if ($timezone) {
+                $timezone = $timezone->timezone;
+            }
+            config(['constants.TIMEZONE' => $timezone]);
+            $request->auth = $user;
+            return $next($request);
+        } else {
+            return $this->responseHelper->error(
+                Response::HTTP_UNAUTHORIZED,
+                Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                config('constants.error_codes.ERROR_UNAUTHORIZED_USER'),
+                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
             );
-            header('Token: '.$newToken);
         }
-
-        $timezone = '';
-        $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
-        if ($timezone) {
-            $timezone = $timezone->timezone;
-        }
-        config(['constants.TIMEZONE' => $timezone]);
-        $request->auth = $user;
-        return $next($request);
     }
 }
