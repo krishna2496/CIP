@@ -8198,10 +8198,6 @@
           "type": "integer",
           "format": "int32"
         },
-        "language_id": {
-          "type": "integer",
-          "format": "int32"
-        },
         "availability_id": {
           "type": "integer",
           "format": "int32"
@@ -8213,9 +8209,6 @@
           "type": "string"
         },
         "department": {
-          "type": "string"
-        },
-        "manager_name": {
           "type": "string"
         },
         "city_id": {
@@ -8231,6 +8224,22 @@
         },
         "linked_in_url": {
           "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "description": "0 for inactive; 1 for active"
+        },
+        "language_id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "expiry": {
+          "type":  "string",
+          "format": "date-time",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
         }
       }
     },
