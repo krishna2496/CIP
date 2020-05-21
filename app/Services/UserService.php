@@ -61,6 +61,55 @@ class UserService
     }
 
     /**
+     * Get user's volunteer summary
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    public function volunteerSummary($user, $params = null): Array
+    {
+        $data = $this->userRepository->volunteerSummary($user, $params);
+        $summary = $data
+            ->first()
+            ->toArray();
+
+        $missionCount = $this->getUserMissionCount($user, $params);
+        $favoriteMission = $this->getUserFavoriteMission($user, $params);
+
+        return array_merge($summary, $missionCount, $favoriteMission);
+    }
+
+    /**
+     * Get user's missions
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    private function getUserMissionCount($user, $params): Array
+    {
+        $mission = $this->userRepository->getMissionCount($user, $params);
+        return $mission->first()->toArray();
+    }
+
+    /**
+     * Get user's favorite missions
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    private function getUserFavoriteMission($user, $params): Array
+    {
+        $favorite = $this->userRepository->getFavoriteMission($user, $params);
+        return $favorite->first()->toArray();
+    }
+
+    /**
      * Get specific user organization count
      *
      * @param App\User $user

@@ -153,6 +153,32 @@ class UserController extends Controller
     }
 
     /**
+     * Get user's volunteer summary
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String $userId
+     *
+     * @return JsonResponse
+     */
+    public function volunteerSummary(Request $request, $userId): JsonResponse
+    {
+        try {
+            $user = $this->userService->findById($userId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        }
+
+        $data = $this->userService->volunteerSummary($user, $request->all());
+
+        $status = Response::HTTP_OK;
+        $message = trans('messages.success.MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS');
+        return $this->responseHelper->success($status, $message, $data);
+    }
+
+    /**
      * Display specific user timesheet summary
      *
      * @param \Illuminate\Http\Request $request

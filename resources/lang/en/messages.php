@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
     ],
 
 

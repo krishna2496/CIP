@@ -3,6 +3,9 @@
 namespace Tests\Unit\Services;
 
 use App\Models\MissionApplication;
+use App\Models\ActivityLog;
+use App\Models\Timesheet;
+use App\Models\FavouriteMission;
 use App\Repositories\User\UserRepository;
 use App\Services\UserService;
 use App\User;
@@ -82,6 +85,64 @@ class UserServiceTest extends TestCase
             'organization_count' => 2
         ], $response);
 
+    }
+
+    /**
+    * @testdox Test volunteer summary
+    *
+    * @return void
+    */
+    public function testVolunteersummary()
+    {
+        $request = new Request();
+
+        $activityLog = new ActivityLog();
+        $activityLog->setAttribute('last_login', '2020-05-15 10:10:31');
+        $activityLog->setAttribute('last_volunteer', '2020-05-01');
+        $activityLog = new Collection([$activityLog]);
+
+        $missionCount = new User();
+        $missionCount->setAttribute('open_volunteer_request', 1);
+        $missionCount->setAttribute('mission', 1);
+        $missionCount = new Collection([$missionCount]);
+
+        $favoriteMission = new FavouriteMission();
+        $favoriteMission->setAttribute('favourite_mission', 1);
+        $favoriteMission = new Collection([$favoriteMission]);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('volunteerSummary')
+            ->once()
+            ->with($user, $request->all())
+            ->andReturn($activityLog);
+
+        $userRepository
+            ->shouldReceive('getMissionCount')
+            ->once()
+            ->with($user, $request->all())
+            ->andReturn($missionCount);
+
+        $userRepository
+            ->shouldReceive('getFavoriteMission')
+            ->once()
+            ->with($user, $request->all())
+            ->andReturn($favoriteMission);
+
+        $service = $this->getService(
+            $userRepository
+        );
+        $response = $service->volunteerSummary($user, $request->all());
+        $this->assertEquals([
+            'last_volunteer' => '2020-05-01',
+            'last_login' => '2020-05-15 10:10:31',
+            'open_volunteer_request' => 1,
+            'mission' => 1,
+            'favourite_mission' => 1
+        ], $response);
     }
 
     private function getMockResponse()
