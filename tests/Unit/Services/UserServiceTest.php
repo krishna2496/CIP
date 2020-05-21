@@ -81,7 +81,7 @@ class UserServiceTest extends TestCase
             'comments_count' => 3,
             'stories_count' => 2,
             'stories_views_count' => 3,
-            'stories_invites_count' => 1,
+            'stories_invited_users_count' => 1,
             'organization_count' => 2
         ], $response);
 
@@ -152,7 +152,7 @@ class UserServiceTest extends TestCase
         $user->setAttribute('comments_count', 3);
         $user->setAttribute('stories_count', 2);
         $user->setAttribute('stories_views_count', 3);
-        $user->setAttribute('stories_invites_count', 1);
+        $user->setAttribute('stories_invited_users_count', 1);
 
         return new Collection([
             $user
