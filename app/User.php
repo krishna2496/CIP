@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
-use App\Models\missionApplication;
 use App\Models\Availability;
 use App\Models\UserCustomFieldValue;
 use App\Models\Timesheet;
@@ -22,14 +21,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
 use App\Models\Notification;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\Comment;
 use App\Models\FavouriteMission;
 use App\Models\Message;
+use App\Models\MissionApplication;
 use App\Models\MissionInvite;
 use App\Models\MissionRating;
+use App\Models\Story;
+use App\Models\StoryInvite;
 use App\Models\UserFilter;
 use App\Models\UserNotification;
 use App\Models\UserSkill;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -65,11 +68,40 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $visible = ['user_id', 'first_name', 'last_name', 'email',
-     'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
-     'employee_id', 'department', 'city_id', 'country_id',
-     'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'skills', 'is_profile_complete', 'receive_email_notification'];
+    protected $visible = [
+        'user_id', 
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'avatar',
+        'timezone_id',
+        'availability_id',
+        'why_i_volunteer',
+        'employee_id',
+        'department',
+        'city_id',
+        'country_id',
+        'profile_text',
+        'linked_in_url',
+        'status',
+        'title',
+        'city',
+        'country',
+        'timezone',
+        'language_id',
+        'availability',
+        'userCustomFieldValue',
+        'cookie_agreement_date','hours_goal',
+        'skills',
+        'is_profile_complete',
+        'receive_email_notification',
+        'messages_count',
+        'comments_count',
+        'stories_count',
+        'stories_views_count',
+        'stories_invited_users_count'
+    ];
 
      /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -349,7 +381,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-    * Defined has one relation for the timezone table.
+    * Defined has many relation for the timesheet table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
@@ -357,4 +389,45 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Timesheet::class, 'user_id');
     }
+
+    /**
+    * Defined has many relation for the message table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the comment table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the stories table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function stories(): HasMany
+    {
+        return $this->hasMany(Story::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the story invites table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function storyInvites(): HasMany
+    {
+        return $this->hasMany(StoryInvite::class, 'from_user_id');
+    }
+
 }

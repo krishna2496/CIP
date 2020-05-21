@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use App\Models\Mission;
 use App\Helpers\LanguageHelper;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserRepository implements UserInterface
 {
@@ -498,8 +499,8 @@ class UserRepository implements UserInterface
 
     }
 
-     /**
-      * Check profile complete status
+    /**
+     * Check profile complete status
      *
      * @param int $userId
      * @param Request $request
@@ -531,4 +532,55 @@ class UserRepository implements UserInterface
         $userData->update(["is_profile_complete" => $profileComplete]);
         return $userData;
     }
+
+    /**
+     * Get specific user content statistics
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    public function getStatistics($user, $params = null)
+    {
+        $userId = $user->user_id;
+
+        return $this->user
+            ->select([])
+            ->withCount([
+                'messages',
+                'comments',
+                'stories' => function (Builder $query) {
+                    $query->where('status', config("constants.story_status.PUBLISHED"));
+                },
+                'stories as stories_views_count' => function (Builder $query) use ($userId) {
+                    $query->join('story_visitor as sv', 'sv.story_id', '=', 'story.story_id')
+                        ->where('story.status', config("constants.story_status.PUBLISHED"));
+                },
+                'storyInvites as stories_invited_users_count'
+            ])
+            ->where('user.user_id', $userId)
+            ->get();
+    }
+
+    /**
+     * Get specific user organization ccunt
+     *
+     * @param App\User $user
+     * @param Array $params all get parameteres
+     *
+     * @return Array
+     */
+    public function getOrgCount($user, $params = null)
+    {
+        return $user
+            ->missionApplication()
+            ->selectRaw('
+                COUNT(DISTINCT mission.organisation_id) as organization_count
+            ')
+            ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
+            ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
+            ->get();
+    }
+
 }
