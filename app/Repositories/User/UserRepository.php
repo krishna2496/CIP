@@ -557,7 +557,7 @@ class UserRepository implements UserInterface
                     $query->join('story_visitor as sv', 'sv.story_id', '=', 'story.story_id')
                         ->where('story.status', config("constants.story_status.PUBLISHED"));
                 },
-                'storyInvites as stories_invites_count'
+                'storyInvites as stories_invited_users_count'
             ])
             ->where('user.user_id', $userId)
             ->get();
