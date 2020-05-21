@@ -2090,6 +2090,9 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "User not found in system"
           }
         }
       }
@@ -2123,6 +2126,9 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "User not found in system"
           }
         }
       }
@@ -2156,6 +2162,9 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "User not found in system"
           }
         }
       }
