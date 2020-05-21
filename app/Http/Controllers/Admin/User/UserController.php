@@ -16,6 +16,8 @@ use Illuminate\Validation\Rule;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
+use App\Services\UserService;
+use App\Services\TimesheetService;
 use App\Repositories\Notification\NotificationRepository;
 
 //!  User controller
@@ -47,6 +49,16 @@ class UserController extends Controller
     private $helpers;
 
     /**
+     * @var App\Services\UserService
+     */
+    private $timesheetService;
+
+    /**
+     * @var App\Services\TimesheetService
+     */
+    private $userService;
+
+    /**
      * @var string
      */
     private $userApiKey;
@@ -62,6 +74,7 @@ class UserController extends Controller
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\ResponseHelper $languageHelper
+     * @param App\Services\UserService $userService
      * @param App\Helpers\Helpers $helpers
      * @param Illuminate\Http\Request $request
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
@@ -71,6 +84,8 @@ class UserController extends Controller
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
+        UserService $userService,
+        TimesheetService $timesheetService,
         Helpers $helpers,
         Request $request,
         NotificationRepository $notificationRepository
@@ -78,6 +93,8 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->userService = $userService;
+        $this->timesheetService = $timesheetService;
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
         $this->notificationRepository = $notificationRepository;
@@ -117,17 +134,15 @@ class UserController extends Controller
     {
 
         try {
-            $user = $this->userRepository->find($userId);
+            $user = $this->userService->findById($userId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-       
-        $timesheet = $this->userRepository->getTimesheetSummary($request, $userId);
 
-        $data = $timesheet->first()->toArray();
+        $data = $this->timesheetService->summary($user, $request->all());
         $status = Response::HTTP_OK;
         $message = trans('messages.success.MESSAGE_TENANT_USER_TIMESHEET_SUMMARY_SUCCESS');
 

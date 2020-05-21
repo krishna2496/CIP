@@ -79,7 +79,7 @@ class UserRepository implements UserInterface
         LanguageHelper $languageHelper,
         Mission $mission,
         Helpers $helpers,
-		UserCustomFieldRepository $userCustomFieldRepository
+        UserCustomFieldRepository $userCustomFieldRepository
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
@@ -88,7 +88,7 @@ class UserRepository implements UserInterface
         $this->languageHelper = $languageHelper;
         $this->mission = $mission;
         $this->helpers = $helpers;
-		$this->userCustomFieldRepository = $userCustomFieldRepository;
+        $this->userCustomFieldRepository = $userCustomFieldRepository;
     }
 
     /**
