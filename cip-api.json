@@ -2127,6 +2127,39 @@
         }
       }
     },
+    "/users/{userId}/content-statistics": {
+      "get": {
+        "operationId": "GET_team4-cip-api-users-content-statistics",
+        "summary": "Admin - Get tenant user content statistics",
+        "description": "List of the tenant user content statistics",
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User content statistics retrieved successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
     "/metadata/users/custom_fields": {
       "get": {
         "operationId": "GET_team4-cip-api-metadata-users-custom_fields",
