@@ -255,6 +255,28 @@ class CountryRepository implements CountryInterface
     }
 
     /**
+     * It will check is country belongs to any city or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasCity(int $id): bool
+    {
+        return $this->country->whereHas('city')->whereCountryId($id)->count() ? true : false;
+    }
+
+    /**
+     * It will check is country belongs to any state or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasState(int $id): bool
+    {
+        return $this->country->whereHas('state')->whereCountryId($id)->count() ? true : false;
+    }
+
+    /**
       * Get country by ISO code
       *
       * @param  string $isoCode

@@ -108,4 +108,14 @@ class Country extends Model
     {
         return $this->belongsTo(User::class, 'country_id', 'country_id');
     }
+
+    /**
+     * Get state associated with the country.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function state()
+    {
+        return $this->hasMany(State::class, 'country_id', 'country_id');
+    }
 }
