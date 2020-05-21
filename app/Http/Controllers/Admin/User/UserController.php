@@ -55,7 +55,7 @@ class UserController extends Controller
      * @var App\Repositories\Notification\NotificationRepository
      */
     private $notificationRepository;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -193,7 +193,6 @@ class UserController extends Controller
                 "expiry" => "sometimes|date|nullable",
                 "status" => [
                     "sometimes",
-                    "string",
                     Rule::in(config('constants.user_statuses'))
                 ]
             ]
@@ -221,8 +220,18 @@ class UserController extends Controller
             }
         }
 
+        $requestData = $request->toArray();
+        $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+            ? $request->expiry : null;
+        $requestData['status'] = config('constants.user_statuses.ACTIVE');
+        if (isset($request->status)) {
+            $requestData['status'] = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
         // Create new user
-        $user = $this->userRepository->store($request->all());
+        $user = $this->userRepository->store($requestData);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -234,7 +243,7 @@ class UserController extends Controller
 
         // Remove password before logging it
         $request->request->remove("password");
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USERS'),
@@ -314,7 +323,6 @@ class UserController extends Controller
                     "expiry" => "sometimes|date|nullable",
                     "status" => [
                         "sometimes",
-                        "string",
                         Rule::in(config('constants.user_statuses'))
                     ]
                 ]
@@ -342,8 +350,17 @@ class UserController extends Controller
                 }
             }
 
+            $requestData = $request->toArray();
+            $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+                ? $request->expiry : null;
+            if (isset($request->status)) {
+                $requestData['status'] = $request->status
+                    ? config('constants.user_statuses.ACTIVE')
+                    : config('constants.user_statuses.INACTIVE');
+            }
+
             // Update user
-            $user = $this->userRepository->update($request->toArray(), $id);
+            $user = $this->userRepository->update($requestData, $id);
 
             // Check profile complete status
             $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -355,7 +372,7 @@ class UserController extends Controller
 
             // Remove password before logging it
             $request->request->remove("password");
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.USERS'),
