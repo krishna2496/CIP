@@ -3,6 +3,7 @@ namespace App\Http\Controllers\App\Auth;
 
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Availability;
 use App\Models\TenantOption;
@@ -11,15 +12,16 @@ use App\Repositories\Country\CountryRepository;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Repositories\Timezone\TimezoneRepository;
 use App\Repositories\User\UserRepository;
+use App\Exceptions\SamlException;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
 use Bschmitt\Amqp\Amqp;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
-use App\Exceptions\SamlException;
 
 class SamlController extends Controller
 {
@@ -34,6 +36,7 @@ class SamlController extends Controller
 
     public function __construct(
         Helpers $helpers,
+        ResponseHelper $responseHelper,
         UserRepository $userRepository,
         TenantOptionRepository $tenantOptionRepository,
         LanguageHelper $languageHelper,
@@ -43,6 +46,7 @@ class SamlController extends Controller
         Availability $availability
     ) {
         $this->helpers = $helpers;
+        $this->responseHelper = $responseHelper;
         $this->userRepository = $userRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->languageHelper = $languageHelper;
@@ -216,6 +220,27 @@ class SamlController extends Controller
             $this->userRepository->store($userData);
 
         $this->syncContact($userDetail, $settings);
+
+        if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_BLOCKED'),
+                trans('messages.custom_error_message.ERROR_USER_BLOCKED')
+            );
+        }
+
+        if ($userDetail->expiry) {
+            $userExpirationDate = new DateTime($userDetail->expiry);
+            if ($userExpirationDate < new DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                );
+            }
+        }
 
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
