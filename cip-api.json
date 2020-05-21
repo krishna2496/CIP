@@ -8226,8 +8226,12 @@
           "type": "string"
         },
         "status": {
-          "type": "string",
-          "description": "0 for inactive; 1 for active"
+          "type": "integer",
+          "description": "1 => Active, 0 => Inactive",
+          "enum":[
+            "1",
+            "0"
+          ]
         },
         "language_id": {
           "type": "integer",
