@@ -101,7 +101,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'comments_count',
         'stories_count',
         'stories_views_count',
-        'stories_invites_count',
+        'stories_invited_users_count',
         'last_login',
         'last_volunteer',
         'open_volunteer_request',
