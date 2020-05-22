@@ -599,13 +599,17 @@ class UserRepository implements UserInterface
                 MAX(timesheet.date_volunteered) as last_volunteer,
                 MAX(activity_log.date) as last_login
             ")
-            ->join('activity_log', function ($join) use ($activityLogAction, $activityLogType) {
+            ->leftJoin('activity_log', function ($join) use ($user, $activityLogAction, $activityLogType) {
                 $join->on('user.user_id', '=', 'activity_log.user_id')
                     ->where('activity_log.action', $activityLogAction)
-                    ->where('activity_log.type', $activityLogType);
+                    ->where('activity_log.type', $activityLogType)
+                    ->where('activity_log.user_id', '=', $user->user_id);
             })
-            ->join('timesheet', 'user.user_id', '=', 'timesheet.user_id')
-            ->where('timesheet.deleted_at', '=', null)
+            ->leftJoin('timesheet', function ($join) use ($user) {
+                $join->on('user.user_id', '=', 'timesheet.user_id')
+                    ->where('timesheet.deleted_at', '=', null)
+                    ->where('timesheet.user_id', '=', $user->user_id);
+            })
             ->get();
     }
 
@@ -628,6 +632,7 @@ class UserRepository implements UserInterface
                 SUM(IF(mission_application.approval_status = ?, 1, 0)) as mission
             ", [$pendingStatus, $approveStatus])
             ->join('mission_application', 'user.user_id', '=', 'mission_application.user_id')
+            ->where('mission_application.user_id', '=', $user->user_id)
             ->where('mission_application.deleted_at', '=', null)
             ->get();
     }
