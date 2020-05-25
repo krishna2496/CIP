@@ -45,7 +45,7 @@ class Country extends Model
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
-    protected $cascadeDeletes = ['languages'];
+    protected $cascadeDeletes = ['languages','city','state'];
 
     /**
      * Get languages associated with the country.
