@@ -8,10 +8,11 @@ use App\Models\CountryLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Country extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -40,6 +41,11 @@ class Country extends Model
      * @var array
      */
     protected $fillable = ['country_id', 'ISO'];
+
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['languages'];
 
     /**
      * Get languages associated with the country.

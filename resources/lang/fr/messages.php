@@ -352,6 +352,8 @@ return [
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
         'ERROR_STATE_NOT_FOUND' => 'État non trouvé dans le système',
-        'ERROR_STATE_ENABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cet état car il s\'agit soit d\'un lien vers la mission, soit d\'un utilisateur',
-       ]
+        'ERROR_STATE_UNABLE_TO_DELETE' => 'Vous ne pouvez pas supprimer cet état car il s\'agit soit d\'un lien vers la mission, soit d\'un utilisateur',
+        'ERROR_THEME_UNABLE_TO_DELETE' => 'Le thème de la mission ne peut pas être supprimé car il est actuellement utilisé.',
+        'ERROR_SKILL_UNABLE_TO_DELETE' => 'La compétence ne peut pas être supprimée car elle est actuellement utilisée.',
+    ]
 ];

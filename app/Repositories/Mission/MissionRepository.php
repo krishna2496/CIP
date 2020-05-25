@@ -601,7 +601,6 @@ class MissionRepository implements MissionInterface
             $missionQuery->where("mission.country_id", $userFilterData['country_id']);
         }
 
-        
         if ($userFilterData['state_id'] && $userFilterData['state_id'] !== '') {
             $missionQuery->leftjoin('city', 'city.city_id', '=', 'mission.city_id');
             $missionQuery->leftjoin('state', 'state.state_id', '=', 'city.state_id');

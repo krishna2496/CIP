@@ -5,10 +5,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use \Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\NewsLanguage;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class News extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -47,6 +48,11 @@ class News extends Model
         'created_at',
         'status'
     ];
+    
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['newsLanguage','newsToCategory'];
     
     /**
      * Get news Language

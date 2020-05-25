@@ -292,8 +292,10 @@
 		"registration_period": "Registration period",
 		"search_mission": "Search mission",
 		"organisations": "Organizations",
-		"virtual_mission" : "Virtual mission",
-		"virtual_missions" : "Virtual missions"
+		"virtual_mission" : "Virtual",
+		"virtual_missions" : "Virtual missions",
+		"home": "Home",
+		"deleted_user" : "Deleted user"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",

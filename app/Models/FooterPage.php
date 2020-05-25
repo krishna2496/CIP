@@ -5,10 +5,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\FooterPagesLanguage;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class FooterPage extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
     
     /**
      * The table associated with the model.
@@ -38,6 +39,11 @@ class FooterPage extends Model
      */
     protected $visible = ['page_id', 'status', 'slug', 'sections', 'pageTranslations', 'pages'];
 
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['pageTranslations'];
+    
     /**
      * Return the page's translations
      */

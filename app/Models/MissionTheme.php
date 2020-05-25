@@ -82,4 +82,14 @@ class MissionTheme extends Model
     {
         return static::findOrFail($id)->delete();
     }
+
+    /**
+     * Get the mission which belongs to mission theme
+     *
+     * @return void
+     */
+    public function mission()
+    {
+        return $this->belongsTo(Mission::class, 'mission_theme_id', 'theme_id');
+    }
 }

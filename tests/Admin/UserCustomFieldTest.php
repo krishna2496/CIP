@@ -12,7 +12,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_create_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);       
+        $randomTypes = array_rand($typeArray,1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -20,25 +20,39 @@ class UserCustomFieldTest extends TestCase
             'is_mandatory' => 1,
             'translations' => [
                 [
-                    'lang' => "en",
+                    'lang' => 'en',
                     'name' => str_random(10),
-                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                    'values' => '['.rand(1, 5).','.rand(5, 10).']'
                 ]
-            ]
+            ],
+            'internal_note' => 'Sample note'
         ];
 
-        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post(
+          'metadata/users/custom_fields/',
+          $params,
+          ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
                 'field_id',
             ],
-        'message',
-        'status',
+            'message',
+            'status',
         ]);
-        App\Models\UserCustomField::where("name", $name)->orderBy("field_id", "DESC")->take(1)->delete();
+        $customField = App\Models\UserCustomField::where('name', $name)
+            ->orderBy('field_id', 'DESC')
+            ->first();
+        $this->assertSame($params['name'], $customField->name);
+        $this->assertSame($params['type'], $customField->type);
+        $this->assertSame($params['is_mandatory'], $customField->is_mandatory);
+        $this->assertSame($params['translations'], $customField->translations);
+        $this->assertSame($params['internal_note'], $customField->internal_note);
+
+        $customField->delete();
     }
-    
+
     /**
      * @test
      *
@@ -53,21 +67,26 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields?search='.$userCustomField->name, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
+        $this->get(
+            'metadata/users/custom_fields?search='.$userCustomField->name,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'status',
+            'data' => [
                 [
-                    "field_id",
-                    "name",
-                    "type",
-                    "translations",
-                    "is_mandatory",
+                    'field_id',
+                    'name',
+                    'type',
+                    'translations',
+                    'is_mandatory',
+                    'internal_note'
                 ]
             ],
-            "message"
+            'message'
         ]);
+
         $userCustomField->delete();
     }
 
@@ -87,7 +106,7 @@ class UserCustomFieldTest extends TestCase
             "message"
         ]);
     }
-    
+
     /**
      * @test
      *
@@ -98,7 +117,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_update_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);    
+        $randomTypes = array_rand($typeArray,1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -106,20 +125,25 @@ class UserCustomFieldTest extends TestCase
             'is_mandatory' => 1,
             'translations' => [
                 [
-                    'lang' => "en",
+                    'lang' => 'en',
                     'name' => str_random(10),
-                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                    'values' => '['.rand(1, 5).','.rand(5, 10).']'
                 ]
-            ]
+            ],
+            'internal_note' => 'Sample note'
         ];
 
         $connection = 'tenant';
         $userCustomField = factory(\App\Models\UserCustomField::class)->make();
         $userCustomField->setConnection($connection);
         $userCustomField->save();
-        $field_id = $userCustomField->field_id;
+        $fieldId = $userCustomField->field_id;
 
-        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            'metadata/users/custom_fields/'.$fieldId,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -127,10 +151,20 @@ class UserCustomFieldTest extends TestCase
             ],
             'message',
             'status',
-            ]);
-        $userCustomField->delete();
+        ]);
+
+        $updatedCustomField = App\Models\UserCustomField::where('field_id', $fieldId)
+            ->orderBy('field_id', 'DESC')
+            ->first();
+        $this->assertSame($params['name'], $updatedCustomField->name);
+        $this->assertSame($params['type'], $updatedCustomField->type);
+        $this->assertSame($params['is_mandatory'], $updatedCustomField->is_mandatory);
+        $this->assertSame($params['translations'], $updatedCustomField->translations);
+        $this->assertSame($params['internal_note'], $updatedCustomField->internal_note);
+
+        $updatedCustomField->delete();
     }
-    
+
     /**
      * @test
      *
@@ -176,7 +210,7 @@ class UserCustomFieldTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -203,7 +237,7 @@ class UserCustomFieldTest extends TestCase
                 ],
             ],
         ];
-        
+
         $this->patch(
             "metadata/users/custom_fields/".rand(1000000, 50000000),
             $params,
@@ -219,7 +253,7 @@ class UserCustomFieldTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -246,7 +280,7 @@ class UserCustomFieldTest extends TestCase
                     "message"
                 ]
             ]
-        ]); 
+        ]);
         $userCustomField->delete();
     }
 
@@ -260,7 +294,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_return_error_for_create_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);       
+        $randomTypes = array_rand($typeArray,1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -298,7 +332,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_return_error_for_update_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);    
+        $randomTypes = array_rand($typeArray,1);
         $name = str_random(20);
         $params = [
             'name' => $name,
