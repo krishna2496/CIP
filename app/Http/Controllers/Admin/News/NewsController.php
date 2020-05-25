@@ -103,7 +103,7 @@ class NewsController extends Controller
                 return $this->getTransformedNews(
                     $newsTransform,
                     true,
-                    $languageId,
+                    null,
                     $defaultTenantLanguageId,
                     $languageCode,
                     $defaultTenantLanguageCode
@@ -297,7 +297,7 @@ class NewsController extends Controller
             $newsTransform = $this->getTransformedNews(
                 $news,
                 false,
-                $languageId,
+                null,
                 $defaultTenantLanguageId,
                 $languageCode,
                 $defaultTenantLanguageCode

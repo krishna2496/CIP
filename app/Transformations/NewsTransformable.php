@@ -62,26 +62,30 @@ trait NewsTransformable
         if (isset($newsDetails['news_to_category'])) {
             $newsCategoryArray = array();
             foreach ($newsDetails['news_to_category'] as $key => $value) {
-                $newsCategoryArray[$key]['news_category_id'] = $value['news_category_id'];
-                foreach ($newsDetails['news_to_category'][$key]['news_category'] as $category) {
-                    $index = array_search($languageCode, array_column(
-                        $category['translations'],
-                        'lang'
-                    ));
-                    
-                    if ($index  !== false) {
-                        $newsCategory[] = $category['translations'][$index]['title'];
-                    } else {
-                        $index = array_search($defaultTenantLanguageCode, array_column(
+                if (is_null($languageId)) {
+                    $transformedNews['news_category_id'] = $newsDetails['news_to_category'][$key]['news_category_id'];
+                } else {
+                    $newsCategoryArray[$key]['news_category_id'] = $value['news_category_id'];
+                    foreach ($newsDetails['news_to_category'][$key]['news_category'] as $category) {
+                        $index = array_search($languageCode, array_column(
                             $category['translations'],
                             'lang'
                         ));
-                        $newsCategory[] = ($index !== false) ? $category['translations'][$index]['title'] : '';
+                    
+                        if ($index  !== false) {
+                            $newsCategory[] = $category['translations'][$index]['title'];
+                        } else {
+                            $index = array_search($defaultTenantLanguageCode, array_column(
+                                $category['translations'],
+                                'lang'
+                            ));
+                            $newsCategory[] = ($index !== false) ? $category['translations'][$index]['title'] : '';
+                        }
+                        unset($category['translations']);
                     }
-                    unset($category['translations']);
+                    $transformedNews['news_category'] = $newsCategory;
                 }
             }
-            $transformedNews['news_category'] = $newsCategory;
         }
         return $transformedNews;
     }
