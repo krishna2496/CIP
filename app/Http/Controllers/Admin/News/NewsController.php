@@ -93,10 +93,30 @@ class NewsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
+            $languageId = $this->languageHelper->getLanguageId($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+            $languageCode = $language->code;
+
             $news = $this->newsRepository->getNewsList($request);
             $newsTransform = $news
-            ->map(function (News $newsTransform) {
-                return $this->getTransformedNews($newsTransform, true);
+            ->map(function (News $newsTransform) use (
+                $languageId,
+                $defaultTenantLanguageId,
+                $languageCode,
+                $defaultTenantLanguageCode
+            ) {
+                return $this->getTransformedNews(
+                    $newsTransform,
+                    true,
+                    null,
+                    $defaultTenantLanguageId,
+                    $languageCode,
+                    $defaultTenantLanguageCode
+                );
             })->all();
 
             $requestString = $request->except(['page','perPage']);
@@ -271,10 +291,26 @@ class NewsController extends Controller
     public function show(Request $request, int $newsId): JsonResponse
     {
         try {
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
+            $languageId = $this->languageHelper->getLanguageId($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+            $languageCode = $language->code;
             // Get news details
             $news = $this->newsRepository->getNewsDetails($newsId);
             // Transform news details
-            $newsTransform = $this->getTransformedNews($news);
+            $newsTransform = $this->newsRepository
+            ->getNewsDetails($newsId, config('constants.news_status.PUBLISHED'));
+            // Transform news details
+            $newsTransform = $this->getTransformedNews(
+                $news,
+                false,
+                null,
+                $defaultTenantLanguageId,
+                $languageCode,
+                $defaultTenantLanguageCode
+            );
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');
