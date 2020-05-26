@@ -121,6 +121,12 @@ spec:
       - backend:
           serviceName: ci-frontend-service
           servicePort: 80          
+  - host: abndemo.ci.prod.optimy.net
+    http:
+      paths:
+      - backend:
+          serviceName: ci-frontend-service
+          servicePort: 80               
         
 status:
   loadBalancer: {}
