@@ -1191,7 +1191,9 @@ main {
 								width: 40%;
 							}
 						}
-
+						&.progress-bar-block {
+							width: 100% !important;
+						}
 						&.progress-block {
 							width: 56%;
 
