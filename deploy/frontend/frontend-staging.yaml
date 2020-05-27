@@ -132,6 +132,11 @@ spec:
       - backend:
           serviceName: cip-frontend-service
           servicePort: 80
-          
+  - host: monorepo.cip.staging.optimy.net
+    http:
+      paths:
+      - backend:
+          serviceName: cip-frontend-service
+          servicePort: 80
 status:
   loadBalancer: {}
