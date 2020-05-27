@@ -118,6 +118,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/whitelist-source-range: 109.88.0.88/32, 87.66.0.172/32,
       94.225.245.228/32, 52.57.232.26/32, 51.38.187.3/32, 212.161.79.81/29, 52.29.166.205/32, 112.199.89.162/32, 203.177.98.75/32, 210.213.230.26/32, 210.213.242.66/32
+    traefik.ingress.kubernetes.io/priority: "1"
   name: cip-api-admin-ingress
   namespace: staging
 spec:

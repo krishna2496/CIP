@@ -110,6 +110,8 @@ kind: Ingress
 metadata:
   name: cip-frontend-ingress
   namespace: staging
+  annotations:
+    traefik.ingress.kubernetes.io/priority: "2"
 spec:
   rules:
   - host: cip.staging.optimy.net
