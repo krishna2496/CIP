@@ -73,15 +73,12 @@ spec:
             cpu: 40m
             memory: 128Mi
         volumeMounts:
-        - mountPath: /optimy
-          name: source
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
           name: cip-frontend-apache-config
           subPath: 000-default.conf
 
       volumes:
-      - name: source
-        emptyDir: {}
+
       - configMap:
           defaultMode: 420
           name: cip-frontend-apache-config
@@ -122,6 +119,12 @@ spec:
           serviceName: cip-frontend-service
           servicePort: 80
   - host: '*.front.cip.staging.optimy.net'
+    http:
+      paths:
+      - backend:
+          serviceName: cip-frontend-service
+          servicePort: 80
+  - host: '*.cip.staging.optimy.net'
     http:
       paths:
       - backend:

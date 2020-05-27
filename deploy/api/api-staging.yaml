@@ -74,13 +74,11 @@ spec:
             memory: 128Mi
         volumeMounts:
         - mountPath: /optimy/api/.env
-          name: cip-config
+          name: cip-api-config
           subPath: .env
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
           name: cip-api-apache-config
           subPath: 000-default.conf
-        - mountPath: /optimy
-          name: source
         ports:
         - containerPort: 80
 
@@ -88,13 +86,11 @@ spec:
       - configMap:
           defaultMode: 420
           name: cip-api-config
-        name: cip-config
+        name: cip-api-config
       - configMap:
           defaultMode: 420
           name: cip-api-apache-config
         name: cip-api-apache-config
-      - name: source
-        emptyDir: {}
             
 
 ---
