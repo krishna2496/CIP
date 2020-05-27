@@ -1,4 +1,4 @@
-const host = "api.ci.prod.optimy.net";
+const host = "cip-api-service";
 const port = 80;
 module.exports = {
     chainWebpack: config => {
