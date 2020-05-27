@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\S3Helper;
+use App\Services\CustomStyling\CustomStyleFilenames;
 use ScssPhp\ScssPhp\Compiler;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Storage;
@@ -67,6 +68,11 @@ class CreateScssTemporaryFolderJob extends Job
         // Download the tenant's custom SCSS from S3 into the temporary folder
         $customScssFiles = Storage::disk('s3')->allFiles($tenantScssFolderName);
         foreach ($customScssFiles as $customScssFile) {
+            // Skip files that are not custom SCSS
+            if (!in_array($customScssFile, CustomStyleFilenames::EDITABLE_FILES)) {
+                continue;
+            }
+
             $customScssContent = Storage::disk('s3')->get($customScssFile);
             Storage::disk('local')->put($tenantScssFolderName . '/' . basename($customScssFile), $customScssContent);
         }
