@@ -350,9 +350,8 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-if="missionDetail.organisation_detail != '' && missionDetail.organisation_detail != null"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
-
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
@@ -775,10 +774,11 @@
       };
     },
     mounted() {
-      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-      tabItem.forEach(function (tabItemEvent) {
-        tabItemEvent.addEventListener("click", tabsHandle);
-      });
+      setTimeout(() => {
+         let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+          tabItem.forEach(function (tabItemEvent) {
+            tabItemEvent.addEventListener("click", tabsHandle);
+          });
 
       function tabsHandle(tabsEvent) {
 
@@ -796,6 +796,8 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
+      }, 100);
+     
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
