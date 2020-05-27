@@ -111,7 +111,7 @@ metadata:
   name: cip-frontend-ingress
   namespace: staging
   annotations:
-    traefik.ingress.kubernetes.io/priority: "2"
+    traefik.ingress.kubernetes.io/priority: "1"
 spec:
   rules:
   - host: cip.staging.optimy.net
@@ -132,6 +132,11 @@ spec:
       - backend:
           serviceName: cip-frontend-service
           servicePort: 80
-          
+  - host: monorepo.cip.staging.optimy.net
+    http:
+      paths:
+      - backend:
+          serviceName: cip-frontend-service
+          servicePort: 80
 status:
   loadBalancer: {}
