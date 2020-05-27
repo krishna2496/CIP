@@ -367,6 +367,9 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
 
+        // Remove password before logging it
+        $request->request->remove("password");
+
         // Store Activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USER_PROFILE'),

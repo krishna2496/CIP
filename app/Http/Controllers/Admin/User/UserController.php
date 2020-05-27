@@ -16,6 +16,7 @@ use Illuminate\Validation\Rule;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  User controller
 /*!
@@ -29,12 +30,12 @@ class UserController extends Controller
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\LanguageHelper
      */
@@ -49,7 +50,12 @@ class UserController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
+    /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
     /**
      * Create a new controller instance.
      *
@@ -58,6 +64,7 @@ class UserController extends Controller
      * @param App\Helpers\ResponseHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
      * @param Illuminate\Http\Request $request
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
@@ -65,15 +72,17 @@ class UserController extends Controller
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        Request $request
+        Request $request,
+        NotificationRepository $notificationRepository
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->notificationRepository = $notificationRepository;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -84,7 +93,7 @@ class UserController extends Controller
     {
         try {
             $users = $this->userRepository->userList($request);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
@@ -115,7 +124,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-       
+
         $timesheet = $this->userRepository->getTimesheetSummary($request, $userId);
 
         $data = $timesheet->first()->toArray();
@@ -143,7 +152,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-       
+
         $timesheets = $this->userRepository->getMissionTimesheet($request, $userId);
 
         $data = $timesheets->toArray();
@@ -165,21 +174,27 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            ["first_name" => "sometimes|required|max:16",
-            "last_name" => "sometimes|required|max:16",
-            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-            "password" => "required|min:8",
-            "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-            "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-            "language_id" => "sometimes|required|int",
-            "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
-            "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
-            "profile_text" => "sometimes|required",
-            "employee_id" => "max:16|
-            unique:user,employee_id,NULL,user_id,deleted_at,NULL",
-            "department" => "max:16",
-            "linked_in_url" => "url|valid_linkedin_url",
-            "why_i_volunteer" => "sometimes|required",
+            [
+                "first_name" => "sometimes|required|max:16",
+                "last_name" => "sometimes|required|max:16",
+                "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
+                "password" => "required|min:8",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+                "language_id" => "sometimes|required|int",
+                "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
+                "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
+                "profile_text" => "sometimes|required",
+                "employee_id" => "max:16|
+                unique:user,employee_id,NULL,user_id,deleted_at,NULL",
+                "department" => "max:16",
+                "linked_in_url" => "url|valid_linkedin_url",
+                "why_i_volunteer" => "sometimes|required",
+                "expiry" => "sometimes|date|nullable",
+                "status" => [
+                    "sometimes",
+                    Rule::in(config('constants.user_statuses'))
+                ]
             ]
         );
 
@@ -192,7 +207,7 @@ class UserController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Check language id is set and valid or not
         if (isset($request->language_id)) {
             if (!$this->languageHelper->validateLanguageId($request)) {
@@ -204,10 +219,19 @@ class UserController extends Controller
                 );
             }
         }
-        
-        
+
+        $requestData = $request->toArray();
+        $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+            ? $request->expiry : null;
+        $requestData['status'] = config('constants.user_statuses.ACTIVE');
+        if (isset($request->status)) {
+            $requestData['status'] = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
         // Create new user
-        $user = $this->userRepository->store($request->all());
+        $user = $this->userRepository->store($requestData);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -216,7 +240,10 @@ class UserController extends Controller
         $apiData = ['user_id' => $user->user_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
-        
+
+        // Remove password before logging it
+        $request->request->remove("password");
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USERS'),
@@ -242,14 +269,14 @@ class UserController extends Controller
     {
         try {
             $userDetail = $this->userRepository->find($id);
-                
+
             $apiData = $userDetail->toArray();
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
             $this->helpers->getUserDefaultProfileImage($tenantName);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -272,28 +299,35 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["first_name" => "sometimes|required|max:16",
-                "last_name" => "sometimes|required|max:16",
-                "email" => [
-                    "sometimes",
-                    "required",
-                    "email",
-                    Rule::unique('user')->ignore($id, 'user_id')],
-                "password" => "sometimes|required|min:8",
-                "employee_id" => [
-                    "sometimes",
-                    "required",
-                    "max:16",
-                    Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-                "department" => "sometimes|required|max:16",
-                "linked_in_url" => "url|valid_linkedin_url",
-                "why_i_volunteer" => "sometimes|required",
-                "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-                "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL"]
+                [
+                    "first_name" => "sometimes|required|max:16",
+                    "last_name" => "sometimes|required|max:16",
+                    "email" => [
+                        "sometimes",
+                        "required",
+                        "email",
+                        Rule::unique('user')->ignore($id, 'user_id')],
+                    "password" => "sometimes|required|min:8",
+                    "employee_id" => [
+                        "sometimes",
+                        "required",
+                        "max:16",
+                        Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
+                    "department" => "sometimes|required|max:16",
+                    "linked_in_url" => "url|valid_linkedin_url",
+                    "why_i_volunteer" => "sometimes|required",
+                    "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+                    "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                    "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
+                    "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL",
+                    "expiry" => "sometimes|date|nullable",
+                    "status" => [
+                        "sometimes",
+                        Rule::in(config('constants.user_statuses'))
+                    ]
+                ]
             );
-                        
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -303,7 +337,7 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Check language id
             if (isset($request->language_id)) {
                 if (!$this->languageHelper->validateLanguageId($request)) {
@@ -316,17 +350,29 @@ class UserController extends Controller
                 }
             }
 
+            $requestData = $request->toArray();
+            $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+                ? $request->expiry : null;
+            if (isset($request->status)) {
+                $requestData['status'] = $request->status
+                    ? config('constants.user_statuses.ACTIVE')
+                    : config('constants.user_statuses.INACTIVE');
+            }
+
             // Update user
-            $user = $this->userRepository->update($request->toArray(), $id);
+            $user = $this->userRepository->update($requestData, $id);
 
             // Check profile complete status
             $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
-            
+
             // Set response data
             $apiData = ['user_id' => $user->user_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
-            
+
+            // Remove password before logging it
+            $request->request->remove("password");
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.USERS'),
@@ -358,11 +404,11 @@ class UserController extends Controller
     {
         try {
             $user = $this->userRepository->delete($id);
-            
+            $this->notificationRepository->deleteAllNotifications($id);
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
-           
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.USERS'),
@@ -409,7 +455,7 @@ class UserController extends Controller
                 );
             }
             $linkedSkills = $this->userRepository->linkSkill($request->toArray(), $id);
-            
+
             foreach ($linkedSkills as $linkedSkill) {
                 // Make activity log
                 event(new UserActivityLogEvent(
@@ -479,7 +525,7 @@ class UserController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

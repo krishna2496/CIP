@@ -18,6 +18,7 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
 use App\Events\User\UserNotificationEvent;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  News controller
 /*!
@@ -52,6 +53,11 @@ class NewsController extends Controller
     private $userApiKey;
 
     /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\News\NewsRepository $newsRepository
@@ -59,6 +65,7 @@ class NewsController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
      * @param \Illuminate\Http\Request $request
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
@@ -66,13 +73,15 @@ class NewsController extends Controller
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        Request $request
+        Request $request,
+        NotificationRepository $notificationRepository
     ) {
         $this->newsRepository = $newsRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->userApiKey =$request->header('php-auth-user');
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -84,10 +93,30 @@ class NewsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
+            $languageId = $this->languageHelper->getLanguageId($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+            $languageCode = $language->code;
+
             $news = $this->newsRepository->getNewsList($request);
             $newsTransform = $news
-            ->map(function (News $newsTransform) {
-                return $this->getTransformedNews($newsTransform, true);
+            ->map(function (News $newsTransform) use (
+                $languageId,
+                $defaultTenantLanguageId,
+                $languageCode,
+                $defaultTenantLanguageCode
+            ) {
+                return $this->getTransformedNews(
+                    $newsTransform,
+                    true,
+                    null,
+                    $defaultTenantLanguageId,
+                    $languageCode,
+                    $defaultTenantLanguageCode
+                );
             })->all();
 
             $requestString = $request->except(['page','perPage']);
@@ -262,10 +291,26 @@ class NewsController extends Controller
     public function show(Request $request, int $newsId): JsonResponse
     {
         try {
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $defaultTenantLanguageCode = $defaultTenantLanguage->code;
+            $languageId = $this->languageHelper->getLanguageId($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+            $languageCode = $language->code;
             // Get news details
             $news = $this->newsRepository->getNewsDetails($newsId);
             // Transform news details
-            $newsTransform = $this->getTransformedNews($news);
+            $newsTransform = $this->newsRepository
+            ->getNewsDetails($newsId, config('constants.news_status.PUBLISHED'));
+            // Transform news details
+            $newsTransform = $this->getTransformedNews(
+                $news,
+                false,
+                null,
+                $defaultTenantLanguageId,
+                $languageCode,
+                $defaultTenantLanguageCode
+            );
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');
@@ -289,7 +334,8 @@ class NewsController extends Controller
     {
         try {
             $news = $this->newsRepository->delete($newsId);
-
+            $this->notificationRepository->deleteNewsNotifications($newsId);
+            
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_DELETED');
