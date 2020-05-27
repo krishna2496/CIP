@@ -19,15 +19,15 @@ RUN cd /optimy/api && composer install
 RUN cd /optimy/api && npm install
 
 # Build access to frontend, api-doc and admin-api-doc
-RUN mkdir /optimy/public
+#RUN mkdir /optimy/public
 
 # Frontend
-RUN mkdir /optimy/public/frontend
+#RUN mkdir /optimy/public/frontend
 COPY ./frontend /tmp
 RUN cd /tmp && mv vue-prod.config.js vue.config.js && npm install && npm rebuild node-sass && npm run build
 
-RUN cp -R /tmp/dist/* /optimy/public/frontend/
-RUN cp /tmp/htaccess /optimy/public/frontend/.htaccess
+RUN cp -R /tmp/dist/* /optimy/frontend/public
+RUN cp /tmp/htaccess /optimy/frontend/public/.htaccess
 
 RUN rm -rf /tmp/*
 
