@@ -39,8 +39,8 @@ class RecompileCustomStyles extends MultiTenantAware
     protected function handleTenant($tenantId, $tenantName): void
     {
         try {
-            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
-            $isCustomCssDisabled = $tenantOptions === null;
+            $tenantOption = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
+            $isCustomCssDisabled = $tenantOption === null || $tenantOption->option_value !== '1';
 
             // Skip this tenant if custom css disabled
             if ($isCustomCssDisabled) {
