@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use App\Helpers\LanguageHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\State;
+use App\Models\Mission;
 use App\Models\StateLanguage;
 
 class StateRepository implements StateInterface
@@ -174,7 +175,9 @@ class StateRepository implements StateInterface
      */
     public function hasMission(int $id): bool
     {
-        return $this->state->whereHas('mission')->whereStateId($id)->count() ? true : false;
+        return Mission::whereHas('city', function ($query) use ($id) {
+            $query->where('state_id', $id);
+        })->count() ? true : false;
     }
 
     /**
