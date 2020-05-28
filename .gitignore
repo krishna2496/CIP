@@ -19,6 +19,7 @@ admin-api/storage/*
 # API
 /vendor
 api/.idea
+api/vendor
 api/public/storage
 api/public/uploads
 api/.htaccess
