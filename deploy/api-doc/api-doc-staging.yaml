@@ -110,6 +110,8 @@ kind: Ingress
 metadata:
   annotations:
     traefik.ingress.kubernetes.io/priority: "1"
+    ingress.kubernetes.io/auth-type: "basic"
+    ingress.kubernetes.io/auth-secret: "cip-api-doc"
   name: cip-api-doc-ingress
   namespace: staging
 spec:
