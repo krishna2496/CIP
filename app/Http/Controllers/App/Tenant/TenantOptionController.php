@@ -138,8 +138,8 @@ class TenantOptionController extends Controller
 
         // Check presence of custom css option
         try {
-            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
-            $isCustomCssEnabled = $tenantOptions !== null;
+            $tenantOption = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
+            $isCustomCssEnabled = $tenantOption !== null && $tenantOption->option_value === '1';
         } catch (\Exception $e) {
             /*
              * If there was some trouble when retrieving this option
