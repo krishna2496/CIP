@@ -226,6 +226,15 @@ class LanguageController extends Controller
     public function destroy(int $languageId): JsonResponse
     {
         try {
+            if ($this->languageRepository->hasLanguage($languageId)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_LANGUAGE_UNABLE_TO_DELETE'),
+                    trans('messages.custom_error_message.ERROR_LANGUAGE_UNABLE_TO_DELETE')
+                );
+            }
+
             $status = $this->languageRepository->delete($languageId);
 
             // Set response data

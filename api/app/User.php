@@ -55,21 +55,66 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
-     'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
-      'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
-       'language_id', 'title', 'hours_goal', 'is_profile_complete', 'receive_email_notification'];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'avatar',
+        'timezone_id',
+        'availability_id',
+        'why_i_volunteer',
+        'employee_id',
+        'department',
+        'city_id',
+        'country_id',
+        'profile_text',
+        'linked_in_url',
+        'status',
+        'language_id',
+        'title',
+        'hours_goal',
+        'is_profile_complete',
+        'receive_email_notification',
+        'expiry'
+    ];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['user_id', 'first_name', 'last_name', 'email',
-     'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
-     'employee_id', 'department', 'city_id', 'country_id',
-     'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue', 'cookie_agreement_date','hours_goal', 'skills', 'is_profile_complete', 'receive_email_notification'];
+    protected $visible = [
+        'user_id',
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'avatar',
+        'timezone_id',
+        'availability_id',
+        'why_i_volunteer',
+        'employee_id',
+        'department',
+        'city_id',
+        'country_id',
+        'profile_text',
+        'linked_in_url',
+        'status',
+        'title',
+        'city',
+        'country',
+        'timezone',
+        'language_id',
+        'availability',
+        'userCustomFieldValue',
+        'cookie_agreement_date',
+        'hours_goal',
+        'skills',
+        'is_profile_complete',
+        'receive_email_notification',
+        'expiry'
+    ];
 
      /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;

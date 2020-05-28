@@ -101,6 +101,9 @@
                             </div>
                         </div>
                         <div class="content-block">
+                            <div class="mission-label" v-if="mission.is_virtual == 1">
+                              <span>{{languageData.label.virtual_mission}}</span>
+                            </div>
                             <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
                                     class="card-title mb-2">
                                 {{mission.title | substring(75)}}
@@ -123,20 +126,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template v-else>
-                                    <div class="detail-column">
-                                        <i class="icon-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
-                                                 alt="user">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <span class="title-text mb-1">{{mission.mission_application_count}}</span>
-                                            <span
-                                                    class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
-                                        </div>
-                                    </div>
-                                </template>
-
+                                
                                 <template v-if="mission.application_deadline != null ||
                                         checkMissionTypeTime(mission.mission_type)
                                         ">

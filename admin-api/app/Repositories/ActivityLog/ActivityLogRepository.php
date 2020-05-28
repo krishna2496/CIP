@@ -63,4 +63,56 @@ class ActivityLogRepository implements ActivityLogInterface
 
         return $activityLogQuery->orderBy('created_at', $order)->paginate($request->perPage);
     }
+
+    /**
+     * Delete activity log related tenant
+     *
+     * @param int $tenantId
+     * @return bool
+     */
+    public function deleteTenantActivityLog($tenantId): bool
+    {
+        return $this->activityLog
+        ->whereIn('type', [
+            config("constants.activity_log_types")["TENANT"]
+        ])->where([
+            'object_id' => $tenantId
+        ])->delete();
+    }
+
+    /**
+     * Delete api_user related to tenant
+     *
+     * @param int $tenantId
+     * @return bool
+     */
+    public function deleteTenantApiUserActivityLog($tenantId): bool
+    {
+        return $this->activityLog
+        ->rightJoin('api_user', 'api_user.api_user_id', '=', 'activity_log.object_id')
+        ->where('tenant_id', $tenantId)
+        ->whereIn('type', [
+            config("constants.activity_log_types")["API_USER"]
+        ])
+        ->delete();
+    }
+
+    /**
+     * Delete tenant_language related to tenant
+     *
+     * @param int $tenantId
+     * @return bool
+     */
+    public function deleteTenantLanguageActivityLog($tenantId): bool
+    {
+        return $this->activityLog
+        ->rightJoin('tenant_language', 'tenant_language.tenant_language_id', '=', 'activity_log.object_id')
+        ->where('tenant_id', $tenantId)
+        ->whereIn('type', [
+            config("constants.activity_log_types")["TENANT_LANGUAGE"]
+        ])
+        ->delete();
+    }
 }
+
+

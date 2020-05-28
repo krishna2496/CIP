@@ -8198,10 +8198,6 @@
           "type": "integer",
           "format": "int32"
         },
-        "language_id": {
-          "type": "integer",
-          "format": "int32"
-        },
         "availability_id": {
           "type": "integer",
           "format": "int32"
@@ -8213,9 +8209,6 @@
           "type": "string"
         },
         "department": {
-          "type": "string"
-        },
-        "manager_name": {
           "type": "string"
         },
         "city_id": {
@@ -8231,6 +8224,26 @@
         },
         "linked_in_url": {
           "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "description": "1 => Active, 0 => Inactive",
+          "enum":[
+            "1",
+            "0"
+          ]
+        },
+        "language_id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "expiry": {
+          "type":  "string",
+          "format": "date-time",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
         }
       }
     },
@@ -8331,9 +8344,6 @@
             "textarea"
           ]
         },
-        "is_mandatory": {
-          "type": "boolean"
-        },
         "translations": {
           "type": "array",
           "items": {
@@ -8351,6 +8361,12 @@
               }
             }
           }
+        },
+        "is_mandatory": {
+          "type": "boolean"
+        },
+        "internal_note": {
+          "type": "string"
         }
       }
     },

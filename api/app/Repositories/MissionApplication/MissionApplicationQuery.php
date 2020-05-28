@@ -149,7 +149,7 @@ class MissionApplicationQuery implements QueryableInterface
                  * the condition on the where can *not* be exclusive as we might lose valid results from
                  * previous filtering. We then need to use the OR condition for searchable fields.
                  */
-                $searchCallback = function ($query) use ($search, $languageId) {
+                $searchCallback = function ($query) use ($search, $filters, $languageId) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
                             ->where('first_name', 'like', "%${search}%")
@@ -176,6 +176,11 @@ class MissionApplicationQuery implements QueryableInterface
                                     ['name', 'like', "%${search}%"],
                                     ['language_id', '=', $languageId]
                                 ]);
+                        })
+                        ->orwhereHas('mission.missionTheme', function ($query) use ($search, $filters) {
+                            $codeLanguage = $filters['language'];
+                            $query->where('translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$codeLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$search.'[^"]*";}')
+                                ->orWhere('theme_name', 'like', "%${search}%");
                         });
                 };
 
