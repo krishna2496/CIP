@@ -113,11 +113,29 @@ class UserRepository implements UserInterface
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
 
-        $userQuery = $this->user->selectRaw("user_id, first_name, last_name, email, password,
-        case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar,
-        timezone_id, availability_id, why_i_volunteer, employee_id, department,
-         city_id, country_id, profile_text, linked_in_url, status, language_id, title")
-        ->with('city', 'country', 'timezone');
+        $userQuery = $this->user->selectRaw("
+            user_id,
+            first_name,
+            last_name,
+            email,
+            password,
+            case when(avatar = '' || avatar is null)
+                then '$defaultAvatarImage' else avatar
+                end as avatar,
+            timezone_id,
+            availability_id,
+            why_i_volunteer,
+            employee_id,
+            department,
+            city_id,
+            country_id,
+            profile_text,
+            linked_in_url,
+            status,
+            language_id,
+            title,
+            expiry
+        ")->with('city', 'country', 'timezone');
 
         if ($request->has('search')) {
             $userQuery->where(function ($query) use ($request) {

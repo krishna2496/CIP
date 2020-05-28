@@ -672,6 +672,10 @@ class MissionRepository implements MissionInterface
         ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
             $missionQuery->inRandomOrder();
         }
+
+        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
+            $missionQuery->where("mission.is_virtual", "1");
+        }
         
         $page = $request->page ?? 1;
         $perPage = $request->perPage;
@@ -770,6 +774,9 @@ class MissionRepository implements MissionInterface
                             });
                         });
                     }
+                    if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
+                        $missionQuery->where("mission.is_virtual", "1");
+                    }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
                             'organisation_name',
@@ -816,6 +823,9 @@ class MissionRepository implements MissionInterface
                                 $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
+                        $missionQuery->where("mission.is_virtual", "1");
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
@@ -878,6 +888,9 @@ class MissionRepository implements MissionInterface
                             'like',
                             '%' . $request->input('explore_mission_params') . '%'
                         );
+                    }
+                    if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
+                        $missionQuery->where("mission.is_virtual", "1");
                     }
                 }
                 $missionQuery->with(['missionTheme'])
@@ -957,6 +970,10 @@ class MissionRepository implements MissionInterface
                                 '%' . $request->input('explore_mission_params') . '%'
                             );
                         }
+
+                        if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
+                            $query->where("mission.is_virtual", "1");
+                        }
                     }
                 });
 
@@ -999,6 +1016,9 @@ class MissionRepository implements MissionInterface
                                 $countryQuery->where("mission.country_id", $request->input('explore_mission_params'));
                             });
                         });
+                    }
+                    if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
+                        $missionQuery->where("mission.is_virtual", "1");
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(

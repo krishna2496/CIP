@@ -51,7 +51,7 @@ class TimeMission extends Model
         $this->attributes['application_deadline'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-    
+
     /**
      * Get application deadline attribute from the model.
      *
@@ -61,10 +61,10 @@ class TimeMission extends Model
     {
         if (isset($this->attributes['application_deadline']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_deadline'])
-            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
     }
-    
+
     /**
      * Set application start date
      *
@@ -76,7 +76,7 @@ class TimeMission extends Model
         $this->attributes['application_start_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-    
+
     /**
      * Get application start date attribute from the model.
      *
@@ -89,7 +89,7 @@ class TimeMission extends Model
             ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
-    
+
     /**
      * Set application end date
      *
@@ -101,7 +101,7 @@ class TimeMission extends Model
         $this->attributes['application_end_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-    
+
     /**
      * Get application end date attribute from the model.
      *
@@ -114,7 +114,7 @@ class TimeMission extends Model
             ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
-    
+
     /**
      * Set application start time attribute on the model.
      *
@@ -126,7 +126,7 @@ class TimeMission extends Model
         $this->attributes['application_start_time'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-    
+
     /**
      * Get application start time attribute from the model.
      *
@@ -151,7 +151,7 @@ class TimeMission extends Model
         $this->attributes['application_end_time'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-    
+
     /**
      * Get application end time attribute from the model.
      *
@@ -175,7 +175,7 @@ class TimeMission extends Model
     {
         return $this->where('mission_id', $missionId)->value('application_deadline');
     }
-    
+
     /**
     * Get time mission details for mission application.
     *

@@ -140,11 +140,14 @@ class S3Helper
             pathinfo($file->getClientOriginalName())['filename'] . '_' . time()
         );
         $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-        $documentName = $fileName . '.' . $fileExtension;
-        $documentPath = '/users/' . $userId . '/'.$folderName.'/' . $documentName;
+        $documentPath = 'users/'
+            . $userId
+            . '/'
+            . $folderName
+            . '/'
+            . $fileName . '.' . $fileExtension;
         $pathInS3 = S3Helper::makeTenantS3BaseUrl($tenantName) . $documentPath;
-
-        $disk->put($documentPath, @file_get_contents($file, false, $context));
+        $disk->put( $tenantName . '/' . $documentPath, @file_get_contents($file, false, $context));
         return $pathInS3;
     }
 
