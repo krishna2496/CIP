@@ -33,7 +33,7 @@ api/storage/app/*
 !api/storage/defaultLanguage
 !api/storage/app/default_theme
 !api/storage/app/samlCertificate
-
+api/vendor
 # API-DOC
 
 # FRONTEND
