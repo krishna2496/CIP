@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\S3Helper;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 final class FrontendTranslationService
@@ -29,6 +30,12 @@ final class FrontendTranslationService
      */
     public function getTranslationsForLanguage(string $tenantName, string $isoCode)
     {
+        $cachedTranslationsKey = "${tenantName}/languages/${isoCode}.json";
+        $cachedTranslations = Cache::get($cachedTranslationsKey);
+        if ($cachedTranslations !== null) {
+            return $cachedTranslations;
+        }
+
         // Retrieve the default translations
         $defaultTranslations = Storage::disk('resources')->get("frontend/translations/${isoCode}.json");
         $translations = collect(json_decode($defaultTranslations, true));
@@ -41,6 +48,7 @@ final class FrontendTranslationService
         $cdnStorage = Storage::disk('s3');
         $customTranslationsPath = $this->s3Helper->getCustomLanguageFilePath($tenantName, $isoCode);
         if (!$cdnStorage->exists($customTranslationsPath)) {
+            Cache::forever($cachedTranslationsKey, $translations);
             return $translations;
         }
 
@@ -57,6 +65,9 @@ final class FrontendTranslationService
 
             $mergedTranslations->put($translationsGroupName, $mergedTranslationsGroup);
         });
+
+        // Write these translations to disk cache
+        Cache::forever($cachedTranslationsKey, $mergedTranslations);
 
         return $mergedTranslations;
     }
