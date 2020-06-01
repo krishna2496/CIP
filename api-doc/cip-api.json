@@ -8244,6 +8244,9 @@
           "type":  "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+        },
+        "position": {
+          "type": "string"
         }
       }
     },
