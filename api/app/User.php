@@ -66,6 +66,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'why_i_volunteer',
         'employee_id',
         'department',
+        'position',
         'city_id',
         'country_id',
         'profile_text',
@@ -96,6 +97,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'why_i_volunteer',
         'employee_id',
         'department',
+        'position',
         'city_id',
         'country_id',
         'profile_text',
@@ -282,7 +284,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Notification::class, 'user_id', 'user_id');
     }
-   
+
     /**
      * Defined has many relation for the favorite_mission table.
      *
