@@ -86,6 +86,7 @@ class LanguageController extends Controller
      * Fetch language file url.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $isoCode
      * @return \Illuminate\Http\JsonResponse
      */
     public function fetchTranslations(Request $request, $isoCode): JsonResponse
@@ -137,15 +138,19 @@ class LanguageController extends Controller
      * It will update language file on S3
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $isoCode
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function uploadTranslations(Request $request): JsonResponse
+    public function uploadTranslations(Request $request, $isoCode): JsonResponse
     {
         // Server side validations
         $validator = Validator::make(
-            $request->toArray(),
+            $request->toArray() + [
+                'isoCode' => $isoCode,
+            ],
             [
-                "iso_code" => "required|max:2|min:2",
+                "isoCode" => "required|max:2|min:2",
                 "translations" => "required"
             ]
         );
@@ -160,7 +165,6 @@ class LanguageController extends Controller
             );
         }
 
-        $isoCode = $request->get('iso_code');
         $translations = $request->get('translations');
 
         // Validate json data
