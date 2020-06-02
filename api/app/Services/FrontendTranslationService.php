@@ -25,12 +25,22 @@ final class FrontendTranslationService
     /**
      * @param string $tenantName
      * @param string $isoCode
+     * @return string
+     */
+    private function getCacheKey($tenantName, $isoCode)
+    {
+        return "${tenantName}/languages/${isoCode}";
+    }
+
+    /**
+     * @param string $tenantName
+     * @param string $isoCode
      * @return Collection
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getTranslationsForLanguage(string $tenantName, string $isoCode)
     {
-        $cachedTranslationsKey = "${tenantName}/languages/${isoCode}.json";
+        $cachedTranslationsKey = $this->getCacheKey($tenantName, $isoCode);
         $cachedTranslations = Cache::get($cachedTranslationsKey);
         if ($cachedTranslations !== null) {
             return $cachedTranslations;
@@ -70,5 +80,31 @@ final class FrontendTranslationService
         Cache::forever($cachedTranslationsKey, $mergedTranslations);
 
         return $mergedTranslations;
+    }
+
+    /**
+     * @param string $tenantName
+     * @param string $isoCode
+     */
+    public function clearCache($tenantName, $isoCode)
+    {
+        Cache::forget($this->getCacheKey($tenantName, $isoCode));
+    }
+
+    /**
+     * Store JSON containing tenant's custom translations
+     * for a specific language
+     * in a file on S3
+     *
+     * @param string $tenantName
+     * @param string $isoCode
+     * @param string $translations
+     */
+    public function storeCustomTranslations($tenantName, $isoCode, $translations)
+    {
+        $cdnStorage = Storage::disk('s3');
+        $documentName = "${isoCode}.json";
+        $documentPath =  config('constants.AWS_S3_LANGUAGES_FOLDER_NAME') . '/' . $documentName;
+        $cdnStorage->put($tenantName . '/' . $documentPath, $translations);
     }
 }

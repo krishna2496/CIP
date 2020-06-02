@@ -794,7 +794,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
             /* Upload language file */
             $router->post('/language-file', ['as' => 'languagefile.upload',
-            'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
+            'uses' => 'Admin\Language\LanguageController@uploadTranslations']);
         }
     );
 
