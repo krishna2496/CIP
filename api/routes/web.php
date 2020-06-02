@@ -788,8 +788,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             /* Get language file */
             $router->get(
-                '/language-file',
-                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchLanguageFile']
+                '/language-file/{isoCode}',
+                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchTranslations']
             );
 
             /* Upload language file */

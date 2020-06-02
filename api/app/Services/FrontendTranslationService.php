@@ -47,8 +47,7 @@ final class FrontendTranslationService
         }
 
         // Retrieve the default translations
-        $defaultTranslations = Storage::disk('resources')->get("frontend/translations/${isoCode}.json");
-        $translations = collect(json_decode($defaultTranslations, true));
+        $translations = $this->getDefaultTranslationsForLanguage($tenantName, $isoCode);
 
         /*
          * Check for any custom translation.
@@ -80,6 +79,20 @@ final class FrontendTranslationService
         Cache::forever($cachedTranslationsKey, $mergedTranslations);
 
         return $mergedTranslations;
+    }
+
+    /**
+     * Return the frontend translations without
+     * the customisations introduced
+     * by the client
+     *
+     * @param $tenantName
+     * @param $isoCode
+     */
+    public function getDefaultTranslationsForLanguage($tenantName, $isoCode)
+    {
+        $defaultTranslations = Storage::disk('resources')->get("frontend/translations/${isoCode}.json");
+        return collect(json_decode($defaultTranslations, true));
     }
 
     /**

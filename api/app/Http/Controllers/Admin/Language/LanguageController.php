@@ -88,13 +88,15 @@ class LanguageController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function fetchLanguageFile(Request $request): JsonResponse
+    public function fetchTranslations(Request $request, $isoCode): JsonResponse
     {
         // Server side validations
         $validator = Validator::make(
-            $request->toArray(),
             [
-                "code" => "required|max:2|min:2"
+                'isoCode' => $isoCode,
+            ],
+            [
+                'isoCode' => 'required|max:2|min:2',
             ]
         );
 
@@ -109,7 +111,7 @@ class LanguageController extends Controller
         }
 
         // Check for valid language code
-        if (!$this->languageHelper->getTenantLanguageByCode($request, $request->code)) {
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $isoCode)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -121,11 +123,13 @@ class LanguageController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        // Fetch language file url
-        $languageFileUrl = $this->s3helper->getLanguageFile($tenantName, $request->code);
-        $apiData = ["file_path" => $languageFileUrl];
+        // Fetch default translations and return them
+        $apiData = $this->frontendTranslationService
+            ->getDefaultTranslationsForLanguage($tenantName, $isoCode)
+            ->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_FILE_FOUND');
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
