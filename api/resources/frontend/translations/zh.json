@@ -292,6 +292,10 @@
 		"registration_period": "登记期间",
 		"search_mission": "搜索任务",
 		"organisations": "组织机构"
+		"deleted_user" : "已删除的用户",
+		"virtual_mission" : "虚拟",
+		"virtual_missions" : "虚拟志愿服务",
+		"home" : "家"
 	},
 	"placeholder": {
 		"email_address": "输入电子邮件地址",

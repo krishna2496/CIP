@@ -292,6 +292,10 @@
 		"registration_period": "Periodo di registrazione",
 		"search_mission": "Cerca missione",
 		"organisations": "Organizzazioni"
+		"deleted_user" : "Utente cancellato",
+		"virtual_mission" : "Virtuale",
+		"virtual_missions" : "Volontariato virtuale",
+		"home" : "Pulsante Home"
 	},
 	"placeholder": {
 		"email_address": "Inserisci un indirizzo di posta elettronica",

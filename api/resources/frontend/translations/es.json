@@ -292,6 +292,10 @@
 		"registration_period": "Periodo de registro",
 		"search_mission": "Misión de búsqueda",
 		"organisations": "Organizaciones"
+		"deleted_user" : "Usuario eliminado",
+		"virtual_mission" : "Virtual",
+		"virtual_missions" : "Voluntariado virtual",
+		"home" : "Hogar"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",

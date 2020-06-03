@@ -292,6 +292,10 @@
 		"registration_period": "Registratie periode",
 		"search_mission": "Zoek missie",
 		"organisations": "Organisaties"
+		"deleted_user" : "Verwijderde gebruike",
+		"virtual_mission" : "Virtueel",
+		"virtual_missions" : "Virtueel vrijwilligerswerk",
+		"home" : "Thuis"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",

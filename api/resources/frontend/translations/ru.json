@@ -292,6 +292,10 @@
 		"registration_period": "Период регистрации",
 		"search_mission": "Поисковая миссия",
 		"organisations": "организации"
+		"deleted_user" : "Удаленный пользователь",
+		"virtual_mission" : "виртуальный",
+		"virtual_missions" : "Виртуальное волонтерство",
+		"home" : "дом"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",
