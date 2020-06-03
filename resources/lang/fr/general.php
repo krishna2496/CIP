@@ -62,14 +62,14 @@ return [
     ],
 
     'notification' => [
-        'RECOMMENDS_THIS_MISSION' => "Recommande cette mission",
+        'RECOMMENDS_THIS_MISSION' => "Recommender cette mission",
         'VOLUNTEERING_HOURS_SUBMITTED_THE' => "Heures de volontariat envoyées le",
         'VOLUNTEERING_GOALS_SUBMITTED_THE' => "Objectifs de volontariat envoyés le",
         'COMMENT_OF' => "Commentaire de",
         'STORY' => "Récit",
         'NEW_MISSION' => "Nouvelle mission",
         'NEW_MESSAGE' => "Nouveau message",
-        'RECOMMENDS_THIS_STORY' => "Recommande cette récit",
+        'RECOMMENDS_THIS_STORY' => "Recommender ce récit",
         'NEW_NEWS' => "Nouveau nouveautés",
         'VOLUNTEERING_REQUEST' => "La demande de volontariat a été",
         'FOR_THIS_MISSION' => "pour cette mission:",
