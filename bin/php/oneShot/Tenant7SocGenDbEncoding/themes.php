@@ -1,5 +1,6 @@
 <?php
 
+
 require_once ('../../../../bootstrap/app.php');
 
 $db = app()->make('db');

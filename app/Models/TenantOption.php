@@ -56,6 +56,6 @@ class TenantOption extends Model
      */
     public function getOptionValueAttribute($value)
     {
-        return (@json_decode($value) === false) ? $value : json_decode($value, true);
+        return (@unserialize($value) === false) ? $value : unserialize($value);
     }
 }

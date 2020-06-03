@@ -53,7 +53,7 @@ class PolicyPagesLanguage extends Model
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return null|array
+     * @return array
      */
     public function getDescriptionAttribute(string $value): array
     {
@@ -64,7 +64,7 @@ class PolicyPagesLanguage extends Model
      * Get an attribute from the model.
      *
      * @param  string $value
-     * @return null|array
+     * @return array
      */
     public function getSectionsAttribute(string $value): array
     {

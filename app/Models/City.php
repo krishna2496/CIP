@@ -7,10 +7,11 @@ use App\Models\CityLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class City extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -40,6 +41,11 @@ class City extends Model
     */
     protected $fillable = ['city_id', 'country_id','state_id'];
 
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['languages'];
+    
     /**
      * Get the city translation associated with the city.
      *

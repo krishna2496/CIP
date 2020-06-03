@@ -22,10 +22,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class Mission extends Model
 {
-    use SoftDeletes, Notifiable;
+    use SoftDeletes, Notifiable, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -79,6 +80,14 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name'];
+
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
+        'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
+        'goalMission','timeMission','comment','timesheet'
+    ];
 
     /**
      * Get the document record associated with the mission.
@@ -139,7 +148,6 @@ class Mission extends Model
     public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
-        //  ->select('country_id', 'name', 'ISO');
     }
 
     /**
@@ -330,7 +338,7 @@ class Mission extends Model
     }
 
     /**
-     * Set organisation detail in serialize form
+     * Set organisation detail in json_encode form
      *
      * @param array|null $value
      * @return void
@@ -351,7 +359,7 @@ class Mission extends Model
         if (!is_null($value) && ($value !== '')) {
             $data = @json_decode($value);
 
-            if ($data !== false) {
+            if ($data !== null) {
                 return json_decode($value, true);
             }
         }

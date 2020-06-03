@@ -32,7 +32,7 @@ class ActivityLog extends Model
     'user_id', 'user_type', 'user_value'];
 
     /**
-     * Set value in serialize form
+     * Set value in json_encode form
      *
      * @param array $value
      * @return void
@@ -45,14 +45,14 @@ class ActivityLog extends Model
     }
 
     /**
-     * Set value in serialize form
+     * Set value in array form
      *
      * @param string $value
      * @return array
      */
     public function getObjectValueAttribute(string $value = null): array
     {
-        $data = @json_decode($value);
-        return ($data !== false && !is_null($value)) ? json_decode($value, true): array();
+        $data = @json_decode($value, true);
+        return ($data !== null) ? json_decode($value, true): array();
     }
 }

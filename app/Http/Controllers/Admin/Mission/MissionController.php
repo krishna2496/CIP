@@ -19,6 +19,7 @@ use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  Mission controller
 /*!
@@ -58,6 +59,11 @@ class MissionController extends Controller
     private $tenantActivatedSettingRepository;
 
     /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -66,6 +72,7 @@ class MissionController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
@@ -74,7 +81,8 @@ class MissionController extends Controller
         Request $request,
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        NotificationRepository $notificationRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -82,6 +90,7 @@ class MissionController extends Controller
         $this->languageHelper = $languageHelper;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -432,7 +441,8 @@ class MissionController extends Controller
     {
         try {
             $mission = $this->missionRepository->delete($id);
-
+            // delete notification related to mission
+            $this->notificationRepository->deleteMissionNotifications($id);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
 

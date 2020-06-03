@@ -162,4 +162,15 @@ class MissionThemeRepository implements MissionThemeInterface
         }
         return $hoursPerThemes;
     }
+
+    /**
+     * It will check is MissionTheme belongs to any mission or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasMission(int $id): bool
+    {
+        return $this->missionTheme->whereHas('mission')->whereMissionThemeId($id)->count() ? true : false;
+    }
 }

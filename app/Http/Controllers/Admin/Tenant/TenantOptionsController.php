@@ -314,6 +314,7 @@ class TenantOptionsController extends Controller
         }
 
         $data = $request->toArray();
+
         $data['option_value'] = is_array($request->option_value) ?
             json_encode($request->option_value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) :
             $request->option_value;

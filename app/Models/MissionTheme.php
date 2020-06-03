@@ -58,7 +58,7 @@ class MissionTheme extends Model
     public function getTranslationsAttribute(string $value): array
     {
         $data = @json_decode($value);
-        return ($data !== false) ? json_decode($value, true): array();
+        return ($data !== null) ? json_decode($value): array();
     }
 
     /**
@@ -81,5 +81,15 @@ class MissionTheme extends Model
     public function deleteMissionTheme(int $id): bool
     {
         return static::findOrFail($id)->delete();
+    }
+
+    /**
+     * Get the mission which belongs to mission theme
+     *
+     * @return void
+     */
+    public function mission()
+    {
+        return $this->belongsTo(Mission::class, 'mission_theme_id', 'theme_id');
     }
 }

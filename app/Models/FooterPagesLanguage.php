@@ -57,7 +57,7 @@ class FooterPagesLanguage extends Model
      */
     public function getDescriptionAttribute(string $value): array
     {
-        return json_decode($value, true);
+        return json_decode($value,  true);
     }
 
     /**
@@ -68,7 +68,7 @@ class FooterPagesLanguage extends Model
      */
     public function getSectionsAttribute(string $value): array
     {
-        return json_decode($value, true);
+        return json_decode($value,  true);
     }
 
     /**

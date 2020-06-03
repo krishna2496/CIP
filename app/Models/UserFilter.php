@@ -51,7 +51,7 @@ class UserFilter extends Model
      * Get an attribute from the model.
      *
      * @param  string  $value
-     * @return null|array
+     * @return array
      */
     public function getFiltersAttribute($value): array
     {
