@@ -48,4 +48,13 @@ class Language extends Model
         return $this->hasMany(TenantLanguage::class, 'language_id', 'language_id');
     }
 
+    /**
+     * Get the tenant language which belongs to Language
+     *
+     * @return void
+     */
+    public function language()
+    {
+        return $this->belongsTo(TenantLanguage::class, 'language_id', 'language_id');
+    }
 }
