@@ -796,7 +796,7 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
-      }, 100);
+      }, 1000);
      
 
       if (!window.location.origin) {
