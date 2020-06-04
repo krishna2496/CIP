@@ -150,7 +150,37 @@ class UserRepository implements UserInterface
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
-            $userQuery->orderBy('user_id', $orderDirection);
+            $sortBy = 'user_id';
+
+            switch ($request->get('field')) {
+                case 'ciUser.fullName':
+                case 'ciUser.firstName':
+                    $sortBy = 'first_name';
+                    break;
+                case 'ciUser.email':
+                    $sortBy = 'email';
+                    break;
+                case 'ciUser.volunteerStatus':
+                    $sortBy = 'status';
+                    break;
+                case 'ciUser.country':
+                    $sortBy = 'country_id';
+                    break;
+                case 'ciUser.language':
+                    $sortBy = 'language_id';
+                    break;
+                case 'ciUser.lastName':
+                    $sortBy = 'last_name';
+                    break;
+                case 'ciUser.title':
+                    $sortBy = 'title';
+                    break;
+                case 'ciUser.department':
+                    $sortBy = 'department';
+                    break;
+
+            }
+            $userQuery->orderBy($sortBy, $orderDirection);
         }
 
         return $userQuery->paginate($request->perPage);
