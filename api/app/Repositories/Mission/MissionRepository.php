@@ -1095,9 +1095,9 @@ class MissionRepository implements MissionInterface
         ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
 
         $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
-        : (($relatedCityCount === 0) && ($relatedCountryCount > 0))
+        : ((($relatedCityCount === 0) && ($relatedCountryCount > 0))
         ? $missionQuery->where('country_id', $mission->country_id)
-        : $missionQuery->where('theme_id', $mission->theme_id);
+        : $missionQuery->where('theme_id', $mission->theme_id));
 
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
         ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission'

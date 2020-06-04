@@ -16,6 +16,7 @@ use App\Models\MissionDocument;
 use App\Models\MissionLanguage;
 use App\Models\FavouriteMission;
 use App\Models\MissionApplication;
+use App\Models\missionTab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -391,4 +392,13 @@ class Mission extends Model
         }
     }
 
+    /**
+     * Get mission-tab associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionTab(): HasMany
+    {
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
+    }
 }
