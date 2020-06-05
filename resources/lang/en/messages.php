@@ -218,6 +218,8 @@ return [
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
         'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
+        'ERROR_USER_EXPIRED' => 'Your account has expired. Please contact your administrator.',
+        'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
 
 
@@ -352,5 +354,9 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_STATE_UNABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
+        'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
+        'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
        ]
 ];

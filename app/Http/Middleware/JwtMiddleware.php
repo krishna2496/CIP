@@ -2,6 +2,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use DateTime;
 use Firebase\JWT\JWT;
 use App\User;
 use App\Helpers\ResponseHelper;
@@ -101,15 +102,35 @@ class JwtMiddleware
         }
         $user = User::find($credentials->sub);
         if ($user) {
+            if ($user->status !== config('constants.user_statuses.ACTIVE')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_BLOCKED'),
+                    trans('messages.custom_error_message.ERROR_USER_BLOCKED')
+                );
+            }
+
+            if ($user->expiry) {
+                $userExpirationDate = new DateTime($user->expiry);
+                if ($userExpirationDate < new DateTime()) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_FORBIDDEN,
+                        Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                        config('constants.error_codes.ERROR_USER_EXPIRED'),
+                        trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                    );
+                }
+            }
+
             if (isset($credentials->sso) && $credentials->sso) {
                 $newToken = $this->helpers->getJwtToken(
                     $user->user_id,
-                    $this->helpers->getSubDomainFromRequest($request),
+                    $this->helpers->getSubDomainFromRequest($request)
                 );
-                header('Token: '.$newToken);
+                header('Token: ' . $newToken);
             }
 
-            $timezone = '';
             $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
             if ($timezone) {
                 $timezone = $timezone->timezone;

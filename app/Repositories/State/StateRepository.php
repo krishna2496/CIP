@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use App\Helpers\LanguageHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\State;
+use App\Models\Mission;
 use App\Models\StateLanguage;
 
 class StateRepository implements StateInterface
@@ -174,7 +175,9 @@ class StateRepository implements StateInterface
      */
     public function hasMission(int $id): bool
     {
-        return $this->state->whereHas('mission')->whereStateId($id)->count() ? true : false;
+        return Mission::whereHas('city', function ($query) use ($id) {
+            $query->where('state_id', $id);
+        })->count() ? true : false;
     }
 
     /**
@@ -198,7 +201,15 @@ class StateRepository implements StateInterface
     public function getStateList(Request $request, int $countryId) : LengthAwarePaginator
     {
         $this->country->findOrFail($countryId);
-        $states = $this->state->with('languages')->where('country_id', $countryId)->paginate($request->perPage);
+        $states = $this->state->with('languages')->where('country_id', $countryId);
+
+        if ($request->has('search') && $request->input('search') != '') {
+            $states->wherehas('languages', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+
+        $states = $states->paginate($request->perPage);
 
         $languages = $this->languageHelper->getLanguages();
         foreach ($states as $key => $value) {

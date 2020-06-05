@@ -123,6 +123,8 @@ class LanguageHelper
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
+        ->where('tenant_language.deleted_at', null)
+        ->where('language.deleted_at', null)
         ->pluck('language.name', 'language.language_id');
 
         // Connect tenant database
@@ -261,5 +263,20 @@ class LanguageHelper
         $tenantLanguageCodes = $this->getTenantLanguageCodeList($request);
         return in_array($languageCode, $tenantLanguageCodes->toArray());
     }
-    
+
+    public function isValidAdminLanguageCode(string $languageCode): bool
+    {
+        // Connect master database to get language details
+        $this->helpers->switchDatabaseConnection('mysql');
+        $language = $this->db->table('language')
+            ->where('code', $languageCode)
+            ->whereNull('deleted_at')
+            ->first();
+
+        // Connect tenant database
+        $this->helpers->switchDatabaseConnection('tenant');
+
+        return $language !== false;
+    }
+
  }
