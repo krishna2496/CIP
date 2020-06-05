@@ -6,6 +6,7 @@ use Validator;
 use DateTime;
 use DB;
 use App\User;
+use App\Models\TenantOption;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -115,6 +116,22 @@ class AuthController extends Controller
      */
     public function authenticate(User $user, Request $request): JsonResponse
     {
+        $samlSettings = $this->tenantOptionRepository->getOptionValue(
+          TenantOption::SAML_SETTINGS
+        );
+
+        if ($samlSettings
+            && count($samlSettings)
+            && $samlSettings[0]['option_value']['saml_access_only']
+        ) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_UNAUTHORIZED_LOGIN_METHOD'),
+                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_LOGIN_METHOD')
+            );
+        }
+
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
             'email' => 'required|email',
