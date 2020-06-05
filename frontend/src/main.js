@@ -4,7 +4,6 @@ import BootstrapVue from "bootstrap-vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import custom from "./assets/scss/custom.scss";
 import SimpleBar from "simplebar";
 import "simplebar/dist/simplebar.css";
 import axios from "axios";
@@ -18,11 +17,11 @@ import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import 'moment-timezone';
-import customCss from './services/CustomCss'
-import 'vue-search-select/dist/VueSearchSelect.css'
+import customCss from './services/CustomCss';
+import 'vue-search-select/dist/VueSearchSelect.css';
 
 Vue.use(Vuelidate, VueAxios, axios);
-Vue.config.devtools = process.env.NODE_ENV !== 'production'
+Vue.config.devtools = process.env.NODE_ENV !== 'production';
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
@@ -57,13 +56,15 @@ router.beforeEach(async(to, from, next) => {
         document.body.classList.add("loader-enable");
         setTimeout(() => {
             document.body.classList.remove("loader-enable");
-        }, 700)
+        }, 700);
     }
     if ((from.path == '/' && to.path == '/') || from.path == '/') {
-        // document.body.classList.add("loader-enable");
-        await customCss().then(() => {
+        await customCss()
+          .catch(() => {
+            import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
+          }).finally(() => {
             document.body.classList.remove("loader-enable");
-        });
+          });
     }
     if (store.state.isLoggedIn) {
         if (entryUrl) {
@@ -92,12 +93,12 @@ router.afterEach((to) => {
     if (to.path == '/') {
         setTimeout(() => {
             document.body.classList.remove("loader-enable");
-        }, 500)
+        }, 500);
     }
 })
 Vue.filter('formatDate', (value) => {
     if (value) {
-        return moment(String(value)).format('DD/MM/YYYY')
+        return moment(String(value)).format('DD/MM/YYYY');
     }
 })
 
@@ -106,29 +107,29 @@ Vue.filter('formatStoryDate', (value) => {
 })
 
 Vue.filter('formatDateTime', (value) => {
-    return moment(String(value)).format('DD/MM/YYYY, LT')
+    return moment(String(value)).format('DD/MM/YYYY, LT');
 })
 
 
 
 Vue.filter('filterGoal', (value) => {
-    return parseInt(value)
+    return parseInt(value);
 })
 
 Vue.filter('formatTime', (value) => {
-    return moment(String(value)).format('LT')
+    return moment(String(value)).format('LT');
 })
 
 Vue.filter('firstLetterCapital', (value) => {
     if (value) {
-        value = value.toLowerCase()
-        return value.charAt(0).toUpperCase() + value.slice(1)
+        value = value.toLowerCase();
+        return value.charAt(0).toUpperCase() + value.slice(1);
     }
 })
 
 Vue.filter('firstLetterSmall', (value) => {
     if (value) {
-        return value.toLowerCase()
+        return value.toLowerCase();
     }
 })
 
@@ -141,7 +142,7 @@ Vue.filter('substring', (value, data) => {
     }
 
     if (value.length <= data) {
-        return value
+        return value;
     } else {
         return value.substring(0, data) + "...";
     }
@@ -174,7 +175,6 @@ new Vue({
     router,
     store,
     BootstrapVue,
-    custom,
     SimpleBar,
     VueScrollTo,
     i18n,
