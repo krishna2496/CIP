@@ -50,9 +50,10 @@
                 </div>
 
                 <b-button type="button"
+                  v-if="hasSSO"
                   @click="handleSSO"
                   class=" btn-bordersecondary mt-3">
-                  {{ 'Login with SSO' }}
+                  {{ languageData.label.login_with_sso || 'Login with SSO' }}
                 </b-button>
 
             </div>
@@ -111,12 +112,18 @@
           //Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage)
           this.defautLang = store.state.defaultLanguage
+          this.hasSSO = Boolean(store.state.samlSettings);
           // Get tenant setting
           tenantSetting();
           loadLocaleMessages(store.state.defaultLanguage).then(() =>{
             this.languageData = JSON.parse(store.state.languageLabel);
             this.isPageShown = true
             setTimeout(() => {
+              if (store.state.samlSettings
+                && store.state.samlSettings.saml_access_only
+              ) {
+                window.location.href = store.state.samlSettings.sso_url;
+              }
               this.$refs.email.focus();
             },500)
           });
@@ -170,7 +177,7 @@
       },
 
       handleSSO() {
-        window.location = JSON.parse(store.state.samlSettings).sso_url;
+        window.location = store.state.samlSettings.sso_url;
       },
 
     },
