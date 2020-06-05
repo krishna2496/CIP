@@ -59,7 +59,7 @@ export default new Vuex.Store({
         getEmailNotification : localStorage.getItem('getEmailNotification'),
         defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage'),
         stateId: localStorage.getItem('stateId'),
-        samlSettings: localStorage.getItem('samlSettings'),
+        samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
     },
     mutations: {
         setToken(state, data) {
@@ -378,8 +378,7 @@ export default new Vuex.Store({
 
         setSamlSettings(state, data) {
             localStorage.setItem('samlSettings', data);
-            state.samlSettings = data;
-            console.log(state.samlSettings)
+            state.samlSettings = JSON.parse(data);
         },
     },
     getters: {},
