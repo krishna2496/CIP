@@ -60,6 +60,7 @@ export default new Vuex.Store({
         defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage'),
         stateId: localStorage.getItem('stateId'),
         samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
+        ssoLogin: JSON.parse(localStorage.getItem('ssoLogin')),
     },
     mutations: {
         setToken(state, data) {
@@ -81,6 +82,7 @@ export default new Vuex.Store({
             localStorage.setItem('userTimezone', data.timezone)
             localStorage.setItem('isProfileComplete',data.is_profile_complete)
             localStorage.setItem('getEmailNotification',data.receive_email_notification);
+            localStorage.setItem('ssoLogin', data.ssoLogin === true);
             state.userId = data.user_id;
             state.firstName = data.first_name;
             state.lastName = data.last_name;
@@ -91,6 +93,7 @@ export default new Vuex.Store({
             state.userTimezone = data.timezone;
             state.isProfileComplete = data.is_profile_complete;
             state.getEmailNotification = data.receive_email_notification
+            state.ssoLogin = data.ssoLogin;
         },
         // Remove login data in state and local storage
         logoutUser(state, data) {
@@ -113,6 +116,13 @@ export default new Vuex.Store({
             state.cookieAgreementDate = null;
             state.policyPage = null;
             state.isProfileComplete = null;
+
+            if (state.ssoLogin) {
+                localStorage.removeItem('ssoLogin');
+                state.ssoLogin = false;
+                window.location.href = state.samlSettings.slo_url;
+            }
+
             if (!data || !data.stay) {
               router.push({
                   name: 'login'

@@ -271,11 +271,10 @@ class SamlController extends Controller
         }
 
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
-        $sloUrl = $auth->logout(null, [], null, null, true);
+        $auth->logout(null, [], null, null, true);
 
         $auth->redirectTo(
-            'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/auth/slo',
-            ['slo' => $sloUrl]
+            'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/auth/slo'
         );
     }
 
