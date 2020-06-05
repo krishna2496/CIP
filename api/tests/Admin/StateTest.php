@@ -540,44 +540,6 @@ class StateTest extends TestCase
         ->seeStatusCode(404);
     }
 
-    /**
-     * @test
-     *
-     * Delete state api, will return error. If state belongs to mission or user
-     *
-     * @return void
-     */
-    public function state_test_it_return_error_not_able_to_delete_state_it_belongs_to_user()
-    {
-        $connection = 'tenant';
-        $country = factory(\App\Models\Country::class)->make();
-        $country->setConnection($connection);
-        $country->save();
-        $countryId = $country->country_id;
-
-        $state = factory(\App\Models\State::class)->make();
-        $state->setConnection($connection);
-        $state->save();
-        $state->country_id = $countryId;
-        $state->update();
-
-        DB::setDefaultConnection('mysql');
-
-        // Add user for this country and state
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-        $user->state_id = $state->state_id;
-        $user->country_id = $countryId;
-        $user->update();
-
-        $this->delete("entities/states/".$state->state_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
-
-        App\User::where('user_id', $user->user_id)->delete();
-        App\Models\state::where('state_id', $state->state_id)->delete();
-        App\Models\Country::where('country_id', $countryId)->delete();
-    }
 
     /**
      * @test
@@ -594,19 +556,14 @@ class StateTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $state = factory(\App\Models\State::class)->make();
-        $state->setConnection($connection);
-        $state->save();
-        $state->country_id = $countryId;
-        $state->update();
-
+        
         DB::setDefaultConnection('mysql');
 
         // Add user for this country and state
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        $mission->state_id = $state->state_id;
+       
         $mission->country_id = $countryId;
         $mission->update();
 
@@ -614,7 +571,7 @@ class StateTest extends TestCase
         ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
-        App\Models\state::where('state_id', $state->state_id)->delete();
+        
         App\Models\Country::where('country_id', $countryId)->delete();
     }
 }
