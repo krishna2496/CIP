@@ -40,7 +40,10 @@
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
                             {{ languageData.errors.password_required }}</div>
                     </b-form-group>
-                    <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
+                    <b-button
+                      type="button"
+                      @click="handleSubmit"
+                      class=" btn-bordersecondary">
                       {{ languageData.label.login }}
                     </b-button>
                 </b-form>
@@ -49,10 +52,11 @@
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
 
-                <b-button type="button"
+                <b-button
+                  type="button"
                   v-if="hasSSO"
                   @click="handleSSO"
-                  class=" btn-bordersecondary mt-3">
+                  class=" btn-borderprimary mt-3">
                   {{ languageData.label.login_with_sso || 'Login with SSO' }}
                 </b-button>
 
