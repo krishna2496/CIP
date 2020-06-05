@@ -95,14 +95,8 @@ class TenantOptionsController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        // Database connection with master database
-        $this->helpers->switchDatabaseConnection('mysql');
-
         // Dispatch job, that will store in master database
         dispatch(new ResetStyleSettingsJob($tenantName));
-
-        // Database connection with tenant database
-        $this->helpers->switchDatabaseConnection('tenant');
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
