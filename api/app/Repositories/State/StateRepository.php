@@ -34,24 +34,32 @@ class StateRepository implements StateInterface
     private $languageHelper;
 
     /**
+     * @var App\Models\Mission
+     */
+    public $mission;
+
+    /**
      * Create a new repository instance.
      *
      * @param App\Models\State $state
      * @param App\Models\Country $country
      * @param App\Models\StateLanguage $stateLanguage
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Models\Mission $mission
      * @return void
      */
     public function __construct(
         State $state,
         Country $country,
         StateLanguage $stateLanguage,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Mission $mission
     ) {
         $this->state = $state;
         $this->country = $country;
         $this->stateLanguage = $stateLanguage;
         $this->languageHelper = $languageHelper;
+        $this->mission = $mission;
     }
 
     /**

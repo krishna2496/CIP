@@ -54,6 +54,16 @@ class StateTest extends TestCase
         $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
 
         DB::setDefaultConnection('mysql');
+
+        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
+        DB::setDefaultConnection('mysql');
+
         // Get all states
         $this->get('/entities/states?search='.$stateName, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
@@ -597,8 +607,16 @@ class StateTest extends TestCase
         $state = factory(\App\Models\State::class)->make();
         $state->setConnection($connection);
         $state->save();
+        $stateId = $state->state_id;
         $state->country_id = $countryId;
         $state->update();
+
+        $city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->state_id = $state->state_id;
+        $city->update();
+        $cityId = $city->city_id;
 
         DB::setDefaultConnection('mysql');
 
@@ -606,13 +624,12 @@ class StateTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        $mission->state_id = $state->state_id;
+        $mission->city_id = $city->city_id;
         $mission->country_id = $countryId;
         $mission->update();
 
-        $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->delete("entities/states/".$stateId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
-
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
         App\Models\state::where('state_id', $state->state_id)->delete();
         App\Models\Country::where('country_id', $countryId)->delete();
