@@ -58,7 +58,8 @@ export default new Vuex.Store({
         isProfileComplete: localStorage.getItem('isProfileComplete'),
         getEmailNotification : localStorage.getItem('getEmailNotification'),
         defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage'),
-        stateId: localStorage.getItem('stateId')
+        stateId: localStorage.getItem('stateId'),
+        samlSettings: localStorage.getItem('samlSettings'),
     },
     mutations: {
         setToken(state, data) {
@@ -373,6 +374,12 @@ export default new Vuex.Store({
         setTenantDefaultLanguage(state, language) {
             localStorage.setItem('defaultTenantLanguage',language);
             state.defaultTenantLanguage = language;
+        },
+
+        setSamlSettings(state, data) {
+            localStorage.setItem('samlSettings', data);
+            state.samlSettings = data;
+            console.log(state.samlSettings)
         },
     },
     getters: {},

@@ -41,12 +41,20 @@
                             {{ languageData.errors.password_required }}</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
-                        {{ languageData.label.login }}</b-button>
+                      {{ languageData.label.login }}
+                    </b-button>
                 </b-form>
                 <!-- link to forgot-password -->
                 <div class="form-link">
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
+
+                <b-button type="button"
+                  @click="handleSSO"
+                  class=" btn-bordersecondary mt-3">
+                  {{ 'Login with SSO' }}
+                </b-button>
+
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent" :key="componentKey"/>
         </div>
@@ -68,26 +76,28 @@
       AppCustomDropdown,
       TheSlider,
     },
+
     data() {
-        return {
-            flag: false,
-            myValue: '',
-            defautLang: '',
-            langList: [],
-            login: {
-                email: '',
-                password: '',
-            },
-            submitted: false,
-            classVariant: 'danger',
-            message: null,
-            showDismissibleAlert: false,
-            isShowComponent : false,
-            languageData : [],
-            isPageShown : false,
-            componentKey : 0
-        };
+      return {
+        flag: false,
+        myValue: '',
+        defautLang: '',
+        langList: [],
+        login: {
+          email: '',
+          password: '',
+        },
+        submitted: false,
+        classVariant: 'danger',
+        message: null,
+        showDismissibleAlert: false,
+        isShowComponent : false,
+        languageData : [],
+        isPageShown : false,
+        componentKey : 0
+      };
     },
+
     validations: {
       login: {
         email: {required, email},
@@ -158,6 +168,11 @@
           }
         });
       },
+
+      handleSSO() {
+        window.location = JSON.parse(store.state.samlSettings).sso_url;
+      },
+
     },
     mounted() {
 
