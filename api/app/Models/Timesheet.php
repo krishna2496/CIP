@@ -43,9 +43,30 @@ class Timesheet extends Model
      *
      * @var array
      */
-    protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
-        'day_volunteered', 'notes', 'timesheetDocument', 'mission', 'month', 'total_hours',
-        'total_minutes', 'status', 'updated_at', 'user'];
+    protected $visible = [
+        'timesheet_id', 
+        'user_id', 
+        'mission_id', 
+        'time', 
+        'action', 
+        'date_volunteered',
+        'day_volunteered', 
+        'notes', 
+        'timesheetDocument', 
+        'mission', 
+        'month',
+        'total_hours',
+        'total_minutes',
+        'status',
+        'updated_at',
+        'user',
+        'total_timesheet',
+        'first_volunteered_date',
+        'total_goal_hours',
+        'total_timesheet_action',
+        'total_timesheet_time',
+        'total_time_seconds'
+    ];
 
     /*
     * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -125,4 +146,53 @@ class Timesheet extends Model
     {
         return $this->hasOne(User::class, 'user_id', 'user_id');
     }
+
+    /**
+     * Scope a query all the approved timesheets
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsApproved($query)
+    {
+        $status = [
+            config("constants.timesheet_status.APPROVED"),
+            config("constants.timesheet_status.AUTOMATICALLY_APPROVED")
+        ];
+
+        return $query->whereIn('status', $status);
+    }
+
+    /**
+     * Scope a query all by timesheets year
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Int  $year
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsYear($query, $year = null)
+    {
+        if (!$year) {
+            return $query;
+        }
+
+        return $query->whereYear('created_at', $year);
+    }
+
+    /**
+     * Scope a query all by timesheets month
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Int $month
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsMonth($query, $month = null)
+    {
+        if (!$month) {
+            return $query;
+        }
+
+        return $query->whereMonth('created_at', $month);
+    }
+
 }

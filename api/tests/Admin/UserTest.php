@@ -1528,7 +1528,14 @@ class UserTest extends TestCase
               'data' => [
                   'total_timesheet_time',
                   'total_timesheet_action',
-                  'total_timesheet'
+                  'total_timesheet',
+                  'first_volunteered_date',
+                  'total_time_seconds',
+                  'total_hours_goal',
+                  'total_remaining_hours',
+                  'total_completed_hours',
+                  'volunteering_rank',
+                  'average_volunteering_days'
               ],
               'message'
           ]
@@ -1539,6 +1546,13 @@ class UserTest extends TestCase
       $this->assertSame($result->data->total_timesheet_time, '03:03:03');
       $this->assertSame($result->data->total_timesheet_action, null);
       $this->assertSame($result->data->total_timesheet, $timesheetCount);
+      $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
+      $this->assertSame($result->data->total_time_seconds, 10983);
+      $this->assertSame($result->data->total_hours_goal, 500);
+      $this->assertSame($result->data->total_remaining_hours, 496.95);
+      $this->assertSame($result->data->total_completed_hours, 3.05);
+      $this->assertSame($result->data->volunteering_rank, 100);
+      $this->assertSame($result->data->average_volunteering_days, 0);
       $this->assertSame($result->message, 'User timesheet summarized successfully');
 
     }
@@ -1560,7 +1574,14 @@ class UserTest extends TestCase
               'data' => [
                   'total_timesheet_time',
                   'total_timesheet_action',
-                  'total_timesheet'
+                  'total_timesheet',
+                  'first_volunteered_date',
+                  'total_time_seconds',
+                  'total_hours_goal',
+                  'total_remaining_hours',
+                  'total_completed_hours',
+                  'volunteering_rank',
+                  'average_volunteering_days'
               ],
               'message'
           ]
@@ -1571,38 +1592,13 @@ class UserTest extends TestCase
       $this->assertSame($result->data->total_timesheet_time, '03:03:03');
       $this->assertSame($result->data->total_timesheet_action, null);
       $this->assertSame($result->data->total_timesheet, $timesheetCount);
-      $this->assertSame($result->message, 'User timesheet summarized successfully');
-
-    }
-
-    /**
-     * @test
-     *
-     * it should return correct user timesheet summary with specified invalid status
-     *
-     * @return void
-     */
-    public function it_should_return_correct_user_timesheet_summary_with_specified_invalid_status()
-    {
-
-      $timesheetCount = 3;
-      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet-summary', 'HOLIDAY')->seeJsonStructure(
-          [
-              'status',
-              'data' => [
-                  'total_timesheet_time',
-                  'total_timesheet_action',
-                  'total_timesheet'
-              ],
-              'message'
-          ]
-      );
-      $result = json_decode($response->response->getContent());
-
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data->total_timesheet_time, null);
-      $this->assertSame($result->data->total_timesheet_action, null);
-      $this->assertSame($result->data->total_timesheet, 0);
+      $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
+      $this->assertSame($result->data->total_time_seconds, 10983);
+      $this->assertSame($result->data->total_hours_goal, 500);
+      $this->assertSame($result->data->total_remaining_hours, 496.95);
+      $this->assertSame($result->data->total_completed_hours, 3.05);
+      $this->assertSame($result->data->volunteering_rank, 100);
+      $this->assertSame($result->data->average_volunteering_days, 0);
       $this->assertSame($result->message, 'User timesheet summarized successfully');
 
     }
@@ -1640,47 +1636,7 @@ class UserTest extends TestCase
       $this->assertSame($result->status, 200);
       $this->assertSame($result->data[0]->mission_type, 'GOAL');
       $this->assertSame($result->data[0]->mission_title, 'mission title');
-      $this->assertSame($result->data[0]->total_timesheet_time, '03:03:03');
-      $this->assertSame($result->data[0]->total_timesheet_action, null);
-      $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
-      $this->assertSame($result->message, 'User timesheet listed successfully');
-
-    }
-
-    /**
-     * @test
-     *
-     * it should return correct user timesheets per mission with specified valid status
-     *
-     * @return void
-     */
-    public function it_should_return_correct_user_timesheets_per_mission_with_specified_valid_status()
-    {
-
-      $timesheetCount = 3;
-      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet', 'WORKDAY')->seeJsonStructure(
-          [
-              'status',
-              'data' => [
-                '*' => [
-                  'mission_id',
-                  'mission_type',
-                  'mission_title',
-                  'mission_objective',
-                  'total_timesheet_time',
-                  'total_timesheet_action',
-                  'total_timesheet'
-                ]
-              ],
-              'message'
-          ]
-      );
-      $result = json_decode($response->response->getContent());
-
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data[0]->mission_type, 'GOAL');
-      $this->assertSame($result->data[0]->mission_title, 'mission title');
-      $this->assertSame($result->data[0]->total_timesheet_time, '03:03:03');
+      $this->assertSame($result->data[0]->total_timesheet_time, null);
       $this->assertSame($result->data[0]->total_timesheet_action, null);
       $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
       $this->assertSame($result->message, 'User timesheet listed successfully');
