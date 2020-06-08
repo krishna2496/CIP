@@ -51,8 +51,7 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function render($request, Exception $exception)
-    { 
-        dd($exception);
+    {
         if (env('APP_ENV') === 'local' && env('APP_DEBUG')) {
             dd($exception);
         }
