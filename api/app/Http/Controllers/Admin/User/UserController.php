@@ -230,6 +230,7 @@ class UserController extends Controller
                 : config('constants.user_statuses.INACTIVE');
         }
 
+
         // Create new user
         $user = $this->userRepository->store($requestData);
 
@@ -255,6 +256,12 @@ class UserController extends Controller
             null,
             $user->user_id
         ));
+
+        if ($user) {
+            $this->helpers
+                ->syncOptimyVolunteer($request, $user->user_id);
+        }
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -385,6 +392,11 @@ class UserController extends Controller
                 $user->user_id
             ));
 
+            if ($user) {
+                $this->helpers
+                    ->syncOptimyVolunteer($request, $user->user_id);
+            }
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -405,6 +417,7 @@ class UserController extends Controller
         try {
             $user = $this->userRepository->delete($id);
             $this->notificationRepository->deleteAllNotifications($id);
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');

@@ -10,6 +10,7 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
+use Bschmitt\Amqp\Amqp;
 
 class Helpers
 {
@@ -21,13 +22,21 @@ class Helpers
     private $db;
 
     /**
+     * Amqp
+     *
+     * @var Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new helper instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Amqp $amqp)
     {
         $this->db = app()->make('db');
+        $this->amqp = $amqp;
     }
 
     /**
@@ -407,6 +416,34 @@ class Helpers
 		}
 
 		return $jsonFileContent;
+    }
+
+    /**
+     * Sync volunteer to Optimyapp
+     *
+     * @param Request $request
+     * @param int $userId
+     *
+     * @return void
+     */
+    public function syncOptimyVolunteer($request, $userId)
+    {
+        $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
+
+        $payload = json_encode([
+            'activity_type' => 'user',
+            'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+            'user_id' => $userId,
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id
+        ]);
+
+        $this->amqp->publish(
+            'ciSynchronizer',
+            $payload,
+            [
+                'queue' => 'ciSynchronizer'
+            ]
+        );
     }
 
     /**
