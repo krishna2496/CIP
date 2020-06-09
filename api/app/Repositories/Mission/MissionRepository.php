@@ -8,6 +8,7 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
 use App\Models\Mission;
+use App\Models\MissionTab;
 use App\Models\FavouriteMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
+use Illuminate\Support\Str;
+use Validator;
 
 class MissionRepository implements MissionInterface
 {
@@ -36,6 +39,11 @@ class MissionRepository implements MissionInterface
      * @var App\Helpers\S3Helper
      */
     private $s3helper;
+
+    /**
+     * @var App\Models\MissionTab
+     */
+    public $missionTab;
 
     /**
      * @var App\Repositories\Country\CountryRepository
@@ -61,6 +69,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Models\MissionTab $missionTab
      * @return void
      */
     public function __construct(
@@ -69,7 +78,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        MissionTab $missionTab
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -77,6 +87,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->missionTab = $missionTab;
     }
     
     /**
@@ -161,6 +172,31 @@ class MissionRepository implements MissionInterface
             $this->modelsService->missionLanguage->create($missionLanguage);
             unset($missionLanguage);
         }
+
+        //Add mission tab detail
+        if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
+            foreach ($request->mission_tab_details as $missionTabValue) {
+                $missionTabArray = [
+                    'id' => (String) Str::uuid(),
+                    'mission_id' => $mission->mission_id,
+                    'sort_key' => $missionTabValue['sort_key']
+                ];
+                $missionTab = $this->modelsService->missionTab->create($missionTabArray);
+                foreach ($missionTabValue['translations'] as $missionTabLangValue) {
+                    $language = $languages->where('code', $missionTabLangValue['lang'])->first();
+                    $missionTabLangArray = [
+                        'id' => (String) Str::uuid(),
+                        'mission_tab_id' => $missionTab['id'],
+                        'language_id' => $language->language_id,
+                        'name' => $missionTabLangValue['name'],
+                        'section' => json_encode($missionTabLangValue['sections'])
+                    ];
+                    $missionTabLanguage = $this->modelsService->missionTabLanguage->create($missionTabLangArray);
+                    unset($missionTabLangArray);
+                }
+                unset($missionTabArray);
+            }
+        }
         
         // For skills
         if (isset($request->skills) && count($request->skills) > 0) {
@@ -175,13 +211,14 @@ class MissionRepository implements MissionInterface
         if (isset($request->media_images) && count($request->media_images) > 0) {
             $this->missionMediaRepository->saveMediaImages($request->media_images, $tenantName, $mission->mission_id);
         }
+        
         // Add mission media videos
         if (isset($request->media_videos) && count($request->media_videos) > 0) {
             if (!empty($request->media_videos)) {
                 $this->missionMediaRepository->saveMediaVideos($request->media_videos, $mission->mission_id);
             }
         }
-            
+
         // Add mission documents
         if (isset($request->documents) && count($request->documents) > 0) {
             if (!empty($request->documents)) {
@@ -343,7 +380,7 @@ class MissionRepository implements MissionInterface
         if (isset($request->media_images) && count($request->media_images) > 0) {
             $this->missionMediaRepository->updateMediaImages($request->media_images, $tenantName, $id);
         }
-
+        
         // Add/Update mission media videos
         if (isset($request->media_videos) && count($request->media_videos) > 0) {
             $this->missionMediaRepository->updateMediaVideos($request->media_videos, $id);
@@ -367,6 +404,64 @@ class MissionRepository implements MissionInterface
                 unset($missionDocument);
             }
         }
+
+        //Add/Update mission tab details
+        if (isset($request->mission_tab_details) && count($request->mission_tab_details)) {
+            foreach ($request->mission_tab_details as $missionTabValue) {
+                if (isset($missionTabValue['mission_tab_id'])) {
+                    //Mission tab id is available and update the mission tab and details
+                    $missionTabId = $missionTabValue['mission_tab_id'];
+                    if (isset($missionTabValue['sort_key'])) {
+                        $missionTab = $this->modelsService->missionTab->where(["id"=>$missionTabId])->update(['sort_key'=>$missionTabValue['sort_key']]);
+                    }
+
+                    if (isset($missionTabValue['translations'])) {
+                        foreach ($missionTabValue['translations'] as $missionTabLangValue) {
+                            $language = $languages->where('code', $missionTabLangValue['lang'])->first();
+                            $missionTabLangArray['id'] = (String) Str::uuid();
+                            $missionTabLangArray['mission_tab_id'] = $missionTabId;
+                            $missionTabLangArray['language_id'] = $language->language_id;
+                                
+                            if (isset($missionTabLangValue['name'])) {
+                                $missionTabLangArray['name'] = $missionTabLangValue['name'];
+                            }
+                            if (isset($missionTabLangValue['sections'])) {
+                                $missionTabLangArray['section'] = json_encode($missionTabLangValue['sections']);
+                            }
+
+                            $missionTabLanguage = $this->modelsService->missionTabLanguage->createOrUpdateMissionTabLanguage(['mission_tab_id' => $missionTabId,
+                                'language_id' => $language->language_id], $missionTabLangArray);
+                            unset($missionTabLangArray);
+                        }
+                    }
+                } else {
+                    //Mission tab id is available and create the mission tab and details
+                    foreach ($request->mission_tab_details as $missionTabValue) {
+                        $missionTabArray = [
+                                'id' => (String) Str::uuid(),
+                                'mission_id' => $mission->mission_id,
+                                'sort_key' => $missionTabValue['sort_key']
+                            ];
+                        $missionTab = $this->modelsService->missionTab->create($missionTabArray);
+        
+                        foreach ($missionTabValue['translations'] as $missionTabLangValue) {
+                            $language = $languages->where('code', $missionTabLangValue['lang'])->first();
+                            $missionTabLangArray = [
+                                'id' => (String) Str::uuid(),
+                                'mission_tab_id' => $missionTab['id'],
+                                'language_id' => $language->language_id,
+                                'name' => $missionTabLangValue['name'],
+                                'section' => json_encode($missionTabLangValue['sections'])
+                            ];
+                            $missionTabLanguage = $this->modelsService->missionTabLanguage->create($missionTabLangArray);
+                            unset($missionTabLangArray);
+                        }
+        
+                        unset($missionTabArray);
+                    }
+                }
+            }
+        }
         return $mission;
     }
     
@@ -387,7 +482,7 @@ class MissionRepository implements MissionInterface
             'country.languages',
             'missionLanguage',
             'timeMission',
-            'goalMission'
+            'goalMission',
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
@@ -395,6 +490,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['missionTab' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionTab.getMissionTabDetail' => function ($query) {
         }])->findOrFail($id);
         
         if (isset($mission->missionLanguage)) {
@@ -406,6 +504,26 @@ class MissionRepository implements MissionInterface
                 )->first()->code;
             }
         }
+
+        //mission tab array modification
+        $missionTabInfo =  $mission['missionTab']->toArray();
+        if ($missionTabInfo != null) {
+            $missionLanguageArray = [];
+            foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
+                $missionLanguageArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionLanguageArray["languages"] = [];
+                foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabLanguadeValue) {
+                    $languageCode = $languages->where('language_id', $missionTabLanguadeValue['language_id'])->first()->code;
+                    $missionTabLanguage['language_id'] = $missionTabLanguadeValue['language_id'];
+                    $missionTabLanguage['language_code'] = $languageCode;
+                    $missionTabLanguage['name'] = $missionTabLanguadeValue['name'];
+                    $missionTabLanguage['section'] = $missionTabLanguadeValue['section'];
+                    array_push($missionLanguageArray["languages"], $missionTabLanguage);
+                }
+                $mission['missionTab'][$missionTabKey] = $missionLanguageArray;
+            }
+        }
+
         return $mission;
     }
     
@@ -454,8 +572,12 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['missionTab' => function ($query) {
+            $query->select('mission_tab.sort_key', 'mission_tab.id', 'mission_tab.mission_id')->orderBy('sort_key');
+        }, 'missionTab.getMissionTabDetail' => function ($query) {
+            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.id');
         }]);
-        
+
         if ($request->has('search') && $request->has('search') !== '') {
             $searchString = $request->search;
             $missionQuery->where(function ($query) use ($searchString) {
@@ -473,6 +595,7 @@ class MissionRepository implements MissionInterface
             $orderDirection = $request->input('order', 'asc');
             $missionQuery->orderBy('mission_id', $orderDirection);
         }
+
         $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
@@ -485,6 +608,25 @@ class MissionRepository implements MissionInterface
                     $value->default_media_name = $mediaValue->media_name;
                     $value->default_media_type = $mediaValue->media_type;
                     $value->default_media_path = $mediaValue->media_path;
+                }
+            }
+            
+            //mission tab array modification
+            $missionTabInfo =  $value['missionTab']->toArray();
+            if ($missionTabInfo != null) {
+                $missionLanguageArray = [];
+                foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
+                    $missionLanguageArray['sort_key'] = $missionTabValue['sort_key'];
+                    $missionLanguageArray["languages"] = [];
+                    foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabLanguadeValue) {
+                        $languageCode = $languages->where('language_id', $missionTabLanguadeValue['language_id'])->first()->code;
+                        $missionTabLanguage['language_id'] = $missionTabLanguadeValue['language_id'];
+                        $missionTabLanguage['language_code'] = $languageCode;
+                        $missionTabLanguage['name'] = $missionTabLanguadeValue['name'];
+                        $missionTabLanguage['section'] = $missionTabLanguadeValue['section'];
+                        array_push($missionLanguageArray["languages"], $missionTabLanguage);
+                    }
+                    $value['missionTab'][$missionTabKey] = $missionLanguageArray;
                 }
             }
         }
@@ -1532,5 +1674,16 @@ class MissionRepository implements MissionInterface
         ->where(['mission_id'=> $missionId, 'user_id'=> $userId])
         ->whereIn('approval_status', $statusArray)->get();
         return $applicationStatusData->isEmpty() ? true : false;
+    }
+
+    /**
+     * Get mission tab details
+     *
+     * @param string $missionTabId
+     * @return App\Repositories\Mission\MissionTab
+     */
+    public function checkExistMissionTabId(string $missionTabId)
+    {
+        return $this->modelsService->missionTab->findOrFail($missionTabId);
     }
 }

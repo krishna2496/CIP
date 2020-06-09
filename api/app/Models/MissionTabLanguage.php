@@ -35,7 +35,7 @@ class MissionTabLanguage extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_tab_id', 'language_id', 'name', 'section'];
+    protected $fillable = ['id', 'mission_tab_id', 'language_id', 'name', 'section'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -50,4 +50,16 @@ class MissionTabLanguage extends Model
      * @var array
      */
     protected $visible = ['mission_tab_id', 'language_id', 'name', 'section'];
+
+    /**
+     * Store/update specified resource for mission tab language.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return App\Models\MissionTabLanguage
+     */
+    public function createOrUpdateMissionTabLanguage(array $condition, array $data): MissionTabLanguage
+    {
+        return static::updateOrCreate($condition, $data);
+    }
 }

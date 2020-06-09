@@ -218,6 +218,16 @@ return [
         'states.*.translations' => 'translations',
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
+        'mission_tab_details.*.translations' => 'mission tab translation',
+        'mission_tab_details.*.sort_key' => 'sort key',
+        'mission_tab_details.*.languages.*.language_id' => 'language id',
+        'mission_tab_details.*.languages.*.name' => 'name',
+        'mission_tab_details.*.translations.*.lang' => 'language code',
+        'mission_tab_details.*.translations.*.name' => 'name',
+        'mission_tab_details.*.translations.*.sections' => 'section details',
+        'mission_tab_details.*.translations.*.sections.*.title' => 'section title',
+        'mission_tab_details.*.translations.*.sections.*.content' => 'section content',
+        'mission_tab_details.*.mission_tab_id' => 'mission tab id',
 		],
 
 ];

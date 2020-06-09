@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\MissionTabLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -35,7 +35,7 @@ class MissionTab extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'sort_key'];
+    protected $fillable = ['id', 'mission_id', 'sort_key'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -50,6 +50,16 @@ class MissionTab extends Model
      * @var array
      */
     protected $visible = [
-        'mission_id', 'sort_key'
+        'id', 'mission_id', 'sort_key', 'getMissionTabDetail'
     ];
+
+    /**
+     * Find the specified resource.
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getMissionTabDetail()
+    {
+        return $this->hasMany(MissionTabLanguage::class, 'mission_tab_id', 'id');
+    }
 }
