@@ -2,67 +2,34 @@
 namespace App\Http\Controllers\App\Auth;
 
 use App\Helpers\Helpers;
-use App\Helpers\LanguageHelper;
-use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Availability;
-use App\Models\TenantOption;
-use App\Repositories\City\CityRepository;
-use App\Repositories\Country\CountryRepository;
-use App\Repositories\TenantOption\TenantOptionRepository;
-use App\Repositories\Timezone\TimezoneRepository;
-use App\Repositories\User\UserRepository;
-use App\Exceptions\SamlException;
-use App\Traits\RestExceptionHandlerTrait;
 use App\User;
-use Bschmitt\Amqp\Amqp;
-use DateTime;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use OneLogin\Saml2\Auth;
-use OneLogin\Saml2\Settings;
 use Hybridauth\Hybridauth;
+use Illuminate\Http\Request;
+use App\Repositories\User\UserRepository;
 
 class GoogleAuthController extends Controller
 {
     private $helpers;
+    private $user;
     private $userRepository;
-    private $tenantOptionRepository;
-    private $languageHelper;
-    private $timezoneRepository;
-    private $countryRepository;
-    private $cityRepository;
-    private $availability;
 
     public function __construct(
         Helpers $helpers,
-        ResponseHelper $responseHelper,
-        UserRepository $userRepository,
-        TenantOptionRepository $tenantOptionRepository,
-        LanguageHelper $languageHelper,
-        TimezoneRepository $timezoneRepository,
-        CountryRepository $countryRepository,
-        CityRepository $cityRepository,
-        Availability $availability
+        User $user,
+        UserRepository $userRepository
     ) {
         $this->helpers = $helpers;
-        $this->responseHelper = $responseHelper;
+        $this->user = $user;
         $this->userRepository = $userRepository;
-        $this->tenantOptionRepository = $tenantOptionRepository;
-        $this->languageHelper = $languageHelper;
-        $this->timezoneRepository = $timezoneRepository;
-        $this->countryRepository = $countryRepository;
-        $this->cityRepository = $cityRepository;
-        $this->availability = $availability;
     }
 
-    public function login(Request $request, User $user)
+    public function login(Request $request)
     {
 
         $config = [
-            'callback' => route('google.authentication'), 
-            'providers' => [ 
+            'callback' => route('google.authentication'),
+            'providers' => [
                 "Google" => [
                     "enabled" => true,
                     "keys" => [
@@ -115,7 +82,9 @@ class GoogleAuthController extends Controller
             return redirect($redirectUrl);
         }
 
-        $userDetail = $user->where('email', $userEmail)->first();
+        $userDetail = $this->user
+            ->where('email', $userEmail)
+            ->first();
 
         $userData = [
             'first_name' => $userProfile->firstName,
