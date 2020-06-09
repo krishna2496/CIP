@@ -430,4 +430,27 @@ class Helpers
 
         return $tenant->name;
     }
+
+    /**
+     * Check if email address is an admin user.
+     *
+     * @param String
+     * @return Boolean
+     */
+    public function isAdminUser($email): Bool
+    {
+        $connection = Config::get('database.default');
+        $this->switchDatabaseConnection('mysql');
+
+        $adminUser = $this->db->table('admin_user')
+            ->select('id')
+            ->where('email', $email)
+            ->where('role', 'optimy_admin')
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection($connection);
+
+        return (bool)$adminUser;
+    }
 }

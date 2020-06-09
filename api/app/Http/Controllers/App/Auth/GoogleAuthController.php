@@ -59,19 +59,15 @@ class GoogleAuthController extends Controller
 
     public function login(Request $request, User $user)
     {
-        // TODO hard coded
+
         $config = [
-            'callback' => sprintf(
-                'http%s://%s/app/google/auth',
-                ($request->secure() ? 's' : ''),
-                env('APP_URL')
-            ),
-            'providers' => [
+            'callback' => route('google.authentication'), 
+            'providers' => [ 
                 "Google" => [
                     "enabled" => true,
                     "keys" => [
-                        "id" => "670900351133-i1qv95tmiseh57si77k9llr43u88oq2n.apps.googleusercontent.com",
-                        "secret" => "P8bxydxUJnOQf1ddIYgDAtJb"
+                        "id" => env('GOOGLE_AUTH_ID'),
+                        "secret" => env('GOOGLE_AUTH_SECRET'),
                     ]
                 ]
             ]
@@ -80,9 +76,16 @@ class GoogleAuthController extends Controller
         $hybridauth = new Hybridauth($config);
         $adapter = $hybridauth->authenticate('Google');
         $isConnected = $adapter->isConnected();
+        $frontendFqdn = $request->input('domain');
 
         if (!$isConnected) {
-            dd('FAILED: Google Auth');
+            $redirectUrl = sprintf(
+                'http%s://%s/saml-error?errors=%s',
+                ($request->secure() ? 's' : ''),
+                $frontendFqdn,
+                implode(',',['GOOGLE_AUTH_ERROR']),
+            );
+            return redirect($redirectUrl);
         }
 
         $userProfile = $adapter->getUserProfile();
@@ -91,7 +94,25 @@ class GoogleAuthController extends Controller
         $isOptimyDomain = preg_match('/\.optimy\.com$/i', $userEmail) || preg_match('/@optimy\.com$/i', $userEmail);
 
         if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL) || !$isOptimyDomain) {
-            dd('FAILED: Invalid email');
+            $redirectUrl = sprintf(
+                'http%s://%s/saml-error?errors=%s',
+                ($request->secure() ? 's' : ''),
+                $frontendFqdn,
+                implode(',',['INVALID_OPTIMY_EMAIL']),
+            );
+            return redirect($redirectUrl);
+        }
+
+        $isAdminUser = $this->helpers->isAdminUser($userEmail);
+
+        if (!$isAdminUser) {
+            $redirectUrl = sprintf(
+                'http%s://%s/saml-error?errors=%s',
+                ($request->secure() ? 's' : ''),
+                $frontendFqdn,
+                implode(',',['GOOGLE_AUTH_UNAUTHORIZE']),
+            );
+            return redirect($redirectUrl);
         }
 
         $userDetail = $user->where('email', $userEmail)->first();
@@ -120,7 +141,6 @@ class GoogleAuthController extends Controller
             60
         );
 
-        $frontendFqdn = 'localhost:7000';
         $redirectUrl = sprintf(
             'http%s://%s/auth/sso?token=%s',
             ($request->secure() ? 's' : ''),
