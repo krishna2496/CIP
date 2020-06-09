@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: cip-frontend-deployment
+  name: ci-frontend-deployment
   labels:
-    app: cip-frontend
+    app: ci-frontend
     deployment: {{DEPLOYMENT}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cip-frontend
+      app: ci-frontend
   template:
     metadata:
       labels:
-        app: cip-frontend
+        app: ci-frontend
         deployment: {{DEPLOYMENT}}
     spec:
       affinity:
@@ -42,7 +42,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-frontend
+                  - ci-frontend
               topologyKey: failure-domain.beta.kubernetes.io/zone
             weight: 10
           - podAffinityTerm:
@@ -65,8 +65,8 @@ spec:
           requests:
             cpu: 10m
             
-      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
-        name: cip-frontend
+      - image: registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
+        name: ci-frontend
         imagePullPolicy: Always
         resources:
           requests:
@@ -74,15 +74,15 @@ spec:
             memory: 128Mi
         volumeMounts:
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
-          name: cip-frontend-apache-config
+          name: ci-frontend-apache-config
           subPath: 000-default.conf
 
       volumes:
 
       - configMap:
           defaultMode: 420
-          name: cip-frontend-apache-config
-        name: cip-frontend-apache-config
+          name: ci-frontend-apache-config
+        name: ci-frontend-apache-config
       
        
 ---
@@ -90,16 +90,16 @@ kind: Service
 apiVersion: v1
 metadata:
   namespace: staging
-  name: cip-frontend-service
+  name: ci-frontend-service
   labels:
-    app: cip-frontend
+    app: ci-frontend
 spec:
   selector:
-    app: cip-frontend
+    app: ci-frontend
   ports:
     - protocol: TCP
       port: 80
-      name: cip-frontend-service
+      name: ci-frontend-service
     - protocol: TCP
       port: 9117
       name: exporter
@@ -108,35 +108,35 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: cip-frontend-ingress
+  name: ci-frontend-ingress
   namespace: staging
   annotations:
     traefik.ingress.kubernetes.io/priority: "1"
 spec:
   rules:
-  - host: cip.staging.optimy.net
+  - host: ci.staging.optimy.net
     http:
       paths:
       - backend:
-          serviceName: cip-frontend-service
+          serviceName: ci-frontend-service
           servicePort: 80
-  - host: '*.front.cip.staging.optimy.net'
+  - host: '*.front.ci.staging.optimy.net'
     http:
       paths:
       - backend:
-          serviceName: cip-frontend-service
+          serviceName: ci-frontend-service
           servicePort: 80
-  - host: '*.cip.staging.optimy.net'
+  - host: '*.ci.staging.optimy.net'
     http:
       paths:
       - backend:
-          serviceName: cip-frontend-service
+          serviceName: ci-frontend-service
           servicePort: 80
-  - host: monorepo.cip.staging.optimy.net
+  - host: monorepo.ci.staging.optimy.net
     http:
       paths:
       - backend:
-          serviceName: cip-frontend-service
+          serviceName: ci-frontend-service
           servicePort: 80
 status:
   loadBalancer: {}
