@@ -223,7 +223,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Mission"
+              "$ref": "#/definitions/MissionWithMissionTab"
             }
           },
           {
@@ -7908,6 +7908,399 @@
                     "description": {
                       "type": "string",
                       "description": "Description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "mission_tab_details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sort_key": {
+                "type": "integer",
+                "description": "sort_key would be 0,1,2, etc.."
+              },
+              "translations": {
+                "type": "array",
+                "description": "array for tab name and section and in which language you need to store",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lang": {
+                      "type": "string",
+                      "description": "language name in which you want to display content. It should be maximum 2 characters."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "tab heading name"
+                    },
+                    "section": {
+                      "type": "array",
+                      "description": "These section are for 'Mission' tab in front end, you can add unlimited amount of sections(Title+description)",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Title of section"
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Description of section"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "document_id": {
+                "type": "integer",
+                "description": "If adding new document then leave it blank",
+                "format": "int64"
+              },
+              "document_path": {
+                "type": "string",
+                "description": "Url for document"
+              },
+              "sort_order": {
+                "type": "integer",
+                "description": "Mission document sort order",
+                "format": "int64"
+              }
+            }
+          }
+        },
+        "media_images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "media_id": {
+                "type": "integer",
+                "description": "If adding new media then leave it blank",
+                "format": "int64"
+              },
+              "media_path": {
+                "type": "string",
+                "description": "Url for media"
+              },
+              "internal_note": {
+                "type": "string",
+                "description": "Internal note describing the image"
+              },
+              "default": {
+                "type": "int32",
+                "enum": [
+                  "1",
+                  "0"
+                ],
+                "description": "If its set as 1, then mission thumbnail will be set to this media"
+              },
+              "sort_order": {
+                "type": "integer",
+                "description": "Mission media sort order ",
+                "format": "int64"
+              }
+            }
+          }
+        },
+        "media_videos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "media_id": {
+                "type": "integer",
+                "description": "If adding new media then leave it blank",
+                "format": "int64"
+              },
+              "media_name": {
+                "type": "string",
+                "description": "Name of the video"
+              },
+              "media_path": {
+                "type": "string",
+                "description": "Youtube url of a video"
+              },
+              "internal_note": {
+                "type": "string",
+                "description": "Internal note describing the video"
+              },
+              "sort_order": {
+                "type": "integer",
+                "description": "Mission media sort order",
+                "format": "int64"
+              }
+            }
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Skill id from `skill` table"
+              }
+            }
+          }
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s - Mission start date"
+        },
+        "end_date": {
+          "type": "string",
+          "description": "dd-mm-yyyy h:i:s - Mission end date",
+          "format": "date-time"
+        },
+        "mission_type": {
+          "type": "string",
+          "enum": [
+            "TIME",
+            "GOAL"
+          ]
+        },
+        "goal_objective": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "total_seats": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Total seats for this mission"
+        },
+        "application_deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_start_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_end_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_end_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "publication_status": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "PENDING_APPROVAL",
+            "APPROVED",
+            "PUBLISHED_FOR_VOTING",
+            "PUBLISHED_FOR_APPLYING",
+            "UNPUBLISHED"
+          ]
+        },
+        "theme_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "mission_theme_id from `mission_theme` table"
+        },
+        "availability_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "availability_id from `availability` table"
+        },
+        "is_virtual": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "MissionWithMissionTab": {
+      "type": "object",
+      "properties": {
+        "organisation": {
+          "type": "object",
+          "properties": {
+            "organisation_id": {
+              "type": "string",
+              "description": "Currently this id is kept as static"
+            },
+            "organisation_name": {
+              "type": "string",
+              "description": "Name of organisation"
+            },
+            "organisation_detail": {
+              "type": "array",
+              "description": "Organisation detail.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "lang": {
+                    "type": "string",
+                    "description": "Language code e.g. en, fr, de etc."
+                  },
+                  "detail": {
+                    "type": "string",
+                    "description": "Organisation detail"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city_id": {
+              "type": "string",
+              "description": "City id from `city` table"
+            },
+            "country_code": {
+              "type": "string",
+              "description": "ISO code of country from `country` table"
+            },
+            "state_id": {
+              "type": "integer",
+              "description": "state id from `state` table",
+              "format": "int32"
+            }
+          }
+        },
+        "mission_detail": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code e.g. en, fr, de etc."
+              },
+              "title": {
+                "type": "string",
+                "description": "Mission title"
+              },
+              "short_description": {
+                "type": "string",
+                "description": "Mission short description"
+              },
+              "objective": {
+                "type": "string",
+                "description": "If mission is Goal then add its objective. e.g. Plant 100 trees"
+              },
+              "label_goal_achieved": {
+                "type": "string",
+                "description": "If mission is Goal then add its label of goal achieved. e.g. Achieved goal"
+              },
+              "label_goal_objective": {
+                "type": "string",
+                "description": "If mission is Goal then add its label of objective. e.g Tree plantation"
+              },
+              "section": {
+                "type": "array",
+                "description": "These section are for 'Mission' tab in front end, you can add unlimited amount of sections(Title+description)",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Title of section"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of section"
+                    }
+                  }
+                }
+              },
+              "custom_information": {
+                "type": "array",
+                "description": "This is for Custom Information in mission detail page. You will need to add title+description which will appear on Information section.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "mission_tab_details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_tab_id": {
+                "type": "string",
+                "description": "update  mission tab content then require mission tab id"
+              },
+              "sort_key": {
+                "type": "integer",
+                "description": "sort_key would be 0,1,2, etc.."
+              },
+              "translations": {
+                "type": "array",
+                "description": "array for tab name and section and in which language you need to store",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lang": {
+                      "type": "string",
+                      "description": "language name in which you want to display content. It should be maximum 2 characters."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "tab heading name"
+                    },
+                    "section": {
+                      "type": "array",
+                      "description": "These section are for 'Mission' tab in front end, you can add unlimited amount of sections(Title+description)",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Title of section"
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Description of section"
+                          }
+                        }
+                      }
                     }
                   }
                 }
