@@ -197,8 +197,12 @@ class StateTest extends TestCase
 
     }
 
-        /**
+    /**
      * @test
+     * 
+     * return validation error on state create
+     * 
+     * @return void
      */
     public function state_test_it_should_return_required_field_validation_error_on_state_create()
     {
@@ -251,6 +255,10 @@ class StateTest extends TestCase
 
     /**
      * @test
+     * 
+     * validation error for language code on state create
+     * 
+     * @return void 
      */
     public function state_test_it_should_return_validation_error_for_language_code_on_state_create()
     {
@@ -747,6 +755,10 @@ class StateTest extends TestCase
 	
 	/**
 	 * @test
+     * 
+     * invalid language codeon state create
+     * 
+     * @return void
 	 */
 	public function state_test_it_should_return_invalid_language_code_for_tenant_on_state_create()
     {
@@ -798,6 +810,10 @@ class StateTest extends TestCase
 	
 	/**
 	 * @test
+     * 
+     * invalid language code on state update
+     * 
+     * @return void
 	 */
 	public function state_test_it_should_return_invalid_language_code_for_tenant_on_state_update()
     {
