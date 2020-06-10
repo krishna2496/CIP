@@ -342,7 +342,7 @@ return [
     'SKILL' => "skill",
     'RANDOM' => 'random-missions',
     'STATE' => 'state',
-
+    'VIRTUAL' => 'virtual-missions',
     /* sort by */
     "NEWEST" => "newest",
     "OLDEST" => "oldest",
@@ -388,6 +388,8 @@ return [
         'ERROR_IN_TOKEN_DECODE' => '210010',
         'ERROR_TOKEN_NOT_PROVIDED' => '210012',
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => '210013',
+        'ERROR_USER_EXPIRED' => '210014',
+        'ERROR_USER_BLOCKED' => '210015',
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
         'ERROR_MISSION_NOT_FOUND' => '400003',
@@ -640,6 +642,10 @@ return [
         'country_id',
         'timezone_id',
         'language_id'
-    ]
+    ],
 
+    'user_statuses' => [
+        'ACTIVE' => '1',
+        'INACTIVE' => '0'
+    ]
 ];

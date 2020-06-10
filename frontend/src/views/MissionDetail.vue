@@ -144,20 +144,7 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            <template v-else>
-                                                <div class="detail-column info-block">
-                                                    <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
-                                                             alt="user">
-                                                    </i>
-                                                    <div class="text-wrap">
-                                                        <span
-                                                                class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
-                                                        <span
-                                                                class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
-                                                    </div>
-                                                </div>
-                                            </template>
+                                            
                                             <template>
                                                 <div class="detail-column info-block" v-if="(missionDetail.application_deadline != '' && missionDetail.application_deadline != null) || (missionDetail.application_start_date != null && missionDetail.application_end_date != null )">
                                                     <i class="icon-wrap">
@@ -198,9 +185,8 @@
                                     </template>
                                     <template v-else>
                                         <div class="group-details-inner has-progress">
-                                            <div class="detail-column info-block">
-                                                <template
-                                                        v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
+                                            <div class="detail-column info-block" v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
+                                                <template>
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'"
                                                              alt="user">
@@ -212,20 +198,14 @@
                                                                 class="subtitle-text">{{ languageData.label.seats_left }}</span>
                                                     </div>
                                                 </template>
-                                                <template v-else>
-                                                    <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
-                                                             alt="user">
-                                                    </i>
-                                                    <div class="text-wrap">
-                                                        <span
-                                                                class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
-                                                        <span
-                                                                class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
-                                                    </div>
-                                                </template>
                                             </div>
-                                            <div class="detail-column progress-block">
+                                            <div 
+                                              v-bind:class="{
+                                                'progress-bar-block': (missionDetail.total_seats == 0 || missionDetail.total_seats === null),
+                                                'detail-column' : true,
+                                                'progress-block' :true
+                                              }"
+                                            >
                                                 <i class="icon-wrap">
                                                     <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
                                                          alt="user">
@@ -512,8 +492,9 @@
                                                                    :style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
                                                                 </i>
                                                                 <div class="comment-title">
-                                                                    <h5>{{comments.user.first_name}}
-                                                                        {{comments.user.last_name}}</h5>
+                                                                    <h5 v-if="comments.user.user_id != null">
+                                                                      {{comments.user.first_name}}{{comments.user.last_name}}</h5>
+                                                                    <h5 v-else>{{ languageData.label.deleted_user }}</h5>
                                                                     <p>{{ getCommentDate(comments.created_at) }}</p>
                                                                 </div>
                                                                 <div class="comment-content">

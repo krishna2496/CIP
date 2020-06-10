@@ -16,7 +16,7 @@ class UserCustomField extends Model
      * @var string
      */
     protected $table = 'user_custom_field';
-    
+
     /**
      * The primary key for the model.
      *
@@ -29,14 +29,14 @@ class UserCustomField extends Model
     *
     * @var array
     */
-    protected $fillable = ['name', 'type', 'translations', 'is_mandatory'];
-    
+    protected $fillable = ['name', 'type', 'translations', 'is_mandatory', 'internal_note'];
+
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory'];
+    protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
     
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -53,7 +53,7 @@ class UserCustomField extends Model
     {
         $this->attributes['translations'] = serialize($value);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -64,7 +64,7 @@ class UserCustomField extends Model
     {
         return unserialize($value);
     }
-    
+
     /**
      * Delete the specified resource.
      *

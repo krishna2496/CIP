@@ -98,4 +98,15 @@ class LanguageRepository implements LanguageInterface
         $languageData = $this->find($id);
         return $languageData->delete();
     }
+
+    /**
+     * It will check is language is belongs to any tenant or not
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasLanguage(int $id): bool
+    {
+        return $this->language->whereHas('language')->whereLanguageId($id)->count() ? true : false;
+    }
 }
