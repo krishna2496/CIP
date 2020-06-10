@@ -51,7 +51,7 @@ class GoogleAuthController extends Controller
                 $errorUrlPattern,
                 ($request->secure() ? 's' : ''),
                 $frontendFqdn,
-                implode(',',['GOOGLE_AUTH_ERROR']),
+                'GOOGLE_AUTH_ERROR',
             );
             return redirect($redirectUrl);
         }
@@ -66,7 +66,7 @@ class GoogleAuthController extends Controller
                 $errorUrlPattern,
                 ($request->secure() ? 's' : ''),
                 $frontendFqdn,
-                implode(',',['INVALID_EMAIL']),
+                'INVALID_EMAIL',
             );
             return redirect($redirectUrl);
         }
@@ -78,7 +78,7 @@ class GoogleAuthController extends Controller
                 $errorUrlPattern,
                 ($request->secure() ? 's' : ''),
                 $frontendFqdn,
-                implode(',',['GOOGLE_AUTH_UNAUTHORIZE']),
+                'GOOGLE_AUTH_UNAUTHORIZE',
             );
             return redirect($redirectUrl);
         }
