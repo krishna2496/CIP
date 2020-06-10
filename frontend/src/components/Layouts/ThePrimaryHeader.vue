@@ -29,6 +29,15 @@
                             <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt>
                         </b-button>
                         <ul v-if="this.$store.state.isLoggedIn">
+                            <li v-if="this.$store.state.logoRedirectUrl !== 'home'" class="has-menu no-dropdown home-link">
+                                <router-link :to="{ path: '/home'}" 
+                                    :title="languageData.label.home" class="home-icon">
+                                    <img class="home-icon"
+                                        :src="$store.state.imagePath+'/assets/images/home-ic.svg'"  
+                                    />
+                                </router-link>
+                            </li>
+                           
                             <li class="has-menu">
                                 <a href="Javascript:void(0)"
                                     :title='languageData.label.explore'>{{ languageData.label.explore}}</a>
@@ -95,6 +104,12 @@
                                         <router-link :to="{ path: '/home/random-missions'}"
                                             @click.native="menuBarclickHandler">
                                             {{languageData.label.random}}
+                                        </router-link>
+                                    </li>
+                                    <li class="no-dropdown">
+                                        <router-link :to="{ path: '/home/virtual-missions'}"
+                                            @click.native="menuBarclickHandler">
+                                            {{languageData.label.virtual_missions}}
                                         </router-link>
                                     </li>
                                 </ul>

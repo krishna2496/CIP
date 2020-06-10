@@ -75,6 +75,9 @@
 
 						<b-card-body>
 							<div class="content-block">
+								<div class="mission-label" v-if="mission.is_virtual == 1">
+									<span>{{languageData.label.virtual_mission}}</span>
+								</div>
 								<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
 										class="card-title mb-2">
 									{{mission.title | substring(60)}}
@@ -129,7 +132,8 @@
 												</div>
 											</div>
 										</template>
-										<template v-else>
+
+										<!-- <template v-else>
 											<div class="detail-column info-block">
 												<i class="icon-wrap">
 													<img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
@@ -142,7 +146,8 @@
 															class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
 												</div>
 											</div>
-										</template>
+										</template> -->
+										
 										<template v-if="mission.application_deadline != null">
 											<div class="detail-column info-block">
 												<i class="icon-wrap">
@@ -160,8 +165,8 @@
 								</template>
 								<template v-else>
 									<div class="group-details-inner  has-progress">
-										<div class="detail-column info-block">
-											<template v-if="mission.total_seats != 0 && mission.total_seats !== null">
+										<div class="detail-column info-block" v-if="mission.total_seats != 0 && mission.total_seats !== null">
+											<template >
 												<i class="icon-wrap">
 													<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'"
 														 alt="user">
@@ -172,20 +177,14 @@
 															class="subtitle-text">{{ languageData.label.seats_left }}</span>
 												</div>
 											</template>
-											<template v-else>
-												<i class="icon-wrap">
-													<img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'"
-														 alt="user">
-												</i>
-												<div class="text-wrap">
-													<span
-															class="title-text mb-1">{{mission.mission_application_count}}</span>
-													<span
-															class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
-												</div>
-											</template>
 										</div>
-										<div class="detail-column progress-block">
+										<div 
+										v-bind:class="{
+											'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
+											'detail-column' : true,
+											'progress-block' :true
+										}"
+										>
 											<i class="icon-wrap">
 												<img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
 													 alt="user">

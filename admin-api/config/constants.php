@@ -20,7 +20,7 @@
             'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '200106',
             'ERROR_NOT_VALID_EXTENSION' => '200107',
             'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => '200108',
-
+            'ERROR_LANGUAGE_UNABLE_TO_DELETE' => '200109',
         ],
         'background_process_status' => [
             'PENDING' => '0',

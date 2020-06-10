@@ -28,7 +28,7 @@ class UserCustomFieldController extends Controller
      * @var App\Repositories\UserCustomField\UserCustomFieldRepository
      */
     private $userCustomFieldRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -56,7 +56,7 @@ class UserCustomFieldController extends Controller
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -67,7 +67,7 @@ class UserCustomFieldController extends Controller
     {
         try {
             $customFields = $this->userCustomFieldRepository->userCustomFieldList($request);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($customFields->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
@@ -92,16 +92,20 @@ class UserCustomFieldController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->toArray(),
-            ["name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
-            "type" => ['required',
-                Rule::in(config('constants.custom_field_types'))],
-            "is_mandatory" => "required|boolean",
-            "translations" => "required",
-            "translations.*.lang" => "max:2",
-            "translations.*.values" => Rule::requiredIf(
-                $request->type === config('constants.custom_field_types.DROP-DOWN') ||
-                $request->type === config('constants.custom_field_types.RADIO')
-            ),
+            [
+                "name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
+                "type" => [
+                    'required',
+                    Rule::in(config('constants.custom_field_types'))
+                ],
+                "is_mandatory" => "required|boolean",
+                "translations" => "required",
+                "translations.*.lang" => "max:2",
+                "translations.*.values" => Rule::requiredIf(
+                    $request->type === config('constants.custom_field_types.DROP-DOWN') ||
+                    $request->type === config('constants.custom_field_types.RADIO')
+                ),
+                "internal_note" => "sometimes|nullable|string"
             ]
         );
         // If post parameter have any missing parameter
@@ -113,10 +117,10 @@ class UserCustomFieldController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Create new user custom field record
         $customField = $this->userCustomFieldRepository->store($request->toArray());
-        
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
@@ -149,20 +153,23 @@ class UserCustomFieldController extends Controller
             // Server side validations
             $validator = Validator::make(
                 $request->toArray(),
-                ["name" => [
-                    "sometimes",
-                    "required",
-                    "max:255",
-                    Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')],
-                "is_mandatory" => "sometimes|required|boolean",
-                "type" => [
-                    "sometimes",
-                    "required",
-                    Rule::in(config('constants.custom_field_types'))],
-                "translations.*.lang" => "max:2",
-                "translations.*.values" =>
-                Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
-                    || $request->type === config('constants.custom_field_types.RADIO')),
+                [
+                    "name" => [
+                        "sometimes",
+                        "required",
+                        "max:255",
+                        Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')
+                    ],
+                    "is_mandatory" => "sometimes|required|boolean",
+                    "type" => [
+                        "sometimes",
+                        "required",
+                        Rule::in(config('constants.custom_field_types'))
+                    ],
+                    "translations.*.lang" => "max:2",
+                    "translations.*.values" => Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
+                        || $request->type === config('constants.custom_field_types.RADIO')),
+                    "internal_note" => "sometimes|nullable|max:255"
                 ]
             );
             // If post parameter have any missing parameter
@@ -174,9 +181,9 @@ class UserCustomFieldController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             $customField = $this->userCustomFieldRepository->update($request->toArray(), $id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_UPDATED');
@@ -202,7 +209,7 @@ class UserCustomFieldController extends Controller
             );
         }
     }
-    
+
     /**
      * Display the specified user custom field detail.
      *
@@ -213,11 +220,11 @@ class UserCustomFieldController extends Controller
     {
         try {
             $fieldDetail = $this->userCustomFieldRepository->find($id);
-            
+
             $apiData = $fieldDetail->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -237,7 +244,7 @@ class UserCustomFieldController extends Controller
     {
         try {
             $customField = $this->userCustomFieldRepository->delete($id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED');

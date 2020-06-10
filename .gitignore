@@ -10,6 +10,7 @@ admin-api/node_modules
 admin-api/Homestead.json
 admin-api/Homestead.yaml
 admin-api/.env
+admin-api/phpunit.xml
 admin-api/npm-debug.log
 admin-api/storage/*
 !admin-api/storage/app
@@ -19,6 +20,7 @@ admin-api/storage/*
 # API
 /vendor
 api/.idea
+api/vendor
 api/public/storage
 api/public/uploads
 api/.htaccess
@@ -27,6 +29,7 @@ api/package-lock.json
 api/Homestead.json
 api/Homestead.yaml
 api/.env
+api/phpunit.xml
 api/storage/*
 api/storage/app/*
 !api/storage/unitTestFiles
@@ -34,6 +37,7 @@ api/storage/app/*
 !api/storage/app/default_theme
 !api/storage/app/samlCertificate
 api/vendor
+
 # API-DOC
 
 # FRONTEND
@@ -43,6 +47,7 @@ frontend/dist
 # local env files
 frontend/.env.local
 frontend/.env.*.local
+frontend/.env.development
 # Log files
 frontend/npm-debug.log*
 frontend/yarn-debug.log*

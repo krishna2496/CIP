@@ -67,6 +67,9 @@ spec:
             
       - image: registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
         name: ci-frontend
+        env: 
+        - name: VUE_APP_S3_IMAGE_PATH
+          value: https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/
         imagePullPolicy: Always
         resources:
           requests:
@@ -76,9 +79,7 @@ spec:
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
           name: ci-frontend-apache-config
           subPath: 000-default.conf
-
       volumes:
-
       - configMap:
           defaultMode: 420
           name: ci-frontend-apache-config
