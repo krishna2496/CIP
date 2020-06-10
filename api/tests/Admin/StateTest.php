@@ -457,7 +457,7 @@ class StateTest extends TestCase
                 "country_id" => "",
                 "translations" => [
                    [
-                      "lang" => "test",
+                      "lang" => "en",
                       "name" => ""
                    ]
                 ]
@@ -551,27 +551,290 @@ class StateTest extends TestCase
     public function state_test_it_return_error_not_able_to_delete_state_it_belongs_to_mission()
     {
         $connection = 'tenant';
-        $country = factory(\App\Models\Country::class)->make();
-        $country->setConnection($connection);
-        $country->save();
-        $countryId = $country->country_id;
-
+        $state = factory(\App\Models\State::class)->make();
+        $state->setConnection($connection);
+        $state->save();
+        $stateId = $state->state_id;
         
+		$city = factory(\App\Models\City::class)->make();
+        $city->setConnection($connection);
+        $city->save();
+        $city->state_id = $stateId;
+        $city->update();
+		$cityId = $city->city_id;
+		
         DB::setDefaultConnection('mysql');
-
+		
         // Add user for this country and state
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
        
-        $mission->country_id = $countryId;
+        $mission->city_id = $cityId;
         $mission->update();
 
-        $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->delete("entities/states/".$stateId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
         
+        App\Models\City::where('city_id', $cityId)->delete();
+		
+		App\Models\State::where('state_id', $stateId)->delete();
+    }
+	
+	/**
+     * @test
+     *
+     * Get state list by country id
+     *
+     * @return void
+     */
+    public function state_test_it_should_return_all_state_by_country_id()
+    {
+        // Get random langauge for country name
+        $params = [
+            "countries" => [
+                [
+                    "iso" => str_random(2),
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+        /* Add country end */
+
+        \DB::setDefaultConnection('mysql');
+        /* Add state details start */
+        $stateName = str_random(5);
+        $params = [
+            "country_id" => $countryId,
+            "states" => [
+                [
+                    "translations" => [
+                        [
+                            "lang" => "en",
+                            "name" => $stateName
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("entities/states", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
+
+        DB::setDefaultConnection('mysql');
+        // Get all states
+        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        /* Delete state details start */
+        DB::setDefaultConnection('mysql');
+
+        // Delete country and country_language data
+        $this->delete("entities/states/".$stateId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(204);
+        /* Delete state details end */
+		
+		DB::setDefaultConnection('mysql');
+        // Get all states
+        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        /* Delete country language start */
+        DB::setDefaultConnection('mysql');
+
+        // Delete country and country_language data
+        $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(204);
+    }
+	
+	/**
+     * @test
+     *
+     * Get state list by state id
+     *
+     * @return void
+     */
+	public function state_test_it_should_return_all_state_by_state_id()
+    {
+        // Get random langauge for country name
+        $params = [
+            "countries" => [
+                [
+                    "iso" => str_random(2),
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+        /* Add country end */
+
+        \DB::setDefaultConnection('mysql');
+        /* Add state details start */
+        $stateName = str_random(5);
+        $params = [
+            "country_id" => $countryId,
+            "states" => [
+                [
+                    "translations" => [
+                        [
+                            "lang" => "en",
+                            "name" => $stateName
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("entities/states", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
+
+        DB::setDefaultConnection('mysql');
+        // Get all states
+        $this->get('/entities/states/'.$stateId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
+        /* Delete state details start */
+        DB::setDefaultConnection('mysql');
+
+        // Delete country and country_language data
+        $this->delete("entities/states/".$stateId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(204);
+        /* Delete state details end */
+
+        /* Delete country language start */
+        DB::setDefaultConnection('mysql');
+
+        // Delete country and country_language data
+        $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(204);
+    }
+	
+	/**
+     * @test
+     *
+     * Return state not found error on country id
+     *
+     * @return void
+     */
+	public function state_test_it_should_return_state_not_found_on_country_id()
+    {
+        DB::setDefaultConnection('mysql');
+        // Get all states by country id
+        $this->get('/entities/countries/'.rand ( 10000 , 99999 ).'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404);
+    }
+	
+	/**
+	 * @test
+	 */
+	public function state_test_it_should_return_invalid_language_code_for_tenant_on_state_create()
+    {
+        // Get random langauge for country name
+        $params = [
+            "countries" => [
+                [
+                    "iso" => str_random(2),
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> str_random(5)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
+        /* Add country end */
+        \DB::setDefaultConnection('mysql');
+        /* Add state details start */
+        $stateName = str_random(5);
+        $params = [
+            "country_id" => $countryId,
+            "states" => [
+                [
+                    "translations" => [
+                        [
+                            "lang" => str_random(2),
+                            "name" => $stateName
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->post("entities/states", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+
+        DB::setDefaultConnection('mysql');
+
+        // Delete country and country_language data
+        $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(204);
+    }
+	
+	/**
+	 * @test
+	 */
+	public function state_test_it_should_return_invalid_language_code_for_tenant_on_state_update()
+    {
+        $connection = 'tenant';
+        $country = factory(\App\Models\Country::class)->make();
+        $country->setConnection($connection);
+        $country->save();
+        $countryId = $country->country_id;
+
+        $state = factory(\App\Models\State::class)->make();
+        $state->setConnection($connection);
+        $state->save();
+        $state->country_id = $countryId;
+        $state->update();
+
+        $params = [
+                "country_id" => $countryId,
+                "translations" => [
+                   [
+                      "lang" => str_random(2),
+                      "name" => str_random(5)
+                   ]
+                ]
+        ];
+
+        $this->patch("entities/states/".$state->state_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message"
+                ]
+            ]
+        ]);
         App\Models\Country::where('country_id', $countryId)->delete();
+        App\Models\state::where('state_id', $state->state_id)->delete();
     }
 }
