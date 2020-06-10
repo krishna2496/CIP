@@ -44,10 +44,11 @@ class GoogleAuthController extends Controller
         $adapter = $hybridauth->authenticate('Google');
         $isConnected = $adapter->isConnected();
         $frontendFqdn = $request->input('domain');
+        $errorUrlPattern = 'http%s://%s/auth/sso/error?errors=%s&source=google';
 
         if (!$isConnected) {
             $redirectUrl = sprintf(
-                'http%s://%s/saml-error?errors=%s',
+                $errorUrlPattern,
                 ($request->secure() ? 's' : ''),
                 $frontendFqdn,
                 implode(',',['GOOGLE_AUTH_ERROR']),
@@ -62,10 +63,10 @@ class GoogleAuthController extends Controller
 
         if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL) || !$isOptimyDomain) {
             $redirectUrl = sprintf(
-                'http%s://%s/saml-error?errors=%s',
+                $errorUrlPattern,
                 ($request->secure() ? 's' : ''),
                 $frontendFqdn,
-                implode(',',['INVALID_OPTIMY_EMAIL']),
+                implode(',',['INVALID_EMAIL']),
             );
             return redirect($redirectUrl);
         }
@@ -74,7 +75,7 @@ class GoogleAuthController extends Controller
 
         if (!$isAdminUser) {
             $redirectUrl = sprintf(
-                'http%s://%s/saml-error?errors=%s',
+                $errorUrlPattern,
                 ($request->secure() ? 's' : ''),
                 $frontendFqdn,
                 implode(',',['GOOGLE_AUTH_UNAUTHORIZE']),
