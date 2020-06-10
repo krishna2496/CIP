@@ -498,7 +498,7 @@ return [
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
 
-        'MISSION_TAB_ID_DOESNOT_EXIST' => '100001'
+        'MISSION_TAB_NOT_FOUND' => '400051'
     ],
 
     /**

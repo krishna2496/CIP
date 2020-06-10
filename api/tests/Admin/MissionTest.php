@@ -1,7 +1,7 @@
 <?php
 
 class MissionTest extends TestCase
-{   
+{
     /**
      * @test (priority=1)
      *
@@ -106,7 +106,7 @@ class MissionTest extends TestCase
                                         ]
                                     ]
                                 ],
-                            ]	
+                            ]
                         ],
                         [
                             "sort_key"=> 2,
@@ -121,7 +121,7 @@ class MissionTest extends TestCase
                                         ]
                                     ]
                                 ]
-                            ]	
+                            ]
                         ]
                     ],
                     "media_images" => [[
@@ -162,7 +162,7 @@ class MissionTest extends TestCase
                     ]
                 ];
         
-        \DB::setDefaultConnection('mysql');       
+        \DB::setDefaultConnection('mysql');
         
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201)
@@ -174,7 +174,6 @@ class MissionTest extends TestCase
             'status',
         ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-        
     }
 
     /**
@@ -310,7 +309,7 @@ class MissionTest extends TestCase
                                 ]
                             ]
                         ],
-                    ]	
+                    ]
                 ],
                 [
                     "sort_key"=> 2,
@@ -325,7 +324,7 @@ class MissionTest extends TestCase
                                 ]
                             ]
                         ]
-                    ]	
+                    ]
                 ]
             ],
             "media_images" => [[
@@ -376,7 +375,6 @@ class MissionTest extends TestCase
             "data",
             "message"
         ]);
-        
     }
 
     /**
@@ -471,7 +469,7 @@ class MissionTest extends TestCase
 
                                     ]
                                 ],
-                            ]	
+                            ]
                         ],
                     ],
                     "media_images" => [[
@@ -525,15 +523,17 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission->mission_id,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
             'status',
             ]);
         $mission->delete();
-        
     }
 
     /**
@@ -563,7 +563,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -611,7 +611,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -695,7 +695,6 @@ class MissionTest extends TestCase
                 ]
             ]
         ]);
-        
     }
 
     /**
@@ -707,8 +706,8 @@ class MissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_type()
     {
-        $params = [                    
-                    "mission_type" => "GOAL1",                   
+        $params = [
+                    "mission_type" => "GOAL1",
                 ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -722,7 +721,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -770,7 +769,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -802,7 +801,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $mission->delete();
     }
 
@@ -931,7 +930,6 @@ class MissionTest extends TestCase
             'status',
         ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-        
     }
 
     /**
@@ -1048,15 +1046,17 @@ class MissionTest extends TestCase
             "publication_status" => config("constants.publication_status.PUBLISHED_FOR_APPLYING"),
         ];
 
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
             'status',
             ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-        
     }
 
     /**
@@ -1165,15 +1165,17 @@ class MissionTest extends TestCase
         App\Models\MissionMedia::where("mission_id", $mission[0]['mission_id'])->delete();
         DB::setDefaultConnection('mysql');
 
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
             'status',
             ]);
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-        
     }
 
     /**
@@ -1367,14 +1369,16 @@ class MissionTest extends TestCase
                     ]
                 ];
 
-        $this->patch("missions/".$mission->mission_id, $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission->mission_id,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
             'status',
             ]);
-        
     }
 
     
@@ -1386,7 +1390,7 @@ class MissionTest extends TestCase
      * @return void
      */
     public function it_should_delete_mission_media()
-    {   
+    {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
@@ -1397,12 +1401,12 @@ class MissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1438,7 +1442,7 @@ class MissionTest extends TestCase
                     "default" => "0",
                     "sort_order" => "1"
                 ]
-            ],            
+            ],
             "documents" => [],
             "media_videos"=> [],
             "start_date" => "2019-05-15 10:40:00",
@@ -1477,7 +1481,7 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
 
         $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
         // Return error if you are trying to delete default mission media
@@ -1493,9 +1497,8 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         App\Models\Mission::where("mission_id", $missionId)->delete();
-        
     }
 
     /**
@@ -1506,7 +1509,7 @@ class MissionTest extends TestCase
      * @return void
      */
     public function it_should_delete_mission_document()
-    {    
+    {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
@@ -1517,12 +1520,12 @@ class MissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1554,7 +1557,7 @@ class MissionTest extends TestCase
                     "default" => "1",
                     "sort_order" => "1"
                 ]
-            ],            
+            ],
             "documents" => [[
                     "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
                     "sort_order" => "1"
@@ -1597,8 +1600,8 @@ class MissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
-        App\Models\Mission::where("mission_id", $missionId)->delete();        
+        ]);
+        App\Models\Mission::where("mission_id", $missionId)->delete();
     }
 
     /**
@@ -1686,10 +1689,10 @@ class MissionTest extends TestCase
                     ]
                 ];
         
-        \DB::setDefaultConnection('mysql');       
+        \DB::setDefaultConnection('mysql');
         
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);        
+        ->seeStatusCode(422);
     }
 
     /**
@@ -1802,8 +1805,11 @@ class MissionTest extends TestCase
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         DB::setDefaultConnection('mysql');
 
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -1824,8 +1830,11 @@ class MissionTest extends TestCase
             ]
         ];
 
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('mysql');
@@ -1841,8 +1850,11 @@ class MissionTest extends TestCase
             ]
         ];
 
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('mysql');
@@ -1857,8 +1869,11 @@ class MissionTest extends TestCase
         ]
         ];
 
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('tenant');
@@ -1875,8 +1890,11 @@ class MissionTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(422);
 
         DB::setDefaultConnection('tenant');
@@ -1893,8 +1911,11 @@ class MissionTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(422);
 
         DB::setDefaultConnection('tenant');
@@ -1909,12 +1930,14 @@ class MissionTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->patch("missions/".$mission[0]['mission_id'], $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission[0]['mission_id'],
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(422);
 
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
-        
     }
 
     /**
@@ -2001,10 +2024,13 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission->mission_id,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(422);
-        $mission->delete();        
+        $mission->delete();
     }
 
     /**
@@ -2095,7 +2121,7 @@ class MissionTest extends TestCase
                                         ]
                                     ]
                                 ],
-                            ]	
+                            ]
                         ]
                     ],
                     "media_images" => [[
@@ -2143,8 +2169,11 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission->mission_id,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -2156,11 +2185,11 @@ class MissionTest extends TestCase
                 ]
             ]
         ]);
-        $mission->delete();        
+        $mission->delete();
     }
 
 
-        /**
+    /**
      * @test
      *
      * Update mission tab with mission tab id api
@@ -2252,7 +2281,7 @@ class MissionTest extends TestCase
 
                                     ]
                                 ],
-                            ]	
+                            ]
                         ],
                     ],
                     "media_images" => [[
@@ -2306,14 +2335,16 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params,
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch(
+            "missions/".$mission->mission_id,
+            $params,
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
             'status',
             ]);
         $mission->delete();
-        
     }
 }

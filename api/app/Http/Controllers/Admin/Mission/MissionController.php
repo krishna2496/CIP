@@ -102,7 +102,6 @@ class MissionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-
             // Get mission
             $missions = $this->missionRepository->missionList($request);
 
@@ -298,7 +297,7 @@ class MissionController extends Controller
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',"mission_tab_details.*.sort_key" => 'required|integer',
-                "mission_tab_details.*.mission_tab_id" => 'sometimes|required',
+                "mission_tab_details.*.mission_tab_id" => 'sometimes|required|exists:mission_tab,id,deleted_at,NULL',
                 "mission_tab_details.*.sort_key" => "required_without:mission_tab_details.*.mission_tab_id|integer",
                 "mission_tab_details.*.translations" => "required_without:mission_tab_details.*.mission_tab_id",
                 "mission_tab_details.*.translations.*.lang" => "required_with:mission_tab_details.*.translations|max:2",
@@ -414,19 +413,19 @@ class MissionController extends Controller
             }
         }
         
-        //check for mission tab is linked with mission or not
-        try{            
-            if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {                
-                foreach($request->mission_tab_details as $missionTabValue) {
-                    if(isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== "")) {
-                        $this->missionRepository->checkExistMissionTabId($missionTabValue['mission_tab_id']);
+        // Check for mission tab id is valid or not
+        try {
+            if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
+                foreach ($request->mission_tab_details as $missionTabValue) {
+                    if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== "")) {
+                        $this->missionRepository->isMissionTabLinkedToMission($id, $missionTabValue['mission_tab_id']);
                     }
                 }
             }
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.MISSION_TAB_ID_DOESNOT_EXIST'),
-                trans('messages.custom_error_message.MISSION_TAB_ID_DOESNOT_EXIST')
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
             );
         }
 
