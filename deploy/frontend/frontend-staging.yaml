@@ -65,7 +65,7 @@ spec:
           requests:
             cpu: 10m
             
-      - image: registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
+      - image: registry.kubernetes.infra.optimy.net/ci/ci-source-staging:{{GO_PIPELINE_LABEL}}
         name: ci-frontend
         env: 
         - name: VUE_APP_S3_IMAGE_PATH

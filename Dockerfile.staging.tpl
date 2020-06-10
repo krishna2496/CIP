@@ -1,20 +1,5 @@
-FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
+FROM registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
 
-COPY . /optimy
-RUN rm /optimy/Dockerfile
-
-# Install nodeJS
-RUN apt-get install curl -y
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
-RUN apt-get install -y nodejs
-
-# Install api-admin dependencies
-RUN cd /optimy/admin-api && composer install
-RUN cd /optimy/admin-api && npm install
-
-# Install api dependencies
-RUN cd /optimy/api && composer install
-RUN cd /optimy/api && npm install
 
 
 # Frontend
