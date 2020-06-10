@@ -70,6 +70,10 @@ spec:
         env: 
         - name: VUE_APP_S3_IMAGE_PATH
           value: https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/
+        - name: VUE_APP_API_ENDPOINT
+          value: https://api.ci.staging.optimy.net/
+        - name: VUE_APP_LANGUAGE_API_ENDPOINT
+          value: https://api.ci.staging.optimy.net/language/
         imagePullPolicy: Always
         resources:
           requests:
