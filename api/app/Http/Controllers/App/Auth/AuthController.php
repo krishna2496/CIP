@@ -122,6 +122,7 @@ class AuthController extends Controller
 
         if ($samlSettings
             && count($samlSettings)
+            && $samlSettings[0]['option_value']
             && $samlSettings[0]['option_value']['saml_access_only']
         ) {
             return $this->responseHelper->error(
