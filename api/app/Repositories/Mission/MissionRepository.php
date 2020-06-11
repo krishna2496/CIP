@@ -174,7 +174,7 @@ class MissionRepository implements MissionInterface
             unset($missionLanguage);
         }
 
-        //Add mission tab detail
+        // Add mission tab detail
         if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
             $this->missionTabRepository->store($request, $mission->mission_id);
         }
@@ -1613,7 +1613,7 @@ class MissionRepository implements MissionInterface
                     $missionTabLanguage['language_id'] = $missionTabLanguadeValue['language_id'];
                     $missionTabLanguage['language_code'] = $languageCode;
                     $missionTabLanguage['name'] = $missionTabLanguadeValue['name'];
-                    $missionTabLanguage['section'] = $missionTabLanguadeValue['section'];
+                    $missionTabLanguage['section'] = json_decode($missionTabLanguadeValue['section']);
                     array_push($missionLanguageArray["languages"], $missionTabLanguage);
                 }
                 $value['missionTab'][$missionTabKey] = $missionLanguageArray;
