@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: cip-cronjob-api-cli
+  name: ci-cronjob-api-cli
 spec:
   concurrencyPolicy: Forbid 
   jobTemplate:
@@ -14,12 +14,12 @@ spec:
             name: api-cli 
             volumeMounts:
             - mountPath: /optimy/.env
-              name: cip-config
+              name: ci-config
               subPath: .env
           restartPolicy: OnFailure
           volumes:
           - configMap:
               defaultMode: 420
-              name: cip-api-config
-            name: cip-config
+              name: ci-api-config
+            name: ci-config
   schedule: "* * * * *"

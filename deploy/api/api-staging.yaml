@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: cip-api-deployment
+  name: ci-api-deployment
   labels:
-    app: cip-api
+    app: ci-api
     deployment: {{DEPLOYMENT}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cip-api
+      app: ci-api
   template:
     metadata:
       labels:
-        app: cip-api
+        app: ci-api
         deployment: {{DEPLOYMENT}}
     spec:
       affinity:
@@ -42,7 +42,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-api
+                  - ci-api
               topologyKey: failure-domain.beta.kubernetes.io/zone
             weight: 10
           - podAffinityTerm:
@@ -51,7 +51,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-api
+                  - ci-api
               topologyKey: kubernetes.io/hostname
             weight: 20
       containers:
@@ -65,8 +65,8 @@ spec:
           requests:
             cpu: 10m
 
-      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
-        name: cip-api 
+      - image: registry.kubernetes.infra.optimy.net/ci/ci-source-staging:{{GO_PIPELINE_LABEL}}
+        name: ci-api 
         imagePullPolicy: Always
         resources:
           requests:
@@ -74,10 +74,10 @@ spec:
             memory: 128Mi
         volumeMounts:
         - mountPath: /optimy/api/.env
-          name: cip-api-config
+          name: ci-api-config
           subPath: .env
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
-          name: cip-api-apache-config
+          name: ci-api-apache-config
           subPath: 000-default.conf
         ports:
         - containerPort: 80
@@ -85,12 +85,12 @@ spec:
       volumes:
       - configMap:
           defaultMode: 420
-          name: cip-api-config
-        name: cip-api-config
+          name: ci-api-config
+        name: ci-api-config
       - configMap:
           defaultMode: 420
-          name: cip-api-apache-config
-        name: cip-api-apache-config
+          name: ci-api-apache-config
+        name: ci-api-apache-config
             
 
 ---
@@ -98,16 +98,16 @@ kind: Service
 apiVersion: v1
 metadata:
   namespace: staging
-  name: cip-api-service
+  name: ci-api-service
   labels:
-    app: cip-api
+    app: ci-api
 spec:
   selector:
-    app: cip-api
+    app: ci-api
   ports:
     - protocol: TCP
       port: 80
-      name: cip-api-service
+      name: ci-api-service
     - protocol: TCP
       port: 9117
       name: exporter
@@ -116,15 +116,15 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: cip-api-ingress
+  name: ci-api-ingress
   namespace: staging
 spec:
   rules:
-  - host: api.cip.staging.optimy.net
+  - host: api.ci.staging.optimy.net
     http:
       paths:
       - backend:
-          serviceName: cip-api-service
+          serviceName: ci-api-service
           servicePort: 80
 status:
   loadBalancer: {}

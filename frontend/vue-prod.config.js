@@ -24,7 +24,6 @@ module.exports = {
         });
     },
 
-    //publicPath: process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
     publicPath: '/',
 
     lintOnSave: false,
@@ -33,7 +32,6 @@ module.exports = {
         host: host,
         port: port,
         https: false,
-
     },
 
     pluginOptions: {

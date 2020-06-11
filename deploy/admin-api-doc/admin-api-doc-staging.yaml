@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: cip-admin-api-doc-deployment
+  name: ci-admin-api-doc-deployment
   labels:
-    app: cip-admin-api-doc
+    app: ci-admin-api-doc
     deployment: {{DEPLOYMENT}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cip-admin-api-doc
+      app: ci-admin-api-doc
   template:
     metadata:
       labels:
-        app: cip-admin-api-doc
+        app: ci-admin-api-doc
         deployment: {{DEPLOYMENT}}
     spec:
       affinity:
@@ -42,7 +42,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-admin-api-doc
+                  - ci-admin-api-doc
               topologyKey: failure-domain.beta.kubernetes.io/zone
             weight: 10
           - podAffinityTerm:
@@ -51,7 +51,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-admin-api-doc
+                  - ci-admin-api-doc
               topologyKey: kubernetes.io/hostname
             weight: 20
       containers:
@@ -65,8 +65,8 @@ spec:
           requests:
             cpu: 10m
 
-      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
-        name: cip-admin-api-doc
+      - image: registry.kubernetes.infra.optimy.net/ci/ci-source-staging:{{GO_PIPELINE_LABEL}}
+        name: ci-admin-api-doc
         imagePullPolicy: Always
         resources:
           requests:
@@ -74,7 +74,7 @@ spec:
             memory: 128Mi
         volumeMounts:
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
-          name: cip-admin-api-doc-apache-config
+          name: ci-admin-api-doc-apache-config
           subPath: 000-default.conf
         ports:
         - containerPort: 80
@@ -82,24 +82,24 @@ spec:
       volumes:
       - configMap:
           defaultMode: 420
-          name: cip-admin-api-doc-apache-config
-        name: cip-admin-api-doc-apache-config
+          name: ci-admin-api-doc-apache-config
+        name: ci-admin-api-doc-apache-config
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
   namespace: staging
-  name: cip-admin-api-doc-service
+  name: ci-admin-api-doc-service
   labels:
-    app: cip-admin-api-doc
+    app: ci-admin-api-doc
 spec:
   selector:
-    app: cip-admin-api-doc
+    app: ci-admin-api-doc
   ports:
     - protocol: TCP
       port: 80
-      name: cip-admin-api-doc-service
+      name: ci-admin-api-doc-service
     - protocol: TCP
       port: 9117
       name: exporter
@@ -113,16 +113,16 @@ metadata:
       94.225.245.228/32, 52.57.232.26/32, 51.38.187.3/32, 212.161.79.81/29, 52.29.166.205/32, 112.199.89.162/32, 203.177.98.75/32, 210.213.230.26/32, 210.213.242.66/32
     traefik.ingress.kubernetes.io/priority: "1"
     ingress.kubernetes.io/auth-type: "basic"
-    ingress.kubernetes.io/auth-secret: "cip-admin-api-doc"
-  name: cip-api-admin-doc-ingress
+    ingress.kubernetes.io/auth-secret: "ci-admin-api-doc"
+  name: ci-api-admin-doc-ingress
   namespace: staging
 spec:
   rules:
-  - host: admin-api-doc.cip.staging.optimy.net
+  - host: admin-api-doc.ci.staging.optimy.net
     http:
       paths:
       - backend:
-          serviceName: cip-admin-api-doc-service
+          serviceName: ci-admin-api-doc-service
           servicePort: 80
 status:
   loadBalancer: {}
