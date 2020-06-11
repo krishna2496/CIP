@@ -212,7 +212,7 @@ return [
         'ERROR_USER_SKILL_NOT_FOUND' => "Verzochte vaardigheid kon niet worden gevonden",
         'ERROR_SLIDER_IMAGE_UPLOAD' => "Kan slider-afbeelding niet uploaden",
         'ERROR_SLIDER_INVALID_DATA' => "Ongeldige invoergegevens",
-        'ERROR_SLIDER_LIMIT' => "Sorry, u kunt niet meer dan ".config." toevoegen"('constants.SLIDER_LIMIT').' glijstang!',
+        'ERROR_SLIDER_LIMIT' => "Sorry, u kunt niet meer dan ".config('constants.SLIDER_LIMIT')." dia's toevoegen!",
         'ERROR_NOT_VALID_EXTENSION' => "Bestand moet van het type .scss zijn",
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => "Bestandsnaam komt niet overeen met structuur",
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => "Gebruik a.u.b. één van de volgende bestandstypen om een afbeelding te uploaden: jpeg, jpg, svg, png.",
