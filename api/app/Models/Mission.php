@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\VolunteeringAttribute;
 
 class Mission extends Model
 {
@@ -231,15 +232,6 @@ class Mission extends Model
         return $this->hasMany(Comment::class, 'mission_id', 'mission_id');
     }
 
-    /**
-     * Get availability associated with the mission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function availability(): BelongsTo
-    {
-        return $this->belongsTo(Availability::class, 'availability_id', 'availability_id');
-    }
 
     /**
      * Get timesheet associated with the mission.
@@ -378,17 +370,15 @@ class Mission extends Model
         return $this->hasMany('App\User', 'availability_id', 'availability_id');
     }
 
-    /**
-     * Set is virtual attribute on the model.
-     *
-     * @param $value
-     * @return void
-     */
-    public function setIsVirtualAttribute($value): void
-    {
-        if (!is_null($value)) {
-            $this->attributes['is_virtual'] = (string)$value;
-        }
-    }
+    
 
+    /**
+    * Get timesheet associated with the mission.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function volunteeringAttribute(): HasOne
+    {
+        return $this->hasOne(VolunteeringAttribute::class, 'mission_id', 'mission_id');
+    }
 }

@@ -1,7 +1,6 @@
 <?php
 
 require_once('../../../../bootstrap/app.php');
-use Illuminate\Support\Str;
 
 $db = app()->make('db');
 
@@ -28,6 +27,7 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
         
+        //Drop FOREIGN KEY
         $pdo->exec('ALTER TABLE mission 
             DROP FOREIGN KEY mission_availability_id_foreign
         ');

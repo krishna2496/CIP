@@ -95,20 +95,24 @@ class MissionRepository implements MissionInterface
                 'country_id' => $countryId,
                 'start_date' => (isset($request->start_date)) ? $request->start_date : null,
                 'end_date' => (isset($request->end_date)) ? $request->end_date : null,
-                'total_seats' => (isset($request->total_seats) && ($request->total_seats !== '')) ?
-                 $request->total_seats : null,
                 'publication_status' => $request->publication_status,
                 'organisation_id' => $request->organisation['organisation_id'],
                 'organisation_name' => $request->organisation['organisation_name'],
                 'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
                 $request->organisation['organisation_detail'] : null,
-                'availability_id' => $request->availability_id,
-                'mission_type' => $request->mission_type,
-                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
+                'mission_type' => $request->mission_type
             );
         
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
+        
+        $volunteeringAttributeArray = array(
+            'total_seats' => (isset($request->volunteering_attribute['total_seats']) && 
+                            ($request->volunteering_attribute['total_seats'] !== '')) ? $request->volunteering_attribute['total_seats'] : null,
+            'availability_id' => $request->volunteering_attribute['availability_id'],
+            'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
+        );
+        $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
 
         // Entry into goal_mission table
         if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
@@ -228,17 +232,7 @@ class MissionRepository implements MissionInterface
         if (isset($request->organisation['organisation_detail'])) {
             $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
         }
-        if (isset($request->total_seats)) {
-            $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
-            $request->total_seats : null;
-            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-            $request->request->add(['total_seats' => $totalSeats]);
-        }
-
-        if (isset($request->total_seats) && ($request->total_seats === '')) {
-            $request->request->set('total_seats', null);
-        }
-
+        
         if (isset($request->theme_id) && ($request->theme_id === '')) {
             $request->request->set('theme_id', null);
         }
@@ -246,6 +240,18 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->findOrFail($id);
         $mission->update($request->toArray());
 
+        // update volunteering attribute
+        if (isset($request->volunteering_attribute['total_seats'])) {
+            $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
+            $request->volunteering_attribute['total_seats'] : null;
+            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+            $request->request->add(['total_seats' => $totalSeats]);
+        }
+
+        if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
+            $request->request->set('total_seats', null);
+        }
+        
         // update goal_mission details
         if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
             $goalMissionArray = array(
