@@ -1,6 +1,6 @@
 <?php
 
-require_once('bootstrap/app.php');
+require_once('../../../../bootstrap/app.php');
 use Illuminate\Support\Str;
 
 $db = app()->make('db');
@@ -8,7 +8,7 @@ $db = app()->make('db');
 $pdo = $db->connection('mysql')->getPdo();
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at IS NULL')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
