@@ -248,7 +248,7 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => "Sollicitatie kon niet worden gevonden",
         'ERROR_MISSION_RATING_INVALID_DATA' => "Opdrachtbeoordeling kon niet worden aangemaakt. Controleer a.u.b. de invoerparameters",
         'ERROR_MISSION_COMMENT_INVALID_DATA' => "Opmerking kon niet worden aangemaakt. Controleer a.u.b. de invoerparameters",
-        'ERROR_SKILL_LIMIT' => "Sorry, u kunt niet meer dan ".config." toevoegen"('constants.SKILL_LIMIT').' vaardigheden',
+        'ERROR_SKILL_LIMIT' => 'Sorry, u kunt niet meer dan '.config('constants.SKILL_LIMIT').' vaardigheden toevoegen',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => "invoer op urenstaat kon niet worden gevonden",
         'ERROR_USER_MISSIONS_NOT_FOUND' => "Opdrachten konden niet worden gevonden",
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => "U kunt goedgekeurde urenstaatdocumenten niet verwijderen",
