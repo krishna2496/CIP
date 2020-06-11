@@ -47,4 +47,4 @@ data:
     </VirtualHost>
 kind: ConfigMap
 metadata:
-  name: cip-api-apache-config
+  name: ci-api-apache-config
