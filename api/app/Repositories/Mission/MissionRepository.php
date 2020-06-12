@@ -646,13 +646,13 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] === config('constants.LOWEST_AVAILABLE_SEATS')) {
-                $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
-                    $volunteeringAttributeQuery->orderByRaw('total_seats IS NULL, total_seats - mission_application_count ASC');
-                });
+                // $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
+                    $missionQuery->orderByRaw('total_seats IS NULL, total_seats - mission_application_count ASC');
+                // });
             }
             if ($userFilterData['sort_by'] === config('constants.HIGHEST_AVAILABLE_SEATS')) {
                 $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
-                    $volunteeringAttributeQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application_count DESC');
+                    $missionQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application_count DESC');
                 });
             }
             if ($userFilterData['sort_by'] === config('constants.MY_FAVOURITE')) {
