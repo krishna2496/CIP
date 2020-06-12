@@ -22,6 +22,6 @@ class VolunteeringAttributeRepository implements VolunteeringAttributeInterface
      */
     public function __construct(VolunteeringAttribute $volunteeringAttribute)
     {
-        
+        $this->volunteeringAttribute = $volunteeringAttribute;
     }
 }
