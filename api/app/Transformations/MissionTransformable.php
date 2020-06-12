@@ -26,7 +26,9 @@ trait MissionTransformable
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
         }
-
+//         echo "<pre>";
+// print_r($mission->toArray());
+// exit;
         if (isset($mission['start_date'])) {
             $mission['start_date'] = Carbon::parse(
                 $mission['start_date'],
@@ -87,9 +89,19 @@ trait MissionTransformable
             }
             unset($mission['availability']);
         }
+
+        //if availability id is set
+        if (isset($mission['volunteeringAttribute'])) {
+            $mission['availability_id'] = $mission['volunteeringAttribute']['availability_id'];
+            $mission['is_virtual'] = $mission['volunteeringAttribute']['is_virtual'];
+            $mission['total_seats'] = $mission['volunteeringAttribute']['total_seats'];
+            unset($mission['volunteeringAttribute']);
+        }
+        
         // Set seats_left or already_volunteered
-        if ($mission['total_seats'] !== 0 && $mission['total_seats'] !== null) {
-            $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
+        if ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] !== null) {
+            $mission['seats_left'] = ($mission['volunteeringAttribute']['total_seats']) -
+            ($mission['mission_application_count']);
         } else {
             $mission['already_volunteered'] = $mission['mission_application_count'];
         }
@@ -124,7 +136,7 @@ trait MissionTransformable
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
        
         if (($mission['user_application_count'] > 0) ||
-            ($mission['total_seats'] !== 0 && $mission['total_seats'] === $mission['mission_application_count']) ||
+            ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] === $mission['mission_application_count']) ||
             ($mission['end_date'] !== null && $mission['end_date'] <= $today)
             ) {
             $mission['set_view_detail'] = 1;
@@ -199,7 +211,7 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-      
+        unset($mission['volunteeringAttribute']);
         return $mission;
     }
 }

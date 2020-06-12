@@ -146,6 +146,7 @@ class MissionController extends Controller
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
+       
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);

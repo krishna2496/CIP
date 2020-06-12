@@ -80,7 +80,9 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name',
+    'volunteeringAttribute'
+    ];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -360,17 +362,6 @@ class Mission extends Model
         return null;
     }
 
-    /**
-     * Get users associated with the mission availability.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function availableUsers(): HasMany
-    {
-        return $this->hasMany('App\User', 'availability_id', 'availability_id');
-    }
-
-    
 
     /**
     * Get timesheet associated with the mission.

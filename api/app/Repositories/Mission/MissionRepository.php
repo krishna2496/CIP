@@ -240,18 +240,31 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->findOrFail($id);
         $mission->update($request->toArray());
 
+        $volunteeringAttributeArray = [];
+
         // update volunteering attribute
         if (isset($request->volunteering_attribute['total_seats'])) {
             $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
             $request->volunteering_attribute['total_seats'] : null;
             $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
             $request->request->add(['total_seats' => $totalSeats]);
+            $volunteeringAttributeArray['total_seats'] = $totalSeats;
         }
 
         if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
-            $request->request->set('total_seats', null);
+            $volunteeringAttributeArray['total_seats'] = null;
         }
-        
+        if (isset($request->volunteering_attribute['availability_id'])) {
+            $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
+        }
+
+        if (isset($request->volunteering_attribute['is_virtual'])) {
+            $volunteeringAttributeArray['is_virtual'] = (string)$request->volunteering_attribute['is_virtual'];
+        }
+
+        if ($volunteeringAttributeArray) {
+            $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
+        }
         // update goal_mission details
         if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
             $goalMissionArray = array(
@@ -442,12 +455,10 @@ class MissionRepository implements MissionInterface
             'mission.country_id',
             'mission.start_date',
             'mission.end_date',
-            'mission.total_seats',
             'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
-            'mission.organisation_name',
-            'mission.is_virtual'
+            'mission.organisation_name'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
         'missionLanguage', 'goalMission', 'timeMission'])
@@ -512,7 +523,7 @@ class MissionRepository implements MissionInterface
        
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability'
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
@@ -635,10 +646,14 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] === config('constants.LOWEST_AVAILABLE_SEATS')) {
-                $missionQuery->orderByRaw('total_seats IS NULL, total_seats - mission_application_count ASC');
+                $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
+                    $volunteeringAttributeQuery->orderByRaw('total_seats IS NULL, total_seats - mission_application_count ASC');
+                });
             }
             if ($userFilterData['sort_by'] === config('constants.HIGHEST_AVAILABLE_SEATS')) {
-                $missionQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application_count DESC');
+                $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
+                    $volunteeringAttributeQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application_count DESC');
+                });
             }
             if ($userFilterData['sort_by'] === config('constants.MY_FAVOURITE')) {
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
@@ -1171,7 +1186,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'availability'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])
@@ -1434,8 +1449,10 @@ class MissionRepository implements MissionInterface
                 $query->whereHas('missionSkill.skilledUsers', function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 });
-                $query->OrWhereHas('availableUsers', function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
+                $query->OrWhereHas('volunteeringAttribute', function ($volunteeringAttributeQuery) use ($userId) {
+                    $volunteeringAttributeQuery->OrWhereHas('availableUsers', function ($userQuery) use ($userId) {
+                        $userQuery->where('user_id', $userId);
+                    });
                 });
             })
             ->count();

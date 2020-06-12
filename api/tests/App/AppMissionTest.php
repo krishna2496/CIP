@@ -88,11 +88,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => [
                 [
                     "skill_id" => $skill->skill_id
@@ -102,7 +105,7 @@ class AppMissionTest extends TestCase
 
         $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-        dd($res);
+       
         DB::setDefaultConnection('mysql');
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
@@ -366,11 +369,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -535,7 +541,6 @@ class AppMissionTest extends TestCase
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2020-07-28 11:40:00",
             "application_start_date" => "2019-05-15 10:40:00",
             "application_end_date" => "2020-05-15 10:40:00",
@@ -543,7 +548,11 @@ class AppMissionTest extends TestCase
             "application_end_time" => "2020-05-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -885,11 +894,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -982,11 +994,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1079,11 +1094,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1177,11 +1195,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1275,11 +1296,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1378,11 +1402,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1478,11 +1505,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1566,11 +1596,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1664,11 +1697,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1762,11 +1798,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1860,11 +1899,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -1958,11 +2000,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -2056,11 +2101,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -2163,11 +2211,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -2263,11 +2314,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -2435,11 +2489,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2020-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -2568,11 +2625,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => []
         ];
 
@@ -2686,11 +2746,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => [
                 [
                     "skill_id" => $skill->skill_id
@@ -2800,11 +2863,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => [
                 [
                     "skill_id" => $skill->skill_id
@@ -2912,11 +2978,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -3019,11 +3088,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => [
                 [
                     "skill_id" => $skill->skill_id
@@ -3139,7 +3211,6 @@ class AppMissionTest extends TestCase
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2020-07-28 11:40:00",
             "application_start_date" => "2019-05-15 10:40:00",
             "application_end_date" => "2019-07-15 10:40:00",
@@ -3147,7 +3218,11 @@ class AppMissionTest extends TestCase
             "application_end_time" => "2019-07-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ]
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -3280,11 +3355,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => date("Y-m-d H:i:s"),
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => [
                 [
                     "skill_id" => $skill->skill_id
@@ -3383,11 +3461,14 @@ class AppMissionTest extends TestCase
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
             "theme_id" => 1,
-            "availability_id" => 1,
+            "volunteering_attribute" => [
+                "availability_id" => 1,
+                "total_seats" => rand(10, 1000),
+                "is_virtual" => 0
+            ],
             "skills" => []
         ];
 

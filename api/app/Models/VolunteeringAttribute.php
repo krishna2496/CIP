@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Skill;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VolunteeringAttribute extends Model
 {
@@ -91,5 +93,15 @@ class VolunteeringAttribute extends Model
         if (!is_null($value)) {
             $this->attributes['is_virtual'] = (string)$value;
         }
+    }
+
+    /**
+     * Get users associated with the volunteering availability.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function availableUsers(): HasMany
+    {
+        return $this->hasMany('App\User', 'availability_id', 'availability_id');
     }
 }
