@@ -28,7 +28,7 @@ class CreateOrganizationTable extends Migration
             $table->timestamps();
 
             $table->foreign('city_id')->references('city_id')->on('city')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('state_id')->references('state_id')->on('city')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('state_id')->references('state_id')->on('state')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
