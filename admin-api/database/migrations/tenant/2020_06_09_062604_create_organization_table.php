@@ -20,9 +20,9 @@ class CreateOrganizationTable extends Migration
             $table->integer('phone_number');
             $table->string('address_line_1',255);
             $table->string('address_line_2',255);
-            $table->unsignedBigInteger('city_id');
-            $table->unsignedBigInteger('state_id');
-            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('city_id')->nullable();
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->unsignedBigInteger('country_id')->nullable();
             $table->integer('postal_code');
             $table->softDeletes();
             $table->timestamps();
