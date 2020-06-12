@@ -528,6 +528,7 @@ class MissionRepository implements MissionInterface
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
+            
             ->with(['missionLanguage' => function ($query) {
                 $query->select(
                     'mission_language_id',
@@ -647,12 +648,12 @@ class MissionRepository implements MissionInterface
             }
             if ($userFilterData['sort_by'] === config('constants.LOWEST_AVAILABLE_SEATS')) {
                 // $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
-                    $missionQuery->orderByRaw('total_seats IS NULL, total_seats - mission_application_count ASC');
+                    $missionQuery->orderByRaw('volunteering_attribute.total_seats - mission_application.mission_application_count ASC');
                 // });
             }
             if ($userFilterData['sort_by'] === config('constants.HIGHEST_AVAILABLE_SEATS')) {
                 $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
-                    $missionQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application_count DESC');
+                    $missionQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application.mission_application_count DESC');
                 });
             }
             if ($userFilterData['sort_by'] === config('constants.MY_FAVOURITE')) {

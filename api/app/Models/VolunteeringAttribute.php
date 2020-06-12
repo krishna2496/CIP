@@ -104,4 +104,14 @@ class VolunteeringAttribute extends Model
     {
         return $this->hasMany('App\User', 'availability_id', 'availability_id');
     }
+
+    /**
+     * Get the mission application associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionApplication(): HasMany
+    {
+        return $this->hasMany(MissionApplication::class, 'mission_id', 'mission_id');
+    }
 }
