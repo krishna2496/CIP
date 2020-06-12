@@ -8,7 +8,7 @@ $pdo = $db->connection('mysql')->getPdo();
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 use Illuminate\Support\Str;
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 AND deleted_at IS NULL')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -28,7 +28,7 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $uniqueOrganizationDataFromMission = $pdo->query('select organisation_id ,organisation_name, organisation_detail from mission GROUP BY organisation_name')->fetchAll();
+        $uniqueOrganizationDataFromMission = $pdo->query('select organisation_id ,organisation_name from mission GROUP BY organisation_name')->fetchAll();
 
         if (!empty($uniqueOrganizationDataFromMission)) {
             foreach ($uniqueOrganizationDataFromMission as $organizationData) {
@@ -37,15 +37,21 @@ if (count($tenants) > 0) {
                 $pdo->exec('SET NAMES utf8mb4');
                 $pdo->exec('SET CHARACTER SET utf8mb4');
 
-                $pdo->prepare('
-                    INSERT INTO organization (id, name, created_at) VALUES
-                    (:id, :name, :created_at)
-                ')
-                ->execute([
-                    'id' => $id,
-                    'name' => $name,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
+                $sql = $pdo->prepare("SELECT name FROM organization WHERE name=?");
+                $sql->execute([$name]); 
+                $getExistingOrganization = $sql->fetchAll();
+
+                if(count($getExistingOrganization) === 0){
+                    $pdo->prepare('
+                        INSERT INTO organization (id, name, created_at) VALUES
+                        (:id, :name, :created_at)
+                    ')
+                    ->execute([
+                        'id' => $id,
+                        'name' => $name,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
             }
         }
 
