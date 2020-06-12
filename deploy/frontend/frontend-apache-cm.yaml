@@ -47,4 +47,4 @@ data:
     </VirtualHost>
 kind: ConfigMap
 metadata:
-  name: cip-frontend-apache-config
+  name: ci-frontend-apache-config

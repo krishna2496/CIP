@@ -151,25 +151,28 @@ class SamlController extends Controller
             if ($name === 'language_id') {
                 $language = $this->languageHelper->getTenantLanguageByCode($request, $value);
                 if (!$language) {
-                    $validationErrors[] = 'Language';
+                  $validationErrors[] = 'Language';
+                } else {
+                  $value = $language->language_id;
                 }
-                $value = $language->language_id;
             }
 
             if ($name === 'timezone_id') {
                 $timezone = $this->timezoneRepository->getTenantTimezoneByCode($value);
                 if (!$timezone) {
-                     $validationErrors[] = 'Timezone';
+                  $validationErrors[] = 'Timezone';
+                } else {
+                  $value = $timezone->timezone_id;
                 }
-                $value = $timezone->timezone_id;
             }
 
             if ($name === 'country_id') {
                 $country = $this->countryRepository->getCountryByCode($value);
                 if (!$country) {
-                     $validationErrors[] = 'Country';
+                  $validationErrors[] = 'Country';
+                } else {
+                  $value = $country->country_id;
                 }
-                $value = $country->country_id;
             }
 
             $userData[$name] = $value;
@@ -268,11 +271,10 @@ class SamlController extends Controller
         }
 
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
-        $sloUrl = $auth->logout(null, [], null, null, true);
+        $auth->logout(null, [], null, null, true);
 
         $auth->redirectTo(
-            'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/auth/slo',
-            ['slo' => $sloUrl]
+            'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/auth/slo'
         );
     }
 
