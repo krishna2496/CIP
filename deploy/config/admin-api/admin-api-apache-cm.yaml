@@ -48,4 +48,3 @@ data:
 kind: ConfigMap
 metadata:
   name: ci-admin-api-apache-config
-  namespace: staging
