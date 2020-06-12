@@ -47,5 +47,5 @@ data:
     </VirtualHost>
 kind: ConfigMap
 metadata:
-  name: cip-admin-api-apache-config
+  name: ci-admin-api-apache-config
   namespace: staging
