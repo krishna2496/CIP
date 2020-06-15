@@ -252,13 +252,13 @@ class MissionController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $missionId): JsonResponse
     {
         try {
-            $this->missionRepository->find($id);
+            $this->missionRepository->find($missionId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -337,7 +337,7 @@ class MissionController extends Controller
                         $this->missionMediaRepository->find($mediaImages['media_id']);
                         $mediaImage = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaImages['media_id'],
-                            $id
+                            $missionId
                         );
                         if (!$mediaImage) {
                             return $this->responseHelper->error(
@@ -357,7 +357,7 @@ class MissionController extends Controller
                         $this->missionMediaRepository->find($mediaVideos['media_id']);
                         $mediaVideo = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaVideos['media_id'],
-                            $id
+                            $missionId
                         );
                         if (!$mediaVideo) {
                             return $this->responseHelper->error(
@@ -384,7 +384,7 @@ class MissionController extends Controller
                         $this->missionRepository->findDocument($mediaDocuments['document_id']);
                         $mediaDocument = $this->missionRepository->isDocumentLinkedToMission(
                             $mediaDocuments['document_id'],
-                            $id
+                            $missionId
                         );
                         if (!$mediaDocument) {
                             return $this->responseHelper->error(
@@ -405,7 +405,7 @@ class MissionController extends Controller
         }
 
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
-        $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
+        $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
 
         // Check for default language delete
         if (isset($request->mission_detail)) {
@@ -430,7 +430,7 @@ class MissionController extends Controller
             if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
                 foreach ($request->mission_tab_details as $missionTabValue) {
                     if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== "")) {
-                        $this->missionRepository->isMissionTabLinkedToMission($id, $missionTabValue['mission_tab_id']);
+                        $this->missionRepository->isMissionTabLinkedToMission($missionId, $missionTabValue['mission_tab_id']);
                     }
                 }
             }
@@ -441,7 +441,7 @@ class MissionController extends Controller
             );
         }
 
-        $this->missionRepository->update($request, $id);
+        $this->missionRepository->update($request, $missionId);
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
@@ -456,7 +456,7 @@ class MissionController extends Controller
             get_class($this),
             $request->toArray(),
             null,
-            $id
+            $missionId
         ));
 
         // Send notification to user if mission publication status is PUBLISHED
@@ -467,7 +467,7 @@ class MissionController extends Controller
         ) {
             // Send notification to all users
             $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
-            $entityId = $id;
+            $entityId = $missionId;
             $action = config('constants.notification_actions.'.$request->publication_status);
 
             event(new UserNotificationEvent($notificationType, $entityId, $action));
