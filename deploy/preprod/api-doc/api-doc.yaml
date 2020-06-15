@@ -114,7 +114,7 @@ metadata:
   name: ci-api-doc-ingress
 spec:
   rules:
-  - host: api-doc.ci.prod.optimy.net
+  - host: api-doc.ci.test.optimy.net
     http:
       paths:
       - backend:
