@@ -430,13 +430,19 @@ class Helpers
     {
         $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
 
-        $payload = json_encode([
+        $params = [
             'activity_type' => 'user',
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
             'source' => 'ci',
             'ci_user_id' => $userId,
             'tenant_id' => $tenantIdAndSponsorId->tenant_id
-        ]);
+        ];
+
+        if ($request->backend_internal_notes) {
+            $params['backend_internal_notes'] = $request->backend_internal_notes;
+        }
+
+        $payload = json_encode($params);
 
         $this->amqp->publish(
             'ciSynchronizer',

@@ -573,6 +573,15 @@ class UserRepository implements UserInterface
     private function getUserArrayDataFromRequest(Request $request)
     {
         $requestData = $request->toArray();
+
+        if (array_key_exists('request_sync_source', $requestData)) {
+            unset($requestData['request_sync_source']);
+        }
+
+        if (array_key_exists('backend_internal_notes', $requestData)) {
+            unset($requestData['backend_internal_notes']);
+        }
+
         $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
             ? $request->expiry : null;
         if (isset($request->status)) {
