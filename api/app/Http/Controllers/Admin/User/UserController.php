@@ -220,19 +220,8 @@ class UserController extends Controller
             }
         }
 
-        $requestData = $request->toArray();
-        $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
-            ? $request->expiry : null;
-        $requestData['status'] = config('constants.user_statuses.ACTIVE');
-        if (isset($request->status)) {
-            $requestData['status'] = $request->status
-                ? config('constants.user_statuses.ACTIVE')
-                : config('constants.user_statuses.INACTIVE');
-        }
-
-
         // Create new user
-        $user = $this->userRepository->store($requestData);
+        $user = $this->userRepository->store($request);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -256,11 +245,6 @@ class UserController extends Controller
             null,
             $user->user_id
         ));
-
-        if ($user) {
-            $this->helpers
-                ->syncOptimyVolunteer($request, $user->user_id);
-        }
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -357,17 +341,8 @@ class UserController extends Controller
                 }
             }
 
-            $requestData = $request->toArray();
-            $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
-                ? $request->expiry : null;
-            if (isset($request->status)) {
-                $requestData['status'] = $request->status
-                    ? config('constants.user_statuses.ACTIVE')
-                    : config('constants.user_statuses.INACTIVE');
-            }
-
             // Update user
-            $user = $this->userRepository->update($requestData, $id);
+            $user = $this->userRepository->update($request, $id);
 
             // Check profile complete status
             $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -391,11 +366,6 @@ class UserController extends Controller
                 null,
                 $user->user_id
             ));
-
-            if ($user) {
-                $this->helpers
-                    ->syncOptimyVolunteer($request, $user->user_id);
-            }
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {

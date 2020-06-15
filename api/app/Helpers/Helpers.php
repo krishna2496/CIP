@@ -426,14 +426,15 @@ class Helpers
      *
      * @return void
      */
-    public function syncOptimyVolunteer($request, $userId)
+    public function syncUserData($request, $userId)
     {
         $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
 
         $payload = json_encode([
             'activity_type' => 'user',
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
-            'user_id' => $userId,
+            'source' => 'ci',
+            'ci_user_id' => $userId,
             'tenant_id' => $tenantIdAndSponsorId->tenant_id
         ]);
 

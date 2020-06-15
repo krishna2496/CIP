@@ -59,6 +59,8 @@ class UserRepository implements UserInterface
      */
     private $languageHelper;
 
+    const SOURCE_ACTION_BACKEND = 'backend';
+
     /**
      * Create a new User repository instance.
      *
@@ -94,12 +96,22 @@ class UserRepository implements UserInterface
     /**
      * Store a newly created resource in storage.
      *
-     * @param array $request
+     * @param Illuminate\Http\Request $request
      * @return App\User
      */
-    public function store(array $request): User
+    public function store(Request $request): User
     {
-        return $this->user->create($request);
+        // Default user to active
+        if (!isset($request->status)) {
+            $request->status = config('constants.user_statuses.ACTIVE');
+        }
+        $requestData = $this->getUserArrayDataFromRequest($request);
+        $user = $this->user->create($requestData);
+
+        $this->helpers
+            ->syncUserData($request, $user->user_id);
+
+        return $user;
     }
 
     /**
@@ -159,14 +171,22 @@ class UserRepository implements UserInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param  array  $request
+     * @param Illuminate\Http\Request $request
      * @param  int  $id
      * @return App\User
      */
-    public function update(array $request, int $id): User
+    public function update(Request $request, int $id): User
     {
+        $requestData = $this->getUserArrayDataFromRequest($request);
         $user = $this->user->findOrFail($id);
-        $user->update($request);
+        $user->update($requestData);
+
+        if (isset($request->request_sync_source) && $request->request_sync_source === self::SOURCE_ACTION_BACKEND) {
+            return $user;
+        }
+
+        $this->helpers
+            ->syncUserData($request, $user->user_id);
         return $user;
     }
 
@@ -548,5 +568,19 @@ class UserRepository implements UserInterface
 
         $userData->update(["is_profile_complete" => $profileComplete]);
         return $userData;
+    }
+
+    private function getUserArrayDataFromRequest(Request $request)
+    {
+        $requestData = $request->toArray();
+        $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+            ? $request->expiry : null;
+        if (isset($request->status)) {
+            $requestData['status'] = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
+        return $requestData;
     }
 }
