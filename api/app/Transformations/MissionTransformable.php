@@ -26,9 +26,7 @@ trait MissionTransformable
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
         }
-//         echo "<pre>";
-// print_r($mission->toArray());
-// exit;
+       
         if (isset($mission['start_date'])) {
             $mission['start_date'] = Carbon::parse(
                 $mission['start_date'],
@@ -99,8 +97,8 @@ trait MissionTransformable
         }
         
         // Set seats_left or already_volunteered
-        if ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] !== null) {
-            $mission['seats_left'] = ($mission['volunteeringAttribute']['total_seats']) -
+        if ($mission['total_seats'] !== 0 && $mission['total_seats'] !== null) {
+            $mission['seats_left'] = ($mission['total_seats']) -
             ($mission['mission_application_count']);
         } else {
             $mission['already_volunteered'] = $mission['mission_application_count'];

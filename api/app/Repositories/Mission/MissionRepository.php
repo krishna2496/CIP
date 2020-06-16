@@ -406,7 +406,8 @@ class MissionRepository implements MissionInterface
             'country.languages',
             'missionLanguage',
             'timeMission',
-            'goalMission'
+            'goalMission',
+            'volunteeringAttribute'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
@@ -461,7 +462,7 @@ class MissionRepository implements MissionInterface
             'mission.organisation_name'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission'])
+        'missionLanguage', 'goalMission', 'timeMission','volunteeringAttribute'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -522,13 +523,13 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->select('mission.*');
        
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        $missionQuery->leftjoin('volunteering_attribute', 'volunteering_attribute.mission_id', '=', 'mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
-            
             ->with(['missionLanguage' => function ($query) {
                 $query->select(
                     'mission_language_id',
@@ -647,14 +648,10 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] === config('constants.LOWEST_AVAILABLE_SEATS')) {
-                // $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
-                    $missionQuery->orderByRaw('volunteering_attribute.total_seats - mission_application.mission_application_count ASC');
-                // });
+                $missionQuery->orderByRaw('volunteering_attribute.total_seats IS NULL, volunteering_attribute.total_seats - mission_application_count ASC');
             }
             if ($userFilterData['sort_by'] === config('constants.HIGHEST_AVAILABLE_SEATS')) {
-                $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) {
-                    $missionQuery->orderByRaw('total_seats IS NOT NULL, total_seats - mission_application.mission_application_count DESC');
-                });
+                $missionQuery->orderByRaw('volunteering_attribute.total_seats IS NOT NULL, volunteering_attribute.total_seats - mission_application_count DESC');
             }
             if ($userFilterData['sort_by'] === config('constants.MY_FAVOURITE')) {
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
@@ -696,7 +693,7 @@ class MissionRepository implements MissionInterface
         }
 
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-            $missionQuery->where("mission.is_virtual", "1");
+            $missionQuery->where("volunteering_attribute.is_virtual", "1");
         }
         
         $page = $request->page ?? 1;
@@ -797,7 +794,10 @@ class MissionRepository implements MissionInterface
                         });
                     }
                     if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-                        $missionQuery->where("mission.is_virtual", "1");
+                        $missionQuery->with('volunteeringAttribute');
+                        $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) use ($request) {
+                            $volunteeringAttributeQuery->where("is_virtual", "1");
+                        });
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
@@ -847,7 +847,10 @@ class MissionRepository implements MissionInterface
                         });
                     }
                     if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-                        $missionQuery->where("mission.is_virtual", "1");
+                        $missionQuery->with('volunteeringAttribute');
+                        $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) use ($request) {
+                            $volunteeringAttributeQuery->where("is_virtual", "1");
+                        });
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
@@ -912,7 +915,10 @@ class MissionRepository implements MissionInterface
                         );
                     }
                     if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-                        $missionQuery->where("mission.is_virtual", "1");
+                        $missionQuery->with('volunteeringAttribute');
+                        $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) use ($request) {
+                            $volunteeringAttributeQuery->where("is_virtual", "1");
+                        });
                     }
                 }
                 $missionQuery->with(['missionTheme'])
@@ -994,7 +1000,10 @@ class MissionRepository implements MissionInterface
                         }
 
                         if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-                            $query->where("mission.is_virtual", "1");
+                            $query->with('volunteeringAttribute');
+                            $query->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) use ($request) {
+                                $volunteeringAttributeQuery->where("is_virtual", "1");
+                            });
                         }
                     }
                 });
@@ -1040,7 +1049,10 @@ class MissionRepository implements MissionInterface
                         });
                     }
                     if ($request->input('explore_mission_type') === config('constants.VIRTUAL')) {
-                        $missionQuery->where("mission.is_virtual", "1");
+                        $missionQuery->with('volunteeringAttribute');
+                        $missionQuery->wherehas('volunteeringAttribute', function ($volunteeringAttributeQuery) use ($request) {
+                            $volunteeringAttributeQuery->where("is_virtual", "1");
+                        });
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
