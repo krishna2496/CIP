@@ -67,13 +67,6 @@ spec:
             
       - image: registry.kubernetes.infra.optimy.net/ci/ci-source-staging:{{GO_PIPELINE_LABEL}}
         name: ci-frontend
-        env: 
-        - name: VUE_APP_S3_IMAGE_PATH
-          value: https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/
-        - name: VUE_APP_API_ENDPOINT
-          value: https://api.ci.staging.optimy.net/
-        - name: VUE_APP_LANGUAGE_API_ENDPOINT
-          value: https://api.ci.staging.optimy.net/language/
         imagePullPolicy: Always
         resources:
           requests:
@@ -87,9 +80,7 @@ spec:
       - configMap:
           defaultMode: 420
           name: ci-frontend-apache-config
-        name: ci-frontend-apache-config
-      
-       
+        name: ci-frontend-apache-config   
 ---
 kind: Service
 apiVersion: v1

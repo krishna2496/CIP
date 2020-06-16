@@ -121,7 +121,7 @@ metadata:
   name: ci-api-admin-ingress
 spec:
   rules:
-  - host: admin-api.ci.prod.optimy.net
+  - host: admin-api.ci.test.optimy.net
     http:
       paths:
       - backend:

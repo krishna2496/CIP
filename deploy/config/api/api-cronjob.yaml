@@ -9,11 +9,13 @@ spec:
       template:
         spec:
           containers:
-          - image: registry.kubernetes.infra.optimy.net/ci/api-cli:{{GO_PIPELINE_LABEL}}
+          - image: registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
             imagePullPolicy: IfNotPresent
-            name: api-cli 
+            name: api-cli
+            command:
+              - /optimy/api/run-jobs.sh
             volumeMounts:
-            - mountPath: /optimy/.env
+            - mountPath: /optimy/api/.env
               name: ci-config
               subPath: .env
           restartPolicy: OnFailure
