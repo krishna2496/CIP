@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
      * @return void
      */
     public function report(Exception $exception)
-    {          dd($exception);
+    {   
         parent::report($exception);
     }
 
@@ -52,7 +52,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        dd($exception);
         if (env('APP_ENV') === 'local' && env('APP_DEBUG')) {
             dd($exception);
         }
