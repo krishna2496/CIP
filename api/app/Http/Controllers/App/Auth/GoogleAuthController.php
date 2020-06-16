@@ -24,8 +24,16 @@ class GoogleAuthController extends Controller
         $this->userRepository = $userRepository;
     }
 
+    // TODO: Refactor!!!
     public function login(Request $request)
     {
+        $frontendFqdn = $request->input('domain');
+        $state = $request->input('state');
+
+        if ($state) {
+            $decodedToken = $this->helpers->decodeJwtToken($state);
+            $frontendFqdn = $decodedToken->domain;
+        }
 
         $config = [
             'callback' => route('google.authentication'),
@@ -35,6 +43,9 @@ class GoogleAuthController extends Controller
                     "keys" => [
                         "id" => env('GOOGLE_AUTH_ID'),
                         "secret" => env('GOOGLE_AUTH_SECRET'),
+                    ],
+                    'authorize_url_parameters' => [
+                        'state' => $this->helpers->encodeJwtToken(['domain' => $frontendFqdn], 60)
                     ]
                 ]
             ]
@@ -43,7 +54,6 @@ class GoogleAuthController extends Controller
         $hybridauth = new Hybridauth($config);
         $adapter = $hybridauth->authenticate('Google');
         $isConnected = $adapter->isConnected();
-        $frontendFqdn = $request->input('domain');
         $errorUrlPattern = 'http%s://%s/auth/sso/error?errors=%s&source=google';
 
         if (!$isConnected) {
@@ -57,6 +67,7 @@ class GoogleAuthController extends Controller
         }
 
         $userProfile = $adapter->getUserProfile();
+
         $userEmail = $userProfile->email;
 
         $isOptimyDomain = preg_match('/\.optimy\.com$/i', $userEmail) || preg_match('/@optimy\.com$/i', $userEmail);

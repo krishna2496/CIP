@@ -178,10 +178,7 @@ class Helpers
         int $duration = 14400
     ) : string {
         $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
-            'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + $duration, // Expiration time
             'fqdn' => $tenantName
         ];
 
@@ -191,7 +188,24 @@ class Helpers
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
+        return Helpers::encodeJwtToken($payload, $duration);
+    }
+
+    public static function encodeJwtToken(
+        $params = [],
+        $duration = 300
+    ) {
+        $payload = array_merge([
+            'iss' => "lumen-jwt",
+            'iat' => time(),
+            'exp' => time() + $duration,
+        ], $params);
         return JWT::encode($payload, env('JWT_SECRET'));
+    }
+
+    public static function decodeJwtToken($token)
+    {
+        return JWT::decode($token, env('JWT_SECRET'), ['HS256']);
     }
 
     /**
