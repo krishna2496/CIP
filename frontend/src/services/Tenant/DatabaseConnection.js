@@ -80,6 +80,13 @@ export default async(langList, defautLang) => {
                   logoRedirectUrl = data.logo_redirect_url;
               }
               store.commit('setLogoRedirectUrl', logoRedirectUrl);
+              
+              // Saml Settings
+              if (data.saml_settings) {
+                  store.commit('setSamlSettings', JSON.stringify(data.saml_settings));
+              } else {
+                  store.commit('setSamlSettings', JSON.stringify(false));
+              }
 
           } else {
               localStorage.removeItem('slider');
