@@ -26,7 +26,7 @@ class DropColumnIsVirtualFromMissionTable extends Migration
     public function down()
     {
         Schema::table('mission', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `mission` ADD `is_virtual` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `organisation_detail`");
+            \DB::statement("ALTER TABLE `mission` ADD `is_virtual` ENUM('0','1') NOT NULL DEFAULT '0'");
         });
     }
 }
