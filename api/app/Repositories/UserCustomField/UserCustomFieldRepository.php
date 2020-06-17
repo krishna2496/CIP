@@ -43,7 +43,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
-            $customFields = $customFields->orderBy('field_id', $orderDirection);
+            $customFields = $customFields->orderBy('order', $orderDirection);
         }
 
         return $customFields->paginate($request->perPage);
@@ -138,6 +138,6 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      */
     public function getUserCustomFields(Request $request): Collection
     {
-        return $this->field->get();
+        return $this->field->orderBy('order', 'asc')->get();
     }
 }
