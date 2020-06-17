@@ -161,8 +161,15 @@
 		mounted() {
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
-			yearsList.push([0,this.languageData.label.all]);
-			for (let index = currentYear; index > (currentYear - 5); index--) {
+			yearsList.push([0, this.languageData.label.all]);
+			let yearDiff = 5;
+			if (store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+				let lastYear = store.state.timesheetFromYear;
+				if ((currentYear - lastYear) + 1 > 0) {
+					yearDiff = (currentYear - lastYear) + 1;
+				}
+			}
+			for (let index = currentYear; index > (currentYear - yearDiff); index--) {
 				yearsList.push([index, index]);
 			}
 			this.skillYearList = yearsList;
