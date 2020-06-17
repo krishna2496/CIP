@@ -2653,7 +2653,7 @@ class AppMissionTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
-        App\Models\Mission::where("mission_id", $mission->mission_id)->update(['total_seats' => 0]);
+        App\Models\VolunteeringAttribute::where("mission_id", $mission->mission_id)->update(['total_seats' => 0]);
         DB::setDefaultConnection('mysql');
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
