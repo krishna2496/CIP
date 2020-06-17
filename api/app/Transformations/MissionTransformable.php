@@ -133,11 +133,13 @@ trait MissionTransformable
         $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
        
-        if (($mission['user_application_count'] > 0) ||
+        if ($mission['volunteeringAttribute']) {
+            if (($mission['user_application_count'] > 0) ||
             ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] === $mission['mission_application_count']) ||
             ($mission['end_date'] !== null && $mission['end_date'] <= $today)
             ) {
-            $mission['set_view_detail'] = 1;
+                $mission['set_view_detail'] = 1;
+            }
         }
 
         if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
