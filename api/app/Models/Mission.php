@@ -89,7 +89,7 @@ class Mission extends Model
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet'
+        'goalMission','timeMission','comment','timesheet', 'volunteeringAttribute'
     ];
     
     /**
