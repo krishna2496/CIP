@@ -8344,6 +8344,11 @@
             "textarea"
           ]
         },
+        "order": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Field order"
+        },
         "translations": {
           "type": "array",
           "items": {
