@@ -16,6 +16,7 @@ use App\Models\MissionDocument;
 use App\Models\MissionLanguage;
 use App\Models\FavouriteMission;
 use App\Models\MissionApplication;
+use App\Models\missionTab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -49,6 +50,10 @@ class Mission extends Model
 
     private $helpers;
 
+    /**
+     * @var App\Models\missionTab
+     */
+    public $missionTab;
 
     /**
      * The attributes that are mass assignable.
@@ -81,7 +86,7 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name',
-    'volunteeringAttribute'
+    'volunteeringAttribute', 'missionTab'
     ];
 
     /*
@@ -89,7 +94,7 @@ class Mission extends Model
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'volunteeringAttribute'
+        'goalMission','timeMission','comment','timesheet', 'volunteeringAttribute', 'missionTab'
     ];
     
     /**
@@ -364,12 +369,22 @@ class Mission extends Model
 
 
     /**
-    * Get timesheet associated with the mission.
+    * Get volunteering attribute associated with the mission.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
     public function volunteeringAttribute(): HasOne
     {
         return $this->hasOne(VolunteeringAttribute::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get mission-tab associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionTab(): HasMany
+    {        
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
     }
 }
