@@ -47,8 +47,8 @@ class LanguageController extends Controller
     {
         $this->s3helper = $s3helper;
         $this->helpers = $helpers;
-		$this->languageHelper = $languageHelper;
-		$this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
+        $this->responseHelper = $responseHelper;
     }
 
     /**

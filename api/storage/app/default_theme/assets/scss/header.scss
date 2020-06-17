@@ -20,7 +20,7 @@ header {
     &:not(.modal-header) {
         right: 0;
         left: 0;
-        z-index: 99999;
+        z-index: 9999;
         background: $white;
         width: 100%;
         position: fixed;
@@ -449,10 +449,7 @@ header {
 }
 
 .menu-wrap {
-    padding-left: 60px;
-    @include lg-max{
-        padding-left: 25px;
-    }
+    padding-left:0!important;
     >ul {
         display: flex;
         list-style: none;

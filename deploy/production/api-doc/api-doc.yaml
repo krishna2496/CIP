@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: cip-api-deployment
+  name: ci-api-doc-deployment
   labels:
-    app: cip-api
+    app: ci-api-doc
     deployment: {{DEPLOYMENT}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cip-api
+      app: ci-api-doc
   template:
     metadata:
       labels:
-        app: cip-api
+        app: ci-api-doc
         deployment: {{DEPLOYMENT}}
     spec:
       affinity:
@@ -42,7 +42,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-api
+                  - ci-api-doc
               topologyKey: failure-domain.beta.kubernetes.io/zone
             weight: 10
           - podAffinityTerm:
@@ -51,7 +51,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cip-api
+                  - ci-api-doc
               topologyKey: kubernetes.io/hostname
             weight: 20
       containers:
@@ -65,19 +65,16 @@ spec:
           requests:
             cpu: 10m
 
-      - image: registry.kubernetes.infra.optimy.net/cip/cip-source:{{GO_PIPELINE_LABEL}}
-        name: cip-api 
+      - image: registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
+        name: ci-api-doc
         imagePullPolicy: Always
         resources:
           requests:
             cpu: 40m
             memory: 128Mi
         volumeMounts:
-        - mountPath: /optimy/api/.env
-          name: cip-api-config
-          subPath: .env
         - mountPath: /etc/apache2/sites-enabled/000-default.conf
-          name: cip-api-apache-config
+          name: ci-api-doc-apache-config
           subPath: 000-default.conf
         ports:
         - containerPort: 80
@@ -85,29 +82,23 @@ spec:
       volumes:
       - configMap:
           defaultMode: 420
-          name: cip-api-config
-        name: cip-api-config
-      - configMap:
-          defaultMode: 420
-          name: cip-api-apache-config
-        name: cip-api-apache-config
-            
+          name: ci-api-doc-apache-config
+        name: ci-api-doc-apache-config
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: staging
-  name: cip-api-service
+  name: ci-api-doc-service
   labels:
-    app: cip-api
+    app: ci-api-doc
 spec:
   selector:
-    app: cip-api
+    app: ci-api-doc
   ports:
     - protocol: TCP
       port: 80
-      name: cip-api-service
+      name: ci-api-doc-service
     - protocol: TCP
       port: 9117
       name: exporter
@@ -116,15 +107,18 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: cip-api-ingress
-  namespace: staging
+  annotations:
+    traefik.ingress.kubernetes.io/priority: "1"
+    ingress.kubernetes.io/auth-type: "basic"
+    ingress.kubernetes.io/auth-secret: "ci-api-doc"
+  name: ci-api-doc-ingress
 spec:
   rules:
-  - host: api.cip.staging.optimy.net
+  - host: api-doc.ci.prod.optimy.net
     http:
       paths:
       - backend:
-          serviceName: cip-api-service
+          serviceName: ci-api-doc-service
           servicePort: 80
 status:
   loadBalancer: {}

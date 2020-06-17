@@ -6,9 +6,9 @@ data:
 
     AddDefaultCharset utf-8
 
-    DocumentRoot /optimy/api-doc
+    DocumentRoot /optimy/admin-api-doc
 
-    <Directory /optimy/api-doc>
+    <Directory /optimy/admin-api-doc>
         Require all granted
         AllowOverride All
     </Directory>
@@ -47,5 +47,4 @@ data:
     </VirtualHost>
 kind: ConfigMap
 metadata:
-  name: cip-api-doc-apache-config
-  namespace: staging
+  name: ci-admin-api-doc-apache-config
