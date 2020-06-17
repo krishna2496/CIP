@@ -77,6 +77,7 @@ class UserCustomFieldTest extends TestCase
             'data' => [
                 [
                     'field_id',
+                    'order',
                     'name',
                     'type',
                     'translations',
@@ -429,6 +430,7 @@ class UserCustomFieldTest extends TestCase
             "status",
             "data" => [
                 "field_id",
+                "order",
                 "name",
                 "type",
                 "translations"
