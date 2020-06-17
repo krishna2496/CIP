@@ -121,6 +121,7 @@ class UserCustomFieldTest extends TestCase
         $name = str_random(20);
         $params = [
             'name' => $name,
+            'order' => 1,
             'type' => $typeArray[$randomTypes],
             'is_mandatory' => 1,
             'translations' => [
@@ -243,7 +244,7 @@ class UserCustomFieldTest extends TestCase
             $params,
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
-        ->seeStatusCode(404)
+        ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
                 [

@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Repositories\UserCustomField;
 
+use App\Models\UserCustomField;
 use App\Repositories\UserCustomField\UserCustomFieldInterface;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use App\Models\UserCustomField;
 
 class UserCustomFieldRepository implements UserCustomFieldInterface
 {
@@ -15,7 +16,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      * @var App\Models\UserCustomField
      */
     private $field;
-    
+
     /**
      * Create a new repository instance.
      *
@@ -26,7 +27,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     {
         $this->field = $field;
     }
-    
+
     /**
      * Get listing of user custom fields
      *
@@ -39,7 +40,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
         if ($request->has('search')) {
             $customFields = $customFields->where('name', 'like', '%' . $request->input('search') . '%');
         }
-        
+
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $customFields = $customFields->orderBy('field_id', $orderDirection);
@@ -47,7 +48,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
 
         return $customFields->paginate($request->perPage);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -58,21 +59,21 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     {
         return $this->field->create($request);
     }
-    
+
     /**
-    * Update the specified resource in storage.
-    *
-    * @param  array  $request
-    * @param  int  $id
-    * @return App\Models\UserCustomField
-    */
+     * Update the specified resource in storage.
+     *
+     * @param  array  $request
+     * @param  int  $id
+     * @return App\Models\UserCustomField
+     */
     public function update(array $request, int $id): UserCustomField
     {
         $customField = $this->field->findOrFail($id);
         $customField->update($request);
         return $customField;
     }
-    
+
     /**
      * Find user custom field in storage.
      *
@@ -83,7 +84,41 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     {
         return $this->field->findOrFail($id);
     }
-       
+
+    /**
+     * Returns value of the highest order.
+     *
+     * @return Int
+     */
+    public function findMaxOrder(): Int
+    {
+        return $this->field->max('order');
+    }
+
+    /**
+     * Selects records between certain order.
+     *
+     * @param integer $currentOrder
+     * @param integer $requestOrder
+     *
+     * @return Collection
+     */
+    public function findByOrder($currentOrder, $requestOrder): Collection
+    {
+        // where condition for $currentOrder > $requestOrder
+        $fields = $this->field->where('order', '>=', $requestOrder);
+        $fields = $fields->where('order', '<', $currentOrder);
+
+        if ($currentOrder < $requestOrder) {
+            $fields = $this->field->where('order', '>', $currentOrder);
+            $fields = $fields->where('order', '<=', $requestOrder);
+        }
+
+        $fields = $fields->orderBy('order', 'asc');
+
+        return $fields->lockForUpdate()->get();
+    }
+
     /**
      * Remove the specified resource from storage.
      *
