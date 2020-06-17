@@ -20,6 +20,7 @@ import moment from 'moment'
 import 'moment-timezone';
 import customCss from './services/CustomCss'
 import 'vue-search-select/dist/VueSearchSelect.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = process.env.NODE_ENV !== 'production'
@@ -155,7 +156,7 @@ Vue.filter('substring', (value, data) => {
 });
 
 window.addEventListener('storage', function (e) {
-    if (event.key === 'logout-event') { 
+    if (event.key === 'logout-event') {
         location.reload();
     }
 },false);
