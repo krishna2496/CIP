@@ -28,12 +28,20 @@ class GoogleAuthController extends Controller
     public function login(Request $request)
     {
         $frontendFqdn = $request->input('domain');
+        $tenantId = $request->input('tenant');
         $state = $request->input('state');
 
         if ($state) {
             $decodedToken = $this->helpers->decodeJwtToken($state);
             $frontendFqdn = $decodedToken->domain;
+            $tenantId = $decodedToken->tenant;
         }
+
+        $this->helpers->createConnection($tenantId);
+        $state = $this->helpers->encodeJwtToken([
+            'tenant' => $tenantId,
+            'domain' => $frontendFqdn
+        ], 60);
 
         $config = [
             'callback' => route('google.authentication'),
@@ -45,7 +53,7 @@ class GoogleAuthController extends Controller
                         "secret" => env('GOOGLE_AUTH_SECRET'),
                     ],
                     'authorize_url_parameters' => [
-                        'state' => $this->helpers->encodeJwtToken(['domain' => $frontendFqdn], 60)
+                        'state' => $state,
                     ]
                 ]
             ]

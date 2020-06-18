@@ -190,7 +190,6 @@ $router->group(
  [
      'prefix' => '/app/google',
      'namespace' => 'App\Auth',
-     'middleware' => 'tenant.connection',
  ],
  function ($router) {
      $router->get('auth', ['as' => 'google.authentication', 'uses' => 'GoogleAuthController@login']);
