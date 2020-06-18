@@ -171,6 +171,7 @@ class MissionApplicationController extends Controller
         $search = $request->get('search');
         $order = $request->get('order', []);
         $limit = $request->get('limit', []);
+        $isVirtual = (string) $request->get('isVirtual', null);
         $tenantLanguages = $languageHelper->getTenantLanguages($request);
 
         $applicationList = $missionApplicationQuery->run([
@@ -178,7 +179,8 @@ class MissionApplicationController extends Controller
             'search' => $search,
             'order' => $order,
             'limit' => $limit,
-            'tenantLanguages' => $tenantLanguages
+            'tenantLanguages' => $tenantLanguages,
+            'isVirtual' => $isVirtual
         ]);
 
         return $this->responseHelper->successWithPagination(

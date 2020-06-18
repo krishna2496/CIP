@@ -44,6 +44,7 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
+        $isVirtual = $parameters['isVirtual'];
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
@@ -193,6 +194,10 @@ class MissionApplicationQuery implements QueryableInterface
             // Ordering
             ->when($order, function ($query) use ($order) {
                 $query->orderBy($order['orderBy'], $order['orderDir']);
+            })
+            // Virtual Filter
+            ->when(in_array($isVirtual, ['1', '0']), function ($query) use ($isVirtual) {
+                $query->where('mission.is_virtual', $isVirtual);
             })
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
