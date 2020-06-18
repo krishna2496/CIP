@@ -310,7 +310,7 @@ class TenantTest extends TestCase
         ->seeStatusCode(200);
 
         
-        $this->delete(route("tenants.destroy", ["tenantId" => $tenantId]), [], [])
+        $this->delete(route("tenants.destroy", ["id" => $tenantId]), [], [])
         ->seeStatusCode(204);
     }
 
@@ -369,7 +369,7 @@ class TenantTest extends TestCase
         ->seeStatusCode(500);
 
         DB::setDefaultConnection('mysql');
-        $this->delete(route("tenants.destroy", ["tenantId" => $tenantId]), [], [])
+        $this->delete(route("tenants.destroy", ["id" => $tenantId]), [], [])
         ->seeStatusCode(204);
     }
 }
