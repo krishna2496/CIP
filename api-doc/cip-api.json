@@ -7941,7 +7941,7 @@
                       "type": "string",
                       "description": "Tab heading name"
                     },
-                    "section": {
+                    "sections": {
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -7950,7 +7950,7 @@
                             "type": "string",
                             "description": "Title of section"
                           },
-                          "description": {
+                          "content": {
                             "type": "string",
                             "description": "Description of section"
                           }
