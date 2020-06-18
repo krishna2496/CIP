@@ -21,7 +21,7 @@ class MissionTabLanguage extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'mission_tab_language_id';
 
     /**
      * Indicates if the IDs are auto-incrementing.
