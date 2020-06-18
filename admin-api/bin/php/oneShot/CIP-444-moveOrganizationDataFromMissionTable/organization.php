@@ -43,7 +43,7 @@ if (count($tenants) > 0) {
 
                 if(count($getExistingOrganization) === 0){
                     $pdo->prepare('
-                        INSERT INTO organization (id, name, created_at) VALUES
+                        INSERT INTO organization (organization_id, name, created_at) VALUES
                         (:id, :name, :created_at)
                     ')
                     ->execute([
@@ -55,7 +55,7 @@ if (count($tenants) > 0) {
             }
         }
 
-        $organizationTableData = $pdo->query('select id, name  from organization')->fetchAll();
+        $organizationTableData = $pdo->query('select organization_id, name  from organization')->fetchAll();
 
         if (!empty($organizationTableData)) {
             foreach ($organizationTableData as $organizationData) {
