@@ -128,7 +128,7 @@ class TenantTest extends TestCase
         ]);
 
         $tenantId = $tenant->response->getData()->data->tenant_id;
-        $this->delete(route("tenants.destroy", ["tenant_id" => $tenantId]), [], [])
+        $this->delete(route("tenants.destroy", ["id" => $tenantId]), [], [])
         ->seeStatusCode(204);
     }
 
@@ -158,7 +158,7 @@ class TenantTest extends TestCase
     public function it_should_return_tenant_detail()
     {
         $tenant = Tenant::get()->random();
-        $this->get(route("tenants.detail", ["tenant_id" => $tenant->tenant_id]), [])
+        $this->get(route("tenants.detail", ["tenantId" => $tenant->tenant_id]), [])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' =>[
@@ -184,7 +184,7 @@ class TenantTest extends TestCase
     public function it_should_return_tenant_not_found_on_tenant_detail()
     {
         $tenantId = rand(1000000000,20000000000);
-        $this->get(route("tenants.detail", ["tenant_id" => $tenantId]), [])
+        $this->get(route("tenants.detail", ["tenantId" => $tenantId]), [])
         ->seeStatusCode(404);
     }
     
@@ -198,7 +198,7 @@ class TenantTest extends TestCase
     {
         // Create faker and delete it
         $tenant = factory(Tenant::class)->create();
-        $this->delete(route("tenants.destroy", ["tenant_id" => $tenant->tenant_id]), [], [])
+        $this->delete(route("tenants.destroy", ["id" => $tenant->tenant_id]), [], [])
         ->seeStatusCode(204);
     }
 
@@ -210,7 +210,7 @@ class TenantTest extends TestCase
      */
     public function it_should_return_tenant_not_found_on_delete()
     {
-        $this->delete(route("tenants.destroy", ["tenant_id" => rand(99999999,999999999)]), [], [])
+        $this->delete(route("tenants.destroy", ["id" => rand(99999999,999999999)]), [], [])
         ->seeStatusCode(404);
     }
 
@@ -229,7 +229,7 @@ class TenantTest extends TestCase
             'sponsor_id' => rand(1000,50000)
         ];
 
-        $this->patch(route("tenants.update", ["tenant_id" => $tenant->tenant_id]), $data)
+        $this->patch(route("tenants.update", ["id" => $tenant->tenant_id]), $data)
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -256,7 +256,7 @@ class TenantTest extends TestCase
             'name' => "testing ".str_random(10)
         ];
 
-        $this->patch(route("tenants.update", ["tenant_id" => $tenant->tenant_id]), $data)
+        $this->patch(route("tenants.update", ["id" => $tenant->tenant_id]), $data)
         ->seeStatusCode(422);
 
         $this->assertTrue($tenant->delete());
@@ -277,7 +277,7 @@ class TenantTest extends TestCase
             'sponsor_id' => rand(1000,50000)
         ];
 
-        $this->patch(route("tenants.update", ["tenant_id" => $tenantId]), $data)
+        $this->patch(route("tenants.update", ["id" => $tenantId]), $data)
         ->seeStatusCode(404);
     }
 
@@ -310,7 +310,7 @@ class TenantTest extends TestCase
         ->seeStatusCode(200);
 
         
-        $this->delete(route("tenants.destroy", ["tenant_id" => $tenantId]), [], [])
+        $this->delete(route("tenants.destroy", ["tenantId" => $tenantId]), [], [])
         ->seeStatusCode(204);
     }
 
@@ -369,7 +369,7 @@ class TenantTest extends TestCase
         ->seeStatusCode(500);
 
         DB::setDefaultConnection('mysql');
-        $this->delete(route("tenants.destroy", ["tenant_id" => $tenantId]), [], [])
+        $this->delete(route("tenants.destroy", ["tenantId" => $tenantId]), [], [])
         ->seeStatusCode(204);
     }
 }

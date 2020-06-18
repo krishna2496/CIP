@@ -1324,7 +1324,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->I
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1377,37 +1377,7 @@ class MissionTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(204);
-
-        DB::setDefaultConnection('mysql');
-        // Return error if media not found in system
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
-                ]
-            ]
-        ]); 
-
-        $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
-        // Return error if you are trying to delete default mission media
-        DB::setDefaultConnection('mysql');
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
-                ]
-            ]
-        ]); 
+ 
         App\Models\Mission::where("mission_id", $missionId)->delete();
         
     }

@@ -156,7 +156,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -178,7 +178,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -199,7 +199,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -220,7 +220,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -242,7 +242,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -274,7 +274,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -529,7 +529,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -562,7 +562,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -595,7 +595,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -628,7 +628,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -745,7 +745,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => $apiKey,

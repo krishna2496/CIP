@@ -102,7 +102,7 @@ class StoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path().'/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -229,7 +229,7 @@ class StoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path().'/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);

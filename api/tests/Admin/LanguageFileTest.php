@@ -37,7 +37,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, $fileName.'.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, $fileName.'.json', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -70,7 +70,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -102,7 +102,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'dummy.css', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'dummy.css', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -134,7 +134,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'invalid_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'invalid_en.json', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -166,7 +166,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -224,7 +224,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -257,14 +257,14 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
                 'HTTP_php-auth-pw' => env('API_SECRET')
             ]
         );
-        $this->seeStatusCode(200);
+        $this->seeStatusCode(422);
     }
 
     /**

@@ -20,7 +20,7 @@ class ApiUserTest extends TestCase
         $tenant = factory(Tenant::class)->create();
         
         // Create api user of create tenant
-        $response = $this->post(route("tenants.create-api-user", ["tenant_id" => $tenant->tenant_id]), [])
+        $response = $this->post(route("tenants.create-api-user", ["tenantId" => $tenant->tenant_id]), [])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -56,7 +56,7 @@ class ApiUserTest extends TestCase
         $tenantId = rand(99999999,999999999);
         
         // Create api user of create tenant
-        $this->post(route("tenants.create-api-user", ["tenant_id" => $tenantId]), [])
+        $this->post(route("tenants.create-api-user", ["tenantId" => $tenantId]), [])
         ->seeStatusCode(404);
     }
 
@@ -72,7 +72,7 @@ class ApiUserTest extends TestCase
         $tenant = Tenant::whereHas('apiUsers')->get()->random();
         
         // Get all api user of tenant
-        $this->get(route("tenants.api-users", ["tenant_id" => $tenant->tenant_id]), [])
+        $this->get(route("tenants.api-users", ["tenantId" => $tenant->tenant_id]), [])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -94,7 +94,7 @@ class ApiUserTest extends TestCase
         $tenantId = rand(99999999,999999999);
         
         // Get all api users of tenant
-        $this->get(route("tenants.api-users", ["tenant_id" => $tenantId]), [])
+        $this->get(route("tenants.api-users", ["tenantId" => $tenantId]), [])
         ->seeStatusCode(404);
     }
 
@@ -113,7 +113,7 @@ class ApiUserTest extends TestCase
         $apiUser = $tenant->apiUsers->random();
         
         // Get details of api user, based on tenant_id and api_user_id
-        $this->get(route("tenants.get-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
+        $this->get(route("tenants.get-api-user", ["tenantId" => $tenant->tenant_id, "apiUserId" => $apiUser->api_user_id]), [])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -145,7 +145,7 @@ class ApiUserTest extends TestCase
         $apiUser = $tenant->apiUsers->random();
         
         // Get details of api user, based on tenantId and api_user_id
-        $this->get(route("tenants.get-api-user", ["tenant_id" => $tenantId, "api_user_id" => $apiUser->api_user_id]), [])
+        $this->get(route("tenants.get-api-user", ["tenantId" => $tenantId, "apiUserId" => $apiUser->api_user_id]), [])
         ->seeStatusCode(404);
     }
 
@@ -164,7 +164,7 @@ class ApiUserTest extends TestCase
         $apiUserId = rand(99999999,999999999);
     
         // Get details of api user, based on tenantId and api_user_id
-        $this->get(route("tenants.get-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUserId]), [])
+        $this->get(route("tenants.get-api-user", ["tenantId" => $tenant->tenant_id, "apiUserId" => $apiUserId]), [])
         ->seeStatusCode(404);
     }
 
@@ -186,7 +186,7 @@ class ApiUserTest extends TestCase
         $apiUser = $tenant->apiUsers()->create($data);        
 
         // Update that created api user                                
-        $this->patch(route("tenants.renew-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
+        $this->patch(route("tenants.renew-api-user", ["tenantId" => $tenant->tenant_id, "apiUserId" => $apiUser->api_user_id]), [])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -217,7 +217,7 @@ class ApiUserTest extends TestCase
         $apiUser = ApiUser::get()->random();        
 
         // Update that created api user                                
-        $this->patch(route("tenants.renew-api-user", ["tenant_id" => $tenantId, "api_user_id" => $apiUser->api_user_id]), [])
+        $this->patch(route("tenants.renew-api-user", ["tenantId" => $tenantId, "apiUserId" => $apiUser->api_user_id]), [])
         ->seeStatusCode(404);
     }
 
@@ -236,7 +236,7 @@ class ApiUserTest extends TestCase
         $apiUserId = rand(99999999,999999999);        
 
         // Update that created api user
-        $this->patch(route("tenants.renew-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUserId]), [])
+        $this->patch(route("tenants.renew-api-user", ["tenantId" => $tenant->tenant_id, "apiUserId" => $apiUserId]), [])
         ->seeStatusCode(404);
     }
 
@@ -258,7 +258,7 @@ class ApiUserTest extends TestCase
         $apiUser = $tenant->apiUsers()->create($data);        
 
         // Delete api user for tenant                                
-        $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
+        $this->delete(route("tenants.delete-api-user", ["tenantId" => $tenant->tenant_id, "apiUserId" => $apiUser->api_user_id]), [])
         ->seeStatusCode(204);
 
         $this->assertEquals(true, $tenant->delete());
@@ -279,7 +279,7 @@ class ApiUserTest extends TestCase
         $apiUser = ApiUser::get()->random();        
 
         // Delete api user for tenant                                
-        $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenantId, "api_user_id" => $apiUser->api_user_id]), [])
+        $this->delete(route("tenants.delete-api-user", ["tenantId" => $tenantId, "apiUserId" => $apiUser->api_user_id]), [])
         ->seeStatusCode(404);
     }
 
@@ -298,7 +298,7 @@ class ApiUserTest extends TestCase
         $apiUserId = rand(99999999,999999999);        
 
         // Delete api user for tenant                                
-        $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUserId]), [])
+        $this->delete(route("tenants.delete-api-user", ["tenantId" => $tenant->tenant_id, "apiUserId" => $apiUserId]), [])
         ->seeStatusCode(404);
     }
 }

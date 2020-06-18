@@ -3391,7 +3391,7 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
          
         $documents = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/timesheet', $params, [], ['documents' => $documents], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3608,7 +3608,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
                 
-        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'test.html', '', null, null, true))], ['HTTP_token' => $token]);
+        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'test.html', '', null, true))], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         $user->delete();
@@ -3706,7 +3706,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
                 
-        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, null, true))], ['HTTP_token' => $token]);
+        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, true))], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         $user->delete();

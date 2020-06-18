@@ -212,7 +212,7 @@ class AppPolicyPageTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing?order=test', ['token' => $token])
-          ->seeStatusCode(500)
+          ->seeStatusCode(400)
           ->seeJsonStructure([
               "errors" => [
                   [
