@@ -171,7 +171,7 @@ class MissionApplicationController extends Controller
         $search = $request->get('search');
         $order = $request->get('order', []);
         $limit = $request->get('limit', []);
-        $isVirtual = (string) $request->get('isVirtual', null);
+        $isVirtual = $request->get('isVirtual', null);
         $tenantLanguages = $languageHelper->getTenantLanguages($request);
 
         $applicationList = $missionApplicationQuery->run([

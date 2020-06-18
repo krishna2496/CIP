@@ -44,7 +44,7 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
-        $isVirtual = $parameters['isVirtual'];
+        $isVirtual = $parameters['isVirtual'] === null ? null : filter_var($parameters['isVirtual'], FILTER_VALIDATE_BOOLEAN);
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
@@ -196,8 +196,8 @@ class MissionApplicationQuery implements QueryableInterface
                 $query->orderBy($order['orderBy'], $order['orderDir']);
             })
             // Virtual Filter
-            ->when(in_array($isVirtual, ['1', '0']), function ($query) use ($isVirtual) {
-                $query->where('mission.is_virtual', $isVirtual);
+            ->when($isVirtual !== null, function ($query) use ($isVirtual) {
+                $query->where('mission.is_virtual', $isVirtual ? '1' : '0');
             })
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
