@@ -75,7 +75,7 @@ class MissionTabRepository implements MissionTabInterface
                 $language = $languages->where('code', $missionTabLanguageValue['lang'])->first();
                 $missionTabLangArray = [
                     'mission_tab_language_id' => (String) Str::uuid(),
-                    'mission_tab_id' => $missionTab['id'],
+                    'mission_tab_id' => $missionTab['mission_tab_id'],
                     'language_id' => $language->language_id,
                     'name' => $missionTabLanguageValue['name'],
                     'section' => json_encode($missionTabLanguageValue['sections'])

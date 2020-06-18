@@ -304,7 +304,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_tab_details.*.sort_key" => 'required|integer',
                 "mission_tab_details.*.mission_tab_id" =>
-                'sometimes|required|exists:mission_tab,id,deleted_at,NULL',
+                'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
                 "mission_tab_details.*.sort_key" =>
                 "required_without:mission_tab_details.*.mission_tab_id|integer",
                 "mission_tab_details.*.translations" =>
