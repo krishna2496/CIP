@@ -88,9 +88,9 @@ class Availability extends Model
      *
      * @return void
      */
-    public function mission()
+    public function volunteeringAttribute()
     {
-        return $this->belongsTo(Mission::class, 'availability_id', 'availability_id');
+        return $this->belongsTo(VolunteeringAttribute::class, 'availability_id', 'availability_id');
     }
 
     /**
@@ -102,4 +102,5 @@ class Availability extends Model
     {
         return $this->belongsTo(User::class, 'availability_id', 'availability_id');
     }
+    
 }
