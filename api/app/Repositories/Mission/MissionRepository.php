@@ -494,9 +494,9 @@ class MissionRepository implements MissionInterface
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
         }])->with(['missionTab' => function ($query) {
-            $query->select('mission_tab.sort_key', 'mission_tab.id', 'mission_tab.mission_id')->orderBy('sort_key');
+            $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
         }, 'missionTab.getMissionTabDetail' => function ($query) {
-            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.id');
+            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
         if ($request->has('search') && $request->has('search') !== '') {
@@ -1591,7 +1591,7 @@ class MissionRepository implements MissionInterface
      */
     public function isMissionTabLinkedToMission(int $missionId, string $missionTabId)
     {
-        return $this->modelsService->missionTab->where([['mission_id', '=', $missionId], ['id', '=', $missionTabId]])->firstOrFail();
+        return $this->modelsService->missionTab->where([['mission_id', '=', $missionId], ['mission_tab_id', '=', $missionTabId]])->firstOrFail();
     }
 
     /**

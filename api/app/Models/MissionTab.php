@@ -35,7 +35,7 @@ class MissionTab extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'mission_id', 'sort_key'];
+    protected $fillable = ['mission_tab_id', 'mission_id', 'sort_key'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -50,7 +50,7 @@ class MissionTab extends Model
      * @var array
      */
     protected $visible = [
-        'id', 'mission_id', 'sort_key', 'getMissionTabDetail'
+        'mission_tab_id', 'mission_id', 'sort_key', 'getMissionTabDetail'
     ];
 
     /**
@@ -60,6 +60,6 @@ class MissionTab extends Model
      */
     public function getMissionTabDetail()
     {
-        return $this->hasMany(MissionTabLanguage::class, 'mission_tab_id', 'id');
+        return $this->hasMany(MissionTabLanguage::class, 'mission_tab_id', 'mission_tab_id');
     }
 }

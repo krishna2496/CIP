@@ -66,7 +66,7 @@ class MissionTabRepository implements MissionTabInterface
         $languages = $this->languageHelper->getLanguages();
         foreach ($request->mission_tab_details as $missionTabValue) {
             $missionTabArray = [
-                'id' => (String) Str::uuid(),
+                'mission_tab_id' => (String) Str::uuid(),
                 'mission_id' => $missionId,
                 'sort_key' => $missionTabValue['sort_key']
             ];
@@ -74,7 +74,7 @@ class MissionTabRepository implements MissionTabInterface
             foreach ($missionTabValue['translations'] as $missionTabLanguageValue) {
                 $language = $languages->where('code', $missionTabLanguageValue['lang'])->first();
                 $missionTabLangArray = [
-                    'id' => (String) Str::uuid(),
+                    'mission_tab_language_id' => (String) Str::uuid(),
                     'mission_tab_id' => $missionTab['id'],
                     'language_id' => $language->language_id,
                     'name' => $missionTabLanguageValue['name'],
@@ -99,13 +99,13 @@ class MissionTabRepository implements MissionTabInterface
         $languages = $this->languageHelper->getLanguages();
         $missionTabId = $missionTabValue['mission_tab_id'];
         if (isset($missionTabValue['sort_key'])) {
-            $missionTab = $this->modelsService->missionTab->where(["id"=>$missionTabId])->update(['sort_key'=>$missionTabValue['sort_key']]);
+            $missionTab = $this->modelsService->missionTab->where(["mission_tab_id"=>$missionTabId])->update(['sort_key'=>$missionTabValue['sort_key']]);
         }
 
         if (isset($missionTabValue['translations'])) {
             foreach ($missionTabValue['translations'] as $missionTabLangValue) {
                 $language = $languages->where('code', $missionTabLangValue['lang'])->first();
-                $missionTabLangArray['id'] = (String) Str::uuid();
+                $missionTabLangArray['mission_tab_language_id'] = (String) Str::uuid();
                 $missionTabLangArray['mission_tab_id'] = $missionTabId;
                 $missionTabLangArray['language_id'] = $language->language_id;
                                 

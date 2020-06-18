@@ -35,7 +35,7 @@ class MissionTabLanguage extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'mission_tab_id', 'language_id', 'name', 'section'];
+    protected $fillable = ['mission_tab_language_id', 'mission_tab_id', 'language_id', 'name', 'section'];
 
     /**
      * The attributes that should be mutated to dates.
