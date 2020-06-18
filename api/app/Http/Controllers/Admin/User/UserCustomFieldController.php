@@ -275,13 +275,36 @@ class UserCustomFieldController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, $id): JsonResponse
     {
         try {
-            $customField = $this->userCustomFieldRepository->delete($id);
+            $payload = array_merge($request->toArray(), [$id]);
+            $customMessage['integer'] = 'The custom field ID must be an integer.';
+
+            $validator = Validator::make($payload, [
+                '*' => 'sometimes|required|integer'
+            ], $customMessage);
+
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $method = 'deleteMultiple';
+            if (count($payload) === 1) {
+                $method = 'delete';
+                $payload = $id;
+            }
+
+            $customField = $this->userCustomFieldRepository->{$method}($payload);
 
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;

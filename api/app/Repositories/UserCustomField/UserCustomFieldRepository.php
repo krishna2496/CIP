@@ -131,6 +131,17 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     }
 
     /**
+     * Remove the array of resources from storage.
+     *
+     * @param  array  $ids
+     * @return int
+     */
+    public function deleteMultiple(array $ids): Int
+    {
+        return $this->field->whereIn('field_id', $ids)->delete();
+    }
+
+    /**
      * Get listing of user custom fields
      *
      * @param Illuminate\Http\Request $request

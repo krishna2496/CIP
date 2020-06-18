@@ -192,6 +192,28 @@ class UserCustomFieldTest extends TestCase
     /**
      * @test
      *
+     * Delete multiple user custom field
+     *
+     * @return void
+     */
+    public function it_should_delete_multiple_user_custom_field()
+    {
+        $connection = 'tenant';
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+
+        $this->delete(
+            "metadata/users/custom_fields/".$userCustomField->field_id,
+            [1, 2, 3],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(204);
+    }
+
+    /**
+     * @test
+     *
      * Delete user custom field api with already deleted or not available user custom field id
      * @return void
      */
