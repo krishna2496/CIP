@@ -14,7 +14,7 @@ class CreateTableMissionTabLanguage extends Migration
     public function up()
     {
         Schema::create('mission_tab_language', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('mission_tab_language_id')->primary();
             $table->string('mission_tab_id', 36);
             $table->integer('language_id');
             $table->text('name');
@@ -23,7 +23,7 @@ class CreateTableMissionTabLanguage extends Migration
             $table->softDeletes();
 
             // Set references with mission table
-            $table->foreign('mission_tab_id')->references('id')->on('mission_tab')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_tab_id')->references('mission_tab_id')->on('mission_tab')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

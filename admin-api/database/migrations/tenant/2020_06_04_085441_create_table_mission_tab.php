@@ -14,7 +14,7 @@ class CreateTableMissionTab extends Migration
     public function up()
     {
         Schema::create('mission_tab', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('mission_tab_id')->primary();
             $table->unsignedBigInteger('mission_id');
             $table->integer('sort_key');
             $table->timestamps();
