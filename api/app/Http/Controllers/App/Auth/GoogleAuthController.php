@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\App\Auth;
 
 use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
 use App\Http\Controllers\Controller;
 use App\User;
 use Hybridauth\Hybridauth;
@@ -15,10 +16,12 @@ class GoogleAuthController extends Controller
     private $userRepository;
 
     public function __construct(
+        LanguageHelper $languageHelper,
         Helpers $helpers,
         User $user,
         UserRepository $userRepository
     ) {
+        $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->user = $user;
         $this->userRepository = $userRepository;
