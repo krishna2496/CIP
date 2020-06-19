@@ -431,7 +431,7 @@ class MissionApplicationTest extends TestCase
     */
     public function it_should_return_both_mission_with_virtual_one()
     {
-        $records = $this->createMissionApplicationData('?isVirtual=1');
+        $records = $this->createMissionApplicationData('?filter[isVirtual]=1');
 
         $both = array_filter($records['response']->data, function($item) use ($records) {
             return in_array($item->mission_id, [
@@ -451,7 +451,7 @@ class MissionApplicationTest extends TestCase
     */
     public function it_should_return_both_mission_with_virtual_zero()
     {
-        $records = $this->createMissionApplicationData('?isVirtual=0');
+        $records = $this->createMissionApplicationData('?filter[isVirtual]=0');
 
         $both = array_filter($records['response']->data, function($item) use ($records) {
             return in_array($item->mission_id, [

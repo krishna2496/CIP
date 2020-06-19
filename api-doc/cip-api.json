@@ -1110,14 +1110,6 @@
             "type": "string"
           },
           {
-            "name": "isVirtual",
-            "in": "path",
-            "description": "Mission is_virtual",
-            "required": false,
-            "type": "boolean",
-            "default": null
-          },
-          {
             "name": "order[orderBy]",
             "in": "path",
             "description": "Field name for ordering",
@@ -1235,6 +1227,14 @@
             "description": "Languages",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "filters[isVirtual]",
+            "in": "path",
+            "description": "Mission is_virtual",
+            "required": false,
+            "type": "boolean",
+            "default": null
           }
         ],
         "responses": {
