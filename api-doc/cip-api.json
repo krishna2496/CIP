@@ -1150,8 +1150,8 @@
             "in": "path",
             "description": "List of all application ids",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
@@ -1162,8 +1162,8 @@
             "in": "path",
             "description": "List of all skills ids",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
@@ -1174,8 +1174,8 @@
             "in": "path",
             "description": "List of all mission skilld ids",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
@@ -1186,8 +1186,8 @@
             "in": "path",
             "description": "List of all mission types: GOAL, TIME",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
@@ -1198,8 +1198,8 @@
             "in": "path",
             "description": "List of all themes ids",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
@@ -1210,8 +1210,8 @@
             "in": "path",
             "description": "List of all country ids",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
@@ -1222,8 +1222,8 @@
             "in": "path",
             "description": "List of all city ids",
             "required": false,
+            "type": "array",
             "schema": {
-              "type": "array",
               "items": {
                 "type": "integer"
               }
