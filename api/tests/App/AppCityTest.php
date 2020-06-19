@@ -43,7 +43,7 @@ class AppCityTest extends TestCase
     /**
      * @test
      *
-     * No data found for city 
+     * No data found for city
      *
      * @return void
      */
@@ -71,7 +71,7 @@ class AppCityTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void
@@ -98,7 +98,7 @@ class AppCityTest extends TestCase
     /**
      * @test
      *
-     * No data found for city 
+     * No data found for city
      *
      * @return void
      */
@@ -124,7 +124,7 @@ class AppCityTest extends TestCase
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
               

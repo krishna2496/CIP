@@ -15,8 +15,8 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id; 
-        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $cityId = $countryDetail->city->first()->city_id;
+        $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
         
         App\Models\Mission::whereNull('deleted_at')->delete();
         \DB::setDefaultConnection('mysql');
@@ -34,12 +34,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -100,7 +100,7 @@ class AppMissionTest extends TestCase
             ]
         ];
 
-        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         DB::setDefaultConnection('mysql');
@@ -121,7 +121,7 @@ class AppMissionTest extends TestCase
             "message"
         ]);
         
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -195,7 +195,7 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
     }
 
@@ -285,7 +285,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -297,12 +297,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -373,7 +373,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -437,7 +437,7 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $missionId = rand(1000000,2000000);
+        $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$missionId, ['token' => $token])
@@ -451,8 +451,8 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);   
-        $user->delete();   
+        ]);
+        $user->delete();
     }
 
     /**
@@ -466,7 +466,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -475,12 +475,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -546,7 +546,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $missionRelated = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -618,7 +618,7 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $missionId = rand(1000000,2000000);
+        $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/'.$missionId, ['token' => $token])
@@ -632,8 +632,8 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
-        $user->delete();          
+        ]);
+        $user->delete();
     }
 
     /**
@@ -673,11 +673,11 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_id_for_get_volunteers()
     {
-        $connection = 'tenant';        
+        $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $missionId = rand(1000000,2000000);
+        $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
@@ -691,8 +691,8 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
-        $user->delete();    
+        ]);
+        $user->delete();
     }
 
     /**
@@ -725,7 +725,7 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
     }
 
@@ -830,7 +830,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -841,12 +841,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -892,7 +892,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -912,7 +912,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -927,7 +927,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -938,12 +938,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -989,7 +989,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1009,7 +1009,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1024,7 +1024,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -1035,12 +1035,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1086,7 +1086,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1106,7 +1106,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1121,7 +1121,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1133,12 +1133,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1184,7 +1184,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1204,7 +1204,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1219,7 +1219,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1231,12 +1231,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1282,7 +1282,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1302,7 +1302,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1317,7 +1317,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1329,12 +1329,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1385,7 +1385,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
@@ -1407,7 +1407,7 @@ class AppMissionTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/missions?explore_mission_type=favourite-missions&explore_mission_params='.$organizationName, ['token' => $token])
           ->seeStatusCode(200);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1422,7 +1422,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1434,12 +1434,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1485,7 +1485,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1496,7 +1496,7 @@ class AppMissionTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/missions?explore_mission_type=most-ranked-missions&explore_mission_params='.$organizationName, ['token' => $token])
           ->seeStatusCode(200);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1511,7 +1511,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -1522,12 +1522,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1573,7 +1573,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1593,7 +1593,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1608,7 +1608,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1620,12 +1620,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1671,7 +1671,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1691,7 +1691,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1706,7 +1706,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1718,12 +1718,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1769,7 +1769,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1789,7 +1789,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1804,7 +1804,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1816,12 +1816,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1867,7 +1867,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1887,7 +1887,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -1902,7 +1902,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -1914,12 +1914,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -1965,7 +1965,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -1985,7 +1985,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -2000,7 +2000,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -2012,12 +2012,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2063,7 +2063,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -2083,7 +2083,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -2098,7 +2098,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -2110,12 +2110,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2170,7 +2170,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -2190,7 +2190,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -2206,7 +2206,7 @@ class AppMissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
-        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
              
         \DB::setDefaultConnection('mysql');
         
@@ -2218,12 +2218,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2269,7 +2269,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->first();
 
@@ -2327,13 +2327,13 @@ class AppMissionTest extends TestCase
             "data"
         ]);
 
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
     /**
      * @test
-     * 
+     *
      * It should return social sharing view with social sharing meta data
      *
      * @return void
@@ -2372,7 +2372,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2381,12 +2381,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2441,7 +2441,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $missionRelated = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2511,7 +2511,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2523,12 +2523,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2575,7 +2575,7 @@ class AppMissionTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
@@ -2607,7 +2607,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -2623,7 +2623,7 @@ class AppMissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
-        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
         
         \DB::setDefaultConnection('mysql');
 
@@ -2640,12 +2640,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2696,7 +2696,7 @@ class AppMissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
@@ -2736,7 +2736,7 @@ class AppMissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
-        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
         
         \DB::setDefaultConnection('mysql');
 
@@ -2753,12 +2753,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2809,7 +2809,7 @@ class AppMissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
@@ -2848,7 +2848,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $organizationName = str_random(10);
@@ -2860,12 +2860,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => $organizationName,
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -2916,7 +2916,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
@@ -2938,7 +2938,7 @@ class AppMissionTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/missions?sort_by=my_favourite', ['token' => $token])
           ->seeStatusCode(200);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -2954,7 +2954,7 @@ class AppMissionTest extends TestCase
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
-        $cityDetail = App\Models\City::with('state')->where('city_id',$cityId)->whereNull('deleted_at')->first();
+        $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
               
         \DB::setDefaultConnection('mysql');
         
@@ -2971,12 +2971,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -3027,7 +3027,7 @@ class AppMissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
@@ -3066,7 +3066,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -3075,12 +3075,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -3146,7 +3146,7 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $missionRelated = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -3216,7 +3216,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -3232,12 +3232,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -3288,7 +3288,7 @@ class AppMissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -3308,7 +3308,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();        
+        $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
@@ -3323,7 +3323,7 @@ class AppMissionTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -3335,12 +3335,12 @@ class AppMissionTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => [  
-                    [  
+                "organisation_detail" => [
+                    [
                        "lang"=>"en",
                        "detail"=>"Testing organisation description in English"
                     ],
-                    [  
+                    [
                        "lang"=>"fr",
                        "detail"=>"Testing organisation description in French"
                     ]
@@ -3387,7 +3387,7 @@ class AppMissionTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();

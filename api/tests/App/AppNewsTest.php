@@ -17,7 +17,6 @@ class AppNewsTest extends TestCase
         $newsIdsArray = [];
 
         for ($i=0; $i<5; $i++) {
-
             $news = factory(\App\Models\News::class)->make();
             $news->setConnection($connection);
             $news->save();
@@ -34,18 +33,18 @@ class AppNewsTest extends TestCase
 
             $newsLanguage = factory(\App\Models\NewsLanguage::class)->make();
             $newsLanguage->setConnection($connection);
-            $newsLanguage->news_id = $news->news_id;            
+            $newsLanguage->news_id = $news->news_id;
             $newsLanguage->save();
             
-            array_push($newsIdsArray, $news->news_id); 
-        } 
+            array_push($newsIdsArray, $news->news_id);
+        }
 
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
 
         \DB::setDefaultConnection('mysql');
-        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get('app/news', ['token' => $token, 'X-localization' => 'test'])->seeStatusCode(200);
 
         \DB::setDefaultConnection('mysql');
@@ -82,7 +81,7 @@ class AppNewsTest extends TestCase
             "status" => "PUBLISHED",
             "news_content" => [
                 "translations" => [
-                    [  
+                    [
                         "lang" => "en",
                         "title" => "english_".str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
@@ -96,7 +95,7 @@ class AppNewsTest extends TestCase
             ]
         ];
         DB::setDefaultConnection('mysql');
-        $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $newsId = json_decode($response->response->getContent())->data->news_id;

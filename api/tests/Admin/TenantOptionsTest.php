@@ -3,6 +3,7 @@
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use App\Helpers\Helpers;
 
 class TenantOptionsTest extends TestCase
 {
@@ -15,7 +16,7 @@ class TenantOptionsTest extends TestCase
      */
     public function tenant_option_testing_it_should_reset_style_to_default()
     {
-        $this->get('style/reset-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('style/reset-style', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
     
@@ -28,7 +29,7 @@ class TenantOptionsTest extends TestCase
      */
     public function tenant_option_testing_it_should_download_style_from_s3()
     {
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('style/download-style', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -49,7 +50,7 @@ class TenantOptionsTest extends TestCase
             'primary_color' => "#ccc"
         ];
 
-        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('style/update-style', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
 
@@ -62,7 +63,7 @@ class TenantOptionsTest extends TestCase
     */
     public function tenant_option_testing_style_it_should_return_custom_css()
     {
-        $this->get('app/custom-css', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('app/custom-css', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
 
@@ -89,7 +90,7 @@ class TenantOptionsTest extends TestCase
             ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -121,7 +122,7 @@ class TenantOptionsTest extends TestCase
             ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -144,7 +145,6 @@ class TenantOptionsTest extends TestCase
     */
     public function tenant_option_testing_style_update_it_should_update_assets_image_on_s3_server()
     {
-        
         $fileName = 'back-arrow-black.svg';
         $path  = storage_path("unitTestFiles/$fileName");
         $params = [
@@ -153,8 +153,9 @@ class TenantOptionsTest extends TestCase
         
         $res = $this->call(
             'PATCH',
-            'style/update-image', 
-            $params, [], 
+            'style/update-image',
+            $params,
+            [],
             [
                 'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
@@ -175,8 +176,9 @@ class TenantOptionsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $res = $this->call(
             'PATCH',
-            'style/update-image', 
-            $params, [], 
+            'style/update-image',
+            $params,
+            [],
             [
                 'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
@@ -196,8 +198,9 @@ class TenantOptionsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $res = $this->call(
             'PATCH',
-            'style/update-image', 
-            $params, [], 
+            'style/update-image',
+            $params,
+            [],
             [
                 'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
             ],
@@ -217,8 +220,9 @@ class TenantOptionsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $res = $this->call(
             'PATCH',
-            'style/update-image', 
-            $params, [], 
+            'style/update-image',
+            $params,
+            [],
             [
                 'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
             ],
@@ -239,8 +243,9 @@ class TenantOptionsTest extends TestCase
 
         $res = $this->call(
             'PATCH',
-            'style/update-image', 
-            $params, [], 
+            'style/update-image',
+            $params,
+            [],
             [
                 'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
@@ -282,7 +287,7 @@ class TenantOptionsTest extends TestCase
             ]
         );
         $this->seeStatusCode(200);
-        $this->seeJsonStructure(['status', 'message']);              
+        $this->seeJsonStructure(['status', 'message']);
     }
 
     /**
@@ -308,10 +313,10 @@ class TenantOptionsTest extends TestCase
             ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
-        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -320,7 +325,7 @@ class TenantOptionsTest extends TestCase
         App\Models\TenantOption::where("option_name", $optionName)->orderBy("tenant_option_id", "DESC")->take(1)->delete();
     }
 
-        /**
+    /**
      * @test
      *
      * Return error if data is invalid
@@ -343,7 +348,7 @@ class TenantOptionsTest extends TestCase
             ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
 
@@ -361,7 +366,7 @@ class TenantOptionsTest extends TestCase
             ],
         ];
         
-        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -386,7 +391,7 @@ class TenantOptionsTest extends TestCase
     {
         $params = [];
 
-        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('style/update-style', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -413,9 +418,8 @@ class TenantOptionsTest extends TestCase
             ],
         ];
         
-        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
-
     }
 
     /**
@@ -427,7 +431,7 @@ class TenantOptionsTest extends TestCase
      */
     public function tenant_option_testing_it_should_reset_assets_images_to_default()
     {
-        $this->get('style/reset-asset-images', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('style/reset-asset-images', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
 
@@ -443,10 +447,10 @@ class TenantOptionsTest extends TestCase
         $optionName = str_random(20);
         $params = [
             'option_name' => $optionName,
-            'option_value' => 1            
+            'option_value' => 1
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -458,7 +462,7 @@ class TenantOptionsTest extends TestCase
     /**
     * @test
     * it should return error bucket not found for update primary color
-    * 
+    *
     * @return void
     */
     public function tenant_option_testing_it_should_return_error_bucket_not_found_for_update_primary_color()
@@ -468,7 +472,7 @@ class TenantOptionsTest extends TestCase
         $tenantId = DB::table('tenant')->insertGetId(
             [
                 'name' => str_random('5'),
-                'sponsor_id' => rand(1,9999)
+                'sponsor_id' => rand(1, 9999)
             ]
         );
 
@@ -570,7 +574,6 @@ class TenantOptionsTest extends TestCase
             ]
         );
         $this->seeStatusCode(422);
-        
     }
 
     /**
@@ -603,7 +606,6 @@ class TenantOptionsTest extends TestCase
             ]
         );
         $this->seeStatusCode(422);
-        
     }
 
     /**
@@ -636,7 +638,6 @@ class TenantOptionsTest extends TestCase
             ]
         );
         $this->seeStatusCode(422);
-        
     }
 
     /**
@@ -653,9 +654,8 @@ class TenantOptionsTest extends TestCase
             'custom_scss_file' => ''
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("style/update-style/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);  
-        
+        $this->post("style/update-style/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        ->seeStatusCode(422);
     }
 
     /**
@@ -742,8 +742,9 @@ class TenantOptionsTest extends TestCase
         
         $res = $this->call(
             'PATCH',
-            'style/update-image', 
-            $params, [], 
+            'style/update-image',
+            $params,
+            [],
             [
                 'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
@@ -820,11 +821,11 @@ class TenantOptionsTest extends TestCase
     public function tenant_option_testing_it_should_update_secondary_color()
     {
         $params = [
-            'primary_color' => "#ccc",            
+            'primary_color' => "#ccc",
             'secondary_color' => "#000"
         ];
 
-        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('style/update-style', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
 }

@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
 
 class AppMissionRatingTest extends TestCase
-{   
+{
     /**
      * @test
      *
@@ -15,7 +15,7 @@ class AppMissionRatingTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -63,7 +63,7 @@ class AppMissionRatingTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -101,7 +101,7 @@ class AppMissionRatingTest extends TestCase
             "message"
         ]);
         App\Models\MissionRating::where(['user_id' => $user->user_id, 'mission_id' => $mission[0]['mission_id']])->delete();
-        $user->delete();        
+        $user->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
     }
 
@@ -135,7 +135,7 @@ class AppMissionRatingTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
     }
 
@@ -173,7 +173,7 @@ class AppMissionRatingTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
         $mission->delete();
     }
@@ -212,7 +212,7 @@ class AppMissionRatingTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
         $mission->delete();
     }
@@ -228,7 +228,7 @@ class AppMissionRatingTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -276,7 +276,7 @@ class AppMissionRatingTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -322,7 +322,7 @@ class AppMissionRatingTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -370,7 +370,7 @@ class AppMissionRatingTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -386,7 +386,7 @@ class AppMissionRatingTest extends TestCase
           ->seeStatusCode(201);
         
         $params = [
-            'mission_id' => $mission[0]['mission_id']            
+            'mission_id' => $mission[0]['mission_id']
         ];
 
         DB::setDefaultConnection('mysql');
@@ -415,7 +415,7 @@ class AppMissionRatingTest extends TestCase
             "message"
         ]);
         App\Models\MissionRating::where(['user_id' => $user->user_id, 'mission_id' => $mission[0]['mission_id']])->delete();
-        $user->delete();        
+        $user->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
     }
 }

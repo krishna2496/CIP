@@ -33,7 +33,7 @@ class MessagesTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         // Add messages from admin side
-        $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
@@ -44,8 +44,7 @@ class MessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<count($messages); $i++)
-        {
+        for ($i=0; $i<count($messages); $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
@@ -84,7 +83,7 @@ class MessagesTest extends TestCase
         ];
 
         // Send message to user
-        $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         $user->delete();
@@ -104,23 +103,23 @@ class MessagesTest extends TestCase
             "message" => str_random('1000'),
             "admin"  => str_random('10'),
             "user_ids" => [
-               rand(9000000000,90000000000),
-               rand(9000000000,90000000000)
+               rand(9000000000, 90000000000),
+               rand(9000000000, 90000000000)
             ]
         ];
 
         // Send message to user
-        $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
-     /**
-     * @test
-     *
-     * It should return validation error for user ids must be integer on send message to user
-     *
-     * @return void
-     */
+    /**
+    * @test
+    *
+    * It should return validation error for user ids must be integer on send message to user
+    *
+    * @return void
+    */
     public function it_should_return_validation_error_for_user_ids_must_be_int_on_send_message_to_user()
     {
         $params = [
@@ -134,7 +133,7 @@ class MessagesTest extends TestCase
         ];
 
         // Send message to user
-        $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -174,7 +173,7 @@ class MessagesTest extends TestCase
         
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -189,9 +188,9 @@ class MessagesTest extends TestCase
      */
     public function it_should_return_error_message_id_not_found_on_delete_user_messages()
     {
-        $messageId = rand(9000000000,90000000000);
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404);        
+        $messageId = rand(9000000000, 90000000000);
+        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
+        ->seeStatusCode(404);
     }
 
     /**
@@ -231,11 +230,11 @@ class MessagesTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $this->get('message/list?search='.$subject, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('message/list?search='.$subject, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -308,15 +307,15 @@ class MessagesTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $this->get("message/list?users=$userId1,$userId2", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("message/list?users=$userId1,$userId2", ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId1, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->delete('message/'.$messageId1, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId2, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->delete('message/'.$messageId2, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -343,7 +342,7 @@ class MessagesTest extends TestCase
             'message' => str_random('100')
         ];
         
-        $response = $this->get("message/list?users=$user->user_id", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get("message/list?users=$user->user_id", ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -387,7 +386,7 @@ class MessagesTest extends TestCase
         $messageId = (json_decode($response->response->getContent())->data->message_id)[0];
 
         \DB::setDefaultConnection('mysql');
-        $this->post("message/read/$messageId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("message/read/$messageId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -398,7 +397,7 @@ class MessagesTest extends TestCase
         ]);
 
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -413,8 +412,8 @@ class MessagesTest extends TestCase
      */
     public function it_should_return_error_message_id_not_found_on_read_message_sent_from_user()
     {
-        $messageId = rand(8000000000,80000000000);
-        $this->post("message/read/$messageId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $messageId = rand(8000000000, 80000000000);
+        $this->post("message/read/$messageId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -459,7 +458,7 @@ class MessagesTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         // Add messages from admin side
-        $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
 
@@ -472,8 +471,7 @@ class MessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<count($messages); $i++)
-        {
+        for ($i=0; $i<count($messages); $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
@@ -490,8 +488,7 @@ class MessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<count($messages); $i++)
-        {
+        for ($i=0; $i<count($messages); $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database

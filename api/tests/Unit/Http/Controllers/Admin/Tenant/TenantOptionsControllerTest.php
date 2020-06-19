@@ -53,7 +53,7 @@ class TenantOptionsControllerTest extends TestCase
             '/happy',
             [],
             $samlSettings->toArray()
-        );	
+        );
 
         $response = $this->getController(
             $tenantOptionRepository,
@@ -104,7 +104,7 @@ class TenantOptionsControllerTest extends TestCase
             '/happy',
             [],
             $samlSettings->toArray()
-        );	
+        );
 
         $response = $this->getController(
             $tenantOptionRepository,
@@ -155,7 +155,7 @@ class TenantOptionsControllerTest extends TestCase
             '/happy',
             [],
             ['option_name' => self::OPTION_NAME_SSO]
-        );	
+        );
 
         $response = $this->getController(
             $tenantOptionRepository,
@@ -186,7 +186,7 @@ class TenantOptionsControllerTest extends TestCase
      * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Services\CustomStyling\CustomStylingService $customStylingService
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @return void
      */
     private function getController(

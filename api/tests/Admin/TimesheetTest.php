@@ -76,10 +76,10 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
-        $missionId = json_decode($response->response->getContent())->data->mission_id;        
+        $missionId = json_decode($response->response->getContent())->data->mission_id;
 
         $params = [
                 'mission_id' => $missionId,
@@ -133,13 +133,13 @@ class TimesheetTest extends TestCase
         );
         
         DB::setDefaultConnection('mysql');
-        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->delete();
         
         DB::setDefaultConnection('mysql');
-        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         $user->delete();
@@ -154,8 +154,8 @@ class TimesheetTest extends TestCase
      */
     public function timesheet_it_should_return_user_not_found_when_timesheet_entries_of_user()
     {
-        $userId = rand(500000000,5000000000000);
-        $response = $this->get('timesheet/'.$userId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $userId = rand(500000000, 5000000000000);
+        $response = $this->get('timesheet/'.$userId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -227,10 +227,10 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
-        $missionId = json_decode($response->response->getContent())->data->mission_id;        
+        $missionId = json_decode($response->response->getContent())->data->mission_id;
 
         $params = [
                 'mission_id' => $missionId,
@@ -289,19 +289,19 @@ class TimesheetTest extends TestCase
             "status" => config('constants.timesheet_status.PENDING')
         ];
         
-        $this->patch('timesheet/'.$timeSheetId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('timesheet/'.$timeSheetId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         $invalidParam = [
-            "status" => rand(80000,8000000)
+            "status" => rand(80000, 8000000)
         ];
         DB::setDefaultConnection('mysql');
-        $this->patch('timesheet/'.$timeSheetId, $invalidParam, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('timesheet/'.$timeSheetId, $invalidParam, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
-        $timeSheetId = rand(5000000000,50000000000);
+        $timeSheetId = rand(5000000000, 50000000000);
         DB::setDefaultConnection('mysql');
-        $res = $this->patch('timesheet/'.$timeSheetId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->patch('timesheet/'.$timeSheetId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
 
         $user->delete();
@@ -323,10 +323,10 @@ class TimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        // Get country and city id for mission create       
+        // Get country and city id for mission create
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
 
         $themeId = MissionTheme::first()->mission_theme_id;
         $availabilityId = Availability::first()->availability_id;
@@ -377,10 +377,10 @@ class TimesheetTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
-        $missionId = json_decode($response->response->getContent())->data->mission_id;        
+        $missionId = json_decode($response->response->getContent())->data->mission_id;
 
         $params = [
                 'mission_id' => $missionId,
@@ -435,20 +435,19 @@ class TimesheetTest extends TestCase
         $status = config('constants.timesheet_status.AUTOMATICALLY_APPROVED');
         $statusId = Config('constants.timesheet_status.'.$status);
         DB::setDefaultConnection('mysql');
-        $response = $this->get('timesheet/'.$user->user_id.'?status='.$statusId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get('timesheet/'.$user->user_id.'?status='.$statusId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->delete();
         
         DB::setDefaultConnection('mysql');
-        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');
-        $response = $this->get('timesheet/'.$user->user_id.'?type='.config("constants.mission_type.TIME"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get('timesheet/'.$user->user_id.'?type='.config("constants.mission_type.TIME"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         $user->delete();
     }
-
 }

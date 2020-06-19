@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\Helpers;
+
 class ThemeTest extends TestCase
 {
     /**
@@ -12,7 +14,7 @@ class ThemeTest extends TestCase
     public function it_should_create_theme()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -22,7 +24,7 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -40,7 +42,7 @@ class ThemeTest extends TestCase
      */
     public function it_should_return_error_if_theme_name_is_blank()
     {
-        $params = [        
+        $params = [
             "theme_name" => "",
             "translations" => [
                 [
@@ -50,7 +52,7 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -74,7 +76,7 @@ class ThemeTest extends TestCase
     public function it_should_return_all_themes_for_admin()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -84,10 +86,10 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes?perPage=test&search='.$themeName, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/themes?perPage=test&search='.$themeName, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -106,7 +108,7 @@ class ThemeTest extends TestCase
     public function it_should_return_a_theme_for_admin_by_mission_theme_id()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -116,7 +118,7 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -126,7 +128,7 @@ class ThemeTest extends TestCase
         $themeId = $theme[0]->mission_theme_id;
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes/'.$themeId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/themes/'.$themeId, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -149,7 +151,7 @@ class ThemeTest extends TestCase
      */
     public function it_should_return_error_if_mission_theme_id_is_wrong()
     {
-        $this->get('entities/themes/'.rand(1000000,2000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/themes/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -173,7 +175,7 @@ class ThemeTest extends TestCase
     public function it_should_update_theme()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -183,17 +185,17 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $theme = App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->get();
         $themeId = $theme[0]->mission_theme_id;
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "theme_name" => str_random(20)
         ];
         
-        $this->patch('entities/themes/'.$themeId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/themes/'.$themeId, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -212,7 +214,7 @@ class ThemeTest extends TestCase
     public function it_should_return_error_for_update_theme_blank_theme_name()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -222,17 +224,17 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()]);
         
         $theme = App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->get();
         $themeId = $theme[0]->mission_theme_id;
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "theme_name" => ""
         ];
         
-        $this->patch('entities/themes/'.$themeId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/themes/'.$themeId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -255,8 +257,8 @@ class ThemeTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_wrong_mission_theme_id()
-    {   
-        $params = [        
+    {
+        $params = [
             "theme_name" => str_random(20),
             "translations" => [
                 [
@@ -266,7 +268,7 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->patch('entities/themes/'.rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/themes/'.rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -290,7 +292,7 @@ class ThemeTest extends TestCase
     public function it_should_delete_theme()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -300,13 +302,13 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $theme = App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->get();
         $themeId = $theme[0]->mission_theme_id;
         DB::setDefaultConnection('mysql');
         
-        $this->delete('entities/themes/'.$themeId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('entities/themes/'.$themeId, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -318,8 +320,8 @@ class ThemeTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_delete_theme_for_invalid_mission_theme_id()
-    {   
-        $this->delete('entities/themes/'.rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+    {
+        $this->delete('entities/themes/'.rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -343,7 +345,7 @@ class ThemeTest extends TestCase
     public function it_should_return_invalid_argument_error_for_get_all_themes_for_admin()
     {
         $themeName = str_random(20);
-        $params = [        
+        $params = [
             "theme_name" => $themeName,
             "translations" => [
                 [
@@ -355,10 +357,10 @@ class ThemeTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/themes?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             'errors' => [
@@ -376,14 +378,14 @@ class ThemeTest extends TestCase
     /**
      * @test
      *
-     * Return error for invalid API keys 
+     * Return error for invalid API keys
      *
      * @return void
      */
     public function it_should_return_error_for_invalid_api_key_and_secret_key()
     {
         $defaultTenant = env('DEFAULT_TENANT');
-        $_ENV["DEFAULT_TENANT"] = str_random('5');        
+        $_ENV["DEFAULT_TENANT"] = str_random('5');
         $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode(':'.env('API_SECRET'))])
         ->seeStatusCode(401)
         ->seeJsonStructure([
@@ -398,5 +400,4 @@ class ThemeTest extends TestCase
         ]);
         $_ENV["DEFAULT_TENANT"] = $defaultTenant;
     }
-
 }

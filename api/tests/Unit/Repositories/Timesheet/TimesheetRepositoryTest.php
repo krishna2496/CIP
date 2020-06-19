@@ -20,7 +20,8 @@ class TimeSheetRepositoryTest extends TestCase
     /**
     * @testdox Get sum of all users approved time
     */
-    public function testGetSumOfUsersTotalMinutes() {
+    public function testGetSumOfUsersTotalMinutes()
+    {
         /**
          * code commented by tatvasoft to ignore test case failer
          */
@@ -71,7 +72,8 @@ class TimeSheetRepositoryTest extends TestCase
         */
     }
 
-    private function getIntance($defaults = []) {
+    private function getIntance($defaults = [])
+    {
         $timesheet = array_key_exists('timesheet', $defaults) ?
             $defaults['timesheet'] : $this->getTimeSheetMock();
 
@@ -89,64 +91,73 @@ class TimeSheetRepositoryTest extends TestCase
         );
     }
 
-    private function getTimeSheetMock() {
+    private function getTimeSheetMock()
+    {
         return $this->getMockBuilder(Timesheet::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getMissionMock() {
+    private function getMissionMock()
+    {
         return $this->getMockBuilder(Mission::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getMissionLanguageMock() {
+    private function getMissionLanguageMock()
+    {
         return $this->getMockBuilder(MissionLanguage::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getTimesheetDocumentMock() {
+    private function getTimesheetDocumentMock()
+    {
         return $this->getMockBuilder(TimesheetDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getHelpersMock() {
+    private function getHelpersMock()
+    {
         return $this->getMockBuilder(Helpers::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getLanguageHelperMock() {
+    private function getLanguageHelperMock()
+    {
         return $this->getMockBuilder(LanguageHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getS3HelperMock() {
+    private function getS3HelperMock()
+    {
         return $this->getMockBuilder(S3Helper::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getTenantOptionRepositoryMock() {
+    private function getTenantOptionRepositoryMock()
+    {
         return $this->getMockBuilder(TenantOptionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getUserRepositoryMock() {
+    private function getUserRepositoryMock()
+    {
         return $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getAmqpMock() {
+    private function getAmqpMock()
+    {
         return $this->getMockBuilder(Amqp::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
-
 }

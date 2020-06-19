@@ -42,7 +42,7 @@ class AppAuthTest extends TestCase
                 ],
                 "message"
             ]
-        );
+          );
         $user->delete();
     }
 
@@ -105,7 +105,7 @@ class AppAuthTest extends TestCase
                 "status",
                 "message"
             ]
-        );
+          );
         $user->delete();
     }
 

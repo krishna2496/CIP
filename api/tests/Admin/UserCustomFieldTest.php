@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\Helpers;
+
 class UserCustomFieldTest extends TestCase
 {
     /**
@@ -12,7 +14,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_create_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);
+        $randomTypes = array_rand($typeArray, 1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -29,9 +31,9 @@ class UserCustomFieldTest extends TestCase
         ];
 
         $this->post(
-          'metadata/users/custom_fields/',
-          $params,
-          ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            'metadata/users/custom_fields/',
+            $params,
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(201)
         ->seeJsonStructure([
@@ -69,7 +71,7 @@ class UserCustomFieldTest extends TestCase
 
         $this->get(
             'metadata/users/custom_fields?search='.$userCustomField->name,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -99,7 +101,7 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_no_user_custom_field_found()
     {
-        $this->get(route("metadata.users.custom_fields"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(route("metadata.users.custom_fields"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -117,7 +119,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_update_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);
+        $randomTypes = array_rand($typeArray, 1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -142,7 +144,7 @@ class UserCustomFieldTest extends TestCase
         $this->patch(
             'metadata/users/custom_fields/'.$fieldId,
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -182,7 +184,7 @@ class UserCustomFieldTest extends TestCase
         $this->delete(
             "metadata/users/custom_fields/".$userCustomField->field_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
     }
@@ -198,7 +200,7 @@ class UserCustomFieldTest extends TestCase
         $this->delete(
             "metadata/users/custom_fields/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -241,7 +243,7 @@ class UserCustomFieldTest extends TestCase
         $this->patch(
             "metadata/users/custom_fields/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -270,7 +272,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
@@ -294,7 +296,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_return_error_for_create_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);
+        $randomTypes = array_rand($typeArray, 1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -309,7 +311,7 @@ class UserCustomFieldTest extends TestCase
             ]
         ];
 
-        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -332,7 +334,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_return_error_for_update_user_custom_field()
     {
         $typeArray = config('constants.custom_field_types');
-        $randomTypes = array_rand($typeArray,1);
+        $randomTypes = array_rand($typeArray, 1);
         $name = str_random(20);
         $params = [
             'name' => $name,
@@ -366,7 +368,7 @@ class UserCustomFieldTest extends TestCase
             ]
         ];
 
-        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -394,7 +396,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
@@ -422,7 +424,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields/'.$userCustomField->field_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('metadata/users/custom_fields/'.$userCustomField->field_id, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -446,7 +448,7 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_error_if_custom_fields_id_is_wrong()
     {
-        $this->get('metadata/users/custom_fields/'.rand(1000000,2000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('metadata/users/custom_fields/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
