@@ -196,6 +196,11 @@ return [
         'MESSAGE_STATE_LISTING' => 'States listed successfully',
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
+        'MESSAGE_ORGANIZATION_CREATED' => "Organization created successfully",
+        'MESSAGE_ORGANIZATION_UPDATED' => "Organization updated successfully",
+        'MESSAGE_ORGANIZATION_DELETED' => "Organization deleted successfully",
+        'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
+        'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully'
     ],
 
 
@@ -358,5 +363,6 @@ return [
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
+        'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
        ]
 ];
