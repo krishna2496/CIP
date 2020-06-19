@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class FooterPageTest extends TestCase
 {
@@ -31,7 +32,7 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -39,8 +40,8 @@ class FooterPageTest extends TestCase
             ],
             'message',
             'status',
-        ]);    
-        App\Models\FooterPage::where('slug', $slug)->delete();    
+        ]);
+        App\Models\FooterPage::where('slug', $slug)->delete();
     }
 
     /**
@@ -73,16 +74,16 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(201);    
+        $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
-        $this->get('cms?search='.$titile, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('cms?search='.$titile, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
         ]);
-        App\Models\FooterPage::where('slug', $slug)->delete(); 
+        App\Models\FooterPage::where('slug', $slug)->delete();
     }
 
     /**
@@ -114,7 +115,7 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -143,7 +144,7 @@ class FooterPageTest extends TestCase
                 [
                 'status' => 1,
                 'slug' => $slug,
-                'translations' =>[  
+                'translations' =>[
                         [
                             "lang" => "en",
                             "title" => str_random(20),
@@ -151,10 +152,10 @@ class FooterPageTest extends TestCase
                                 [
                                     "title" => str_random(20),
                                     "description"=> str_random(20)
-                                ]                                
+                                ]
                             ],
-                        ]  
-                    ]             
+                        ]
+                    ]
                 ],
             ];
 
@@ -164,7 +165,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $pageId = $footerPage->page_id;
 
-        $this->patch("cms/".$pageId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("cms/".$pageId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -173,7 +174,7 @@ class FooterPageTest extends TestCase
             'message',
             'status',
         ]);
-        App\Models\FooterPage::where('slug', $slug)->delete(); 
+        App\Models\FooterPage::where('slug', $slug)->delete();
     }
     
     /**
@@ -193,7 +194,7 @@ class FooterPageTest extends TestCase
         $this->delete(
             "cms/".$footerPage->page_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
     }
@@ -209,7 +210,7 @@ class FooterPageTest extends TestCase
         $this->delete(
             "cms/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -221,7 +222,7 @@ class FooterPageTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -248,7 +249,7 @@ class FooterPageTest extends TestCase
                                 'title' => str_random(20),
                                 'description' => array(str_random(255)),
                             ]
-                        ] 
+                        ]
                     ]
                 ],
             ],
@@ -257,7 +258,7 @@ class FooterPageTest extends TestCase
         $this->patch(
             "cms/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -269,7 +270,7 @@ class FooterPageTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -281,7 +282,7 @@ class FooterPageTest extends TestCase
      */
     public function it_should_return_invalid_argument_error_on_footer_page_listing()
     {
-        $this->get('/cms?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/cms?order=test', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(400)
           ->seeJsonStructure([
               "errors" => [
@@ -308,7 +309,7 @@ class FooterPageTest extends TestCase
         $footerPage->setConnection($connection);
         $footerPage->save();
 
-        $this->get('cms/'.$footerPage->page_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('cms/'.$footerPage->page_id, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -327,7 +328,7 @@ class FooterPageTest extends TestCase
      */
     public function it_should_show_footer_page_not_found_error()
     {
-        $this->get('cms/'.rand(1000000, 50000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('cms/'.rand(1000000, 50000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -338,7 +339,7 @@ class FooterPageTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -369,7 +370,7 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -380,7 +381,7 @@ class FooterPageTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
+        ]);
     }
 
     /**
@@ -406,7 +407,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $pageId = $footerPage->page_id;
 
-        $this->patch("cms/".$footerPage->page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("cms/".$footerPage->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -439,7 +440,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $pageId = $footerPage->page_id;
 
-        $this->patch("cms/".$footerPage->page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("cms/".$footerPage->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [

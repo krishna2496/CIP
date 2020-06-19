@@ -1,5 +1,5 @@
 <?php
-	
+    
 namespace Tests\Unit\Http\Controllers\Admin\Tenant;
 
 use App\Helpers\Helpers;
@@ -114,7 +114,7 @@ class TenantActivatedSettingControllerTest extends TestCase
                 'description' => 'User profile edit page - Add new skills (Allow the user to add or manage his skills. If enabled open modal)',
                 'title' => 'skills enabled'
             ]
-        ]);  
+        ]);
     }
 
     /**
@@ -123,7 +123,7 @@ class TenantActivatedSettingControllerTest extends TestCase
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
-     * 
+     *
      * @return void
      */
     private function getController(
@@ -149,5 +149,4 @@ class TenantActivatedSettingControllerTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

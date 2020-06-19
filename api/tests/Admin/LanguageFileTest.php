@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class LanguageFileTest extends TestCase
 {
@@ -12,7 +13,7 @@ class LanguageFileTest extends TestCase
      */
     public function language_file_test_it_should_fetch_language_file()
     {
-        $this->get('language-file?code=en', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('language-file?code=en', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
 
@@ -186,7 +187,7 @@ class LanguageFileTest extends TestCase
      */
     public function language_file_test_it_should_return_error_on_fetch_language_file()
     {
-        $this->get('language-file?code=qq', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('language-file?code=qq', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -199,7 +200,7 @@ class LanguageFileTest extends TestCase
      */
     public function language_file_test_it_should_return_error_for_invalid_code_on_fetch_language_file()
     {
-        $this->get('language-file?code=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('language-file?code=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -238,9 +239,9 @@ class LanguageFileTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should return correct invalid file content
-     * 
+     *
      * @return void
      */
     public function it_should_return_correct_invalid_file_content()
@@ -269,17 +270,17 @@ class LanguageFileTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Language file not found for language file
-     * 
+     *
      * @return void
      */
     public function it_should_return_error_tenant_language_file_not_found()
-    {        
+    {
         $tenantId = env('DEFAULT_TENANT_ID');
 
         $languageData = DB::table('language')
-        ->select('language.language_id', 'language.code')        
+        ->select('language.language_id', 'language.code')
         ->leftJoin('tenant_language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_language.language_id', null)
         ->first();
@@ -290,8 +291,8 @@ class LanguageFileTest extends TestCase
             'default' => '0'
         ]);
 
-        $res = $this->get("language-file?code=$languageData->code", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(200);        
+        $res = $this->get("language-file?code=$languageData->code", ['Authorization' => Helpers::getBasicAuth()])
+        ->seeStatusCode(200);
         
         DB::setDefaultConnection('mysql');
         

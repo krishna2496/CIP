@@ -72,7 +72,7 @@ class AppCommentsTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $missionId = rand(1000000,2000000);
+        $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
@@ -86,7 +86,7 @@ class AppCommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
+        ]);
         $user->delete();
     }
 
@@ -128,7 +128,7 @@ class AppCommentsTest extends TestCase
      * @test
      *
      * Return error for invalid mission id
-     * 
+     *
      * @return void
      */
     public function it_should_return_error_for_invalid_mission_id_for_add_comment()
@@ -155,7 +155,7 @@ class AppCommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
+        ]);
         $user->delete();
     }
 
@@ -163,7 +163,7 @@ class AppCommentsTest extends TestCase
      * @test
      *
      * Return error if comment field is blank
-     * 
+     *
      * @return void
      */
     public function it_should_return_error_if_comment_is_blank()
@@ -192,7 +192,7 @@ class AppCommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
+        ]);
         $user->delete();
         $mission->delete();
     }
@@ -201,7 +201,7 @@ class AppCommentsTest extends TestCase
      * @test
      *
      * Return error if comment field exceeds maximum character
-     * 
+     *
      * @return void
      */
     public function it_should_return_error_if_comments_exceeds_maximum_character_validation()
@@ -230,7 +230,7 @@ class AppCommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
+        ]);
         $user->delete();
         $mission->delete();
     }
@@ -247,7 +247,7 @@ class AppCommentsTest extends TestCase
         // Get setting id from master table
         DB::setDefaultConnection('mysql');
         $missionCommentAutoApproved = config('constants.tenant_settings.MISSION_COMMENT_AUTO_APPROVED');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$missionCommentAutoApproved'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$missionCommentAutoApproved'");
         
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -294,10 +294,10 @@ class AppCommentsTest extends TestCase
      * @return void
      */
     public function it_should_return_all_comments_by_user_id()
-    {        
+    {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -373,7 +373,7 @@ class AppCommentsTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -414,7 +414,7 @@ class AppCommentsTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -487,7 +487,7 @@ class AppCommentsTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 

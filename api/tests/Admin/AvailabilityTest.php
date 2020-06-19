@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class AvailabilityTest extends TestCase
 {
@@ -12,7 +13,7 @@ class AvailabilityTest extends TestCase
     public function it_should_create_availability()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -22,7 +23,7 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -40,7 +41,7 @@ class AvailabilityTest extends TestCase
      */
     public function it_should_return_error_if_type_is_blank()
     {
-        $params = [        
+        $params = [
             "type" => "",
             "translations" => [
                 [
@@ -50,7 +51,7 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -74,7 +75,7 @@ class AvailabilityTest extends TestCase
     public function it_should_return_all_availability_for_admin()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -84,10 +85,10 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/availability?perPage=test&search='.$availabilityType, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/availability?perPage=test&search='.$availabilityType, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -106,7 +107,7 @@ class AvailabilityTest extends TestCase
     public function it_should_return_a_availability_for_admin_by_availability_id()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -116,7 +117,7 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -126,7 +127,7 @@ class AvailabilityTest extends TestCase
         $availabilityId = $availability[0]->availability_id;
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/availability/'.$availabilityId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/availability/'.$availabilityId, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -149,7 +150,7 @@ class AvailabilityTest extends TestCase
      */
     public function it_should_return_error_if_availability_id_is_wrong()
     {
-        $this->get('entities/availability/'.rand(1000000,2000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/availability/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -173,7 +174,7 @@ class AvailabilityTest extends TestCase
     public function it_should_update_availability()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -183,18 +184,18 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $availability = App\Models\Availability::where("type", $availabilityType)->orderBy("availability_id", "DESC")->take(1)->get();
         $availabilityId = $availability[0]->availability_id;
         
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "type" => str_random(20)
         ];
         
-        $this->patch('entities/availability/'.$availabilityId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/availability/'.$availabilityId, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -213,7 +214,7 @@ class AvailabilityTest extends TestCase
     public function it_should_return_error_for_update_availability_blank_type()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -223,17 +224,17 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()]);
         
         $availability = App\Models\Availability::where("type", $availabilityType)->orderBy("availability_id", "DESC")->take(1)->get();
         $availabilityId = $availability[0]->availability_id;
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "type" => ""
         ];
         
-        $this->patch('entities/availability/'.$availabilityId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/availability/'.$availabilityId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -256,8 +257,8 @@ class AvailabilityTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_wrong_availability_id()
-    {   
-        $params = [        
+    {
+        $params = [
             "type" => str_random(20),
             "translations" => [
                 [
@@ -267,7 +268,7 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->patch('entities/availability/'.rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/availability/'.rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -291,7 +292,7 @@ class AvailabilityTest extends TestCase
     public function it_should_delete_availability()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -301,13 +302,13 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $availability = App\Models\Availability::where("type", $availabilityType)->orderBy("availability_id", "DESC")->take(1)->get();
         $availabilityId = $availability[0]->availability_id;
         DB::setDefaultConnection('mysql');
         
-        $this->delete('entities/availability/'.$availabilityId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('entities/availability/'.$availabilityId, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -319,8 +320,8 @@ class AvailabilityTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_delete_availability_for_invalid_availability_id()
-    {   
-        $this->delete('entities/availability/'.rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+    {
+        $this->delete('entities/availability/'.rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -344,7 +345,7 @@ class AvailabilityTest extends TestCase
     public function it_should_return_invalid_argument_error_for_get_all_availability_for_admin()
     {
         $availabilityType = str_random(10);
-        $params = [        
+        $params = [
             "type" => $availabilityType,
             "translations" => [
                 [
@@ -356,10 +357,10 @@ class AvailabilityTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->post("entities/availability", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/availability?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/availability?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             'errors' => [

@@ -104,7 +104,7 @@ class AppMissionApplicationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -152,7 +152,7 @@ class AppMissionApplicationTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
@@ -190,7 +190,7 @@ class AppMissionApplicationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -238,7 +238,7 @@ class AppMissionApplicationTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         App\Models\Mission::where("mission_id", $mission[0]['mission_id'])->update(["total_seats" => 0]);
@@ -276,7 +276,7 @@ class AppMissionApplicationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -324,7 +324,7 @@ class AppMissionApplicationTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -362,7 +362,7 @@ class AppMissionApplicationTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -410,7 +410,7 @@ class AppMissionApplicationTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
@@ -426,5 +426,4 @@ class AppMissionApplicationTest extends TestCase
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
-    
 }

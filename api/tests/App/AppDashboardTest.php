@@ -38,7 +38,7 @@ class AppDashboardTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -86,7 +86,7 @@ class AppDashboardTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -133,12 +133,11 @@ class AppDashboardTest extends TestCase
         ]);
         $user->delete();
         \App\Models\Mission::whereNull('deleted_at')->delete();
-
     }
 
     /**
      * @test
-     * 
+     *
      * It should list comment history on dashboard
      * @return void
      */
@@ -146,7 +145,7 @@ class AppDashboardTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         // Creating user
@@ -196,7 +195,7 @@ class AppDashboardTest extends TestCase
             "availability_id" => 1
         ];
 
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -223,7 +222,7 @@ class AppDashboardTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -255,7 +254,7 @@ class AppDashboardTest extends TestCase
         $this->delete(
             "missions/$missionId",
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
 
@@ -265,7 +264,7 @@ class AppDashboardTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should return no comment found on dashboard comment hisotry
      * @return void
      */
@@ -293,7 +292,7 @@ class AppDashboardTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should delete comment from comments history on dashboard
      * @return void
      */
@@ -301,7 +300,7 @@ class AppDashboardTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         // Creating user
@@ -351,7 +350,7 @@ class AppDashboardTest extends TestCase
             "availability_id" => 1
         ];
 
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -378,7 +377,7 @@ class AppDashboardTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -395,7 +394,7 @@ class AppDashboardTest extends TestCase
         $this->delete(
             "missions/$missionId",
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
 
@@ -405,7 +404,7 @@ class AppDashboardTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should return error, comment not found on delete comment from comments history on dashboard
      * @return void
      */
@@ -418,7 +417,7 @@ class AppDashboardTest extends TestCase
         $user->save();
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $commentId = rand(800000000,80000000000);
+        $commentId = rand(800000000, 80000000000);
 
         // Delete comment
         $this->delete("app/dashboard/comments/$commentId", [], ['token' => $token])
@@ -430,7 +429,7 @@ class AppDashboardTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should export user's comments
      * @return void
      */
@@ -438,7 +437,7 @@ class AppDashboardTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         // Creating user
@@ -488,7 +487,7 @@ class AppDashboardTest extends TestCase
             "availability_id" => 1
         ];
 
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -515,7 +514,7 @@ class AppDashboardTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -537,7 +536,7 @@ class AppDashboardTest extends TestCase
         $this->delete(
             "missions/$missionId",
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
 
@@ -547,7 +546,7 @@ class AppDashboardTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should export user's comments
      * @return void
      */

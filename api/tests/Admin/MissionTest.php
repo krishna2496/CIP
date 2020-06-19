@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class MissionTest extends TestCase
 {
@@ -11,7 +12,7 @@ class MissionTest extends TestCase
      */
     public function it_should_return_no_mission_found()
     {
-        $this->get(route("missions"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(route("missions"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -167,7 +168,7 @@ class MissionTest extends TestCase
         
         \DB::setDefaultConnection('mysql');
         
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -208,7 +209,7 @@ class MissionTest extends TestCase
                     ]
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -364,11 +365,11 @@ class MissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
-        $this->get('missions?order=desc&search='.$description, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions?order=desc&search='.$description, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -377,7 +378,7 @@ class MissionTest extends TestCase
         ]);
 
         DB::setDefaultConnection('mysql');
-        $this->get('missions?perPage=all', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions?perPage=all', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -538,7 +539,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission->mission_id,
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -563,7 +564,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -595,7 +596,7 @@ class MissionTest extends TestCase
         $this->delete(
             "missions/".$mission->mission_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
     }
@@ -611,7 +612,7 @@ class MissionTest extends TestCase
         $this->delete(
             "missions/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -698,7 +699,7 @@ class MissionTest extends TestCase
                     ]
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -725,7 +726,7 @@ class MissionTest extends TestCase
                     "mission_type" => "GOAL1",
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -753,7 +754,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get("missions/".$mission->mission_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("missions/".$mission->mission_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
                 'message',
@@ -773,7 +774,7 @@ class MissionTest extends TestCase
     {
         $missionId = rand(100000, 5000000);
 
-        $this->get("missions/".$missionId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("missions/".$missionId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -805,7 +806,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -834,7 +835,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get('missions?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             'errors' => [
@@ -938,7 +939,7 @@ class MissionTest extends TestCase
                     ]
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -1057,7 +1058,7 @@ class MissionTest extends TestCase
                     ]
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
@@ -1070,7 +1071,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1182,7 +1183,7 @@ class MissionTest extends TestCase
                         ]
                     ]
                 ];
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
@@ -1192,7 +1193,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1230,7 +1231,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->I
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1300,7 +1301,7 @@ class MissionTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
@@ -1402,7 +1403,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission->mission_id,
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1444,7 +1445,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->I
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1490,7 +1491,7 @@ class MissionTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $missionId = json_decode($this->response->getContent())->data->mission_id;
@@ -1498,12 +1499,12 @@ class MissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $missionId)->delete();
 
         DB::setDefaultConnection('mysql');
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         DB::setDefaultConnection('mysql');
         // Return error if media not found in system
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -1519,7 +1520,7 @@ class MissionTest extends TestCase
         $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
         // Return error if you are trying to delete default mission media
         DB::setDefaultConnection('mysql');
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -1566,7 +1567,7 @@ class MissionTest extends TestCase
             ],
             "location" => [
                 'city_id' => $cityId,
-                'country_code' => $countryDetail->I
+                'country_code' => $countryDetail->ISO
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -1612,7 +1613,7 @@ class MissionTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $missionId = json_decode($this->response->getContent())->data->mission_id;
@@ -1620,12 +1621,12 @@ class MissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $missionId)->delete();
 
         DB::setDefaultConnection('mysql');
-        $this->delete('missions/document/'.$missionDocumentId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('missions/document/'.$missionDocumentId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         DB::setDefaultConnection('mysql');
         // Return error if document not found in system
-        $this->delete('missions/document/'.$missionDocumentId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('missions/document/'.$missionDocumentId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -1730,7 +1731,7 @@ class MissionTest extends TestCase
         
         \DB::setDefaultConnection('mysql');
         
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -1841,7 +1842,7 @@ class MissionTest extends TestCase
                     ]
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
@@ -1850,7 +1851,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1875,7 +1876,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404);
 
@@ -1895,7 +1896,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404);
 
@@ -1914,7 +1915,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404);
 
@@ -1935,7 +1936,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422);
 
@@ -1956,7 +1957,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422);
 
@@ -1975,7 +1976,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission[0]['mission_id'],
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422);
 
@@ -2072,330 +2073,9 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".$mission->mission_id,
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422);
-        $mission->delete();
-    }
-
-    /**
-     * @test
-     *
-     * Invalid mission tab id for update api
-     *
-     * @return void
-     */
-    public function it_should_return_error_on_invalid_mission_tab_id()
-    {
-        \DB::setDefaultConnection('tenant');
-        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;
-        
-        \DB::setDefaultConnection('mysql');
-        
-        $connection = 'tenant';
-        $skill = factory(\App\Models\Skill::class)->make();
-        $skill->setConnection($connection);
-        $skill->save();
- 
-        $params = [
-                    "organisation" => [
-                        "organisation_id" => 1,
-                        "organisation_name" => str_random(10),
-                        "organisation_detail" => ''
-                    ],
-                    "location" => [
-                        'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
-                    ],
-                    "mission_detail" => [[
-                            "lang" => "en",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "custom_information" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ],
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ],
-                        [
-                            "lang" => "fr",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ]
-                    ],
-                    "mission_tab_details"=>[
-                        [
-                            'mission_tab_id'=>str_random(36),
-                            "sort_key"=> 1,
-                            "translations"=> [
-                                [
-                                    "lang"=> "en",
-                                    "name"=> "Tab A1",
-                                    "sections"=> [
-                                        [
-                                            "title"=> "First section",
-                                            "content"=> str_random(100)
-                                        ]
-                                    ]
-                                ],
-                            ]
-                        ]
-                    ],
-                    "media_images" => [[
-                            "media_id" => "",
-                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "default" => "1",
-                            "sort_order" => "1"
-                        ]
-                    ],
-                    "documents" => [[
-                            "document_id" => "",
-                            "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
-                            "sort_order" => "1"
-                        ]
-                    ],
-                    "media_videos"=> [[
-                        "media_id" => "",
-                        "media_name" => "youtube_small",
-                        "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
-                        "sort_order" => "1"
-                        ]
-                    ],
-                    "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2022-10-15 10:40:00",
-                    "mission_type" => config("constants.mission_type.TIME"),
-                    "goal_objective" => rand(1, 1000),
-                    "application_deadline" => "2022-07-28 11:40:00",
-                    "application_start_date" => "2019-05-15 10:40:00",
-                    "application_end_date" => "2020-05-15 10:40:00",
-                    "application_start_time" => "2019-05-15 10:40:00",
-                    "application_end_time" => "2020-05-15 10:40:00",
-                    "publication_status" => config("constants.publication_status.APPROVED"),
-                    "theme_id" => 1,
-                    "volunteering_attribute" => [
-                        "availability_id" => 1,
-                        "total_seats" => rand(10, 1000),
-                        "is_virtual" => 0
-                    ],
-                    'skills' => [
-                        [
-                            "skill_id" => $skill->skill_id
-                        ]
-                    ]
-                ];
-
-        $connection = 'tenant';
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
-
-        $this->patch(
-            "missions/".$mission->mission_id,
-            $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
-        )
-        ->seeStatusCode(404)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'code',
-                    'message'
-                ]
-            ]
-        ]);
-        $mission->delete();
-    }
-
-
-    /**
-     * @test
-     *
-     * Update mission tab with mission tab id api
-     *
-     * @return void
-     */
-    public function it_should_update_mission_tab_with_mission_tab_id()
-    {
-        \DB::setDefaultConnection('tenant');
-        $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;
-        
-        \DB::setDefaultConnection('mysql');
-        
-        $connection = 'tenant';
-        $skill = factory(\App\Models\Skill::class)->make();
-        $skill->setConnection($connection);
-        $skill->save();
- 
-        $params = [
-                    "organisation" => [
-                        "organisation_id" => 1,
-                        "organisation_name" => str_random(10),
-                        "organisation_detail" => ''
-                    ],
-                    "location" => [
-                        'city_id' => $cityId,
-                        'country_code' => $countryDetail->ISO
-                    ],
-                    "mission_detail" => [[
-                            "lang" => "en",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "custom_information" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ],
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ],
-                        [
-                            "lang" => "fr",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ]
-                    ],
-                    "mission_tab_details"=>[
-                        [
-                            "sort_key"=> 1,
-                            "translations"=> [
-                                [
-                                    "lang"=> "en",
-                                    "name"=> "Tab A1",
-                                    "sections"=> [
-                                        [
-                                            "title"=> "First section",
-                                            "content"=> str_random(100)
-                                        ],
-                                        [
-                                            "title"=> "second section",
-                                            "content"=> str_random(100)
-                                        ],
-
-                                    ]
-                                ],
-                            ]
-                        ],
-                    ],
-                    "media_images" => [[
-                            "media_id" => "",
-                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "default" => "1",
-                            "sort_order" => "1"
-                        ],
-                        [
-                            "media_id" => "",
-                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
-                            "default" => "",
-                            "sort_order" => "1"
-                        ]
-                    ],
-                    "documents" => [[
-                            "document_id" => "",
-                            "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
-                            "sort_order" => "1"
-                        ]
-                    ],
-                    "media_videos"=> [[
-                        "media_id" => "",
-                        "media_name" => "youtube_small",
-                        "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
-                        "sort_order" => "1"
-                        ]
-                    ],
-                    "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2022-10-15 10:40:00",
-                    "mission_type" => config("constants.mission_type.TIME"),
-                    "goal_objective" => rand(1, 1000),
-                    "application_deadline" => "2022-07-28 11:40:00",
-                    "application_start_date" => "2019-05-15 10:40:00",
-                    "application_end_date" => "2020-05-15 10:40:00",
-                    "application_start_time" => "2019-05-15 10:40:00",
-                    "application_end_time" => "2020-05-15 10:40:00",
-                    "publication_status" => config("constants.publication_status.APPROVED"),
-                    "theme_id" => 1,
-                    "volunteering_attribute" => [
-                        "availability_id" => 1,
-                        "total_seats" => rand(10, 1000),
-                        "is_virtual" => 0
-                    ],
-                    'skills' => [
-                        [
-                            "skill_id" => $skill->skill_id
-                        ]
-                    ]
-                ];
-
-        $connection = 'tenant';
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
-
-        $this->patch(
-            "missions/".$mission->mission_id,
-            $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
-        )
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            'message',
-            'status',
-            ]);
         $mission->delete();
     }
 }

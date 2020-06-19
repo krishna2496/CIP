@@ -97,7 +97,7 @@ class AppPolicyPageTest extends TestCase
             ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -208,7 +208,7 @@ class AppPolicyPageTest extends TestCase
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
-        $user->save();        
+        $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing?order=test', ['token' => $token])

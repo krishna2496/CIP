@@ -39,9 +39,9 @@ class Helpers
     {
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
             return $this->getDomainFromUserAPIKeys($request);
-        } else if (!empty($request->query('tenant'))) {
+        } elseif (!empty($request->query('tenant'))) {
             return $this->getTenantDomainByTenantId($request->query('tenant'));
-        } else if (in_array(env('APP_ENV'), ['local', 'testing'])) {
+        } elseif (in_array(env('APP_ENV'), ['local', 'testing'])) {
             return env('DEFAULT_TENANT');
         } else {
             return parse_url($request->headers->all()['referer'][0])['host'];
@@ -384,7 +384,7 @@ class Helpers
         return $language;
     }
 
-	/**
+    /**
      * Remove unwanted characters from json
      * @param string $filePath
      * @return string
@@ -393,20 +393,20 @@ class Helpers
     {
         $jsonFileContent = file_get_contents($filePath);
 
-		// This will remove unwanted characters.
-		for ($i = 0; $i <= 31; ++$i) {
-			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
-		}
-		$jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
+        // This will remove unwanted characters.
+        for ($i = 0; $i <= 31; ++$i) {
+            $jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
+        }
+        $jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
 
-		// This is the most common part
-		// Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
-		// here we detect it and we remove it, basically it's the first 3 characters
-		if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
-		   $jsonFileContent = substr($jsonFileContent, 3);
-		}
+        // This is the most common part
+        // Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
+        // here we detect it and we remove it, basically it's the first 3 characters
+        if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
+            $jsonFileContent = substr($jsonFileContent, 3);
+        }
 
-		return $jsonFileContent;
+        return $jsonFileContent;
     }
 
     /**
@@ -429,5 +429,15 @@ class Helpers
         $this->switchDatabaseConnection($connection);
 
         return $tenant->name;
+    }
+
+    /**
+     * Retrieve tenant's basic auth
+     *
+     * @return String
+     */
+    public static function getBasicAuth()
+    {
+        return 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'));
     }
 }

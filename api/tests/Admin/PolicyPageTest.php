@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class PolicyPageTest extends TestCase
 {
@@ -31,7 +32,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -71,7 +72,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -94,7 +95,7 @@ class PolicyPageTest extends TestCase
      */
     public function it_should_return_all_policy_pages()
     {
-        $this->get('policy?search=a', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('policy?search=a', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -111,7 +112,7 @@ class PolicyPageTest extends TestCase
      */
     public function it_should_return_no_data_found_for_get_all_policy_pages()
     {
-        $this->get(route('policy'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(route('policy'), ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -143,7 +144,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -166,7 +167,7 @@ class PolicyPageTest extends TestCase
         $this->delete(
             "policy/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -214,7 +215,7 @@ class PolicyPageTest extends TestCase
         $this->patch(
             "policy/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -251,7 +252,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -283,7 +284,7 @@ class PolicyPageTest extends TestCase
         $this->delete(
             "policy/".$policyPage->page_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
     }
@@ -302,7 +303,7 @@ class PolicyPageTest extends TestCase
         $policyPage->setConnection($connection);
         $policyPage->save();
 
-        $this->get('policy/'.$policyPage->page_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('policy/'.$policyPage->page_id, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -325,7 +326,7 @@ class PolicyPageTest extends TestCase
      */
     public function it_should_return_error_not_found_for_invalid_policy_page_id()
     {
-        $this->get('policy/'.rand(1000000, 5000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('policy/'.rand(1000000, 5000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -367,7 +368,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -416,7 +417,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -466,7 +467,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -500,7 +501,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -548,7 +549,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -601,7 +602,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -658,7 +659,7 @@ class PolicyPageTest extends TestCase
             ],
         ];
 
-        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -679,7 +680,7 @@ class PolicyPageTest extends TestCase
      */
     public function it_should_return_invalid_argument_error_on_policy_page_listing()
     {
-        $this->get('/policy?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/policy?order=test', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(400)
           ->seeJsonStructure([
               "errors" => [

@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\Helpers;
+
 class TenantSettingsTest extends TestCase
 {
     /**
@@ -13,14 +15,14 @@ class TenantSettingsTest extends TestCase
     {
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
-        DB::setDefaultConnection('tenant');        
-        $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);        
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
+        DB::setDefaultConnection('tenant');
+        $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
         $tenantActivatedSetting = App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$tenantSetting->tenant_setting_id]);
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('tenant-settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('tenant-settings', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -41,8 +43,8 @@ class TenantSettingsTest extends TestCase
     {
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
-        DB::setDefaultConnection('tenant');        
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
+        DB::setDefaultConnection('tenant');
         $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
         
         DB::setDefaultConnection('tenant');
@@ -53,7 +55,7 @@ class TenantSettingsTest extends TestCase
                     "value" => "1"
                 ];
 
-        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -73,8 +75,8 @@ class TenantSettingsTest extends TestCase
     {
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
-        DB::setDefaultConnection('tenant');        
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
+        DB::setDefaultConnection('tenant');
         $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
 
         DB::setDefaultConnection('tenant');
@@ -85,7 +87,7 @@ class TenantSettingsTest extends TestCase
                     "value" => "123456"
                 ];
 
-        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -114,7 +116,7 @@ class TenantSettingsTest extends TestCase
                     "value" => "1"
                 ];
 
-        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -139,8 +141,8 @@ class TenantSettingsTest extends TestCase
     {
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
-        DB::setDefaultConnection('tenant');        
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
+        DB::setDefaultConnection('tenant');
         $tenantSetting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
 
         DB::setDefaultConnection('tenant');
@@ -151,7 +153,7 @@ class TenantSettingsTest extends TestCase
                     "value" => ""
                 ];
 
-        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -180,7 +182,7 @@ class TenantSettingsTest extends TestCase
         \App\Models\TenantSetting::whereNull('deleted_at')->delete();
 
         DB::setDefaultConnection('mysql');
-        $this->get('tenant-settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('tenant-settings', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         
         \App\Models\TenantSetting::whereNotNull('deleted_at')->restore();

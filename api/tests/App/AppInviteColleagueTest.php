@@ -159,9 +159,9 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
-        DB::setDefaultConnection('tenant');        
+        DB::setDefaultConnection('tenant');
         $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
         App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
 
@@ -438,7 +438,7 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
         DB::setDefaultConnection('tenant');
         $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);

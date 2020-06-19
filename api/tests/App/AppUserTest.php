@@ -2,6 +2,7 @@
 use App\Helpers\Helpers;
 use Firebase\JWT\JWT;
 use Carbon\Carbon;
+
 class AppUserTest extends TestCase
 {
     /**
@@ -85,11 +86,11 @@ class AppUserTest extends TestCase
      */
     public function it_should_save_user_data()
     {
-		\DB::setDefaultConnection('tenant');
+        \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-		
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -122,8 +123,8 @@ class AppUserTest extends TestCase
                 ]
             ],
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
 
         ];
     
@@ -150,7 +151,7 @@ class AppUserTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
                 
         $connection = 'tenant';
@@ -188,8 +189,8 @@ class AppUserTest extends TestCase
                 ]
             ],
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
 
         ];
     
@@ -942,7 +943,6 @@ class AppUserTest extends TestCase
         
         DB::setDefaultConnection('mysql');
         DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => null]);
-        
     }
     
     /**
@@ -1064,11 +1064,11 @@ class AppUserTest extends TestCase
      */
     public function it_should_return_error_on_save_user_data()
     {
-		\DB::setDefaultConnection('tenant');
+        \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-		
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1101,8 +1101,8 @@ class AppUserTest extends TestCase
                 ]
             ],
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
 
         ];
     
@@ -1135,6 +1135,6 @@ class AppUserTest extends TestCase
         $this->get('app/missions', ['token' => $token])
         ->seeStatusCode(401);
         
-        $user->delete();      
+        $user->delete();
     }
 }
