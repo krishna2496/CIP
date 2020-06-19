@@ -19,6 +19,7 @@ class MissionApplicationQuery implements QueryableInterface
     const FILTER_MISSION_COUNTRIES  = 'missionCountries';
     const FILTER_MISSION_CITIES     = 'missionCities';
     const FILTER_MISSION_TYPES      = 'missionTypes';
+    const FILTER_MISSION_VIRTUAL    = 'isVirtual';
 
     const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
@@ -44,7 +45,6 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
-        $isVirtual = isset($filters['isVirtual']) ? filter_var($filters['isVirtual'], FILTER_VALIDATE_BOOLEAN) : null;
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
@@ -52,7 +52,8 @@ class MissionApplicationQuery implements QueryableInterface
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
-            || isset($filters[self::FILTER_MISSION_TYPES]);
+            || isset($filters[self::FILTER_MISSION_TYPES])
+            || isset($filters[self::FILTER_MISSION_VIRTUAL]);
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
@@ -130,6 +131,11 @@ class MissionApplicationQuery implements QueryableInterface
                     $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
                         $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
                     });
+                    // Filter by mission is virtual
+                    $query->when(isset($filters[self::FILTER_MISSION_VIRTUAL]), function($query) use ($filters) {
+                        $isVirtual = filter_var($filters[self::FILTER_MISSION_VIRTUAL], FILTER_VALIDATE_BOOLEAN) ;
+                        $query->where('mission.is_virtual', $isVirtual ? '1' : '0');
+                    });
                 });
             })
             // Filter by applicant skills
@@ -194,10 +200,6 @@ class MissionApplicationQuery implements QueryableInterface
             // Ordering
             ->when($order, function ($query) use ($order) {
                 $query->orderBy($order['orderBy'], $order['orderDir']);
-            })
-            // Virtual Filter
-            ->when($isVirtual !== null, function ($query) use ($isVirtual) {
-                $query->where('mission.is_virtual', $isVirtual ? '1' : '0');
             })
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
