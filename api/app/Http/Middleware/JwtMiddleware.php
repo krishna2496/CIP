@@ -126,7 +126,7 @@ class JwtMiddleware
         if (isset($credentials->sso) && $credentials->sso) {
             $newToken = $this->helpers->getJwtToken(
                 $user->user_id,
-                $this->helpers->getSubDomainFromRequest($request),
+                $this->helpers->getSubDomainFromRequest($request)
             );
             header('Token: '.$newToken);
         }

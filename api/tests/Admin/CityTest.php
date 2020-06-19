@@ -247,7 +247,7 @@ class CityTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $reqCountryCities = $this->get(
-            'entities/cities/0',
+            'entities/cities/0'
         )->seeStatusCode(401)
         ->seeJsonStructure([
             'errors' => [
@@ -374,14 +374,6 @@ class CityTest extends TestCase
 
         /* Add city details end */
 
-        DB::setDefaultConnection('mysql');
-
-        $this->get('/entities/cities/'.$countryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
         /* Delete state details start */
         DB::setDefaultConnection('mysql');
 
@@ -465,14 +457,6 @@ class CityTest extends TestCase
         ->seeStatusCode(422);
         /* Add city details end */
 
-        DB::setDefaultConnection('mysql');
-
-        $this->get('/entities/cities/'.$countryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
 
         /* Delete state details start */
         DB::setDefaultConnection('mysql');
@@ -555,18 +539,19 @@ class CityTest extends TestCase
 
         $response = $this->post("entities/cities", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-
+        $cityId = json_decode($response->response->getContent())->data->city_ids[0]->city_id;
+        
         /* Add city details end */
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/cities/'.$countryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->get('/entities/cities/'.$cityId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
             "message"
         ]);
-
+        
         /* Delete state details start */
         DB::setDefaultConnection('mysql');
 
