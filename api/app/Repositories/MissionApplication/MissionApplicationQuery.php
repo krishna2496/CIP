@@ -44,7 +44,7 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
-        $isVirtual = isset($parameters['filters']['isVirtual']) ? filter_var($parameters['filters']['isVirtual'], FILTER_VALIDATE_BOOLEAN) : null;
+        $isVirtual = isset($filters['isVirtual']) ? filter_var($filters['isVirtual'], FILTER_VALIDATE_BOOLEAN) : null;
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
