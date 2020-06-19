@@ -67,7 +67,7 @@ class JwtMiddleware
             );
         }
         try {
-            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+            $credentials = $this->helpers->decodeJwtToken($token);
         } catch (\Firebase\JWT\ExpiredException $e) {
             return $this->responseHelper->error(
                 Response::HTTP_UNAUTHORIZED,

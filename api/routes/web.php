@@ -185,6 +185,17 @@ $router->group(
  }
 );
 
+/* Google Authentication */
+$router->group(
+ [
+     'prefix' => '/app/google',
+     'namespace' => 'App\Auth',
+ ],
+ function ($router) {
+     $router->get('auth', ['as' => 'google.authentication', 'uses' => 'GoogleAuthController@login']);
+ }
+);
+
 /* Policy pages  */
 $router->get('/app/policy/listing', ['as' => 'policy.listing',
     'middleware' => 'localization|tenant.connection|jwt.auth',
