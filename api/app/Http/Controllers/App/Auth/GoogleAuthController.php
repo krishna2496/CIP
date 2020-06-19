@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\App\Auth;
 
+use App\Repositories\Timezone\TimezoneRepository;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Http\Controllers\Controller;
@@ -19,12 +20,14 @@ class GoogleAuthController extends Controller
         LanguageHelper $languageHelper,
         Helpers $helpers,
         User $user,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TimezoneRepository $timezoneRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->user = $user;
         $this->userRepository = $userRepository;
+        $this->timezoneRepository = $timezoneRepository;
     }
 
     // TODO: Refactor!!!
@@ -110,21 +113,30 @@ class GoogleAuthController extends Controller
             ->first();
 
         $userData = [
+            'avatar' => $userProfile->photoURL,
             'first_name' => $userProfile->firstName,
             'last_name' => $userProfile->lastName,
             'email' => $userProfile->email,
+            'status' => '1',
         ];
 
         if (!$userDetail) {
-            $language = $this->languageHelper->getLanguages()->first();
-            $userData['language_id'] = $language->id;
+            $language = $this->languageHelper
+                ->getTenantLanguagesByTenantId($tenantId)
+                ->first();
+            $timezone = $this->timezoneRepository
+                ->getTenantTimezoneByCode($this->timezoneRepository->getTimezoneList()->first())
+                ->first();
+
+            $userData['language_id'] = $language->language_id;
+            $userData['timezone_id'] = $timezone->timezone_id;
         }
 
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
 
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $tenantName = $this->helpers->getTenantDomainByTenantId($tenantId);
 
         $token = $this->helpers->getJwtToken(
             $userDetail->user_id,

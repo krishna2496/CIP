@@ -429,7 +429,7 @@ class Helpers
      * @param Request
      * @return String
      */
-    private function getTenantDomainByTenantId($tenantId): String
+    public function getTenantDomainByTenantId($tenantId): String
     {
         $connection = Config::get('database.default');
         $this->switchDatabaseConnection('mysql');
