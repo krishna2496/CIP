@@ -87,7 +87,7 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -119,7 +119,7 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -310,7 +310,7 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -345,7 +345,7 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -363,7 +363,7 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
         
         $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -415,7 +415,7 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
         
         $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -501,7 +501,7 @@ class TenantOptionsTest extends TestCase
             'default' => '1'
         ]);
 
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret), 'X-localization' => 'en'])
+        $this->get('style/download-style', ['Authorization' => 'Basic ' . base64_encode($apiKey . ':' . $apiSecret), 'X-localization' => 'en'])
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('mysql');
@@ -692,7 +692,7 @@ class TenantOptionsTest extends TestCase
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
         
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        $this->get('style/download-style', ['Authorization' => 'Basic ' . base64_encode($apiKey . ':' . $apiSecret)])
         ->seeStatusCode(404);
         
         DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");
@@ -796,11 +796,11 @@ class TenantOptionsTest extends TestCase
         ]);
 
         Storage::disk('s3')->put(
-            $tenant->name.'/assets/css/style.css',
-            $path  = storage_path().'/unitTestFiles/dummy.css'
+            $tenant->name . '/assets/css/style.css',
+            $path  = storage_path() . '/unitTestFiles/dummy.css'
         );
 
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        $this->get('style/download-style', ['Authorization' => 'Basic ' . base64_encode($apiKey . ':' . $apiSecret)])
         ->seeStatusCode(404);
 
         DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");

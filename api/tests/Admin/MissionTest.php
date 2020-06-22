@@ -109,7 +109,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                         "sort_order" => "1"
@@ -275,7 +275,7 @@ class MissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -296,13 +296,13 @@ class MissionTest extends TestCase
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
-        $this->get('missions?order=desc&search='.$description, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('missions?order=desc&search=' . $description, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "data",
             "message"
-        ]);
+          ]);
 
         DB::setDefaultConnection('mysql');
         $this->get('missions?perPage=all', ['Authorization' => Helpers::getBasicAuth()])
@@ -311,7 +311,7 @@ class MissionTest extends TestCase
             "status",
             "data",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -406,7 +406,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -439,7 +439,7 @@ class MissionTest extends TestCase
         $mission->save();
 
         $this->patch(
-            "missions/".$mission->mission_id,
+            "missions/" . $mission->mission_id,
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -464,7 +464,7 @@ class MissionTest extends TestCase
             ];
 
         $this->patch(
-            "missions/".rand(1000000, 50000000),
+            "missions/" . rand(1000000, 50000000),
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -496,7 +496,7 @@ class MissionTest extends TestCase
         $mission->save();
 
         $this->delete(
-            "missions/".$mission->mission_id,
+            "missions/" . $mission->mission_id,
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -512,7 +512,7 @@ class MissionTest extends TestCase
     public function it_should_return_mission_not_found_on_delete()
     {
         $this->delete(
-            "missions/".rand(1000000, 50000000),
+            "missions/" . rand(1000000, 50000000),
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -653,7 +653,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get("missions/".$mission->mission_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get("missions/" . $mission->mission_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
                 'message',
@@ -673,7 +673,7 @@ class MissionTest extends TestCase
     {
         $missionId = rand(100000, 5000000);
 
-        $this->get("missions/".$missionId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get("missions/" . $missionId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -705,7 +705,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("missions/" . $mission->mission_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -818,7 +818,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                         "sort_order" => "1"
@@ -924,7 +924,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -962,7 +962,7 @@ class MissionTest extends TestCase
         ];
 
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1051,7 +1051,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -1081,7 +1081,7 @@ class MissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1167,7 +1167,7 @@ class MissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1257,7 +1257,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -1285,7 +1285,7 @@ class MissionTest extends TestCase
                 ];
 
         $this->patch(
-            "missions/".$mission->mission_id,
+            "missions/" . $mission->mission_id,
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1318,12 +1318,12 @@ class MissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1359,7 +1359,7 @@ class MissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1380,12 +1380,12 @@ class MissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $missionId)->delete();
 
         DB::setDefaultConnection('mysql');
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('missions/media/' . $missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         DB::setDefaultConnection('mysql');
         // Return error if media not found in system
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('missions/media/' . $missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -1401,7 +1401,7 @@ class MissionTest extends TestCase
         $missionMediaId = App\Models\MissionMedia::where(["mission_id" => $missionId, "default" => '1'])->first()->mission_media_id;
         // Return error if you are trying to delete default mission media
         DB::setDefaultConnection('mysql');
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('missions/media/' . $missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -1437,12 +1437,12 @@ class MissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1478,7 +1478,7 @@ class MissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1499,12 +1499,12 @@ class MissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $missionId)->delete();
 
         DB::setDefaultConnection('mysql');
-        $this->delete('missions/document/'.$missionDocumentId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('missions/document/' . $missionDocumentId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         DB::setDefaultConnection('mysql');
         // Return error if document not found in system
-        $this->delete('missions/document/'.$missionDocumentId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('missions/document/' . $missionDocumentId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -1587,7 +1587,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [],
+                    "media_videos" => [],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2022-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
@@ -1687,7 +1687,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -1721,7 +1721,7 @@ class MissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1746,7 +1746,7 @@ class MissionTest extends TestCase
         ];
 
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1756,7 +1756,7 @@ class MissionTest extends TestCase
 
         // Validate video id
         $params = [
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_id" => rand(10000000, 50000000),
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -1766,7 +1766,7 @@ class MissionTest extends TestCase
         ];
 
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1781,11 +1781,11 @@ class MissionTest extends TestCase
                 "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
                 "sort_order" => "1"
             ]
-        ]
+            ]
         ];
 
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1806,7 +1806,7 @@ class MissionTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1816,7 +1816,7 @@ class MissionTest extends TestCase
 
         // Validate media id
         $params = [
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_id" => App\Models\MissionMedia::where('mission_id', "<>", $mission[0]['mission_id'])->first()->mission_media_id,
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -1827,7 +1827,7 @@ class MissionTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1841,12 +1841,12 @@ class MissionTest extends TestCase
                 "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf",
                 "sort_order" => "1"
             ]
-        ]
+            ]
         ];
 
         DB::setDefaultConnection('mysql');
         $this->patch(
-            "missions/".$mission[0]['mission_id'],
+            "missions/" . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1907,7 +1907,7 @@ class MissionTest extends TestCase
                             "sort_order" => "1"
                         ]
                     ],
-                    "media_videos"=> [[
+                    "media_videos" => [[
                         "media_id" => "",
                         "media_name" => "youtube_small",
                         "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
@@ -1940,7 +1940,7 @@ class MissionTest extends TestCase
         $mission->save();
 
         $this->patch(
-            "missions/".$mission->mission_id,
+            "missions/" . $mission->mission_id,
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )

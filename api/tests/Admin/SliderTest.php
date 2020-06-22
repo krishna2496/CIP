@@ -220,7 +220,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -258,7 +258,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -299,7 +299,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -340,7 +340,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -382,7 +382,7 @@ class SliderTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $slider->delete();
     }
 
@@ -400,7 +400,7 @@ class SliderTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -417,7 +417,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->delete('slider/'.$slider->slider_id, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('slider/' . $slider->slider_id, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -430,7 +430,7 @@ class SliderTest extends TestCase
      */
     public function it_should_return_error_if_slider_id_is_invalid()
     {
-        $this->delete('slider/'.rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('slider/' . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -506,7 +506,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -544,7 +544,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->patch("slider/".rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -579,7 +579,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->patch("slider/".rand(500000000, 8000000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("slider/" . rand(500000000, 8000000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 }

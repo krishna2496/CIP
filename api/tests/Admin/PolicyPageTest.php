@@ -29,7 +29,7 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -69,7 +69,7 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -100,7 +100,7 @@ class PolicyPageTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -117,7 +117,7 @@ class PolicyPageTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -144,7 +144,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("policy/" . $page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -165,7 +165,7 @@ class PolicyPageTest extends TestCase
     public function it_should_return_policy_page_not_found_on_delete()
     {
         $this->delete(
-            "policy/".rand(1000000, 50000000),
+            "policy/" . rand(1000000, 50000000),
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -209,11 +209,11 @@ class PolicyPageTest extends TestCase
                         ]
                     ]
                 ],
-            ],
+                ],
         ];
         
         $this->patch(
-            "policy/".rand(1000000, 50000000),
+            "policy/" . rand(1000000, 50000000),
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -252,7 +252,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("policy/" . $page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -282,7 +282,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
 
         $this->delete(
-            "policy/".$policyPage->page_id,
+            "policy/" . $policyPage->page_id,
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -303,7 +303,7 @@ class PolicyPageTest extends TestCase
         $policyPage->setConnection($connection);
         $policyPage->save();
 
-        $this->get('policy/'.$policyPage->page_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('policy/' . $policyPage->page_id, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -313,7 +313,7 @@ class PolicyPageTest extends TestCase
                 "slug",
                 "status"
             ]
-        ]);
+          ]);
         $policyPage->delete();
     }
 
@@ -326,7 +326,7 @@ class PolicyPageTest extends TestCase
      */
     public function it_should_return_error_not_found_for_invalid_policy_page_id()
     {
-        $this->get('policy/'.rand(1000000, 5000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('policy/' . rand(1000000, 5000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -365,7 +365,7 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -414,7 +414,7 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -464,7 +464,7 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -501,7 +501,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("policy/" . $page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -540,7 +540,7 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $connection = 'tenant';
@@ -549,7 +549,7 @@ class PolicyPageTest extends TestCase
         $policyPage->save();
         $page_id = $policyPage->page_id;
 
-        $this->patch("policy/".$page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("policy/" . $page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -599,10 +599,10 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("policy/" . $policyPageNew->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -656,10 +656,10 @@ class PolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("policy/" . $policyPageNew->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -690,6 +690,6 @@ class PolicyPageTest extends TestCase
                     "message"
                   ]
               ]
-        ]);
+          ]);
     }
 }

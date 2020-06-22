@@ -16,15 +16,15 @@ class TenantActivatedSettingsTest extends TestCase
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
         $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
         DB::setDefaultConnection('tenant');
-        $tenantSetting1 = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$tenantSetting1->tenant_setting_id]);
+        $tenantSetting1 = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $tenantSetting1->tenant_setting_id]);
 
         DB::setDefaultConnection('mysql');
         $missionCommentAutoApproved = config('constants.tenant_settings.MISSION_COMMENT_AUTO_APPROVED');
         $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$missionCommentAutoApproved'");
         DB::setDefaultConnection('tenant');
-        $tenantSetting2 = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$tenantSetting2->tenant_setting_id]);
+        $tenantSetting2 = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $tenantSetting2->tenant_setting_id]);
 
         DB::setDefaultConnection('tenant');
         $settings = \App\Models\TenantSetting::get()->random(2);
@@ -67,15 +67,15 @@ class TenantActivatedSettingsTest extends TestCase
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
         $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
         DB::setDefaultConnection('tenant');
-        $tenantSetting1 = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$tenantSetting1->tenant_setting_id]);
+        $tenantSetting1 = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $tenantSetting1->tenant_setting_id]);
 
         DB::setDefaultConnection('mysql');
         $missionCommentAutoApproved = config('constants.tenant_settings.MISSION_COMMENT_AUTO_APPROVED');
         $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$missionCommentAutoApproved'");
         DB::setDefaultConnection('tenant');
-        $tenantSetting2 = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$tenantSetting2->tenant_setting_id]);
+        $tenantSetting2 = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $tenantSetting2->tenant_setting_id]);
 
         DB::setDefaultConnection('tenant');
         $settings = \App\Models\TenantSetting::get()->random(2);

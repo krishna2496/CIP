@@ -34,7 +34,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->save();
         
         $this->get(
-            '/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC',
+            '/missions/' . $missionApplication->mission_id . '/applications?search=' . $motivation . '&order=ASC',
             ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200);
@@ -72,7 +72,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save();
 
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/missions/' . $missionApplication->mission_id . '/applications/' . $missionApplication->mission_application_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         $missionApplication->delete();
         $user->delete();
@@ -93,7 +93,7 @@ class MissionApplicationTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get('/missions/'.$mission->mission_id.'/applications/'.rand(10000000, 200000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/missions/' . $mission->mission_id . '/applications/' . rand(10000000, 200000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         $mission->delete();
     }
@@ -127,7 +127,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save();
 
-        $this->get('/missions/'.rand(10000000, 200000000).'/applications/'.$missionApplication->mission_application_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/missions/' . rand(10000000, 200000000) . '/applications/' . $missionApplication->mission_application_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         $missionApplication->delete();
         $mission->delete();
@@ -167,7 +167,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save();
         
-        $this->patch('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . $missionApplication->mission_id . '/applications/' . $missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -211,7 +211,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save();
 
-        $this->patch('/missions/'.rand(1000000, 2000000).'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . rand(1000000, 2000000) . '/applications/' . $missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -258,7 +258,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->save();
         
         $this->get(
-            '/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=test',
+            '/missions/' . $missionApplication->mission_id . '/applications?search=' . $motivation . '&order=test',
             ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(400)
@@ -310,7 +310,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save();
 
-        $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . $mission->mission_id . '/applications/' . $missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -349,7 +349,7 @@ class MissionApplicationTest extends TestCase
 
         $missionApplication = new App\Models\MissionApplication();
 
-        $this->patch('/missions/'.$mission->mission_id.'/applications/'.rand(1000000, 2000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . $mission->mission_id . '/applications/' . rand(1000000, 2000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -396,7 +396,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->save();
         
         $this->get(
-            '/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC&status='.$status.'&user_id='.$user->user_id.'&type='.config("constants.mission_type.GOAL"),
+            '/missions/' . $missionApplication->mission_id . '/applications?search=' . $motivation . '&order=ASC&status=' . $status . '&user_id=' . $user->user_id . '&type=' . config("constants.mission_type.GOAL"),
             ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200);

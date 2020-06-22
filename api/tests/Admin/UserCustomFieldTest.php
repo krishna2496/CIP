@@ -24,7 +24,7 @@ class UserCustomFieldTest extends TestCase
                 [
                     'lang' => 'en',
                     'name' => str_random(10),
-                    'values' => '['.rand(1, 5).','.rand(5, 10).']'
+                    'values' => '[' . rand(1, 5) . ',' . rand(5, 10) . ']'
                 ]
             ],
             'internal_note' => 'Sample note'
@@ -70,7 +70,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->save();
 
         $this->get(
-            'metadata/users/custom_fields?search='.$userCustomField->name,
+            'metadata/users/custom_fields?search=' . $userCustomField->name,
             ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
@@ -129,7 +129,7 @@ class UserCustomFieldTest extends TestCase
                 [
                     'lang' => 'en',
                     'name' => str_random(10),
-                    'values' => '['.rand(1, 5).','.rand(5, 10).']'
+                    'values' => '[' . rand(1, 5) . ',' . rand(5, 10) . ']'
                 ]
             ],
             'internal_note' => 'Sample note'
@@ -142,7 +142,7 @@ class UserCustomFieldTest extends TestCase
         $fieldId = $userCustomField->field_id;
 
         $this->patch(
-            'metadata/users/custom_fields/'.$fieldId,
+            'metadata/users/custom_fields/' . $fieldId,
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -182,7 +182,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->save();
 
         $this->delete(
-            "metadata/users/custom_fields/".$userCustomField->field_id,
+            "metadata/users/custom_fields/" . $userCustomField->field_id,
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -198,7 +198,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_return_user_custom_field_not_found_on_delete()
     {
         $this->delete(
-            "metadata/users/custom_fields/".rand(1000000, 50000000),
+            "metadata/users/custom_fields/" . rand(1000000, 50000000),
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -237,11 +237,11 @@ class UserCustomFieldTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->patch(
-            "metadata/users/custom_fields/".rand(1000000, 50000000),
+            "metadata/users/custom_fields/" . rand(1000000, 50000000),
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -306,7 +306,7 @@ class UserCustomFieldTest extends TestCase
                 [
                     'lang' => "test",
                     'name' => str_random(10),
-                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                    'values' => "[" . rand(1, 5) . "," . rand(5, 10) . "]"
                 ]
             ]
         ];
@@ -344,7 +344,7 @@ class UserCustomFieldTest extends TestCase
                 [
                     'lang' => "en",
                     'name' => str_random(10),
-                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                    'values' => "[" . rand(1, 5) . "," . rand(5, 10) . "]"
                 ]
             ]
         ];
@@ -363,12 +363,12 @@ class UserCustomFieldTest extends TestCase
                 [
                     'lang' => "test",
                     'name' => str_random(10),
-                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                    'values' => "[" . rand(1, 5) . "," . rand(5, 10) . "]"
                 ]
             ]
         ];
 
-        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("metadata/users/custom_fields/" . $field_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -424,7 +424,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields/'.$userCustomField->field_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('metadata/users/custom_fields/' . $userCustomField->field_id, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -435,7 +435,7 @@ class UserCustomFieldTest extends TestCase
                 "translations"
             ],
             "message"
-        ]);
+          ]);
         $userCustomField->delete();
     }
 
@@ -448,7 +448,7 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_error_if_custom_fields_id_is_wrong()
     {
-        $this->get('metadata/users/custom_fields/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('metadata/users/custom_fields/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [

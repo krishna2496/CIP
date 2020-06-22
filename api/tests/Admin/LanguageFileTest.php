@@ -38,7 +38,7 @@ class LanguageFileTest extends TestCase
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, $fileName.'.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, $fileName . '.json', 'text/plain', null, null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),

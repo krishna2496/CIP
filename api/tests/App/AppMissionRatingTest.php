@@ -99,7 +99,7 @@ class AppMissionRatingTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\MissionRating::where(['user_id' => $user->user_id, 'mission_id' => $mission[0]['mission_id']])->delete();
         $user->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
@@ -413,7 +413,7 @@ class AppMissionRatingTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\MissionRating::where(['user_id' => $user->user_id, 'mission_id' => $mission[0]['mission_id']])->delete();
         $user->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();

@@ -89,12 +89,12 @@ class ThemeTest extends TestCase
         $this->post("entities/themes", $params, ['Authorization' => Helpers::getBasicAuth()]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes?perPage=test&search='.$themeName, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/themes?perPage=test&search=' . $themeName, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->delete();
     }
 
@@ -128,7 +128,7 @@ class ThemeTest extends TestCase
         $themeId = $theme[0]->mission_theme_id;
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes/'.$themeId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/themes/' . $themeId, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -138,7 +138,7 @@ class ThemeTest extends TestCase
                 "translations"
             ],
             "message"
-        ]);
+          ]);
         App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->delete();
     }
 
@@ -151,7 +151,7 @@ class ThemeTest extends TestCase
      */
     public function it_should_return_error_if_mission_theme_id_is_wrong()
     {
-        $this->get('entities/themes/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/themes/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -195,12 +195,12 @@ class ThemeTest extends TestCase
             "theme_name" => str_random(20)
         ];
         
-        $this->patch('entities/themes/'.$themeId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/themes/' . $themeId, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\MissionTheme::where("mission_theme_id", $themeId)->delete();
     }
 
@@ -234,7 +234,7 @@ class ThemeTest extends TestCase
             "theme_name" => ""
         ];
         
-        $this->patch('entities/themes/'.$themeId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/themes/' . $themeId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -268,7 +268,7 @@ class ThemeTest extends TestCase
             ]
         ];
 
-        $this->patch('entities/themes/'.rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/themes/' . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -308,7 +308,7 @@ class ThemeTest extends TestCase
         $themeId = $theme[0]->mission_theme_id;
         DB::setDefaultConnection('mysql');
         
-        $this->delete('entities/themes/'.$themeId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('entities/themes/' . $themeId, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -321,7 +321,7 @@ class ThemeTest extends TestCase
      */
     public function it_should_return_error_for_delete_theme_for_invalid_mission_theme_id()
     {
-        $this->delete('entities/themes/'.rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('entities/themes/' . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -386,7 +386,7 @@ class ThemeTest extends TestCase
     {
         $defaultTenant = env('DEFAULT_TENANT');
         $_ENV["DEFAULT_TENANT"] = str_random('5');
-        $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode(':'.env('API_SECRET'))])
+        $this->get('entities/themes', ['Authorization' => 'Basic ' . base64_encode(':' . env('API_SECRET'))])
         ->seeStatusCode(401)
         ->seeJsonStructure([
             'errors' => [

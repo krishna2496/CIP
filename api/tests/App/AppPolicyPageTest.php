@@ -34,7 +34,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $policyPage->delete();
     }
@@ -94,7 +94,7 @@ class AppPolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -110,7 +110,7 @@ class AppPolicyPageTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/policy/'.$slug, ['token' => $token])
+        $this->get('/app/policy/' . $slug, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -125,7 +125,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\PolicyPage::where('slug', $slug)->delete();
     }
@@ -147,7 +147,7 @@ class AppPolicyPageTest extends TestCase
         $user->save();
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/policy/'.$slug, ['token' => $token])
+        $this->get('/app/policy/' . $slug, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
               "errors" => [
@@ -191,7 +191,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $policyPage->delete();
     }
@@ -221,7 +221,7 @@ class AppPolicyPageTest extends TestCase
                     "message"
                   ]
               ]
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -256,7 +256,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $policyPage->delete();
     }

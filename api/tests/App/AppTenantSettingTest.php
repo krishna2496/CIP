@@ -17,7 +17,7 @@ class AppTenantSettingTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -41,7 +41,7 @@ class AppTenantSettingTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         DB::setDefaultConnection('tenant');
         \App\Models\TenantActivatedSetting::withTrashed()->where('deleted_at', $currentDate)->update(['deleted_at' => null]);
     }

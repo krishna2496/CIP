@@ -231,7 +231,7 @@ class TenantOptionsControllerTest extends TestCase
         $cookies = [],
         $files = []
     ) {
-        $request = new Request;
+        $request = new Request();
         return $request->createFromBase(
             SymfonyRequest::create(
                 $uri,

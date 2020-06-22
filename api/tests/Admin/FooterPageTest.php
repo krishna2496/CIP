@@ -29,7 +29,7 @@ class FooterPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -71,18 +71,18 @@ class FooterPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
-        $this->get('cms?search='.$titile, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('cms?search=' . $titile, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\FooterPage::where('slug', $slug)->delete();
     }
 
@@ -112,7 +112,7 @@ class FooterPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -144,14 +144,14 @@ class FooterPageTest extends TestCase
                 [
                 'status' => 1,
                 'slug' => $slug,
-                'translations' =>[
+                'translations' => [
                         [
                             "lang" => "en",
                             "title" => str_random(20),
                             "sections" => [
                                 [
                                     "title" => str_random(20),
-                                    "description"=> str_random(20)
+                                    "description" => str_random(20)
                                 ]
                             ],
                         ]
@@ -165,7 +165,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $pageId = $footerPage->page_id;
 
-        $this->patch("cms/".$pageId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("cms/" . $pageId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -192,7 +192,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
 
         $this->delete(
-            "cms/".$footerPage->page_id,
+            "cms/" . $footerPage->page_id,
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -208,7 +208,7 @@ class FooterPageTest extends TestCase
     public function it_should_return_footer_page_not_found_on_delete()
     {
         $this->delete(
-            "cms/".rand(1000000, 50000000),
+            "cms/" . rand(1000000, 50000000),
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -252,11 +252,11 @@ class FooterPageTest extends TestCase
                         ]
                     ]
                 ],
-            ],
+                ],
         ];
         
         $this->patch(
-            "cms/".rand(1000000, 50000000),
+            "cms/" . rand(1000000, 50000000),
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -292,7 +292,7 @@ class FooterPageTest extends TestCase
                     "message"
                   ]
               ]
-        ]);
+          ]);
     }
 
     /**
@@ -309,12 +309,12 @@ class FooterPageTest extends TestCase
         $footerPage->setConnection($connection);
         $footerPage->save();
 
-        $this->get('cms/'.$footerPage->page_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('cms/' . $footerPage->page_id, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         
         $footerPage->delete();
     }
@@ -328,7 +328,7 @@ class FooterPageTest extends TestCase
      */
     public function it_should_show_footer_page_not_found_error()
     {
-        $this->get('cms/'.rand(1000000, 50000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('cms/' . rand(1000000, 50000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -367,7 +367,7 @@ class FooterPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
         $this->post("cms/", $params, ['Authorization' => Helpers::getBasicAuth()])
@@ -407,7 +407,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $pageId = $footerPage->page_id;
 
-        $this->patch("cms/".$footerPage->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("cms/" . $footerPage->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -440,7 +440,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $pageId = $footerPage->page_id;
 
-        $this->patch("cms/".$footerPage->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("cms/" . $footerPage->page_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [

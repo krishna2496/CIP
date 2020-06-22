@@ -21,12 +21,12 @@ class AppCommentsTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
+        $this->get('/app/mission/' . $mission->mission_id . '/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -49,12 +49,12 @@ class AppCommentsTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
+        $this->get('/app/mission/' . $mission->mission_id . '/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -75,7 +75,7 @@ class AppCommentsTest extends TestCase
         $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
+        $this->get('/app/mission/' . $missionId . '/comments', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -119,7 +119,7 @@ class AppCommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -279,7 +279,7 @@ class AppCommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
         $activatedSetting->delete();
@@ -314,12 +314,12 @@ class AppCommentsTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -355,7 +355,7 @@ class AppCommentsTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -389,7 +389,7 @@ class AppCommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -398,7 +398,7 @@ class AppCommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -428,12 +428,12 @@ class AppCommentsTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -469,7 +469,7 @@ class AppCommentsTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -503,19 +503,19 @@ class AppCommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         DB::setDefaultConnection('tenant');
         App\Models\Comment::where('mission_id', $mission->mission_id)->update(['approval_status' => 'PUBLISHED']);
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
+        $this->get('/app/mission/' . $mission->mission_id . '/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }

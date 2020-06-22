@@ -86,7 +86,7 @@ class AppMissionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+          ]);
 
         $missionApplication->delete();
         $mission->delete();
@@ -174,7 +174,7 @@ class AppMissionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -260,7 +260,7 @@ class AppMissionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::where("mission_id", $mission[0]['mission_id'])->take(1)->delete();
     }

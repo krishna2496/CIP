@@ -18,12 +18,12 @@ class AppDashboardTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/dashboard?year='.date('Y')."&month=".date('m'), ['token' => $token])
+        $this->get('app/dashboard?year=' . date('Y') . "&month=" . date('m'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -113,7 +113,7 @@ class AppDashboardTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -125,12 +125,12 @@ class AppDashboardTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('app/dashboard?mission_id='.$mission[0]['mission_id'], ['token' => $token])
+        $this->get('app/dashboard?mission_id=' . $mission[0]['mission_id'], ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         \App\Models\Mission::whereNull('deleted_at')->delete();
     }
@@ -213,7 +213,7 @@ class AppDashboardTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $commentId = json_decode($commentResponse->response->getContent())->data->comment_id;
 
         // Update it's status
@@ -222,7 +222,7 @@ class AppDashboardTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . $missionId . '/comments/' . $commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -368,7 +368,7 @@ class AppDashboardTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $commentId = json_decode($commentResponse->response->getContent())->data->comment_id;
 
         // Update it's status
@@ -377,7 +377,7 @@ class AppDashboardTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . $missionId . '/comments/' . $commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -505,7 +505,7 @@ class AppDashboardTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $commentId = json_decode($commentResponse->response->getContent())->data->comment_id;
 
         // Update it's status
@@ -514,7 +514,7 @@ class AppDashboardTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$missionId.'/comments/'.$commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('/missions/' . $missionId . '/comments/' . $commentId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",

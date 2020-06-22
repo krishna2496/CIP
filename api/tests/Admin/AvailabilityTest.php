@@ -39,7 +39,7 @@ class AvailabilityTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_type_is_blank()
+    public function it_should_return_error_if_type_is_blank($tbs, $abc)
     {
         $params = [
             "type" => "",
@@ -88,12 +88,12 @@ class AvailabilityTest extends TestCase
         $this->post("entities/availability", $params, ['Authorization' => Helpers::getBasicAuth()]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/availability?perPage=test&search='.$availabilityType, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/availability?perPage=test&search=' . $availabilityType, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Availability::where("type", $availabilityType)->orderBy("availability_id", "DESC")->take(1)->delete();
     }
 
@@ -127,7 +127,7 @@ class AvailabilityTest extends TestCase
         $availabilityId = $availability[0]->availability_id;
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/availability/'.$availabilityId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/availability/' . $availabilityId, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -137,7 +137,7 @@ class AvailabilityTest extends TestCase
                 "translations"
             ],
             "message"
-        ]);
+          ]);
         App\Models\Availability::where("type", $availabilityType)->orderBy("availability_id", "DESC")->take(1)->delete();
     }
 
@@ -150,7 +150,7 @@ class AvailabilityTest extends TestCase
      */
     public function it_should_return_error_if_availability_id_is_wrong()
     {
-        $this->get('entities/availability/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/availability/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -195,12 +195,12 @@ class AvailabilityTest extends TestCase
             "type" => str_random(20)
         ];
         
-        $this->patch('entities/availability/'.$availabilityId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/availability/' . $availabilityId, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Availability::where("availability_id", $availabilityId)->delete();
     }
 
@@ -234,7 +234,7 @@ class AvailabilityTest extends TestCase
             "type" => ""
         ];
         
-        $this->patch('entities/availability/'.$availabilityId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/availability/' . $availabilityId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -268,7 +268,7 @@ class AvailabilityTest extends TestCase
             ]
         ];
 
-        $this->patch('entities/availability/'.rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/availability/' . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -308,7 +308,7 @@ class AvailabilityTest extends TestCase
         $availabilityId = $availability[0]->availability_id;
         DB::setDefaultConnection('mysql');
         
-        $this->delete('entities/availability/'.$availabilityId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('entities/availability/' . $availabilityId, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -321,7 +321,7 @@ class AvailabilityTest extends TestCase
      */
     public function it_should_return_error_for_delete_availability_for_invalid_availability_id()
     {
-        $this->delete('entities/availability/'.rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('entities/availability/' . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [

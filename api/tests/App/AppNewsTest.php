@@ -16,7 +16,7 @@ class AppNewsTest extends TestCase
         $connection = 'tenant';
         $newsIdsArray = [];
 
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $news = factory(\App\Models\News::class)->make();
             $news->setConnection($connection);
             $news->save();
@@ -83,12 +83,12 @@ class AppNewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -103,7 +103,7 @@ class AppNewsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        $response = $this->get('app/news/'.$newsId, ['token' => $token])
+        $response = $this->get('app/news/' . $newsId, ['token' => $token])
         ->seeStatusCode(200);
         $newsCategory->delete();
     }
@@ -128,7 +128,7 @@ class AppNewsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        $response = $this->get('app/news/'.$newsId, ['token' => $token])
+        $response = $this->get('app/news/' . $newsId, ['token' => $token])
         ->seeStatusCode(404);
     }
 }

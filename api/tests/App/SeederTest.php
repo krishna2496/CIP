@@ -27,10 +27,10 @@ class SeederTest extends TestCase
             "countries" => [
                 [
                     "iso" => $iso,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
