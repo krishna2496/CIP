@@ -228,6 +228,9 @@ return [
         'mission_tab_details.*.translations.*.sections.*.title' => 'section title',
         'mission_tab_details.*.translations.*.sections.*.content' => 'section content',
         'mission_tab_details.*.mission_tab_id' => 'mission tab id',
+        'volunteering_attribute.availability_id' => 'availability id',
+        'volunteering_attribute.is_virtual' => 'is virtual',
+        'volunteering_attribute.total_seats' => 'total seats'
 		],
 
 ];
