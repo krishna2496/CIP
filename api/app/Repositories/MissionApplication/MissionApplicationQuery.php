@@ -134,11 +134,12 @@ class MissionApplicationQuery implements QueryableInterface
                     // Filter by mission is virtual
                     $virtual = $filters[self::FILTER_MISSION_VIRTUAL];
                     $query->when(isset($virtual) && $virtual !== "", function($query) use ($virtual) {
-                        $isVirtual = filter_var($virtual, FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
-                        if ($isVirtual === '0') {
-                            $isVirtual = in_array($virtual, ['0', 'false', 'no']) ? $isVirtual : $virtual;
+                        $isVirtual = filter_var($virtual, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                        $value = $isVirtual ? '1' : '0';
+                        if ($isVirtual === null) {
+                            $value = $isVirtual;
                         }
-                        $query->where('mission.is_virtual', $isVirtual);
+                        $query->where('mission.is_virtual', $value);
                     });
                 });
             })
