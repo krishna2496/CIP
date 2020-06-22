@@ -288,7 +288,7 @@ class MissionController extends Controller
             foreach ($topOrganisation as $key => $value) {
                 if ($value->organisation_name !== '') {
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
-                    $value->organisation_name;
+                    $value->organization->name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
                     $value->organisation_id;
                 }

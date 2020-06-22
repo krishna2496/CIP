@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\Organization;
 
 class Mission extends Model
 {
@@ -79,7 +80,8 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name',
+    'organization'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -389,6 +391,16 @@ class Mission extends Model
         if (!is_null($value)) {
             $this->attributes['is_virtual'] = (string)$value;
         }
+    }
+
+    /**
+     * Get Organization associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function organization(): HasOne
+    {
+        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
     }
 
 }
