@@ -36,17 +36,17 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     public function userCustomFieldList(Request $request): LengthAwarePaginator
     {
         $customFields = $this->field;
-        if ($request->has('search')) {
-            $customFields = $customFields->where('name', 'like', '%' . $request->input('search') . '%')
-                ->orWhere('internal_note', 'like', '%' . $request->input('search') . '%');
+        if ($request->has('mandatory') && $request->input('mandatory') !== '') {
+            $customFields = $customFields->whereRaw("BINARY `is_mandatory` = ?", [$request->input('mandatory')]);
         }
 
         if ($request->has('type')) {
             $customFields = $customFields->whereIn('type', $request->input('type'));
         }
 
-        if ($request->has('mandatory')) {
-            $customFields = $customFields->where('is_mandatory', $request->input('mandatory'));
+        if ($request->has('search')) {
+            $customFields = $customFields->where('name', 'like', '%' . $request->input('search') . '%')
+                ->orWhere('internal_note', 'like', '%' . $request->input('search') . '%');
         }
         
         if ($request->has('order')) {
