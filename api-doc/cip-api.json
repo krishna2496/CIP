@@ -1083,7 +1083,7 @@
         }
       }
     },
-    "/missions/applications/details?search={search}&order[orderBy]={order[orderBy]}&order[orderDir]={order[orderDir]}&limit[limit]={limit[limit]}&limit[offset]={limit[offset]}&filters[applicationIds]={filters[applicationIds]}&filters[applicantSkills]={filters[applicantSkills]}&filters[missionSkills]={filters[missionSkills]}&filters[missionTypes]={filters[missionTypes]}&filters[missionThemes]={filters[missionThemes]}&filters[missionCountries]={filters[missionCountries]}&filters[missionCities]={filters[missionCities]}&filters[language]={filters[language]}&filters[isVirtual]={filters[isVirtual]}": {
+    "/missions/applications/details": {
       "get": {
         "operationId": "GET_team4-cip-api-missions-2-applications-details",
         "summary": "Admin - List of mission's applications with details (Milestone - 1)",
