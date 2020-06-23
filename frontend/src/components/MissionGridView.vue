@@ -273,8 +273,20 @@
 										<img src="../assets/images/multi-user-icon.svg" alt="multi user icon">
 								</b-button>
 								
-								<b-button v-if="mission.is_favourite == 0" class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
-								<b-button v-if="mission.is_favourite == 1" class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
+								<b-button v-if="mission.is_favourite == 0" class="icon-btn fill-heart-btn"
+								v-bind:class="{
+									'icon-btn' : true,
+									'fill-heart-btn' : mission.is_favourite == 1
+								}"
+								:title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
+								@click="favoriteMission(mission.mission_id)"
+								>
+									<img v-if="mission.is_favourite == 0" src="../assets/images/heart-icon.svg" alt="heart icon">
+									<img v-if="mission.is_favourite == 1" src="../assets/images/heart-fill-icon.svg" alt="heart icon">
+								</b-button>
+								<!-- <b-button v-if="mission.is_favourite == 1" class="icon-btn fill-heart-btn">
+									<img src="../assets/images/heart-fill-icon.svg" alt="heart icon">
+								</b-button> -->
 							</div>
 							</div>
 							</div>
