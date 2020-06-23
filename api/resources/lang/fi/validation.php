@@ -110,8 +110,10 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "Valitse kelvollinen tuntiraporttiasiakirja",
-            'max' => "Asiakirjatiedoston koon tulee olla "
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Asiakirjatiedoston koon tulee olla "
+                . (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "Et voi lisätä aikamerkintää tuleville päivämäärille",
@@ -124,8 +126,10 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "Valitse kelvollinen kuvatyyppi",
-            'max' => "Kuvan koon tulee olla "
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Kuvan koon tulee olla "
+                . (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "Anna kelvollinen osoite videolle",
@@ -162,14 +166,14 @@ return [
         'media_videos.*.media_path' => "median polku",
         'documents.*.document_name' => "asiakirjan nimi",
         'documents.*.document_type' => "asiakirjan tyyppi",
-        'documents.*.document_path' => "asiakirjan polku",        
+        'documents.*.document_path' => "asiakirjan polku",
         'slider_detail.translations.*.lang' => "kielen koodi",
-        'skills.*.skill_id' => "taitotunnus",  
-        'location.city' => "kaupunki", 
-        'location.country' => "maa",   
-        'password_confirmation' => "vahvista salasana",         
-        'translations.*.lang' => "kielen koodi",         
-        'is_mandatory' => "pakollinen",       
+        'skills.*.skill_id' => "taitotunnus",
+        'location.city' => "kaupunki",
+        'location.country' => "maa",
+        'password_confirmation' => "vahvista salasana",
+        'translations.*.lang' => "kielen koodi",
+        'is_mandatory' => "pakollinen",
 		'page_details.translations.*.sections.*.title' => "otsikko",
 		'page_details.translations.*.sections.*.description' => "kuvaus",
 		'location.city_id' => "kaupunki",
@@ -200,10 +204,10 @@ return [
         'cities.*.translations' => "käännökset",
         'media_images.*.sort_order' => "lajittelujärjestys",
         'media_videos.*.sort_order' => "lajittelujärjestys",
-        'documents.*.sort_order' => "lajittelujärjestys", 
+        'documents.*.sort_order' => "lajittelujärjestys",
         'countries.*.translations.*.lang' => "kielen koodi",
         'countries.*.translations.*.name' => "nimi",
-        'countries.*.translations' => "käännökset",   
+        'countries.*.translations' => "käännökset",
         'countries.*.iso' => "ISO",
         'translations.*.lang' => "kielen koodi",
         'translations.*.name' => "nimi",
