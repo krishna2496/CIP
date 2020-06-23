@@ -1622,14 +1622,6 @@ class UserTest extends TestCase
         $this->assertSame($result->status, 200);
         $this->assertSame($result->data[0]->mission_type, 'GOAL');
         $this->assertSame($result->data[0]->mission_title, 'mission title');
-        $this->assertSame($result->data[0]->total_timesheet_time, null);
-        $this->assertSame($result->data[0]->total_timesheet_action, null);
-        $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
-        $this->assertSame($result->message, 'User timesheet listed successfully');
-
-        $this->assertSame($result->status, 200);
-        $this->assertSame($result->data[0]->mission_type, 'GOAL');
-        $this->assertSame($result->data[0]->mission_title, 'mission title');
         $this->assertSame($result->data[0]->total_timesheet_time, '03:03:03');
         $this->assertSame($result->data[0]->total_timesheet_action, null);
         $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
