@@ -196,6 +196,8 @@ return [
         'MESSAGE_STATE_LISTING' => 'States listed successfully',
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
+        'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
     ],
 
 
@@ -358,5 +360,6 @@ return [
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
+        'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
        ]
 ];
