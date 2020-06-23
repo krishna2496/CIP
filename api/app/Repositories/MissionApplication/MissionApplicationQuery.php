@@ -19,6 +19,7 @@ class MissionApplicationQuery implements QueryableInterface
     const FILTER_MISSION_COUNTRIES  = 'missionCountries';
     const FILTER_MISSION_CITIES     = 'missionCities';
     const FILTER_MISSION_TYPES      = 'missionTypes';
+    const FILTER_MISSION_VIRTUAL    = 'isVirtual';
 
     const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
@@ -51,7 +52,8 @@ class MissionApplicationQuery implements QueryableInterface
         $hasMissionFilters = isset($filters[self::FILTER_MISSION_THEMES])
             || isset($filters[self::FILTER_MISSION_COUNTRIES])
             || isset($filters[self::FILTER_MISSION_CITIES])
-            || isset($filters[self::FILTER_MISSION_TYPES]);
+            || isset($filters[self::FILTER_MISSION_TYPES])
+            || isset($filters[self::FILTER_MISSION_VIRTUAL]);
 
         $languageId = $this->getFilteringLanguage($filters, $tenantLanguages);
 
@@ -128,6 +130,16 @@ class MissionApplicationQuery implements QueryableInterface
                     // Filter by mission type
                     $query->when(isset($filters[self::FILTER_MISSION_TYPES]), function($query) use ($filters) {
                         $query->whereIn('mission_type', $filters[self::FILTER_MISSION_TYPES]);
+                    });
+                    // Filter by mission is virtual
+                    $virtual = $filters[self::FILTER_MISSION_VIRTUAL];
+                    $query->when(isset($virtual) && $virtual !== "", function($query) use ($virtual) {
+                        $isVirtual = filter_var($virtual, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                        $value = $isVirtual ? '1' : '0';
+                        if ($isVirtual === null) {
+                            $value = $isVirtual;
+                        }
+                        $query->where('mission.is_virtual', $value);
                     });
                 });
             })

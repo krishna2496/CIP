@@ -1083,6 +1083,156 @@
         }
       }
     },
+    "/missions/applications/details": {
+      "get": {
+        "operationId": "GET_team4-cip-api-missions-2-applications-details",
+        "summary": "Admin - List of mission's applications with details (Milestone - 1)",
+        "description": "Admin can view list of applications on a mission with details",
+        "tags": [
+          "Mission application"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "search",
+            "in": "path",
+            "description": "Search user first_name, last_name and email, mission language title, city and country language name, mission themes translations and name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order[orderBy]",
+            "in": "path",
+            "description": "Field name for ordering",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order[orderDir]",
+            "in": "path",
+            "description": "Kind or ordering: asc or desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit[limit]",
+            "in": "path",
+            "description": "Number of record to display",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "limit[offset]",
+            "in": "path",
+            "description": "Number of record where to start",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "filters[applicationIds]",
+            "in": "path",
+            "description": "List of all application ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters[applicantSkills]",
+            "in": "path",
+            "description": "List of all skills ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters[missionSkills]",
+            "in": "path",
+            "description": "List of all mission skilld ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters[missionTypes]",
+            "in": "path",
+            "description": "List of all mission types: GOAL, TIME",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filters[missionThemes]",
+            "in": "path",
+            "description": "List of all themes ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters[missionCountries]",
+            "in": "path",
+            "description": "List of all country ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters[missionCities]",
+            "in": "path",
+            "description": "List of all city ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters[language]",
+            "in": "path",
+            "description": "Languages",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filters[isVirtual]",
+            "in": "path",
+            "description": "Mission is_virtual",
+            "required": false,
+            "type": "boolean",
+            "default": null
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
     "/missions/{missionId}/applications/{applicationId}": {
       "get": {
         "operationId": "GET_team4-cip-api--missions-2-applications-1",
