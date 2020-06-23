@@ -1063,7 +1063,7 @@
             let time2 = timeEntry.time;
             if (timeSheetType == "time") {
               if (this.volunteeringHoursCurrentYear == currentArrayYear) {
-                if (this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                if (this.volunteeringHoursMonthArray.includes(currentArrayMonth)) {
                   let splitTime1 = time1.split(':');
                   let splitTime2 = time2.split(':');
                   hour = parseInt(splitTime1[0]) + parseInt(splitTime2[0]);
@@ -1090,14 +1090,12 @@
                         ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
                     }
                   }
-
                 }
               }
 
             } else {
               if (this.volunteeringGoalCurrentYear == currentArrayYear) {
-                if (this.volunteeringGoalCurrentMonth == currentArrayMonth) {
-
+                if (this.volunteeringGoalMonthArray.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
                     actionApproved = actionApproved + timeEntry.action
