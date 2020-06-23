@@ -3,6 +3,7 @@
 		<div v-bind:class="{'card-grid' : !relatedMission}">
 			<b-row>
 				<b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
+					<div class="card-inner">
 					<b-card no-body>
 						<b-card-header>
 							<div class="header-img-block">
@@ -26,7 +27,7 @@
 									</i>
 									{{mission.city_name}}
 								</div>
-								<div class="btn-ic-wrap">
+								<!-- <div class="btn-ic-wrap">
 									<b-button v-bind:class="{ 'favourite-icon' : true,
                                             active : mission.is_favourite == 1
                                         }" v-b-tooltip.hover
@@ -66,7 +67,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
 											:alt="languageData.label.recommend_to_co_worker">
 									</b-button>
-								</div>
+								</div> -->
 							</div>
 							<div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span
 									class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
@@ -74,25 +75,60 @@
 						</b-card-header>
 
 						<b-card-body>
+							
 							<div class="content-block">
-								<div class="mission-label" v-if="mission.is_virtual == 1">
-									<span>{{languageData.label.virtual_mission}}</span>
+								<div class="mission-label-wrap">
+									<!-- <div class="mission-label" v-if="mission.is_virtual == 1">
+										<span>{{languageData.label.virtual_mission}}</span>
+									</div> -->
+									<div class="mission-label volunteer-label">
+										<span><i class="icon-wrap"><img src="../assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
+									</div>
+									<div class="mission-label virtual-label">
+										<span>{{languageData.label.virtual_mission}}</span>
+									</div>
+									<div class="mission-label donation-label">
+										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
+									</div>
+									
 								</div>
+								
 								<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
 										class="card-title mb-2">
 									{{mission.title | substring(60)}}
 								</b-link>
-								<b-card-text>
-									{{mission.short_description | substring(105)}}
-								</b-card-text>
 								<div class="group-ratings">
-									<span class="group-name">{{mission.organisation_name}}</span>
 									<star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5"
-												 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
+												 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
 												 :rating="mission.mission_rating_count" :read-only="true">
 									</star-rating>
 								</div>
+								<b-card-text>
+									{{mission.short_description | substring(105)}}
+								</b-card-text>
+								<div class="event-block has-progress">
+									<p class="event-name">For <span>Friendly Paws</span></p>
+									<div class="progress-block detail-column" >
+											<div class="text-wrap">
+												<b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective" ></b-progress>	
+	                                            <div class="progress-info">
+														<span class="subtitle-text">
+				                                            <em> 70% </em>
+				                                            <em>Achieved</em>
+		                                            	</span>
+			                                            <span class="subtitle-text">
+			                                            	<em><b>$250,000</b></em>
+			                                            	<em>Goal</em>
+			                                            </span>
+	                                            	</div>
+												</div>
+											</div>
+									<b-button class="like-btn">
+										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
+									</b-button>
+								</div>
 							</div>
+							<div class="init-hidden">
 							<div class="group-details">
 								<div class="top-strip">
 									<span>
@@ -165,7 +201,7 @@
 								</template>
 								<template v-else>
 									<div class="group-details-inner  has-progress">
-										<div class="detail-column info-block" v-if="mission.total_seats != 0 && mission.total_seats !== null">
+										<!-- <div class="detail-column info-block" v-if="mission.total_seats != 0 && mission.total_seats !== null">
 											<template >
 												<i class="icon-wrap">
 													<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'"
@@ -173,11 +209,10 @@
 												</i>
 												<div class="text-wrap">
 													<span class="title-text mb-1">{{mission.seats_left}}</span>
-													<span
-															class="subtitle-text">{{ languageData.label.seats_left }}</span>
+													<span class="subtitle-text">{{ languageData.label.seats_left }}</span>
 												</div>
 											</template>
-										</div>
+										</div> -->
 										<div 
 										v-bind:class="{
 											'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
@@ -185,32 +220,36 @@
 											'progress-block' :true
 										}"
 										>
-											<i class="icon-wrap">
+											<!-- <i class="icon-wrap">
 												<img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
 													 alt="user">
-											</i>
+											</i> -->
 											<div class="text-wrap">
-												<b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"
-													class="mb-2"></b-progress>
-												<span class="subtitle-text">
-                                                    {{mission.achieved_goal}}
-                                                <span 
-                                                    v-if="mission.label_goal_achieved != ''">
-                                                    {{ mission.label_goal_achieved }}
-                                                </span>
-                                                <span v-else>{{ languageData.label.achieved }}</span>
-                                            </span>
+												<p><b>$210,851</b> raised by <b>25 Donors</b></p>
+												<b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
+												<div class="progress-info">
+													<span class="subtitle-text">
+	                                                    {{mission.achieved_goal}}
+			                                                <em 
+			                                                    v-if="mission.label_goal_achieved != ''">
+			                                                    {{ mission.label_goal_achieved }}
+			                                                </em>
+			                                                <em v-else>{{ languageData.label.achieved }}</em>
+	                                            		</span>
+		                                            <span class="subtitle-text">
+		                                            	<em>$250,000</em>
+		                                            	<em>Goal</em>
+		                                            </span>
+                                            	</div>
 											</div>
 										</div>
 									</div>
 
 								</template>
 							</div>
-						</b-card-body>
-
-						<b-card-footer>
-							<b-link  :to="'/mission-detail/' + mission.mission_id">
-								<b-button class="btn-bordersecondary icon-btn">
+							<div class="card-action-block">
+								<div class="left-btn">
+								<b-link  :to="'/mission-detail/' + mission.mission_id" class="btn-bordersecondary icon-btn">
 									<span>{{ languageData.label.view_detail }}</span>
 									<i>
 										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
@@ -225,10 +264,23 @@
 											</g>
 										</svg>
 									</i>
-								</b-button>
 							</b-link>
-						</b-card-footer>
+							</div>
+							<div class="social-btn">
+								<b-button class="icon-btn"  v-if="isInviteCollegueDisplay" v-b-tooltip.hover
+										:title="languageData.label.recommend_to_co_worker"
+										@click="handleModal(mission.mission_id)">
+										<img src="../assets/images/multi-user-icon.svg" alt="multi user icon">
+								</b-button>
+								
+								<b-button v-if="mission.is_favourite == 0" class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
+								<b-button v-if="mission.is_favourite == 1" class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
+							</div>
+							</div>
+							</div>
+						</b-card-body>
 					</b-card>
+				</div>
 				</b-col>
 			</b-row>
 		</div>
@@ -553,6 +605,9 @@
 				if(this.submitNewMissionUrl != '') {
 					window.open(this.submitNewMissionUrl, '_self');
 				}
+			},
+			cardHeightAdj() {
+				
 			}
 		},
 		created() {
@@ -566,6 +621,34 @@
 			);
 			this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 			this.submitNewMissionUrl = store.state.submitNewMissionUrl
-		}
+
+			this.cardHeightAdj();
+
+			// window.addEventListener("resize", this.cardHeightAdj());
+			setTimeout(function () {
+				var cardBody = document.querySelectorAll(".card-grid .card-body");
+					cardBody.forEach(function (event) {
+						var bodyHeight = event.offsetHeight;
+						var hiddenHeight = event.children[1].offsetHeight
+						var totalHeight = bodyHeight - hiddenHeight;
+						event.style.height = totalHeight +"px";
+						event.parentNode.addEventListener("mouseover", function (mouseEvent) {
+						var bodyHeight = mouseEvent.offsetHeight;
+						// event.style.height = bodyHeight +"px";
+						// this.children[0].style.marginTop = "-204px",
+						// console.log(mouseEvent.children(1).offsetHeight);
+						this.parentNode.classList.add("active");
+		                });
+						event.parentNode.addEventListener("mouseleave", function () {
+							// this.children[0].style.marginTop = "",
+							// event.style.height = totalHeight +"px";
+							this.parentNode.classList.remove("active");
+		                });
+					});
+				},1000);
+		},
+		updated() {
+      		this.cardHeightAdj();
+    	}
 	};
 </script>
