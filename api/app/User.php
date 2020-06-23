@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
-use App\Models\MissionApplication;
 use App\Models\Availability;
 use App\Models\UserCustomFieldValue;
 use App\Models\Timesheet;
@@ -22,14 +21,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
 use App\Models\Notification;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\ActivityLog;
+use App\Models\Comment;
 use App\Models\FavouriteMission;
 use App\Models\Message;
+use App\Models\MissionApplication;
 use App\Models\MissionInvite;
 use App\Models\MissionRating;
+use App\Models\Story;
+use App\Models\StoryInvite;
 use App\Models\UserFilter;
 use App\Models\UserNotification;
 use App\Models\UserSkill;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -85,7 +89,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $visible = [
-        'user_id',
+        'user_id', 
         'first_name',
         'last_name',
         'email',
@@ -108,11 +112,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'language_id',
         'availability',
         'userCustomFieldValue',
-        'cookie_agreement_date',
-        'hours_goal',
+        'cookie_agreement_date','hours_goal',
         'skills',
         'is_profile_complete',
         'receive_email_notification',
+        'messages_count',
+        'comments_count',
+        'stories_count',
+        'stories_views_count',
+        'stories_invited_users_count',
+        'last_login',
+        'last_volunteer',
+        'open_volunteer_request',
+        'mission',
+        'favourite_mission',
+        'hours_goal',
         'expiry'
     ];
 
@@ -392,4 +406,55 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany('App\Models\UserSkill', 'user_id', 'user_id');
     }
+
+    /**
+    * Defined has many relation for the timesheet table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function timesheets(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the message table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the comment table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the stories table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function stories(): HasMany
+    {
+        return $this->hasMany(Story::class, 'user_id');
+    }
+
+    /**
+    * Defined has many relation for the story invites table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function storyInvites(): HasMany
+    {
+        return $this->hasMany(StoryInvite::class, 'from_user_id');
+    }
+
 }

@@ -67,7 +67,7 @@ class JwtMiddleware
             );
         }
         try {
-            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+            $credentials = $this->helpers->decodeJwtToken($token);
         } catch (\Firebase\JWT\ExpiredException $e) {
             return $this->responseHelper->error(
                 Response::HTTP_UNAUTHORIZED,
@@ -101,43 +101,50 @@ class JwtMiddleware
             );
         }
         $user = User::find($credentials->sub);
-
-        if ($user->status !== config('constants.user_statuses.ACTIVE')) {
-            return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_USER_BLOCKED'),
-                trans('messages.custom_error_message.ERROR_USER_BLOCKED')
-            );
-        }
-
-        if ($user->expiry) {
-            $userExpirationDate = new DateTime($user->expiry);
-            if ($userExpirationDate < new DateTime()) {
+        if ($user) {
+            if ($user->status !== config('constants.user_statuses.ACTIVE')) {
                 return $this->responseHelper->error(
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    config('constants.error_codes.ERROR_USER_EXPIRED'),
-                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                    config('constants.error_codes.ERROR_USER_BLOCKED'),
+                    trans('messages.custom_error_message.ERROR_USER_BLOCKED')
                 );
             }
-        }
 
-        if (isset($credentials->sso) && $credentials->sso) {
-            $newToken = $this->helpers->getJwtToken(
-                $user->user_id,
-                $this->helpers->getSubDomainFromRequest($request)
+            if ($user->expiry) {
+                $userExpirationDate = new DateTime($user->expiry);
+                if ($userExpirationDate < new DateTime()) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_FORBIDDEN,
+                        Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                        config('constants.error_codes.ERROR_USER_EXPIRED'),
+                        trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                    );
+                }
+            }
+
+            if (isset($credentials->sso) && $credentials->sso) {
+                $newToken = $this->helpers->getJwtToken(
+                    $user->user_id,
+                    $this->helpers->getSubDomainFromRequest($request)
+                );
+                header('Token: ' . $newToken);
+            }
+
+            $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
+            if ($timezone) {
+                $timezone = $timezone->timezone;
+            }
+            config(['constants.TIMEZONE' => $timezone]);
+            $request->auth = $user;
+            return $next($request);
+        } else {
+            return $this->responseHelper->error(
+                Response::HTTP_UNAUTHORIZED,
+                Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                config('constants.error_codes.ERROR_UNAUTHORIZED_USER'),
+                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
             );
-            header('Token: '.$newToken);
         }
-
-        $timezone = '';
-        $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
-        if ($timezone) {
-            $timezone = $timezone->timezone;
-        }
-        config(['constants.TIMEZONE' => $timezone]);
-        $request->auth = $user;
-        return $next($request);
     }
 }
