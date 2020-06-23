@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,23 +31,27 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $policyPageLanguages = $pdo->query('select id,description from policy_pages_language')->fetchAll();
-        if (!empty($policyPageLanguages)) {
-            foreach ($policyPageLanguages as $policyPageLanguage) {
-                $data = @json_decode($policyPageLanguage['description'], true);
+        $missions = $pdo->query('select mission_id,organisation_detail from mission')->fetchAll();
+        if (!empty($missions)) {
+            foreach ($missions as $mission) {
+                if ($mission['organisation_detail'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($mission['organisation_detail'], true);
+                }
 
                 if ($data !== null) {
-                    $policyPageLanguageArray = json_decode($policyPageLanguage['description'], true);
-                    $jsonData  = serialize($policyPageLanguageArray);
+                    $missionArray = json_decode($mission['organisation_detail'], true);
+                    $jsonData  = serialize($missionArray);
 
                     $pdo->prepare('
-                        UPDATE policy_pages_language
-                        SET `description` = :description
-                        WHERE id = :id
+                        UPDATE mission
+                        SET `organisation_detail` = :organisation_detail
+                        WHERE mission_id = :id
                     ')
                         ->execute([
-                            'description' => $jsonData,
-                            'id' => $policyPageLanguage['id']
+                            'organisation_detail' => $jsonData,
+                            'id' => $mission['mission_id']
                         ]);
                 }
             }

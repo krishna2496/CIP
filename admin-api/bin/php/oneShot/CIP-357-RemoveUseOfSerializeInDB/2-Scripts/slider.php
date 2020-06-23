@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -34,11 +34,15 @@ if (count($tenants) > 0) {
         $tenantOptions = $pdo->query('select slider_id,translations from slider')->fetchAll();
         if (!empty($tenantOptions)) {
             foreach ($tenantOptions as $tenantOption) {
-                $data = @json_decode($tenantOption['translations'], true);
+                if ($tenantOption['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($tenantOption['translations']);
+                }
 
-                if ($data !== null) {
-                    $tenantOptionArray = json_decode($tenantOption['translations'], true);
-                    $jsonData  = serialize($tenantOptionArray);
+                if ($data !== false) {
+                    $tenantOptionArray = unserialize($tenantOption['translations']);
+                    $jsonData  = json_encode($tenantOptionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE slider
@@ -49,6 +53,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'id' => $tenantOption['slider_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'slider',
+                                'column' => 'translations',
+                                'id' => $tenantOption['slider_id']
+                            ])
+                    );
                 }
             }
         }

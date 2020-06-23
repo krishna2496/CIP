@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -34,8 +34,11 @@ if (count($tenants) > 0) {
         $missionLanguages = $pdo->query('select mission_language_id,description,custom_information from mission_language')->fetchAll();
         if (!empty($missionLanguages)) {
             foreach ($missionLanguages as $missionLanguage) {
-                //description
-                $data = @unserialize($missionLanguage['description']);
+                if ($missionLanguage['description'] === null) {
+                    $data = false;
+                } else {
+                    $data = @unserialize($missionLanguage['description']);
+                }
 
                 if ($data !== false) {
                     $missionLanguageArray = unserialize($missionLanguage['description']);
@@ -51,19 +54,25 @@ if (count($tenants) > 0) {
                             'id' => $missionLanguage['mission_language_id']
                         ]);
                 } else {
-                    var_dump(
-                        'Needs manual verification for following context: ' . json_encode(
-                        [
-                            'tenantId' => $tenantId,
-                            'table' => 'missionLanguage',
-                            'column' => 'description',
-                            'id' => $missionLanguage['mission_language_id']
-                        ])
-                    );
+                    if ($missionLanguage['description'] !== null) {
+                        var_dump(
+                            'Needs manual verification for following context: ' . json_encode(
+                                [
+                                    'tenantId' => $tenantId,
+                                    'table' => 'missionLanguage',
+                                    'column' => 'description',
+                                    'id' => $missionLanguage['mission_language_id']
+                                ])
+                        );
+                    }
                 }
 
                 //custom information
-                $customInformationData = @unserialize($missionLanguage['custom_information']);
+                if ($missionLanguage['custom_information'] === null) {
+                    $customInformationData = false;
+                } else {
+                    $customInformationData = @unserialize($missionLanguage['custom_information']);
+                }
 
                 if ($customInformationData !== false) {
                     $missionLanguageArray = unserialize($missionLanguage['custom_information']);
@@ -79,15 +88,17 @@ if (count($tenants) > 0) {
                             'id' => $missionLanguage['mission_language_id']
                         ]);
                 } else {
-                    var_dump(
-                        'Needs manual verification for following context: ' . json_encode(
-                            [
-                                'tenantId' => $tenantId,
-                                'table' => 'missionLanguage',
-                                'column' => 'custom_information',
-                                'id' => $missionLanguage['mission_language_id']
-                            ])
-                    );
+                    if ($missionLanguage['custom_information'] !== null) {
+                        var_dump(
+                            'Needs manual verification for following context: ' . json_encode(
+                                [
+                                    'tenantId' => $tenantId,
+                                    'table' => 'missionLanguage',
+                                    'column' => 'custom_information',
+                                    'id' => $missionLanguage['mission_language_id']
+                                ])
+                        );
+                    }
                 }
             }
         }

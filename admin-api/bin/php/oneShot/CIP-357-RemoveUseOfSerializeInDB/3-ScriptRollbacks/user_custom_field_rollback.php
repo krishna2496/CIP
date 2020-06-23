@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,23 +31,27 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $missions = $pdo->query('select mission_id,organisation_detail from mission')->fetchAll();
-        if (!empty($missions)) {
-            foreach ($missions as $mission) {
-                $data = @json_decode($mission['organisation_detail'], true);
+        $userCustomFields = $pdo->query('select translations,field_id from user_custom_field')->fetchAll();
+        if (!empty($userCustomFields)) {
+            foreach ($userCustomFields as $userCustomField) {
+                if ($userCustomField['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($userCustomField['translations'], true);
+                }
 
                 if ($data !== null) {
-                    $missionArray = json_decode($mission['organisation_detail'], true);
-                    $jsonData  = serialize($missionArray);
+                    $userCustomFieldArray = json_decode($userCustomField['translations'], true);
+                    $jsonData  = serialize($userCustomFieldArray);
 
                     $pdo->prepare('
-                        UPDATE mission
-                        SET `organisation_detail` = :organisation_detail
-                        WHERE mission_id = :id
+                        UPDATE user_custom_field
+                        SET `translations` = :translations
+                        WHERE field_id = :id
                     ')
                         ->execute([
-                            'organisation_detail' => $jsonData,
-                            'id' => $mission['mission_id']
+                            'translations' => $jsonData,
+                            'id' => $userCustomField['field_id']
                         ]);
                 }
             }

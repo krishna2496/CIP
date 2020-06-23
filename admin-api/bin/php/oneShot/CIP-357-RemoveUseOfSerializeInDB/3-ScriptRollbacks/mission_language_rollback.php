@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -34,8 +34,11 @@ if (count($tenants) > 0) {
         $missionLanguages = $pdo->query('select mission_language_id,description,custom_information from mission_language')->fetchAll();
         if (!empty($missionLanguages)) {
             foreach ($missionLanguages as $missionLanguage) {
-                //description
-                $data = @json_decode($missionLanguage['description'],true);
+                if ($missionLanguage['description'] === null) {
+                    $data = null;
+                } else {
+                    $data = @json_decode($missionLanguage['description'],true);
+                }
 
                 if ($data !== null) {
                     $missionLanguageArray = json_decode($missionLanguage['description'],true);
@@ -52,7 +55,11 @@ if (count($tenants) > 0) {
                         ]);
                 }
                 //custom information
-                $customInformationData = @json_decode($missionLanguage['custom_information'], true);
+                if ($missionLanguage['custom_information'] === null) {
+                    $customInformationData = null;
+                } else {
+                    $customInformationData = @json_decode($missionLanguage['custom_information'], true);
+                }
 
                 if ($customInformationData !== null) {
                     $missionLanguageArray = json_decode($missionLanguage['custom_information'], true);

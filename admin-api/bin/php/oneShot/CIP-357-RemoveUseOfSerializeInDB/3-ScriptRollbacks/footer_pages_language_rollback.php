@@ -5,12 +5,9 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
-$pdo->exec('SET NAMES utf8mb4');
-$pdo->exec('SET CHARACTER SET utf8mb4');
-
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -32,24 +29,30 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select activity_log_id,object_value from activity_log')->fetchAll();
-
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @json_decode($tenantOption['object_value'], true);
+        $footerPageLanguages = $pdo->query('select id,description from footer_pages_language')->fetchAll();
+        if (!empty($footerPageLanguages)) {
+            foreach ($footerPageLanguages as $footerPageLanguage) {
+                if ($footerPageLanguage['description'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($footerPageLanguage['description'], true);
+                }
 
                 if ($data !== null) {
-                    $tenantOptionArray = json_decode($tenantOption['object_value'], true);
-                    $jsonData  = serialize($tenantOptionArray);
+                    $footerPageLanguageArray = json_decode($footerPageLanguage['description'], true);
+                    $jsonData  = serialize($footerPageLanguageArray);
+
+                    $pdo->exec('SET NAMES utf8mb4');
+                    $pdo->exec('SET CHARACTER SET utf8mb4');
 
                     $pdo->prepare('
-                        UPDATE activity_log
-                        SET `object_value` = :object_value
-                        WHERE activity_log_id = :id
+                        UPDATE footer_pages_language
+                        SET `description` = :description
+                        WHERE id = :id
                     ')
                         ->execute([
-                            'object_value' => $jsonData,
-                            'id' => $tenantOption['activity_log_id']
+                            'description' => $jsonData,
+                            'id' => $footerPageLanguage['id']
                         ]);
                 }
             }

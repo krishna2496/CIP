@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,34 +31,28 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $availabilities = $pdo->query('select availability_id,translations from availability')->fetchAll();
-        if (!empty($availabilities)) {
-            foreach ($availabilities as $availability) {
-                $data = @unserialize($availability['translations']);
+        $skills = $pdo->query('select translations,skill_id from skill')->fetchAll();
+        if (!empty($skills)) {
+            foreach ($skills as $skill) {
+                if ($skill['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($skill['translations'], true);
+                }
 
-                if ($data !== false) {
-                    $availabilityArray = unserialize($availability['translations']);
-                    $jsonData  = json_encode($availabilityArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if ($data !== null) {
+                    $skillArray = json_decode($skill['translations'], true);
+                    $jsonData  = serialize($skillArray);
 
                     $pdo->prepare('
-                        UPDATE availability
+                        UPDATE skill
                         SET `translations` = :translations
-                        WHERE availability_id = :availability_id
+                        WHERE skill_id = :skill_id
                     ')
                         ->execute([
                             'translations' => $jsonData,
-                            'availability_id' => $availability['availability_id']
+                            'skill_id' => $skill['skill_id']
                         ]);
-                } else {
-                    var_dump(
-                        'Needs manual verification for following context: ' . json_encode(
-                            [
-                                'tenantId' => $tenantId,
-                                'table' => 'availability',
-                                'column' => 'translations',
-                                'id' => $availability['availability_id']
-                            ])
-                    );
                 }
             }
         }

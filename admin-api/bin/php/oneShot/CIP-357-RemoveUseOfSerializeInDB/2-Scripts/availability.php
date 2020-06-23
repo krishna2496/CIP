@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,32 +31,36 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $policyPageLanguages = $pdo->query('select id,description from policy_pages_language')->fetchAll();
-        if (!empty($policyPageLanguages)) {
-            foreach ($policyPageLanguages as $policyPageLanguage) {
-                $data = @unserialize($policyPageLanguage['description']);
+        $availabilities = $pdo->query('select availability_id,translations from availability')->fetchAll();
+        if (!empty($availabilities)) {
+            foreach ($availabilities as $availability) {
+                if ($availability['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($availability['translations']);
+                }
 
                 if ($data !== false) {
-                    $policyPageLanguageArray = unserialize($policyPageLanguage['description']);
-                    $jsonData  = json_encode($policyPageLanguageArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $availabilityArray = unserialize($availability['translations']);
+                    $jsonData  = json_encode($availabilityArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
-                        UPDATE policy_pages_language
-                        SET `description` = :description
-                        WHERE id = :id
+                        UPDATE availability
+                        SET `translations` = :translations
+                        WHERE availability_id = :availability_id
                     ')
                         ->execute([
-                            'description' => $jsonData,
-                            'id' => $policyPageLanguage['id']
+                            'translations' => $jsonData,
+                            'availability_id' => $availability['availability_id']
                         ]);
                 } else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'policy_pages_language',
-                                'column' => 'description',
-                                'id' => $policyPageLanguage['id']
+                                'table' => 'availability',
+                                'column' => 'translations',
+                                'id' => $availability['availability_id']
                             ])
                     );
                 }

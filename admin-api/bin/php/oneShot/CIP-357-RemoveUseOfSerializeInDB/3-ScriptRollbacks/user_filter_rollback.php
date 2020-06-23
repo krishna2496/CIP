@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,23 +31,27 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $missionThemes = $pdo->query('select mission_theme_id,translations from mission_theme')->fetchAll();
-        if (!empty($missionThemes)) {
-            foreach ($missionThemes as $missionTheme) {
-                $data = @json_decode($missionTheme['translations'], true);
+        $userFilters = $pdo->query('select filters,user_filter_id from user_filter')->fetchAll();
+        if (!empty($userFilters)) {
+            foreach ($userFilters as $userFilter) {
+                if ($userFilter['filters'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($userFilter['filters'], true);
+                }
 
                 if ($data !== null) {
-                    $missionThemeArray = json_decode($missionTheme['translations'], true);
-                    $jsonData  = serialize($missionThemeArray);
+                    $userFilterArray = json_decode($userFilter['filters'], true);
+                    $jsonData  = serialize($userFilterArray);
 
                     $pdo->prepare('
-                        UPDATE mission_theme
-                        SET `translations` = :translations
-                        WHERE mission_theme_id = :mission_theme_id
+                        UPDATE user_filter
+                        SET `filters` = :filters
+                        WHERE user_filter_id = :id
                     ')
                         ->execute([
-                            'translations' => $jsonData,
-                            'mission_theme_id' => $missionTheme['mission_theme_id']
+                            'filters' => $jsonData,
+                            'id' => $userFilter['user_filter_id']
                         ]);
                 }
             }

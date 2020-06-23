@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,32 +31,36 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select tenant_option_id,option_value from tenant_option')->fetchAll();
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @unserialize($tenantOption['option_value']);
+        $userFilters = $pdo->query('select filters,user_filter_id from user_filter')->fetchAll();
+        if (!empty($userFilters)) {
+            foreach ($userFilters as $userFilter) {
+                if ($userFilter['filters'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($userFilter['filters']);
+                }
 
                 if ($data !== false) {
-                    $tenantOptionArray = unserialize($tenantOption['option_value']);
-                    $jsonData  = json_encode($tenantOptionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $userFilterArray = unserialize($userFilter['filters']);
+                    $jsonData  = json_encode($userFilterArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
-                        UPDATE tenant_option
-                        SET `option_value` = :option_value
-                        WHERE tenant_option_id = :id
+                        UPDATE user_filter
+                        SET `filters` = :filters
+                        WHERE user_filter_id = :id
                     ')
                         ->execute([
-                            'option_value' => $jsonData,
-                            'id' => $tenantOption['tenant_option_id']
+                            'filters' => $jsonData,
+                            'id' => $userFilter['user_filter_id']
                         ]);
                 }  else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'tenant_option',
-                                'column' => 'option_value',
-                                'id' => $tenantOption['tenant_option_id']
+                                'table' => 'user_filter',
+                                'column' => 'filters',
+                                'id' => $userFilter['user_filter_id']
                             ])
                     );
                 }

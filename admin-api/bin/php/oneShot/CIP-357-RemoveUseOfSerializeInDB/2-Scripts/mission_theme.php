@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -34,7 +34,11 @@ if (count($tenants) > 0) {
         $missionThemes = $pdo->query('select mission_theme_id,translations from mission_theme')->fetchAll();
         if (!empty($missionThemes)) {
             foreach ($missionThemes as $missionTheme) {
-                $data = @unserialize($missionTheme['translations']);
+                if ($missionTheme['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($missionTheme['translations']);
+                }
 
                 if ($data !== false) {
                     $missionThemeArray = unserialize($missionTheme['translations']);

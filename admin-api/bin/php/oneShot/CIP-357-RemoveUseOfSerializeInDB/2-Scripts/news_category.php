@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,32 +31,36 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $userCustomFields = $pdo->query('select translations,field_id from user_custom_field')->fetchAll();
-        if (!empty($userCustomFields)) {
-            foreach ($userCustomFields as $userCustomField) {
-                $data = @unserialize($userCustomField['translations']);
+        $newsCategories = $pdo->query('select news_category_id,translations from news_category')->fetchAll();
+        if (!empty($newsCategories)) {
+            foreach ($newsCategories as $newsCategory) {
+                if ($newsCategory['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($newsCategory['translations']);
+                }
 
                 if ($data !== false) {
-                    $userCustomFieldArray = unserialize($userCustomField['translations']);
-                    $jsonData  = json_encode($userCustomFieldArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $newsCategoryArray = unserialize($newsCategory['translations']);
+                    $jsonData  = json_encode($newsCategoryArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
-                        UPDATE user_custom_field
+                        UPDATE news_category
                         SET `translations` = :translations
-                        WHERE field_id = :id
+                        WHERE news_category_id = :news_category_id
                     ')
                         ->execute([
                             'translations' => $jsonData,
-                            'id' => $userCustomField['field_id']
+                            'news_category_id' => $newsCategory['news_category_id']
                         ]);
-                }  else {
+                } else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'user_custom_field',
+                                'table' => 'news_category',
                                 'column' => 'translations',
-                                'id' => $userCustomField['field_id']
+                                'id' => $newsCategory['news_category_id']
                             ])
                     );
                 }

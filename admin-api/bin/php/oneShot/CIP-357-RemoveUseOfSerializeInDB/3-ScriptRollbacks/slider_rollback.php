@@ -5,9 +5,11 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
+$pdo->exec('SET NAMES utf8mb4');
+$pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -29,26 +31,27 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $footerPageLanguages = $pdo->query('select id,description from footer_pages_language')->fetchAll();
-        if (!empty($footerPageLanguages)) {
-            foreach ($footerPageLanguages as $footerPageLanguage) {
-                $data = @json_decode($footerPageLanguage['description'], true);
+        $tenantOptions = $pdo->query('select slider_id,translations from slider')->fetchAll();
+        if (!empty($tenantOptions)) {
+            foreach ($tenantOptions as $tenantOption) {
+                if ($tenantOption['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($tenantOption['translations'], true);
+                }
 
                 if ($data !== null) {
-                    $footerPageLanguageArray = json_decode($footerPageLanguage['description'], true);
-                    $jsonData  = serialize($footerPageLanguageArray);
-
-                    $pdo->exec('SET NAMES utf8mb4');
-                    $pdo->exec('SET CHARACTER SET utf8mb4');
+                    $tenantOptionArray = json_decode($tenantOption['translations'], true);
+                    $jsonData  = serialize($tenantOptionArray);
 
                     $pdo->prepare('
-                        UPDATE footer_pages_language
-                        SET `description` = :description
-                        WHERE id = :id
+                        UPDATE slider
+                        SET `translations` = :translations
+                        WHERE slider_id = :id
                     ')
                         ->execute([
-                            'description' => $jsonData,
-                            'id' => $footerPageLanguage['id']
+                            'translations' => $jsonData,
+                            'id' => $tenantOption['slider_id']
                         ]);
                 }
             }

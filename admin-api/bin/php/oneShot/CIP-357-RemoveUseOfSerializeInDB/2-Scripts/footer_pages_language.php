@@ -5,11 +5,9 @@ require_once('bootstrap/app.php');
 $db = app()->make('db');
 
 $pdo = $db->connection('mysql')->getPdo();
-$pdo->exec('SET NAMES utf8mb4');
-$pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,32 +29,39 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $userFilters = $pdo->query('select filters,user_filter_id from user_filter')->fetchAll();
-        if (!empty($userFilters)) {
-            foreach ($userFilters as $userFilter) {
-                $data = @unserialize($userFilter['filters']);
+        $footerPageLanguages = $pdo->query('select id,description from footer_pages_language')->fetchAll();
+        if (!empty($footerPageLanguages)) {
+            foreach ($footerPageLanguages as $footerPageLanguage) {
+                if ($footerPageLanguage['description'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($footerPageLanguage['description']);
+                }
 
                 if ($data !== false) {
-                    $userFilterArray = unserialize($userFilter['filters']);
-                    $jsonData  = json_encode($userFilterArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $footerPageLanguageArray = unserialize($footerPageLanguage['description']);
+                    $jsonData  = json_encode($footerPageLanguageArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+                    $pdo->exec('SET NAMES utf8mb4');
+                    $pdo->exec('SET CHARACTER SET utf8mb4');
 
                     $pdo->prepare('
-                        UPDATE user_filter
-                        SET `filters` = :filters
-                        WHERE user_filter_id = :id
+                        UPDATE footer_pages_language
+                        SET `description` = :description
+                        WHERE id = :id
                     ')
                         ->execute([
-                            'filters' => $jsonData,
-                            'id' => $userFilter['user_filter_id']
+                            'description' => $jsonData,
+                            'id' => $footerPageLanguage['id']
                         ]);
-                }  else {
+                } else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'user_filter',
-                                'column' => 'filters',
-                                'id' => $userFilter['user_filter_id']
+                                'table' => 'footer_pages_language',
+                                'column' => 'description',
+                                'id' => $footerPageLanguage['id']
                             ])
                     );
                 }

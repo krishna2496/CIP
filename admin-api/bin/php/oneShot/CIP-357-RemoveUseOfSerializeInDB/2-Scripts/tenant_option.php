@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,32 +31,36 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $newsCategories = $pdo->query('select news_category_id,translations from news_category')->fetchAll();
-        if (!empty($newsCategories)) {
-            foreach ($newsCategories as $newsCategory) {
-                $data = @unserialize($newsCategory['translations']);
+        $tenantOptions = $pdo->query('select tenant_option_id,option_value from tenant_option')->fetchAll();
+        if (!empty($tenantOptions)) {
+            foreach ($tenantOptions as $tenantOption) {
+                if ($tenantOption['option_value'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($tenantOption['option_value']);
+                }
 
                 if ($data !== false) {
-                    $newsCategoryArray = unserialize($newsCategory['translations']);
-                    $jsonData  = json_encode($newsCategoryArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $tenantOptionArray = unserialize($tenantOption['option_value']);
+                    $jsonData  = json_encode($tenantOptionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
-                        UPDATE news_category
-                        SET `translations` = :translations
-                        WHERE news_category_id = :news_category_id
+                        UPDATE tenant_option
+                        SET `option_value` = :option_value
+                        WHERE tenant_option_id = :id
                     ')
                         ->execute([
-                            'translations' => $jsonData,
-                            'news_category_id' => $newsCategory['news_category_id']
+                            'option_value' => $jsonData,
+                            'id' => $tenantOption['tenant_option_id']
                         ]);
-                } else {
+                }  else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'news_category',
-                                'column' => 'translations',
-                                'id' => $newsCategory['news_category_id']
+                                'table' => 'tenant_option',
+                                'column' => 'option_value',
+                                'id' => $tenantOption['tenant_option_id']
                             ])
                     );
                 }

@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,23 +31,27 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select tenant_option_id,option_value from tenant_option')->fetchAll();
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @json_decode($tenantOption['option_value'], true);
+        $newsCategories = $pdo->query('select news_category_id,translations from news_category')->fetchAll();
+        if (!empty($newsCategories)) {
+            foreach ($newsCategories as $newsCategory) {
+                if ($newsCategory['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($newsCategory['translations'], true);
+                }
 
                 if ($data !== null) {
-                    $tenantOptionArray = json_decode($tenantOption['option_value'], true);
-                    $jsonData  = serialize($tenantOptionArray);
+                    $newsCategoryArray = json_decode($newsCategory['translations'], true);
+                    $jsonData  = serialize($newsCategoryArray);
 
                     $pdo->prepare('
-                        UPDATE tenant_option
-                        SET `option_value` = :option_value
-                        WHERE tenant_option_id = :id
+                        UPDATE news_category
+                        SET `translations` = :translations
+                        WHERE news_category_id = :news_category_id
                     ')
                         ->execute([
-                            'option_value' => $jsonData,
-                            'id' => $tenantOption['tenant_option_id']
+                            'translations' => $jsonData,
+                            'news_category_id' => $newsCategory['news_category_id']
                         ]);
                 }
             }

@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,32 +31,36 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select slider_id,translations from slider')->fetchAll();
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @unserialize($tenantOption['translations']);
+        $missions = $pdo->query('select mission_id,organisation_detail from mission')->fetchAll();
+        if (!empty($missions)) {
+            foreach ($missions as $mission) {
+                if ($mission['organisation_detail'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($mission['organisation_detail']);
+                }
 
                 if ($data !== false) {
-                    $tenantOptionArray = unserialize($tenantOption['translations']);
-                    $jsonData  = json_encode($tenantOptionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $missionArray = unserialize($mission['organisation_detail']);
+                    $jsonData  = json_encode($missionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
-                        UPDATE slider
-                        SET `translations` = :translations
-                        WHERE slider_id = :id
+                        UPDATE mission
+                        SET `organisation_detail` = :organisation_detail
+                        WHERE mission_id = :id
                     ')
                         ->execute([
-                            'translations' => $jsonData,
-                            'id' => $tenantOption['slider_id']
+                            'organisation_detail' => $jsonData,
+                            'id' => $mission['mission_id']
                         ]);
-                } else {
+                }  else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'slider',
-                                'column' => 'translations',
-                                'id' => $tenantOption['slider_id']
+                                'table' => 'mission',
+                                'column' => 'organisation_detail',
+                                'id' => $mission['mission_id']
                             ])
                     );
                 }

@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -34,11 +34,15 @@ if (count($tenants) > 0) {
         $skills = $pdo->query('select translations,skill_id from skill')->fetchAll();
         if (!empty($skills)) {
             foreach ($skills as $skill) {
-                $data = @json_decode($skill['translations'], true);
+                if ($skill['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($skill['translations']);
+                }
 
-                if ($data !== null) {
-                    $skillArray = json_decode($skill['translations'], true);
-                    $jsonData  = serialize($skillArray);
+                if ($data !== false) {
+                    $skillArray = unserialize($skill['translations']);
+                    $jsonData  = json_encode($skillArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
                         UPDATE skill
@@ -49,6 +53,16 @@ if (count($tenants) > 0) {
                             'translations' => $jsonData,
                             'skill_id' => $skill['skill_id']
                         ]);
+                } else {
+                    var_dump(
+                        'Needs manual verification for following context: ' . json_encode(
+                            [
+                                'tenantId' => $tenantId,
+                                'table' => 'skill',
+                                'column' => 'translations',
+                                'id' => $skill['skill_id']
+                            ])
+                    );
                 }
             }
         }

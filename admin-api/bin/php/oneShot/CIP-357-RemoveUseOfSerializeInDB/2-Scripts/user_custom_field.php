@@ -3,13 +3,13 @@
 require_once('bootstrap/app.php');
 
 $db = app()->make('db');
+
 $pdo = $db->connection('mysql')->getPdo();
 $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
-
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,33 +31,36 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $tenantOptions = $pdo->query('select activity_log_id,object_value from activity_log')->fetchAll();
-
-        if (!empty($tenantOptions)) {
-            foreach ($tenantOptions as $tenantOption) {
-                $data = @unserialize($tenantOption['object_value']);
+        $userCustomFields = $pdo->query('select translations,field_id from user_custom_field')->fetchAll();
+        if (!empty($userCustomFields)) {
+            foreach ($userCustomFields as $userCustomField) {
+                if ($userCustomField['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @unserialize($userCustomField['translations']);
+                }
 
                 if ($data !== false) {
-                    $tenantOptionArray = unserialize($tenantOption['object_value']);
-                    $jsonData  = json_encode($tenantOptionArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $userCustomFieldArray = unserialize($userCustomField['translations']);
+                    $jsonData  = json_encode($userCustomFieldArray, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     $pdo->prepare('
-                        UPDATE activity_log
-                        SET `object_value` = :object_value
-                        WHERE activity_log_id = :id
+                        UPDATE user_custom_field
+                        SET `translations` = :translations
+                        WHERE field_id = :id
                     ')
                         ->execute([
-                            'object_value' => $jsonData,
-                            'id' => $tenantOption['activity_log_id']
+                            'translations' => $jsonData,
+                            'id' => $userCustomField['field_id']
                         ]);
-                } else {
+                }  else {
                     var_dump(
                         'Needs manual verification for following context: ' . json_encode(
                             [
                                 'tenantId' => $tenantId,
-                                'table' => 'activity_log',
-                                'column' => 'object_value',
-                                'id' => $tenantOption['activity_log_id']
+                                'table' => 'user_custom_field',
+                                'column' => 'translations',
+                                'id' => $userCustomField['field_id']
                             ])
                     );
                 }

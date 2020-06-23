@@ -9,7 +9,7 @@ $pdo->exec('SET NAMES utf8mb4');
 $pdo->exec('SET CHARACTER SET utf8mb4');
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-$tenants = $pdo->query('select * from tenant where status=1')->fetchAll();
+$tenants = $pdo->query('select * from tenant where status=1 and deleted_at is null')->fetchAll();
 
 if (count($tenants) > 0) {
     foreach ($tenants as $tenant) {
@@ -31,23 +31,27 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $userCustomFields = $pdo->query('select translations,field_id from user_custom_field')->fetchAll();
-        if (!empty($userCustomFields)) {
-            foreach ($userCustomFields as $userCustomField) {
-                $data = @json_decode($userCustomField['translations'], true);
+        $missionThemes = $pdo->query('select mission_theme_id,translations from mission_theme')->fetchAll();
+        if (!empty($missionThemes)) {
+            foreach ($missionThemes as $missionTheme) {
+                if ($missionTheme['translations'] === null) {
+                    continue;
+                } else {
+                    $data = @json_decode($missionTheme['translations'], true);
+                }
 
                 if ($data !== null) {
-                    $userCustomFieldArray = json_decode($userCustomField['translations'], true);
-                    $jsonData  = serialize($userCustomFieldArray);
+                    $missionThemeArray = json_decode($missionTheme['translations'], true);
+                    $jsonData  = serialize($missionThemeArray);
 
                     $pdo->prepare('
-                        UPDATE user_custom_field
+                        UPDATE mission_theme
                         SET `translations` = :translations
-                        WHERE field_id = :id
+                        WHERE mission_theme_id = :mission_theme_id
                     ')
                         ->execute([
                             'translations' => $jsonData,
-                            'id' => $userCustomField['field_id']
+                            'mission_theme_id' => $missionTheme['mission_theme_id']
                         ]);
                 }
             }
