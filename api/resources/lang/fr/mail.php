@@ -22,10 +22,10 @@ return [
         'ALL_RIGHTS_RESERVED' => "Tous droits réservés."
     ],
     'recommonded_story' => [
-        'HAS_RECOMMENDED_A_STORY_TO_YOU' => "a recommandé une story pour vous",
+        'HAS_RECOMMENDED_A_STORY_TO_YOU' => "a recommandé un récit pour vous",
         'STORY' => "ARTICLE :",
         'ALL_RIGHTS_RESERVED' => "Tous droits réservés.",
-        'MAIL_STORY_RECOMMENDATION' => "Recommandation de la story"
+        'MAIL_STORY_RECOMMENDATION' => "Recommandation de récit"
     ],
 ];
 ?>

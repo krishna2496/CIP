@@ -1,3 +1,3 @@
 #!/bin/bash
 
-php artisan schedule:run > /dev/stdout 2>/dev/stderr ;
+php /optimy/api/artisan schedule:run > /dev/stdout 2>/dev/stderr ;

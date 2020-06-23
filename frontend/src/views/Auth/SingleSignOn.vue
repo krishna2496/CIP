@@ -31,6 +31,7 @@ export default {
             await loadLocaleMessages(store.state.defaultLanguage);
             userDetail = userDetail.data;
             userDetail.timezone =  userDetail.timezone.timezone;
+            userDetail.ssoLogin = true;
             store.commit('loginUser', userDetail);
             await policy().then(response => {
                 if (response.error == false) {
