@@ -44,6 +44,7 @@
                   :custom-label="customLabel"
                   :placeholder="defaultText"
                   :allow-empty="item.is_mandatory !== 1"
+                  :close-on-select="false"
                   @select="addMultiSelect"
                   @remove="removeMultiSelect"
                 ></multiselect>

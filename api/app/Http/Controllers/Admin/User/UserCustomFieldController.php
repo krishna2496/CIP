@@ -94,7 +94,7 @@ class UserCustomFieldController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                "name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
+                "name" => "required|max:100|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
                 "type" => [
                     'required',
                     Rule::in(config('constants.custom_field_types'))
@@ -106,7 +106,7 @@ class UserCustomFieldController extends Controller
                     $request->type === config('constants.custom_field_types.DROP-DOWN') ||
                     $request->type === config('constants.custom_field_types.RADIO')
                 ),
-                "internal_note" => "sometimes|nullable|string"
+                "internal_note" => "sometimes|nullable|string|max:500"
             ]
         );
         // If post parameter have any missing parameter
@@ -159,7 +159,7 @@ class UserCustomFieldController extends Controller
                 "name" => [
                     "sometimes",
                     "required",
-                    "max:255",
+                    "max:100",
                     Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')
                 ],
                 "order" => "required|numeric|min:1",
@@ -172,7 +172,7 @@ class UserCustomFieldController extends Controller
                 "translations.*.lang" => "max:2",
                 "translations.*.values" => Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
                     || $request->type === config('constants.custom_field_types.RADIO')),
-                "internal_note" => "sometimes|nullable|max:255"
+                "internal_note" => "sometimes|nullable|max:500"
             ]);
 
             // If post parameter have any missing parameter
