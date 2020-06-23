@@ -195,7 +195,7 @@ class UserController extends Controller
                     "sometimes",
                     Rule::in(config('constants.user_statuses'))
                 ],
-                "position" => "sometimes|required"
+                "position" => "sometimes|nullable"
             ]
         );
 
@@ -326,7 +326,7 @@ class UserController extends Controller
                         "sometimes",
                         Rule::in(config('constants.user_statuses'))
                     ],
-                    "position" => "sometimes|required"
+                    "position" => "sometimes|nullable"
                 ]
             );
 

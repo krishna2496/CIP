@@ -127,6 +127,7 @@ class UserRepository implements UserInterface
             why_i_volunteer,
             employee_id,
             department,
+            position,
             city_id,
             country_id,
             profile_text,
@@ -153,29 +154,29 @@ class UserRepository implements UserInterface
             $sortBy = 'user_id';
 
             switch ($request->get('field')) {
-                case 'ciUser.fullName':
-                case 'ciUser.firstName':
+                case 'fullName':
+                case 'firstName':
                     $sortBy = 'first_name';
                     break;
-                case 'ciUser.email':
+                case 'email':
                     $sortBy = 'email';
                     break;
-                case 'ciUser.volunteerStatus':
+                case 'volunteerStatus':
                     $sortBy = 'status';
                     break;
-                case 'ciUser.country':
+                case 'country':
                     $sortBy = 'country_id';
                     break;
-                case 'ciUser.language':
+                case 'language':
                     $sortBy = 'language_id';
                     break;
-                case 'ciUser.lastName':
+                case 'lastName':
                     $sortBy = 'last_name';
                     break;
-                case 'ciUser.title':
+                case 'title':
                     $sortBy = 'title';
                     break;
-                case 'ciUser.department':
+                case 'department':
                     $sortBy = 'department';
                     break;
 

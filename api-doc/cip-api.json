@@ -1846,7 +1846,7 @@
             "in": "path",
             "required": false,
             "type": "string",
-            "description": "For ordering of user. Can be (ciUser.fullName, ciUser.firstName, ciUser.email, ciUser.volunteerStatus, ciUser.country, ciUser.language, ciUser.lastName, ciUser.email, ciUser.title, ciUser.email, ciUser.department)"
+            "description": "For ordering of user. Can be (fullName, firstName, email, volunteerStatus, country, language, lastName, email, title, email, department)"
           }
         ],
         "responses": {
