@@ -1529,26 +1529,20 @@ class UserTest extends TestCase
               ],
               'message'
           ]
-      );
-      $result = json_decode($response->response->getContent());
-
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data->total_timesheet_time, '03:03:03');
-      $this->assertSame($result->data->total_timesheet_action, null);
-      $this->assertSame($result->data->total_timesheet, $timesheetCount);
-      $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
-      $this->assertSame($result->data->total_time_seconds, 10983);
-      $this->assertSame($result->data->total_hours_goal, 500);
-      $this->assertSame($result->data->total_remaining_hours, 496.95);
-      $this->assertSame($result->data->total_completed_hours, 3.05);
-      $this->assertSame($result->data->volunteering_rank, 100);
-      $this->assertSame($result->data->average_volunteering_days, 0);
-      $this->assertSame($result->message, 'User timesheet summarized successfully');
+        );
+        $result = json_decode($response->response->getContent());
 
         $this->assertSame($result->status, 200);
         $this->assertSame($result->data->total_timesheet_time, '03:03:03');
         $this->assertSame($result->data->total_timesheet_action, null);
         $this->assertSame($result->data->total_timesheet, $timesheetCount);
+        $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
+        $this->assertSame($result->data->total_time_seconds, 10983);
+        $this->assertSame($result->data->total_hours_goal, 500);
+        $this->assertSame($result->data->total_remaining_hours, 496.95);
+        $this->assertSame($result->data->total_completed_hours, 3.05);
+        $this->assertSame($result->data->volunteering_rank, 100);
+        $this->assertSame($result->data->average_volunteering_days, 0);
         $this->assertSame($result->message, 'User timesheet summarized successfully');
     }
 
@@ -1579,26 +1573,20 @@ class UserTest extends TestCase
               ],
               'message'
           ]
-      );
-      $result = json_decode($response->response->getContent());
-
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data->total_timesheet_time, '03:03:03');
-      $this->assertSame($result->data->total_timesheet_action, null);
-      $this->assertSame($result->data->total_timesheet, $timesheetCount);
-      $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
-      $this->assertSame($result->data->total_time_seconds, 10983);
-      $this->assertSame($result->data->total_hours_goal, 500);
-      $this->assertSame($result->data->total_remaining_hours, 496.95);
-      $this->assertSame($result->data->total_completed_hours, 3.05);
-      $this->assertSame($result->data->volunteering_rank, 100);
-      $this->assertSame($result->data->average_volunteering_days, 0);
-      $this->assertSame($result->message, 'User timesheet summarized successfully');
+        );
+        $result = json_decode($response->response->getContent());
 
         $this->assertSame($result->status, 200);
-        $this->assertSame($result->data->total_timesheet_time, null);
+        $this->assertSame($result->data->total_timesheet_time, '03:03:03');
         $this->assertSame($result->data->total_timesheet_action, null);
-        $this->assertSame($result->data->total_timesheet, 0);
+        $this->assertSame($result->data->total_timesheet, $timesheetCount);
+        $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
+        $this->assertSame($result->data->total_time_seconds, 10983);
+        $this->assertSame($result->data->total_hours_goal, 500);
+        $this->assertSame($result->data->total_remaining_hours, 496.95);
+        $this->assertSame($result->data->total_completed_hours, 3.05);
+        $this->assertSame($result->data->volunteering_rank, 100);
+        $this->assertSame($result->data->average_volunteering_days, 0);
         $this->assertSame($result->message, 'User timesheet summarized successfully');
     }
 
@@ -1628,16 +1616,16 @@ class UserTest extends TestCase
               ],
               'message'
           ]
-      );
-      $result = json_decode($response->response->getContent());
+        );
+        $result = json_decode($response->response->getContent());
 
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data[0]->mission_type, 'GOAL');
-      $this->assertSame($result->data[0]->mission_title, 'mission title');
-      $this->assertSame($result->data[0]->total_timesheet_time, null);
-      $this->assertSame($result->data[0]->total_timesheet_action, null);
-      $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
-      $this->assertSame($result->message, 'User timesheet listed successfully');
+        $this->assertSame($result->status, 200);
+        $this->assertSame($result->data[0]->mission_type, 'GOAL');
+        $this->assertSame($result->data[0]->mission_title, 'mission title');
+        $this->assertSame($result->data[0]->total_timesheet_time, null);
+        $this->assertSame($result->data[0]->total_timesheet_action, null);
+        $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
+        $this->assertSame($result->message, 'User timesheet listed successfully');
 
         $this->assertSame($result->status, 200);
         $this->assertSame($result->data[0]->mission_type, 'GOAL');
