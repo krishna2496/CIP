@@ -71,16 +71,20 @@ class LanguageHelper
     {
         $tenant = $this->helpers->getTenantDetail($request);
         // Connect master database to get language details
+        $tenantLanguages = $this->getTenantLanguagesByTenantId($tenant->tenant_id);
+        return $tenantLanguages;
+    }
+    
+    public function getTenantLanguagesByTenantId($tenantId)
+    {
         $this->helpers->switchDatabaseConnection('mysql');
-
         $tenantLanguages = $this->db->table('tenant_language')
-        ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
-        ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
-        ->where('tenant_id', $tenant->tenant_id)
-        ->whereNull('tenant_language.deleted_at')
-        ->whereNull('language.deleted_at')
-        ->get();
-
+            ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+            ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
+            ->where('tenant_id', $tenantId)
+            ->whereNull('tenant_language.deleted_at')
+            ->whereNull('language.deleted_at')
+            ->get();
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
         return $tenantLanguages;
@@ -123,6 +127,8 @@ class LanguageHelper
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
+        ->where('tenant_language.deleted_at', null)
+        ->where('language.deleted_at', null)
         ->pluck('language.name', 'language.language_id');
 
         // Connect tenant database
