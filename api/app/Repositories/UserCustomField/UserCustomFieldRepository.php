@@ -88,9 +88,9 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     /**
      * Returns value of the highest order.
      *
-     * @return Int
+     * @return int|null
      */
-    public function findMaxOrder(): Int
+    public function findMaxOrder()
     {
         return $this->field->max('order');
     }

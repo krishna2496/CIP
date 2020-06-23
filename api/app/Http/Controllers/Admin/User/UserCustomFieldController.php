@@ -120,7 +120,8 @@ class UserCustomFieldController extends Controller
         }
 
         $lastOrderInDb = $this->userCustomFieldRepository->findMaxOrder();
-        $request->merge(['order' => $lastOrderInDb + 1]);
+        $order = ($lastOrderInDb === null) ? 1 : $lastOrderInDb + 1;
+        $request->merge(['order' => $order]);
 
         // Create new user custom field record
         $customField = $this->userCustomFieldRepository->store($request->toArray());
