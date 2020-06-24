@@ -2,7 +2,7 @@ FROM registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}} AS 
 
 # Frontend
 COPY ./frontend /tmp
-RUN cd /tmp && mv vue-prod.config.js vue.config.js && npm install && npm rebuild node-sass && npm run build-preprod
+RUN cd /tmp && mv vue-prod.config.js vue.config.js && npm install && npm rebuild node-sass && npm run build-staging
 
 RUN cp -R /tmp/dist/* /optimy/frontend/public
 RUN cp /tmp/htaccess /optimy/frontend/public/.htaccess
