@@ -1,9 +1,9 @@
 <?php
+
 use App\Helpers\Helpers;
 
 class LanguageFileTest extends TestCase
 {
-
     /**
      * @test
      *
@@ -27,22 +27,22 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_upload_language_file()
     {
         $fileName = 'en';
-        $path  = storage_path("unitTestFiles/$fileName.json");
+        $path = storage_path("unitTestFiles/$fileName.json");
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, $fileName . '.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, $fileName.'.json', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
         // dd($res->response);
@@ -60,22 +60,22 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_return_validation_error_on_upload_language_file()
     {
         $fileName = str_random(5);
-        $path  = storage_path("unitTestFiles/en.json");
+        $path = storage_path('unitTestFiles/en.json');
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
         // dd($res->response);
@@ -92,22 +92,22 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_return_invalid_file_error_on_upload_language_file()
     {
         $fileName = 'en';
-        $path  = storage_path("unitTestFiles/dummy.css");
+        $path = storage_path('unitTestFiles/dummy.css');
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'dummy.css', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'dummy.css', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
         // dd($res->response);
@@ -124,22 +124,22 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_return_invalid_json_format_error_on_upload_language_file()
     {
         $fileName = 'en';
-        $path  = storage_path("unitTestFiles/invalid_en.json");
+        $path = storage_path('unitTestFiles/invalid_en.json');
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'invalid_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'invalid_en.json', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
         // dd($res->response);
@@ -156,22 +156,22 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_return_error_when_adding_invalid_file_name()
     {
         $fileName = str_random(2);
-        $path  = storage_path("unitTestFiles/en.json");
+        $path = storage_path('unitTestFiles/en.json');
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'en.json', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
         // dd($res->response);
@@ -214,22 +214,22 @@ class LanguageFileTest extends TestCase
     public function language_file_test_it_should_return_error_on_upload_language_file()
     {
         $fileName = 'en';
-        $path  = storage_path("unitTestFiles/missing_params_en.json");
+        $path = storage_path('unitTestFiles/missing_params_en.json');
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
         // dd($res->response);
@@ -247,25 +247,25 @@ class LanguageFileTest extends TestCase
     public function it_should_return_correct_invalid_file_content()
     {
         $fileName = 'en';
-        $path  = storage_path("unitTestFiles/invalid_json_file.json");
+        $path = storage_path('unitTestFiles/invalid_json_file.json');
         $params = [
-            'file_name' => $fileName
+            'file_name' => $fileName,
         ];
-        
+
         $res = $this->call(
             'POST',
             'language-file',
             $params,
             [],
             [
-                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0]
+                'file_path' => array(new \Illuminate\Http\UploadedFile($path, 'missing_params_en.json', 'text/plain', null, null, true))[0],
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
-                'HTTP_php-auth-pw' => env('API_SECRET')
+                'HTTP_php-auth-pw' => env('API_SECRET'),
             ]
         );
-        $this->seeStatusCode(200);
+        $this->seeStatusCode(422);
     }
 
     /**
@@ -283,19 +283,20 @@ class LanguageFileTest extends TestCase
         ->select('language.language_id', 'language.code')
         ->leftJoin('tenant_language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_language.language_id', null)
+        ->where('language.deleted_at', null)
         ->first();
-        
+
         DB::table('tenant_language')->insert([
             'tenant_id' => $tenantId,
             'language_id' => $languageData->language_id,
-            'default' => '0'
+            'default' => '0',
         ]);
 
         $res = $this->get("language-file?code=$languageData->code", ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
-        
+
         DB::setDefaultConnection('mysql');
-        
+
         DB::table('tenant_language')
         ->where('tenant_id', $tenantId)
         ->where('language_id', $languageData->language_id)

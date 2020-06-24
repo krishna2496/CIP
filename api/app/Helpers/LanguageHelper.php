@@ -280,7 +280,7 @@ class LanguageHelper
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant');
 
-        return $language !== false;
+        return $language !== null
     }
 
  }
