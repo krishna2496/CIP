@@ -121,7 +121,22 @@ class TenantHasSettingController extends Controller
             $tenant = $this->tenantRepository->find($tenantId);
 
             // Store settings
-            $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);
+            $result = $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);
+
+            if($result === false){
+                $apiStatus = Response::HTTP_OK;
+                $apiMessage =  trans('messages.success.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE');
+                $activityLogStatus = config('constants.activity_log_actions.ENABLED');
+                // Make activity log
+                event(new ActivityLogEvent(
+                    config('constants.activity_log_types.TENANT_SETTINGS'),
+                    $activityLogStatus,
+                    get_class($this),
+                    $request->toArray()
+                ));
+                
+                return $this->responseHelper->success($apiStatus, $apiMessage);
+            }
 
             // Create connection with tenant database
             $this->databaseHelper->connectWithTenantDatabase($tenantId);

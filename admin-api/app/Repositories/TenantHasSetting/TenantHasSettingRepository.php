@@ -63,10 +63,33 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      */
     public function store(array $data, int $tenantId): bool
     {
+        //data for donation setting
+        $getSettingIdForMissionRatingAndComment = $this->tenantSetting->select('tenant_setting_id')
+            ->where(['key' => 'donation_mission_comments'])
+            ->orWhere(['key' => 'donation_mission_ratings'])
+            ->get();
+        $donationTenantSettings = $this->tenantSetting->where(['key' => 'donation'])->get();
+        $donationSettingId = $donationTenantSettings[0]['tenant_setting_id'];
+        $donationHasSetting = $this->tenantHasSetting->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $donationSettingId])->get();
+        $MissionRatingAndCommentIds = array_values(array_column($getSettingIdForMissionRatingAndComment->toArray(), 'tenant_setting_id'));
+                
         foreach ($data['settings'] as $value) {
             if ($value['value'] == 1) {
-                $this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
+                if (in_array($value['tenant_setting_id'], $MissionRatingAndCommentIds)) {
+                    if (!empty($donationHasSetting->toArray())) {
+                        $this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
+                }
             } else {
+                if ($value['tenant_setting_id'] === $donationSettingId) {
+                    foreach ($MissionRatingAndCommentIds as $settingId) {
+                        $this->tenantHasSetting->disableSetting($tenantId, $settingId);
+                    }
+                } 
                 $this->tenantHasSetting->disableSetting($tenantId, $value['tenant_setting_id']);
             }
         }

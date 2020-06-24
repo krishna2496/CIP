@@ -32,7 +32,8 @@ return [
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Activity logs listed successfully',
         'MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.',
         'MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.',
-        'MESSAGE_TENANT_BACKGROUND_PROCESS_COMPLETED' => 'Tenant background process completed successfully'
+        'MESSAGE_TENANT_BACKGROUND_PROCESS_COMPLETED' => 'Tenant background process completed successfully',
+        'MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE' => 'Donation settings is not enable for this tenant.'
     ],
     
     /**
