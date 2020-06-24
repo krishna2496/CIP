@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "E-mailadres",
 		"password": "Wachtwoord",
@@ -291,7 +291,7 @@
 		"state": "Regio",
 		"registration_period": "Registratie periode",
 		"search_mission": "Zoek missie",
-		"organisations": "Organisaties"
+		"organisations": "Organisaties",
 		"deleted_user" : "Verwijderde gebruike",
 		"virtual_mission" : "Virtueel",
 		"virtual_missions" : "Virtueel vrijwilligerswerk",

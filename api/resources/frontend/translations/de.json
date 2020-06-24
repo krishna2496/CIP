@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "E-Mail-Adresse",
 		"password": "Passwort",
@@ -291,7 +291,7 @@
 		"state": "Region",
 		"registration_period": "Anmeldezeitraum",
 		"search_mission": "Suchmission",
-		"organisations": "Organisationen"
+		"organisations": "Organisationen",
 		"deleted_user" : "Gelöschter Benutzer",
 		"virtual_mission" : "Virtuell",
 		"virtual_missions" : "Virtuelle Freiwilligenarbeit",

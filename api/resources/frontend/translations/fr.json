@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "Adresse e-mail",
 		"password": "Mot de passe",
@@ -110,7 +110,7 @@
 		"language": "Langue",
 		"timezone": "Fuseau horaire",
 		"address_information": "Coordonnées",
-		"basic_information": "Informations de base",
+		"basic_information": "Données personnelles",
 		"professional_information": "Informations professionnelles",
 		"linked_in": "Profil LinkedIn",
 		"custom_field": "Informations complémentaires",
@@ -292,10 +292,6 @@
 		"registration_period": "Période d'Enregistrement",
 		"search_mission": "Mission de recherche",
 		"organisations": "Les organisations",
-		"deleted_user" : "Utilisateur supprimé",
-		"virtual_mission" : "Mission virtuelle",
-		"virtual_missions" : "Missions virtuelles",
-		"home" : "Accueil"
 		"deleted_user" : "Utilisateur supprimé",
 		"virtual_mission" : "En ligne",
 		"virtual_missions" : "Mécénat en ligne",

@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "Dirección de correo electrónico",
 		"password": "Contraseña",
@@ -291,7 +291,7 @@
 		"state": "Región",
 		"registration_period": "Periodo de registro",
 		"search_mission": "Misión de búsqueda",
-		"organisations": "Organizaciones"
+		"organisations": "Organizaciones",
 		"deleted_user" : "Usuario eliminado",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Voluntariado virtual",

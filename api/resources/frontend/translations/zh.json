@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "电子邮件地址",
 		"password": "密码",
@@ -291,7 +291,7 @@
 		"state": "区域",
 		"registration_period": "登记期间",
 		"search_mission": "搜索任务",
-		"organisations": "组织机构"
+		"organisations": "组织机构",
 		"deleted_user" : "已删除的用户",
 		"virtual_mission" : "虚拟",
 		"virtual_missions" : "虚拟志愿服务",

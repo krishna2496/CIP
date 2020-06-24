@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "E-mail",
 		"password": "Пароль",
@@ -291,7 +291,7 @@
 		"state": "Область",
 		"registration_period": "Период регистрации",
 		"search_mission": "Поисковая миссия",
-		"organisations": "организации"
+		"organisations": "организации",
 		"deleted_user" : "Удаленный пользователь",
 		"virtual_mission" : "виртуальный",
 		"virtual_missions" : "Виртуальное волонтерство",

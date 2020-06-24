@@ -1,4 +1,4 @@
-{
+﻿{
 	"label": {
 		"email_address": "Sähköpostiosoite",
 		"password": "Salasana",
@@ -291,7 +291,7 @@
 		"state": "Alue",
 		"registration_period": "Rekisteröitymisaika",
 		"search_mission": "Etsi tehtävä",
-		"organisations": "Organisaatioiden"
+		"organisations": "Organisaatioiden",
 		"deleted_user" : "Poistettu käyttäjä",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
