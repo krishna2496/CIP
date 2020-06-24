@@ -78,53 +78,57 @@
 							
 							<div class="content-block">
 								<div class="mission-label-wrap">
-									<!-- <div class="mission-label" v-if="mission.is_virtual == 1">
-										<span>{{languageData.label.virtual_mission}}</span>
+									
+									<!-- <div class="mission-label volunteer-label">
+										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
 									</div> -->
-									<div class="mission-label volunteer-label">
-										<span><i class="icon-wrap"><img src="../assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
-									</div>
-									<div class="mission-label virtual-label">
+									<div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
 										<span>{{languageData.label.virtual_mission}}</span>
 									</div>
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
+									<!-- <div class="mission-label donation-label">
+										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/donation-icon.svg" alt=""></i>Donation</span>
+									</div> -->
 									
 								</div>
-								
-								<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
-										class="card-title mb-2">
-									{{mission.title | substring(60)}}
-								</b-link>
-								<div class="group-ratings">
-									<star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5"
-												 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-												 :rating="mission.mission_rating_count" :read-only="true">
-									</star-rating>
+								<div class="content-inner-block">
+									<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
+											class="card-title mb-2">
+										{{mission.title | substring(60)}}
+									</b-link>
+									<div class="group-ratings">
+										<star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5"
+													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
+													 :rating="mission.mission_rating_count" :read-only="true">
+										</star-rating>
+									</div>
+									<b-card-text>
+										{{mission.short_description | substring(105)}}
+									</b-card-text>
 								</div>
-								<b-card-text>
-									{{mission.short_description | substring(105)}}
-								</b-card-text>
 								<div class="event-block has-progress">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-									<div class="progress-block detail-column" >
+									<p class="event-name">For <span>{{ mission.organisation_name }}</span></p>
+									<div class="progress-block detail-column" v-if="!checkMissionTypeTime(mission.mission_type)">
 											<div class="text-wrap">
 												<b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective" ></b-progress>	
 	                                            <div class="progress-info">
 														<span class="subtitle-text">
-				                                            <em> 70% </em>
-				                                            <em>Achieved</em>
+															<em>{{mission.achieved_goal}}</em>
+				                                            <em v-if="mission.label_goal_achieved != ''">
+																{{ mission.label_goal_achieved }}
+															</em>
+                                                    		<em v-else>
+																{{ languageData.label.achieved }}
+															</em>
 		                                            	</span>
 			                                            <span class="subtitle-text">
-			                                            	<em><b>$250,000</b></em>
-			                                            	<em>Goal</em>
+			                                            	<em><b>{{mission.goal_objective}}</b></em>
+			                                            	<em>{{languageData.label.goal}}</em>
 			                                            </span>
 	                                            	</div>
 												</div>
 											</div>
 									<b-button class="like-btn">
-										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
+										<img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="Heart Icon"/>
 									</b-button>
 								</div>
 							</div>
@@ -201,7 +205,7 @@
 								</template>
 								<template v-else>
 									<div class="group-details-inner  has-progress">
-										<!-- <div class="detail-column info-block" v-if="mission.total_seats != 0 && mission.total_seats !== null">
+										<div class="detail-column info-block" v-if="mission.total_seats != 0 && mission.total_seats !== null">
 											<template >
 												<i class="icon-wrap">
 													<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'"
@@ -212,7 +216,7 @@
 													<span class="subtitle-text">{{ languageData.label.seats_left }}</span>
 												</div>
 											</template>
-										</div> -->
+										</div>
 										<div 
 										v-bind:class="{
 											'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
@@ -225,7 +229,7 @@
 													 alt="user">
 											</i> -->
 											<div class="text-wrap">
-												<p><b>$210,851</b> raised by <b>25 Donors</b></p>
+												<!-- <p v-if="mission.achieved_goal != ''"><b>{{ mission.achieved_goal | filterGoal }}</b> raised by <b>25 Donors</b></p> -->
 												<b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
 												<div class="progress-info">
 													<span class="subtitle-text">
@@ -236,9 +240,9 @@
 			                                                </em>
 			                                                <em v-else>{{ languageData.label.achieved }}</em>
 	                                            		</span>
-		                                            <span class="subtitle-text">
-		                                            	<em>$250,000</em>
-		                                            	<em>Goal</em>
+		                                            <span class="subtitle-text" >
+		                                            	<em>{{ mission.goal_objective | filterGoal }}</em>
+		                                            	<em>{{ languageData.label.goal }}</em>
 		                                            </span>
                                             	</div>
 											</div>
@@ -270,10 +274,10 @@
 								<b-button class="icon-btn"  v-if="isInviteCollegueDisplay" v-b-tooltip.hover
 										:title="languageData.label.recommend_to_co_worker"
 										@click="handleModal(mission.mission_id)">
-										<img src="../assets/images/multi-user-icon.svg" alt="multi user icon">
+										<img :src="$store.state.imagePath+'/assets/images/multi-user-icon.svg'" alt="multi user icon">
 								</b-button>
 								
-								<b-button v-if="mission.is_favourite == 0" class="icon-btn fill-heart-btn"
+								<b-button
 								v-bind:class="{
 									'icon-btn' : true,
 									'fill-heart-btn' : mission.is_favourite == 1
@@ -281,12 +285,10 @@
 								:title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
 								@click="favoriteMission(mission.mission_id)"
 								>
-									<img v-if="mission.is_favourite == 0" src="../assets/images/heart-icon.svg" alt="heart icon">
-									<img v-if="mission.is_favourite == 1" src="../assets/images/heart-fill-icon.svg" alt="heart icon">
+									<img v-if="mission.is_favourite == 0" :src="$store.state.imagePath+'/assets/images/heart-icon.svg'" alt="heart icon">
+									<img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="heart icon">
 								</b-button>
-								<!-- <b-button v-if="mission.is_favourite == 1" class="icon-btn fill-heart-btn">
-									<img src="../assets/images/heart-fill-icon.svg" alt="heart icon">
-								</b-button> -->
+								
 							</div>
 							</div>
 							</div>
@@ -355,312 +357,328 @@
 </template>
 
 <script>
-	import store from "../store";
-	import constants from "../constant";
-	import StarRating from "vue-star-rating";
-	import {
-		favoriteMission,
-		inviteColleague,
-		applyMission
-	} from "../services/service";
-	import {
-		VueAutosuggest
-	} from "vue-autosuggest";
-	import moment from "moment";
-	export default {
-		name: "MissionGridView",
-		components: {
-			StarRating,
-			VueAutosuggest
-		},
-		props: {
-			items: Array,
-			userList: Array,
-			relatedMission: Boolean
-		},
-		data() {
-			return {
-				query: "",
-				selected: "",
-				myclass: ["userdetail-modal"],
-				currentMissionId: 0,
-				invitedUserId: 0,
-				showErrorDiv: false,
-				message: null,
-				classVariant: "success",
-				autoSuggestPlaceholder: "",
-				submitDisable: true,
-				languageData: [],
-				isInviteCollegueDisplay: true,
-				isStarRatingDisplay: true,
-				isSubmitNewMissionSet: true,
-				isThemeSet: true,
-				submitNewMissionUrl : ''
-			};
-		},
-		computed: {
-			filteredOptions() {
-				if (this.userList) {
-					return [{
-						data: this.userList.filter(option => {
-							let firstName = option.first_name.toLowerCase();
-							let lastName = option.last_name.toLowerCase();
-							let email = option.email.toLowerCase();
-							let searchString = firstName + "" + lastName + "" + email;
-							return searchString.indexOf(this.query.toLowerCase()) > -1;
-						})
-					}];
-				}
-			}
-		},
-		methods: {
+import store from "../store";
+import constants from "../constant";
+import StarRating from "vue-star-rating";
+import {
+  favoriteMission,
+  inviteColleague,
+  applyMission
+} from "../services/service";
+import { VueAutosuggest } from "vue-autosuggest";
+import moment from "moment";
+export default {
+  name: "MissionGridView",
+  components: {
+    StarRating,
+    VueAutosuggest
+  },
+  props: {
+    items: Array,
+    userList: Array,
+    relatedMission: Boolean
+  },
+  data() {
+    return {
+      query: "",
+      selected: "",
+      myclass: ["userdetail-modal"],
+      currentMissionId: 0,
+      invitedUserId: 0,
+      showErrorDiv: false,
+      message: null,
+      classVariant: "success",
+      autoSuggestPlaceholder: "",
+      submitDisable: true,
+      languageData: [],
+      isInviteCollegueDisplay: true,
+      isStarRatingDisplay: true,
+      isSubmitNewMissionSet: true,
+      isThemeSet: true,
+      submitNewMissionUrl: ""
+    };
+  },
+  computed: {
+    filteredOptions() {
+      if (this.userList) {
+        return [
+          {
+            data: this.userList.filter(option => {
+              let firstName = option.first_name.toLowerCase();
+              let lastName = option.last_name.toLowerCase();
+              let email = option.email.toLowerCase();
+              let searchString = firstName + "" + lastName + "" + email;
+              return searchString.indexOf(this.query.toLowerCase()) > -1;
+            })
+          }
+        ];
+      }
+    }
+  },
+  methods: {
+    hideModal() {
+      this.autoSuggestPlaceholder = "";
+      this.submitDisable = true;
+      this.invitedUserId = "";
+      this.query = "";
+      this.selected = "";
+    },
+    getAppliedStatus(missionDetail) {
+      let currentDate = moment().format("YYYY-MM-DD");
+      let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+      let checkEndDateExist = true;
+      if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+        if (currentDate > missionEndDate) {
+          checkEndDateExist = false;
+        }
+      }
+      if (missionDetail.user_application_count == 1 && checkEndDateExist) {
+        return true;
+      }
+    },
+    getClosedStatus(missionDetail) {
+      let currentDate = moment().format("YYYY-MM-DD");
+      let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+      if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+        if (currentDate > missionEndDate) {
+          return true;
+        }
+      }
+    },
+    //No record found
+    noRecordFound() {
+      let defaultLang = store.state.defaultLanguage.toLowerCase();
+      if (JSON.parse(store.state.missionNotFoundText) != "") {
+        let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
+        let data = missionNotFoundArray.filter(item => {
+          if (item.lang == defaultLang) {
+            return item;
+          }
+        });
 
-			hideModal() {
-				this.autoSuggestPlaceholder = ""
-				this.submitDisable  = true
-				this.invitedUserId  = ""
-				this.query = ""
-				this.selected = ""
-			},
-			getAppliedStatus(missionDetail) {
-				let currentDate = moment().format("YYYY-MM-DD");
-				let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-				let checkEndDateExist = true;
-				if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-					if (currentDate > missionEndDate) {
-						checkEndDateExist = false;
-					}
-				}
-				if (missionDetail.user_application_count == 1 && checkEndDateExist) {
-					return true;
-				}
-			},
-			getClosedStatus(missionDetail) {
-				let currentDate = moment().format("YYYY-MM-DD");
-				let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-				if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-					if (currentDate > missionEndDate) {
-						return true;
-					}
-				}
-			},
-			//No record found
-			noRecordFound() {
-				let defaultLang = store.state.defaultLanguage.toLowerCase();
-				if (JSON.parse(store.state.missionNotFoundText) != "") {
-					let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-					let data = missionNotFoundArray.filter((item) => {
-						if (item.lang == defaultLang) {
-							return item;
-						}
-					});
+        if (data[0] && data[0].message) {
+          return data[0].message;
+        } else {
+          return this.languageData.label.no_record_found;
+        }
+      } else {
+        return this.languageData.label.no_record_found;
+      }
+    },
 
-					if (data[0] && data[0].message) {
-						return data[0].message;
-					} else {
-						return this.languageData.label.no_record_found;
-					}
-				} else {
-					return this.languageData.label.no_record_found;
-				}
-			},
+    handleFav() {
+      let btn_active = document.querySelector(".favourite-icon");
+      btn_active.classList.toggle("active");
+    },
+    //get theme title
+    getThemeTitle(translations) {
+      if (translations) {
+        let filteredObj = translations.filter((item, i) => {
+          if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+            return translations[i].title;
+          }
+        });
 
-			handleFav() {
-				let btn_active = document.querySelector(".favourite-icon");
-				btn_active.classList.toggle("active");
-			},
-			//get theme title
-			getThemeTitle(translations) {
-				if (translations) {
-					let filteredObj = translations.filter((item, i) => {
-						if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-							return translations[i].title;
-						}
-					});
+        if (filteredObj[0]) {
+          return filteredObj[0].title;
+        } else {
+          let filtereObj = translations.filter((item, i) => {
+            if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+              return translations[i].title;
+            }
+          });
 
-					if (filteredObj[0]) {
-						return filteredObj[0].title;
-					} else {
+          if (filtereObj[0]) {
+            return filtereObj[0].title;
+          }
+        }
+      }
+    },
+    // Is default media is video or not
+    checkDefaultMediaFormat(mediaType) {
+      return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
+    },
+    // Check mission type
+    checkMissionTypeTime(missionType) {
+      return missionType == constants.MISSION_TYPE_TIME;
+    },
+    // Get Youtube Thumb images
+    youtubeThumbImage(videoPath) {
+      let data = videoPath.split("=");
+      return (
+        "https://img.youtube.com/vi/" + data.slice(-1)[0] + "/mqdefault.jpg"
+      );
+    },
+    // Add mission to favorite
+    favoriteMission(missionId) {
+      let missionData = {
+        mission_id: ""
+      };
+      missionData.mission_id = missionId;
+      favoriteMission(missionData).then(response => {
+        if (response.error == true) {
+          this.makeToast("danger", response.message);
+        } else {
+          this.makeToast("success", response.message);
+          this.$emit("getMissions", "removeLoader");
+        }
+      });
+    },
+    onInputChange() {
+      this.submitDisable = true;
+    },
+    // For selected user id.
+    onSelected(item) {
+      if (item) {
+        this.selected = item.item;
+        this.submitDisable = false;
+        this.invitedUserId = item.item.user_id;
+      }
+    },
+    //This is what the <input/> value is set to when you are selecting a suggestion.
+    getSuggestionValue(suggestion) {
+      let firstName = suggestion.item.first_name;
+      let lastName = suggestion.item.last_name;
+      return firstName + " " + lastName;
+    },
+    getMediaPath(mediaPath) {
+      if (mediaPath != "") {
+        return mediaPath;
+      } else {
+        return (
+          store.state.imagePath +
+          "/assets/images/" +
+          constants.MISSION_DEFAULT_PLACEHOLDER
+        );
+      }
+    },
+    // Open auto suggest modal
+    handleModal(missionId) {
+      this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
+      this.showErrorDiv = false;
+      this.message = null;
+      this.$refs.userDetailModal.show();
+      this.currentMission = missionId;
+      setTimeout(() => {
+        this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+        var input = document.getElementById("autosuggest__input");
+        input.addEventListener("keyup", event => {
+          if (event.keyCode === 13 && !this.submitDisable) {
+            event.preventDefault();
+            this.inviteColleagues();
+          }
+        });
+      }, 100);
+    },
+    // invite collegues api call
+    inviteColleagues() {
+      let inviteData = {};
+      inviteData.mission_id = this.currentMission;
+      inviteData.to_user_id = this.invitedUserId;
+      inviteColleague(inviteData).then(response => {
+        this.submitDisable = true;
+        if (response.error == true) {
+          this.classVariant = "danger";
+          this.message = response.message;
+          this.$refs.autosuggest.$data.currentIndex = null;
+          this.$refs.autosuggest.$data.internalValue = "";
+          this.showErrorDiv = true;
+        } else {
+          this.query = "";
+          this.selected = "";
+          this.currentMissionId = 0;
+          this.invitedUserId = 0;
+          this.$refs.autosuggest.$data.currentIndex = null;
+          this.$refs.autosuggest.$data.internalValue = "";
+          this.classVariant = "success";
+          this.message = response.message;
+          this.showErrorDiv = true;
+        }
+      });
+    },
+    // Apply for mission
+    applyForMission(mission) {
+      let missionData = {};
+      missionData.mission_id = mission.mission_id;
+      missionData.availability_id = mission.availability_id;
+      applyMission(missionData).then(response => {
+        if (response.error == true) {
+          this.makeToast("danger", response.message);
+        } else {
+          this.makeToast("success", response.message);
+          this.$emit("getMissions");
+        }
+      });
+    },
+    makeToast(variant = null, message) {
+      this.$bvToast.toast(message, {
+        variant: variant,
+        solid: true,
+        autoHideDelay: 1000
+      });
+    },
+    submitNewMission() {
+      if (this.submitNewMissionUrl != "") {
+        window.open(this.submitNewMissionUrl, "_self");
+      }
+    },
+    cardHeightAdj() {
+      setTimeout(function() {
+        var cardBody = document.querySelectorAll(".card-grid .card-body");
+        var cardText = document.querySelectorAll(
+          ".card-grid .card-body .card-text"
+        );
 
-						let filtereObj = translations.filter((item, i) => {
-							if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
-								return translations[i].title;
-							}
-						});
+        // cardText.forEach(function (textEvent) {
+        // 	var cardTextH = textEvent.offsetHeight;
+        // 	console.log("max height",Math.max(...cardTextH));
+        // 	// textEvent.style.height =  Math.max.apply( Math, cardTextH) + 'px';
+        // });
 
-						if (filtereObj[0]) {
-							return filtereObj[0].title;
-						}
-					}
-				}
-			},
-			// Is default media is video or not
-			checkDefaultMediaFormat(mediaType) {
-				return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
-			},
-			// Check mission type
-			checkMissionTypeTime(missionType) {
-				return missionType == constants.MISSION_TYPE_TIME;
-			},
-			// Get Youtube Thumb images
-			youtubeThumbImage(videoPath) {
-				let data = videoPath.split("=");
-				return (
-						"https://img.youtube.com/vi/" + data.slice(-1)[0] + "/mqdefault.jpg"
-				);
-			},
-			// Add mission to favorite
-			favoriteMission(missionId) {
-				let missionData = {
-					mission_id: ""
-				};
-				missionData.mission_id = missionId;
-				favoriteMission(missionData).then(response => {
-					if (response.error == true) {
-						this.makeToast("danger", response.message);
-					} else {
-						this.makeToast("success", response.message);
-						this.$emit("getMissions", "removeLoader");
-					}
-				});
-			},
-			onInputChange() {
-				this.submitDisable = true;
-			},
-			// For selected user id.
-			onSelected(item) {
-				if(item) {
-					this.selected = item.item;
-					this.submitDisable = false;
-					this.invitedUserId = item.item.user_id;
-				}
-			},
-			//This is what the <input/> value is set to when you are selecting a suggestion.
-			getSuggestionValue(suggestion) {
-				let firstName = suggestion.item.first_name;
-				let lastName = suggestion.item.last_name;
-				return firstName + " " + lastName;
-			},
-			getMediaPath(mediaPath) {
-				if(mediaPath != '') {
-					return mediaPath;
-				} else {
-					return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
-				}
-			},
-			// Open auto suggest modal
-			handleModal(missionId) {
-				this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
-				this.showErrorDiv = false;
-				this.message = null;
-				this.$refs.userDetailModal.show();
-				this.currentMission = missionId;
-				setTimeout(() => {
-					this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-					var input = document.getElementById("autosuggest__input");
-					input.addEventListener("keyup", (event) => {
-						if (event.keyCode === 13 && !this.submitDisable) {
-							event.preventDefault();
-							this.inviteColleagues()
-						}
-					});
-				}, 100);
-			},
-			// invite collegues api call
-			inviteColleagues() {
-				let inviteData = {};
-				inviteData.mission_id = this.currentMission;
-				inviteData.to_user_id = this.invitedUserId;
-				inviteColleague(inviteData).then(response => {
-					this.submitDisable = true;
-					if (response.error == true) {
-						this.classVariant = "danger";
-						this.message = response.message;
-						this.$refs.autosuggest.$data.currentIndex = null;
-						this.$refs.autosuggest.$data.internalValue = "";
-						this.showErrorDiv = true;
-					} else {
-						this.query = "";
-						this.selected = "";
-						this.currentMissionId = 0;
-						this.invitedUserId = 0;
-						this.$refs.autosuggest.$data.currentIndex = null;
-						this.$refs.autosuggest.$data.internalValue = "";
-						this.classVariant = "success";
-						this.message = response.message;
-						this.showErrorDiv = true;
-					}
-				});
-			},
-			// Apply for mission
-			applyForMission(mission) {
-				let missionData = {};
-				missionData.mission_id = mission.mission_id;
-				missionData.availability_id = mission.availability_id;
-				applyMission(missionData).then(response => {
-					if (response.error == true) {
-						this.makeToast("danger", response.message);
-					} else {
-						this.makeToast("success", response.message);
-						this.$emit("getMissions");
-					}
-				});
-			},
-			makeToast(variant = null, message) {
-				this.$bvToast.toast(message, {
-					variant: variant,
-					solid: true,
-					autoHideDelay: 1000
-				});
-			},
-			submitNewMission() {
-				if(this.submitNewMissionUrl != '') {
-					window.open(this.submitNewMissionUrl, '_self');
-				}
-			},
-			cardHeightAdj() {
-				
-			}
-		},
-		created() {
-			this.languageData = JSON.parse(store.state.languageLabel);
-			this.isInviteCollegueDisplay = this.settingEnabled(
-					constants.INVITE_COLLEAGUE
-			);
-			this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
-			this.isSubmitNewMissionSet = this.settingEnabled(
-					constants.USER_CAN_SUBMIT_MISSION
-			);
-			this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
-			this.submitNewMissionUrl = store.state.submitNewMissionUrl
+        cardBody.forEach(function(event) {
+          var getCard = event.parentNode;
+          var cardHeight =
+            event.children[0].offsetHeight + getCard.children[0].offsetHeight;
+          getCard.style.height = cardHeight + "px";
+          event.parentNode.addEventListener("mouseover", function(mouseEvent) {
+            var cardBodyH =
+              this.children[1].children[1].offsetHeight +
+              this.children[1].children[0].offsetHeight +
+              this.children[0].offsetHeight;
+            var cardTotalHeight = cardBodyH - this.offsetHeight;
+            this.children[0].style.transform =
+              "translateY(-" + cardTotalHeight + "px)";
+            this.children[1].style.transform =
+              "translateY(-" + cardTotalHeight + "px)";
+            this.parentNode.classList.add("active");
+          });
+          event.parentNode.addEventListener("mouseleave", function() {
+            this.children[0].style.transform = "translateY(0)";
+            this.children[1].style.transform = "translateY(0)";
+            this.parentNode.classList.remove("active");
+          });
+        });
+      }, 1000);
+    }
+  },
+  created() {
+    this.languageData = JSON.parse(store.state.languageLabel);
+    this.isInviteCollegueDisplay = this.settingEnabled(
+      constants.INVITE_COLLEAGUE
+    );
+    this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
+    this.isSubmitNewMissionSet = this.settingEnabled(
+      constants.USER_CAN_SUBMIT_MISSION
+    );
+    this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+    this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 
-			this.cardHeightAdj();
+    this.cardHeightAdj();
 
-			// window.addEventListener("resize", this.cardHeightAdj());
-			setTimeout(function () {
-				var cardBody = document.querySelectorAll(".card-grid .card-body");
-					cardBody.forEach(function (event) {
-						var bodyHeight = event.offsetHeight;
-						var hiddenHeight = event.children[1].offsetHeight
-						var totalHeight = bodyHeight - hiddenHeight;
-						event.style.height = totalHeight +"px";
-						event.parentNode.addEventListener("mouseover", function (mouseEvent) {
-						var bodyHeight = mouseEvent.offsetHeight;
-						// event.style.height = bodyHeight +"px";
-						// this.children[0].style.marginTop = "-204px",
-						// console.log(mouseEvent.children(1).offsetHeight);
-						this.parentNode.classList.add("active");
-		                });
-						event.parentNode.addEventListener("mouseleave", function () {
-							// this.children[0].style.marginTop = "",
-							// event.style.height = totalHeight +"px";
-							this.parentNode.classList.remove("active");
-		                });
-					});
-				},1000);
-		},
-		updated() {
-      		this.cardHeightAdj();
-    	}
-	};
+    window.addEventListener("resize", this.cardHeightAdj());
+  },
+  updated() {
+    this.cardHeightAdj();
+  }
+};
 </script>

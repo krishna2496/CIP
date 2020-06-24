@@ -16,11 +16,16 @@
 	}
 
 	.card {
-		@extend .card_shadow;
+		box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-webkit-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-moz-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-ms-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-o-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
 		height: 100%;
 		background-color: $white;
 		border: none;
-		border-radius: 3px;
+		border-radius: 10px;
+		overflow: hidden;
 		@include transition(all 0.6s);
 
 		[class*="card-img"] {
@@ -29,11 +34,11 @@
 
 		@include lg-min {
 			&:hover {
-				box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
-				-webkit-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
-				-moz-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
-				-ms-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
-				-o-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+				box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+				-webkit-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+				-moz-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+				-ms-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+				-o-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
 
 				.btn-bordersecondary {
 					background: $primary;
@@ -71,14 +76,14 @@
 
 		.card-header {
 			position: relative;
-			height: 220px;
+			height: 280px;
 			padding: 0;
 			line-height: 0;
 			border: none;
 
-			@include lg-max {
+			/*@include lg-max {
 				height: 190px;
-			}
+			}*/
 
 			.card-alert {
 				position: absolute;
@@ -99,7 +104,8 @@
 				}
 
 				&.alert-warning {
-					background: $primary;
+					background: $light-gray-border;
+					color: $black-primary;
 				}
 			}
 
@@ -131,19 +137,39 @@
 			display: flex;
 			flex-wrap: wrap;
 			align-content: space-between;
+			position: relative;
+			.progress-block{
+				.progress-info{
+					font-size: 12px;
+					line-height: 16px;
+					display: flex;
+					justify-content: space-between;
+					.subtitle-text{
+						em{
+							display: inline-block;
+							&:first-child{
+								margin-right:3px;
+							}
+						}
+					}
+
+				}
+				.text-wrap{
+					p{
+						font-size: 14px;
+						line-height: 19px;
+						text-align: center;
+						margin:15px 0 2px;
+					}
+				}
+			}
 		}
 
 		.card-title {
-			font-size: 26px;
-			line-height: 34px;
+			font-size: 20px;
+			line-height: 27px;
 			display: inline-block;
 			max-width: 100%;
-
-			@include lg-max {
-				font-size: 20px;
-				line-height: 28px;
-			}
-
 			&:hover,
 			&:active,
 			&:focus {
@@ -153,17 +179,55 @@
 
 		.card-text {
 			margin-bottom: 13px;
-			color: $gray-primary;
-
-			@include lg-max {
-				font-size: 14px;
-				line-height: 22px;
+			font-size: 14px;
+			line-height: 19px;
+		}
+		.event-name{
+			font-size: 14px;
+			line-height: 19px;
+			margin: 0;
+			span{
+				font-weight: 600;
+			}
+		}
+		.event-block{
+			display:block;
+			position: relative;
+			.like-btn{
+				position: absolute;
+				right:0;
+				top:50%;
+				transform:translateY(-50%);
+				-webkit-transform:translateY(-50%);
+				-ms-transform:translateY(-50%);
+				-moz-transform:translateY(-50%);
+				background:transparent;
+				min-height: 1px;
+				min-width: 1px;
+				border:none;
+				border-radius: 0;
+				padding:0;
+				opacity: 1;
+				img{
+					width:18px;
+					height:21px;
+				}
+			}
+			.progress-block{
+				padding:24px 45px 0 0;
+			}
+			&.has-progress{
+				.like-btn{
+					top:auto;
+					transform: none;
+					bottom: 0;
+				}
 			}
 		}
 
 		.location {
 			position: absolute;
-			top: 15px;
+			bottom: 28px;
 			right: 14px;
 			display: inline-block;
 			display: inline-flex;
@@ -172,11 +236,12 @@
 			padding: 7px 12px;
 			color: $white;
 			font-size: 14px;
-			line-height: 18px;
+			line-height: 19px;
 			background: $rgb-black-dark;
-			border-radius: 18px;
-			@include transition(all 0.6s);
-
+			border-radius: 39px;
+			@include transition(all 0.3s);
+			opacity: 0;
+			visibility: visible;
 			@include lg-max {
 				font-size: 13px;
 				right: 10px;
@@ -307,21 +372,16 @@
 			display: inline-block;
 			text-align: center;
 			z-index: 5;
-			margin: 0 40px;
+			margin: 0 40px; 
 
 			.category-text {
 				background: $white;
 				border-radius: 50px;
-				padding: 9px 17px;
-				font-size: 16px;
-				line-height: 18px;
+				padding: 4px 12px;
+				font-size: 14px;
+				line-height: 19px;
 				display: inline-block;
 				max-width: 100%;
-
-				@include lg-max {
-					font-size: 15px;
-					padding: 6px 14px;
-				}
 			}
 		}
 
@@ -332,6 +392,9 @@
 			align-items: center;
 			flex-wrap: wrap;
 			justify-content: space-between;
+			margin: -6px 0 6px;
+			opacity: 0;
+			 @include transition(opacity 0.3s);
 		}
 
 		.group-name {
@@ -354,7 +417,7 @@
 		.content-block {
 			position: relative;
 			z-index: 1;
-			padding: 23px 30px 33px;
+			padding: 20px 32px 33px;
 
 			@include lg-max {
 				padding: 18px 15px 30px;
@@ -364,17 +427,49 @@
 				padding-left: 10px;
 				padding-right: 10px;
 			}
+			.mission-label-wrap{
+				display: flex;
+				flex-wrap: wrap;
+			}
 			.mission-label{
-				margin-bottom: 10px;
+				margin:0 8px 8px 0;
 				span{
-					font-size: 13px;
-					line-height: 18px;
+					font-size: 12px;
+					line-height: 16px;
 					display: inline-block;
 					color: #fff;
-					text-transform: uppercase;
-					padding: 4px 13px;
-					border-radius: 14px;
+					text-transform: capitalize;
+					padding: 4px 12px;
+					border-radius: 17px;
 					background: $secondary;
+					font-weight: 600;
+					.icon-wrap{
+						vertical-align: middle;
+    					margin: -2px 4px 0 0;
+					}
+				}
+				&.volunteer-label{
+					span{
+						background: $green;
+						.icon-wrap{
+							width: 14px;
+    						height: 16px;
+						}
+					}
+				}
+				&.virtual-label{
+					span{
+						background: $sky-blue;
+					}
+				}
+				&.donation-label{
+					span{
+						background: $lavender;
+						.icon-wrap{
+							width: 15px;
+    						height: 16px;
+						}
+					}	
 				}
 			}
 		}
@@ -384,12 +479,13 @@
 			display: flex;
 			justify-content: space-between;
 			flex: 1;
-			padding: 24px 15px 11px;
+			padding: 24px 15px 18px;
 			align-items: center;
 			-ms-flex: 1;
+			background: $rgb-gray;
 
 			@include lg-max {
-				padding: 24px 0 11px;
+				padding: 24px 0 18px;
 			}
 
 			.group-details-inner {
@@ -412,11 +508,8 @@
 						}
 
 						&.progress-block {
-							width: 67%;
-
-							@include xl-max {
-								width: 60%;
-							}
+							width: 100%;
+							padding-right: 15px;
 						}
 						
 					}
@@ -426,10 +519,10 @@
 			.icon-wrap {
 				position: relative;
 				top: 3px;
-				width: 26px;
-				height: 26px;
-				flex: 0 0 26px;
-				margin-right: 12px;
+				width: 28px;
+				height: 28px;
+				flex: 0 0 28px;
+				margin-right: 8px;
 
 				@include sm-max {
 					height: 20px;
@@ -441,9 +534,13 @@
 			.detail-column {
 				display: inline-flex;
 				align-items: flex-start;
-				width: 50%;
 				padding: 0 15px;
-
+				&:first-child{
+					width: 47%;
+				}
+				&:last-child{
+					width:53%;
+				}
 				@include sm-max {
 					padding: 0 10px;
 				}
@@ -451,7 +548,17 @@
 				&:first-child {
 					padding-right: 0;
 				}
+				&.info-block{
+					.subtitle-text {
+						font-size: 14px;
+						line-height: 19px;
+						color: $gray-primary;
 
+						@include lg-max {
+							font-size: 13px;
+						}
+					}					
+				}
 				.text-wrap {
 					display: inline-flex;
 					flex-direction: column;
@@ -466,22 +573,6 @@
 							line-height: 17px;
 						}
 					}
-
-					.subtitle-text {
-						font-size: 14px;
-						line-height: 18px;
-						color: $gray-primary;
-
-						@include lg-max {
-							font-size: 13px;
-						}
-
-						em {
-							@include xl-max {
-								display: none;
-							}
-						}
-					}
 					.skill-text-wrap{
 						width : 210px;
 					}
@@ -490,8 +581,8 @@
 				&.progress-block {
 					.text-wrap {
 						display: flex;
-						width: calc(100% - 37px);
-						padding: 8px 0 0 4px;
+						width: 100%;
+						padding: 0;
 					}
 				}
 			}
@@ -506,7 +597,7 @@
 				align-items: center;
 				margin: 0 auto;
 				text-align: center;
-				background: $white;
+				background: transparent;
 
 				@include lg-max {
 					top: -16px;
@@ -515,15 +606,17 @@
 				span {
 					z-index: 5;
 					display: inline-block;
-					padding: 5px 18px;
+					padding: 5px 20px;
 					background: $white;
-					border: 1px solid $primary-border-color;
-					border-radius: 50px;
+					border: 1px solid $light-gray-border;
+					border-radius: 54px;
 					white-space: nowrap;
 					text-overflow: ellipsis;
 					max-width: 100%;
 					overflow: hidden;
 					position: relative;
+					font-size: 14px;
+					line-height: 19px;
 
 					@include lg-max {
 						font-size: 13px;
@@ -546,11 +639,11 @@
 		}
 
 		.progress {
-			height: 10px;
-
+			height: 4px;
+			margin-bottom: 2px;
 			.progress-bar {
-				background: $primary;
-				border-radius: 0.25rem;
+				background: linear-gradient(270deg, #63A96A 0%, #14CC26 100%);
+				border-radius: 0;
 			}
 		}
 
@@ -564,7 +657,62 @@
 				margin: 0 auto;
 			}
 		}
-
+		.card-action-block{
+			padding: 20px 32px;
+			background: transparent;
+			border: none;
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			align-items: center;
+			.left-btn{
+				.icon-btn{
+					display: inline-flex;
+					min-width: 172px;
+					min-height: 40px;
+					align-items: center;
+					font-size: 18px;
+					line-height: 25px;
+					padding: 5px 20px;
+					background: transparent;
+					color:$primary;
+					svg{
+						fill:$primary;
+					}
+					&:hover{
+						svg{
+							fill: $white;
+						}
+					}
+					span{
+						line-height: normal;
+					}
+					i{
+						margin-left: 8px;
+					}
+				}
+			}
+			.social-btn{
+				display: inline-flex;
+				.icon-btn{
+					background: transparent;
+					border:none;
+					border-radius: 0;
+					width: 18px;
+					height: 20px;
+					min-height: 1px;
+					min-width: 1px;
+					padding: 0;
+					margin-left: 16px;
+					&:first-child{
+						margin-left:0;
+					}
+					img{
+						width:100%;
+					}
+				}
+			}
+		}
 		.btn {
 			&.btn-bordersecondary {
 				@include lg-max {
@@ -572,14 +720,98 @@
 				}
 			}
 		}
+		.init-hidden{
+			flex: 1;
+    		opacity: 0;
+			 @include transition(all 0.3s);
+			.progress-block{
+				.progress-info{
+					.subtitle-text{
+						em{
+							display: block;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
 .card-grid {
+	.card-inner{
+		height: 100%;
+		box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-webkit-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-ms-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		-moz-box-shadow: 0px 10px 20px rgba(65, 65, 65, 0.25);
+		border-radius: 10px;
+		@include transition(all 0.5s);
+		&.active{
+			box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+			-webkit-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+			-moz-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+			-ms-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+			-o-box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
+		}
+		.card{
+			box-shadow: none;
+			.content-inner-block{
+				min-height: 117px;
+			}
+		}
+	}
   .card {
-    .content-block {
-      max-width: 100%;
-      flex: 0 0 100%;
+    	 @include transition(all 0.5s);
+    	 overflow: hidden;
+	    .content-block {
+	      max-width: 100%;
+	      flex: 0 0 100%;
+    }
+    .card-header{
+    	 @include transition(transform 0.3s);
+    	z-index: 9;
+    	margin-top: 0;
+    }
+    .card-text{
+    	margin:-20px 0 8px;
+    	 @include transition(margin-top 0.3s);
+    }
+
+    /*.init-hidden{
+    	position: absolute;
+    	bottom: 0;
+    	left: 0;
+    	right: 0;
+    }*/
+    &:hover{
+    	.init-hidden{
+			opacity: 1;
+    	}
+	  /* .card-header{
+			height: 90px;
+	   }*/
+	   .group-ratings{
+	   	opacity: 1;
+	   }
+	   .card-text{
+	   	margin-top: 0;
+	   }
+	   .location{
+	   	opacity: 1;
+	   	visibility: visible;
+	   }
+	   .event-block{
+	   	 .like-btn{
+		   	opacity: 0;
+		  }
+	   	 .progress-block{
+	   		display: none;
+	   	  }
+	   }
+	  
+	}
+    .card-body{
+    	@include transition(transform 0.3s);
     }
   }
 
@@ -631,10 +863,35 @@
       flex-direction: row;
       height: 100%;
       flex-wrap: wrap;
+	  box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
+	  -webkit-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
+	  -ms-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
+	  -moz-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
+	  &:hover{
+	  	.card-action-block {
+	  		.btn-wrap {
+	  			.btn{
+	  				background:$white;
+	  				color:$primary;
+	  				svg{
+	  					fill:$primary;
+	  				}
+	  			}
+	  		}
+	  	}
+	  }
 
       .favourite-icon {
         bottom: auto;
         top: 73px;
+      }
+
+      .location{
+      	opacity: 1;
+      	visibility: visible;
+      	top:16px;
+      	right:12px;
+      	bottom: auto;
       }
 
       .add-icon {
@@ -642,8 +899,8 @@
       }
 
       .card-header {
-        max-width: 25%;
-        flex: 0 0 25%;
+        max-width: 23%;
+        flex: 0 0 23%;
         height: auto;
         min-height: 220px;
 
@@ -659,28 +916,193 @@
 
       .card-body {
         display: inline-flex;
-        max-width: 75%;
-        flex: 0 0 75%;
-        flex-direction: column;
+        max-width: 77%;
+        flex: 0 0 77%;
+        flex-direction: row;
         border-radius: 0 3px 3px 0;
-        justify-content: space-between;
-        padding: 20px 30px 30px;
-
-        @include lg-max {
-          padding: 20px;
-        }
-
-        @include md-max {
-          max-width: 70%;
-          flex: 0 0 70%;
-        }
-
+        align-items: center;
+		padding: 0;
+		.card-detail-column{
+			max-width: 70%;
+			flex: 0 0 70%;
+		}
+		.group-details {
+			padding: 15px 20px 3px;
+			flex-wrap: wrap;
+			&:before{
+				display:none;
+			}
+			&.progress-details{
+				justify-content: flex-start;
+				padding-top: 0;
+				.detail-column{
+					p{
+						margin-bottom: 0;
+						font-size: 16px;
+						line-height: 24px;
+						.progress-success{
+							color: #14CC26;
+						}
+					}
+					&.progress-info-column{
+						width:275px;
+						flex: 0 0 275px;
+						padding-left: 0;
+					}
+					&.achieved-column{
+						width: 120px;
+						flex: 0 0 120px;
+					}
+					&.info-block{
+						width: 135px;
+						flex: 0 0 135px;
+					}	
+					&.progress-block{
+						flex: 0 0 100%;
+						max-width: 100%;
+						.progress{
+							height: 6px;
+							border-radius: 0;
+							.progress-bar{
+								width: 500px!important;
+							}
+						}
+					}
+				}
+			}
+			.detail-column {
+				width: 180px;
+				flex: 0 0 180px;
+				padding:  0 15px 12px 0;
+				&.seat-info{
+					width: 115px;
+					flex: 0 0 115px;
+				}
+				&.info-block{
+					width: 200px;
+					flex: 0 0 200px;
+				}
+				.icon-wrap{
+					width: 18px;
+					height: 18px;
+					flex: 0 0 18px;
+					top: 8px;
+				}
+				.text-wrap {
+					.title-text, .subtitle-text{
+						font-size: 14px;
+						line-height: 19px;
+					}
+				}
+			}
+		}
+		.card-action-block{
+			border-left: 1px solid $rgb-border;
+		    padding: 0;
+		    flex-direction: column;
+		    align-items: center;
+		    justify-content: center;
+		    text-align: center;
+		    height: 100%;
+		    max-width: 30%;
+		    flex: 0 0 30%;
+		    .btn-wrap{
+		    	.btn{
+		    		min-height: 40px;
+		    		line-height: normal;
+		    		padding: 6px 17px;
+		    		&:hover{
+		    			svg{
+		    				fill:$white;
+		    			}
+		    		}
+		    	}
+		    	.gray-btn{
+	  				border-color:$gray-secondary;
+	  				color: $middle-gray; 
+	  				svg{
+	  					fill:$middle-gray;
+	  				}
+	  				&:hover{
+	  					background: $gray-secondary!important;
+	  					color: $white!important;
+	  					border-color:$gray-secondary!important;
+	  					svg{
+	  						fill:$white;
+	  					}	
+	  				}
+	  			}
+		    }
+		    .social-btn{
+		    	margin-top: 27px;
+		    }
+		    .donate-btn-wrap{
+		    	.form-group{
+		    		margin-bottom: 12px;
+		    		position: relative;
+		    		label{
+			    		position: absolute;
+			    		top: 50%;
+			    		@include transformY(-50%);
+			    		left: 9px;
+			    		font-size: 18px;
+			    		line-height: 25px;
+			    		font-weight: 600;
+			    		color: $middle-gray;
+			    	}
+		    		.btn-donate{
+		    			position: absolute;
+		    			right: 0;
+		    			min-width: 110px;
+		    			color: $white;
+		    			font-weight: 500;
+		    			top: 0;
+		    			border-radius: 0 29px 29px 0;
+		    			min-height: 40px;
+		    			line-height: normal;
+		    			font-size: 18px;
+		    		}
+		    		.form-control{
+		    			border:2px solid $light-gray-border;
+		    			min-height: 40px; 
+		    			border-radius: 29px;
+		    			padding: 5px 115px 5px 30px;
+		    			width: 175px;
+		    			font-size: 14px;
+		    			font-weight: 600;
+		    		}
+		    	}
+		    }
+		}
         .content-block {
           width: 100%;
-          padding: 25px 0 30px;
-
+          padding: 16px 20px 0;
+          .mission-label-wrap{
+          	margin-bottom: 8px;
+          	.group-category{
+          		transform: none;
+			    position: relative;
+			    left: auto;
+			    right: auto;
+			    margin: 0 8px 8px 0;
+			    top: auto;
+			    .category-text{
+			    	background: $light-gray-border;
+			    	font-size: 12px;
+			    	line-height: 16px;
+			    	font-weight: 600;
+			    }
+          	}
+          }
+          .card-title{
+          	margin-bottom: 5px;
+          }
+          .ratings{
+          	margin-bottom: 4px;
+          	display: block;
+          }
           p {
-            margin-bottom: 0;
+            margin-bottom: 12px;
             width: 100%;
           }
         }
@@ -825,6 +1247,7 @@
     .card {
       &:hover {
         .card-header {
+        	margin-top:0;
           &:after {
             opacity: 1;
           }
@@ -866,7 +1289,7 @@
       }
 
       .card-text {
-        margin-bottom: 24px;
+        margin:0 0 24px;
 
         @include md-max {
           margin-bottom: 16px;
