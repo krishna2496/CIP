@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DropColumnAvailabilityIdFromMissionTable extends Migration
+class DropVolunteeringAttributesRelatedColumnFromMissionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -33,7 +33,7 @@ class DropColumnAvailabilityIdFromMissionTable extends Migration
             $table->unsignedBigInteger('availability_id');
             $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->integer('total_seats')->nullable();
-            $table->enum('is_virtual',['0','1'])->default('0');
+            $table->enum('is_virtual', ['0', '1'])->default('0');
         });
     }
 }
