@@ -1,6 +1,4 @@
-FROM registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}}
-
-
+FROM registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}} AS build 
 
 # Frontend
 COPY ./frontend /tmp
@@ -11,14 +9,12 @@ RUN cp /tmp/htaccess /optimy/frontend/public/.htaccess
 
 RUN rm -rf /tmp/*
 
-# Api-doc
+FROM registry.kubernetes.infra.optimy.net/tools/web-ci:7.3
+
+COPY --chown=www-data:www-data --from=build /optimy /optimy
+# Api-doc and Api 
 ENV SWAGGER_API_JSON="/optimy/api-doc/cip-api.json"
-
-# Admin-api-doc
 ENV SWAGGER_ADMIN_API_JSON="/optimy/admin-api-doc/cip-admin-api.json"
-
-RUN chown -R www-data:www-data /optimy/
-
 
 
 
