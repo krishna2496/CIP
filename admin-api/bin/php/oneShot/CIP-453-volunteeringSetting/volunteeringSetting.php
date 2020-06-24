@@ -8,12 +8,12 @@ $pdo = setAdminDatabaseConnection($db);
 
 // Get all the tenants id
 $tenants = $pdo->query('select tenant_id from tenant where deleted_at is null')->fetchAll();
-$tenantSettingIdData = $pdo->query('select tenant_setting_id from tenant_setting where title = "volunteering" AND  deleted_at is null')->fetchAll();
+$tenantSettingData = $pdo->query('select tenant_setting_id from tenant_setting where title = "volunteering" AND  deleted_at is null')->fetchAll();
 
-if (isset($tenantSettingIdData[0])) {
-    $tenantSettingId = $tenantSettingIdData[0]['tenant_setting_id'];
+if (isset($tenantSettingData[0])) {
+    $tenantSettingId = $tenantSettingData[0]['tenant_setting_id'];
 } else {
-    echo "Tenant setting is not exist in system." ;
+    echo "Tenant setting not found in system" ;
     exit;
 }
 
@@ -29,9 +29,9 @@ foreach ($tenants as $tenant) {
     // Add settings into tenant_has_setting (master database)
     $tenantHasSettingSql = $pdo->prepare("SELECT * FROM tenant_has_setting WHERE tenant_id=? AND tenant_setting_id=? AND deleted_at is null");
     $tenantHasSettingSql->execute([$tenantId, $tenantSettingId]);
-    $getNewlyInsertedSettingId = $tenantHasSettingSql->fetchAll();
+    $tenantHasSettingData = $tenantHasSettingSql->fetchAll();
 
-    if (count($getNewlyInsertedSettingId) === 0) {
+    if (count($tenantHasSettingData) === 0) {
         $pdo->prepare('
             INSERT INTO tenant_has_setting
             (tenant_id, tenant_setting_id, created_at)
@@ -62,9 +62,9 @@ foreach ($tenants as $tenant) {
     // Add settings into tenant_setting (tenant's database)
     $tenantSettingSql = $pdo->prepare("SELECT * FROM tenant_setting WHERE setting_id=? AND deleted_at is null");
     $tenantSettingSql->execute([$tenantSettingId]);
-    $getExistingTenantSettingId = $tenantSettingSql->fetchAll();
+    $tenantSettingData = $tenantSettingSql->fetchAll();
 
-    if (count($getExistingTenantSettingId) === 0) {
+    if (count($tenantSettingData) === 0) {
         $pdo->prepare('
             INSERT INTO tenant_setting
             (setting_id, created_at)
@@ -74,27 +74,17 @@ foreach ($tenants as $tenant) {
             'setting_id' => $tenantSettingId,
             'created_at' => date('Y-m-d H:i:s')
         ]);
-    }
 
-    //Activate volunteering setting in tenant_activated_setting (tenant's database)
-    $sql = $pdo->prepare("SELECT tenant_setting_id FROM tenant_setting WHERE setting_id=?");
-    $sql->execute([$tenantSettingId]);
-    $getNewlyInsertedSettingId = $sql->fetchAll();
+        $lastInsertTenantSettingId = $pdo->lastInsertId();
 
-    $settingIdFromTenantSetting = $getNewlyInsertedSettingId[0]['tenant_setting_id'];
-
-    $tenantActivatedSettingSql = $pdo->prepare("SELECT * FROM tenant_activated_setting WHERE tenant_setting_id=? AND deleted_at is null");
-    $tenantActivatedSettingSql->execute([$settingIdFromTenantSetting]);
-    $getActivatedTenantSettingId = $tenantActivatedSettingSql->fetchAll();
-
-    if (count($getActivatedTenantSettingId) === 0) {
+        //Activate volunteering setting in tenant_activated_setting (tenant's database)
         $pdo->prepare('
             INSERT INTO tenant_activated_setting
             (tenant_setting_id, created_at)
             VALUES (:tenant_setting_id, :created_at)
         ')
         ->execute([
-            'tenant_setting_id' => $settingIdFromTenantSetting,
+            'tenant_setting_id' => $lastInsertTenantSettingId,
             'created_at' => date('Y-m-d H:i:s')
         ]);
     }

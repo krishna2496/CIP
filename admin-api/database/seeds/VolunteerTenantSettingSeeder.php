@@ -15,7 +15,7 @@ class VolunteerTenantSettingSeeder extends Seeder
         $items = [            
             [
                 'title' => 'volunteering',
-                'description' => 'Volunteering selection is enabled/disabled',
+                'description' => 'Volunteering is enabled/disabled',
                 'key' => 'volunteering',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
