@@ -105,6 +105,37 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     }
 
     /**
+     * Returns value of the smallest order.
+     *
+     * @param mixed $ids
+     *
+     * @return mixed
+     */
+    public function findMinOrder($ids = null)
+    {
+        if (empty($ids)) {
+            return $this->field->min('order');
+        } elseif (is_array($ids)) {
+            return $this->field->whereIn('field_id', $ids)->min('order');
+        }
+        return $this->field->select('order')->findOrFail($ids);
+    }
+
+    /**
+     * Selects records after certain order.
+     *
+     * @param int $order
+     *
+     * @return Collection
+     */
+    public function findAfterMinOrder($order)
+    {
+        $fields = $this->field->where('order', '>', $order);
+        $fields = $fields->orderBy('order', 'asc');
+        return $fields->lockForUpdate()->get();
+    }
+
+    /**
      * Selects records between certain order.
      *
      * @param integer $currentOrder
@@ -112,7 +143,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      *
      * @return Collection
      */
-    public function findByOrder($currentOrder, $requestOrder): Collection
+    public function findBetweenOrder($currentOrder, $requestOrder): Collection
     {
         // where condition for $currentOrder > $requestOrder
         $fields = $this->field->where('order', '>=', $requestOrder);

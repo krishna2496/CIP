@@ -499,6 +499,12 @@ label {
     & .multiselect__tag-icon:hover {
         background: $primary;
     }
+    & .multiselect__tag-icon:after {
+        color: $white;
+    }
+    & .multiselect__tag-icon:hover:after {
+        color: $secondary;
+    }
 }
 
 .checkbox-select {

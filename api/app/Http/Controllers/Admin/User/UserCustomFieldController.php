@@ -210,7 +210,7 @@ class UserCustomFieldController extends Controller
 
                 $newOrder = $currentOrder < $requestOrder ? $currentOrder : $requestOrder + 1;
 
-                $records = $this->userCustomFieldRepository->findByOrder($currentOrder, $requestOrder);
+                $records = $this->userCustomFieldRepository->findBetweenOrder($currentOrder, $requestOrder);
                 foreach ($records as $record) {
                     $record->order = $newOrder;
                     $this->userCustomFieldRepository->update($record->toArray(), $record->field_id);
@@ -305,7 +305,20 @@ class UserCustomFieldController extends Controller
                 $payload = $id;
             }
 
-            $customField = $this->userCustomFieldRepository->{$method}($payload);
+            $minOrder = $this->userCustomFieldRepository->findMinOrder($payload);
+            $minOrder = is_array($payload) ? $minOrder : $minOrder->order;
+
+            $this->userCustomFieldRepository->{$method}($payload);
+
+            if (!empty($minOrder)) {
+                $records = $this->userCustomFieldRepository->findAfterMinOrder($minOrder);
+
+                foreach ($records as $record) {
+                    $record->order = $minOrder;
+                    $this->userCustomFieldRepository->update($record->toArray(), $record->field_id);
+                    $minOrder++;
+                }
+            }
 
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;

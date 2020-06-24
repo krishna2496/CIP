@@ -87,7 +87,8 @@ class UserCustomFieldControllerTest extends TestCase
 
         $repository = $this->mock(UserCustomFieldRepository::class);
         $repository->shouldReceive('store')
-            ->andReturn($userCustomFieldModel);
+            ->andReturn($userCustomFieldModel)
+            ->shouldReceive('findMaxOrder');
 
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper->shouldReceive('success')
@@ -102,12 +103,13 @@ class UserCustomFieldControllerTest extends TestCase
                 'type' => 'textarea',
                 'is_mandatory' => 'true',
                 'translations' => [
-                    ['lang' => 'en', 'name' => 'Custom Textarea'],
+                    ['lang' => 'en', 'name' => 'Custom Textarea']
                 ],
-                'internal_note' => 'note',
+                'internal_note' => 'note'
             ])
             ->shouldReceive('all')
-            ->shouldReceive('route');
+            ->shouldReceive('route')
+            ->shouldReceive('merge');
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
@@ -135,10 +137,13 @@ class UserCustomFieldControllerTest extends TestCase
 
         $userCustomFieldModel = $this->mock(UserCustomField::class);
         $userCustomFieldModel->shouldReceive('offsetGet')
-            ->andReturn($dbRecord['field_id']);
+            ->andReturn($dbRecord['field_id'])
+            ->shouldReceive('getAttribute');
 
         $repository = $this->mock(UserCustomFieldRepository::class);
         $repository->shouldReceive('update')
+            ->andReturn($userCustomFieldModel)
+            ->shouldReceive('find')
             ->andReturn($userCustomFieldModel);
 
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -154,9 +159,9 @@ class UserCustomFieldControllerTest extends TestCase
                 'type' => 'textarea',
                 'is_mandatory' => 'true',
                 'translations' => [
-                    ['lang' => 'en', 'name' => 'Custom Textarea'],
+                    ['lang' => 'en', 'name' => 'Custom Textarea']
                 ],
-                'internal_note' => 'note',
+                'internal_note' => 'note'
             ])
             ->shouldReceive('all')
             ->shouldReceive('route');
@@ -218,7 +223,9 @@ class UserCustomFieldControllerTest extends TestCase
 
         $repository = $this->mock(UserCustomFieldRepository::class);
         $repository->shouldReceive('delete')
-            ->andReturn(true);
+            ->andReturn(true)
+            ->shouldReceive('findMinOrder')
+            ->shouldReceive('deleteMultiple');
 
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper->shouldReceive('success')
@@ -226,12 +233,14 @@ class UserCustomFieldControllerTest extends TestCase
             ->with(Response::HTTP_NO_CONTENT, trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED'));
 
         $request = $this->mock(Request::class);
-        $request->shouldReceive('header');
+        $request->shouldReceive('header')
+            ->shouldReceive('toArray')
+            ->andReturn([1]);
 
         $this->withoutEvents();
 
         $response = $this->getController($repository, $responseHelper, $request)
-            ->destroy($dbRecord['field_id']);
+            ->destroy($request, $dbRecord['field_id']);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -249,22 +258,22 @@ class UserCustomFieldControllerTest extends TestCase
                 'name' => 'Custom Checkbox',
                 'type' => 'checkbox',
                 'is_mandatory' => 1,
-                'internal_note' => '',
+                'internal_note' => ''
             ],
             [
                 'field_id' => 2,
                 'name' => 'Custom Multi Select',
                 'type' => 'multiselect',
                 'is_mandatory' => 1,
-                'internal_note' => '',
+                'internal_note' => ''
             ],
             [
                 'field_id' => 3,
                 'name' => 'Custom Textarea',
                 'type' => 'textarea',
                 'is_mandatory' => 1,
-                'internal_note' => '',
-            ],
+                'internal_note' => ''
+            ]
         ];
     }
 
