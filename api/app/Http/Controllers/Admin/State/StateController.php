@@ -136,7 +136,8 @@ class StateController extends Controller
             foreach ($request->states[0]['translations'] as $key => $value) {
                 $languageCode = $value['lang'];
                 // Check for valid language code inside tenant and ci admin
-                if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) && !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) &&
+                !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -204,7 +205,8 @@ class StateController extends Controller
                 foreach ($request->translations as $key => $value) {
                     $languageCode = $value['lang'];
                     // Check for valid language code
-                    if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) && !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                    if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) &&
+                    !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
                         return $this->responseHelper->error(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
                             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
