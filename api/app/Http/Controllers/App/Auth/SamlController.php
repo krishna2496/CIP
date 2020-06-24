@@ -180,8 +180,8 @@ class SamlController extends Controller
 
         if ($validationErrors) {
             $auth->redirectTo(
-                'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/saml-error',
-                ['errors' => implode(',', $validationErrors)]
+                'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/auth/sso/error',
+                ['errors' => implode(',', $validationErrors), 'source' => 'saml']
             );
         }
 
@@ -221,6 +221,8 @@ class SamlController extends Controller
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
+            
+        
 
         $this->syncContact($userDetail, $settings);
 

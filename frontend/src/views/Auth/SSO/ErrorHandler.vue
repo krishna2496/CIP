@@ -6,10 +6,28 @@
           <div class="error-img" :style="{backgroundImage: 'url('+img+')'}"></div>
           <div class="error-content">
             <i class="glyphicon glyphicon-th-list"></i>
-            <template v-if="errors.length">
+
+            <!-- From Saml SSO -->
+            <template v-if="saml && errors.length">
               <h4 class="text-danger">{{ languageData.errors.invalid_saml_setting }}</h4>
               <span class="errors" v-for="error in errors">{{ error }}</span>
             </template>
+
+            <!-- From Google OAuth - no need for error translations -->
+            <template v-if="google && errors.length">
+              <span class="errors" v-for="error in errors">
+                <template v-if="error === 'GOOGLE_AUTH_UNAUTHORIZE'">
+                  <span>{{ 'Unauthorize access' }}</span>
+                </template>
+                <template v-if="error === 'GOOGLE_AUTH_ERROR'">
+                  <span>{{ 'Failed to authenticate' }}</span>
+                </template>
+                <template v-if="error === 'INVALID_OPTIMY_EMAIL'">
+                  <span>{{ 'Invalid optimy email' }}</span>
+                </template>
+              </span>
+            </template>
+
             <div class="btn-row">
               <b-link class="btn btn-bordersecondary icon-btn"
                 :title="languageData.label.go_to_home_page" to="/home">
@@ -36,10 +54,10 @@
 </template>
 
 <script>
-import store from "../store";
+import store from "../../../store";
 
 export default {
-  name: "SamlError",
+  name: "SsoErrorHandler",
 
   data() {
     return {
@@ -49,6 +67,8 @@ export default {
     };
   },
   created() {
+    this.saml = this.$route.query.source === 'saml';
+    this.google = this.$route.query.source === 'google';
     if (this.$route.query.errors) {
       this.errors = this.$route.query.errors.split(',');
     }
