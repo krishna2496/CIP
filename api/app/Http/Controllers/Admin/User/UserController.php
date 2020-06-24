@@ -296,38 +296,14 @@ class UserController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        $requestData = $request->toArray();
+        $fieldsToValidate = $this->getFieldsTovalidate($id, $requestData);
+
         try {
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                [
-                    "first_name" => "sometimes|required|max:16",
-                    "last_name" => "sometimes|required|max:16",
-                    "email" => [
-                        "sometimes",
-                        "required",
-                        "email",
-                        Rule::unique('user')->ignore($id, 'user_id')],
-                    "password" => "sometimes|required|min:8",
-                    "employee_id" => [
-                        "sometimes",
-                        "required",
-                        "max:16",
-                        Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-                    "department" => "sometimes|required|max:16",
-                    "linked_in_url" => "url|valid_linkedin_url",
-                    "why_i_volunteer" => "sometimes|required",
-                    "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-                    "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-                    "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
-                    "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL",
-                    "expiry" => "sometimes|date|nullable",
-                    "status" => [
-                        "sometimes",
-                        Rule::in(config('constants.user_statuses'))
-                    ],
-                    "position" => "sometimes|nullable"
-                ]
+                $fieldsToValidate
             );
 
             // If request parameter have any error
@@ -342,17 +318,18 @@ class UserController extends Controller
 
             // Check language id
             if (isset($request->language_id)) {
-                if (!$this->languageHelper->validateLanguageId($request)) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                        trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
-                    );
+                if ($request->language_id) {
+                    if (!$this->languageHelper->validateLanguageId($request)) {
+                        return $this->responseHelper->error(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                            config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                            trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+                        );
+                    }
                 }
             }
 
-            $requestData = $request->toArray();
             $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
                 ? $request->expiry : null;
             if (isset($request->status)) {
@@ -394,6 +371,57 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
+    }
+
+    private function getFieldsTovalidate($id, $requestData)
+    {
+        $fieldsToValidate = [
+            "first_name" => "sometimes|required|max:16",
+            "last_name" => "sometimes|required|max:16",
+            "email" => [
+                "sometimes",
+                "required",
+                "email",
+                Rule::unique('user')->ignore($id, 'user_id')],
+            "password" => "sometimes|required|min:8",
+            "employee_id" => [
+                "sometimes",
+                "required",
+                "max:16",
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
+            "department" => "sometimes|required|max:16",
+            "linked_in_url" => "url|valid_linkedin_url",
+            "why_i_volunteer" => "sometimes|required",
+            "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+            "city_id" => "sometimes|required|integer|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "sometimes|required|integer|exists:country,country_id,deleted_at,NULL",
+            "expiry" => "sometimes|date|nullable",
+            "status" => [
+                "sometimes",
+                Rule::in(config('constants.user_statuses'))
+            ],
+            "position" => "sometimes|nullable"
+        ];
+
+        $nullableFields = [
+            'employee_id',
+            'department',
+            'linked_in_url',
+            'why_i_volunteer',
+            'timezone_id',
+            'availability_id',
+            'city_id',
+            'country_id'
+        ];
+
+        foreach ($nullableFields as $field) {
+            if (array_key_exists($field, $requestData) && !$requestData[$field]) {
+                $fieldsToValidate[$field] = 'nullable';
+            }
+        }
+
+        return $fieldsToValidate;
     }
 
     /**
