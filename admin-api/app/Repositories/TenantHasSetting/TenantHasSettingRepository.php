@@ -72,4 +72,45 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
 
         return true;
     }
+
+    /**
+     * Get key by setting Id
+     *
+     * @param int $tenantSettingId
+     * @return string
+     */
+    public function getKeyBySettingID(int $tenantSettingId): string 
+    {
+        $tenantSettingKey = $this->tenantSetting->select('key')->where(['tenant_setting_id' => $tenantSettingId])->get();
+        return $tenantSettingKey->toArray()[0]['key'];
+    }
+
+    /**
+     * Get setting id of donation_comment and donation_rating setting
+     *
+     * @return array
+     */
+    public function getCommentAndRatingSettingId(): array
+    {
+        $getSettingIdForMissionRatingAndComment = $this->tenantSetting->select('tenant_setting_id')
+            ->where(['key' => 'donation_mission_comments'])
+            ->orWhere(['key' => 'donation_mission_ratings'])
+            ->get();
+        $missionRatingAndCommentIds = array_values(array_column($getSettingIdForMissionRatingAndComment->toArray(), 'tenant_setting_id'));
+        return $missionRatingAndCommentIds;
+    }
+
+    /**
+     * Check donation setting enable/disables
+     *
+     * @param int $tenantId
+     * @return app\Models\TenantHasSetting
+     */
+    public function isDonationSettingEnabled($tenantId): TenantHasSetting
+    {
+        $donationTenantSettings = $this->tenantSetting->where(['key' => 'donation'])->get();
+        $donationSettingId = $donationTenantSettings[0]['tenant_setting_id'];
+        $donationHasSetting = $this->tenantHasSetting->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $donationSettingId])->firstOrFail();
+        return $donationHasSetting;
+    }
 }
