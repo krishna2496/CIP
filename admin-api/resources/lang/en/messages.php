@@ -33,7 +33,6 @@ return [
         'MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.',
         'MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.',
         'MESSAGE_TENANT_BACKGROUND_PROCESS_COMPLETED' => 'Tenant background process completed successfully',
-        'MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE' => 'Donation settings is not enable for this tenant.'
     ],
     
     /**
@@ -54,7 +53,8 @@ return [
         'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'Invalid file extension',
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'You can not delete default tenant language',
         'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
-        'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.'
+        'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.',
+        'MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE' => 'Donation settings is not enable for this tenant.'
     ],
     'email_text' => [
         'ERROR' => 'Error',

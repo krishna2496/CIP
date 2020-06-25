@@ -19,9 +19,10 @@ interface TenantHasSettingInterface
     /**
      * Create new setting
      *
-     * @param array $data
      * @param int $tenantId
+     * @param int $tenantSettingId
+     * @param int $value
      * @return bool
      */
-    public function store(array $data, int $tenantId): bool;
+    public function store(int $tenantId, int $tenantSettingId, int $value): bool;
 }

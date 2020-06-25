@@ -16,6 +16,7 @@ use Validator;
 use App\Helpers\DatabaseHelper;
 use DB;
 use App\Events\ActivityLogEvent;
+use App\Models\TenantSetting;
 
 //!  Tenanthassetting controller
 /*!
@@ -44,6 +45,16 @@ class TenantHasSettingController extends Controller
      * @var App\Helpers\DatabaseHelper
      */
     private $databaseHelper;
+
+    /**
+     * @var App\Models\TenantSetting
+     */
+    private $tenantSetting;
+
+    /**
+     * @var App\Models\TenantHasSetting
+     */
+    private $tenantHasSetting;
     
     /**
      * Create a new Tenant has setting controller instance.
@@ -52,18 +63,23 @@ class TenantHasSettingController extends Controller
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\DatabaseHelper $databaseHelper
+     * @param  App\Models\TenantSetting $tenantSetting
      * @return void
      */
     public function __construct(
         TenantHasSettingRepository $tenantHasSettingRepository,
         TenantRepository $tenantRepository,
         ResponseHelper $responseHelper,
-        DatabaseHelper $databaseHelper
+        DatabaseHelper $databaseHelper,
+        TenantSetting $tenantSetting,
+        TenantHasSetting $tenantHasSetting
     ) {
         $this->tenantHasSettingRepository = $tenantHasSettingRepository;
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
         $this->databaseHelper = $databaseHelper;
+        $this->tenantSetting = $tenantSetting;
+        $this->tenantHasSetting = $tenantHasSetting;
     }
     
     /**
@@ -120,22 +136,42 @@ class TenantHasSettingController extends Controller
             // Check tenant is available or not
             $tenant = $this->tenantRepository->find($tenantId);
 
-            // Store settings
-            $result = $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);
+            //check donation setting enable/disable
+            $settingData = $request->toArray();
+            foreach ($settingData['settings'] as $value) {
+                $tenantSettingId = $value['tenant_setting_id'];
+                $settingValue = $value['value'];
+                $tenantSettingKey = $this->tenantSetting->select('key')->where(['tenant_setting_id' => $tenantSettingId])->get();
+                $key = $tenantSettingKey->toArray()[0]['key'];
 
-            if($result === false){
-                $apiStatus = Response::HTTP_OK;
-                $apiMessage =  trans('messages.success.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE');
-                $activityLogStatus = config('constants.activity_log_actions.ENABLED');
-                // Make activity log
-                event(new ActivityLogEvent(
-                    config('constants.activity_log_types.TENANT_SETTINGS'),
-                    $activityLogStatus,
-                    get_class($this),
-                    $request->toArray()
-                ));
-                
-                return $this->responseHelper->success($apiStatus, $apiMessage);
+                // Donation setting is disable then donation_commnet and donation_rating will be disabled
+                if ($key === 'donation' && $value['value'] === 0) {
+                    $getSettingIdForMissionRatingAndComment = $this->tenantSetting->select('tenant_setting_id')
+                        ->where(['key' => 'donation_mission_comments'])
+                        ->orWhere(['key' => 'donation_mission_ratings'])
+                        ->get();
+                    $missionRatingAndCommentIds = array_values(array_column($getSettingIdForMissionRatingAndComment->toArray(), 'tenant_setting_id'));
+                    foreach ($missionRatingAndCommentIds as $settingId) {
+                        $this->tenantHasSettingRepository->store($tenantId, $tenantSettingId, $settingValue);
+                    }
+                }
+
+                // check donation setting enable/disable for donation_commnet and donation_rating
+                if ($key === 'donation_mission_comments' || $key === 'donation_mission_ratings') {
+                    $donationTenantSettings = $this->tenantSetting->where(['key' => 'donation'])->get();
+                    $donationSettingId = $donationTenantSettings[0]['tenant_setting_id'];
+                    try {
+                        $donationHasSetting = $this->tenantHasSetting->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $donationSettingId])->firstOrFail();
+                    } catch (ModelNotFoundException $e) {
+                        return $this->modelNotFound(
+                            config('constants.error_codes.ERROR_TENANT_DONATION_SETTINGS_NOT_ENABLE'),
+                            trans('messages.custom_error_message.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE')
+                        );
+                    }
+                }
+
+                // Store setting
+                $this->tenantHasSettingRepository->store($tenantId, $tenantSettingId, $settingValue);
             }
 
             // Create connection with tenant database
