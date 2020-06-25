@@ -38,7 +38,7 @@ final class FrontendTranslationService
      * @return Collection
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function getTranslationsForLanguage(string $tenantName, string $isoCode)
+    public function getCustomTranslationsForLanguage(string $tenantName, string $isoCode)
     {
         $cachedTranslationsKey = $this->getCacheKey($tenantName, $isoCode);
         $cachedTranslations = Cache::get($cachedTranslationsKey);
@@ -46,8 +46,8 @@ final class FrontendTranslationService
             return $cachedTranslations;
         }
 
-        // Retrieve the default translations
-        $translations = $this->getDefaultTranslationsForLanguage($tenantName, $isoCode);
+        // Retrieve the generic translations
+        $translations = $this->getGenericTranslationsForLanguage($tenantName, $isoCode);
 
         /*
          * Check for any custom translation.
@@ -89,7 +89,7 @@ final class FrontendTranslationService
      * @param $tenantName
      * @param $isoCode
      */
-    public function getDefaultTranslationsForLanguage($tenantName, $isoCode)
+    public function getGenericTranslationsForLanguage($tenantName, $isoCode)
     {
         $defaultTranslations = Storage::disk('resources')->get("frontend/translations/${isoCode}.json");
         return collect(json_decode($defaultTranslations, true));

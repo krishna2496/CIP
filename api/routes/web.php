@@ -795,14 +795,20 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
-    /* Language file management */
+    /* Generic and custom translations management */
     $router->group(
         ['middleware' => 'localization|auth.tenant.admin'],
         function ($router) {
             /* Get language file */
             $router->get(
+                '/language-generic/{isoCode}',
+                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchGenericTranslations']
+            );
+
+            /* Get language file */
+            $router->get(
                 '/language-file/{isoCode}',
-                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchTranslations']
+                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchCustomTranslations']
             );
 
             /* Upload language file */

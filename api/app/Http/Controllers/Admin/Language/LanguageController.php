@@ -89,7 +89,7 @@ class LanguageController extends Controller
      * @param string $isoCode
      * @return \Illuminate\Http\JsonResponse
      */
-    public function fetchTranslations(Request $request, $isoCode): JsonResponse
+    public function fetchGenericTranslations(Request $request, $isoCode): JsonResponse
     {
         // Server side validations
         $validator = Validator::make(
@@ -126,8 +126,62 @@ class LanguageController extends Controller
 
         // Fetch default translations and return them
         $apiData = $this->frontendTranslationService
-            ->getDefaultTranslationsForLanguage($tenantName, $isoCode)
+            ->getGenericTranslationsForLanguage($tenantName, $isoCode)
             ->toArray();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_FILE_FOUND');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Fetch language file url.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $isoCode
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function fetchCustomTranslations(Request $request, $isoCode): JsonResponse
+    {
+        // Server side validations
+        $validator = Validator::make(
+            [
+                'isoCode' => $isoCode,
+            ],
+            [
+                'isoCode' => 'required|max:2|min:2',
+            ]
+        );
+
+        // If post parameter have any missing parameter
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                $validator->errors()->first()
+            );
+        }
+
+        // Check for valid language code
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $isoCode)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+            );
+        }
+
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        // Fetch default translations and return them
+        $apiData = $this->frontendTranslationService
+            ->getCustomTranslationsForLanguage($tenantName, $isoCode)
+            ->toArray();
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_FILE_FOUND');
 
@@ -195,7 +249,7 @@ class LanguageController extends Controller
 
         // Break the cache then warm it up
         $this->frontendTranslationService->clearCache($tenantName, $isoCode);
-        $this->frontendTranslationService->getTranslationsForLanguage($tenantName, $isoCode);
+        $this->frontendTranslationService->getCustomTranslationsForLanguage($tenantName, $isoCode);
 
         // Make activity log
         event(new UserActivityLogEvent(

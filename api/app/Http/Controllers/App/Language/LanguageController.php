@@ -77,7 +77,7 @@ class LanguageController extends Controller
 
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        $translations = $this->frontendTranslationService->getTranslationsForLanguage($tenantName, $isoCode);
+        $translations = $this->frontendTranslationService->getCustomTranslationsForLanguage($tenantName, $isoCode);
 
         return new JsonResponse([
             'locale' => $isoCode,
