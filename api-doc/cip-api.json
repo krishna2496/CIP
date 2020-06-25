@@ -7672,10 +7672,46 @@
         }
       }
     },
+    "/language-generic/{isoCode}/": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-language-generic",
+        "summary": "Admin - Fetch generic translations",
+        "tags": [
+          "Language File"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "isoCode",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Language code. Example: To fetch English translations, use en; for French translations, use fr."
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Not found - Tenant language file not found"
+          }
+        }
+      }
+    },
     "/language-file/{isoCode}/": {
       "get": {
         "operationId": "GET_team4-cip-api-get-language-file",
-        "summary": "Admin - Fetch language file",
+        "summary": "Admin - Fetch custom translations",
         "tags": [
           "Language File"
         ],
