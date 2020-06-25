@@ -129,9 +129,9 @@
                                 <b-card-text>
                                     {{mission.short_description | substring(150)}}
                                 </b-card-text>
-                                <!-- <p class="event-name">For <span>Friendly Paws</span></p> -->
+                                <p class="event-name">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
                             </div>
-                            <div class="group-details">
+                            <div class="group-details volunteer-progress">
                                 <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                     <div class="detail-column seat-info">
                                         <i class="icon-wrap">
@@ -168,6 +168,20 @@
                                             {{ mission.end_date | formatDate }}</span>
                                     </div>
                                 </div>
+                                <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
+                                    <i class="icon-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
+                                             alt="user">
+                                    </i>
+                                    <div class="text-wrap">
+                                        <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
+                                        <span class="subtitle-text">{{mission.achieved_goal}}
+                                        <span v-if="mission.label_goal_achieved != ''"> {{ mission.label_goal_achieved }}
+                                                    </span>
+										<span v-else>{{ languageData.label.achieved }}</span>
+                                    </span>
+                                    </div>
+                                </div>
                                 <div class="detail-column skill-col" v-if="mission.skill && isSkillDisplay">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/skill-icon.svg'" alt="skill icon">
@@ -179,45 +193,6 @@
                                 </div>
 
                             </div>
-                            <div class="group-details progress-details"  v-if="!checkMissionTypeTime(mission.mission_type)">
-                                <div class="detail-column progress-block">
-                                    <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
-                                </div>
-                               <div class="detail-column progress-info-column">
-                                   <div class="text-wrap">
-                                       <p>{{mission.achieved_goal}} <span v-if="mission.label_goal_achieved != ''"> {{ mission.label_goal_achieved }}
-                                                    </span>
-										<span v-else>{{ languageData.label.achieved }}</span></p>
-                                   </div>
-                               </div>
-                                   <!-- <div class="detail-column achieved-column">
-                                        <i class="icon-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"alt="target icon">
-                                        </i>
-										
-                                        <div class="text-wrap">
-											 
-                                             <span class="title-text">{{mission.achieved_goal}}</span>
-											 
-                                            <span class="subtitle-text">
-                                                    <span v-if="mission.label_goal_achieved != ''">
-                                                        {{ mission.label_goal_achieved }}
-                                                    </span>
-                                                    <span v-else>{{ languageData.label.achieved }}</span>
-                                            </span>
-                                        </div>
-                                    </div> -->
-                                        <div class="detail-column info-block" v-if="mission.application_deadline != null">
-                                        <i class="icon-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <span class="title-text">{{mission.application_deadline | formatDate}}</span>
-                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
-                                        </div>
-                                    </div>
-                            </div>
-
                         </div>
                         <div class="card-action-block">
                             <!-- <div class="donate-btn-wrap">
@@ -336,294 +311,294 @@ import constants from "../constant";
 import StarRating from "vue-star-rating";
 import moment from "moment";
 import {
-  favoriteMission,
-  inviteColleague,
-  applyMission
+	favoriteMission,
+	inviteColleague,
+	applyMission
 } from "../services/service";
 import { VueAutosuggest } from "vue-autosuggest";
 
 export default {
-  name: "MissionListView",
-  props: {
-    items: Array,
-    userList: Array
-  },
-  components: {
-    StarRating,
-    VueAutosuggest
-  },
-  data() {
-    return {
-      query: "",
-      selected: "",
-      myclass: ["userdetail-modal"],
-      currentMissionId: 0,
-      invitedUserId: 0,
-      showErrorDiv: false,
-      message: null,
-      classVariant: "success",
-      autoSuggestPlaceholder: "",
-      submitDisable: true,
-      languageData: [],
-      isInviteCollegueDisplay: true,
-      isStarRatingDisplay: true,
-      isQuickAccessSet: true,
-      isSubmitNewMissionSet: true,
-      isThemeSet: true,
-      submitNewMissionUrl: "",
-      isSkillDisplay: true
-    };
-  },
-  computed: {
-    filteredOptions() {
-      if (this.userList) {
-        return [
-          {
-            data: this.userList.filter(option => {
-              let firstName = option.first_name.toLowerCase();
-              let lastName = option.last_name.toLowerCase();
-              let email = option.email.toLowerCase();
-              let searchString = firstName + "" + lastName + "" + email;
-              return searchString.indexOf(this.query.toLowerCase()) > -1;
-            })
-          }
-        ];
-      }
-    }
-  },
-  methods: {
-    hideModal() {
-      this.autoSuggestPlaceholder = "";
-      this.submitDisable = true;
-      this.invitedUserId = "";
-      this.query = "";
-      this.selected = "";
-    },
-    noRecordFound() {
-      let defaultLang = store.state.defaultLanguage.toLowerCase();
-      if (JSON.parse(store.state.missionNotFoundText) != "") {
-        let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-        let data = missionNotFoundArray.filter(item => {
-          if (item.lang == defaultLang) {
-            return item;
-          }
-        });
+	name: "MissionListView",
+	props: {
+		items: Array,
+		userList: Array
+	},
+	components: {
+		StarRating,
+		VueAutosuggest
+	},
+	data() {
+		return {
+		query: "",
+		selected: "",
+		myclass: ["userdetail-modal"],
+		currentMissionId: 0,
+		invitedUserId: 0,
+		showErrorDiv: false,
+		message: null,
+		classVariant: "success",
+		autoSuggestPlaceholder: "",
+		submitDisable: true,
+		languageData: [],
+		isInviteCollegueDisplay: true,
+		isStarRatingDisplay: true,
+		isQuickAccessSet: true,
+		isSubmitNewMissionSet: true,
+		isThemeSet: true,
+		submitNewMissionUrl: "",
+		isSkillDisplay: true
+		};
+	},
+	computed: {
+		filteredOptions() {
+		if (this.userList) {
+			return [
+			{
+				data: this.userList.filter(option => {
+				let firstName = option.first_name.toLowerCase();
+				let lastName = option.last_name.toLowerCase();
+				let email = option.email.toLowerCase();
+				let searchString = firstName + "" + lastName + "" + email;
+				return searchString.indexOf(this.query.toLowerCase()) > -1;
+				})
+			}
+			];
+		}
+		}
+	},
+	methods: {
+		hideModal() {
+		this.autoSuggestPlaceholder = "";
+		this.submitDisable = true;
+		this.invitedUserId = "";
+		this.query = "";
+		this.selected = "";
+		},
+		noRecordFound() {
+		let defaultLang = store.state.defaultLanguage.toLowerCase();
+		if (JSON.parse(store.state.missionNotFoundText) != "") {
+			let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
+			let data = missionNotFoundArray.filter(item => {
+			if (item.lang == defaultLang) {
+				return item;
+			}
+			});
 
-        if (data[0] && data[0].message) {
-          return data[0].message;
-        } else {
-          return this.languageData.label.no_record_found;
-        }
-      } else {
-        return this.languageData.label.no_record_found;
-      }
-    },
-    // Get theme title
-    getThemeTitle(translations) {
-      if (translations) {
-        let filteredObj = translations.filter((item, i) => {
-          if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-            return translations[i].title;
-          }
-        });
-        if (filteredObj[0]) {
-          return filteredObj[0].title;
-        } else {
-          let filtereObj = translations.filter((item, i) => {
-            if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
-              return translations[i].title;
-            }
-          });
+			if (data[0] && data[0].message) {
+			return data[0].message;
+			} else {
+			return this.languageData.label.no_record_found;
+			}
+		} else {
+			return this.languageData.label.no_record_found;
+		}
+		},
+		// Get theme title
+		getThemeTitle(translations) {
+		if (translations) {
+			let filteredObj = translations.filter((item, i) => {
+			if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+				return translations[i].title;
+			}
+			});
+			if (filteredObj[0]) {
+			return filteredObj[0].title;
+			} else {
+			let filtereObj = translations.filter((item, i) => {
+				if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+				return translations[i].title;
+				}
+			});
 
-          if (filtereObj[0]) {
-            return filtereObj[0].title;
-          }
-        }
-      }
-    },
-    getMediaPath(mediaPath) {
-      if (mediaPath != "") {
-        return mediaPath;
-      } else {
-        return (
-          store.state.imagePath +
-          "/assets/images/" +
-          constants.MISSION_DEFAULT_PLACEHOLDER
-        );
-      }
-    },
-    // Is default media is video or not
-    checkDefaultMediaFormat(mediaType) {
-      return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
-    },
-    // Check mission type
-    checkMissionTypeTime(missionType) {
-      return missionType == constants.MISSION_TYPE_TIME;
-    },
-    // Get Youtube Thumb images
-    youtubeThumbImage(videoPath) {
-      let data = videoPath.split("=");
-      return (
-        "https://img.youtube.com/vi/" + data.slice(-1)[0] + "/mqdefault.jpg"
-      );
-    },
-    // Add mission to favorite
-    favoriteMission(missionId) {
-      let missionData = {
-        mission_id: ""
-      };
-      missionData.mission_id = missionId;
-      favoriteMission(missionData).then(response => {
-        if (response.error == true) {
-          this.makeToast("danger", response.message);
-        } else {
-          this.makeToast("success", response.message);
-          this.$emit("getMissions", "removeLoader");
-        }
-      });
-    },
-    onInputChange() {
-      this.submitDisable = true;
-    },
-    // For selected user id.
-    onSelected(item) {
-      if (item) {
-        this.selected = item.item;
-        this.submitDisable = false;
-        this.invitedUserId = item.item.user_id;
-      }
-    },
-    //This is what the <input/> value is set to when you are selecting a suggestion.
-    getSuggestionValue(suggestion) {
-      let firstName = suggestion.item.first_name;
-      let lastName = suggestion.item.last_name;
-      return firstName + " " + lastName;
-    },
-    // Open auto suggest modal
-    handleModal(missionId) {
-      this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
-      this.showErrorDiv = false;
-      this.message = null;
-      this.$refs.userDetailModal.show();
-      this.currentMission = missionId;
-      setTimeout(() => {
-        this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-        var input = document.getElementById("autosuggest__input");
-        input.addEventListener("keyup", event => {
-          if (event.keyCode === 13 && !this.submitDisable) {
-            event.preventDefault();
-            this.inviteColleagues();
-          }
-        });
-      }, 100);
-    },
-    // invite collegues api call
-    inviteColleagues() {
-      let inviteData = {};
-      inviteData.mission_id = this.currentMission;
-      inviteData.to_user_id = this.invitedUserId;
-      inviteColleague(inviteData).then(response => {
-        this.submitDisable = true;
-        if (response.error == true) {
-          this.classVariant = "danger";
-          this.message = response.message;
-          this.$refs.autosuggest.$data.currentIndex = null;
-          this.$refs.autosuggest.$data.internalValue = "";
-          this.showErrorDiv = true;
-        } else {
-          this.query = "";
-          this.selected = "";
-          this.currentMissionId = 0;
-          this.invitedUserId = 0;
-          this.$refs.autosuggest.$data.currentIndex = null;
-          this.$refs.autosuggest.$data.internalValue = "";
-          this.classVariant = "success";
-          this.message = response.message;
-          this.showErrorDiv = true;
-        }
-      });
-    },
-    // Apply for mission
-    applyForMission(missionId) {
-      let missionData = {};
-      missionData.mission_id = missionId;
-      missionData.availability_id = 1;
-      applyMission(missionData).then(response => {
-        if (response.error == true) {
-          this.makeToast("danger", response.message);
-        } else {
-          this.makeToast("success", response.message);
-          this.$emit("getMissions");
-        }
-      });
-    },
-    makeToast(variant = null, message) {
-      this.$bvToast.toast(message, {
-        variant: variant,
-        solid: true,
-        autoHideDelay: 1000
-      });
-    },
-    getAppliedStatus(missionDetail) {
-      let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
-      let missionEndDate = moment(missionDetail.end_date).format(
-        "YYYY-MM-DD HH::mm:ss"
-      );
-      let checkEndDateExist = true;
-      if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-        if (currentDate > missionEndDate) {
-          checkEndDateExist = false;
-        }
-      }
-      if (missionDetail.user_application_count == 1 && checkEndDateExist) {
-        return true;
-      }
-    },
-    getClosedStatus(missionDetail) {
-      let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
-      let missionEndDate = moment(missionDetail.end_date).format(
-        "YYYY-MM-DD HH::mm:ss"
-      );
-      if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-        if (currentDate > missionEndDate) {
-          return true;
-        }
-      }
-    },
-    submitNewMission() {
-      if (this.submitNewMissionUrl != "") {
-        window.open(this.submitNewMissionUrl, "_self");
-      }
-    },
-    getSkills(skills) {
-      let skillString = "";
-      if (skills) {
-        skills.filter((data, index) => {
-          if (data) {
-            if (skillString != "") {
-              skillString = skillString + ", " + data.title;
-            } else {
-              skillString = data.title;
-            }
-          }
-        });
-      }
-      return skillString;
-    }
-  },
-  created() {
-    this.languageData = JSON.parse(store.state.languageLabel);
-    this.isInviteCollegueDisplay = this.settingEnabled(
-      constants.INVITE_COLLEAGUE
-    );
-    this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
-    this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
-    this.isSubmitNewMissionSet = this.settingEnabled(
-      constants.USER_CAN_SUBMIT_MISSION
-    );
-    this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
-    this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-    this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-  }
+			if (filtereObj[0]) {
+				return filtereObj[0].title;
+			}
+			}
+		}
+		},
+		getMediaPath(mediaPath) {
+		if (mediaPath != "") {
+			return mediaPath;
+		} else {
+			return (
+			store.state.imagePath +
+			"/assets/images/" +
+			constants.MISSION_DEFAULT_PLACEHOLDER
+			);
+		}
+		},
+		// Is default media is video or not
+		checkDefaultMediaFormat(mediaType) {
+		return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
+		},
+		// Check mission type
+		checkMissionTypeTime(missionType) {
+		return missionType == constants.MISSION_TYPE_TIME;
+		},
+		// Get Youtube Thumb images
+		youtubeThumbImage(videoPath) {
+		let data = videoPath.split("=");
+		return (
+			"https://img.youtube.com/vi/" + data.slice(-1)[0] + "/mqdefault.jpg"
+		);
+		},
+		// Add mission to favorite
+		favoriteMission(missionId) {
+		let missionData = {
+			mission_id: ""
+		};
+		missionData.mission_id = missionId;
+		favoriteMission(missionData).then(response => {
+			if (response.error == true) {
+			this.makeToast("danger", response.message);
+			} else {
+			this.makeToast("success", response.message);
+			this.$emit("getMissions", "removeLoader");
+			}
+		});
+		},
+		onInputChange() {
+		this.submitDisable = true;
+		},
+		// For selected user id.
+		onSelected(item) {
+		if (item) {
+			this.selected = item.item;
+			this.submitDisable = false;
+			this.invitedUserId = item.item.user_id;
+		}
+		},
+		//This is what the <input/> value is set to when you are selecting a suggestion.
+		getSuggestionValue(suggestion) {
+		let firstName = suggestion.item.first_name;
+		let lastName = suggestion.item.last_name;
+		return firstName + " " + lastName;
+		},
+		// Open auto suggest modal
+		handleModal(missionId) {
+		this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
+		this.showErrorDiv = false;
+		this.message = null;
+		this.$refs.userDetailModal.show();
+		this.currentMission = missionId;
+		setTimeout(() => {
+			this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+			var input = document.getElementById("autosuggest__input");
+			input.addEventListener("keyup", event => {
+			if (event.keyCode === 13 && !this.submitDisable) {
+				event.preventDefault();
+				this.inviteColleagues();
+			}
+			});
+		}, 100);
+		},
+		// invite collegues api call
+		inviteColleagues() {
+		let inviteData = {};
+		inviteData.mission_id = this.currentMission;
+		inviteData.to_user_id = this.invitedUserId;
+		inviteColleague(inviteData).then(response => {
+			this.submitDisable = true;
+			if (response.error == true) {
+			this.classVariant = "danger";
+			this.message = response.message;
+			this.$refs.autosuggest.$data.currentIndex = null;
+			this.$refs.autosuggest.$data.internalValue = "";
+			this.showErrorDiv = true;
+			} else {
+			this.query = "";
+			this.selected = "";
+			this.currentMissionId = 0;
+			this.invitedUserId = 0;
+			this.$refs.autosuggest.$data.currentIndex = null;
+			this.$refs.autosuggest.$data.internalValue = "";
+			this.classVariant = "success";
+			this.message = response.message;
+			this.showErrorDiv = true;
+			}
+		});
+		},
+		// Apply for mission
+		applyForMission(missionId) {
+		let missionData = {};
+		missionData.mission_id = missionId;
+		missionData.availability_id = 1;
+		applyMission(missionData).then(response => {
+			if (response.error == true) {
+			this.makeToast("danger", response.message);
+			} else {
+			this.makeToast("success", response.message);
+			this.$emit("getMissions");
+			}
+		});
+		},
+		makeToast(variant = null, message) {
+		this.$bvToast.toast(message, {
+			variant: variant,
+			solid: true,
+			autoHideDelay: 1000
+		});
+		},
+		getAppliedStatus(missionDetail) {
+		let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+		let missionEndDate = moment(missionDetail.end_date).format(
+			"YYYY-MM-DD HH::mm:ss"
+		);
+		let checkEndDateExist = true;
+		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+			if (currentDate > missionEndDate) {
+			checkEndDateExist = false;
+			}
+		}
+		if (missionDetail.user_application_count == 1 && checkEndDateExist) {
+			return true;
+		}
+		},
+		getClosedStatus(missionDetail) {
+		let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+		let missionEndDate = moment(missionDetail.end_date).format(
+			"YYYY-MM-DD HH::mm:ss"
+		);
+		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+			if (currentDate > missionEndDate) {
+			return true;
+			}
+		}
+		},
+		submitNewMission() {
+		if (this.submitNewMissionUrl != "") {
+			window.open(this.submitNewMissionUrl, "_self");
+		}
+		},
+		getSkills(skills) {
+		let skillString = "";
+		if (skills) {
+			skills.filter((data, index) => {
+			if (data) {
+				if (skillString != "") {
+				skillString = skillString + ", " + data.title;
+				} else {
+				skillString = data.title;
+				}
+			}
+			});
+		}
+		return skillString;
+		}
+	},
+	created() {
+		this.languageData = JSON.parse(store.state.languageLabel);
+		this.isInviteCollegueDisplay = this.settingEnabled(
+		constants.INVITE_COLLEAGUE
+		);
+		this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
+		this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
+		this.isSubmitNewMissionSet = this.settingEnabled(
+		constants.USER_CAN_SUBMIT_MISSION
+		);
+		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
+		this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+	}
 };
 </script>
