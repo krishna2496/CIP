@@ -79,7 +79,6 @@ class TimesheetServiceTest extends TestCase
             'volunteering_rank' => 100,
             'average_volunteering_days' => 1.0
         ], $response);
-
     }
 
     private function getMockResponseFirst()
@@ -93,7 +92,7 @@ class TimesheetServiceTest extends TestCase
 
         return new Collection([
             $timesheet
-        ]);  
+        ]);
     }
 
     private function getMockResponseSecond()
@@ -115,7 +114,7 @@ class TimesheetServiceTest extends TestCase
             $timesheet1,
             $timesheet2,
             $timesheet3
-        ]);  
+        ]);
     }
 
     /**
@@ -123,7 +122,7 @@ class TimesheetServiceTest extends TestCase
      *
      * @param  App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param  App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
-     * 
+     *
      * @return void
      */
     private function getController(
@@ -147,5 +146,4 @@ class TimesheetServiceTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

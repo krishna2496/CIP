@@ -26,7 +26,7 @@ class AppTenantOptionTest extends TestCase
                 "defaultLanguageId",
                 "language"
             ]
-        ]);
+          ]);
         $slider->delete();
     }
 

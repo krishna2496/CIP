@@ -1138,7 +1138,7 @@
             "type": "integer"
           },
           {
-            "name": "filters[applicationIds]",
+            "name": "filters[applicationIds][]",
             "in": "path",
             "description": "List of all application ids",
             "required": false,
@@ -1148,9 +1148,9 @@
             }
           },
           {
-            "name": "filters[applicantSkills]",
+            "name": "filters[applicantSkills][]",
             "in": "path",
-            "description": "List of all skills ids",
+            "description": "List of all skill ids",
             "required": false,
             "type": "array",
             "items": {
@@ -1158,9 +1158,9 @@
             }
           },
           {
-            "name": "filters[missionSkills]",
+            "name": "filters[missionSkills][]",
             "in": "path",
-            "description": "List of all mission skilld ids",
+            "description": "List of all mission skill ids",
             "required": false,
             "type": "array",
             "items": {
@@ -1168,7 +1168,7 @@
             }
           },
           {
-            "name": "filters[missionTypes]",
+            "name": "filters[missionTypes][]",
             "in": "path",
             "description": "List of all mission types: GOAL, TIME",
             "required": false,
@@ -1178,7 +1178,7 @@
             }
           },
           {
-            "name": "filters[missionThemes]",
+            "name": "filters[missionThemes][]",
             "in": "path",
             "description": "List of all themes ids",
             "required": false,
@@ -1188,7 +1188,7 @@
             }
           },
           {
-            "name": "filters[missionCountries]",
+            "name": "filters[missionCountries][]",
             "in": "path",
             "description": "List of all country ids",
             "required": false,
@@ -1198,7 +1198,7 @@
             }
           },
           {
-            "name": "filters[missionCities]",
+            "name": "filters[missionCities][]",
             "in": "path",
             "description": "List of all city ids",
             "required": false,
@@ -1210,7 +1210,7 @@
           {
             "name": "filters[language]",
             "in": "path",
-            "description": "Languages",
+            "description": "Language",
             "required": false,
             "type": "string"
           },
@@ -1990,6 +1990,13 @@
             "required": false,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "field",
+            "in": "path",
+            "required": false,
+            "type": "string",
+            "description": "For ordering of user. Can be (fullName, firstName, email, volunteerStatus, country, language, lastName, email, title, email, department)"
           }
         ],
         "responses": {
@@ -8469,6 +8476,9 @@
           "type":  "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+        },
+        "position": {
+          "type": "string"
         }
       }
     },
