@@ -6,6 +6,13 @@
 				<b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
 					<div class="card-inner">
 					<b-card no-body>
+						<div class="location">
+							<i>
+								<img :src="$store.state.imagePath+'/assets/images/location.svg'"
+										:alt="languageData.label.location">
+							</i>
+							{{mission.city_name}}
+						</div>
 						<b-card-header>
 							<div class="header-img-block">
 								<b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
@@ -21,14 +28,6 @@
 									 :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
 								</div>
 
-								<div class="location">
-									<i>
-										<img :src="$store.state.imagePath+'/assets/images/location.svg'"
-											 :alt="languageData.label.location">
-									</i>
-									{{mission.city_name}}
-								</div>
-								
 							</div>
 							<div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span
 									class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
@@ -539,43 +538,31 @@ export default {
 		}
 		},
 		cardHeightAdj() {
-		setTimeout(function() {
-			var cardBody = document.querySelectorAll(".card-grid .card-body");
-			var cardText = document.querySelectorAll(
-			".card-grid .card-body .card-text"
-			);
-
-			// cardText.forEach(function (textEvent) {
-			// 	var cardTextH = textEvent.offsetHeight;
-			// 	console.log("max height",Math.max(...cardTextH));
-			// 	// textEvent.style.height =  Math.max.apply( Math, cardTextH) + 'px';
-			// });
-
-			cardBody.forEach(function(event) {
-			var getCard = event.parentNode;
-			var cardHeight =
-				event.children[0].offsetHeight + getCard.children[0].offsetHeight;
-			getCard.style.height = cardHeight + "px";
-			event.parentNode.addEventListener("mouseover", function(mouseEvent) {
-				var cardBodyH =
-				this.children[1].children[1].offsetHeight +
-				this.children[1].children[0].offsetHeight +
-				this.children[0].offsetHeight;
-				var cardTotalHeight = cardBodyH - this.offsetHeight;
-				this.children[0].style.transform =
-				"translateY(-" + cardTotalHeight + "px)";
-				this.children[1].style.transform =
-				"translateY(-" + cardTotalHeight + "px)";
-				this.parentNode.classList.add("active");
-			});
-			event.parentNode.addEventListener("mouseleave", function() {
-				this.children[0].style.transform = "translateY(0)";
-				this.children[1].style.transform = "translateY(0)";
-				this.parentNode.classList.remove("active");
-			});
-			});
-		}, 1000);
-		}
+				setTimeout(function () {
+				let cardBody = document.querySelectorAll(".card-grid .card-body");
+				let cardText = document.querySelectorAll(".card-grid .card-body .card-text");
+					cardBody.forEach(function (event) {
+						let getCard = event.parentNode;
+						let cardHeight = event.children[0].offsetHeight + getCard.children[1].offsetHeight;
+						let cardOuterHeight = event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight + event.children[0].children[1].offsetHeight + event.children[0].children[0].offsetHeight;
+							getCard.style.height = cardHeight +"px";	
+						
+						event.parentNode.addEventListener("mouseover", function (mouseEvent) {
+						let cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
+						let cardTotalHeight = cardBodyH - this.offsetHeight;
+							this.children[1].style.transform = "translateY(-" + cardTotalHeight + "px)";
+							this.children[2].style.transform = "translateY(-" + cardTotalHeight + "px)";
+							this.parentNode.classList.add("active");
+		                });
+						event.parentNode.addEventListener("mouseleave", function () {
+							this.children[1].style.transform = "translateY(0)";
+							this.children[2].style.transform = "translateY(0)";
+							this.parentNode.classList.remove("active");
+		                });
+					});
+				},500);
+			}
+		
 	},
 	created() {
 		this.languageData = JSON.parse(store.state.languageLabel);

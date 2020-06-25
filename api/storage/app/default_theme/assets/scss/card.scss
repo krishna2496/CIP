@@ -81,11 +81,7 @@
 			padding: 0;
 			line-height: 0;
 			border: none;
-
-			/*@include lg-max {
-				height: 190px;
-			}*/
-
+			
 			.card-alert {
 				position: absolute;
 				top: 15px;
@@ -843,6 +839,13 @@
 				min-height: 90px;
 			}
 		}
+		.location{
+			position: absolute;
+			bottom: auto;
+			right: 28px;
+			top: 16px;
+			z-index: 10;
+		}
 	}
   .card {
     	 @include transition(all 0.5s);
@@ -852,7 +855,7 @@
 	      flex: 0 0 100%;
     }
     .card-header{
-    	 @include transition(transform 0.3s);
+    	@include transition(transform 0.3s);
     	z-index: 9;
     	margin-top: 0;
     }
