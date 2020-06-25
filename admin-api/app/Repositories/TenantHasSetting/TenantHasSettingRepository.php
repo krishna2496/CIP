@@ -79,38 +79,76 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      * @param int $tenantSettingId
      * @return string
      */
-    public function getKeyBySettingID(int $tenantSettingId): string 
+    public function getKeyBySettingID(int $tenantSettingId): string
     {
         $tenantSettingKey = $this->tenantSetting->select('key')->where(['tenant_setting_id' => $tenantSettingId])->get();
         return $tenantSettingKey->toArray()[0]['key'];
     }
 
     /**
-     * Get setting id of donation_comment and donation_rating setting
+     * Check donation setting enable/disables and update other setting
      *
-     * @return array
+     * @param Request $request
+     * @param int $tenantId
+     * @return bool
      */
-    public function getCommentAndRatingSettingId(): array
+    public function isDonationSettingEnabled(Request $request, int $tenantId): bool
     {
-        $getSettingIdForMissionRatingAndComment = $this->tenantSetting->select('tenant_setting_id')
-            ->where(['key' => 'donation_mission_comments'])
-            ->orWhere(['key' => 'donation_mission_ratings'])
+        $settingData = $request->toArray();
+        foreach ($settingData['settings'] as $value) {
+            $tenantSettingId = $value['tenant_setting_id'];
+            $settingValue = $value['value'];
+            $key = $this->getKeyBySettingID($tenantSettingId);
+
+            // Donation setting is disable then donation_commnet and donation_rating will be disabled
+            if ($key === 'donation' && $value['value'] === '0') {
+                $this->disableDonationRelatedSetting($tenantId);
+            }
+
+            // check donation setting enable/disable for donation_commnet and donation_rating
+            if ($key === 'donation_mission_comments' || $key === 'donation_mission_ratings') {
+                if (!$this->checkDonationSettingForRelatedSettings($tenantId)) {
+                    return false;
+                }
+            }
+            $this->store($tenantId, $tenantSettingId, $settingValue);
+        }
+
+        return true;
+    }
+    
+    /**
+     * disable all doantion related setting when donation setting is disabled
+     *
+     * @param int $tenantId
+     * @return bool
+     */
+    public function disableDonationRelatedSetting(int $tenantId)
+    {
+        $relatedSettingArray = ['donation_mission_comments', 'donation_mission_ratings'];
+        foreach ($relatedSettingArray as $value) {
+            $settingIdDetails = $this->tenantSetting->select('tenant_setting_id')
+            ->where(['key' => $value])
             ->get();
-        $missionRatingAndCommentIds = array_values(array_column($getSettingIdForMissionRatingAndComment->toArray(), 'tenant_setting_id'));
-        return $missionRatingAndCommentIds;
+            $settingId = $settingIdDetails[0]['tenant_setting_id'];
+            $this->store($tenantId, $settingId, 0);
+        }
     }
 
     /**
      * Check donation setting enable/disables
      *
      * @param int $tenantId
-     * @return app\Models\TenantHasSetting
+     * @return bool
      */
-    public function isDonationSettingEnabled($tenantId): TenantHasSetting
+    public function checkDonationSettingForRelatedSettings(int $tenantId): bool
     {
         $donationTenantSettings = $this->tenantSetting->where(['key' => 'donation'])->get();
         $donationSettingId = $donationTenantSettings[0]['tenant_setting_id'];
-        $donationHasSetting = $this->tenantHasSetting->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $donationSettingId])->firstOrFail();
-        return $donationHasSetting;
+        $donationHasSetting = $this->tenantHasSetting->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $donationSettingId])->get();
+        if (!empty($donationHasSetting->toArray())) {
+            return true;
+        }
+        return false;
     }
 }

@@ -122,36 +122,11 @@ class TenantHasSettingController extends Controller
             $tenant = $this->tenantRepository->find($tenantId);
 
             //check donation setting enable/disable
-            $settingData = $request->toArray();
-            foreach ($settingData['settings'] as $value) {
-                
-                $tenantSettingId = $value['tenant_setting_id'];
-                $settingValue = $value['value'];
-                $key = $this->tenantHasSettingRepository->getKeyBySettingID($tenantSettingId);
-
-                // Donation setting is disable then donation_commnet and donation_rating will be disabled
-                if ($key === 'donation' && $value['value'] === '0') {
-                    $missionRatingAndCommentIds = $this->tenantHasSettingRepository->getCommentAndRatingSettingId();
-                    foreach ($missionRatingAndCommentIds as $settingId) {
-                        $this->tenantHasSettingRepository->store($tenantId, $settingId, $settingValue);
-                    }
-                }
-
-                // check donation setting enable/disable for donation_commnet and donation_rating
-                if ($key === 'donation_mission_comments' || $key === 'donation_mission_ratings') {
-                    try{
-                        $this->tenantHasSettingRepository->isDonationSettingEnabled($tenantId);
-                    } catch (ModelNotFoundException $e) {
-                        return $this->modelNotFound(
-                            config('constants.error_codes.ERROR_TENANT_DONATION_SETTINGS_NOT_ENABLE'),
-                            trans('messages.custom_error_message.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE')
-                        );
-                    }
-                }
-
-                // Store setting
-                $this->tenantHasSettingRepository->store($tenantId, $tenantSettingId, $settingValue);
-
+            if(!$this->tenantHasSettingRepository->isDonationSettingEnabled($request, $tenantId)){
+                    return $this->modelNotFound(
+                        config('constants.error_codes.ERROR_TENANT_DONATION_SETTINGS_NOT_ENABLE'),
+                        trans('messages.custom_error_message.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE')
+                );
             }
 
             // Create connection with tenant database
