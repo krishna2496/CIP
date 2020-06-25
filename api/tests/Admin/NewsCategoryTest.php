@@ -15,14 +15,14 @@ class NewsCategoryTest extends TestCase
     public function news_category_test_it_should_return_news_categories()
     {
         // List of news categories
-        $this->get('news/category', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('news/category', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         
         // When there is no category available
         News::whereNull('deleted_at')->delete();
 
-        \DB::setDefaultConnection('mysql');        
-        $this->get('news/category?search=&order=desc', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        \DB::setDefaultConnection('mysql');
+        $this->get('news/category?search=&order=desc', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -56,7 +56,7 @@ class NewsCategoryTest extends TestCase
             ]
         ];
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
 
@@ -73,7 +73,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         $newsCategoryDetails = NewsCategory::first();
@@ -91,7 +91,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         // Validation error for translations, it must be required
@@ -101,7 +101,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         // Validation error for translations' translation code, it must be language code with 2 character
@@ -117,7 +117,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         // Validation error for translations' translation title, it should required
@@ -132,17 +132,16 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
-
     }
 
     /**
      * @test
-     * 
+     *
      * It should news category by category_id
-     * 
+     *
      * @return void
      */
     public function news_category_test_it_should_get_news_category_by_category_id()
@@ -162,14 +161,14 @@ class NewsCategoryTest extends TestCase
             ]
         ];
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
 
         // Get details of category, which is create above
         \DB::setDefaultConnection('mysql');
 
-        $this->get('news/category/'.$newsCategoryId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('news/category/' . $newsCategoryId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -191,7 +190,7 @@ class NewsCategoryTest extends TestCase
         // It should give an error while trying to get details of unavailable news category id
         \DB::setDefaultConnection('mysql');
 
-        $this->get('news/category/'.rand(50000000000,500000000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('news/category/' . rand(50000000000, 500000000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -204,7 +203,7 @@ class NewsCategoryTest extends TestCase
      */
     public function news_category_test_it_should_update_news_category()
     {
-        // Update news category        
+        // Update news category
         $params = [
             "category_name" => str_random('5'),
             "translations" => [
@@ -219,7 +218,7 @@ class NewsCategoryTest extends TestCase
             ]
         ];
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
@@ -241,8 +240,8 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(200);        
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        ->seeStatusCode(200);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
     }
@@ -268,8 +267,8 @@ class NewsCategoryTest extends TestCase
                 ]
             ]
         ];
-        $randNewsCategoryId = rand(50000000000,900000000000);
-        $response = $this->patch('news/category/'.$randNewsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $randNewsCategoryId = rand(50000000000, 900000000000);
+        $response = $this->patch('news/category/' . $randNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -282,7 +281,7 @@ class NewsCategoryTest extends TestCase
      */
     public function news_category_test_it_should_return_error_category_field_is_require_on_update_news_category()
     {
-        // Update news category        
+        // Update news category
         $params = [
             "category_name" => str_random('5'),
             "translations" => [
@@ -297,7 +296,7 @@ class NewsCategoryTest extends TestCase
             ]
         ];
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
@@ -319,7 +318,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -334,7 +333,7 @@ class NewsCategoryTest extends TestCase
      */
     public function news_category_test_it_should_return_error_language_code_invalid_on_update_news_category()
     {
-        // Update news category        
+        // Update news category
         $params = [
             "category_name" => str_random('5'),
             "translations" => [
@@ -349,7 +348,7 @@ class NewsCategoryTest extends TestCase
             ]
         ];
 
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
@@ -367,7 +366,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -383,7 +382,7 @@ class NewsCategoryTest extends TestCase
     public function news_category_test_it_should_return_error_category_name_exist_on_update_news_cateogry()
     {
         // Category is already taken
-        $categoryName = str_random('5');        
+        $categoryName = str_random('5');
         // Create new category
         $params = [
             "category_name" => $categoryName,
@@ -401,7 +400,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
         
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $NewNewsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
@@ -419,7 +418,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$NewNewsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->patch('news/category/' . $NewNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $NewNewsCategoryId)->delete();
@@ -435,7 +434,7 @@ class NewsCategoryTest extends TestCase
     public function news_category_test_it_should_allow_deleted_category_name_on_update_news_category()
     {
         // Category is already taken
-        $categoryName = str_random('5');        
+        $categoryName = str_random('5');
         // Create new category
         $params = [
             "category_name" => $categoryName,
@@ -453,13 +452,13 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
         
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
         
         // Category is already taken
-        $categoryName = str_random('5');        
+        $categoryName = str_random('5');
         // Create new category
         $params = [
             "category_name" => $categoryName,
@@ -477,7 +476,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
         
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $NewNewsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
@@ -495,12 +494,12 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$NewNewsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->patch('news/category/' . $NewNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $NewNewsCategoryId)->delete();
 
-        // Deleted category name should allow. 
+        // Deleted category name should allow.
         // Use above deleted category name for update
         $params = [
             "category_name" => $categoryName,
@@ -514,7 +513,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -526,7 +525,7 @@ class NewsCategoryTest extends TestCase
     public function news_category_it_should_delete_news_category()
     {
         // Category is already taken
-        $categoryName = str_random('5');        
+        $categoryName = str_random('5');
         // Create new category
         $params = [
             "category_name" => $categoryName,
@@ -542,28 +541,28 @@ class NewsCategoryTest extends TestCase
             ]
         ];
 
-        \DB::setDefaultConnection('mysql');        
-        $response = $this->post('news/category', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        \DB::setDefaultConnection('mysql');
+        $response = $this->post('news/category', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
 
         \DB::setDefaultConnection('mysql');
-        $this->delete('news/category/'.$newsCategoryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('news/category/' . $newsCategoryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
 
     /**
      * @test
-     * 
+     *
      * It should return an error news category not found
-     * 
+     *
      * @return void
      */
     public function news_category_it_should_return_error_news_category_id_not_found_on_deleted_news_category()
     {
         $newsCategoryId = rand(5000000000, 50000000000);
-        $this->delete('news/category/'.$newsCategoryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('news/category/' . $newsCategoryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 }

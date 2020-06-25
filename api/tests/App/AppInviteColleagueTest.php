@@ -119,7 +119,7 @@ class AppInviteColleagueTest extends TestCase
                 ]
             ]
         ]);
-        App\Models\MissionInvite::where(['mission_id' =>$mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
+        App\Models\MissionInvite::where(['mission_id' => $mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
         $user->delete();
         $toUser->delete();
         $mission->delete();
@@ -159,11 +159,11 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
-        DB::setDefaultConnection('tenant');        
-        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+        DB::setDefaultConnection('tenant');
+        $setting = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $setting->tenant_setting_id]);
 
         DB::setDefaultConnection('mysql');
 
@@ -182,7 +182,7 @@ class AppInviteColleagueTest extends TestCase
             ],
             'message',
         ]);
-        App\Models\MissionInvite::where(['mission_id' =>$mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
+        App\Models\MissionInvite::where(['mission_id' => $mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
         $user->delete();
         $toUser->delete();
         $mission->delete();
@@ -229,7 +229,7 @@ class AppInviteColleagueTest extends TestCase
             ],
             'message',
         ]);
-        App\Models\MissionInvite::where(['mission_id' =>$mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
+        App\Models\MissionInvite::where(['mission_id' => $mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
         $user->delete();
         $toUser->delete();
         $mission->delete();
@@ -261,7 +261,7 @@ class AppInviteColleagueTest extends TestCase
             'mission_id' => $mission->mission_id,
             'title' => str_random(10),
             'description' => str_random(50),
-            'story_images[]' =>[]
+            'story_images[]' => []
         ];
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -356,7 +356,7 @@ class AppInviteColleagueTest extends TestCase
             'mission_id' => $mission->mission_id,
             'title' => str_random(10),
             'description' => str_random(50),
-            'story_images[]' =>[]
+            'story_images[]' => []
         ];
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -392,7 +392,7 @@ class AppInviteColleagueTest extends TestCase
                 ]
             ]
         ]);
-        App\Models\StoryInvite::where(['story_id' =>$story->story_id,
+        App\Models\StoryInvite::where(['story_id' => $story->story_id,
         'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
         $user->delete();
         $story->delete();
@@ -438,18 +438,18 @@ class AppInviteColleagueTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
-        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'"); 
+        $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
         DB::setDefaultConnection('tenant');
-        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+        $setting = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $setting->tenant_setting_id]);
         DB::setDefaultConnection('mysql');
     
         $params = [
             'mission_id' => $mission->mission_id,
             'title' => str_random(10),
             'description' => str_random(50),
-            'story_images[]' =>[]
+            'story_images[]' => []
         ];
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -473,7 +473,7 @@ class AppInviteColleagueTest extends TestCase
             ],
             'message',
         ]);
-        App\Models\StoryInvite::where(['story_id' =>$story->story_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
+        App\Models\StoryInvite::where(['story_id' => $story->story_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
         $story->delete();
         $user->delete();
         $toUser->delete();
@@ -513,7 +513,7 @@ class AppInviteColleagueTest extends TestCase
             'mission_id' => $mission->mission_id,
             'title' => str_random(10),
             'description' => str_random(50),
-            'story_images[]' =>[]
+            'story_images[]' => []
         ];
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -537,7 +537,7 @@ class AppInviteColleagueTest extends TestCase
             ],
             'message',
         ]);
-        App\Models\StoryInvite::where(['story_id' =>$story->story_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
+        App\Models\StoryInvite::where(['story_id' => $story->story_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
         $story->delete();
         $user->delete();
         $toUser->delete();

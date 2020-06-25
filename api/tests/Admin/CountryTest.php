@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class CountryTest extends TestCase
 {
@@ -17,28 +18,28 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/countries?search='.$countryName, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/entities/countries?search=' . $countryName, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/countries', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/entities/countries', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -50,7 +51,7 @@ class CountryTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         // Delete country and country_language data
-        $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
 
@@ -63,9 +64,8 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_a_country()
     {
-
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         // 1: Create new country
@@ -73,8 +73,8 @@ class CountryTest extends TestCase
         $mockCountry = $this->getMockCountryPostPayload();
 
         $reqCountry = $this->post(
-            'entities/countries', 
-            $mockCountry, 
+            'entities/countries',
+            $mockCountry,
             $authorization
         )->seeStatusCode(201);
 
@@ -112,7 +112,6 @@ class CountryTest extends TestCase
             [],
             $authorization
         )->seeStatusCode(204);
-
     }
 
     /**
@@ -124,9 +123,8 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_invalid_country()
     {
-
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         DB::setDefaultConnection('mysql');
@@ -149,7 +147,6 @@ class CountryTest extends TestCase
 
         $this->assertEquals($actualResult->errors[0]->type, 'Not Found');
         $this->assertEquals($actualResult->errors[0]->code, config('constants.error_codes.ERROR_COUNTRY_NOT_FOUND'));
-
     }
 
     /**
@@ -161,7 +158,6 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_unauthorized_request_for_get_country()
     {
-
         DB::setDefaultConnection('mysql');
 
         $reqCountryCities = $this->get(
@@ -176,7 +172,6 @@ class CountryTest extends TestCase
                 ]
             ]
         ]);
-
     }
 
     /**
@@ -188,9 +183,8 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_list_of_country_cities()
     {
-
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         // 1: Create new country
@@ -198,8 +192,8 @@ class CountryTest extends TestCase
         $mockCountry = $this->getMockCountryPostPayload();
 
         $reqCountry = $this->post(
-            'entities/countries', 
-            $mockCountry, 
+            'entities/countries',
+            $mockCountry,
             $authorization
         )->seeStatusCode(201);
 
@@ -214,8 +208,8 @@ class CountryTest extends TestCase
         $mockCities = $this->getMockCityPostPayload($countryId, 2);
 
         $reqCity = $this->post(
-            'entities/cities', 
-            $mockCities, 
+            'entities/cities',
+            $mockCities,
             $authorization
         )->seeStatusCode(201);
 
@@ -245,7 +239,6 @@ class CountryTest extends TestCase
         // 6: Delete created city and country
 
         foreach ($reqCityResponse->data->city_ids as $key => $item) {
-
             $cityId = $item->city_id;
             
             DB::setDefaultConnection('mysql');
@@ -255,7 +248,6 @@ class CountryTest extends TestCase
                 [],
                 $authorization
             )->seeStatusCode(204);
-
         }
 
         DB::setDefaultConnection('mysql');
@@ -265,7 +257,6 @@ class CountryTest extends TestCase
             [],
             $authorization
         )->seeStatusCode(204);
-
     }
 
     /**
@@ -277,9 +268,8 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_error_for_invalid_country_id_on_country_cities()
     {
-
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         DB::setDefaultConnection('mysql');
@@ -297,7 +287,6 @@ class CountryTest extends TestCase
                 ]
             ]
         ]);
-
     }
 
     /**
@@ -309,9 +298,8 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_no_city_found()
     {
-
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         // 1: Create new country
@@ -319,8 +307,8 @@ class CountryTest extends TestCase
         $mockCountry = $this->getMockCountryPostPayload();
 
         $reqCountry = $this->post(
-            'entities/countries', 
-            $mockCountry, 
+            'entities/countries',
+            $mockCountry,
             $authorization
         )->seeStatusCode(201);
 
@@ -356,7 +344,6 @@ class CountryTest extends TestCase
             [],
             $authorization
         )->seeStatusCode(204);
-
     }
 
     /**
@@ -368,7 +355,6 @@ class CountryTest extends TestCase
      */
     public function country_test_it_should_return_unauthorized_request_for_country_cities()
     {
-
         DB::setDefaultConnection('mysql');
 
         $reqCountryCities = $this->get(
@@ -383,7 +369,6 @@ class CountryTest extends TestCase
                 ]
             ]
         ]);
-
     }
 
     /**
@@ -397,10 +382,10 @@ class CountryTest extends TestCase
             'countries' => [
                 [
                     'iso' => str_random(2),
-                    'translations'=> [
+                    'translations' => [
                         [
-                            'lang'=> 'en',
-                            'name'=> str_random(5)
+                            'lang' => 'en',
+                            'name' => str_random(5)
                         ]
                     ]
                 ]
@@ -420,10 +405,10 @@ class CountryTest extends TestCase
             'cities' => []
         ];
 
-        for ($i = 1; $i <= $count; $i++) { 
-            $data['cities'][] = [ 
-                'translations' => [ 
-                    [ 
+        for ($i = 1; $i <= $count; $i++) {
+            $data['cities'][] = [
+                'translations' => [
+                    [
                         'lang' => 'en',
                         'name' => uniqid()
                     ]
@@ -443,7 +428,7 @@ class CountryTest extends TestCase
      */
     public function city_test_it_should_return_no_country_found()
     {
-        $this->get('/entities/countries', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/entities/countries', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
     }
 
@@ -457,26 +442,26 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         
         DB::setDefaultConnection('mysql');
 
         // Delete country and country_language data
-        $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
-    }    
+    }
 
     /**
      * @test
@@ -488,19 +473,18 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => '',
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
-
     }
 
     /**
@@ -513,19 +497,18 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> str_random(5),
-                            "name"=> str_random(5)
+                            "lang" => str_random(5),
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
-
     }
     
     /**
@@ -540,11 +523,11 @@ class CountryTest extends TestCase
         $iso = str_random(3);
 
         $params = [
-            "iso"=>$iso,
-            "translations"=>[
+            "iso" => $iso,
+            "translations" => [
                 [
-                    "lang"=>"en",
-                    "name"=>str_random(10)
+                    "lang" => "en",
+                    "name" => str_random(10)
                 ]
             ]
         ];
@@ -555,7 +538,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->patch("entities/countries/".$countryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("entities/countries/" . $countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -574,11 +557,11 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_error_if_iso_is_invalid_for_update_country()
     {
         $params = [
-            "iso"=>"",
-            "translations"=>[
+            "iso" => "",
+            "translations" => [
                 [
-                    "lang"=>"en",
-                    "name"=>str_random(10)
+                    "lang" => "en",
+                    "name" => str_random(10)
                 ]
             ]
         ];
@@ -589,7 +572,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->patch("entities/countries/".$countryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("entities/countries/" . $countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -613,11 +596,11 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_error_if_data_is_invalid_for_update_country()
     {
         $params = [
-            "iso"=>"",
-            "translations"=>[
+            "iso" => "",
+            "translations" => [
                 [
-                    "lang"=>"test",
-                    "name"=>str_random(10)
+                    "lang" => "test",
+                    "name" => str_random(10)
                 ]
             ]
         ];
@@ -628,7 +611,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->patch("entities/countries/".$countryId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("entities/countries/" . $countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -652,16 +635,16 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_error_if_id_is_invalid_for_update_country()
     {
         $params = [
-            "iso"=>"",
-            "translations"=>[
+            "iso" => "",
+            "translations" => [
                 [
-                    "lang"=>"test",
-                    "name"=>str_random(10)
+                    "lang" => "test",
+                    "name" => str_random(10)
                 ]
             ]
         ];
 
-        $this->patch("entities/countries/".rand(5000000, 9000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("entities/countries/" . rand(5000000, 9000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -689,7 +672,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
 
@@ -702,7 +685,7 @@ class CountryTest extends TestCase
      */
     public function city_test_it_should_return_error_for_delete_country()
     {
-        $this->delete("entities/countries/".rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/" . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
     
@@ -718,47 +701,47 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         
         DB::setDefaultConnection('mysql');
 
-        // Add another country with same ISO code        
+        // Add another country with same ISO code
         $params = [
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
             ]
         ];
         
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         DB::setDefaultConnection('mysql');
 
         // Delete country and country_language data
-        $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
-    } 
+    }
 
     /**
      * @test
@@ -773,45 +756,45 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
         
         DB::setDefaultConnection('mysql');
 
-        // Add another country with same ISO code        
+        // Add another country with same ISO code
         $params = [
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
             ]
         ];
         
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         DB::setDefaultConnection('mysql');
         
         // Delete country and country_language data
-        $this->delete("entities/countries/$countryId", [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
 
@@ -846,8 +829,8 @@ class CountryTest extends TestCase
         $mission->country_id = $countryId;
         $mission->update();
 
-        $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);        
+        $res = $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
         App\Models\City::where('city_id', $city->city_id)->delete();
@@ -885,7 +868,7 @@ class CountryTest extends TestCase
         $user->country_id = $countryId;
         $user->update();
 
-        $this->delete("entities/countries/".$countryId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         App\User::where('user_id', $user->user_id)->delete();

@@ -36,7 +36,7 @@ class AppFooterPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $footer_page->delete();
     }
 
@@ -84,7 +84,7 @@ class AppFooterPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $footer_page->delete();
     }
 
@@ -104,7 +104,7 @@ class AppFooterPageTest extends TestCase
 
         $slug = $footer_page->slug;
 
-        $this->get('/app/cms/'.$slug, [])
+        $this->get('/app/cms/' . $slug, [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -115,7 +115,7 @@ class AppFooterPageTest extends TestCase
                 "pages"
             ],
             "message"
-        ]);
+          ]);
 
         $footer_page->delete();
     }
@@ -136,12 +136,12 @@ class AppFooterPageTest extends TestCase
 
         $slug = $footer_page->slug;
 
-        $this->get('/app/cms/'.$slug, [])
+        $this->get('/app/cms/' . $slug, [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $footer_page->delete();
     }
 
@@ -156,7 +156,7 @@ class AppFooterPageTest extends TestCase
     {
         $slug = str_random(10) ;
 
-        $this->get('/app/cms/'.$slug, [])
+        $this->get('/app/cms/' . $slug, [])
         ->seeStatusCode(404)
         ->seeJsonStructure([
               "errors" => [
@@ -179,7 +179,7 @@ class AppFooterPageTest extends TestCase
     {
         $slug = str_random(10) ;
 
-        $this->get('/app/cms/'.$slug, [])
+        $this->get('/app/cms/' . $slug, [])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -188,7 +188,7 @@ class AppFooterPageTest extends TestCase
                     "message"
                   ]
               ]
-        ]);
+          ]);
     }
     
     /**
@@ -227,6 +227,6 @@ class AppFooterPageTest extends TestCase
                     "message"
                   ]
               ]
-        ]);
+          ]);
     }
 }

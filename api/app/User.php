@@ -324,7 +324,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function missionApplication(): HasMany
     {
-        return $this->hasMany(missionApplication::class, 'user_id', 'user_id');
+        return $this->hasMany(MissionApplication::class, 'user_id', 'user_id');
     }
 
     /**

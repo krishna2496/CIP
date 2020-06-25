@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\Helpers;
+
 class SliderTest extends TestCase
 {
     /**
@@ -16,7 +18,7 @@ class SliderTest extends TestCase
         DB::setDefaultConnection('mysql');
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -26,7 +28,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -50,7 +52,7 @@ class SliderTest extends TestCase
 
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -62,12 +64,12 @@ class SliderTest extends TestCase
 
         for ($i = 0; $i < config('constants.SLIDER_LIMIT'); $i++) {
             DB::setDefaultConnection('mysql');
-            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+            $this->post("slider/", $params, ['Authorization' => Helpers::getBasicAuth()])
             ->seeStatusCode(201);
         }
 
         DB::setDefaultConnection('mysql');
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(403)
         ->seeJsonStructure([
             'errors' => [
@@ -94,7 +96,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => "test",
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -104,7 +106,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -129,7 +131,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => str_random(20),        
+            'sort_order' => str_random(20),
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -139,7 +141,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -164,7 +166,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => 1,        
+            'sort_order' => 1,
             'translations' =>  [
                 [
                     'lang' => 'test',
@@ -174,7 +176,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -203,7 +205,7 @@ class SliderTest extends TestCase
         
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -218,7 +220,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -241,7 +243,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => "test",
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -256,7 +258,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -282,7 +284,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => str_random(2),        
+            'sort_order' => str_random(2),
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -297,7 +299,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -323,7 +325,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => 1,        
+            'sort_order' => 1,
             'translations' =>  [
                 [
                     'lang' => 'test',
@@ -338,7 +340,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -367,7 +369,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->get('slider/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('slider/', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -380,7 +382,7 @@ class SliderTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $slider->delete();
     }
 
@@ -393,12 +395,12 @@ class SliderTest extends TestCase
      */
     public function it_should_return_no_slider_found()
     {
-        $this->get('slider/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('slider/', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -415,7 +417,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->delete('slider/'.$slider->slider_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('slider/' . $slider->slider_id, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -427,8 +429,8 @@ class SliderTest extends TestCase
      * @return void
      */
     public function it_should_return_error_if_slider_id_is_invalid()
-    {   
-        $this->delete('slider/'.rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+    {
+        $this->delete('slider/' . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -440,7 +442,7 @@ class SliderTest extends TestCase
                 ]
             ]
         ]);
-    }    
+    }
 
     /**
      * @test
@@ -455,7 +457,7 @@ class SliderTest extends TestCase
         App\Models\Slider::where('deleted_at', '<>', '')->delete();
         $params = [
             'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/test.png",
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -465,7 +467,7 @@ class SliderTest extends TestCase
             ],
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("slider", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeJsonStructure([
             'errors' => [
                 [
@@ -489,7 +491,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/test.png",
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -504,7 +506,7 @@ class SliderTest extends TestCase
         $slider->setConnection($connection);
         $slider->save();
 
-        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . $slider->slider_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -532,7 +534,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -542,7 +544,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->patch("slider/".rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -567,7 +569,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png',
-            'sort_order' => "1",        
+            'sort_order' => "1",
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -577,9 +579,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        $this->patch("slider/".rand(500000000,8000000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("slider/" . rand(500000000, 8000000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
-        
     }
-
 }

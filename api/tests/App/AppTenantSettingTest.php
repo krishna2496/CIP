@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class AppTenantSettingTest extends TestCase
 {
@@ -11,13 +12,12 @@ class AppTenantSettingTest extends TestCase
      */
     public function tenant_settings_it_should_return_tenant_setting_details()
     {
-        
-        $this->get(route('app.tenant-settings'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(route('app.tenant-settings'), ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -34,14 +34,14 @@ class AppTenantSettingTest extends TestCase
         \App\Models\TenantActivatedSetting::where('deleted_at', $currentDate)->update(['deleted_at' => null]);
 
         DB::setDefaultConnection('tenant');
-        \App\Models\TenantActivatedSetting::where('deleted_at', NULL)->update(['deleted_at' => $currentDate]);
+        \App\Models\TenantActivatedSetting::where('deleted_at', null)->update(['deleted_at' => $currentDate]);
         DB::setDefaultConnection('mysql');
-        $this->get(route('app.tenant-settings'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(route('app.tenant-settings'), ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         DB::setDefaultConnection('tenant');
         \App\Models\TenantActivatedSetting::withTrashed()->where('deleted_at', $currentDate)->update(['deleted_at' => null]);
     }
