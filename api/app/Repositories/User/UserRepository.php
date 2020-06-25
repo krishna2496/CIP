@@ -128,6 +128,7 @@ class UserRepository implements UserInterface
             why_i_volunteer,
             employee_id,
             department,
+            position,
             city_id,
             country_id,
             profile_text,
@@ -151,7 +152,37 @@ class UserRepository implements UserInterface
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
-            $userQuery->orderBy('user_id', $orderDirection);
+            $sortBy = 'user_id';
+
+            switch ($request->get('field')) {
+                case 'fullName':
+                case 'firstName':
+                    $sortBy = 'first_name';
+                    break;
+                case 'email':
+                    $sortBy = 'email';
+                    break;
+                case 'volunteerStatus':
+                    $sortBy = 'status';
+                    break;
+                case 'country':
+                    $sortBy = 'country_id';
+                    break;
+                case 'language':
+                    $sortBy = 'language_id';
+                    break;
+                case 'lastName':
+                    $sortBy = 'last_name';
+                    break;
+                case 'title':
+                    $sortBy = 'title';
+                    break;
+                case 'department':
+                    $sortBy = 'department';
+                    break;
+
+            }
+            $userQuery->orderBy($sortBy, $orderDirection);
         }
 
         return $userQuery->paginate($request->perPage);
