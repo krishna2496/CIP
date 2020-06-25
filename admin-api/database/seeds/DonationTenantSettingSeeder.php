@@ -15,7 +15,7 @@ class DonationTenantSettingSeeder extends Seeder
         $items = [            
             [
                 'title' => 'Donation mission',
-                'description' => 'Allow donation mission to tenant',
+                'description' => 'Enable/disable donation on platform',
                 'key' => 'donation',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
