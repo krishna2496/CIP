@@ -1,6 +1,12 @@
 FROM registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}} AS build 
 
 # Frontend
+# Install nodeJS
+
+RUN apt-get install curl -y
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
+RUN apt-get install -y nodejs
+
 COPY ./frontend /tmp
 RUN cd /tmp && mv vue-prod.config.js vue.config.js && npm install && npm rebuild node-sass && npm run build-staging
 
