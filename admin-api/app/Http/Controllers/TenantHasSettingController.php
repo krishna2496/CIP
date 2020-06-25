@@ -16,7 +16,6 @@ use Validator;
 use App\Helpers\DatabaseHelper;
 use DB;
 use App\Events\ActivityLogEvent;
-use App\Models\TenantSetting;
 
 //!  Tenanthassetting controller
 /*!
@@ -45,16 +44,6 @@ class TenantHasSettingController extends Controller
      * @var App\Helpers\DatabaseHelper
      */
     private $databaseHelper;
-
-    /**
-     * @var App\Models\TenantSetting
-     */
-    private $tenantSetting;
-
-    /**
-     * @var App\Models\TenantHasSetting
-     */
-    private $tenantHasSetting;
     
     /**
      * Create a new Tenant has setting controller instance.
@@ -70,16 +59,12 @@ class TenantHasSettingController extends Controller
         TenantHasSettingRepository $tenantHasSettingRepository,
         TenantRepository $tenantRepository,
         ResponseHelper $responseHelper,
-        DatabaseHelper $databaseHelper,
-        TenantSetting $tenantSetting,
-        TenantHasSetting $tenantHasSetting
+        DatabaseHelper $databaseHelper
     ) {
         $this->tenantHasSettingRepository = $tenantHasSettingRepository;
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
         $this->databaseHelper = $databaseHelper;
-        $this->tenantSetting = $tenantSetting;
-        $this->tenantHasSetting = $tenantHasSetting;
     }
     
     /**
