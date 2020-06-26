@@ -121,13 +121,19 @@ class TenantHasSettingController extends Controller
             // Check tenant is available or not
             $tenant = $this->tenantRepository->find($tenantId);
 
-            //check donation setting enable/disable
-            if(!$this->tenantHasSettingRepository->isDonationSettingEnabled($request, $tenantId)){
-                    return $this->modelNotFound(
-                        config('constants.error_codes.ERROR_TENANT_DONATION_SETTINGS_NOT_ENABLE'),
-                        trans('messages.custom_error_message.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE')
+            // Check if donation setting is enable/disable
+            $requestArray = $request->toArray();
+            if (!$this->tenantHasSettingRepository->isDonationSettingEnabled($requestArray, $tenantId)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TENANT_DONATION_SETTINGS_NOT_ENABLE'),
+                    trans('messages.custom_error_message.MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE')
                 );
             }
+
+            // Store settings
+            $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);
 
             // Create connection with tenant database
             $this->databaseHelper->connectWithTenantDatabase($tenantId);

@@ -54,7 +54,7 @@ return [
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'You can not delete default tenant language',
         'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
         'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.',
-        'MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE' => 'Donation settings is not enable for this tenant.'
+        'MESSAGE_TENANT_DONATION_SETTINGS_NOT_ENABLE' => 'Donation setting is not enable for this tenant.'
     ],
     'email_text' => [
         'ERROR' => 'Error',

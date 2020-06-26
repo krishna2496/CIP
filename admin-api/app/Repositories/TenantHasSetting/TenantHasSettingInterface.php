@@ -19,12 +19,11 @@ interface TenantHasSettingInterface
     /**
      * Create new setting
      *
+     * @param array $data
      * @param int $tenantId
-     * @param int $tenantSettingId
-     * @param int $value
      * @return bool
      */
-    public function store(int $tenantId, int $tenantSettingId, int $value): bool;
+    public function store(array $data, int $tenantId): bool;
 
     /**
      * Get setting key by setting Id
@@ -37,24 +36,32 @@ interface TenantHasSettingInterface
     /**
      * Check donation setting is enable or disable
      *
-     * @param Request $request
+     * @param array $request
      * @param int $tenatnId
      * @return bool
      */
-    public function isDonationSettingEnabled(Request $request, int $tenantId): bool;
+    public function isDonationSettingEnabled(array $request, int $tenantId): bool;
 
     /**
     * Disable donation realted settings
     *
     * @param int $tenantId
     */
-    public function disableDonationRelatedSetting(int $tenantId);
+    public function disableDonationRelatedSettings(int $tenantId);
 
     /**
      * Check donation setting for related settings
      *
      * @param int $tenantId
+     * @param string $key
      * @return bool
      */
-    public function checkDonationSettingForRelatedSettings(int $tenantId): bool;
+    public function isTenantHasSetting(int $tenantId, string $key): bool;
+
+    /**
+     * Get id of donation related settings
+     *
+     * @return array
+     */
+    public function getDonationRelatedSettingIds(): array;
 }
