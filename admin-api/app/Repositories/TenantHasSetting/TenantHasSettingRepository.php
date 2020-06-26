@@ -156,8 +156,8 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      */
     public function disableDonationRelatedSettings(int $tenantId)
     {
-        $relatedSettingArray = ['donation_mission_comments', 'donation_mission_ratings'];
-        foreach ($relatedSettingArray as $value) {
+        $donationRelatedSettingsArray = ['donation_mission_comments', 'donation_mission_ratings'];
+        foreach ($donationRelatedSettingsArray as $value) {
             $settingIdDetails = $this->tenantSetting->select('tenant_setting_id')
             ->where(['key' => $value])
             ->get();
@@ -191,9 +191,9 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      */
     public function getDonationRelatedSettingIds(): array
     {
-        $relatedSettingArray = ['donation_mission_comments', 'donation_mission_ratings'];
+        $donationRelatedSettingsArray = ['donation_mission_comments', 'donation_mission_ratings'];
         $settingIdArray = [];
-        foreach ($relatedSettingArray as $value) {
+        foreach ($donationRelatedSettingsArray as $value) {
             $settingIdDetails = $this->tenantSetting->select('tenant_setting_id')
             ->where(['key' => $value])
             ->get();
