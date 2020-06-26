@@ -63,4 +63,8 @@
             'seeder' => 'seeder'
         ],
         'EMAIL_TEMPLATE_MIGRATION_NOTIFICATION' => 'migration-notification',
+        'DONATION_RELATED_SETTINGS' => [
+            'donation_mission_comments',
+            'donation_mission_ratings'
+        ],
     ];

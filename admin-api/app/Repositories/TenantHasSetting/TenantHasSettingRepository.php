@@ -64,26 +64,25 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     public function store(array $data, int $tenantId): bool
     {
         $donationRelatedSettingIdsArray = $this->getDonationRelatedSettingIds();
-        $donationDisable = 0;
-        $donationRelatedSettingIds = 0;
+        $donationDisableFlag = false;
+        $donationRelatedSettingsExist = false;
         foreach ($data['settings'] as $value) {
             $key = $this->getKeyBySettingId($value['tenant_setting_id']);
             if ($value['value'] == 1) {
                 if (in_array($value['tenant_setting_id'], $donationRelatedSettingIdsArray)) {
-                    $donationRelatedSettingIds = 1;
+                    $donationRelatedSettingsExist = true;
                 }
                 $this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
             } else {
                 if ($key === 'donation' && $value['value'] === '0') {
-                    $donationDisable = 1;
+                    $donationDisableFlag = true;
                     $this->disableDonationRelatedSettings($tenantId);
-                    $this->tenantHasSetting->disableSetting($tenantId, $value['tenant_setting_id']);
                 }
                 $this->tenantHasSetting->disableSetting($tenantId, $value['tenant_setting_id']);
             }
         }
 
-        if ($donationDisable === 1 && $donationRelatedSettingIds === 1) {
+        if ($donationDisableFlag === true && $donationRelatedSettingsExist === true) {
             $this->disableDonationRelatedSettings($tenantId);
         }
         return true;
@@ -110,39 +109,33 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      */
     public function isDonationSettingEnabled(array $settingData, int $tenantId): bool
     {
-        $tenantSettingDisableFlag = 0;
+        $checkDonationRelatedSettings = [ 'donation', 'donation_mission_comments', 'donation_mission_ratings'];
         foreach ($settingData['settings'] as $value) {
             $tenantSettingId = $value['tenant_setting_id'];
             $settingValue = $value['value'];
             $key = $this->getKeyBySettingID($tenantSettingId);
 
             // check donation setting enable/disable for donation_comment and donation_rating
-            if ($key === 'donation_mission_comments' || $key === 'donation_mission_ratings' || $key === 'donation') {
+            if (in_array($key, $checkDonationRelatedSettings)) {
                 if (!$this->isTenantHasSetting($tenantId, 'donation')) {
-                    $tenantSettingDisableFlag = 1;
+                    $donationSettingEnable = true;
                 } else {
-                    $tenantSettingDisableFlag = 2;
+                    $donationSettingEnable = false;
                 }
             }
 
-            if ($key === 'donation' && $settingValue === '0' && $tenantSettingDisableFlag === 1) {
+            if ($key === 'donation' && $settingValue === '0' && $donationSettingEnable === true) {
                 return false;
-            }
-
-            if ($key === 'donation' && $settingValue === '1' && $tenantSettingDisableFlag === 1) {
+            } elseif ($key === 'donation' && $settingValue === '1' && $donationSettingEnable === true) {
                 return true;
-            }
-
-            if ($key === 'donation' && $settingValue === '0' && $tenantSettingDisableFlag === 2) {
+            } elseif ($key === 'donation' && $settingValue === '0' && $donationSettingEnable === false) {
                 return true;
-            }
-
-            if ($key === 'donation' && $settingValue === '1' && $tenantSettingDisableFlag === 2) {
+            } elseif ($key === 'donation' && $settingValue === '1' && $donationSettingEnable === false) {
                 return true;
             }
         }
 
-        if ($tenantSettingDisableFlag === 1) {
+        if ($donationSettingEnable === true) {
             return false;
         }
 
@@ -156,7 +149,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      */
     public function disableDonationRelatedSettings(int $tenantId)
     {
-        $donationRelatedSettingsArray = ['donation_mission_comments', 'donation_mission_ratings'];
+        $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
         foreach ($donationRelatedSettingsArray as $value) {
             $settingIdDetails = $this->tenantSetting->select('tenant_setting_id')
             ->where(['key' => $value])
@@ -167,7 +160,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     }
 
     /**
-     * Check donation setting enable/disables
+     * Check donation setting is enable/disable
      *
      * @param int $tenantId
      * @param string $key
@@ -185,13 +178,13 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     }
 
     /**
-     * Disable all donation related settings when donation setting is disabled
+     * Get donation related setting IDs
      *
      * @return array
      */
     public function getDonationRelatedSettingIds(): array
     {
-        $donationRelatedSettingsArray = ['donation_mission_comments', 'donation_mission_ratings'];
+        $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
         $settingIdArray = [];
         foreach ($donationRelatedSettingsArray as $value) {
             $settingIdDetails = $this->tenantSetting->select('tenant_setting_id')
