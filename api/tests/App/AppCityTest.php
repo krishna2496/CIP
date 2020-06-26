@@ -22,7 +22,7 @@ class AppCityTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/city/'.$countryDetail->country_id, ['token' => $token])
+        $this->get('/app/city/' . $countryDetail->country_id, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -31,7 +31,7 @@ class AppCityTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/city/'.$countryDetail->country_id, ['token' => $token, 'X-localization' => 'test'])
+        $this->get('/app/city/' . $countryDetail->country_id, ['token' => $token, 'X-localization' => 'test'])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -43,7 +43,7 @@ class AppCityTest extends TestCase
     /**
      * @test
      *
-     * No data found for city 
+     * No data found for city
      *
      * @return void
      */
@@ -55,7 +55,7 @@ class AppCityTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/city/'.rand(1000000, 5000000), ['token' => $token])
+        $this->get('/app/city/' . rand(1000000, 5000000), ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -71,7 +71,7 @@ class AppCityTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void
@@ -82,7 +82,7 @@ class AppCityTest extends TestCase
         $countryId = App\Models\Country::get()->random()->country_id;
 
         $token = str_random(50);
-        $req =$this->get('/app/city/'.$countryId, ['token' => $token])
+        $req = $this->get('/app/city/' . $countryId, ['token' => $token])
         ->seeStatusCode(401)
         ->seeJsonStructure([
             "errors" => [
@@ -98,7 +98,7 @@ class AppCityTest extends TestCase
     /**
      * @test
      *
-     * No data found for city 
+     * No data found for city
      *
      * @return void
      */
@@ -114,23 +114,23 @@ class AppCityTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
             ]
         ];
 
-        $response = $this->post("entities/countries", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("entities/countries", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $countryId = json_decode($response->response->getContent())->data->country_ids[0]->country_id;
               
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/city/'.$countryId, ['token' => $token])
+        $this->get('/app/city/' . $countryId, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
