@@ -41,7 +41,9 @@ class TimezoneRepository implements TimezoneInterface
      */
     public function getTimezoneList() :Collection
     {
-        return $this->timezone->pluck('timezone', 'timezone_id');
+        return $this->timezone
+            ->whereNull('deleted_at')
+            ->pluck('timezone', 'timezone_id');
     }
 
     /**

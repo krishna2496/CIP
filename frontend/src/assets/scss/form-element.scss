@@ -1369,7 +1369,9 @@ span {
         visibility: hidden !important;
     }
 }
-
+.cke_inner{
+		z-index: 9999!important;
+	}
 .ckeditor {
     textarea {
         resize: none;
@@ -1395,7 +1397,7 @@ span {
         -webkit-border-radius: 3px;
         -ms-border-radius: 3px;
         -moz-border-radius: 3px;
-    }
+	}
     .cke_bottom {
         border-radius: 0 0 3px 3px;
         -webkit-border-radius: 0 0 3px 3px;
