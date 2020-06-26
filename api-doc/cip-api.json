@@ -7672,7 +7672,7 @@
         }
       }
     },
-    "/translations/generic/{isoCode}/": {
+    "/translations/generic/{isoCode}": {
       "get": {
         "operationId": "GET_team4-cip-api-get-translations-generic",
         "summary": "Admin - Fetch generic translations",
@@ -7708,7 +7708,7 @@
         }
       }
     },
-    "/translations/custom/{isoCode}/": {
+    "/translations/custom/{isoCode}": {
       "get": {
         "operationId": "GET_team4-cip-api-get-language-file",
         "summary": "Admin - Fetch custom translations",
@@ -7742,9 +7742,7 @@
             "description": "Not found - Tenant language file not found"
           }
         }
-      }
-    },
-    "/translations/custom/{isoCode}": {
+      },
       "post": {
         "operationId": "GET_team4-cip-api-post-language-file-changes",
         "summary": "Admin - Update language file",
