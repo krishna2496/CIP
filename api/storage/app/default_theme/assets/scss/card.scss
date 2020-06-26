@@ -156,7 +156,7 @@
 						font-size: 14px;
 						line-height: 19px;
 						text-align: center;
-						margin:15px 0 2px;
+						margin:10px 0 4px;
 					}
 				}
 			}
@@ -205,6 +205,7 @@
 				border-radius: 0;
 				padding:0;
 				opacity: 1;
+				margin-top: -2px;
 				img{
 					width:18px;
 					height:21px;
@@ -242,7 +243,7 @@
 			display: inline-flex;
 			justify-content: center;
 			align-items: center;
-			padding: 7px 12px;
+			padding: 6px 16px;
 			color: $white;
 			font-size: 14px;
 			line-height: 19px;
@@ -374,7 +375,7 @@
 
 		.group-category {
 			position: absolute;
-			bottom: 0;
+			bottom: 3px;
 			@include transformY(50%);
 			left: 15px;
 			right: 15px;
@@ -404,6 +405,18 @@
 			margin: -6px 0 6px;
 			opacity: 0;
 			 @include transition(opacity 0.3s);
+			 span{
+				&.vue-star-rating-star{
+					svg{
+			 			margin: 0 -2px;
+			 		}
+			 		&:first-child{
+			 			svg{
+			 				margin: 0;
+			 			}
+			 		}
+			 	}
+			 }
 		}
 
 		.group-name {
@@ -426,10 +439,10 @@
 		.content-block {
 			position: relative;
 			z-index: 1;
-			padding: 20px 32px 33px;
+			padding: 17px 32px 33px;
 
 			@include lg-max {
-				padding: 18px 15px 30px;
+				padding: 17px 15px 30px;
 			}
 
 			@include sm-max {
@@ -439,6 +452,7 @@
 			.mission-label-wrap{
 				display: flex;
 				flex-wrap: wrap;
+				margin-bottom: 4px;
 			}
 			.mission-label{
 				margin:0 8px 8px 0;
@@ -488,7 +502,7 @@
 			display: flex;
 			justify-content: space-between;
 			flex: 1;
-			padding: 24px 15px 18px;
+			padding: 24px 15px 22px;
 			align-items: center;
 			-ms-flex: 1;
 			background: $rgb-gray;
@@ -525,7 +539,9 @@
 						&.progress-block {
 							.text-wrap {
 								p{
-									margin: 10px 0 5px;
+									margin: 9px 0 3px;
+									font-size: 18px;
+									line-height: 25px;
 								}
 							}
 						}
@@ -614,12 +630,12 @@
 			.detail-column {
 				display: inline-flex;
 				align-items: flex-start;
-				padding: 0 15px;
+				padding: 0 19px;
 				&:first-child{
-					width: 47%;
+					width: 42%;
 				}
 				&:last-child{
-					width:53%;
+					width:58%;
 				}
 				@include sm-max {
 					padding: 0 10px;
@@ -646,7 +662,7 @@
 
 					.title-text {
 						font-size: 18px;
-						line-height: 22px;
+						line-height: 20px;
 
 						@include lg-max {
 							font-size: 15px;
@@ -669,7 +685,7 @@
 
 			.top-strip {
 				position: absolute;
-				top: -19px;
+				top: -17px;
 				right: 15px;
 				left: 15px;
 				display: inline-flex;
@@ -745,6 +761,9 @@
 			justify-content: space-between;
 			flex-wrap: wrap;
 			align-items: center;
+			@include lg-max {
+				padding: 20px 15px;
+			}
 			.left-btn{
 				.icon-btn{
 					display: inline-flex;
@@ -774,6 +793,7 @@
 			}
 			.social-btn{
 				display: inline-flex;
+				margin: -4px 11px 0 0;
 				.icon-btn{
 					background: transparent;
 					border:none;
@@ -842,7 +862,7 @@
 		.location{
 			position: absolute;
 			bottom: auto;
-			right: 28px;
+			right: 17px;
 			top: 16px;
 			z-index: 10;
 		}
@@ -860,7 +880,7 @@
     	margin-top: 0;
     }
     .card-text{
-    	margin:-20px 0 8px;
+    	margin:-18px 0 9px;
     	 @include transition(margin-top 0.3s);
     }
 
@@ -931,7 +951,7 @@
 
 .card-listing {
   .card-outer {
-    padding-bottom: 51px;
+    padding-bottom: 39px;
 
     @include lg-max {
       padding-bottom: 30px;
@@ -1016,6 +1036,7 @@
 		.group-details {
 			padding: 15px 20px 3px;
 			flex-wrap: wrap;
+			justify-content: flex-start;
 			&:before{
 				display:none;
 			}
@@ -1032,13 +1053,13 @@
 						}
 					}
 					&.progress-info-column{
-						width:275px;
-						flex: 0 0 275px;
+						width:276px;
+						flex: 0 0 276px;
 						padding-left: 0;
 					}
 					&.achieved-column{
-						width: 120px;
-						flex: 0 0 120px;
+						width: 106px;
+						flex: 0 0 106px;
 					}
 					&.info-block{
 						width: 135px;
@@ -1047,11 +1068,12 @@
 					&.progress-block{
 						flex: 0 0 100%;
 						max-width: 100%;
+						padding-bottom: 8px;
 						.progress{
 							height: 6px;
 							border-radius: 0;
 							.progress-bar{
-								width: 500px!important;
+								width: 434px!important;
 							}
 						}
 					}
@@ -1062,12 +1084,12 @@
 				flex: 0 0 180px;
 				padding:  0 15px 12px 0;
 				&.seat-info{
-					width: 115px;
-					flex: 0 0 115px;
+					width: 107px;
+					flex: 0 0 107px;
 				}
 				&.info-block{
-					width: 200px;
-					flex: 0 0 200px;
+					width: 175px;
+					flex: 0 0 175px;
 				}
 				.icon-wrap{
 					width: 18px;
@@ -1075,10 +1097,36 @@
 					flex: 0 0 18px;
 					top: 8px;
 				}
+				&.calendar-col{
+					flex: 0 0 166px;
+					width: 166px;
+					.text-wrap{
+						span{
+							em{
+								font-size: 12px;
+								line-height: 16px;
+							}
+						}
+					}
+				}
+				&.skill-col{
+					width: 210px;
+					flex: 0 0 210px;
+					.text-wrap{
+						display: inline-block;
+						span{
+							display: block;
+						}
+					}
+				}
 				.text-wrap {
-					.title-text, .subtitle-text{
+					.title-text{
 						font-size: 14px;
 						line-height: 19px;
+					}
+					.subtitle-text{
+						font-size: 12px;
+						line-height: 16px;
 					}
 				}
 			}
@@ -1093,6 +1141,7 @@
 		    height: 100%;
 		    max-width: 30%;
 		    flex: 0 0 30%;
+		    padding-top: 45px;
 		    .btn-wrap{
 		    	.btn{
 		    		min-height: 40px;
@@ -1121,7 +1170,7 @@
 	  			}
 		    }
 		    .social-btn{
-		    	margin-top: 27px;
+		    	margin: 21px 0 0;
 		    }
 		    .donate-btn-wrap{
 		    	.form-group{
@@ -1132,10 +1181,15 @@
 			    		top: 50%;
 			    		@include transformY(-50%);
 			    		left: 9px;
-			    		font-size: 18px;
-			    		line-height: 25px;
+			    		width: 11px;
+			    		height: 25px;
 			    		font-weight: 600;
 			    		color: $middle-gray;
+			    		margin-bottom: 0;
+			    		img{
+			    			width: 100%;
+			    			height: 100%;
+			    		}
 			    	}
 		    		.btn-donate{
 		    			position: absolute;
@@ -1182,7 +1236,7 @@
           	}
           }
           .card-title{
-          	margin-bottom: 5px;
+          	margin-bottom: 0;
           }
           .ratings{
           	margin-bottom: 4px;
