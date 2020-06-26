@@ -22,100 +22,25 @@
                                          :alt="languageData.label.location">
                                 </i>{{mission.city_name}}
                             </div>
-                         <!--    <div class="btn-ic-wrap">
-                                <b-button v-bind:class="{
-                                        'favourite-icon' : true,
-                                        active : mission.is_favourite == 1
-                                    }" v-b-tooltip.hover
-                                          :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
-                                          @click="favoriteMission(mission.mission_id)">
-                                    <i class="normal-img">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24"
-                                             height="21">
-                                            <g id="Main Content">
-                                                <g id="1">
-                                                    <g id="Image content">
-                                                        <path id="Forma 1"
-                                                              d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-                                                    </g>
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </i>
-                                    <i class="hover-img">
-                                        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                             viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;"
-                                             xml:space="preserve">
-                                            <g>
-                                                <g id="Icons_18_">
-                                                    <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-                                                    C475,208.9,492.7,173.1,492.7,133.1z" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </i>
-                                </b-button>
-                                <b-button class="add-icon" v-if="isInviteCollegueDisplay"
-                                    @click="handleModal(mission.mission_id)" v-b-tooltip.hover
-                                    :title="languageData.label.recommend_to_co_worker">
-                                    <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-                                        :alt="languageData.label.recommend_to_co_worker">
-                                </b-button>
-                            </div> -->
+                         
                         </div>
-                        <!-- <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span
-                                class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
-                        </div> -->
                     </b-card-header>
 
                     <b-card-body>
                         <div class="card-detail-column">
-                            <!-- <div class="top-content">
-                                <b-list-group>
-                                    <b-list-group-item>
-                                        <i class="left-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
-                                        </i>
-                                        <p class="text-wrap">{{mission.city_name}}</p>
-                                    </b-list-group-item>
-                                    <b-list-group-item v-if="mission.mission_theme != null && isThemeSet">
-                                        <i class="left-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
-                                        </i>
-                                        <p class="text-wrap">{{getThemeTitle(mission.mission_theme.translations)}}</p>
-                                    </b-list-group-item>
-                                    <b-list-group-item>
-                                        <i class="left-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
-                                        </i>
-                                        <p class="text-wrap">{{mission.organisation_name}}</p>
-                                    </b-list-group-item>
-                                </b-list-group>
-
-                                <div class="ratings" v-if="isStarRatingDisplay">
-                                    <star-rating v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd"
-                                                 active-color="#F7D341" v-bind:star-size="23" :rating="mission.mission_rating_count"
-                                                 :read-only="true">
-                                    </star-rating>
-                                </div>
-                            </div> -->
+                            
                             <div class="content-block">
                                 <!-- <div class="mission-label" v-if="mission.is_virtual == 1">
                                   <span>{{languageData.label.virtual_mission}}</span>
                                 </div> -->
                                 <div class="mission-label-wrap">
                                     <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span></div>
-                                    <!-- <div class="mission-label volunteer-label">
-                                        <span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon'.svg" alt="volunteer icon"></i>Volunteer</span>
-                                    </div> -->
+                                    <div class="mission-label volunteer-label" v-if="isDispalyMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
+										<span :style="{ backgroundColor: volunteeringMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon" alt="volunteer icon"></i>{{volunteeringMissionTypeLabels.label}}</span>
+									</div>
                                     <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
                                         <span>{{languageData.label.virtual_mission}}</span>
                                     </div>
-                                    <!-- <div class="mission-label donation-label">
-                                        <span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/donation-icon.'svg" alt=""></i>Donation</span>
-                                    </div> -->
                                     
                                 </div>
                                 <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
@@ -346,7 +271,21 @@ export default {
 		isSubmitNewMissionSet: true,
 		isThemeSet: true,
 		submitNewMissionUrl: "",
-		isSkillDisplay: true
+		isSkillDisplay: true,
+		isDispalyMissionLabel : false,
+		isVolunteeringSet : true,
+		isDonationSet : true,
+		missionTypeLabels : "",
+		volunteeringMissionTypeLabels : {
+			'icon' : '',
+			'label' : '',
+			'backgroundColor' : ''
+		},
+		donationMissionTypeLabels : {
+			'icon' : '',
+			'label' : '',
+			'backgroundColor' : ''
+		}
 		};
 	},
 	computed: {
@@ -520,17 +459,17 @@ export default {
 		},
 		// Apply for mission
 		applyForMission(missionId) {
-		let missionData = {};
-		missionData.mission_id = missionId;
-		missionData.availability_id = 1;
-		applyMission(missionData).then(response => {
-			if (response.error == true) {
-			this.makeToast("danger", response.message);
-			} else {
-			this.makeToast("success", response.message);
-			this.$emit("getMissions");
-			}
-		});
+			let missionData = {};
+			missionData.mission_id = missionId;
+			missionData.availability_id = 1;
+			applyMission(missionData).then(response => {
+				if (response.error == true) {
+				this.makeToast("danger", response.message);
+				} else {
+				this.makeToast("success", response.message);
+				this.$emit("getMissions");
+				}
+			});
 		},
 		makeToast(variant = null, message) {
 		this.$bvToast.toast(message, {
@@ -540,50 +479,64 @@ export default {
 		});
 		},
 		getAppliedStatus(missionDetail) {
-		let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
-		let missionEndDate = moment(missionDetail.end_date).format(
-			"YYYY-MM-DD HH::mm:ss"
-		);
-		let checkEndDateExist = true;
-		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-			if (currentDate > missionEndDate) {
-			checkEndDateExist = false;
-			}
-		}
-		if (missionDetail.user_application_count == 1 && checkEndDateExist) {
-			return true;
-		}
-		},
-		getClosedStatus(missionDetail) {
-		let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
-		let missionEndDate = moment(missionDetail.end_date).format(
-			"YYYY-MM-DD HH::mm:ss"
-		);
-		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-			if (currentDate > missionEndDate) {
-			return true;
-			}
-		}
-		},
-		submitNewMission() {
-		if (this.submitNewMissionUrl != "") {
-			window.open(this.submitNewMissionUrl, "_self");
-		}
-		},
-		getSkills(skills) {
-		let skillString = "";
-		if (skills) {
-			skills.filter((data, index) => {
-			if (data) {
-				if (skillString != "") {
-				skillString = skillString + ", " + data.title;
-				} else {
-				skillString = data.title;
+			let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+			let missionEndDate = moment(missionDetail.end_date).format(
+				"YYYY-MM-DD HH::mm:ss"
+			);
+			let checkEndDateExist = true;
+			if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+				if (currentDate > missionEndDate) {
+				checkEndDateExist = false;
 				}
 			}
-			});
-		}
-		return skillString;
+			if (missionDetail.user_application_count == 1 && checkEndDateExist) {
+				return true;
+			}
+		},
+		getClosedStatus(missionDetail) {
+			let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+			let missionEndDate = moment(missionDetail.end_date).format(
+				"YYYY-MM-DD HH::mm:ss"
+			);
+			if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+				if (currentDate > missionEndDate) {
+				return true;
+				}
+			}
+		},
+		submitNewMission() {
+			if (this.submitNewMissionUrl != "") {
+				window.open(this.submitNewMissionUrl, "_self");
+			}
+		},
+		getSkills(skills) {
+			let skillString = "";
+			if (skills) {
+				skills.filter((data, index) => {
+				if (data) {
+					if (skillString != "") {
+					skillString = skillString + ", " + data.title;
+					} else {
+					skillString = data.title;
+					}
+				}
+				});
+			}
+			return skillString;
+		},
+		checkMissionTypeVolunteering(missionType) {
+			if (constants.MISSION_TYPE_TIME == missionType || constants.MISSION_TYPE_GOAL == missionType) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		checkMissionTypeDonation(missionType) {
+			if (constants.MISSION_TYPE_DONATION == missionType) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	},
 	created() {
@@ -599,6 +552,45 @@ export default {
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 		this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+
+		this.isVolunteeringSet = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+		this.isDonationSet = this.settingEnabled(constants.DONATION_ENABLED);
+		if (this.isDonationSet && this.isVolunteeringSet) {
+			this.isDispalyMissionLabel = true;
+		}
+		this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
+		if (JSON.parse(store.state.missionTypeLabels) != "") {
+			let defaultLang = store.state.defaultLanguage.toLowerCase();
+			this.missionTypeLabels.filter((item, i) => {
+				// volunteering mission label
+				if (item.type == constants.VOLUNTERRING_ENABLED) {
+					this.volunteeringMissionTypeLabels.icon = item.icon;
+					this.volunteeringMissionTypeLabels.backgroundColor = item.background_color;
+					let data = item.translations.filter(translationsItem => {
+						if (translationsItem.language_code == defaultLang) {
+							this.volunteeringMissionTypeLabels.label = translationsItem.description;
+						}
+					});
+					if (this.volunteeringMissionTypeLabels.label == "" && data[0] && data[0].description) {
+						this.volunteeringMissionTypeLabels.label = data[0].description;
+					}
+				}
+				// Donation mission label
+				if (item.type == constants.VOLUNTERRING_ENABLED) {
+					this.donationMissionTypeLabels.icon = item.icon;
+					this.donationMissionTypeLabels.backgroundColor = item.background_color;
+					let data = item.translations.filter(translationsItem => {
+						if (translationsItem.language_code == defaultLang) {
+							this.donationMissionTypeLabels.label = translationsItem.description;
+						}
+					});
+					if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
+						this.donationMissionTypeLabels.label = data[0].description;
+					}
+				}
+
+			});
+		}
 	}
 };
 </script>
