@@ -61,30 +61,29 @@ class MissionTabRepository implements MissionTabInterface
     * @param int $missionId
     * @return array
     */
-    public function store(Request $request, int $missionId)
+    public function store(array $missionTabValue, int $missionId)
     {
         $languages = $this->languageHelper->getLanguages();
-        foreach ($request->mission_tab_details as $missionTabValue) {
-            $missionTabArray = [
-                'mission_tab_id' => (String) Str::uuid(),
-                'mission_id' => $missionId,
-                'sort_key' => $missionTabValue['sort_key']
+
+        $missionTabArray = [
+            'mission_tab_id' => (String) Str::uuid(),
+            'mission_id' => $missionId,
+            'sort_key' => $missionTabValue['sort_key']
+        ];
+        $missionTab = $this->modelsService->missionTab->create($missionTabArray);
+        foreach ($missionTabValue['translations'] as $missionTabLanguageValue) {
+            $language = $languages->where('code', $missionTabLanguageValue['lang'])->first();
+            $missionTabLangArray = [
+                'mission_tab_language_id' => (String) Str::uuid(),
+                'mission_tab_id' => $missionTab['mission_tab_id'],
+                'language_id' => $language->language_id,
+                'name' => $missionTabLanguageValue['name'],
+                'section' => json_encode($missionTabLanguageValue['sections'])
             ];
-            $missionTab = $this->modelsService->missionTab->create($missionTabArray);
-            foreach ($missionTabValue['translations'] as $missionTabLanguageValue) {
-                $language = $languages->where('code', $missionTabLanguageValue['lang'])->first();
-                $missionTabLangArray = [
-                    'mission_tab_language_id' => (String) Str::uuid(),
-                    'mission_tab_id' => $missionTab['mission_tab_id'],
-                    'language_id' => $language->language_id,
-                    'name' => $missionTabLanguageValue['name'],
-                    'section' => json_encode($missionTabLanguageValue['sections'])
-                ];
-                $missionTabLanguage = $this->modelsService->missionTabLanguage->create($missionTabLangArray);
-                unset($missionTabLangArray);
-            }
-            unset($missionTabArray);
+            $missionTabLanguage = $this->modelsService->missionTabLanguage->create($missionTabLangArray);
+            unset($missionTabLangArray);
         }
+        unset($missionTabArray);
     }
 
     /**

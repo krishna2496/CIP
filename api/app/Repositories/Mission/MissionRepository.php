@@ -176,7 +176,9 @@ class MissionRepository implements MissionInterface
 
         // Add mission tab detail
         if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
-            $this->missionTabRepository->store($request, $mission->mission_id);
+            foreach($request->mission_tab_details as $missionTabValue){
+                $this->missionTabRepository->store($missionTabValue, $mission->mission_id);
+            }
         }
         
         // For skills
@@ -394,7 +396,7 @@ class MissionRepository implements MissionInterface
                     $this->missionTabRepository->update($missionTabValue, $id);
                 } else {
                     //Mission tab id is not available and create the mission tab and details
-                    $this->missionTabRepository->store($request, $id);
+                    $this->missionTabRepository->store($missionTabValue, $id);
                 }
             }
         }

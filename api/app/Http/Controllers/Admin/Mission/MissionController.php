@@ -317,6 +317,8 @@ class MissionController extends Controller
                 "required_with:mission_tab_details.*.translations.*.sections",
                 "mission_tab_details.*.translations.*.sections.*.content" =>
                 "required_with:mission_tab_details.*.translations.*.sections",
+                "mission_tab_details.*.translations.*.sections" =>
+                "required_without:mission_tab_details.*.mission_tab_id",
             ]
         );
 

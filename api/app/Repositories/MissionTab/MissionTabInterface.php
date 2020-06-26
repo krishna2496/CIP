@@ -12,7 +12,7 @@ interface MissionTabInterface
      * @param int $missionId
      * @return array
      */
-    public function store(Request $request, int $missionId);
+    public function store(array $request, int $missionId);
 
         /**
      * Store a newly created resource into database
