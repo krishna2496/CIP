@@ -39,13 +39,13 @@
 							<div class="content-block">
 								<div class="mission-label-wrap">
 									
-									<!-- <div class="mission-label volunteer-label">
+									<div class="mission-label volunteer-label" v-if="isDispalyMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
 										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon.svg'" alt="volunteer icon"></i>Volunteer</span>
-									</div> -->
+									</div>
 									<div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
 										<span>{{languageData.label.virtual_mission}}</span>
 									</div>
-									<!-- <div class="mission-label donation-label">
+									<!-- <div class="mission-label donation-label" v-if="isDispalyMissionLabel && checkMissionTypeDonation(mission.mission_type)">
 										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/donation-icon.svg'" alt=""></i>Donation</span>
 									</div> -->
 									
@@ -310,7 +310,10 @@ export default {
 		isStarRatingDisplay: true,
 		isSubmitNewMissionSet: true,
 		isThemeSet: true,
-		submitNewMissionUrl: ""
+		submitNewMissionUrl: "",
+		isDispalyMissionLabel : false,
+		isVolunteeringSet : true,
+		isDonationSet : true
 		};
 	},
 	computed: {
@@ -561,7 +564,21 @@ export default {
 		                });
 					});
 				},500);
+		},
+		checkMissionTypeVolunteering(missionType) {
+			if (constants.MISSION_TYPE_TIME == missionType || constants.MISSION_TYPE_GOAL == missionType) {
+				return true;
+			} else {
+				return false;
 			}
+		},
+		checkMissionTypeDonation(missionType) {
+			if (constants.MISSION_TYPE_DONATION == missionType) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 		
 	},
 	created() {
@@ -575,7 +592,12 @@ export default {
 		);
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-
+		
+		this.isVolunteeringSet = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+		this.isDonationSet = this.settingEnabled(constants.DONATION_ENABLED);
+		if(this.isDonationSet && this.isVolunteeringSet) {
+			this.isDispalyMissionLabel = true;
+		}
 		this.cardHeightAdj();
 
 		window.addEventListener("resize", this.cardHeightAdj());

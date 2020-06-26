@@ -61,6 +61,7 @@ export default new Vuex.Store({
         stateId: localStorage.getItem('stateId'),
         samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
         ssoLogin: JSON.parse(localStorage.getItem('ssoLogin')),
+        missionTypeLabels : localStorage.getItem('missionTypeLabels')
     },
     mutations: {
         setToken(state, data) {
@@ -390,6 +391,11 @@ export default new Vuex.Store({
             localStorage.setItem('samlSettings', data);
             state.samlSettings = JSON.parse(data);
         },
+
+        missionTypeLabels(state,data) { 
+            localStorage.setItem('missionTypeLabels', JSON.stringify(data))
+            state.missionTypeLabels = JSON.stringify(data)
+        }
     },
     getters: {},
     actions: {}
