@@ -1990,6 +1990,13 @@
             "required": false,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "field",
+            "in": "path",
+            "required": false,
+            "type": "string",
+            "description": "For ordering of user. Can be (fullName, firstName, email, volunteerStatus, country, language, lastName, email, title, email, department)"
           }
         ],
         "responses": {
@@ -8469,6 +8476,9 @@
           "type":  "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+        },
+        "position": {
+          "type": "string"
         }
       }
     },
