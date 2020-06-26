@@ -799,21 +799,33 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->group(
         ['middleware' => 'localization|auth.tenant.admin'],
         function ($router) {
-            /* Get language file */
+            /* Get generic translations */
             $router->get(
-                '/language-generic/{isoCode}',
-                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchGenericTranslations']
+                '/translations/generic/{isoCode}',
+                ['as' => 'translations.generic.fetch', 'uses' => 'Admin\Language\LanguageController@fetchGenericTranslations']
             );
 
-            /* Get language file */
+            /* Get custom translations */
+            $router->get(
+                '/translations/custom/{isoCode}',
+                ['as' => 'translations.custom.fetch', 'uses' => 'Admin\Language\LanguageController@fetchCustomTranslations']
+            );
+
+            /* Update custom translations */
+            $router->post(
+                '/translations/custom/{isoCode}',
+                ['as' => 'translations.custom.update', 'uses' => 'Admin\Language\LanguageController@updateTranslations']
+            );
+
+            /* The following routes are aliases for custom translations, kept for backward compatibility */
             $router->get(
                 '/language-file/{isoCode}',
                 ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchCustomTranslations']
             );
-
-            /* Upload language file */
-            $router->post('/language-file/{isoCode}', ['as' => 'languagefile.upload',
-            'uses' => 'Admin\Language\LanguageController@uploadTranslations']);
+            $router->post(
+                '/language-file/{isoCode}',
+                ['as' => 'languagefile.upload', 'uses' => 'Admin\Language\LanguageController@updateTranslations']
+            );
         }
     );
 

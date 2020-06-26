@@ -196,12 +196,14 @@ class LanguageController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function uploadTranslations(Request $request, $isoCode): JsonResponse
+    public function updateTranslations(Request $request, $isoCode): JsonResponse
     {
         // Server side validations
+        $translations = $request->getContent();
         $validator = Validator::make(
-            $request->toArray() + [
+            [
                 'isoCode' => $isoCode,
+                'translations' => $translations,
             ],
             [
                 "isoCode" => "required|max:2|min:2",
@@ -218,8 +220,6 @@ class LanguageController extends Controller
                 $validator->errors()->first()
             );
         }
-
-        $translations = $request->get('translations');
 
         // Validate json data
         if (json_decode($translations) === null) {

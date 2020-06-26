@@ -78,10 +78,10 @@
       "name": "City"
     },
     {
-      "name": "Language File"
+      "name": "Timezone"
     },
     {
-      "name": "Timezone"
+      "name": "Translations"
     }
   ],
   "paths": {
@@ -7672,12 +7672,12 @@
         }
       }
     },
-    "/language-generic/{isoCode}/": {
+    "/translations/generic/{isoCode}/": {
       "get": {
-        "operationId": "GET_team4-cip-api-get-language-generic",
+        "operationId": "GET_team4-cip-api-get-translations-generic",
         "summary": "Admin - Fetch generic translations",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
           "multipart/form-data"
@@ -7695,7 +7695,7 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "Language code. Example: To fetch English translations, use en; for French translations, use fr."
+            "description": "Language ISO code. Example: To fetch English translations, use en; for French translations, use fr."
           }
         ],
         "responses": {
@@ -7708,12 +7708,12 @@
         }
       }
     },
-    "/language-file/{isoCode}/": {
+    "/translations/custom/{isoCode}/": {
       "get": {
         "operationId": "GET_team4-cip-api-get-language-file",
         "summary": "Admin - Fetch custom translations",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
           "multipart/form-data"
@@ -7731,7 +7731,7 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "Language code. Example: To fetch English translations, use en; for French translations, use fr."
+            "description": "Language ISO code. Example: To fetch English translations, use en; for French translations, use fr."
           }
         ],
         "responses": {
@@ -7744,15 +7744,15 @@
         }
       }
     },
-    "/language-file/{isoCode}": {
+    "/translations/custom/{isoCode}": {
       "post": {
         "operationId": "GET_team4-cip-api-post-language-file-changes",
         "summary": "Admin - Update language file",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
@@ -7767,14 +7767,70 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "Language code. Example: To customize English translations, use en; to customize French translations, use fr."
+            "description": "Language ISO code. Example: To customize English translations, use en; to customize French translations, use fr."
           },
           {
-            "name": "translations",
-            "in": "formData",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string",
-            "description": "JSON encoded string containing all custom translations for the specified language. Translations not included in this structure will be inherited from original translations."
+            "description": "JSON encoded string containing all custom translations for the specified language. Translations not included in this structure will be inherited from original translations.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "placeholder": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "export_timesheet_file_names": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -8048,7 +8104,7 @@
             "required": true,
             "type": "string",
             "default": ""
-          },
+          }
         ],
         "responses": {
           "401":{
@@ -8504,7 +8560,7 @@
         "expiry": {
           "type":  "string",
           "format": "date-time",
-          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         }
       }
     },
