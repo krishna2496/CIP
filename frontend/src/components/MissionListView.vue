@@ -162,9 +162,9 @@
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
                                     <div class="text-wrap" v-if="mission.end_date !== null">
-                                        <span class="title-text mb-1">{{ languageData.label.from }}
+                                        <span class="title-text"><em>{{ languageData.label.from }}</em>
                                             {{mission.start_date | formatDate }}</span>
-                                        <span class="title-text">{{ languageData.label.until}}
+                                        <span class="title-text"><em>{{ languageData.label.until}}</em>
                                             {{ mission.end_date | formatDate }}</span>
                                     </div>
                                 </div>
