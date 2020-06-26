@@ -8,11 +8,11 @@ interface MissionTabInterface
     /**
      * Store a newly created resource into database
      *
-     * @param \Illuminate\Http\Request $request
+     * @param array $missionTabValue
      * @param int $missionId
      * @return array
      */
-    public function store(array $request, int $missionId);
+    public function store(array $missionTabValue, int $missionId);
 
         /**
      * Store a newly created resource into database
