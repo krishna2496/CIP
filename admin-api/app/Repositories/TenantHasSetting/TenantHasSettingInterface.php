@@ -50,7 +50,7 @@ interface TenantHasSettingInterface
     public function disableDonationRelatedSettings(int $tenantId);
 
     /**
-     * Check donation setting for related settings
+     * Return data if tenant has donation setting is enable/disable
      *
      * @param int $tenantId
      * @param string $key

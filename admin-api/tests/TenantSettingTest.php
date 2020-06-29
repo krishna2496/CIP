@@ -200,7 +200,7 @@ class TenantSettingTest extends TestCase
      * It should return donation setting disable if donation setting is already enable else return error message
      * @return void
      */
-    public function it_should_make_disable_all_donation_related_setting()
+    public function it_should_disable_all_donation_related_settings()
     {
 
         // Set Doantion setting disable
@@ -247,7 +247,7 @@ class TenantSettingTest extends TestCase
      * Change donation related setting if donation setting is enable
      * @return void
      */
-    public function it_should_make_enable_disable_all_donation_related_setting_if_donation_setting_enable()
+    public function it_should_enable_or_disable_donation_related_setting_if_donation_setting_is_enable()
     {
 
         // Set Doantion setting disable
@@ -276,10 +276,10 @@ class TenantSettingTest extends TestCase
     /**
      * @test
      *
-     * Return error if donation setting is disable and donation related setting try to get enable
+     * Return error if donation setting is already disable and donation related setting try to get enable
      * @return void
      */
-    public function donation_setting_disable_and_donation_related_setting_try_to_make_enable()
+    public function it_should_try_to_change_donation_related_setting_while_donation_setting_already_disable()
     {
 
         // Set Doantion setting disable
