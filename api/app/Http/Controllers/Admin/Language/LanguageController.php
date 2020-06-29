@@ -152,7 +152,7 @@ class LanguageController extends Controller
         $fileName = $request->file_name;
         $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
 
-        $validFileType = ['text/plain'];
+        $validFileType = ['text/plain','application/json'];
         // If request parameter have any error
         if (!in_array($file->getMimeType(), $validFileType) ||
         ('.'.$fileExtension !== config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION'))) {
