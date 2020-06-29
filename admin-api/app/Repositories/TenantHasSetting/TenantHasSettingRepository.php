@@ -124,13 +124,10 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
                 }
             }
 
-            if ($key === 'donation' && $settingValue === '0' && $donationSettingEnable === true) {
-                return false;
-            } elseif ($key === 'donation' && $settingValue === '1' && $donationSettingEnable === true) {
+            // Check donation setting is alos updating or not
+            if ($key === 'donation' && $settingValue === '1' && $donationSettingEnable === true) {
                 return true;
             } elseif ($key === 'donation' && $settingValue === '0' && $donationSettingEnable === false) {
-                return true;
-            } elseif ($key === 'donation' && $settingValue === '1' && $donationSettingEnable === false) {
                 return true;
             }
         }

@@ -123,7 +123,7 @@ class TenantHasSettingController extends Controller
 
             // Check if donation setting is enable/disable
             $requestArray = $request->toArray();
-            if (!$this->tenantHasSettingRepository->isDonationSettingEnabled($requestArray, $tenantId)) {
+            if (!$this->tenantHasSettingRepository->isDonationSettingEnabled($requestArray, $tenantId)) {                
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -133,7 +133,7 @@ class TenantHasSettingController extends Controller
             }
 
             // Store settings
-            $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);
+            $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);            
 
             // Create connection with tenant database
             $this->databaseHelper->connectWithTenantDatabase($tenantId);
