@@ -91,7 +91,7 @@ class AppStoryTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -234,7 +234,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -343,7 +343,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -446,7 +446,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -555,7 +555,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -669,7 +669,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -779,7 +779,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -885,7 +885,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -995,7 +995,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1114,7 +1114,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1242,7 +1242,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1370,7 +1370,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1492,7 +1492,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1611,7 +1611,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1736,7 +1736,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1858,7 +1858,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1981,7 +1981,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2103,7 +2103,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2215,7 +2215,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2339,7 +2339,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2453,7 +2453,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2576,7 +2576,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2712,7 +2712,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2824,7 +2824,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2937,7 +2937,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3097,7 +3097,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3211,7 +3211,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3370,7 +3370,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
@@ -3510,7 +3510,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
@@ -3649,7 +3649,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3777,7 +3777,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3912,7 +3912,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');

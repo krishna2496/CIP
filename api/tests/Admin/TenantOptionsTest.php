@@ -90,7 +90,7 @@ class TenantOptionsTest extends TestCase
                 ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -122,7 +122,7 @@ class TenantOptionsTest extends TestCase
                 ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -313,10 +313,10 @@ class TenantOptionsTest extends TestCase
                 ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
-        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -348,7 +348,7 @@ class TenantOptionsTest extends TestCase
                 ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
 
@@ -366,7 +366,7 @@ class TenantOptionsTest extends TestCase
                 ],
         ];
         
-        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -418,7 +418,7 @@ class TenantOptionsTest extends TestCase
                 ],
         ];
         
-        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -450,7 +450,7 @@ class TenantOptionsTest extends TestCase
             'option_value' => 1
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -654,7 +654,7 @@ class TenantOptionsTest extends TestCase
             'custom_scss_file' => ''
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("style/update-style/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('style/update-style/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 

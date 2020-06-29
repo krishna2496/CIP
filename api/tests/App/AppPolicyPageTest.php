@@ -97,7 +97,7 @@ class AppPolicyPageTest extends TestCase
                 ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('policy/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
