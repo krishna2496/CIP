@@ -109,6 +109,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      */
     public function isDonationSettingEnabled(array $settingData, int $tenantId): bool
     {
+        $donationSettingEnable = false;
         $checkDonationRelatedSettings = [ 'donation', 'donation_mission_comments', 'donation_mission_ratings'];
         foreach ($settingData['settings'] as $value) {
             $tenantSettingId = $value['tenant_setting_id'];
@@ -157,7 +158,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     }
 
     /**
-     * Check donation setting is enable/disable
+     * Return data if tenant has donation setting is enable/disable
      *
      * @param int $tenantId
      * @param string $key
