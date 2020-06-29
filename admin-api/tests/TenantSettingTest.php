@@ -64,24 +64,66 @@ class TenantSettingTest extends TestCase
         for ($i=0; $i<3; $i++) {
             $params['settings'][$i] = [
                 'tenant_setting_id' => TenantSetting::get()->random()->tenant_setting_id,
-                'value' => 1,
+                'value' => '1',
             ];
         }
-        
-        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
-        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
-        ->seeStatusCode(200);
 
-        // Make disable settings
-        foreach ($params['settings'] as $key => $param) {
-            $params['settings'][$key] = [
-                'tenant_setting_id' => $param['tenant_setting_id'],
-                'value' => 0
-            ];
+        // Get donation setting id
+        $donationRelatedSettingAvailable = 0;
+        $donationSettingData = TenantSetting::get()->where('key', '=', 'donation')->toArray();
+        foreach ($donationSettingData as $donationValue) {
+            $donationSettingId = $donationValue['tenant_setting_id'];
         }
-        // And again call setting API with 0 value to delete it
-        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
-        ->seeStatusCode(200);
+        $donationHasSetting = TenantHasSetting::where(['tenant_setting_id' => $donationSettingId, 'tenant_id' => env('DEFAULT_TENANT_ID')])
+        ->whereNull('deleted_at')->get()->toArray();
+
+        $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
+
+        // Donation related settings
+        $donationRelatedSettingIds = $this->getParamsArray($donationRelatedSettingsArray);
+
+        $donationRelatedIds = [];
+        foreach($donationRelatedSettingIds['settings'] as $value){
+            array_push($donationRelatedIds, $value['tenant_setting_id']);
+        }
+
+        // Check donation setting is enable/disable
+        foreach ($params['settings'] as $key => $param) {
+            if (in_array($param['tenant_setting_id'], $donationRelatedIds) && empty($donationHasSetting)) {
+                $donationRelatedSettingAvailable = 1;
+            }
+        }
+
+        if ($donationRelatedSettingAvailable === 1) {
+            $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+            ->seeStatusCode(422)
+            ->seeJsonStructure([
+                'errors' => [
+                    [
+                        'status',
+                        'type',
+                        'code',
+                        'message'
+                    ]
+                ]
+            ]);
+        } else {
+                
+            // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+            $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+            ->seeStatusCode(200);
+
+            // Make disable settings
+            foreach ($params['settings'] as $key => $param) {
+                $params['settings'][$key] = [
+                    'tenant_setting_id' => $param['tenant_setting_id'],
+                    'value' => 0
+                ];
+            }
+            // And again call setting API with 0 value to delete it
+            $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+            ->seeStatusCode(200);
+        }
     }
 
     /**
@@ -210,8 +252,8 @@ class TenantSettingTest extends TestCase
             $donationSettingId = $donationValue['tenant_setting_id'];
         }
 
-        $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)
-        ->where('deleted_at', '=', null)->toArray();
+        $donationHasSetting = TenantHasSetting::where(['tenant_setting_id' => $donationSettingId, 'tenant_id' => env('DEFAULT_TENANT_ID')])
+        ->whereNull('deleted_at')->get()->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
 
         // Create donation related setting array
@@ -254,8 +296,6 @@ class TenantSettingTest extends TestCase
         foreach ($donationSettingData as $donationValue) {
             $donationSettingId = $donationValue['tenant_setting_id'];
         }
-
-        $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
 
         // Create donation related setting array
@@ -285,7 +325,8 @@ class TenantSettingTest extends TestCase
             $donationSettingId = $donationValue['tenant_setting_id'];
         }
 
-        $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
+        $donationHasSetting = TenantHasSetting::where(['tenant_setting_id' => $donationSettingId, 'tenant_id' => env('DEFAULT_TENANT_ID')])
+        ->whereNull('deleted_at')->get()->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
 
         $params['settings'][0] = [
@@ -328,9 +369,7 @@ class TenantSettingTest extends TestCase
             $donationSettingId = $donationValue['tenant_setting_id'];
         }
 
-        $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
-
         $params['settings'][0] = [
             'tenant_setting_id' => $donationSettingId,
             'value' => '1',
