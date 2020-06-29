@@ -67,6 +67,7 @@ class TenantSettingTest extends TestCase
                 'value' => 1,
             ];
         }
+        
         // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
         $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
         ->seeStatusCode(200);
@@ -209,7 +210,8 @@ class TenantSettingTest extends TestCase
             $donationSettingId = $donationValue['tenant_setting_id'];
         }
 
-        $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
+        $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)
+        ->where('deleted_at', '=', null)->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
 
         // Create donation related setting array
