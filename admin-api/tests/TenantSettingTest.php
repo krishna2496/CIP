@@ -210,18 +210,15 @@ class TenantSettingTest extends TestCase
         }
 
         $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
-
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
-        $i = 0;
-
-        $params['settings'][$i] = [
-            'tenant_setting_id' => $donationSettingId,
-            'value' => '0',
-        ];
-        $i++;
 
         // Create donation related setting array
         $params = $this->getParamsArray($donationRelatedSettingsArray);
+        $params['settings'][0] = [
+            'tenant_setting_id' => $donationSettingId,
+            'value' => '0',
+        ];
+
         if (!empty($donationHasSetting)) {
             $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
             ->seeStatusCode(200);
@@ -258,16 +255,14 @@ class TenantSettingTest extends TestCase
 
         $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
-        $i = 0;
-
-        $params['settings'][$i] = [
-            'tenant_setting_id' => $donationSettingId,
-            'value' => '1',
-        ];
-        $i++;
 
         // Create donation related setting array
         $params = $this->getParamsArray($donationRelatedSettingsArray);
+
+        $params['settings'][0] = [
+            'tenant_setting_id' => $donationSettingId,
+            'value' => '1',
+        ];
 
         $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
         ->seeStatusCode(200);
@@ -290,7 +285,6 @@ class TenantSettingTest extends TestCase
 
         $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
-        $i = 0;
 
         $params['settings'][0] = [
             'tenant_setting_id' => $donationSettingId,
@@ -334,7 +328,6 @@ class TenantSettingTest extends TestCase
 
         $donationHasSetting = TenantHasSetting::get()->where('tenant_setting_id', '=', $donationSettingId)->toArray();
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
-        $i = 0;
 
         $params['settings'][0] = [
             'tenant_setting_id' => $donationSettingId,
@@ -345,7 +338,6 @@ class TenantSettingTest extends TestCase
         ->seeStatusCode(200);
 
         $params = $this->getParamsArray($donationRelatedSettingsArray);
-
         $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
         ->seeStatusCode(200);
     }
@@ -359,15 +351,14 @@ class TenantSettingTest extends TestCase
     */
 
     /**
-     * @test
-     *
      * Set parameter for donation related setting
+     *
      * @param $donationRelatedSettingsArray
      * @return array
      */
     public function getParamsArray($donationRelatedSettingsArray) : array
     {
-        $i = 0;
+        $i = 1;
         foreach ($donationRelatedSettingsArray as $value) {
             $settingIdDetails = TenantSetting::get()->where('key', '=', $value)->toArray();
             foreach ($settingIdDetails as $settingValue) {
