@@ -186,8 +186,6 @@
                                 </b-col>
                             </b-row>
                             <b-row class="row-form">
-                            </b-row>
-                            <b-row class="row-form">
                                 <b-col cols="12">
                                     <h2 class="title-with-border">
                                         <span>{{languageData.label.professional_information}}</span>
