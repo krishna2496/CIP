@@ -346,7 +346,7 @@ class UserController extends Controller
         $this->userFilterRepository->saveFilter($request);
 
         // Update user
-        $user = $this->userRepository->update($request->toArray(), $id);
+        $user = $this->userRepository->update($request, $id);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -417,8 +417,10 @@ class UserController extends Controller
         $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
         $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
 
-        $userData['avatar'] = $imagePath;
-        $this->userRepository->update($userData, $userId);
+        $request->merge([
+            'avatar' => $imagePath
+        ]);
+        $this->userRepository->update($request, $userId);
 
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');

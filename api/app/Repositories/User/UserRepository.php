@@ -60,8 +60,6 @@ class UserRepository implements UserInterface
      */
     private $languageHelper;
 
-    const SOURCE_ACTION_BACKEND = 'backend';
-
     /**
      * Create a new User repository instance.
      *
@@ -212,10 +210,6 @@ class UserRepository implements UserInterface
         $requestData = $this->getUserArrayDataFromRequest($request);
         $user = $this->user->findOrFail($id);
         $user->update($requestData);
-
-        if (isset($request->request_sync_source) && $request->request_sync_source === self::SOURCE_ACTION_BACKEND) {
-            return $user;
-        }
 
         $this->helpers
             ->syncUserData($request, $user->user_id);

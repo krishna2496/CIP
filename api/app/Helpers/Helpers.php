@@ -447,7 +447,6 @@ class Helpers
         $params = [
             'activity_type' => 'user',
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
-            'source' => 'ci',
             'ci_user_id' => $userId,
             'tenant_id' => $tenantIdAndSponsorId->tenant_id
         ];
