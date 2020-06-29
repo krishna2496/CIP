@@ -14,7 +14,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -32,12 +32,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -69,7 +69,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -91,7 +91,7 @@ class AppStoryTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -105,7 +105,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -136,7 +136,7 @@ class AppStoryTest extends TestCase
             'mission_id' => rand(10000000, 50000000),
             'title' => str_random(10),
             'description' => str_random(50),
-            'story_images[]' =>[]
+            'story_images[]' => []
         ];
 
         $this->post('app/story', $params, ['token' => $token])
@@ -165,7 +165,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -179,12 +179,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -216,7 +216,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -234,7 +234,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -243,7 +243,7 @@ class AppStoryTest extends TestCase
             'mission_id' => $mission->mission_id,
             'title' => "",
             'description' => str_random(50),
-            'story_images[]' =>[]
+            'story_images[]' => []
         ];
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -274,7 +274,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -288,12 +288,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -325,7 +325,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -343,7 +343,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -355,7 +355,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/dummy.svg';
+        $path  = storage_path() . '/unitTestFiles/dummy.svg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, null, true)
         );
@@ -377,7 +377,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -391,12 +391,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -428,7 +428,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -446,7 +446,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -486,7 +486,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -500,12 +500,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -537,7 +537,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -555,13 +555,13 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
         $storyVideos = '';
         $storyVideoUrl = 'https://www.youtube.com/watch?v=PCwL3-hkKrg,';
-        for ($i=0; $i<=config("constants.STORY_MAX_VIDEO_LIMIT")+1 ; $i++) {
+        for ($i = 0; $i <= config("constants.STORY_MAX_VIDEO_LIMIT") + 1; $i++) {
             $storyVideos .= $storyVideoUrl;
         }
 
@@ -600,7 +600,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -614,12 +614,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -651,7 +651,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -669,16 +669,16 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
 
-        for ($i=0; $i<=config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
+        for ($i = 0; $i <= config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
             array_push($storyImages, new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true));
         }
 
@@ -710,7 +710,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -724,12 +724,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -761,7 +761,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -779,11 +779,11 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
-        $path  = storage_path().'/unitTestFiles/SampleJPGImage_5mbmb.jpg';
+        $path  = storage_path() . '/unitTestFiles/SampleJPGImage_5mbmb.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, null, true)
         );
@@ -816,7 +816,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -830,12 +830,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -867,7 +867,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -885,7 +885,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -926,7 +926,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -940,12 +940,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -977,7 +977,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -995,7 +995,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1009,7 +1009,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1025,8 +1025,8 @@ class AppStoryTest extends TestCase
             'story_videos' => ''
         ];
         DB::setDefaultConnection('mysql');
-        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
-        $this->seeStatusCode(200);        
+        $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->seeStatusCode(200);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
@@ -1045,7 +1045,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1059,12 +1059,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1096,7 +1096,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1114,7 +1114,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1128,7 +1128,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1143,7 +1143,7 @@ class AppStoryTest extends TestCase
         ];
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-        $this->patch('app/story/'.$story->story_id, $params, ['token' => $token])
+        $this->patch('app/story/' . $story->story_id, $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -1173,7 +1173,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1187,12 +1187,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1224,7 +1224,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1242,7 +1242,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1256,7 +1256,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1271,7 +1271,7 @@ class AppStoryTest extends TestCase
         ];
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-        $this->patch('app/story/'.$story->story_id, $params, ['token' => $token])
+        $this->patch('app/story/' . $story->story_id, $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -1301,7 +1301,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1315,12 +1315,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1352,7 +1352,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1370,7 +1370,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1384,7 +1384,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1399,11 +1399,11 @@ class AppStoryTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $path  = storage_path().'/unitTestFiles/dummy.svg';
+        $path  = storage_path() . '/unitTestFiles/dummy.svg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, null, true)
         );
-        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -1423,7 +1423,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1437,12 +1437,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1474,7 +1474,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1492,7 +1492,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1506,7 +1506,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1522,7 +1522,7 @@ class AppStoryTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -1542,7 +1542,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1556,12 +1556,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1593,7 +1593,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1611,7 +1611,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1625,7 +1625,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1635,7 +1635,7 @@ class AppStoryTest extends TestCase
 
         $storyVideos = '';
         $storyVideoUrl = 'https://www.youtube.com/watch?v=PCwL3-hkKrg,';
-        for ($i=0; $i<=config("constants.STORY_MAX_VIDEO_LIMIT")+1 ; $i++) {
+        for ($i = 0; $i <= config("constants.STORY_MAX_VIDEO_LIMIT") + 1; $i++) {
             $storyVideos .= $storyVideoUrl;
         }
 
@@ -1647,7 +1647,7 @@ class AppStoryTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -1667,7 +1667,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1681,12 +1681,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1718,7 +1718,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1736,7 +1736,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1750,7 +1750,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1758,7 +1758,7 @@ class AppStoryTest extends TestCase
         $this->seeStatusCode(201);
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
 
-        for ($i=0; $i<=config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
+        for ($i = 0; $i <= config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
             array_push($storyImages, new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true));
         }
 
@@ -1769,7 +1769,7 @@ class AppStoryTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -1789,7 +1789,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1803,12 +1803,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1840,7 +1840,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1858,7 +1858,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1872,7 +1872,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -1880,7 +1880,7 @@ class AppStoryTest extends TestCase
         $this->seeStatusCode(201);
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
 
-        $path  = storage_path().'/unitTestFiles/SampleJPGImage_5mbmb.jpg';
+        $path  = storage_path() . '/unitTestFiles/SampleJPGImage_5mbmb.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, null, true)
         );
@@ -1892,7 +1892,7 @@ class AppStoryTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -1912,7 +1912,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -1926,12 +1926,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1963,7 +1963,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1981,7 +1981,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2006,7 +2006,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->patch('app/story/'.$story->story_id, $params, ['token' => $token])
+        $this->patch('app/story/' . $story->story_id, $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -2034,7 +2034,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2048,12 +2048,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2085,7 +2085,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2103,7 +2103,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2118,7 +2118,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
                
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->patch('app/story/'.rand(1000000, 50000000), $params, ['token' => $token])
+        $this->patch('app/story/' . rand(1000000, 50000000), $params, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -2146,7 +2146,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2160,12 +2160,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2197,7 +2197,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2215,7 +2215,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2242,7 +2242,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->patch('app/story/'.$story->story_id, $params, ['token' => $token])
+        $this->patch('app/story/' . $story->story_id, $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -2270,7 +2270,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2284,12 +2284,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2321,7 +2321,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2339,7 +2339,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2353,7 +2353,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -2364,7 +2364,7 @@ class AppStoryTest extends TestCase
         
         DB::setDefaultConnection('mysql');
 
-        $this->get('app/story/'.$story->story_id.'/copy', ['token' => $token])
+        $this->get('app/story/' . $story->story_id . '/copy', ['token' => $token])
         ->seeStatusCode(200);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -2384,7 +2384,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2398,12 +2398,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2435,7 +2435,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2453,7 +2453,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2467,17 +2467,17 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
 
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();        
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
 
-        $this->get('app/story/'.$story->story_id.'/copy', ['token' => $token])
+        $this->get('app/story/' . $story->story_id . '/copy', ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -2507,7 +2507,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2521,12 +2521,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2558,7 +2558,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2576,7 +2576,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2591,7 +2591,7 @@ class AppStoryTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
-        $this->get('app/story/'.rand(1000000, 5000000).'/copy', ['token' => $token])
+        $this->get('app/story/' . rand(1000000, 5000000) . '/copy', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -2623,7 +2623,7 @@ class AppStoryTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        DB::setDefaultConnection('mysql');            
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $this->get('app/story/export', ['token' => $token])
@@ -2643,7 +2643,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2657,12 +2657,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2694,7 +2694,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2712,7 +2712,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2727,7 +2727,7 @@ class AppStoryTest extends TestCase
         ];
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -2755,7 +2755,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2769,12 +2769,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2806,7 +2806,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2824,7 +2824,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2838,17 +2838,17 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
 
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();        
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
 
-        $this->post('app/story/'.$story->story_id.'/submit', [], ['token' => $token])
+        $this->post('app/story/' . $story->story_id . '/submit', [], ['token' => $token])
         ->seeStatusCode(200);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -2868,7 +2868,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -2882,12 +2882,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2919,7 +2919,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2937,7 +2937,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2951,18 +2951,18 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
 
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();   
-        $story->update(['status' => config('constants.story_status.PUBLISHED')]);     
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
+        $story->update(['status' => config('constants.story_status.PUBLISHED')]);
         DB::setDefaultConnection('mysql');
 
-        $this->post('app/story/'.$story->story_id.'/submit', [], ['token' => $token])
+        $this->post('app/story/' . $story->story_id . '/submit', [], ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -2992,7 +2992,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3000,8 +3000,8 @@ class AppStoryTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));        
-        $this->post('app/story/'.rand(1000000, 5000000).'/submit', [], ['token' => $token])                
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/story/' . rand(1000000, 5000000) . '/submit', [], ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -3028,7 +3028,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3042,12 +3042,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3079,7 +3079,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3097,7 +3097,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3110,19 +3110,19 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
 
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();   
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         $storyImage = App\Models\StoryMedia::where('story_id', $story->story_id)->take(1)->first();
    
         DB::setDefaultConnection('mysql');
 
-        $this->delete('app/story/'.$story->story_id.'/image/'.$storyImage->story_media_id, [], ['token' => $token])
+        $this->delete('app/story/' . $story->story_id . '/image/' . $storyImage->story_media_id, [], ['token' => $token])
         ->seeStatusCode(204);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -3142,7 +3142,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3156,12 +3156,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3193,7 +3193,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3211,7 +3211,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3225,20 +3225,20 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
 
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();   
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         $storyImage = App\Models\StoryMedia::where('story_id', $story->story_id)->take(1)->first();
           
         DB::setDefaultConnection('mysql');
 
         // Return error if image id is invalid
-        $this->delete('app/story/'.$story->story_id.'/image/'.rand(1000000, 5000000), [], ['token' => $token])
+        $this->delete('app/story/' . $story->story_id . '/image/' . rand(1000000, 5000000), [], ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -3254,7 +3254,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         // Return error if story id is invalid
-        $this->delete('app/story/'.rand(1000000, 5000000).'/image/'.$storyImage->story_media_id, [], ['token' => $token])
+        $this->delete('app/story/' . rand(1000000, 5000000) . '/image/' . $storyImage->story_media_id, [], ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -3267,11 +3267,11 @@ class AppStoryTest extends TestCase
             ]
         ]);
 
-        $story->update(['status' => config('constants.story_status.PUBLISHED')]);     
+        $story->update(['status' => config('constants.story_status.PUBLISHED')]);
         DB::setDefaultConnection('mysql');
 
         // Return error if story is already published or declined
-        $this->delete('app/story/'.$story->story_id.'/image/'.$storyImage->story_media_id, [], ['token' => $token])
+        $this->delete('app/story/' . $story->story_id . '/image/' . $storyImage->story_media_id, [], ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -3301,7 +3301,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3315,12 +3315,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3352,7 +3352,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3370,7 +3370,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
@@ -3386,7 +3386,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -3397,7 +3397,7 @@ class AppStoryTest extends TestCase
         
         DB::setDefaultConnection('mysql');
 
-        $this->get('app/story/list?search='.$title."&status=".config('constants.story_status.PUBLISHED')."&mission_id=".$mission->mission_id, ['token' => $token])
+        $this->get('app/story/list?search=' . $title . "&status=" . config('constants.story_status.PUBLISHED') . "&mission_id=" . $mission->mission_id, ['token' => $token])
         ->seeStatusCode(200);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -3421,7 +3421,7 @@ class AppStoryTest extends TestCase
         $user->save();
         DB::setDefaultConnection('tenant');
 
-        App\Models\Story::where('deleted_at', '<>', null)->update(['status' =>config('constants.story_status.DRAFT')]);
+        App\Models\Story::where('deleted_at', '<>', null)->update(['status' => config('constants.story_status.DRAFT')]);
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/story/list', ['token' => $token])
@@ -3441,7 +3441,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3455,12 +3455,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3492,7 +3492,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3510,7 +3510,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
@@ -3525,7 +3525,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -3580,7 +3580,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3594,12 +3594,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3631,7 +3631,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3649,7 +3649,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3663,24 +3663,24 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
 
-        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();   
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
           
         DB::setDefaultConnection('mysql');
         
-        $this->delete('app/story/'.$story->story_id, [], ['token' => $token])
+        $this->delete('app/story/' . $story->story_id, [], ['token' => $token])
         ->seeStatusCode(204);
 
         DB::setDefaultConnection('mysql');
 
         // Return error if story id is invalid
-        $this->delete('app/story/'.rand(1000000, 5000000), [], ['token' => $token])
+        $this->delete('app/story/' . rand(1000000, 5000000), [], ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -3708,7 +3708,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3722,12 +3722,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3759,7 +3759,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3777,7 +3777,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3791,7 +3791,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -3799,18 +3799,18 @@ class AppStoryTest extends TestCase
         $this->seeStatusCode(201);
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        $this->get('app/story/' . $story->story_id, ['token' => $token])
         ->seeStatusCode(200);
         
         DB::setDefaultConnection('mysql');
         $story->update(['status' => config('constants.story_status.DECLINED')]);
         // If story is declined or published
-        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        $this->get('app/story/' . $story->story_id, ['token' => $token])
         ->seeStatusCode(404);
 
         // If story id is not exist in system
         DB::setDefaultConnection('mysql');
-        $this->get('app/story/'.rand(1000000, 50000000), ['token' => $token])
+        $this->get('app/story/' . rand(1000000, 50000000), ['token' => $token])
         ->seeStatusCode(404);
 
         //If story is published, other user can see story
@@ -3822,7 +3822,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         $story->update(['status' => config('constants.story_status.PUBLISHED')]);
         // If story is declined or published
-        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        $this->get('app/story/' . $story->story_id, ['token' => $token])
         ->seeStatusCode(200);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
@@ -3843,7 +3843,7 @@ class AppStoryTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
         
         $connection = 'tenant';
@@ -3857,12 +3857,12 @@ class AppStoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3894,7 +3894,7 @@ class AppStoryTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3912,7 +3912,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3926,7 +3926,7 @@ class AppStoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -3934,18 +3934,18 @@ class AppStoryTest extends TestCase
         $this->seeStatusCode(201);
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-        $this->get('app/edit/story/'.$story->story_id, ['token' => $token])
+        $this->get('app/edit/story/' . $story->story_id, ['token' => $token])
         ->seeStatusCode(200);
         
         DB::setDefaultConnection('mysql');
         $story->update(['status' => config('constants.story_status.PUBLISHED')]);
         // If story is declined or published
-        $this->get('app/edit/story/'.$story->story_id, ['token' => $token])
+        $this->get('app/edit/story/' . $story->story_id, ['token' => $token])
         ->seeStatusCode(422);
 
         DB::setDefaultConnection('mysql');
         // If story id is not exist in system
-        $this->get('app/edit/story/'.rand(1000000, 50000000), ['token' => $token])
+        $this->get('app/edit/story/' . rand(1000000, 50000000), ['token' => $token])
         ->seeStatusCode(404);
 
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();

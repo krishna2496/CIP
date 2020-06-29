@@ -185,6 +185,17 @@ $router->group(
  }
 );
 
+/* Google Authentication */
+$router->group(
+ [
+     'prefix' => '/app/google',
+     'namespace' => 'App\Auth',
+ ],
+ function ($router) {
+     $router->get('auth', ['as' => 'google.authentication', 'uses' => 'GoogleAuthController@login']);
+ }
+);
+
 /* Policy pages  */
 $router->get('/app/policy/listing', ['as' => 'policy.listing',
     'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -466,6 +477,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/{userId}', ['as' => 'users.show', 'uses' => 'Admin\User\UserController@show']);
             $router->get('/{userId}/timesheet', ['as' => 'users.timesheet', 'uses' => 'Admin\User\UserController@timesheet']);
             $router->get('/{userId}/timesheet-summary', ['as' => 'users.timesheet-summary', 'uses' => 'Admin\User\UserController@timesheetSummary']);
+            $router->get('/{userId}/content-statistics', ['as' => 'users.content-statistics', 'uses' => 'Admin\User\UserController@contentStatistics']);
+            $router->get('/{userId}/volunteer-summary', ['as' => 'users/volunteer-summary', 'uses' => 'Admin\User\UserController@volunteerSummary']);
             $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
             $router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
             $router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
@@ -782,19 +795,37 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
-    /* Language file management */
+    /* Generic and custom translations management */
     $router->group(
         ['middleware' => 'localization|auth.tenant.admin'],
         function ($router) {
-            /* Get language file */
+            /* Get generic translations */
             $router->get(
-                '/language-file',
-                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchLanguageFile']
+                '/translations/generic/{isoCode}',
+                ['as' => 'translations.generic.fetch', 'uses' => 'Admin\Language\LanguageController@fetchGenericTranslations']
             );
 
-            /* Upload language file */
-            $router->post('/language-file', ['as' => 'languagefile.upload',
-            'uses' => 'Admin\Language\LanguageController@uploadLanguageFile']);
+            /* Get custom translations */
+            $router->get(
+                '/translations/custom/{isoCode}',
+                ['as' => 'translations.custom.fetch', 'uses' => 'Admin\Language\LanguageController@fetchCustomTranslations']
+            );
+
+            /* Update custom translations */
+            $router->post(
+                '/translations/custom/{isoCode}',
+                ['as' => 'translations.custom.update', 'uses' => 'Admin\Language\LanguageController@updateTranslations']
+            );
+
+            /* The following routes are aliases for custom translations, kept for backward compatibility */
+            $router->get(
+                '/language-file/{isoCode}',
+                ['as' => 'languagefile.fetch', 'uses' => 'Admin\Language\LanguageController@fetchCustomTranslations']
+            );
+            $router->post(
+                '/language-file/{isoCode}',
+                ['as' => 'languagefile.upload', 'uses' => 'Admin\Language\LanguageController@updateTranslations']
+            );
         }
     );
 

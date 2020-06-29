@@ -23,7 +23,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -52,7 +52,7 @@ class AppNotificationTest extends TestCase
             ],
             "user_settings" => [
                 [
-                    "receive_email_notification"=> 1
+                    "receive_email_notification" => 1
                 ]
             ]
         ];
@@ -64,7 +64,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         // For update notification settings
         DB::setDefaultConnection('mysql');
@@ -73,7 +73,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -194,7 +194,7 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray,
             "user_settings" => [
                 [
-                "receive_email_notification"=> 1
+                "receive_email_notification" => 1
                 ]
             ]
         ];
@@ -205,8 +205,8 @@ class AppNotificationTest extends TestCase
         $settings = DB::select("SELECT * FROM tenant_setting as t WHERE t.key='$emailNotificationInviteColleague'");
 
         DB::setDefaultConnection('tenant');
-        $setting = App\Models\TenantSetting::create(['setting_id' =>$settings[0]->tenant_setting_id]);
-        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
+        $setting = App\Models\TenantSetting::create(['setting_id' => $settings[0]->tenant_setting_id]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' => $setting->tenant_setting_id]);
 
         // Save user notification settings
         DB::setDefaultConnection('mysql');
@@ -216,7 +216,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         // Add skill
         $skillName = str_random(20);
@@ -231,7 +231,7 @@ class AppNotificationTest extends TestCase
             ]
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
@@ -326,7 +326,7 @@ class AppNotificationTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -349,7 +349,7 @@ class AppNotificationTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . $mission->mission_id . '/applications/' . $missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         // Recommend a mission to user
@@ -384,18 +384,18 @@ class AppNotificationTest extends TestCase
         // Submit story for approval
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-        $this->post('app/story/'.$story->story_id.'/submit', [], ['token' => $token])
+        $this->post('app/story/' . $story->story_id . '/submit', [], ['token' => $token])
         ->seeStatusCode(200);
         
         // Update story status
         DB::setDefaultConnection('mysql');
         $params = ["status" => config('constants.story_status.PUBLISHED')];
-        $this->patch('stories/'.$story->story_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('stories/' . $story->story_id, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         // Recommend a story to a user
         $notification = factory(\App\Models\UserNotification::class)->make();
@@ -428,7 +428,7 @@ class AppNotificationTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
         DB::setDefaultConnection('mysql');
-        $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . $mission->mission_id . '/comments/' . $comment->comment_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('tenant');
@@ -450,12 +450,12 @@ class AppNotificationTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -463,7 +463,7 @@ class AppNotificationTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $response = $this->post('news', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('news', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         // Add message
@@ -478,7 +478,7 @@ class AppNotificationTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         // Add message from admin side
-        $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         // Add timesheet for volunteering hours
@@ -488,7 +488,7 @@ class AppNotificationTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -537,7 +537,7 @@ class AppNotificationTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $timeMissionId = json_decode($this->response->getContent())->data->mission_id;
@@ -563,7 +563,7 @@ class AppNotificationTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -593,12 +593,12 @@ class AppNotificationTest extends TestCase
         ];
         
         DB::setDefaultConnection('mysql');
-        $this->patch('timesheet/'.$timesheet->timesheet_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('timesheet/' . $timesheet->timesheet_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         // Update timesheet status
         DB::setDefaultConnection('mysql');
-        $this->patch('timesheet/'.$timeMissionTimesheet->timesheet_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('timesheet/' . $timeMissionTimesheet->timesheet_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         // Get Notifications
@@ -653,7 +653,7 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray,
             "user_settings" => [
                 [
-                "receive_email_notification"=> 1
+                "receive_email_notification" => 1
                 ]
             ]
         ];
@@ -666,7 +666,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         // Add skill
         $skillName = str_random(20);
@@ -681,7 +681,7 @@ class AppNotificationTest extends TestCase
             ]
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
@@ -766,7 +766,7 @@ class AppNotificationTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -789,7 +789,7 @@ class AppNotificationTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -802,17 +802,17 @@ class AppNotificationTest extends TestCase
 
         // Read-unread notifications
         DB::setDefaultConnection('mysql');
-        $this->post('app/notification/read-unread/'.$notificationId, [], ['token' => $token])
+        $this->post('app/notification/read-unread/' . $notificationId, [], ['token' => $token])
         ->seeStatusCode(200);
 
         // Read-unread notifications
         DB::setDefaultConnection('mysql');
-        $this->post('app/notification/read-unread/'.$notificationId, [], ['token' => $token])
+        $this->post('app/notification/read-unread/' . $notificationId, [], ['token' => $token])
         ->seeStatusCode(200);
 
         // Invalid notification Id
         DB::setDefaultConnection('mysql');
-        $this->post('app/notification/read-unread/'.rand(10000000, 50000000), [], ['token' => $token])
+        $this->post('app/notification/read-unread/' . rand(10000000, 50000000), [], ['token' => $token])
         ->seeStatusCode(404);
 
         // Update notification settings
@@ -827,7 +827,7 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray,
             "user_settings" => [
                 [
-                "receive_email_notification"=> 1
+                "receive_email_notification" => 1
                 ]
             ]
         ];
@@ -840,7 +840,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         $user->delete();
         $mission->delete();
@@ -878,7 +878,7 @@ class AppNotificationTest extends TestCase
             "settings" => $notificationTypeArray,
             "user_settings" => [
                 [
-                "receive_email_notification"=> 1
+                "receive_email_notification" => 1
                 ]
             ]
         ];
@@ -891,7 +891,7 @@ class AppNotificationTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         // Add skill
         $skillName = str_random(20);
@@ -906,7 +906,7 @@ class AppNotificationTest extends TestCase
             ]
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
@@ -991,7 +991,7 @@ class AppNotificationTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1014,7 +1014,7 @@ class AppNotificationTest extends TestCase
         ];
 
         DB::setDefaultConnection('mysql');
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 

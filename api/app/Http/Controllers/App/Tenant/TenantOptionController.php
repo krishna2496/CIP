@@ -93,9 +93,20 @@ class TenantOptionController extends Controller
 
         if ($data) {
             foreach ($data as $key => $value) {
-                $optionData[$value->option_name] = $value->option_value;
+                $optionValue = $value->option_value;
+                if ($value->option_name === TenantOption::SAML_SETTINGS
+                    && $optionValue
+                ) {
+                    $optionValue = [
+                      'saml_access_only' => $optionValue['saml_access_only'],
+                      'sso_url' => $optionValue['idp']['singleSignOnService']['url'],
+                      'slo_url' => $optionValue['idp']['singleLogoutService']['url'],
+                    ];
+                }
+                $optionData[$value->option_name] = $optionValue;
             }
         }
+
         // For slider
         $sliderData = array();
         $sliders = $this->sliderRepository->getAllSliders();

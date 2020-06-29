@@ -57,6 +57,28 @@
     padding-left: 0;
   }
 
+    ul ,ol{
+	  padding-left: 15px;
+  }
+  ul{
+	  list-style:disc ;
+	  ul {
+		  list-style: circle;
+		  ul{
+			  list-style: square;
+		  }
+	  }
+  }
+  ol{
+	  list-style: decimal;
+  }
+  b{
+	font-weight: bold;
+  }
+  em,i{
+	  font-style: italic;
+  }
+
   a {
     color: $gray-primary;
     text-decoration: underline;
