@@ -76,7 +76,8 @@ class UserControllerTest extends TestCase
             $responseHelper,
             null,
             $userService,
-            null, null,
+            null,
+            null,
             $request,
             $notificationRepository
         );
@@ -92,7 +93,6 @@ class UserControllerTest extends TestCase
             'stories_invites_count' => 1,
             'organization_count' => 2
         ], json_decode($response->getContent(), true));
-
     }
 
     /**
@@ -149,7 +149,8 @@ class UserControllerTest extends TestCase
             $responseHelper,
             null,
             $userService,
-            null, null,
+            null,
+            null,
             $request,
             $notificationRepository
         );
@@ -170,7 +171,7 @@ class UserControllerTest extends TestCase
      * Create a new service instance.
      *
      * @param  App\Services\UserService $userService
-     * 
+     *
      * @return void
      */
     private function getController(
@@ -183,7 +184,6 @@ class UserControllerTest extends TestCase
         Request $request,
         NotificationRepository $notificationRepository
     ) {
-
         $userRepository = $userRepository ?? $this->mock(UserRepository::class);
         $responseHelper = $responseHelper ?? $this->mock(ResponseHelper::class);
         $languageHelper = $languageHelper ?? $this->mock(LanguageHelper::class);
@@ -215,5 +215,4 @@ class UserControllerTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

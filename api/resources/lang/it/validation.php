@@ -110,8 +110,10 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "Ti preghiamo d’inserire un documento relativo alla scheda orari valido",
-            'max' => "Le dimensioni del file del documento devono essere di "
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Le dimensioni del file del documento devono essere di "
+                . (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "Non puoi aggiungere le informazioni relative agli orari per date future",
@@ -124,8 +126,10 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "Ti preghiamo di selezionare un tipo d’immagine valido",
-            'max' => "Le dimensioni dell’immagine devono essere di "
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Le dimensioni dell’immagine devono essere di "
+                . (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "Ti preghiamo di inserire un url valido dell’immagine",
@@ -162,14 +166,14 @@ return [
         'media_videos.*.media_path' => "percorso del file multimediale",
         'documents.*.document_name' => "nome del documento",
         'documents.*.document_type' => "tipo di documento",
-        'documents.*.document_path' => "percorso del documento",        
+        'documents.*.document_path' => "percorso del documento",
         'slider_detail.translations.*.lang' => "codice lingua",
-        'skills.*.skill_id' => "id competenza",  
-        'location.city' => "città", 
-        'location.country' => "paese",   
-        'password_confirmation' => "conferma password",         
-        'translations.*.lang' => "codice lingua",         
-        'is_mandatory' => "obbligatorio",       
+        'skills.*.skill_id' => "id competenza",
+        'location.city' => "città",
+        'location.country' => "paese",
+        'password_confirmation' => "conferma password",
+        'translations.*.lang' => "codice lingua",
+        'is_mandatory' => "obbligatorio",
 		'page_details.translations.*.sections.*.title' => "titolo",
 		'page_details.translations.*.sections.*.description' => "descrizione",
 		'location.city_id' => "città",
@@ -200,10 +204,10 @@ return [
         'cities.*.translations' => "traduzioni",
         'media_images.*.sort_order' => "ordinamento",
         'media_videos.*.sort_order' => "ordinamento",
-        'documents.*.sort_order' => "ordinamento", 
+        'documents.*.sort_order' => "ordinamento",
         'countries.*.translations.*.lang' => "codice lingua",
         'countries.*.translations.*.name' => "nome",
-        'countries.*.translations' => "traduzioni",   
+        'countries.*.translations' => "traduzioni",
         'countries.*.iso' => "ISO",
         'translations.*.lang' => "codice lingua",
         'translations.*.name' => "nome",

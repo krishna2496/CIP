@@ -2,7 +2,7 @@
 use App\Helpers\Helpers;
 
 class StoryTest extends TestCase
-{   
+{
     /**
      * @test
      *
@@ -32,12 +32,12 @@ class StoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -86,7 +86,7 @@ class StoryTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -100,7 +100,7 @@ class StoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -109,33 +109,31 @@ class StoryTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('user/'.$user->user_id.'/stories', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('user/' . $user->user_id . '/stories', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);        
+          ]);
         App\Models\Story::where('mission_id', '<>', null)->delete();
 
         DB::setDefaultConnection('mysql');
         
         // If no data found for story
-        $this->get('user/'.$user->user_id.'/stories', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('user/' . $user->user_id . '/stories', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         DB::setDefaultConnection('mysql');
         // If user is is invalid
-        $this->get('user/'.rand(1000000, 5000000).'/stories', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('user/' . rand(1000000, 5000000) . '/stories', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(404);
 
         $user->delete();
         $mission->delete();
-        
-        
     }
 
     /**
@@ -163,12 +161,12 @@ class StoryTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -213,7 +211,7 @@ class StoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -227,7 +225,7 @@ class StoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
         );
@@ -238,37 +236,35 @@ class StoryTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $params = ["status" => config('constants.story_status.DECLINED')];
-        $this->patch('stories/'.$story->story_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('stories/' . $story->story_id, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]); 
+          ]);
         DB::setDefaultConnection('mysql');
         $params = ["status" => config('constants.story_status.PUBLISHED')];
-        $this->patch('stories/'.$story->story_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('stories/' . $story->story_id, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
 
         // If no data found for story
         DB::setDefaultConnection('mysql');
         $params = ["status" => 'test'];
-        $this->patch('stories/'.$story->story_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('stories/' . $story->story_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         // If user is is invalid
         DB::setDefaultConnection('mysql');
         $params = ["status" => config('constants.story_status.DECLINED')];
-        $this->patch('stories/'.rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('stories/' . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
         
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
         $mission->delete();
-        
-        
     }
 }
