@@ -240,34 +240,39 @@ class UserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $fieldsToValidate = [
+            "first_name" => "sometimes|required|max:16",
+            "last_name" => "sometimes|required|max:16",
+            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
+            "password" => "required|min:8",
+            "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+            "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "language_id" => "sometimes|required|int",
+            "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
+            "profile_text" => "sometimes|required",
+            "employee_id" => "max:16|
+            unique:user,employee_id,NULL,user_id,deleted_at,NULL",
+            "department" => "max:16",
+            "linked_in_url" => "url|valid_linkedin_url",
+            "why_i_volunteer" => "sometimes|required",
+            "expiry" => "sometimes|date|nullable",
+            "status" => [
+                "sometimes",
+                Rule::in(config('constants.user_statuses'))
+            ],
+            "position" => "sometimes|nullable"
+        ];
+
+        if (is_array($request->skills)) {
+            $fieldsToValidate['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
+        }
+
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            [
-                "first_name" => "sometimes|required|max:16",
-                "last_name" => "sometimes|required|max:16",
-                "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-                "password" => "required|min:8",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-                "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "language_id" => "sometimes|required|int",
-                "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
-                "profile_text" => "sometimes|required",
-                "employee_id" => "max:16|
-                unique:user,employee_id,NULL,user_id,deleted_at,NULL",
-                "department" => "max:16",
-                "linked_in_url" => "url|valid_linkedin_url",
-                "why_i_volunteer" => "sometimes|required",
-                "expiry" => "sometimes|date|nullable",
-                "status" => [
-                    "sometimes",
-                    Rule::in(config('constants.user_statuses'))
-                ],
-                "position" => "sometimes|nullable"
-            ]
+            $fieldsToValidate
         );
-
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -303,6 +308,10 @@ class UserController extends Controller
 
         // Remove password before logging it
         $request->request->remove("password");
+
+        if ($request->skills && is_array($request->skills)) {
+            $this->userRepository->linkSkill($request->toArray(), $user->user_id);
+        }
 
         // Make activity log
         event(new UserActivityLogEvent(
@@ -404,6 +413,13 @@ class UserController extends Controller
             // Remove password before logging it
             $request->request->remove("password");
 
+            if (is_array($request->skills)) {
+                $this->userRepository->deleteSkills($id);
+                if ($request->skills) {
+                    $this->userRepository->linkSkill($request->toArray(), $id);
+                }
+            }
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.USERS'),
@@ -453,8 +469,14 @@ class UserController extends Controller
                 "sometimes",
                 Rule::in(config('constants.user_statuses'))
             ],
-            "position" => "sometimes|nullable"
+            "position" => "sometimes|nullable",
+
         ];
+
+        if (array_key_exists('skills', $requestData)) {
+            $fieldsToValidate['skills'] = 'array';
+            $fieldsToValidate['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
+        }
 
         $nullableFields = [
             'employee_id',
