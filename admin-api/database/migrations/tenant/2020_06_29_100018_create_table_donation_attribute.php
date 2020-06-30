@@ -14,13 +14,13 @@ class CreateTableDonationAttribute extends Migration
         Schema::create('donation_attribute', function (Blueprint $table) {
             $table->uuid('donation_attribute_id')->primary();
             $table->unsignedBigInteger('mission_id');
-            $table->unsignedBigInteger('goal_amount_currency');
-            $table->unsignedBigInteger('goal_amount');
+            $table->string('goal_amount_currency', 3);
+            $table->unsignedBigInteger('goal_amount')->nullable();
             $table->enum('show_goal_amount', ['1', '0'])->default('0');
             $table->enum('show_donation_percentage', ['1', '0'])->default('0');
             $table->enum('show_donation_meter', ['1', '0'])->default('0');
             $table->enum('show_donation_count', ['1', '0'])->default('0');
-            $table->unsignedBigInteger('show_donors_count');
+            $table->enum('show_donors_count', ['1', '0'])->default('0');
             $table->enum('disable_when_funded', ['1', '0'])->default('0');
             $table->enum('is_disabled', ['1', '0'])->default('0');
             $table->softDeletes();
