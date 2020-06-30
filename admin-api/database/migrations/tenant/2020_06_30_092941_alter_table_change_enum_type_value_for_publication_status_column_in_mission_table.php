@@ -13,8 +13,8 @@ class AlterTableChangeEnumTypeValueForPublicationStatusColumnInMissionTable exte
      */
     public function up()
     {
-        Schema::table('mission', function (Blueprint $table) {
-            //
+		Schema::table('mission', function (Blueprint $table) {
+            \DB::statement("ALTER TABLE `mission` CHANGE `publication_status` `publication_status` ENUM('TIME','GOAL','DONATION','EAF','DISASTER_RELIEF')");
         });
     }
 
@@ -26,7 +26,7 @@ class AlterTableChangeEnumTypeValueForPublicationStatusColumnInMissionTable exte
     public function down()
     {
         Schema::table('mission', function (Blueprint $table) {
-            //
+            \DB::statement("ALTER TABLE `mission` CHANGE `publication_status` `publication_status` ENUM('TIME','GOAL')");
         });
     }
 }
