@@ -60,6 +60,7 @@ class TenantSettingTest extends TestCase
      */
     public function it_should_add_setting_for_tenant()
     {
+
         // Create random settings array
         for ($i=0; $i<3; $i++) {
             $params['settings'][$i] = [
@@ -68,33 +69,39 @@ class TenantSettingTest extends TestCase
             ];
         }
 
-        // Get donation setting id
         $donationRelatedSettingAvailable = 0;
+        $donationSettingAvailable = 0;
+        $donationRelatedIds = [];
+        $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
+
+        // Get donation setting id
         $donationSettingData = TenantSetting::get()->where('key', '=', 'donation')->toArray();
+
         foreach ($donationSettingData as $donationValue) {
             $donationSettingId = $donationValue['tenant_setting_id'];
         }
         $donationHasSetting = TenantHasSetting::where(['tenant_setting_id' => $donationSettingId, 'tenant_id' => env('DEFAULT_TENANT_ID')])
         ->whereNull('deleted_at')->get()->toArray();
 
-        $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
-
         // Donation related settings
         $donationRelatedSettingIds = $this->getParamsArray($donationRelatedSettingsArray);
 
-        $donationRelatedIds = [];
         foreach($donationRelatedSettingIds['settings'] as $value){
             array_push($donationRelatedIds, $value['tenant_setting_id']);
         }
 
         // Check donation setting is enable/disable
         foreach ($params['settings'] as $key => $param) {
+            if($param['tenant_setting_id'] === $donationSettingId){
+                $donationSettingAvailable = 1;
+            }
+
             if (in_array($param['tenant_setting_id'], $donationRelatedIds) && empty($donationHasSetting)) {
                 $donationRelatedSettingAvailable = 1;
             }
         }
 
-        if ($donationRelatedSettingAvailable === 1) {
+        if ($donationRelatedSettingAvailable === 1 && $donationSettingAvailable === 0) {
             $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
             ->seeStatusCode(422)
             ->seeJsonStructure([
