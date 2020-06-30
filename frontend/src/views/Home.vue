@@ -65,6 +65,7 @@
                             </i>
                         </template>
                         <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
+                                  ref="gridView"
                                   :relatedMission=relatedMission
                                   v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
                     </b-tab>
@@ -230,6 +231,7 @@
             filter.exploreMissionParams = store.state.exploreMissionParams
             filter.sortBy = store.state.sortBy
             filter.currentView = this.tabNumber
+            
             filter.addLoader = parmas
             await missionListing(filter).then(response => {
                 if (response.data) {
@@ -251,6 +253,8 @@
                 }
 
                 this.isShownComponent = true;
+               
+                
                 this.isAjaxCall = false
                 if (store.state.search != null) {
                     this.search = store.state.search;
@@ -265,7 +269,10 @@
                         this.sortByDefault = this.languageData.label[sortBy];
                     }, 200);
                 }
-
+ if(this.tabNumber == 0) {
+                    console.log(this.$refs.secondaryHeader);
+                // this.$refs.
+                }
             });
         },
 

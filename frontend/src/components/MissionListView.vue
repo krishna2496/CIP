@@ -157,7 +157,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <div class="detail-column calendar-col">
+                                <div class="detail-column calendar-col" v-if="mission.end_date !== null">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
@@ -187,11 +187,10 @@
                                         <img :src="$store.state.imagePath+'/assets/images/skill-icon.svg'" alt="skill icon">
                                     </i>
                                     <div class="text-wrap">
-                                        <span class="title-text">{{ languageData.label.skills }}</span>
-                                        <span class="subtitle-text skill-text-wrap">{{getSkills(mission.skill)}}</span>
+                                        <span class="title-text">{{getSkills(mission.skill)}}</span>
+                                        <span class="subtitle-text skill-text-wrap">{{ languageData.label.skills }}</span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="card-action-block">

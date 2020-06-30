@@ -538,6 +538,7 @@ export default {
 		}
 		},
 		cardHeightAdj() {
+			alert("in");
 				setTimeout(function () {
 				let cardBody = document.querySelectorAll(".card-grid .card-body");
 				let cardText = document.querySelectorAll(".card-grid .card-body .card-text");
@@ -561,7 +562,7 @@ export default {
 		                });
 					});
 				},500);
-			}
+		}
 		
 	},
 	created() {
@@ -576,9 +577,9 @@ export default {
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 
-		this.cardHeightAdj();
+		// this.cardHeightAdj();
 
-		window.addEventListener("resize", this.cardHeightAdj());
+		// window.addEventListener("resize", this.cardHeightAdj());
 	},
 	updated() {
 		// this.cardHeightAdj();
