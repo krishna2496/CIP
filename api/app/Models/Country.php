@@ -45,7 +45,7 @@ class Country extends Model
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
-    protected $cascadeDeletes = ['languages'];
+    protected $cascadeDeletes = ['languages','city','state'];
 
     /**
      * Get languages associated with the country.
@@ -107,5 +107,15 @@ class Country extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'country_id', 'country_id');
+    }
+
+    /**
+     * Get state associated with the country.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function state()
+    {
+        return $this->hasMany(State::class, 'country_id', 'country_id');
     }
 }

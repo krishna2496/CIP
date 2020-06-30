@@ -4,7 +4,7 @@ COPY --chown=www-data:www-data . /optimy
 RUN rm /optimy/Dockerfile /optimy/Dockerfile.preprod.tpl /optimy/Dockerfile.staging.tpl
 
 # Install nodeJS
-RUN apt-get install curl -y
+RUN apt-get update && apt-get install curl -y
 RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
 RUN apt-get install -y nodejs
 

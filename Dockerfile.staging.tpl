@@ -3,7 +3,7 @@ FROM registry.kubernetes.infra.optimy.net/ci/ci-source:{{GO_PIPELINE_LABEL}} AS 
 # Frontend
 # Install nodeJS
 
-RUN apt-get install curl -y
+RUN apt-get update && apt-get install curl -y
 RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
 RUN apt-get install -y nodejs
 
