@@ -60,77 +60,50 @@ class TenantSettingTest extends TestCase
      */
     public function it_should_add_setting_for_tenant()
     {
-
-        // Create random settings array
-        for ($i=0; $i<3; $i++) {
-            $params['settings'][$i] = [
-                'tenant_setting_id' => TenantSetting::get()->random()->tenant_setting_id,
-                'value' => '1',
-            ];
-        }
-
-        $donationRelatedSettingAvailable = 0;
-        $donationSettingAvailable = 0;
-        $donationRelatedIds = [];
         $donationRelatedSettingsArray = config('constants.DONATION_RELATED_SETTINGS');
+        $donationRelatedIds = [];
+        $tenantSettingIds = [];
 
         // Get donation setting id
-        $donationSettingData = TenantSetting::get()->where('key', '=', 'donation')->toArray();
+        $donationSettingData = TenantSetting::where('key', '=', 'donation')->get()->toArray();
+        $donationSettingId = $donationSettingData[0]['tenant_setting_id'];
+        array_push($donationRelatedIds, $donationSettingId);
 
-        foreach ($donationSettingData as $donationValue) {
-            $donationSettingId = $donationValue['tenant_setting_id'];
-        }
-        $donationHasSetting = TenantHasSetting::where(['tenant_setting_id' => $donationSettingId, 'tenant_id' => env('DEFAULT_TENANT_ID')])
-        ->whereNull('deleted_at')->get()->toArray();
-
-        // Donation related settings
+        // Donation related setting data
         $donationRelatedSettingIds = $this->getParamsArray($donationRelatedSettingsArray);
-
-        foreach($donationRelatedSettingIds['settings'] as $value){
+        foreach ($donationRelatedSettingIds['settings'] as $value) {
             array_push($donationRelatedIds, $value['tenant_setting_id']);
         }
 
-        // Check donation setting is enable/disable
+        // All tenant setting data
+        foreach (TenantSetting::get()->toArray() as $value) {
+            array_push($tenantSettingIds, $value['tenant_setting_id']);
+        }
+
+        $TenantSettingIdsWithoutDonation = array_diff($tenantSettingIds, $donationRelatedIds);
+
+        // Create random settings array
+        for ($i=0; $i<30; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => $TenantSettingIdsWithoutDonation[array_rand($TenantSettingIdsWithoutDonation)],
+                'value' => 1,
+            ];
+        }
+            
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(200);
+
+        // Make disable settings
         foreach ($params['settings'] as $key => $param) {
-            if($param['tenant_setting_id'] === $donationSettingId){
-                $donationSettingAvailable = 1;
-            }
-
-            if (in_array($param['tenant_setting_id'], $donationRelatedIds) && empty($donationHasSetting)) {
-                $donationRelatedSettingAvailable = 1;
-            }
+            $params['settings'][$key] = [
+                'tenant_setting_id' => $param['tenant_setting_id'],
+                'value' => 0
+            ];
         }
-
-        if ($donationRelatedSettingAvailable === 1 && $donationSettingAvailable === 0) {
-            $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
-            ->seeStatusCode(422)
-            ->seeJsonStructure([
-                'errors' => [
-                    [
-                        'status',
-                        'type',
-                        'code',
-                        'message'
-                    ]
-                ]
-            ]);
-        } else {
-                
-            // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
-            $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
-            ->seeStatusCode(200);
-
-            // Make disable settings
-            foreach ($params['settings'] as $key => $param) {
-                $params['settings'][$key] = [
-                    'tenant_setting_id' => $param['tenant_setting_id'],
-                    'value' => 0
-                ];
-            }
-            // And again call setting API with 0 value to delete it
-            $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
-            ->seeStatusCode(200);
-        }
+        // And again call setting API with 0 value to delete it
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(200);
     }
 
     /**
