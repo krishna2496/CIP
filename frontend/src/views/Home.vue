@@ -267,12 +267,12 @@
 
                     setTimeout(() => {
                         this.sortByDefault = this.languageData.label[sortBy];
+                        if(this.tabNumber == 0) {
+                            this.$refs.gridView.cardHeightAdj();
+                        }
                     }, 200);
                 }
- if(this.tabNumber == 0) {
-                    console.log(this.$refs.secondaryHeader);
-                // this.$refs.
-                }
+                
             });
         },
 

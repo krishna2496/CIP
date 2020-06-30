@@ -538,8 +538,8 @@ export default {
 		}
 		},
 		cardHeightAdj() {
-			alert("in");
-				setTimeout(function () {
+			
+				// setTimeout(function () {
 				let cardBody = document.querySelectorAll(".card-grid .card-body");
 				let cardText = document.querySelectorAll(".card-grid .card-body .card-text");
 					cardBody.forEach(function (event) {
@@ -561,7 +561,7 @@ export default {
 							this.parentNode.classList.remove("active");
 		                });
 					});
-				},500);
+				// },500);
 		}
 		
 	},
