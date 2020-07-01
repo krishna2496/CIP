@@ -27,10 +27,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
-    /* Password reset routing */
-    $router->post('/reset-password/{token}', ['as' => 'password.reset',
-        'uses' => 'App\Auth\AuthController@reset_password']);
-
     /* reset password  */
     $router->put('/app/password-reset', ['middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@passwordReset']);
@@ -220,7 +216,7 @@ $router->post('/app/user/skills', ['as' => 'user.skills',
     'uses' => 'App\User\UserController@linkSkill']);
 
 /* Fetch Language json file */
-$router->get('language/{language}', ['as' => 'language',
+$router->get('language/{isoCode}', ['as' => 'language',
 'uses' => 'App\Language\LanguageController@fetchLanguageFile']);
 
 /* Upload profile image */
@@ -369,10 +365,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/story/invite', ['as' => 'app.story.invite',
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Story\StoryInviteController@storyInvite']);
-    /* Update story details */
-    $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
-        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
-        'uses' => 'App\Story\StoryController@update']);
 
     /* store story visitor details */
     $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',

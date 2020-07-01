@@ -293,7 +293,7 @@ class TenantTest extends TestCase
             'sponsor_id' => rand(1000, 50000),
         ];
 
-        $this->patch(route('tenants.updat', ['id' => $tenantId]), $data)
+        $this->patch(route('tenants.update', ['id' => $tenantId]), $data)
         ->seeStatusCode(404);
     }
 
