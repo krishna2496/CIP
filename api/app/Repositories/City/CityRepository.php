@@ -324,6 +324,7 @@ class CityRepository implements CityInterface
     ) {
         return $this->city
             ->join('city_language', 'city_language.city_id', '=', 'city.city_id')
+            ->where('city_language.name', 'LIKE', '%'.$cityName.'%')
             ->where('city.country_id', $countryId)
             ->where('city_language.language_id', $languageId)
             ->take(1)
