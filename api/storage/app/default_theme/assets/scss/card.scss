@@ -31,7 +31,31 @@
 		[class*="card-img"] {
 			height: 220px;
 		}
-
+		.icon-btn {
+			i {
+				&.icon-wrap{
+					img{
+						&.rollhover-img{
+							display: none;
+						}
+					}
+				}
+			}
+			&:hover {
+				i {
+					&.icon-wrap{
+						img{
+							&.normal-img{
+								display: none;
+							}
+							&.rollhover-img{
+								display: inline-block;
+							}
+						}
+					}
+				}
+			}
+		}
 		@include lg-min {
 			&:hover {
 				box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
@@ -53,13 +77,6 @@
 							fill: $white;
 						}
 					}
-
-					&:focus {
-						svg {
-							fill: $primary;
-						}
-					}
-
 					&:active:focus,
 					&:hover:focus {
 						svg {
@@ -81,7 +98,6 @@
 			padding: 0;
 			line-height: 0;
 			border: none;
-			
 			.card-alert {
 				position: absolute;
 				top: 15px;
@@ -403,8 +419,8 @@
 			flex-wrap: wrap;
 			justify-content: space-between;
 			margin: -6px 0 6px;
-			opacity: 0;
-			 @include transition(opacity 0.3s);
+			@include transition(all 0.3s);
+			display: none;
 			 span{
 				&.vue-star-rating-star{
 					svg{
@@ -821,8 +837,9 @@
 			}
 		}
 		.init-hidden{
-			flex: 1;
+			flex: auto;
     		opacity: 0;
+    		max-width: 100%;
 			 @include transition(all 0.3s);
 			.progress-block{
 				.progress-info{
@@ -880,25 +897,15 @@
     	margin-top: 0;
     }
     .card-text{
-    	margin:-18px 0 9px;
+    	margin:0 0 9px;
     	 @include transition(margin-top 0.3s);
     }
-
-    /*.init-hidden{
-    	position: absolute;
-    	bottom: 0;
-    	left: 0;
-    	right: 0;
-    }*/
     &:hover{
     	.init-hidden{
 			opacity: 1;
     	}
-	  /* .card-header{
-			height: 90px;
-	   }*/
 	   .group-ratings{
-	   	opacity: 1;
+	   	display: block;
 	   }
 	   .card-text{
 	   	margin-top: 0;
@@ -1037,6 +1044,7 @@
 			padding: 15px 20px 3px;
 			flex-wrap: wrap;
 			justify-content: flex-start;
+			align-items: flex-start;
 			&:before{
 				display:none;
 			}
@@ -1110,14 +1118,19 @@
 					}
 				}
 				&.skill-col{
-					width: 210px;
-					flex: 0 0 210px;
+					width: 177px;
+					flex: 0 0 auto;
 					.text-wrap{
 						display: inline-block;
 						span{
-							display: block;
+							&.title-text{
+								display: block;
+							}
 						}
 					}
+				}
+				&:last-child{
+					padding-right: 0;
 				}
 				.text-wrap {
 					.title-text{

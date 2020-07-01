@@ -264,14 +264,15 @@
                 }
                 if (store.state.sortBy != null && store.state.sortBy != '') {
                     let sortBy = store.state.sortBy;
-
                     setTimeout(() => {
                         this.sortByDefault = this.languageData.label[sortBy];
-                        if(this.tabNumber == 0) {
-                            this.$refs.gridView.cardHeightAdj();
-                        }
                     }, 200);
                 }
+                setTimeout(() => {
+                    if(this.tabNumber == 0) {
+                        this.$refs.gridView.cardHeightAdj();
+                    }
+                }, 200);
                 
             });
         },

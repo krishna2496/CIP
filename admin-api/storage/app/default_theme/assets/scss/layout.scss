@@ -1932,6 +1932,15 @@ main {
 		@include lg-max {
 			padding-right: 15px;
 		}
+
+		.organization-detail{
+				@-moz-document url-prefix() {
+					li{
+						margin-left: 15px;
+						padding-left: 8px;
+    				}
+				}
+			}
 	}
 
 	.platform-details-right {
