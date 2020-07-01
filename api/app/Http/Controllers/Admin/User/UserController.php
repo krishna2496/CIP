@@ -450,7 +450,8 @@ class UserController extends Controller
                 "sometimes",
                 "required",
                 "email",
-                Rule::unique('user')->ignore($id, 'user_id')],
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
+            ],
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "sometimes",
