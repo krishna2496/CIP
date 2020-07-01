@@ -382,11 +382,6 @@ class UserController extends Controller
             $user->user_id
         ));
 
-        if ($user) {
-            $this->helpers
-                ->syncOptimyVolunteer($request, $user->user_id);
-        }
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
