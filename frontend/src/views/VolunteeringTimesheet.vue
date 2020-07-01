@@ -1062,7 +1062,7 @@
             let currentArrayMonth = timeEntry.month
             let time2 = timeEntry.time;
             if (timeSheetType == "time") {
-              if (this.volunteeringHoursCurrentYear == currentArrayYear) {
+              if (this.volunteeringHoursYearArray.includes(currentArrayYear)) {
                 if (this.volunteeringHoursMonthArray.includes(currentArrayMonth)) {
                   let splitTime1 = time1.split(':');
                   let splitTime2 = time2.split(':');
@@ -1094,7 +1094,7 @@
               }
 
             } else {
-              if (this.volunteeringGoalCurrentYear == currentArrayYear) {
+              if (this.volunteeringHoursYearArray.includes(currentArrayYear)) {
                 if (this.volunteeringGoalMonthArray.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
@@ -1155,17 +1155,6 @@
         }
 
         let timeArray = [];
-        let currentYear = ''
-        let currentMonth = ''
-        if (timeSheetType == "time") {
-          timeArray = this.timeMissionData;
-          currentYear = this.volunteeringHoursCurrentYear
-          currentMonth = this.volunteeringHoursCurrentMonth
-        } else {
-          timeArray = this.goalMissionData;
-          currentYear = this.volunteeringGoalCurrentYear
-          currentMonth = this.volunteeringGoalCurrentMonth
-        }
         if (timeArray) {
           timeArray.filter((timeMission) => {
             let timeSheetArray = timeMission.timesheet;
@@ -1173,8 +1162,8 @@
               timeSheetArray.filter((timeSheet) => {
                 let currentArrayYear = timeSheet.year
                 let currentArrayMonth = timeSheet.month
-                if (currentYear == currentArrayYear) {
-                  if (currentMonth == currentArrayMonth) {
+                if (this.volunteeringHoursYearArray.includes(currentArrayYear)) {
+                  if (this.volunteeringHoursMonthArray.includes(currentArrayMonth)) {
                     if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
                       timeSheetId.timesheet_entries.push({
                         'timesheet_id': timeSheet.timesheet_id
