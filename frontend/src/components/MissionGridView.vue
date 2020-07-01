@@ -529,30 +529,27 @@ export default {
 		}
 		},
 		cardHeightAdj() {
-			
-				// setTimeout(function () {
-				let cardBody = document.querySelectorAll(".card-grid .card-body");
-				let cardText = document.querySelectorAll(".card-grid .card-body .card-text");
-					cardBody.forEach(function (event) {
-						let getCard = event.parentNode;
-						let cardHeight = event.children[0].offsetHeight + getCard.children[1].offsetHeight;
-						let cardOuterHeight = event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight + event.children[0].children[1].offsetHeight + event.children[0].children[0].offsetHeight;
-							getCard.style.height = cardHeight +"px";	
-						
-						event.parentNode.addEventListener("mouseover", function (mouseEvent) {
-						let cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
-						let cardTotalHeight = cardBodyH - this.offsetHeight;
-							this.children[1].style.transform = "translateY(-" + cardTotalHeight + "px)";
-							this.children[2].style.transform = "translateY(-" + cardTotalHeight + "px)";
-							this.parentNode.classList.add("active");
-		                });
-						event.parentNode.addEventListener("mouseleave", function () {
-							this.children[1].style.transform = "translateY(0)";
-							this.children[2].style.transform = "translateY(0)";
-							this.parentNode.classList.remove("active");
-		                });
+			let cardBody = document.querySelectorAll(".card-grid .card-body");
+			let cardText = document.querySelectorAll(".card-grid .card-body .card-text");
+				cardBody.forEach(function (event) {
+					let getCard = event.parentNode;
+					let cardHeight = event.children[0].offsetHeight + getCard.children[1].offsetHeight;
+					let cardOuterHeight = event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight + event.children[0].children[1].offsetHeight + event.children[0].children[0].offsetHeight;
+						getCard.style.height = cardHeight +"px";	
+					
+					event.parentNode.addEventListener("mouseover", function (mouseEvent) {
+					let cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
+					let cardTotalHeight = cardBodyH - this.offsetHeight;
+						this.children[1].style.transform = "translateY(-" + cardTotalHeight + "px)";
+						this.children[2].style.transform = "translateY(-" + cardTotalHeight + "px)";
+						this.parentNode.classList.add("active");
 					});
-				// },500);
+					event.parentNode.addEventListener("mouseleave", function () {
+						this.children[1].style.transform = "translateY(0)";
+						this.children[2].style.transform = "translateY(0)";
+						this.parentNode.classList.remove("active");
+					});
+				});
 		}
 		
 	},
@@ -567,13 +564,6 @@ export default {
 		);
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-
-		// this.cardHeightAdj();
-
-		// window.addEventListener("resize", this.cardHeightAdj());
-	},
-	updated() {
-		// this.cardHeightAdj();
 	}
 };
 </script>
