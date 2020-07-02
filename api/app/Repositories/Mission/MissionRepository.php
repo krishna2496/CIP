@@ -276,46 +276,50 @@ class MissionRepository implements MissionInterface
             );
             $mission->goalMission()->update($goalMissionArray);
         }
-
         //Add donation attribute
-        if ($request->mission_type == config('constants.mission_type.DONATION') ||
-         $request->mission_type == config('constants.mission_type.EAF') ||
-         $request->mission_type == config('constants.mission_type.DISASTER_RELIEF')
+        if ($mission->mission_type == config('constants.mission_type.DONATION') ||
+         $mission->mission_type == config('constants.mission_type.EAF') ||
+         $mission->mission_type == config('constants.mission_type.DISASTER_RELIEF')
          ) {
-            if ($request->donation_attribute && !empty($request->donation_attribute)) {
-                $donationData = array(
-                    'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'],
-                );
-                $donationData = array(
-                    'goal_amount' => $request->donation_attribute['goal_amount'] != '' ? $request->donation_attribute['goal_amount'] : null,
-                );
-                $donationData = array(
-                    'show_goal_amount' => (string) $request->donation_attribute['show_goal_amount'] ?? '0',
-                );
-
-                $donationData = array(
-                    'show_donation_percentage' => (string) $request->donation_attribute['show_donation_percentage'] ?? '0',
-                );
-                $donationData = array(
-                    'show_donation_meter' => (string) $request->donation_attribute['show_donation_meter'] ?? '0',
-                );
-                $donationData = array(
-                    'show_donation_count' => (string) $request->donation_attribute['show_donation_count'] ?? '0',
-                );
-
-                $donationData = array(
-                    'show_donors_count' => (string) $request->donation_attribute['show_donors_count'] ?? '0',
-                );
-
-                $donationData = array(
-                    'disable_when_funded' => (string) $request->donation_attribute['disable_when_funded'] ?? '0',
-                );
-
-                $donationData = array(
-                    'is_disabled' => (string) $request->donation_attribute['is_disabled'] ?? '0',
-                );
-
-                $mission->donationAttribute()->update($donationData);
+            if (isset($request->donation_attribute) && !empty($request->donation_attribute)) {
+                $donationMissionDetail = $mission->donationAttribute()->first();
+                if (!is_null($donationMissionDetail)) {
+                    if ($request->donation_attribute['goal_amount_currency']) {
+                        $donationMissionDetail->goal_amount_currency =
+                        $request->donation_attribute['goal_amount_currency'];
+                    }
+                    if ($request->donation_attribute['goal_amount']) {
+                        $donationMissionDetail->goal_amount = $request->donation_attribute['goal_amount'];
+                    }
+                    if (isset($request->donation_attribute['show_goal_amount'])) {
+                        $donationMissionDetail->show_goal_amount =
+                        (string) $request->donation_attribute['show_goal_amount'];
+                    }
+                    if (isset($request->donation_attribute['show_donation_percentage'])) {
+                        $donationMissionDetail->show_donation_percentage =
+                        (string) $request->donation_attribute['show_donation_percentage'];
+                    }
+                    if (isset($request->donation_attribute['show_donation_meter'])) {
+                        $donationMissionDetail->show_donation_meter =
+                        (string) $request->donation_attribute['show_donation_meter'];
+                    }
+                    if (isset($request->donation_attribute['show_donation_count'])) {
+                        $donationMissionDetail->show_donation_count =
+                        (string) $request->donation_attribute['show_donation_count'];
+                    }
+                    if (isset($request->donation_attribute['show_donors_count'])) {
+                        $donationMissionDetail->show_donors_count =
+                        (string) $request->donation_attribute['show_donors_count'];
+                    }
+                    if (isset($request->donation_attribute['disable_when_funded'])) {
+                        $donationMissionDetail->disable_when_funded =
+                        (string) $request->donation_attribute['disable_when_funded'];
+                    }
+                    if (isset($request->donation_attribute['is_disabled'])) {
+                        $donationMissionDetail->is_disabled = (string) $request->donation_attribute['is_disabled'];
+                    }
+                    $donationMissionDetail->save();
+                }
             }
         }
         // update into time_mission details
@@ -575,7 +579,6 @@ class MissionRepository implements MissionInterface
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
-
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability',
@@ -654,6 +657,12 @@ class MissionRepository implements MissionInterface
             if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                 $missionQuery->where('mission.organisation_id', $request->input('explore_mission_params'));
             }
+        }
+
+        //donation attribute
+        if ($request->has('with_donation_attributes ') && $request->input('with_donation_attributes ') !== ''
+            && $request->input('with_donation_attributes ') !== 0) {
+            $missionQuery->with(['donationAttribute']);
         }
 
         //Explore mission by theme

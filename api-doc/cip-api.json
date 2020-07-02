@@ -8147,6 +8147,75 @@
             }
           }
         },
+		"donation_attribute": {
+          "type": "object",
+          "properties": {
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			},
+			"show_donation_percentage": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			},
+			"show_donation_meter": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			},
+			"show_donation_count": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			},
+			"show_donors_count": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			},
+			"disable_when_funded": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			},
+            "is_disabled": {
+			  "type": "integer",
+			  "description": "1 => True, 0 => False",
+			  "enum":[
+				"1",
+				"0"
+			  ]
+			}
+          }
+        },
         "documents": {
           "type": "array",
           "items": {
