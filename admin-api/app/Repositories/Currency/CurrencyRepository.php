@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Currency;
+
 use App\Repositories\Currency\Currency;
 
 class CurrencyRepository
@@ -15,7 +16,7 @@ class CurrencyRepository
     }
 
     /**
-     * Get listing of all currency
+     * Get list of all currency
      *
      * @return array
      */
