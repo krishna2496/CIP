@@ -565,6 +565,10 @@ export default {
 		);
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
+	},
+	mounted() {
+		this.cardHeightAdj();
+		
 	}
 };
 </script>
