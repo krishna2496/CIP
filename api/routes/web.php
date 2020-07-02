@@ -26,6 +26,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
+    
+    /* Password reset routing */
+    $router->post('/reset-password/{token}', ['as' => 'password.reset',
+        'uses' => 'App\Auth\AuthController@reset_password']);
 
     /* reset password  */
     $router->put('/app/password-reset', ['middleware' => 'tenant.connection',
@@ -365,11 +369,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/story/invite', ['as' => 'app.story.invite',
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Story\StoryInviteController@storyInvite']);
-
-    /* store story visitor details */
-    $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',
-        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
-        'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
 
     /* Delete user mission comments */
     $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
