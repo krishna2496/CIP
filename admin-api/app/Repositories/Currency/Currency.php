@@ -2,40 +2,53 @@
 
 namespace App\Repositories\Currency;
 
+use App\Exceptions\InvalidCurrencyArgumentException;
+
 final class Currency
 {
 
-    // ISO-4217 currency code
-    public string $code;
-    public string $symbol;
+    /**
+     * Currency code
+     *
+     * @param string $code
+     */
+    private string $code;
 
     /**
-     * Create a new Language repository instance.
+     * Currency symbol
+     *
+     * @param string $symbol
+     */
+    private string $symbol;
+
+    /**
+     * Create a new currency instance.
      *
      * @param string $code
      * @param string $symbol
      * @return void
      */
 
-    public function __construct($code, $symbol)
+    public function __construct(string $code, string $symbol)
     {
-        $this->code = $code;
+        $this->setCode($code);
         $this->symbol = $symbol;
     }
 
     /**
-     * get Currency code and check valid or not
+     * Set currency code and check validation for currency code
      *
-     * @return string|boolean
+     * @param string $code
+     * @return string|App\Exceptions\InvalidCurrencyArgumentException
      */
-    public function getCode()
+    public function setCode(string $code)
     {
         $pattern = '/^[A-Z]{3}$/m';
-        $result = preg_match_all($pattern, $this->code, $matches);
+        $result = preg_match_all($pattern, $code, $matches);
         if (!empty($matches[0])) {
-            return $this->code;
+            return $this->code = $code;
         } else {
-            return false;
+            throw new InvalidCurrencyArgumentException("Currency code {$code} is invalid.");
         }
     }
 }

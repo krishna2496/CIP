@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Exceptions\InvalidCurrencyArgumentException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +47,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof InvalidCurrencyArgumentException){
+            return $this->invalidArgument('', $exception->getMessage());
+        }
+
         return $this->internalServerError();
     }
 }
