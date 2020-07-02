@@ -567,8 +567,7 @@ export default {
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 	},
 	mounted() {
-		this.cardHeightAdj();
-		
+		this.cardHeightAdj();	
 	}
 };
 </script>
