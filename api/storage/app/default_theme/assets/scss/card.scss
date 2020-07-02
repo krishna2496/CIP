@@ -31,31 +31,6 @@
 		[class*="card-img"] {
 			height: 220px;
 		}
-		.icon-btn {
-			i {
-				&.icon-wrap{
-					img{
-						&.rollhover-img{
-							display: none;
-						}
-					}
-				}
-			}
-			&:hover {
-				i {
-					&.icon-wrap{
-						img{
-							&.normal-img{
-								display: none;
-							}
-							&.rollhover-img{
-								display: inline-block;
-							}
-						}
-					}
-				}
-			}
-		}
 		@include lg-min {
 			&:hover {
 				box-shadow: 0px 20px 40px rgba(65, 65, 65, 0.25);
@@ -69,7 +44,7 @@
 					color: $white;
 				}
 
-				.icon-btn {
+				/*.icon-btn {
 					i {
 						@include transformX(4px);
 
@@ -83,7 +58,7 @@
 							fill: $white;
 						}
 					}
-				}
+				}*/
 			}
 		}
 
@@ -489,6 +464,7 @@
 				}
 				&.volunteer-label{
 					span{
+						/*background: $green;*/
 						.icon-wrap{
 							width: 14px;
     						height: 16px;
@@ -791,11 +767,15 @@
 					background: transparent;
 					color:$primary;
 					svg{
-						fill:$primary;
+						path{
+							fill:$primary;
+						}
 					}
 					&:hover{
 						svg{
-							fill: $white;
+							path{
+								fill: $white;
+							}
 						}
 					}
 					span{
@@ -981,19 +961,17 @@
 	  -ms-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
 	  -moz-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
 	  &:hover{
-	  	.card-action-block {
-	  		.btn-wrap {
-	  			.btn{
+	  	.card-action-block{
+	  		.btn-wrap{
+	  			.icon-btn{
 	  				background:$white;
 	  				color:$primary;
-	  				svg{
-	  					fill:$primary;
-	  				}
+	  				border-color:$primary;
 	  			}
 	  		}
 	  	}
 	  }
-
+	 
       .favourite-icon {
         bottom: auto;
         top: 73px;
@@ -1075,7 +1053,7 @@
 					&.progress-block{
 						flex: 0 0 100%;
 						max-width: 100%;
-						padding-bottom: 8px;
+						padding:0 0 8px;
 						.progress{
 							height: 6px;
 							border-radius: 0;
@@ -1088,8 +1066,11 @@
 			}
 			.detail-column {
 				width: 180px;
-				flex: 0 0 180px;
+				flex: 0 0 auto;
 				padding:  0 15px 12px 0;
+				&.progress-block{
+					padding-top: 3px;
+				}
 				&.seat-info{
 					width: 107px;
 					flex: 0 0 107px;
@@ -1159,9 +1140,16 @@
 		    		min-height: 40px;
 		    		line-height: normal;
 		    		padding: 6px 17px;
+		    		svg{
+	    				path{
+		    				fill:$primary;
+		    			}
+	    			}
 		    		&:hover{
 		    			svg{
-		    				fill:$white;
+		    				path{
+			    				fill:$white;
+			    			}
 		    			}
 		    		}
 		    	}
@@ -1169,14 +1157,18 @@
 	  				border-color:$gray-secondary;
 	  				color: $middle-gray; 
 	  				svg{
-	  					fill:$middle-gray;
+	  					path{
+	  						fill:$middle-gray;
+	  					}
 	  				}
-	  				&:hover{
+	  				&:hover, &:focus{
 	  					background: $gray-secondary!important;
 	  					color: $white!important;
 	  					border-color:$gray-secondary!important;
 	  					svg{
-	  						fill:$white;
+	  						path{
+	  							fill:$white;
+	  						}
 	  					}	
 	  				}
 	  			}
