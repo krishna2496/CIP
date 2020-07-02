@@ -17,7 +17,6 @@ import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import 'moment-timezone';
-import customCss from './services/CustomCss';
 import 'vue-search-select/dist/VueSearchSelect.css';
 
 Vue.use(Vuelidate, VueAxios, axios);
@@ -50,21 +49,6 @@ router.beforeEach(async(to, from, next) => {
                 return;
            }
         }
-    }
-    // if from path is (/) then we need to call custom css call and wait for its reponse
-    if (to.path == '/') {
-        document.body.classList.add("loader-enable");
-        setTimeout(() => {
-            document.body.classList.remove("loader-enable");
-        }, 700);
-    }
-    if ((from.path == '/' && to.path == '/') || from.path == '/') {
-        await customCss()
-          .catch(() => {
-            import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
-          }).finally(() => {
-            document.body.classList.remove("loader-enable");
-          });
     }
     if (store.state.isLoggedIn) {
         if (entryUrl) {
