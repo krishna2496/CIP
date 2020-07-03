@@ -51,4 +51,17 @@ final class Currency
             throw new InvalidCurrencyArgumentException("Currency code {$code} is invalid.");
         }
     }
+
+    /**
+     * __get magic method to get private property code and symbol
+     *
+     * @param string $property
+     * @return string|App\Exceptions\InvalidCurrencyArgumentException
+     */
+    public function __get(string $property)
+    {
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
+    }
 }

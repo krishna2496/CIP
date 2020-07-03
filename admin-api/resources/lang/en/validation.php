@@ -103,7 +103,11 @@ return [
 
     'attributes' => [
         'settings.*.tenant_setting_id' => 'tenant setting id',
-        'settings.*.value' => 'value',        
+        'settings.*.value' => 'value',
+        'currency.*.code' => 'currency code',
+        'currency.*.default' => 'default',
+        'currency.*.status' => 'status',
+        'currency.*.tenant_id' => 'tenant id'
     ],
 
 ];

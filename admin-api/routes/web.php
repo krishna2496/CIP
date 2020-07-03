@@ -124,5 +124,17 @@ $router->group(
         // Fetch activity logs
         $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'ActivityLogController@index']);
+
+        // Currency routes
+        $router->post(
+            '/tenant-currency',
+            ['as' => 'tenants.store-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
+            'uses' => 'TenantCurrencyController@store']
+        );
+        $router->get(
+            '/tenant-currency/{tenantId}',
+            ['as' => 'tenants.get-tenantcurrency', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'TenantCurrencyController@index']
+        );
     }
 );

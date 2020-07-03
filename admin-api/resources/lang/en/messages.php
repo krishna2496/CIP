@@ -32,7 +32,9 @@ return [
         'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Activity logs listed successfully',
         'MESSAGE_MIGRATION_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.',
         'MESSAGE_SEEDER_CHANGES_APPLIED_SUCCESSFULLY' => 'Migration changes applied successfully on tenant DB.',
-        'MESSAGE_TENANT_BACKGROUND_PROCESS_COMPLETED' => 'Tenant background process completed successfully'
+        'MESSAGE_TENANT_BACKGROUND_PROCESS_COMPLETED' => 'Tenant background process completed successfully',
+        'MESSAGE_TENANT_CURRENCY_ADDED' => 'Tenant currency added successfully',
+        'MESSAGE_TENANT_CURRENCY_LISTING' => 'Tenant currency listed successfully',
     ],
     
     /**
@@ -53,7 +55,9 @@ return [
         'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'Invalid file extension',
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'You can not delete default tenant language',
         'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
-        'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.'
+        'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.',
+        'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => 'Currency code is not available in system.',
+        'ERROR_TENANT_CURRENCY_NOT_FOUND' => 'Tenant language not found in the system'
     ],
     'email_text' => [
         'ERROR' => 'Error',
