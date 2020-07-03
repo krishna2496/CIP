@@ -137,22 +137,6 @@ class CityController extends Controller
             );
         }
 
-        if (!empty($request->cities)) {
-            foreach ($request->cities[0]['translations'] as $key => $value) {
-                $languageCode = $value['lang'];
-                // Check for valid language code inside tenant and ci admin
-                if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) ||
-                    !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
-                        trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
-                    );
-                }
-            }
-        }
-
         // Add cities one by one
         $createdCity = [];
         foreach ($request->cities as $key => $city) {
