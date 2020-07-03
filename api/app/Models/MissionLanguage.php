@@ -81,7 +81,7 @@ class MissionLanguage extends Model
     public function getDescriptionAttribute($value)
     {
         if ($value) {
-            return unserialize($value);
+            return json_decode($value);
         }
     }
 

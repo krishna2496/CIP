@@ -8147,6 +8147,54 @@
             }
           }
         },
+        "mission_tab_details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_tab_id": {
+                "type": "string",
+                "description": "Its “Required“ if you are updating existing mission tab"
+              },
+              "sort_key": {
+                "type": "integer",
+                "description": "Sort Order for mission tabs. It must be numeric value. Example: 0,1,2,3…"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lang": {
+                      "type": "string",
+                      "description": "Language code. Example: en, fr, es etc."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Tab heading name"
+                    },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Title of section"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "Description of section"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "documents": {
           "type": "array",
           "items": {

@@ -93,6 +93,38 @@ class MissionTest extends TestCase
                             ]
                         ]
                     ],
+                    "mission_tab_details"=>[
+                        [
+                            "sort_key"=> 1,
+                            "translations"=> [
+                                [
+                                    "lang"=> "en",
+                                    "name"=> "Tab A1",
+                                    "sections"=> [
+                                        [
+                                            "title"=> "First section",
+                                            "content"=> str_random(100)
+                                        ]
+                                    ]
+                                ],
+                            ]
+                        ],
+                        [
+                            "sort_key"=> 2,
+                            "translations"=> [
+                                [
+                                    "lang"=> "en",
+                                    "name"=> "Tab B1",
+                                    "sections"=> [
+                                        [
+                                            "title"=> "B1 First section",
+                                            "content"=> str_random(100)
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     "media_images" => [[
                             "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                             "default" => "1",
@@ -264,6 +296,38 @@ class MissionTest extends TestCase
                     ]
                 ]
             ],
+            "mission_tab_details"=>[
+                [
+                    "sort_key"=> 1,
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> "Tab A1",
+                            "sections"=> [
+                                [
+                                    "title"=> "First section",
+                                    "content"=> str_random(100)
+                                ]
+                            ]
+                        ],
+                    ]
+                ],
+                [
+                    "sort_key"=> 2,
+                    "translations"=> [
+                        [
+                            "lang"=> "en",
+                            "name"=> "Tab B1",
+                            "sections"=> [
+                                [
+                                    "title"=> "B1 First section",
+                                    "content"=> str_random(100)
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
             "media_images" => [[
                     "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                     "default" => "1",
@@ -386,6 +450,28 @@ class MissionTest extends TestCase
                                 ]
                             ]
                         ]
+                    ],
+                    "mission_tab_details"=>[
+                        [
+                            "sort_key"=> 1,
+                            "translations"=> [
+                                [
+                                    "lang"=> "en",
+                                    "name"=> "Tab A1",
+                                    "sections"=> [
+                                        [
+                                            "title"=> "First section",
+                                            "content"=> str_random(100)
+                                        ],
+                                        [
+                                            "title"=> "second section",
+                                            "content"=> str_random(100)
+                                        ],
+
+                                    ]
+                                ],
+                            ]
+                        ],
                     ],
                     "media_images" => [[
                             "media_id" => "",
