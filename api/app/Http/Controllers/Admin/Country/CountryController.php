@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin\Country;
 
+use App\Exceptions\LanguageCodeNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -129,6 +130,22 @@ class CountryController extends Controller
                 config('constants.error_codes.ERROR_COUNTRY_INVALID_DATA'),
                 $validator->errors()->first()
             );
+        }
+
+        if (!empty($request->countries)) {
+            foreach ($request->countries[0]['translations'] as $key => $value) {
+                $languageCode = $value['lang'];
+                // Check for valid language code inside tenant and ci admin
+                if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) ||
+                    !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                        trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+                    );
+                }
+            }
         }
 
         // Add countries one by one
