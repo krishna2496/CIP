@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Skill;
+use App\Helpers\Helpers;
 
 class SkillTest extends TestCase
 {
@@ -14,7 +15,7 @@ class SkillTest extends TestCase
     public function it_should_create_skill()
     {
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -25,7 +26,7 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -43,7 +44,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_error_if_skill_name_is_blank()
     {
-        $params = [        
+        $params = [
             "skill_name" => "",
             "parent_skill" => 0,
             "translations" => [
@@ -54,7 +55,7 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -77,7 +78,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_error_if_user_enter_wrong_parent_skill()
     {
-        $params = [        
+        $params = [
             "skill_name" => str_random(20),
             "parent_skill" => rand(1000000, 5000000),
             "translations" => [
@@ -88,7 +89,7 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -111,7 +112,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_all_skills_for_admin()
     {
-        $this->get('entities/skills', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/skills', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -123,7 +124,7 @@ class SkillTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -135,9 +136,8 @@ class SkillTest extends TestCase
      */
     public function it_should_return_all_skills_with_specific_id_given()
     {
-
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         // Create three skill record.
@@ -167,7 +167,7 @@ class SkillTest extends TestCase
                 ]
             ],
             'message'
-        ]);
+            ]);
 
         $result = json_decode($response->response->getContent());
 
@@ -179,7 +179,6 @@ class SkillTest extends TestCase
 
         // Forced Delete all created skills. It will not softdelete skills
         Skill::whereIn('skill_id', $skills->modelKeys())->forceDelete();
-
     }
 
     /**
@@ -192,7 +191,7 @@ class SkillTest extends TestCase
     public function it_should_return_a_skill_for_admin_by_skill_id()
     {
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -203,7 +202,7 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -213,7 +212,7 @@ class SkillTest extends TestCase
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/skills/'.$skillId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/skills/' . $skillId, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -223,7 +222,7 @@ class SkillTest extends TestCase
                 "translations"
             ],
             "message"
-        ]);
+          ]);
         App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->delete();
     }
 
@@ -236,7 +235,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_error_if_skill_id_is_wrong()
     {
-        $this->get('entities/skills/'.rand(1000000,2000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/skills/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -260,7 +259,7 @@ class SkillTest extends TestCase
     public function it_should_update_skill()
     {
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -271,22 +270,22 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "parent_skill" => 0
         ];
         
-        $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/skills/' . $skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Skill::where("skill_id", $skillId)->delete();
     }
 
@@ -300,7 +299,7 @@ class SkillTest extends TestCase
     public function it_should_return_error_for_update_skill_blank_skill_name()
     {
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -311,17 +310,17 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
         
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "skill_name" => ""
         ];
         
-        $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/skills/' . $skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -346,7 +345,7 @@ class SkillTest extends TestCase
     public function it_should_return_error_for_update_skill_for_wrong_parent_skill()
     {
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -357,17 +356,17 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
         
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
 
-        $params = [        
+        $params = [
             "parent_skill" => rand(1000000, 5000000)
         ];
         
-        $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/skills/' . $skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -390,8 +389,8 @@ class SkillTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_wrong_skill_id()
-    {   
-        $params = [        
+    {
+        $params = [
             "skill_name" => str_random(20),
             "parent_skill" => 0,
             "translations" => [
@@ -402,7 +401,7 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->patch('entities/skills/'.rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('entities/skills/' . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -426,7 +425,7 @@ class SkillTest extends TestCase
     public function it_should_delete_skill()
     {
         $skillName = str_random(20);
-        $params = [        
+        $params = [
             "skill_name" => $skillName,
             "parent_skill" => 0,
             "translations" => [
@@ -437,13 +436,13 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        $this->post("entities/skills", $params, ['Authorization' => Helpers::getBasicAuth()]);
 
         $skill = App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->get();
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
         
-        $this->delete('entities/skills/'.$skillId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('entities/skills/' . $skillId, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -455,8 +454,8 @@ class SkillTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_delete_skill_for_invalid_skill_id()
-    {   
-        $this->delete('entities/skills/'.rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+    {
+        $this->delete('entities/skills/' . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -479,7 +478,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_for_invalid_argument_for_get_all_skills_for_admin()
     {
-        $this->get('entities/skills?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/skills?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [

@@ -2,6 +2,7 @@
 use App\Helpers\Helpers;
 use Firebase\JWT\JWT;
 use Carbon\Carbon;
+
 class AppUserTest extends TestCase
 {
     /**
@@ -19,7 +20,7 @@ class AppUserTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.substr($user->last_name, 2), ['token' => $token])
+        $this->get('app/search-user?search=' . substr($user->last_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -43,7 +44,7 @@ class AppUserTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.substr($user->email, 3), ['token' => $token])
+        $this->get('app/search-user?search=' . substr($user->email, 3), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -67,7 +68,7 @@ class AppUserTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.str_random(5), ['token' => $token])
+        $this->get('app/search-user?search=' . str_random(5), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -85,11 +86,11 @@ class AppUserTest extends TestCase
      */
     public function it_should_save_user_data()
     {
-		\DB::setDefaultConnection('tenant');
+        \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-		
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -122,8 +123,8 @@ class AppUserTest extends TestCase
                 ]
             ],
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
 
         ];
     
@@ -150,7 +151,7 @@ class AppUserTest extends TestCase
     {
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
                 
         $connection = 'tenant';
@@ -188,8 +189,8 @@ class AppUserTest extends TestCase
                 ]
             ],
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
 
         ];
     
@@ -274,7 +275,7 @@ class AppUserTest extends TestCase
         ->seeJsonStructure(
             [
             "status",
-            "data" =>[
+            "data" => [
                 "token"
             ],
             "message"
@@ -403,7 +404,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $path= 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png';
+        $path = 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png';
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $fileData = file_get_contents($path);
         $base64 = base64_encode($fileData);
@@ -634,7 +635,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $path= 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js';
+        $path = 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js';
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $fileData = file_get_contents($path);
         $base64 = base64_encode($fileData);
@@ -673,7 +674,7 @@ class AppUserTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/get-user-language?email='.$user->email, ['token' => $token])
+        $this->get('app/get-user-language?email=' . $user->email, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -935,14 +936,13 @@ class AppUserTest extends TestCase
         DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => Carbon::now()]);
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
+        $this->get('app/search-user?search=' . substr($user->first_name, 2), ['token' => $token])
         ->seeStatusCode(404);
 
         $user->delete();
         
         DB::setDefaultConnection('mysql');
         DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => null]);
-        
     }
     
     /**
@@ -1045,7 +1045,7 @@ class AppUserTest extends TestCase
         $newUser->save();
 
         $token = Helpers::getJwtToken($newUser->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
+        $this->get('app/search-user?search=' . substr($user->first_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -1064,11 +1064,11 @@ class AppUserTest extends TestCase
      */
     public function it_should_return_error_on_save_user_data()
     {
-		\DB::setDefaultConnection('tenant');
+        \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id;        
+        $cityId = $countryDetail->city->first()->city_id;
         \DB::setDefaultConnection('mysql');
-		
+        
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -1101,8 +1101,8 @@ class AppUserTest extends TestCase
                 ]
             ],
             'skills' => $skillsArray,
-			"city_id" => $cityId,
-			"country_id" => $countryDetail->country_id
+            "city_id" => $cityId,
+            "country_id" => $countryDetail->country_id
 
         ];
     
@@ -1135,6 +1135,6 @@ class AppUserTest extends TestCase
         $this->get('app/missions', ['token' => $token])
         ->seeStatusCode(401);
         
-        $user->delete();      
+        $user->delete();
     }
 }

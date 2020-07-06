@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin\Language;
 
 use App\Http\Controllers\Controller;
+use App\Services\FrontendTranslationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Exceptions\BucketNotFoundException;
@@ -51,6 +52,11 @@ class LanguageController extends Controller
     private $languageHelper;
 
     /**
+     * @var FrontendTranslationService
+     */
+    private $frontendTranslationService;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Helpers\ResponseHelper $responseHelper
@@ -65,28 +71,33 @@ class LanguageController extends Controller
         Helpers $helpers,
         S3Helper $s3helper,
         Request $request,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        FrontendTranslationService $frontendTranslationService
     ) {
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->userApiKey = $request->header('php-auth-user');
         $this->languageHelper = $languageHelper;
+        $this->frontendTranslationService = $frontendTranslationService;
     }
 
     /**
      * Fetch language file url.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $isoCode
      * @return \Illuminate\Http\JsonResponse
      */
-    public function fetchLanguageFile(Request $request): JsonResponse
+    public function fetchGenericTranslations(Request $request, $isoCode): JsonResponse
     {
         // Server side validations
         $validator = Validator::make(
-            $request->toArray(),
             [
-                "code" => "required|max:2|min:2"
+                'isoCode' => $isoCode,
+            ],
+            [
+                'isoCode' => 'required|max:2|min:2',
             ]
         );
 
@@ -101,7 +112,7 @@ class LanguageController extends Controller
         }
 
         // Check for valid language code
-        if (!$this->languageHelper->getTenantLanguageByCode($request, $request->code)) {
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $isoCode)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -113,11 +124,67 @@ class LanguageController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        // Fetch language file url
-        $languageFileUrl = $this->s3helper->getLanguageFile($tenantName, $request->code);
-        $apiData = ["file_path" => $languageFileUrl];
+        // Fetch default translations and return them
+        $apiData = $this->frontendTranslationService
+            ->getGenericTranslationsForLanguage($tenantName, $isoCode)
+            ->toArray();
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_FILE_FOUND');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Fetch language file url.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $isoCode
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function fetchCustomTranslations(Request $request, $isoCode): JsonResponse
+    {
+        // Server side validations
+        $validator = Validator::make(
+            [
+                'isoCode' => $isoCode,
+            ],
+            [
+                'isoCode' => 'required|max:2|min:2',
+            ]
+        );
+
+        // If post parameter have any missing parameter
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                $validator->errors()->first()
+            );
+        }
+
+        // Check for valid language code
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $isoCode)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_LANGUAGE_INVALID_CODE'),
+                trans('messages.custom_error_message.ERROR_TENANT_LANGUAGE_INVALID_CODE')
+            );
+        }
+
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        // Fetch default translations and return them
+        $apiData = $this->frontendTranslationService
+            ->getCustomTranslationsForLanguage($tenantName, $isoCode)
+            ->toArray();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_FILE_FOUND');
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -125,16 +192,22 @@ class LanguageController extends Controller
      * It will update language file on S3
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $isoCode
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function uploadLanguageFile(Request $request): JsonResponse
+    public function updateTranslations(Request $request, $isoCode): JsonResponse
     {
         // Server side validations
+        $translations = $request->getContent();
         $validator = Validator::make(
-            $request->toArray(),
             [
-                "file_name" => "required|max:2|min:2",
-                "file_path" => "required"
+                'isoCode' => $isoCode,
+                'translations' => $translations,
+            ],
+            [
+                "isoCode" => "required|max:2|min:2",
+                "translations" => "required"
             ]
         );
 
@@ -148,24 +221,8 @@ class LanguageController extends Controller
             );
         }
 
-        $file = $request->file('file_path');
-        $fileName = $request->file_name;
-        $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-
-        $validFileType = ['text/plain'];
-        // If request parameter have any error
-        if (!in_array($file->getMimeType(), $validFileType) ||
-        ('.'.$fileExtension !== config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION'))) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION'),
-                trans('messages.custom_error_message.ERROR_NOT_VALID_TENANT_LANGUAGE_FILE_EXTENSION')
-            );
-        }
-
-        // Validate json file data
-        if (json_decode($this->helpers->removeUnwantedCharacters($file->getRealPath())) === null) {
+        // Validate json data
+        if (json_decode($translations) === null) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -175,7 +232,7 @@ class LanguageController extends Controller
         }
 
         // Check for valid language code
-        if (!$this->languageHelper->getTenantLanguageByCode($request, $fileName)) {
+        if (!$this->languageHelper->getTenantLanguageByCode($request, $isoCode)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -187,57 +244,12 @@ class LanguageController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        //Get default file from url
-        $defaultFileUrl = $this->s3helper->getDefaultLanguageFile($fileName);
-        $defaultFileContent = json_decode($this->helpers->removeUnwantedCharacters($defaultFileUrl));
-        $keyNotExists = array();
-        $keyValueNotExists = array();
-        $missingKeyValueString = '';
-        $userLanguageFile = json_decode($this->helpers->removeUnwantedCharacters($file->getRealPath()));
-        //Code to check file keywords
-        foreach ($defaultFileContent as $index => $data) {
-            if (isset($userLanguageFile->$index)) {
-                foreach ($defaultFileContent->$index as $key => $value) {
-                    if (!array_key_exists($key, $userLanguageFile->$index)) {
-                        $keyNotExists[] = $key;
-                    } elseif (trim($userLanguageFile->$index->$key) === "") {
-                        $keyValueNotExists[] = $key;
-                    }
-                }
-            } else {
-                $keyNotExists[] = $index;
-            }
-        }
+        // Store the custom translations on S3
+        $this->frontendTranslationService->storeCustomTranslations($tenantName, $isoCode, $translations);
 
-        if (!empty($keyNotExists)) {
-            $missingKeyValueString.= ' MISSING_KEYS: '.implode(", ", $keyNotExists).'.';
-        }
-        if (!empty($keyValueNotExists)) {
-            $missingKeyValueString.= ' MISSING_VALUES: '.implode(",", $keyValueNotExists);
-        }
-        if (isset($missingKeyValueString) && $missingKeyValueString !== '') {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INCOMPLETE_LANGUAGE_FILE'),
-                trans('messages.custom_error_message.ERROR_INCOMPLETE_LANGUAGE_FILE').$missingKeyValueString
-            );
-        }
-
-        //Upload file on S3
-        set_time_limit(0);
-        $context = stream_context_create(array('http'=> array(
-            'timeout' => 1200
-        )));
-
-        $disk = Storage::disk('s3');
-        $documentName = $fileName . '.' . $fileExtension;
-        $documentPath =  config('constants.AWS_S3_LANGUAGES_FOLDER_NAME') . '/' . $documentName;
-        $disk->put($tenantName . '/' . $documentPath, @file_get_contents($file, false, $context));
-        $pathInS3 = S3Helper::makeTenantS3BaseUrl($tenantName) . $documentPath;
-
-        $fileDetail = array();
-        $fileDetail['file_name'] = $documentName;
+        // Break the cache then warm it up
+        $this->frontendTranslationService->clearCache($tenantName, $isoCode);
+        $this->frontendTranslationService->getCustomTranslationsForLanguage($tenantName, $isoCode);
 
         // Make activity log
         event(new UserActivityLogEvent(
@@ -246,13 +258,16 @@ class LanguageController extends Controller
             config('constants.activity_log_user_types.API'),
             $this->userApiKey,
             get_class($this),
-            $fileDetail,
+            [
+                'isoCode' => $isoCode,
+            ],
             null,
             null
         ));
-        $apiData = ["file_path" => $pathInS3];
+        $apiData = ["isoCode" => $isoCode];
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_UPDATED_SUCESSFULLY');
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

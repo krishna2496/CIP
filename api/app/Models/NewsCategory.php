@@ -51,9 +51,9 @@ class NewsCategory extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = serialize($value);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -62,8 +62,8 @@ class NewsCategory extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        $data = @unserialize($value);
-        return ($data !== false) ? unserialize($value) : [];
+        $data = @json_decode($value);
+        return ($data !== null) ? json_decode($value, true) : [];
     }
 
     /**
@@ -76,7 +76,7 @@ class NewsCategory extends Model
     {
         return static::findOrFail($id);
     }
-    
+
     /**
      * Delete news category by id.
      *

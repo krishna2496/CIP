@@ -173,13 +173,11 @@
 
         switch (wrr.type) {
           case 'drop-down':
-            if (wrr.translations.values[0] && wrr.translations.values[0][wrr
-              .user_custom_field_value]) {
-              this.$set(this.defaultValue, wrr.field_id, wrr.translations.values[0][wrr
-                .user_custom_field_value
-                ])
-            } else {
-              this.$set(this.defaultValue, wrr.field_id, this.defaultText)
+            this.$set(this.defaultValue, wrr.field_id, this.defaultText)
+            for (let key in wrr.translations.values) {
+                if (wrr.translations.values[key] && wrr.translations.values[key][wrr.user_custom_field_value]) {
+                    this.$set(this.defaultValue, wrr.field_id, wrr.translations.values[key][wrr.user_custom_field_value])
+                }
             }
             this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value)
             break;

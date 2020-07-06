@@ -13,6 +13,8 @@ use App\Exceptions\FileNotFoundException;
 use App\Exceptions\TenantDomainNotFoundException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use App\Exceptions\SamlException;
+use Throwable;
+use InvalidArgumentException;
 
 class Handler extends ExceptionHandler
 {
@@ -35,10 +37,10 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         parent::report($exception);
     }
@@ -47,10 +49,10 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if (env('APP_ENV') === 'local' && env('APP_DEBUG')) {
             dd($exception);
@@ -69,6 +71,9 @@ class Handler extends ExceptionHandler
         }
         if ($exception instanceof SamlException) {
             return $this->samlError($exception->getCode(), $exception->getMessage());
+        }
+        if ($exception instanceof InvalidArgumentException) {
+            return $this->invalidArgument($exception->getCode(), $exception->getMessage());
         }
 
         return $this->internalServerError(trans('messages.custom_error_message.ERROR_INTERNAL_SERVER_ERROR'));

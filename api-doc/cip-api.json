@@ -78,10 +78,10 @@
       "name": "City"
     },
     {
-      "name": "Language File"
+      "name": "Timezone"
     },
     {
-      "name": "Timezone"
+      "name": "Translations"
     }
   ],
   "paths": {
@@ -1990,6 +1990,13 @@
             "required": false,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "field",
+            "in": "path",
+            "required": false,
+            "type": "string",
+            "description": "For ordering of user. Can be (fullName, firstName, email, volunteerStatus, country, language, lastName, email, title, email, department)"
           }
         ],
         "responses": {
@@ -4135,7 +4142,7 @@
         }
       }
     },
-    "/language/{lang}": {
+    "/language/{isoCode}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
         "summary": "App - Fetch language json(translations) data (Milestone - 1)",
@@ -4148,7 +4155,7 @@
         ],
         "parameters": [
           {
-            "name": "lang",
+            "name": "isoCode",
             "in": "path",
             "description": "Language code",
             "required": true,
@@ -7672,12 +7679,12 @@
         }
       }
     },
-    "/language-file?code={code}": {
+    "/translations/generic/{isoCode}": {
       "get": {
-        "operationId": "GET_team4-cip-api-get-language-file",
-        "summary": "Admin - Fetch language file",
+        "operationId": "GET_team4-cip-api-get-translations-generic",
+        "summary": "Admin - Fetch generic translations",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
           "multipart/form-data"
@@ -7691,11 +7698,11 @@
             "default": ""
           },
           {
-            "name": "code",
+            "name": "isoCode",
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "Language code. Example: To fetch english language file use en, for French fr"
+            "description": "Language ISO code. Example: To fetch English translations, use en; for French translations, use fr."
           }
         ],
         "responses": {
@@ -7708,12 +7715,12 @@
         }
       }
     },
-    "/language-file": {
-      "post": {
-        "operationId": "GET_team4-cip-api-post-language-file-changes",
-        "summary": "Admin - Update language file",
+    "/translations/custom/{isoCode}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-language-file",
+        "summary": "Admin - Fetch custom translations",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
           "multipart/form-data"
@@ -7727,18 +7734,108 @@
             "default": ""
           },
           {
-            "name": "file_path",
-            "in": "formData",
-            "required": true,
-            "type": "file",
-            "description": "Upload json file that you have modified."
-          },
-          {
-            "name": "file_name",
-            "in": "formData",
+            "name": "isoCode",
+            "in": "path",
             "required": true,
             "type": "string",
-            "description": "This is file name of uploaded file or language code. If you want to modify English language file then enter 'en', for French language file enter 'fr'"
+            "description": "Language ISO code. Example: To fetch English translations, use en; for French translations, use fr."
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Not found - Tenant language file not found"
+          }
+        }
+      },
+      "post": {
+        "operationId": "GET_team4-cip-api-post-language-file-changes",
+        "summary": "Admin - Update language file",
+        "tags": [
+          "Translations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "isoCode",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Language ISO code. Example: To customize English translations, use en; to customize French translations, use fr."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "JSON encoded string containing all custom translations for the specified language. Translations not included in this structure will be inherited from original translations.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "placeholder": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "export_timesheet_file_names": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -8012,7 +8109,7 @@
             "required": true,
             "type": "string",
             "default": ""
-          },
+          }
         ],
         "responses": {
           "401":{
@@ -8469,6 +8566,9 @@
           "type":  "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+        },
+        "position": {
+          "type": "string"
         }
       }
     },

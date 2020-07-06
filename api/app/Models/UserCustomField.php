@@ -36,7 +36,7 @@ class UserCustomField extends Model
      *
      * @var array
      */
-    protected $visible = ['order', 'field_id', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
+    protected $visible = ['field_id', 'order', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
     
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -51,7 +51,7 @@ class UserCustomField extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = serialize($value);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -62,7 +62,7 @@ class UserCustomField extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**

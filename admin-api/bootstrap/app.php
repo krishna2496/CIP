@@ -42,9 +42,12 @@ $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
  */
 $app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(\Illuminate\Mail\MailServiceProvider::class);
+$app->register(\LaravelMandrill\MandrillServiceProvider::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 $app->alias('mailer', \Illuminateminate\Mail\Mailer::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\MailQueue::class);
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
 
 
 /*
