@@ -41,8 +41,8 @@ class AppAuthTest extends TestCase
                     "avatar"
                 ],
                 "message"
-            ]
-        );
+              ]
+          );
         $user->delete();
     }
 
@@ -104,8 +104,8 @@ class AppAuthTest extends TestCase
               [
                 "status",
                 "message"
-            ]
-        );
+              ]
+          );
         $user->delete();
     }
 
@@ -152,7 +152,7 @@ class AppAuthTest extends TestCase
             'email' => $user->email,
             'reset_password_token' => '',
             'password' => "12345678",
-            'password_confirmation' =>"12345678",
+            'password_confirmation' => "12345678",
         ];
 
         $this->put('app/password-reset', $params, [])

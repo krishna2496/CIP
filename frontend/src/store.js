@@ -133,9 +133,9 @@ export default new Vuex.Store({
         setDefaultLanguage(state, language) {
             localStorage.removeItem('defaultLanguage');
             localStorage.removeItem('defaultLanguageId');
-            localStorage.setItem('defaultLanguage', language.selectedVal);
+            localStorage.setItem('defaultLanguage', language.selectedVal.toLowerCase());
             localStorage.setItem('defaultLanguageId', language.selectedId);
-            state.defaultLanguage = language.selectedVal;
+            state.defaultLanguage = language.selectedVal.toLowerCase();
             state.defaultLanguageId = language.selectedId;
         },
         // Set slider in state and local storage

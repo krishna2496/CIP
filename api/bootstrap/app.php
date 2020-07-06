@@ -60,8 +60,8 @@ $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Laravel\Lumen\Providers\EventServiceProvider::class);
 
 $app->middleware([
-     \App\Http\Middleware\CorsMiddleware::class //cross origin support
-
+    \App\Http\Middleware\CorsMiddleware::class, //cross origin support
+    Fruitcake\Cors\HandleCors::class //cross origin support
 ]);
 
 $app->routeMiddleware([
@@ -80,7 +80,7 @@ $app->routeMiddleware([
 /**
  * cross origin api call support
  */
-$app->register(Barryvdh\Cors\ServiceProvider::class);
+$app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
 $app->configure('app'); //default authentication
 $app->configure('auth'); //default authentication
@@ -98,14 +98,13 @@ $app->configure('queue');
  */
 $app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(\Illuminate\Mail\MailServiceProvider::class);
+$app->register(\LaravelMandrill\MandrillServiceProvider::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 $app->alias('mailer', \Illuminateminate\Mail\Mailer::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\MailQueue::class);
 $app->withFacades(true, ['Illuminate\Support\Facades\Notification' => 'Notification']);
-
-// Config cache clear
-$app->register(Orumad\ConfigCache\ServiceProviders\ConfigCacheServiceProvider::class);
-
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
 $app->withFacades();
 /*
 |--------------------------------------------------------------------------
