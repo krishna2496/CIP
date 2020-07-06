@@ -1,7 +1,7 @@
 <template>
     <div class="cards-wrapper" v-if="items.length > 0">
         <div class="card-listing">
-            <div class="card-outer" v-for="(mission, index) in items" :key=index>
+            <div class="card-outer" :id='"listview-"+index' v-for="(mission, index) in items" :key=index>
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">

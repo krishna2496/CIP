@@ -3,7 +3,9 @@
 		<div v-bind:class="{'card-grid' : !relatedMission,
 		}">
 			<b-row>
-				<b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
+				<b-col lg="4" sm="6" class="card-outer" 
+				:id='"gridview-"+key'
+				data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
 					<div class="card-inner">
 					<b-card no-body>
 						<div class="location">
