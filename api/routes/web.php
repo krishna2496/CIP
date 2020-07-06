@@ -618,7 +618,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Skill\SkillController@index']);
             $router->get('/{id}', ['uses' => 'Admin\Skill\SkillController@show']);
-            $router->post('/', ['uses' => 'Admin\Skill\SkillController@store']);
+            $router->post('/', ['middleware' => ['TenantHasSettings:skills_enabled'],
+                'uses' => 'Admin\Skill\SkillController@store']);
             $router->patch('/{id}', ['uses' => 'Admin\Skill\SkillController@update']);
             $router->delete('/{id}', ['uses' => 'Admin\Skill\SkillController@destroy']);
         }
