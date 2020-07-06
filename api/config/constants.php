@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
      * constants to use any where in system
      */
@@ -47,7 +46,7 @@ return [
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
-	'PER_PAGE_ALL' => '100000',
+    'PER_PAGE_ALL' => '100000',
     /*
      * User custom field types
      */
@@ -55,7 +54,7 @@ return [
         'TEXT' => 'text',
         'EMAIL' => 'email',
         'DROP-DOWN' => 'drop-down',
-        'RADIO' => 'radio'
+        'RADIO' => 'radio',
      ],
 
      /*
@@ -71,7 +70,7 @@ return [
     'comment_approval_status' => [
         'PENDING' => 'PENDING',
         'PUBLISHED' => 'PUBLISHED',
-        'DECLINED' => 'DECLINED'
+        'DECLINED' => 'DECLINED',
     ],
 
     /*
@@ -79,7 +78,10 @@ return [
      */
     'mission_type' => [
         'TIME' => 'TIME',
-        'GOAL' => 'GOAL'
+        'GOAL' => 'GOAL',
+        'DONATION' => 'DONATION',
+        'EAF' => 'EAF',
+        'DISASTER_RELIEF' => 'DISASTER_RELIEF',
     ],
 
     /*
@@ -92,7 +94,7 @@ return [
         'APPROVED' => 'APPROVED',
         'PUBLISHED_FOR_VOTING' => 'PUBLISHED_FOR_VOTING',
         'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING',
-        'UNPUBLISHED' => 'UNPUBLISHED'
+        'UNPUBLISHED' => 'UNPUBLISHED',
     ],
 
     /*
@@ -101,7 +103,7 @@ return [
     'day_volunteered' => [
         'WORKDAY' => 'WORKDAY',
         'HOLIDAY' => 'HOLIDAY',
-        'WEEKEND' => 'WEEKEND'
+        'WEEKEND' => 'WEEKEND',
     ],
 
     /*
@@ -138,7 +140,7 @@ return [
         'image/png',
         'image/jpeg',
         'image/jpg',
-        'image/svg+xml'
+        'image/svg+xml',
     ],
 
     /*
@@ -147,7 +149,7 @@ return [
     'profile_image_types' => [
         'image/png',
         'image/jpeg',
-        'image/jpg'
+        'image/jpg',
     ],
 
     /*
@@ -159,7 +161,7 @@ return [
         'XLS' => 'xls',
         'XLSX' => 'xlsx',
         'PDF' => 'pdf',
-        'TXT' => 'txt'
+        'TXT' => 'txt',
     ],
 
     /*
@@ -174,7 +176,7 @@ return [
         'application/vnd.ms-excel.sheet.binary.macroenabled.12',
         'application/vnd.ms-excel.sheet.macroenabled.12',
         'application/pdf',
-        'text/plain'
+        'text/plain',
     ],
 
     /*
@@ -189,7 +191,7 @@ return [
         'PNG' => 'png',
         'PDF' => 'pdf',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg'
+        'JPEG' => 'jpeg',
     ],
 
     /*
@@ -198,7 +200,7 @@ return [
     'application_status' => [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'PENDING' => 'PENDING',
-        'REFUSED' => 'REFUSED'
+        'REFUSED' => 'REFUSED',
     ],
 
     /*
@@ -209,19 +211,19 @@ return [
         'PENDING' => 'PENDING',
         'DECLINED' => 'DECLINED',
         'APPROVED' => 'APPROVED',
-        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
     ],
 
     'ALLOW_TIMESHEET_ENTRY' => 2,
 
-    /**
+    /*
      * Export timesheet file names
      */
     'export_timesheet_file_names' => [
         'PENDING_TIME_MISSION_ENTRIES_XLSX' => 'Pending_Time_Mission_Entries.xlsx',
         'PENTIND_GOAL_MISSION_ENTRIES_XLSX' => 'Pending_Goal_Mission_Entries.xlsx',
         'TIME_MISSION_HISTORY_XLSX' => 'Time_Mission_History.xlsx',
-        'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
+        'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx',
     ],
 
     /*
@@ -229,9 +231,8 @@ return [
      */
     'news_status' => [
         'PUBLISHED' => 'PUBLISHED',
-        'UNPUBLISHED' => 'UNPUBLISHED'
+        'UNPUBLISHED' => 'UNPUBLISHED',
     ],
-
 
     /*
      * Story status
@@ -240,17 +241,17 @@ return [
         'DRAFT' => 'DRAFT',
         'PENDING' => 'PENDING',
         'PUBLISHED' => 'PUBLISHED',
-        'DECLINED' => 'DECLINED'
+        'DECLINED' => 'DECLINED',
     ],
 
-    /**
+    /*
      * Export story file names
      */
     'export_story_file_names' => [
         'STORY_XLSX' => 'Stories.xlsx',
     ],
 
-    /**
+    /*
      * Export mission comments file names
      */
     'export_mission_comment_file_names' => [
@@ -262,7 +263,7 @@ return [
      */
     'folder_name' => [
         'timesheet' => 'timesheet',
-        'story' => 'story'
+        'story' => 'story',
     ],
 
     /*
@@ -272,7 +273,7 @@ return [
         'DRAFT' => 'DRAFT',
         'PUBLISHED' => 'PUBLISHED',
         'PENDING' => 'PENDING',
-        'DECLINED' => 'DECLINED'
+        'DECLINED' => 'DECLINED',
     ],
 
     /*
@@ -287,7 +288,7 @@ return [
             'all' => 0,
             'user' => 1,
             'admin' => 2,
-        ]
+        ],
     ],
 
     /*
@@ -304,15 +305,15 @@ return [
         'NEW_MESSAGES' => 'New messages',
         'RECOMMENDED_STORY' => 'Recommended story',
         'MISSION_APPLICATION' => 'Mission Application',
-        'NEW_NEWS' => 'New News'
+        'NEW_NEWS' => 'New News',
     ],
 
-    /**
+    /*
      * notification status
      */
     'notification' => [
         'read' => '1',
-        'unread' => '0'
+        'unread' => '0',
     ],
 
     /*
@@ -327,33 +328,33 @@ return [
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection'
+        'STATE_ENABLED' => 'state_selection',
     ],
 
-    'TOP_THEME' => "top_themes",
-    'TOP_COUNTRY' => "top_countries",
-    'TOP_ORGANISATION' => "top_organization",
-    'MOST_RANKED' => "most-ranked-missions",
-    'TOP_FAVOURITE' => "favourite-missions",
-    'TOP_RECOMMENDED' => "recommended-missions",
-    'THEME' => "themes",
-    'COUNTRY' => "country",
-    'CITY' => "city",
-    'SKILL' => "skill",
+    'TOP_THEME' => 'top_themes',
+    'TOP_COUNTRY' => 'top_countries',
+    'TOP_ORGANISATION' => 'top_organization',
+    'MOST_RANKED' => 'most-ranked-missions',
+    'TOP_FAVOURITE' => 'favourite-missions',
+    'TOP_RECOMMENDED' => 'recommended-missions',
+    'THEME' => 'themes',
+    'COUNTRY' => 'country',
+    'CITY' => 'city',
+    'SKILL' => 'skill',
     'RANDOM' => 'random-missions',
     'STATE' => 'state',
     'VIRTUAL' => 'virtual-missions',
     /* sort by */
-    "NEWEST" => "newest",
-    "OLDEST" => "oldest",
-    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
-    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
-    "MY_FAVOURITE" => "my_favourite",
-    "DEADLINE" => "deadline",
+    'NEWEST' => 'newest',
+    'OLDEST' => 'oldest',
+    'LOWEST_AVAILABLE_SEATS' => 'lowest_available_seats',
+    'HIGHEST_AVAILABLE_SEATS' => 'highest_available_seats',
+    'MY_FAVOURITE' => 'my_favourite',
+    'DEADLINE' => 'deadline',
 
-    'ORGANIZATION' => "organization",
-    'EXPLORE_MISSION_LIMIT' => "5",
-    'IMAGE' => "image",
+    'ORGANIZATION' => 'organization',
+    'EXPLORE_MISSION_LIMIT' => '5',
+    'IMAGE' => 'image',
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -467,7 +468,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' => '1100001',
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
@@ -491,7 +492,7 @@ return [
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
-        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' => '800103',
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
 
@@ -500,10 +501,10 @@ return [
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
 
-        'MISSION_TAB_NOT_FOUND' => '400051'
+        'MISSION_TAB_NOT_FOUND' => '400051',
     ],
 
-    /**
+    /*
      * Notification types
      */
     'notification_type_keys' => [
@@ -516,10 +517,10 @@ return [
         'NEW_MESSAGES' => 'new_messages',
         'RECOMMENDED_STORY' => 'recommended_story',
         'MISSION_APPLICATION' => 'mission_application',
-        'NEW_NEWS' => 'new_news'
+        'NEW_NEWS' => 'new_news',
     ],
 
-    /**
+    /*
      * Notification actions
      */
     'notification_actions' => [
@@ -535,10 +536,10 @@ return [
         'DELETED' => 'DELETED',
         'UPDATED' => 'UPDATED',
         'REFUSED' => 'REFUSED',
-        'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING'
+        'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING',
     ],
 
-    /**
+    /*
      * Notification type icons
      */
     'notification_icons' => [
@@ -554,7 +555,7 @@ return [
         'APPROVED' => 'APPROVED',
         'REFUSED' => 'REFUSED',
         'PUBLISHED' => 'PUBLISHED',
-        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
     ],
 
     'activity_log_types' => [
@@ -597,7 +598,7 @@ return [
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
-        'STATE' => 'STATE'
+        'STATE' => 'STATE',
     ],
 
     'activity_log_actions' => [
@@ -635,21 +636,21 @@ return [
 
     'activity_log_user_types' => [
         'API' => 'API',
-        'REGULAR' => 'REGULAR'
+        'REGULAR' => 'REGULAR',
     ],
 
-    'profile_required_fields'=> [
+    'profile_required_fields' => [
         'first_name',
         'last_name',
         'email',
         'city_id',
         'country_id',
         'timezone_id',
-        'language_id'
+        'language_id',
     ],
 
     'user_statuses' => [
         'ACTIVE' => '1',
-        'INACTIVE' => '0'
-    ]
+        'INACTIVE' => '0',
+    ],
 ];

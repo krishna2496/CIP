@@ -1,10 +1,9 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class DonationAttribute extends Model
 {
@@ -23,5 +22,20 @@ class DonationAttribute extends Model
      * @var string
      */
     protected $primaryKey = 'donation_attribute_id';
-	
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['mission_id', 'goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
+    'show_donors_count', 'disable_when_funded', 'is_disabled', ];
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
+    'show_donors_count', 'disable_when_funded', 'is_disabled', ];
 }
