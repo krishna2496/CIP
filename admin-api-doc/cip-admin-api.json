@@ -5,8 +5,8 @@
     "title": "CI Platform Admin",
     "description": ""
   },
-  "host":"localhost:7002",
-  "basePath":"/",
+  "host":"localhost",
+  "basePath":"/cip/admin-api",
   "tags":[  
       {  
          "name":"Tenant (Milestone - 1)"
@@ -19,6 +19,9 @@
       },
 	  {  
          "name":"Language management (Milestone - 4)"
+      },
+	  {  
+         "name":"Currency management"
       }
    ],
   "paths": {
@@ -667,7 +670,7 @@
 				  "description":"Tenant language not found in the system"
 				}
 			}
-      },
+      }
 	},
 	"/tenants/migration/": { 
 		"post": {
@@ -704,7 +707,69 @@
 				}
 			}
 		  }
-	}
+	},
+	"/tenants/tenant-currency/": {
+		"post": {
+		  "operationId": "POST_team4-cip-admin-api-add-currency",
+		  "summary": "Add currency",
+		  "description": "This is for master database of currency. This endpoint will add currency in system",
+		  "tags":[  
+				 "Currency management"
+			  ],
+		  "consumes": [
+			"application/json"
+		  ],
+		  "parameters": [
+			{
+			  "name": "body",
+			  "in": "body",
+			  "required": true,
+			  "schema": {
+				"$ref":"#/definitions/Currency"
+			  }
+			}
+		  ],
+		  "responses": {
+			  "400":{  
+				"description":"Bad request"
+			  },
+			  "422":{  
+				"description":"Unprocessable entity - Invalid input"
+			  }
+		  }
+		}
+	  },
+	  "/tenants/tenant-currency/{tenantId}": {
+		"get": {
+			"operationId": "GET_team4-cip-admin-api-get-currency",
+			"summary": "Listing currency",
+			"description": "To fetch all tenant currency",
+			"tags":[  
+				   "Currency management"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+				{  
+					"name":"tenantId",
+					"in":"path",
+					"description":"Tenant Id",
+					"required":true,
+					"type":"integer",
+					"format":"int64"
+				}
+			  ],
+			  "responses": {
+				  "400":{  
+					"description":"Bad request"
+				  },
+				  "404":{  
+					"description":"Tenant not found in the system"
+				  }
+			  }
+		  }
+	  }
   },
   "definitions": {
 	"Tenant":{
@@ -758,6 +823,41 @@
 			      ]
                 }
               }
-        }
+		},
+	"Currency":{
+		"type": "object",
+              "properties": {
+				 "currency":{
+					"type": "array",
+					"items": {
+					  "type": "object",
+					  "properties": {
+						"tenant_id": {
+							"type": "integer"
+						  },
+						  "code": {
+							"type":"string"
+						  },
+						  "default": {
+							"type":"integer",
+							"description":"Set default currency of the platform",
+							"enum":[  
+								  "1",
+								  "0"
+							]
+						  },
+						  "is_active": {
+							  "type":"integer",
+							  "description":"Set currency active for tenant of the platform",
+							  "enum":[  
+									"1",
+									"0"
+							  ]
+							}
+					  }
+					}
+				 } 
+              }
+	}
   }
 }

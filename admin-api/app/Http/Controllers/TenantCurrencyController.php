@@ -11,7 +11,6 @@ use App\Models\TenantCurrency;
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
-use App\Helpers\DatabaseHelper;
 use DB;
 use App\Events\ActivityLogEvent;
 use Validator;
@@ -35,25 +34,17 @@ class TenantCurrencyController extends Controller
     private $responseHelper;
 
     /**
-     * @var App\Helpers\DatabaseHelper
-     */
-    private $databaseHelper;
-
-    /**
      * Create a new Tenant has setting controller instance.
      *
      * @param  App\Helpers\ResponseHelper $responseHelper
-     * @param  App\Helpers\DatabaseHelper $databaseHelper
      * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
-        DatabaseHelper $databaseHelper,
         CurrencyRepository $currencyRepository
     ) {
         $this->responseHelper = $responseHelper;
-        $this->databaseHelper = $databaseHelper;
         $this->currencyRepository = $currencyRepository;
     }
 
@@ -66,7 +57,7 @@ class TenantCurrencyController extends Controller
     public function index(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $tenantCurrencyList = $this->currencyRepository->getCurrencyDetails($request, $tenantId);
+            $tenantCurrencyList = $this->currencyRepository->getCurrencyDetails ($request, $tenantId);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;

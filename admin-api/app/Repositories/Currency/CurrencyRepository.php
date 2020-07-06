@@ -100,7 +100,6 @@ class CurrencyRepository
      */
     public function getCurrencyDetails(Request $request, int $tenantId) : LengthAwarePaginator
     {
-
         // Check tenant is present in the system
         $tenantData = $this->tenant->findOrFail($tenantId);
 

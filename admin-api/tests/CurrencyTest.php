@@ -5,9 +5,90 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\TenantCurrency;
 use App\Models\Tenant;
 use App\Repositories\Currency\Currency;
+use Illuminate\Http\Request;
+use App\Repositories\Currency\CurrencyRepository;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Response;
+use App\Http\Controllers\TenantCurrencyController;
+use App\Helpers\ResponseHelper;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CurrencyTest extends TestCase
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param  App\Repositories\Currency\CurrencyRepository $currencyRepository
+     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
+     *
+     * @return void
+     */
+    private function getController(
+        ResponseHelper $responseHelper,
+        CurrencyRepository $currencyRepository
+    ) {
+        return new TenantCurrencyController(
+            $responseHelper,
+            $currencyRepository
+        );
+    }
+
+    /**
+    * @testdox Test index with success status
+    *
+    * @return void
+    */
+    public function testIndexSuccess()
+    {
+        $request = new Request();
+        // $mockResponse = $this->mockGetAllTenantSettingResponse();
+
+        // $helper = $this->mock(Helpers::class);
+        // $helper->shouldReceive('getAllTenantSetting')
+        //     ->once()
+        //     ->with($request)
+        //     ->andReturn($mockResponse);
+
+        $repository = $this->mock(CurrencyRepository::class);
+        $repository->shouldReceive('getCurrencyDetails')
+            ->once()
+            ->andReturn(new Illuminate\Pagination\LengthAwarePaginator());
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper->shouldReceive('success')
+            ->once()
+            ->with(Response::HTTP_OK, 'Tenant currency listed successfully');
+
+        $controller = $this->getController(
+            $responseHelper,
+            $repository
+        );
+
+        $response = $controller->index($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * Mock an object
+    *
+    * @param string name
+    *
+    * @return Mockery
+    */
+    private function mock($class)
+    {
+        return Mockery::mock($class);
+    }
+
+
+    /* 
+    ======================================
+               Old testcases
+    ======================================
+    */
+
     /**
      * @test
      *
@@ -225,6 +306,11 @@ class CurrencyTest extends TestCase
         $test = new App\Repositories\Currency\CurrencyRepository($tenantCurrenctInstance, $tenantInstance);
         $currencyData = $test->findAll();
         dd($currencyData);
+
+        foreach ($allLanguagesList as $key => $value) {
+            $code = $value->code;
+            array_push($allLanguageArray, $code);
+        }
 
         $params = [
             'currency' => [
