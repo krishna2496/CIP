@@ -282,6 +282,7 @@ return [
         // Custom error code for common exception
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
+        'ERROR_UNAUTHORIZED' => 'Unauthorized',
 
         // Custom error code for other errors - 800000 - 809999
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
