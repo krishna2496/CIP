@@ -32,7 +32,7 @@ class AppSkillTest extends TestCase
     /**
      * @test
      *
-     * No data found for skill 
+     * No data found for skill
      *
      * @return void
      */
@@ -54,7 +54,7 @@ class AppSkillTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void

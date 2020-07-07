@@ -40,13 +40,26 @@
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
                             {{ languageData.errors.password_required }}</div>
                     </b-form-group>
-                    <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
-                        {{ languageData.label.login }}</b-button>
+                    <b-button
+                      type="button"
+                      @click="handleSubmit"
+                      class=" btn-bordersecondary">
+                      {{ languageData.label.login }}
+                    </b-button>
                 </b-form>
                 <!-- link to forgot-password -->
                 <div class="form-link">
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
+
+                <b-button
+                  type="button"
+                  v-if="hasSSO"
+                  @click="handleSSO"
+                  class=" btn-borderprimary mt-3">
+                  {{ languageData.label.login_with_sso || 'Login with SSO' }}
+                </b-button>
+
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent" :key="componentKey"/>
         </div>
@@ -68,26 +81,28 @@
       AppCustomDropdown,
       TheSlider,
     },
+
     data() {
-        return {
-            flag: false,
-            myValue: '',
-            defautLang: '',
-            langList: [],
-            login: {
-                email: '',
-                password: '',
-            },
-            submitted: false,
-            classVariant: 'danger',
-            message: null,
-            showDismissibleAlert: false,
-            isShowComponent : false,
-            languageData : [],
-            isPageShown : false,
-            componentKey : 0
-        };
+      return {
+        flag: false,
+        myValue: '',
+        defautLang: '',
+        langList: [],
+        login: {
+          email: '',
+          password: '',
+        },
+        submitted: false,
+        classVariant: 'danger',
+        message: null,
+        showDismissibleAlert: false,
+        isShowComponent : false,
+        languageData : [],
+        isPageShown : false,
+        componentKey : 0
+      };
     },
+
     validations: {
       login: {
         email: {required, email},
@@ -101,12 +116,18 @@
           //Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage)
           this.defautLang = store.state.defaultLanguage
+          this.hasSSO = Boolean(store.state.samlSettings);
           // Get tenant setting
           tenantSetting();
           loadLocaleMessages(store.state.defaultLanguage).then(() =>{
             this.languageData = JSON.parse(store.state.languageLabel);
             this.isPageShown = true
             setTimeout(() => {
+              if (store.state.samlSettings
+                && store.state.samlSettings.saml_access_only
+              ) {
+                window.location.href = store.state.samlSettings.sso_url;
+              }
               this.$refs.email.focus();
             },500)
           });
@@ -158,6 +179,11 @@
           }
         });
       },
+
+      handleSSO() {
+        window.location = store.state.samlSettings.sso_url;
+      },
+
     },
     mounted() {
 

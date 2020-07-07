@@ -58,7 +58,9 @@ export default new Vuex.Store({
         isProfileComplete: localStorage.getItem('isProfileComplete'),
         getEmailNotification : localStorage.getItem('getEmailNotification'),
         defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage'),
-        stateId: localStorage.getItem('stateId')
+        stateId: localStorage.getItem('stateId'),
+        samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
+        ssoLogin: JSON.parse(localStorage.getItem('ssoLogin')),
     },
     mutations: {
         setToken(state, data) {
@@ -80,6 +82,7 @@ export default new Vuex.Store({
             localStorage.setItem('userTimezone', data.timezone)
             localStorage.setItem('isProfileComplete',data.is_profile_complete)
             localStorage.setItem('getEmailNotification',data.receive_email_notification);
+            localStorage.setItem('ssoLogin', data.ssoLogin === true);
             state.userId = data.user_id;
             state.firstName = data.first_name;
             state.lastName = data.last_name;
@@ -90,6 +93,7 @@ export default new Vuex.Store({
             state.userTimezone = data.timezone;
             state.isProfileComplete = data.is_profile_complete;
             state.getEmailNotification = data.receive_email_notification
+            state.ssoLogin = data.ssoLogin;
         },
         // Remove login data in state and local storage
         logoutUser(state, data) {
@@ -112,6 +116,13 @@ export default new Vuex.Store({
             state.cookieAgreementDate = null;
             state.policyPage = null;
             state.isProfileComplete = null;
+
+            if (state.ssoLogin) {
+                localStorage.removeItem('ssoLogin');
+                state.ssoLogin = false;
+                window.location.href = state.samlSettings.slo_url;
+            }
+
             if (!data || !data.stay) {
               router.push({
                   name: 'login'
@@ -122,9 +133,9 @@ export default new Vuex.Store({
         setDefaultLanguage(state, language) {
             localStorage.removeItem('defaultLanguage');
             localStorage.removeItem('defaultLanguageId');
-            localStorage.setItem('defaultLanguage', language.selectedVal);
+            localStorage.setItem('defaultLanguage', language.selectedVal.toLowerCase());
             localStorage.setItem('defaultLanguageId', language.selectedId);
-            state.defaultLanguage = language.selectedVal;
+            state.defaultLanguage = language.selectedVal.toLowerCase();
             state.defaultLanguageId = language.selectedId;
         },
         // Set slider in state and local storage
@@ -373,6 +384,11 @@ export default new Vuex.Store({
         setTenantDefaultLanguage(state, language) {
             localStorage.setItem('defaultTenantLanguage',language);
             state.defaultTenantLanguage = language;
+        },
+
+        setSamlSettings(state, data) {
+            localStorage.setItem('samlSettings', data);
+            state.samlSettings = JSON.parse(data);
         },
     },
     getters: {},

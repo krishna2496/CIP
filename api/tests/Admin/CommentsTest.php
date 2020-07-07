@@ -1,5 +1,4 @@
 <?php
-
 use App\Helpers\Helpers;
 
 class CommentsTest extends TestCase
@@ -33,11 +32,11 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Comment::where('user_id', $user->user_id)->update(['approval_status' => 'PUBLISHED']);
         DB::setDefaultConnection('mysql');
         
-        $this->get('/missions/'.$mission->mission_id.'/comments', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . $mission->mission_id . '/comments', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -78,12 +77,12 @@ class CommentsTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $this->get('/missions/'.$mission->mission_id.'/comments', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . $mission->mission_id . '/comments', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -101,10 +100,10 @@ class CommentsTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $missionId = rand(1000000,2000000);
+        $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/missions/'.$missionId.'/comments', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . $missionId . '/comments', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -115,7 +114,7 @@ class CommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]);  
+        ]);
         $user->delete();
     }
     
@@ -148,13 +147,13 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Comment::where('user_id', $user->user_id)->update(['approval_status' => config("constants.comment_approval_status.PUBLISHED")]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
         
-        $this->get('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . $mission->mission_id . '/comments/' . $comment->comment_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -187,7 +186,7 @@ class CommentsTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $this->get('/missions/'.$mission->mission_id.'/comments/'.rand(1000000, 2000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . $mission->mission_id . '/comments/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -232,13 +231,13 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Comment::where('user_id', $user->user_id)->update(['approval_status' => config("constants.comment_approval_status.PUBLISHED")]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
         
-        $this->get('/missions/'.rand(1000000, 2000000).'/comments/'.$comment->comment_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . rand(1000000, 2000000) . '/comments/' . $comment->comment_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -283,7 +282,7 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
@@ -292,7 +291,7 @@ class CommentsTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . $mission->mission_id . '/comments/' . $comment->comment_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -331,7 +330,7 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
@@ -340,7 +339,7 @@ class CommentsTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.$mission->mission_id.'/comments/'.rand(1000000, 2000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . $mission->mission_id . '/comments/' . rand(1000000, 2000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -385,7 +384,7 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
@@ -394,7 +393,7 @@ class CommentsTest extends TestCase
             "approval_status" => '',
         ];
 
-        $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . $mission->mission_id . '/comments/' . $comment->comment_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -439,15 +438,15 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
         
         $this->delete(
-            '/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id,
+            '/missions/' . $mission->mission_id . '/comments/' . $comment->comment_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
 
@@ -474,9 +473,9 @@ class CommentsTest extends TestCase
         $user->save();
 
         $this->delete(
-            '/missions/'.$mission->mission_id.'/comments/'.rand(1000000, 2000000),
+            '/missions/' . $mission->mission_id . '/comments/' . rand(1000000, 2000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -488,7 +487,7 @@ class CommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
 
         $user->delete();
         $mission->delete();
@@ -523,15 +522,15 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
         
         $this->delete(
-            '/missions/'.rand(1000000, 2000000).'/comments/'.$comment->comment_id,
+            '/missions/' . rand(1000000, 2000000) . '/comments/' . $comment->comment_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -543,11 +542,11 @@ class CommentsTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         
         $user->delete();
         $mission->delete();
-    }    
+    }
 
     /**
      * @test
@@ -578,7 +577,7 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
@@ -587,7 +586,7 @@ class CommentsTest extends TestCase
             "approval_status" => 'test',
         ];
 
-        $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . $mission->mission_id . '/comments/' . $comment->comment_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -620,7 +619,7 @@ class CommentsTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $this->get('/missions/'.$mission->mission_id.'/comments?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/' . $mission->mission_id . '/comments?order=test', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
@@ -665,7 +664,7 @@ class CommentsTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
        
         DB::setDefaultConnection('mysql');
@@ -674,7 +673,7 @@ class CommentsTest extends TestCase
             "approval_status" => config("constants.comment_approval_status.PUBLISHED"),
         ];
 
-        $this->patch('/missions/'.rand(1000000, 50000000).'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/' . rand(1000000, 50000000) . '/comments/' . $comment->comment_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [

@@ -32,7 +32,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'country_id' => $countryDetail->country_id,
         'profile_text' => str_random(10),
         'linked_in_url' => 'https://www.'.str_random(10).'.com',
-        'is_profile_complete' => '1'
+        'is_profile_complete' => '1',
+        'receive_email_notification' => 1
     ];
 });
 
@@ -277,5 +278,21 @@ $factory->define(App\Models\Organization::class, function (Faker\Generator $fake
         "state_id"=>1,
         "country_id"=>1,
         "postal_code"=>rand()
+    ];
+});
+
+$factory->define(App\Models\CityLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'city_id' => 1, 
+        'language_id' => 1,
+        'name' => $faker->name,
+    ];
+});
+
+$factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'country_id' => 1, 
+        'language_id' => 1,
+        'name' => $faker->name,
     ];
 });

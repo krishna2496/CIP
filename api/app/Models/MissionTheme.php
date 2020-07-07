@@ -46,9 +46,9 @@ class MissionTheme extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = serialize($value);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -57,8 +57,8 @@ class MissionTheme extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        $data = @unserialize($value);
-        return ($data !== false) ? unserialize($value): array();
+        $data = @json_decode($value);
+        return ($data !== null) ? json_decode($value, true): array();
     }
 
     /**
@@ -71,7 +71,7 @@ class MissionTheme extends Model
     {
         return static::findOrFail($id);
     }
-    
+
     /**
      * Delete the specified resource.
      *

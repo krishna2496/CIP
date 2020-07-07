@@ -196,11 +196,16 @@ return [
         'MESSAGE_STATE_LISTING' => 'States listed successfully',
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
+<<<<<<< HEAD
         'MESSAGE_ORGANIZATION_CREATED' => "Organization created successfully",
         'MESSAGE_ORGANIZATION_UPDATED' => "Organization updated successfully",
         'MESSAGE_ORGANIZATION_DELETED' => "Organization deleted successfully",
         'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully'
+=======
+        'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
+>>>>>>> 21800456ad818d3438b9918233883239f832dbda
     ],
 
 
@@ -353,7 +358,7 @@ return [
 
         'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
         'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
-        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
+        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => 'Invalid identity provider.',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
@@ -364,5 +369,6 @@ return [
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
+        'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.'
        ]
 ];
