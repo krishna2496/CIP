@@ -171,12 +171,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
 /* SAML */
 $router->group(
- [
+    [
      'prefix' => '/app/saml',
      'namespace' => 'App\Auth',
      'middleware' => 'tenant.connection',
  ],
- function ($router) {
+    function ($router) {
      $router->get('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
      $router->post('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
      $router->post('acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
@@ -187,11 +187,11 @@ $router->group(
 
 /* Google Authentication */
 $router->group(
- [
+    [
      'prefix' => '/app/google',
      'namespace' => 'App\Auth',
  ],
- function ($router) {
+    function ($router) {
      $router->get('auth', ['as' => 'google.authentication', 'uses' => 'GoogleAuthController@login']);
  }
 );
@@ -613,15 +613,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set skills data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering,skills_enabled'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Skill\SkillController@index']);
             $router->get('/{id}', ['uses' => 'Admin\Skill\SkillController@show']);
-            $router->post('/', ['middleware' => ['TenantHasSettings:skills_enabled'],
-                'uses' => 'Admin\Skill\SkillController@store']);
-            $router->patch('/{id}', ['middleware' => ['TenantHasSettings:skills_enabled'],
-                'uses' => 'Admin\Skill\SkillController@update']);
+            $router->post('/', ['uses' => 'Admin\Skill\SkillController@store']);
+            $router->patch('/{id}', ['uses' => 'Admin\Skill\SkillController@update']);
             $router->delete('/{id}', ['uses' => 'Admin\Skill\SkillController@destroy']);
         }
     );
@@ -657,7 +655,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Timesheet management */
     $router->group(
-        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
         function ($router) {
             $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);
             $router->get('/details', ['middleware' => ['PaginationMiddleware'],
@@ -765,10 +763,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Availability management */
     $router->group(
-        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
         function ($router) {
             /* Get availability */
-            $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
+        $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Availability\AvailabilityController@index']);
 
             /* Store availability */
