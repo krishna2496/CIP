@@ -14,12 +14,13 @@ class TenantHasSettings
      */
     private $tenantActivatedSettingRepository;
 
-    /**
-    * Create a new Tenant has setting instance
-    *
-    * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
-    * @return void
-    */
+     /**
+     * Create a new Tenant has setting instance
+     *
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
+     * @return void
+     */
     public function __construct(
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         ResponseHelper $responseHelper
@@ -33,7 +34,7 @@ class TenantHasSettings
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  $settings array of route settings
+     * @param  array $settings 
      * @return mixed
      */
     public function handle($request, Closure $next, ...$settings)
