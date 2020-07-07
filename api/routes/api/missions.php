@@ -18,7 +18,7 @@ $router->post(
     '/',
     [
         'as' => 'missions.store',
-        'middleware' => ['TenantHasSettings:volunteering,goal,time'],
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionController@store'
     ]
 );
@@ -35,7 +35,7 @@ $router->patch(
     '/{missionId}',
     [
         'as' => 'missions.update',
-        'middleware' => ['TenantHasSettings:volunteering,goal,time'],
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionController@update'
     ]
 );
