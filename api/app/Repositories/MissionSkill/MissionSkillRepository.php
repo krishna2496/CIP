@@ -12,7 +12,7 @@ class MissionSkillRepository implements MissionSkillInterface
      * @var App\Models\MissionSkill
      */
     public $missionSkill;
- 
+
     /**
      * Create a new MissionSkill repository instance.
      *
@@ -58,18 +58,18 @@ class MissionSkillRepository implements MissionSkillInterface
         ->whereNotNull('timesheet.timesheet_id')
         ->whereNull('timesheet.deleted_at')
         ->groupBy('mission_skill.skill_id');
-        
+
         $hoursPerSkill = $queryBuilder->get();
 
         $languageCode = config('app.locale');
         foreach ($hoursPerSkill as $skill) {
-            $tranlations = unserialize($skill->translations);
+            $translations = json_decode($skill->translations, true);
             $arrayKey = array_search($languageCode, array_column(
-                $tranlations,
+                $translations,
                 'lang'
             ));
             if ($arrayKey  !== '') {
-                $skill->skill_name = $tranlations[$arrayKey]['title'];
+                $skill->skill_name = $translations[$arrayKey]['title'];
             }
             unset($skill->translations);
         }

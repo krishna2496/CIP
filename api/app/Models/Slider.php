@@ -44,9 +44,9 @@ class Slider extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = serialize($value);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -55,7 +55,7 @@ class Slider extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**

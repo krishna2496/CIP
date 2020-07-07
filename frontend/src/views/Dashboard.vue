@@ -248,10 +248,32 @@
       var currentYear = new Date().getFullYear();
       var yearsListing = [];
       yearsListing.push([0, this.languageData.label.all])
-      for (var index = currentYear; index > (currentYear - 5); index--) {
+      let yearDiff  = 5;
+			if(store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+				let lastYear = store.state.timesheetFromYear;
+				if((currentYear - lastYear) +1 > 0) {
+					yearDiff = (currentYear - lastYear) +1;
+				}
+			}
+      for (var index = currentYear; index > (currentYear - yearDiff); index--) {
         yearsListing.push([index, index]);
       }
       this.yearList = yearsListing;
+
+      // let currentYear = new Date().getFullYear();
+			// let yearsList = [];
+			// let yearDiff  = 5;
+			// if(store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+			// 	let lastYear = store.state.timesheetFromYear;
+			// 	if((currentYear - lastYear) +1 > 0) {
+			// 		yearDiff = (currentYear - lastYear) +1;
+			// 	}
+			// }
+			// for (let index = currentYear; index > (currentYear - yearDiff); index--) {
+			// 	yearsList.push([index, index]);
+			// }
+			// this.yearList = yearsList;
+			// this.lastYear = parseInt(yearsList[yearsList.length -1][1]);
 
     },
     methods: {

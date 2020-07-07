@@ -73,6 +73,13 @@ router.beforeEach(async(to, from, next) => {
         }
     }
     if (to.meta.requiresAuth && !store.state.isLoggedIn) {
+        if (store.state.samlSettings
+          && store.state.samlSettings.saml_access_only
+        ) {
+          window.location.href = store.state.samlSettings.sso_url;
+          return;
+        }
+
         entryUrl = to.path;
         next({
             name: "login"
