@@ -43,4 +43,16 @@ class MissionImpactDonationLanguage extends Model
      * @var array
      */
     protected $fillable = ['mission_impact_donation_language_id', 'impact_donation_id,', 'content'];
+
+    /**
+     * Store/update specified resource for mission impact donation translations.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return App\Models\MissionImpactDonationLanguage
+     */
+    public function createOrUpdateMissionTabLanguage(array $condition, array $data): MissionImpactDonationLanguage
+    {
+        return static::updateOrCreate($condition, $data);
+    }
 }

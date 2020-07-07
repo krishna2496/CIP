@@ -167,7 +167,13 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact_donation.*.amount" => 'required|integer',
+                "impact_donation.*.translations" => 'required',
+                "impact_donation.*.translations.*.language_code" => 
+                'required_with:impact_donation.*.translations|max:2',
+                "impact_donation.*.translations.*.content" => 
+                'required_with:impact_donation.*.translations',
             ]
         );
 
@@ -288,7 +294,17 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact_donation.*.impact_donation_id" =>
+                'sometimes|required|exists:mission_impact_donation,mission_impact_donation_id,deleted_at,NULL',
+                "impact_donation.*.amount" =>
+                "required_without:impact_donation.*.impact_donation_id|integer",
+                "impact_donation.*.translations" =>
+                "required_without:impact_donation.*.impact_donation_id",
+                "impact_donation.*.translations.*.language_code" =>
+                "required_with:impact_donation.*.translations|max:2",
+                "impact_donation.*.translations.*.content" =>
+                "required_with:impact_donation.*.translations",
             ]
         );
 
@@ -395,6 +411,22 @@ class MissionController extends Controller
                     }
                 }
             }
+        }
+
+         // Check for mission impact donation id is valid or not
+         try {
+            if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
+                foreach ($request->impact_donation as $impactDonationValue) {
+                    if (isset($impact_donation['impact_donation_id']) && ($impact_donation['impact_donation_id'] !== "")) {
+                        $this->missionRepository->isMissionTabLinkedToMission($id, $missionTabValue['impact_donation_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
         }
 
         $this->missionRepository->update($request, $missionId);

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
+use App\Repositories\MissionMedia\ImpactDonationMissionRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -51,6 +52,11 @@ class MissionRepository implements MissionInterface
     * @var App\Services\Mission\ModelsService
     */
     private $modelsService;
+
+    /**
+    * @var App\Repositories\MissionMedia\ImpactDonationMissionRepository
+    */
+    private $impactDonationMissionRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -61,6 +67,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionMedia\ImpactDonationMissionRepository $impactDonationMissionRepository
      * @return void
      */
     public function __construct(
@@ -69,7 +76,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        ImpactDonationMissionRepository $impactDonationMissionRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -77,6 +85,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->impactDonationMissionRepository = $impactDonationMissionRepository;
     }
     
     /**
@@ -180,6 +189,11 @@ class MissionRepository implements MissionInterface
             if (!empty($request->media_videos)) {
                 $this->missionMediaRepository->saveMediaVideos($request->media_videos, $mission->mission_id);
             }
+        }
+
+        // Add impact donation mission
+        if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
+            $this->impactDonationMissionRepository->store($request->impact_donation, $mission->mission_id);
         }
             
         // Add mission documents
@@ -367,6 +381,21 @@ class MissionRepository implements MissionInterface
                 unset($missionDocument);
             }
         }
+
+        // Add/Update mission tab details
+
+        if (isset($request->impact_donation) && count($request->impact_donation)) {
+            foreach ($request->impact_donation as $impactDonationValue) {
+                if (isset($impactDonationValue['impact_donation_id'])) {
+                    $this->impactDonationMissionRepository->update($impactDonationValue, $id);
+                } else {
+
+                    //Impact donation id is not available and create the impact donation and details
+                    $this->impactDonationMissionRepository->store($request->impact_donation, $id);
+                }
+            }
+        }
+
         return $mission;
     }
     
@@ -454,6 +483,10 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['missionImpactDonation' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionImpactDonation.getMissionImpactDonationDetail' => function ($query) {
+            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.id');
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -1094,8 +1127,8 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
 
-        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
-        : (($relatedCityCount === 0) && ($relatedCountryCount > 0))
+        $missionQuery = (($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount === 0) && ($relatedCountryCount > 0)))
         ? $missionQuery->where('country_id', $mission->country_id)
         : $missionQuery->where('theme_id', $mission->theme_id);
 
@@ -1532,5 +1565,18 @@ class MissionRepository implements MissionInterface
         ->where(['mission_id'=> $missionId, 'user_id'=> $userId])
         ->whereIn('approval_status', $statusArray)->get();
         return $applicationStatusData->isEmpty() ? true : false;
+    }
+
+    /**
+    * Get mission tab details
+    *
+    * @param int $missionId
+    * @param string $missionImpactDonationId
+    * @return App\Repositories\MissionImpactDonation\MissionImpactDonation
+    */
+
+    public function isMissionDonationImpactLinkedToMission(int $missionId, string $missionImpactDonationId)
+    {
+        return $this->modelsService->missionImpactDonation->where([['mission_id', '=', $missionId], ['mission_impact_donation_id', '=', $missionImpactDonationId]])->firstOrFail();
     }
 }

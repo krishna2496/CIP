@@ -43,4 +43,15 @@ class MissionImpactDonation extends Model
      * @var array
      */
     protected $fillable = ['mission_impact_donation_id', 'mission_id,', 'amount'];
+
+    /**
+     * Find the specified resource.
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
+     */
+
+    public function getMissionImpactDonationDetail() : HasMany
+    {
+        return $this->hasMany(MissionTabLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
+    }
 }
