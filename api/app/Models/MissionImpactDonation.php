@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use  App\Models\MissionImpactDonationLanguage;
 
 class MissionImpactDonation extends Model
 {
@@ -42,7 +43,7 @@ class MissionImpactDonation extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_impact_donation_id', 'mission_id,', 'amount'];
+    protected $fillable = ['mission_impact_donation_id', 'mission_id', 'amount'];
 
     /**
      * Find the specified resource.
@@ -52,6 +53,6 @@ class MissionImpactDonation extends Model
 
     public function getMissionImpactDonationDetail() : HasMany
     {
-        return $this->hasMany(MissionTabLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
+        return $this->hasMany(MissionImpactDonationLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
     }
 }

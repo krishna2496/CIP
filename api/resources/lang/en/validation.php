@@ -221,7 +221,8 @@ return [
         'impact_donation.*.amount' => 'impact donation amount',
         'impact_donation.*.translations' => 'impact donation translations',
         'impact_donation.*.translations.*.language_code' => 'impact donation language code',
-        'impact_donation.*.translations.*.content' => 'impact donation content'
+        'impact_donation.*.translations.*.content' => 'impact donation content',
+        'impact_donation.*.impact_donation_id' => 'impact donation id'
 		],
 
 ];

@@ -76,7 +76,7 @@ class ModelsService
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
-     * #param  App\Models\MissionImpactDonation $missionImpactDonation
+     * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @return void
      */
     public function __construct(

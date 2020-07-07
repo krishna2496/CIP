@@ -173,7 +173,7 @@ class MissionController extends Controller
                 "impact_donation.*.translations.*.language_code" => 
                 'required_with:impact_donation.*.translations|max:2',
                 "impact_donation.*.translations.*.content" => 
-                'required_with:impact_donation.*.translations',
+                'required_with:impact_donation.*.translations|max:160',
             ]
         );
 
@@ -417,15 +417,15 @@ class MissionController extends Controller
          try {
             if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
                 foreach ($request->impact_donation as $impactDonationValue) {
-                    if (isset($impact_donation['impact_donation_id']) && ($impact_donation['impact_donation_id'] !== "")) {
-                        $this->missionRepository->isMissionTabLinkedToMission($id, $missionTabValue['impact_donation_id']);
+                    if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== "")) {
+                        $this->missionRepository->isMissionDonationImpactLinkedToMission($missionId, $impactDonationValue['impact_donation_id']);
                     }
                 }
             }
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
             );
         }
 

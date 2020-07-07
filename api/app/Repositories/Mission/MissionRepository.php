@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
-use App\Repositories\MissionMedia\ImpactDonationMissionRepository;
+use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -391,7 +391,7 @@ class MissionRepository implements MissionInterface
                 } else {
 
                     //Impact donation id is not available and create the impact donation and details
-                    $this->impactDonationMissionRepository->store($request->impact_donation, $id);
+                    $this->impactDonationMissionRepository->store($impactDonationValue, $id);
                 }
             }
         }
@@ -421,10 +421,7 @@ class MissionRepository implements MissionInterface
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
             $query->orderBy('sort_order');
-        }])
-        ->with(['missionDocument' => function ($query) {
-            $query->orderBy('sort_order');
-        }])->findOrFail($id);
+        }]);
         
         if (isset($mission->missionLanguage)) {
             $languages = $this->languageHelper->getLanguages();
@@ -483,10 +480,6 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionImpactDonation' => function ($query) {
-            $query->orderBy('sort_key');
-        }, 'missionImpactDonation.getMissionImpactDonationDetail' => function ($query) {
-            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.id');
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
