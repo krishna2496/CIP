@@ -8,6 +8,7 @@ $pdo = $db->connection('mysql')->getPdo();
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 use Illuminate\Support\Str;
+
 $tenants = $pdo->query('select * from tenant where status=1 AND deleted_at IS NULL')->fetchAll();
 
 if (count($tenants) > 0) {
@@ -32,16 +33,16 @@ if (count($tenants) > 0) {
 
         if (!empty($uniqueOrganizationDataFromMission)) {
             foreach ($uniqueOrganizationDataFromMission as $organizationData) {
-                $id = (String) Str::uuid();
+                $id = $organizationData['organisation_id'];
                 $name = $organizationData['organisation_name'];
                 $pdo->exec('SET NAMES utf8mb4');
                 $pdo->exec('SET CHARACTER SET utf8mb4');
 
-                $sql = $pdo->prepare("SELECT name FROM organization WHERE name=?");
-                $sql->execute([$name]); 
+                $sql = $pdo->prepare("SELECT organization_id FROM organization WHERE organization_id=?");
+                $sql->execute([$id]);
                 $getExistingOrganization = $sql->fetchAll();
 
-                if(count($getExistingOrganization) === 0){
+                if (count($getExistingOrganization) === 0) {
                     $pdo->prepare('
                         INSERT INTO organization (organization_id, name, created_at) VALUES
                         (:id, :name, :created_at)
@@ -59,7 +60,6 @@ if (count($tenants) > 0) {
 
         if (!empty($organizationTableData)) {
             foreach ($organizationTableData as $organizationData) {
-
                 $id = $organizationData['id'];
                 $organizationName = $organizationData['name'];
                 $pdo->prepare('
@@ -75,6 +75,5 @@ if (count($tenants) > 0) {
                 ]);
             }
         }
-
     }
 }
