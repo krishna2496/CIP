@@ -216,7 +216,7 @@ $router->patch('/app/change-password', ['as' => 'password.change',
 
 /* Create user skill */
 $router->post('/app/user/skills', ['as' => 'user.skills',
-    'middleware' => 'tenant.connection|localization|jwt.auth',
+    'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettings:skills_enabled',
     'uses' => 'App\User\UserController@linkSkill']);
 
 /* Fetch Language json file */
