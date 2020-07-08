@@ -222,10 +222,10 @@
                         <b-col xl="8" lg="7" class="platform-details-left">
                             <div class="platform-details-tab tabs">
                                 <ul class="nav-tabs nav">
-                                    <li><a href="javascript:void(0)" data-id="story" class="tablinks active">Story</a></li>
-                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">Organization</a></li>
-                                    <li><a href="javascript:void(0)" data-id="sponsor" class="tablinks">sponsor</a></li>
-                                    <li><a href="javascript:void(0)" data-id="mission" class="tablinks">Mission</a></li>
+                                    <li><a href="javascript:void(0)" data-id="story" class="tablinks active">{{ languageData.label.story}}</a></li>
+                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">{{ languageData.label.organization}}</a></li>
+                                    <li><a href="javascript:void(0)" data-id="sponsor" class="tablinks">{{ languageData.label.sponser}}</a></li>
+                                    <li><a href="javascript:void(0)" data-id="mission" class="tablinks">{{ languageData.label.mission}}</a></li>
                                     <li><a href="javascript:void(0)" data-id="tab1" class="tablinks">Tab1</a></li>
                                     <li><a href="javascript:void(0)" data-id="tab2" class="tablinks">Tab2</a></li>
                                     <li><a href="javascript:void(0)" data-id="tab3" class="tablinks">Tab3</a></li>
@@ -240,28 +240,28 @@
                                 <div class="tab-content-wrap">
                                     <div class="tabs">
                                         <div class="tab-title">
-                                            <h3 v-b-toggle.story>Story</h3>
+                                            <h3 v-b-toggle.story>{{ languageData.label.story}}</h3>
                                         </div>
                                         <b-collapse id="story" visible accordion="my-accordion" role="tabpanel"class="tab-content">
                                             <div class="mission-tab-block row">
                                                 <div class="col-sm-4 mission-tab-col">
                                                     <div class="mission-tab-inner">
                                                         <p>85
-                                                            <span>Fundraisers</span>
+                                                            <span>{{ languageData.label.fundraisers}}</span>
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4 mission-tab-col">
                                                     <div class="mission-tab-inner">
                                                         <p>50
-                                                            <span>Funds</span>
+                                                            <span>{{ languageData.label.funds}}</span>
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4 mission-tab-col">
                                                     <div class="mission-tab-inner">
                                                         <p>12
-                                                            <span>Recurring Donors</span>
+                                                            <span>{{ languageData.label.recurring_donors}}</span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -300,7 +300,7 @@
                             </div>
                             <div class="recent-volunteer-block">
                             <h2 class="title-with-border">
-                              <span>Recent Donors</span>
+                              <span>{{ languageData.label.recent_donors}}</span>
                             </h2>
                             <div class="recent-details-block">
                               <b-list-group
@@ -331,7 +331,7 @@
                         </b-col>
                         <b-col xl="4" lg="5" class="platform-details-right">
                             <div class="impact-block right-inner-block">
-                                <h2 class="title-with-border"><span>Impact Donation</span></h2>
+                                <h2 class="title-with-border"><span>{{ languageData.label.impact_donation}}</span></h2>
                                 <div class="impact-checkbox-list">
                                     <b-form-checkbox value="" checked><span>10€</span> Donate to help buy plants</b-form-checkbox>
                                     <b-form-checkbox value="" checked><span>20€</span> Donate to help buy trees</b-form-checkbox>
@@ -340,25 +340,25 @@
                                     <b-form-checkbox value=""><span>20€</span> Donate to help maintain land</b-form-checkbox>
                                 </div>
                                 <b-form-group class="amount-control">
-                                    <label for>Enter amount</label>
+                                    <label for>{{ languageData.label.enter_amount}}</label>
                                     <div class="form-control-outer">
                                         <b-form-input id type="text" placeholder=""></b-form-input>
                                         <span class="euro-sign">€</span>
                                     </div>
                                 </b-form-group>
-                                <b-button class="btn btn-fillsecondary donate-btn">Donate Now</b-button>
+                                <b-button class="btn btn-fillsecondary donate-btn">{{ languageData.label.donate_now}}</b-button>
                                 <div class="secure-text-wrap">
                                     <p class="secure-text">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/lock-icon.svg'" alt="Lock icon">
                                             <img :src="$store.state.imagePath+'/assets/images/shield-icon.svg'" alt="Shield icon">
                                         </i>
-                                        <span>Donating is safe, secure and easy with many payment options to choose from</span>
+                                        <span>{{ languageData.label.donation_safety}}</span>
                                     </p>
                                 </div>
                             </div>
                             <div class="un-block right-inner-block">
-                                <h2 class="title-with-border"><span>UN SDG</span></h2>
+                                <h2 class="title-with-border"><span>{{ languageData.label.un_sdg}}</span></h2>
                                 <div class="un-list">
                                     <div class="un-column">
                                         <i class="img-wrap">
@@ -383,9 +383,9 @@
             </b-container>
             <div class="fundraiser-block">
                 <b-container>
-                    <h2>Want to help raise money? </h2>
-                    <p>Create your own fundraising page</p>
-                    <b-button class="btn btn-fillsecondary">Start a Fundraiser</b-button>
+                    <h2>{{ languageData.label.want_to_help_raise_money}}</h2>
+                    <p>{{ languageData.label.create_your_own_fundraising_page}}</p>
+                    <b-button class="btn btn-fillsecondary">{{ languageData.label.start_fundraiser}}</b-button>
                 </b-container>
             </div>
         </main>

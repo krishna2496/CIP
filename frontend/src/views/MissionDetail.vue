@@ -336,6 +336,11 @@
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
+                                    <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
+                                      <a href="javascript:void(0)" :data-id="'tab_' + index"
+                                          class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
+                                      </a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content-wrap">
                                     <div class="tabs">
@@ -521,6 +526,18 @@
 
                                         </b-collapse>
                                     </div>
+
+									                  <div class="tabs"  v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
+                                        <div class="tab-title">
+                                            <h3 v-b-toggle="`tab_${index}`">{{getCustomTabLabel(missionTab.languages)}}</h3>
+                                        </div>
+                                        <b-collapse :id="'tab_' + index" visible accordion="my-accordion" role="tabpanel"
+                                                    class="tab-content">
+
+                                            sadsdasd
+                                        </b-collapse>
+                                    </div>
+
                                 </div>
                             </div>
                         </b-col>
@@ -1206,6 +1223,28 @@
           tabLinks[i].className = tabLinks[i].className.replace("active", "");
         }
         tabsEvent.currentTarget.className += " active";
+      },
+      getCustomTabLabel(translations) {
+          if (translations) {
+            let filteredObj = translations.filter((item, i) => {
+              if (item.language_code === store.state.defaultLanguage.toLowerCase()) {
+                return translations[i].name;
+              }
+            });
+            if (filteredObj[0]) {
+              return filteredObj[0].name;
+            } else {
+              let filtereObj = translations.filter((item, i) => {
+                if (item.language_code === store.state.defaultTenantLanguage.toLowerCase()) {
+                  return translations[i].name;
+                }
+              });
+
+              if (filtereObj[0]) {
+                return filtereObj[0].name;
+              }
+            }
+          }
       }
     },
     created() {
