@@ -350,7 +350,7 @@ return [
 
         'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
         'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
-        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
+        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => 'Invalid identity provider.',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',

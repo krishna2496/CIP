@@ -91,7 +91,7 @@ class AppStoryTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -107,7 +107,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -234,7 +234,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -343,7 +343,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -357,7 +357,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/dummy.svg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
@@ -446,7 +446,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -555,7 +555,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -669,17 +669,17 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
 
-        for ($i = 0; $i <= config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
-            array_push($storyImages, new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true));
+        for ($i=0; $i<=config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
+            array_push($storyImages, new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true));
         }
 
         $params = [
@@ -779,13 +779,13 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
         $path  = storage_path() . '/unitTestFiles/SampleJPGImage_5mbmb.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, true)
         );
 
         $params = [
@@ -885,7 +885,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -995,7 +995,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1011,7 +1011,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1114,7 +1114,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1130,7 +1130,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1242,7 +1242,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1258,7 +1258,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1370,7 +1370,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1386,7 +1386,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1401,7 +1401,7 @@ class AppStoryTest extends TestCase
         
         $path  = storage_path() . '/unitTestFiles/dummy.svg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, true)
         );
         $this->call('PATCH', 'app/story/' . $story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
@@ -1492,7 +1492,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1508,7 +1508,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1611,7 +1611,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1627,7 +1627,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1736,7 +1736,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1752,14 +1752,14 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
 
-        for ($i = 0; $i <= config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
-            array_push($storyImages, new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true));
+        for ($i=0; $i<=config("constants.STORY_MAX_IMAGE_LIMIT"); $i++) {
+            array_push($storyImages, new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true));
         }
 
         $params = [
@@ -1858,7 +1858,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -1874,7 +1874,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -1882,7 +1882,7 @@ class AppStoryTest extends TestCase
 
         $path  = storage_path() . '/unitTestFiles/SampleJPGImage_5mbmb.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, true)
         );
 
         $params = [
@@ -1981,7 +1981,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2103,7 +2103,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2215,7 +2215,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
@@ -2339,7 +2339,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2355,7 +2355,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -2453,7 +2453,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2469,7 +2469,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -2576,7 +2576,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2712,7 +2712,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2729,7 +2729,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -2824,7 +2824,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2840,7 +2840,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -2937,7 +2937,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -2953,7 +2953,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3097,7 +3097,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3112,7 +3112,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3211,7 +3211,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3227,7 +3227,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3370,7 +3370,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
@@ -3388,7 +3388,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3510,7 +3510,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         App\Models\Story::where('mission_id', '<>', $mission->mission_id)->delete();
@@ -3527,7 +3527,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3649,7 +3649,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3665,7 +3665,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3777,7 +3777,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3793,7 +3793,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3912,7 +3912,7 @@ class AppStoryTest extends TestCase
             "skills" => []
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
@@ -3928,7 +3928,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $path  = storage_path() . '/unitTestFiles/test.jpg';
         $storyImages = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
