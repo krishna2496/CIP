@@ -95,14 +95,8 @@ class TenantOptionsController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        // Database connection with master database
-        $this->helpers->switchDatabaseConnection('mysql');
-
         // Dispatch job, that will store in master database
         dispatch(new ResetStyleSettingsJob($tenantName));
-
-        // Database connection with tenant database
-        $this->helpers->switchDatabaseConnection('tenant');
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
@@ -314,9 +308,10 @@ class TenantOptionsController extends Controller
         }
 
         $data = $request->toArray();
-        $data['option_value'] =
-        (gettype($request->option_value)=="array") ? serialize($request->option_value) :
-        $request->option_value;
+
+        $data['option_value'] = is_array($request->option_value) ?
+            json_encode($request->option_value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) :
+            $request->option_value;
 
         $tenantOption = $this->tenantOptionRepository->store($data);
         $apiStatus = Response::HTTP_CREATED;
@@ -368,8 +363,9 @@ class TenantOptionsController extends Controller
 
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
-            $updateData['option_value'] = (gettype($request->option_value)=="array")
-            ? serialize($request->option_value) : $request->option_value;
+            $updateData['option_value'] = is_array($request->option_value) ?
+                json_encode($request->option_value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) :
+                $request->option_value;
             $tenantOption->update($updateData);
 
             $apiStatus = Response::HTTP_OK;

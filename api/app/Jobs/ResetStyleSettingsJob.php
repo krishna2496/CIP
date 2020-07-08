@@ -26,13 +26,13 @@ class ResetStyleSettingsJob extends Job
      */
     public function handle()
     {
-        // Copy default theme folder to tenant folder on s3
-        dispatch(new CopySCSSFolderInS3BucketJob($this->tenantName));
+        // Remove tenant's custom SCSS from S3
+        dispatch(new DeleteCustomScssFromS3Job($this->tenantName));
 
-        // Copy tenant folder to local
-        dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenantName));
-        
+        // Create the temporary SCSS directory
+        dispatch(new CreateScssTemporaryFolderJob($this->tenantName));
+
         // Compile downloaded files and update css on s3
-        dispatch(new CompileScssFiles($this->tenantName));
+        dispatch(new CompileAndUploadCustomCssJob($this->tenantName));
     }
 }
