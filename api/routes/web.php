@@ -613,7 +613,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set skills data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering,skills_enabled'],
+        ['prefix' => '/entities/skills', 'middleware' => 
+        'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering,skills_enabled'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Skill\SkillController@index']);
@@ -655,7 +656,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Timesheet management */
     $router->group(
-        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
+        ['prefix' => 'timesheet', 'middleware' => 
+        'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
         function ($router) {
             $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);
             $router->get('/details', ['middleware' => ['PaginationMiddleware'],
