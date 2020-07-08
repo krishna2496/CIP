@@ -1,0 +1,1264 @@
+<template>
+    <div class="platform-page inner-pages donation-detail-page">
+        <header>
+            <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
+        </header>
+
+        <main>
+            <b-container>
+                <div class="slider-banner-block">
+                    <b-row>
+                        <b-col lg="6" class="slider-col">
+                            <MissionCarousel v-if="isShownMediaComponent"
+                                             @defaultMediaPathDetail="defaultMediaPathDetail"></MissionCarousel>
+                        </b-col>
+                        <b-col lg="6" class="ml-auto banner-content-wrap">
+                            <div class="banner-content-block">
+                                <h1>{{missionDetail.title}}</h1>
+                                <div v-bind:class="{'rating-with-btn' : true , 'justify-content-end' : !isStarDisplay}">
+                                    <div class="rating-block" v-if="isStarDisplay">
+                                        <star-rating
+                                                :read-only="isStarRatingDisable"
+                                                v-bind:increment="0.5" v-bind:max-rating="5"
+                                                inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
+                                                :rating="missionDetail.rating" @rating-selected="setRating">
+                                        </star-rating>
+                                    </div>
+                                    <div class="btn-outer">
+                                        <b-button v-bind:class="{ 
+                          											'btn-borderprimary': true, 
+                          											'icon-btn': true,
+                          											'added-fav' : missionAddedToFavoriteByUser
+                          										}" @click="favoriteMission(missionId)">
+                                            <i class="normal-img">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24"
+                                                     height="21">
+                                                    <g id="Main Content">
+                                                        <g id="1">
+                                                            <g id="Image content">
+                                                                <path id="Forma 1"
+                                                                      d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </i>
+                                            <i class="hover-img">
+                                                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                     viewBox="0 0 492.7 426.8"
+                                                     style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
+                                                    <g>
+                                                        <g id="Icons_18_">
+                                                            <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0 C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2 C475,208.9,492.7,173.1,492.7,133.1z" />
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </i>
+                                            <span v-if="missionAddedToFavoriteByUser">
+                                                Remove from Favourite
+                                            </span>
+                                            <span v-else>
+                                                Add to Favourite
+                                            </span>
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <p>{{missionDetail.short_description}}</p>
+                                <div class="group-details">
+                                    <div class="top-strip">
+                                        <span>
+                                           <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
+                                                <template v-if="missionDetail.end_date !== null">
+                                                    {{ languageData.label.from }}
+                                                    {{missionDetail.start_date | formatDate }}
+                                                    {{ languageData.label.until}}
+                                                    {{ missionDetail.end_date | formatDate }}
+                                                </template>
+                                                <template v-else>
+                                                    {{ languageData.label.on_going_opportunities }}
+                                                </template>
+                                            </template>
+                                            <!-- Mission type goal -->
+                                            <template v-else>
+                                                {{missionDetail.objective}}
+                                            </template>
+                                        </span>
+                                    </div>
+                                    <div class="group-details-inner">
+                                        <div class="detail-column progress-block">
+                                            <div class="text-wrap">
+                                                <p><b>€10 952</b> {{ languageData.label.raised_by}} <b>45 {{ languageData.label.donar}}</b></p>
+                                                <b-progress :value="value" :max="max"></b-progress>
+                                                <div class="progress-info">
+                                                    <span class="subtitle-text">
+                                                        70% 
+                                                        <em>{{ languageData.label.achieved}}</em>
+                                                    </span>
+                                                    <span class="subtitle-text">
+                                                        <em>€250,000</em>
+                                                        <em>{{ languageData.label.goal}}</em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-row">
+                                    <b-button class="btn btn-fillsecondary donate-btn">{{ languageData.label.donate_now}}</b-button>
+                                </div>
+                                <b-list-group class="info-box">
+                                    <b-list-group-item>
+                                        <div class="info-box-inner">
+                                            <i class="img-wrap">
+                                                <img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
+                                            </i>
+                                            <span class="label">{{ languageData.label.city}}</span>
+                                            <p class="text-wrap">{{missionDetail.city_name}}</p>
+                                        </div>
+                                    </b-list-group-item>
+                                    <b-list-group-item>
+                                        <div class="info-box-inner">
+                                            <i class="img-wrap">
+                                                <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
+                                            </i>
+                                            <span class="label">{{ languageData.label.theme}}</span>
+                                            <p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
+                                        </div>
+                                    </b-list-group-item>
+                                    <b-list-group-item>
+                                        <div class="info-box-inner">
+                                            <i class="img-wrap">
+                                                <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
+                                            </i>
+                                            <span class="label">{{ languageData.label.start_date}}</span>
+                                            <p class="text-wrap">
+                                              <template
+                                                    v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
+                                                <p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
+                                              </template>
+                                            </p>
+
+                                        </div>
+                                    </b-list-group-item>
+                                    <b-list-group-item class="full-width-box">
+                                        <div class="info-box-inner">
+                                            <i class="img-wrap">
+                                                <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
+                                            </i>
+                                            <span class="label">{{ languageData.label.organisation}}</span>
+                                            <p class="text-wrap">{{missionDetail.organisation_name}}</p>
+                                          </div>
+                                    </b-list-group-item>
+                                </b-list-group>
+
+                                <div class="btn-wrap group-btns">
+                                    <b-button class="btn-borderprimary icon-btn" @click="handleModal(missionId)"
+                                              v-if="isInviteCollegueDisplay">
+                                        <i>
+                                            <svg height="512pt" viewBox="0 0 512 512" width="512pt"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                        d="m512 428h-84v84h-40v-84h-84v-40h84v-84h40v84h84zm-212.695312-204.5625c1.757812 7.910156 2.695312 16.128906 2.695312 24.5625 0 34.550781-15.59375 65.527344-40.105469 86.269531.699219.277344 1.40625.546875 2.105469.832031v44.199219c-21.414062-11.667969-45.945312-18.300781-72-18.300781v-.039062c-.332031.007812-.667969.007812-1 .015624v.023438c-83.261719 0-151 67.738281-151 151h-40c0-79.371094 48.671875-147.582031 117.730469-176.378906-25.449219-20.734375-41.730469-52.3125-41.730469-87.621094 0-62.308594 50.691406-113 113-113 7.40625 0 14.644531.722656 21.65625 2.089844-1.734375-7.84375-2.65625-15.988282-2.65625-24.34375 0-62.167969 50.578125-112.746094 112.746094-112.746094 62.167968 0 112.746094 50.578125 112.746094 112.746094 0 34.894531-15.9375 66.136718-40.910157 86.832031 33.011719 13.109375 61.464844 35.117187 82.304688 63.421875h-53.847657c-24.847656-22.023438-56.976562-36-92.273437-37.796875-2.652344.1875-5.324219.289063-8.019531.289063-7.332032 0-14.5-.710938-21.441406-2.054688zm-51.304688-110.691406c0 40.113281 32.632812 72.746094 72.746094 72.746094 40.109375 0 72.746094-32.632813 72.746094-72.746094 0-40.113282-32.636719-72.746094-72.746094-72.746094-40.113282 0-72.746094 32.632812-72.746094 72.746094zm14 135.253906c0-40.253906-32.746094-73-73-73s-73 32.746094-73 73 32.746094 73 73 73 73-32.746094 73-73zm0 0" />
+                                            </svg>
+                                        </i>
+                                        <span>{{ languageData.label.recommend_to_co_worker }}</span>
+                                    </b-button>
+                                    <b-button class="btn-borderprimary icon-btn remind-icon" >
+                                        <i>
+                                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 11 15" style="enable-background:new 0 0 11 15;" xml:space="preserve">
+                                            <g>
+                                                <g>
+                                                    <path style="fill:#AAAAAA;" d="M10.5,0H0.5C0.2,0,0,0.2,0,0.4v14.1c0,0.2,0.1,0.3,0.3,0.4c0.1,0,0.1,0,0.2,0c0.1,0,0.2,0,0.3-0.1
+                                                        l4.7-4.4l4.7,4.4c0.1,0.1,0.3,0.2,0.5,0.1c0.2-0.1,0.3-0.2,0.3-0.4V0.4C11,0.2,10.8,0,10.5,0z M5.5,9.4c-0.1,0-0.2,0-0.3,0.1
+                                                        l-4.2,4V0.9h9.1v12.6l-4.2-4C5.7,9.5,5.6,9.4,5.5,9.4z"/>
+                                                </g>
+                                            </g>
+                                            </svg>
+                                        </i>
+                                        <span>{{ languageData.label.remind_me}}</span>
+                                    </b-button>
+                                    <div class="share-block">
+                                    <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title"
+                                                    :description="missionDetail.short_description" inline-template>
+                                        <div class="social-block">
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-grey.svg'" 
+                                                    :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+                                                 	:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img"/>
+                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'"
+                                                	:alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+                                                    :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+                                                    class="hover-img"/>
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+                                                     :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img"/>
+                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+                                                     :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img"/>
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+                                                     :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="normal-img"/>
+                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+                                                     :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="hover-img"/>
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+                                                     :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img"/>
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+                                                     :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img"/>
+                                            </div>
+                                        </div>
+                                    </social-sharing>
+                                </div>
+                                </div>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </div>
+                <div class="platform-details-wrap">
+                    <b-row>
+                        <b-col xl="8" lg="7" class="platform-details-left">
+                            <div class="platform-details-tab tabs">
+                                <ul class="nav-tabs nav">
+                                    <li><a href="javascript:void(0)" data-id="story" class="tablinks active">Story</a></li>
+                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">Organization</a></li>
+                                    <li><a href="javascript:void(0)" data-id="sponsor" class="tablinks">sponsor</a></li>
+                                    <li><a href="javascript:void(0)" data-id="mission" class="tablinks">Mission</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab1" class="tablinks">Tab1</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab2" class="tablinks">Tab2</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab3" class="tablinks">Tab3</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab4" class="tablinks">Tab4</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab5" class="tablinks">Tab5</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab6" class="tablinks">Tab6</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab7" class="tablinks">Tab7</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab8" class="tablinks">Tab8</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab9" class="tablinks">Tab9</a></li>
+                                    <li><a href="javascript:void(0)" data-id="tab10" class="tablinks">Tab10</a></li>
+                                </ul>
+                                <div class="tab-content-wrap">
+                                    <div class="tabs">
+                                        <div class="tab-title">
+                                            <h3 v-b-toggle.story>Story</h3>
+                                        </div>
+                                        <b-collapse id="story" visible accordion="my-accordion" role="tabpanel"class="tab-content">
+                                            <div class="mission-tab-block row">
+                                                <div class="col-sm-4 mission-tab-col">
+                                                    <div class="mission-tab-inner">
+                                                        <p>85
+                                                            <span>Fundraisers</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4 mission-tab-col">
+                                                    <div class="mission-tab-inner">
+                                                        <p>50
+                                                            <span>Funds</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4 mission-tab-col">
+                                                    <div class="mission-tab-inner">
+                                                        <p>12
+                                                            <span>Recurring Donors</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <div class="content-wrap">
+                                                    <h2>Who can join?</h2>
+                                                    <p class="mission-description-content">
+                                                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                    <p>
+                                                      To join this activity, you have to be
+                                                    </p>
+                                                    <p>
+                                                      <span>Phsically fit </span>
+                                                      <span>Can converse using the English language</span>
+                                                      <span>Apply now and our community service team will contact you directly</span>
+                                                    </p>
+                                                </div>
+                                            <div class="document-block">
+                                                <h2>Documents</h2>
+                                                <div class="document-list-wrap">
+                                                    <div class="document-list-block">
+                                                        <!-- doc -->
+                                                        <b-link href="#" target="_blank" title>
+                                                            <AppCustomChip :textVal="'volunteering-guidelines.pdf'" class="has-img no-close" :url="bgImage[1]" />
+                                                        </b-link>
+                                                        <b-link href="#" target="_blank" title>
+                                                            <AppCustomChip :textVal="'terms-and-conditions.pdf'" class="has-img no-close" :url="bgImage[1]" />
+                                                        </b-link> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </b-collapse>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recent-volunteer-block">
+                            <h2 class="title-with-border">
+                              <span>Recent Donors</span>
+                            </h2>
+                            <div class="recent-details-block">
+                              <b-list-group
+                                class="volunteers-list"
+                                :data-perpage="3"
+                                :current-page="currentPage"
+                              >
+                                <b-list-group-item v-for="(volunteer , v) in volunteerList" :key="v">
+                                  <div
+                                    v-if="(volunteer.id >= ((currentPage - 1 ) * perPage ) + 1) && (volunteer.id <= Math.min(perPage * currentPage , rows ))"
+                                    class="list-item"
+                                  >
+                                    <i
+                                      class="user-profile-icon"
+                                      :style="{backgroundImage: 'url(' + volunteer.imgSrc + ')'}"
+                                    ></i>
+                                    <p>{{volunteer.name}} <span>Donated <em>{{volunteer.price}}</em></span></p>
+                                  </div>
+                                </b-list-group-item>
+                              </b-list-group>
+
+                              <div class="custom-pagination">
+                                <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
+                                <span>{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}}  Recent Donors</span>
+                              </div>
+                            </div>
+                          </div>
+                        </b-col>
+                        <b-col xl="4" lg="5" class="platform-details-right">
+                            <div class="impact-block right-inner-block">
+                                <h2 class="title-with-border"><span>Impact Donation</span></h2>
+                                <div class="impact-checkbox-list">
+                                    <b-form-checkbox value="" checked><span>10€</span> Donate to help buy plants</b-form-checkbox>
+                                    <b-form-checkbox value="" checked><span>20€</span> Donate to help buy trees</b-form-checkbox>
+                                    <b-form-checkbox value=""><span>20€</span> Donate to help buy tools</b-form-checkbox>
+                                    <b-form-checkbox value=""><span>20€</span> Donate to help buy land</b-form-checkbox>
+                                    <b-form-checkbox value=""><span>20€</span> Donate to help maintain land</b-form-checkbox>
+                                </div>
+                                <b-form-group class="amount-control">
+                                    <label for>Enter amount</label>
+                                    <div class="form-control-outer">
+                                        <b-form-input id type="text" placeholder=""></b-form-input>
+                                        <span class="euro-sign">€</span>
+                                    </div>
+                                </b-form-group>
+                                <b-button class="btn btn-fillsecondary donate-btn">Donate Now</b-button>
+                                <div class="secure-text-wrap">
+                                    <p class="secure-text">
+                                        <i class="img-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/lock-icon.svg'" alt="Lock icon">
+                                            <img :src="$store.state.imagePath+'/assets/images/shield-icon.svg'" alt="Shield icon">
+                                        </i>
+                                        <span>Donating is safe, secure and easy with many payment options to choose from</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="un-block right-inner-block">
+                                <h2 class="title-with-border"><span>UN SDG</span></h2>
+                                <div class="un-list">
+                                    <div class="un-column">
+                                        <i class="img-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/un-img01.png'" alt="UN Image">
+                                        </i>
+                                    </div>
+                                    <div class="un-column">
+                                        <i class="img-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/un-img02.png'" alt="UN Image">
+                                        </i>
+                                    </div>
+                                    <div class="un-column">
+                                        <i class="img-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/un-img03.png'" alt="UN Image">
+                                        </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </div>
+            </b-container>
+            <div class="fundraiser-block">
+                <b-container>
+                    <h2>Want to help raise money? </h2>
+                    <p>Create your own fundraising page</p>
+                    <b-button class="btn btn-fillsecondary">Start a Fundraiser</b-button>
+                </b-container>
+            </div>
+        </main>
+        <footer v-if="isShownComponent">
+            <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
+        </footer>
+    </div>
+</template>
+
+<script>
+  import AppCustomChip from "../components/AppCustomChip";
+  import StarRating from 'vue-star-rating';
+  import carousel from "vue-owl-carousel";
+  import constants from '../constant';
+  import {
+    VueAutosuggest
+  } from 'vue-autosuggest';
+  import {
+    favoriteMission,
+    inviteColleague,
+    applyMission,
+    searchUser,
+    storeMissionRating,
+    missionDetail,
+    relatedMissions,
+    missionComments,
+    storeMissionComments,
+  } from "../services/service";
+  import SimpleBar from 'simplebar';
+  import store from "../store";
+  import moment from 'moment';
+  import {
+    required,
+    maxLength
+  } from 'vuelidate/lib/validators';
+  import SocialSharing from 'vue-social-sharing';
+
+  export default {
+    components: {
+      AppCustomChip,
+      StarRating,
+      carousel,
+      ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
+      TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
+      GridView: () => import("../components/MissionGridView"),
+      VueAutosuggest,
+      SimpleBar,
+      MissionCarousel: () => import("../components/MissionCarousel"),
+      SocialSharing
+    },
+    data() {
+      return {
+        relatedMission: true,
+        defaultWorkday: "",
+        workDayList: [
+          ["WORKDAY", "workday"],
+          ["WEEKEND", "weekend"],
+          ["HOLIDAY", "holiday"],
+        ],
+        sharingUrl: "",
+        isShownComponent: false,
+        missionId: this.$route.params.misisonId,
+        timeSheetId: '',
+        missionAddedToFavoriteByUser: false,
+        query: "",
+        selected: "",
+        search: "",
+        userList: [],
+        myclass: ["userdetail-modal"],
+        currentMissionId: 0,
+        invitedUserId: 0,
+        showErrorDiv: false,
+        message: null,
+        classVariant: "success",
+        autoSuggestPlaceholder: '',
+        submitDisable: true,
+        recentVolunterLoader: true,
+        missionDetail: [],
+        disableApply: false,
+        hideApply: false,
+        missionDocument: [],
+        relatedMissionlLoader: true,
+        isShownMediaComponent: false,
+        bgImage: [
+          require("@/assets/images/pdf.svg"),
+          require("@/assets/images/doc.svg"),
+          require("@/assets/images/xlsx.svg"),
+        ],
+        orgLogo: require("@/assets/images/ces-logo.png"),
+        currentPage: 1,
+        max: 100,
+        value: 70,
+        missionListing: [],
+        missionComment: [],
+        defaultMedia: '',
+        isShareComponentShown: false,
+        languageData: [],
+        applyButton: '',
+        submitted: false,
+        comment: '',
+        nextUrl: null,
+        page: 1,
+        postComment: false,
+        loadMoreComment: false,
+        domainName: '',
+        socialSharingUrl: '',
+        isFacebookSharingDisplay: false,
+        isTwitterSharingDisplay: false,
+        isStarDisplay: false,
+        isThemeDisplay: false,
+        isInviteCollegueDisplay: false,
+        isCommentDisplay: false,
+        isRecentVolunteerDispaly: false,
+        isMissionGoalDisplay: false,
+        isCurrentStatusDisplay: false,
+        isRemainingGoalDisplay: false,
+        isSkillDispaly: false,
+        isQuickAccessFilterDisplay: false,
+        relatedMissionsDisplay: false,
+        allowAddEntry: false,
+        currentTimeData: {
+          missionId: '',
+          hours: '',
+          minutes: '',
+          dateVolunteered: '',
+          workDay: '',
+          notes: '',
+          day: '',
+          timeSheetId: '',
+          documents: [],
+          disabledPastDates: '',
+          disabledFutureDates: '',
+          missionName: '',
+          action: ''
+        },
+        customInformation: [],
+        missionRatingSetting:true,
+        isStarRatingDisable: false,
+        currentPage: 1,
+         volunteerList: [
+        {
+          name: "Andrew Johnson",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer1.png"),
+          id: 1
+        },
+        {
+          name: "Charles Vigue",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer2.png"),
+          id: 2
+        },
+        {
+          name: "Kathryn Roberts",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer3.png"),
+          id: 3
+        },
+        {
+          name: "Estella Fowles",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer4.png"),
+          id: 4
+        },
+        {
+          name: "Rose Lewis",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer5.png"),
+          id: 5
+        },
+        {
+          name: "Raymond Pabon",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer6.png"),
+          id: 6
+        },
+        {
+          name: "Travis Steen",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer7.png"),
+          id: 7
+        },
+        {
+          name: "Sarah Santillan",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer8.png"),
+          id: 8
+        },
+        {
+          name: "Linda Richards",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer9.png"),
+          id: 9
+        },
+        {
+          name: "Andrew Johnson",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer1.png"),
+          id: 10
+        },
+        {
+          name: "Charles Vigue",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer2.png"),
+          id: 11
+        },
+        {
+          name: "Kathryn Roberts",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer3.png"),
+          id: 12
+        },
+        {
+          name: "Rose Lewis",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer5.png"),
+          id: 13
+        },
+        {
+          name: "Raymond Pabon",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer6.png"),
+          id: 14
+        },
+        {
+          name: "Travis Steen",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer7.png"),
+          id: 15
+        },
+        {
+          name: "Travis Steen",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer7.png"),
+          id: 16
+        },
+        {
+          name: "Sarah Santillan",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer8.png"),
+          id: 17
+        },
+        {
+          name: "Linda Richards",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer9.png"),
+          id: 18
+        },
+        {
+          name: "Andrew Johnson",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer1.png"),
+          id: 19
+        },
+        {
+          name: "Charles Vigue",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer2.png"),
+          id: 20
+        },
+        {
+          name: "Kathryn Roberts",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer3.png"),
+          id: 21
+        },
+        {
+          name: "Rose Lewis",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer5.png"),
+          id: 22
+        },
+        {
+          name: "Sarah Santillan",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer8.png"),
+          id: 23
+        },
+        {
+          name: "Linda Richards",
+          price:'€100',
+          imgSrc: require("@/assets/images/volunteer9.png"),
+          id: 24
+        }
+      ],
+      };
+    },
+    mounted() {
+      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+      tabItem.forEach(function (tabItemEvent) {
+        tabItemEvent.addEventListener("click", tabsHandle);
+      });
+
+      function tabsHandle(tabsEvent) {
+
+        let i, tabContent, tabLinks;
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+          if (tabsEvent.currentTarget.getAttribute("data-id") === tabContent[i].getAttribute('id')) {
+            tabContent[i].style.display = "block";
+          }
+        }
+        tabLinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tabLinks.length; i++) {
+          tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+        }
+        tabsEvent.currentTarget.className += " active";
+      }
+
+      if (!window.location.origin) {
+        window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
+          .port ? ':' + window.location.port : '');
+      }
+
+      let currentUrl = (((window.location.origin).split('.')));
+
+      if (currentUrl[0]) {
+        if (process.env.NODE_ENV == 'production') {
+          this.domainName = process.env.VUE_APP_DEFAULT_TENANT
+        } else {
+          this.domainName = ((currentUrl[0]).split('//'))[1];
+        }
+      }
+
+      this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT + "social-sharing/" + this.domainName + "/" + this
+        .missionId + "/" + store.state.defaultLanguageId;
+    },
+    computed: {
+      filteredOptions() {
+        if (this.userList) {
+          return [{
+            data: this.userList.filter(option => {
+              let firstName = option.first_name.toLowerCase();
+              let lastName = option.last_name.toLowerCase();
+              let email = option.email.toLowerCase();
+              let searchString = firstName + '' + lastName + '' + email;
+              return searchString.indexOf(this.query.toLowerCase()) > -1;
+            })
+          }];
+        }
+      },
+       rows() {
+          return this.volunteerList.length;
+        },
+        perPage() {
+          return 12;
+        }
+    },
+    validations: {
+      comment: {
+        required,
+        maxLength: maxLength(600)
+      },
+    },
+    methods: {
+      hideModal() {
+        this.autoSuggestPlaceholder = ""
+        this.submitDisable = true
+        this.invitedUserId = ""
+        this.query = ""
+        this.selected = ""
+      },
+      addEntry() {
+        let missionData = {
+          "missionId": '',
+          "missionType": ''
+        }
+        missionData.missionId = this.$route.params.misisonId
+        missionData.missionType = this.missionDetail.mission_type
+        store.commit('timeSheetEntryDetail', missionData);
+        this.$router.push('/volunteering-timesheet');
+      },
+      // Get comment create date format
+      getCommentDate(commentDate) {
+        if (commentDate != null) {
+          let day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
+          let date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
+          return day + ', ' + date;
+        } else {
+          return '';
+        }
+      },
+      // Check mission type
+      checkMissionTypeTime(missionType) {
+        return missionType == constants.MISSION_TYPE_TIME
+      },
+
+      setRating: function (rating) {
+        let missionData = {
+          mission_id: '',
+          rating: ''
+        };
+        missionData.mission_id = this.missionId;
+        missionData.rating = rating;
+        storeMissionRating(missionData).then(response => {
+          if (response.error == true) {
+            this.makeToast("danger", response.message);
+          } else {
+            this.makeToast("success", response.message);
+          }
+        });
+      },
+      // Add mission to favorite
+      favoriteMission(missionId) {
+        let missionData = {
+          mission_id: ''
+        };
+        missionData.mission_id = missionId;
+        favoriteMission(missionData).then(response => {
+          if (response.error == true) {
+            this.makeToast("danger", response.message);
+          } else {
+            this.makeToast("success", response.message);
+            this.missionAddedToFavoriteByUser = !this.missionAddedToFavoriteByUser;
+          }
+        });
+
+      },
+      onInputChange() {
+        this.submitDisable = true;
+      },
+      // For selected user id.
+      onSelected(item) {
+        if (item) {
+          this.selected = item.item;
+          this.submitDisable = false;
+          this.invitedUserId = item.item.user_id;
+        }
+      },
+      //This is what the <input/> value is set to when you are selecting a suggestion.
+      getSuggestionValue(suggestion) {
+        let firstName = suggestion.item.first_name;
+        let lastName = suggestion.item.last_name;
+        return firstName + ' ' + lastName;
+      },
+      // Open auto suggest modal
+      handleModal(missionId) {
+        this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
+        this.showErrorDiv = false;
+        this.message = null;
+        this.$refs.userDetailModal.show();
+        this.currentMission = missionId;
+        setTimeout(() => {
+          this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+          var input = document.getElementById("autosuggest__input");
+          input.addEventListener("keyup", (event) => {
+            if (event.keyCode === 13 && !this.submitDisable) {
+              event.preventDefault();
+              this.inviteColleagues()
+            }
+          });
+        }, 100);
+      },
+
+      defaultMediaPathDetail(defaultImage) {
+        this.defaultMedia = defaultImage;
+        this.isShareComponentShown = true;
+      },
+      // invite collegues api call
+      inviteColleagues() {
+        let inviteData = {};
+        inviteData.mission_id = this.currentMission;
+        inviteData.to_user_id = this.invitedUserId;
+        inviteColleague(inviteData).then(response => {
+          this.submitDisable = true;
+          if (response.error == true) {
+            this.classVariant = "danger";
+            this.message = response.message;
+            this.$refs.autosuggest.$data.currentIndex = null;
+            this.$refs.autosuggest.$data.internalValue = '';
+            this.showErrorDiv = true;
+          } else {
+            this.query = "";
+            this.selected = "";
+            this.currentMissionId = 0;
+            this.invitedUserId = 0;
+            this.$refs.autosuggest.$data.currentIndex = null;
+            this.$refs.autosuggest.$data.internalValue = '';
+            this.classVariant = "success";
+            this.message = response.message;
+            this.showErrorDiv = true;
+          }
+        })
+      },
+
+      searchUsers() {
+        searchUser().then(userResponse => {
+          this.userList = userResponse;
+          this.getRelatedMissions();
+        });
+      },
+      // Apply for mission
+      applyForMission(missionId) {
+        let missionData = {};
+        missionData.mission_id = missionId;
+        missionData.availability_id = 1;
+
+        applyMission(missionData).then(response => {
+          if (response.error == true) {
+            this.makeToast("danger", response.message);
+          } else {
+            this.disableApply = true;
+            this.applyButton = this.languageData.label.applied
+            this.makeToast("success", response.message);
+            this.$emit("getMissions");
+          }
+        })
+      },
+      getRelatedMissions() {
+        if (this.$route.params.misisonId) {
+          this.relatedMissionlLoader = true;
+          relatedMissions(this.$route.params.misisonId).then(response => {
+            if (response.error == false) {
+              this.missionListing = response.data;
+            }
+            this.relatedMissionlLoader = false;
+            this.isShownComponent = true;
+          });
+        }
+      },
+
+      makeToast(variant = null, message) {
+        this.$bvToast.toast(message, {
+          variant: variant,
+          solid: true,
+          autoHideDelay: 3000
+        })
+      },
+
+      pendingGoal(missionDetail) {
+        if (missionDetail.goal_objective) {
+          if((missionDetail.goal_objective - missionDetail.achieved_goal) < 0) {
+            return 0;
+          } else {
+            return missionDetail.goal_objective - missionDetail.achieved_goal;
+          }
+        } else {
+          return 0;
+        }
+      },
+
+      getMissionDetail() {
+        if (this.$route.params.misisonId) {
+          missionDetail(this.$route.params.misisonId).then(response => {
+            this.isShownMediaComponent = true;
+            if (response.error == false) {
+              if (response.data[0]) {
+                this.missionDetail = response.data[0];
+                if (response.data[0].user_application_status ==
+                  constants.AUTOMATICALLY_APPROVED && response.data[0]
+                    .user_application_count > 0
+                ) {
+                  this.allowAddEntry = true
+                }
+                if (response.data[0].is_favourite == 1) {
+                  this.missionAddedToFavoriteByUser = true;
+                }
+                if(this.missionRatingSetting) {
+                  if (response.data[0].user_application_status != constants.AUTOMATICALLY_APPROVED) {
+                    this.isStarRatingDisable = true;
+                  }
+                }
+
+                let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+
+                if (response.data[0].end_date != '' && response.data[0].end_date != null) {
+                  let missionEndDate = moment(response.data[0].end_date).format(
+                    "YYYY-MM-DD HH::mm:ss");
+                  if (currentDate > missionEndDate && response.data[0].set_view_detail == 1) {
+                    this.hideApply = true
+                  }
+                }
+                if (response.data[0].application_deadline != '' && response.data[0]
+                  .application_deadline != null) {
+                  let missionDeadline = moment(response.data[0].application_deadline).format(
+                    "YYYY-MM-DD HH::mm:ss");
+                  if (currentDate > missionDeadline && response.data[0].set_view_detail == 1) {
+                    this.hideApply = true
+                  }
+                }
+
+                if (response.data[0].user_application_status ==
+                  constants.AUTOMATICALLY_APPROVED || response.data[0]
+                    .user_application_status ==
+                  constants.PENDING) {
+                  this.disableApply = true;
+
+                } else {
+                  if (response.data[0].set_view_detail == 1) {
+                    this.disableApply = true
+                  } else {
+                    this.disableApply = false
+                  }
+                }
+
+                this.missionDocument = response.data[0].mission_document
+                if (response.data[0].custom_information != null) {
+                  this.customInformation = response.data[0].custom_information;
+                }
+              } else {
+                this.$router.push('/404');
+              }
+
+            } else {
+              this.$router.push('/404');
+            }
+
+            this.searchUsers();
+          })
+        } else {
+          this.$router.push('/404');
+        }
+      },
+      //get theme title
+      getThemeTitle(missionTheme) {
+        if (missionTheme) {
+          let translations = missionTheme.translations
+          if (translations) {
+            let filteredObj = translations.filter((item, i) => {
+              if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+                return translations[i].title;
+              }
+            });
+            if (filteredObj[0]) {
+              return filteredObj[0].title;
+            } else {
+              let filtereObj = translations.filter((item, i) => {
+                if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+                  return translations[i].title;
+                }
+              });
+
+              if (filtereObj[0]) {
+                return filtereObj[0].title;
+              }
+            }
+          }
+        }
+      },
+      getSkills(missionDetail) {
+        let skills = '';
+        if (missionDetail.skill) {
+          (missionDetail.skill).filter((item) => {
+            if (skills == '') {
+              skills = item.title;
+            } else {
+              skills = skills + ", " + item.title;
+            }
+          });
+        } else {
+          skills = '-';
+        }
+        return skills;
+      },
+
+      missionComments(commentStatus) {
+        this.loadMoreComment = true;
+        let commentData = {};
+        if (commentStatus == '0') {
+          this.missionComment = []
+          this.page = 1
+        }
+        commentData.missionId = this.$route.params.misisonId;
+        commentData.page = this.page;
+        missionComments(commentData).then(response => {
+          if (response.error == false) {
+            if (this.missionComment.length) {
+              response.data.map((value) => {
+                this.missionComment.push(value);
+              });
+            } else {
+              this.missionComment = response.data;
+            }
+            if (response.pagination) {
+              this.nextUrl = response.pagination.next_url;
+            }
+          }
+          setTimeout(() => {
+            this.loadMoreComment = false;
+          }, 100)
+        });
+      },
+
+      handleSubmit() {
+        this.submitted = true;
+        this.$v.$touch();
+        // stop here if form is invalid
+        if (this.$v.$invalid) {
+          return;
+        }
+        this.postComment = true;
+        let commentData = {
+          mission_id: '',
+          comment: ''
+        }
+        commentData.mission_id = this.$route.params.misisonId;
+        commentData.comment = this.comment;
+        // Call to store mission service with params mission_id and comments
+        storeMissionComments(commentData).then(response => {
+          if (response.error == true) {
+            this.makeToast("danger", response.message);
+          } else {
+            this.comment = '';
+            this.disableApply = true;
+            this.applyButton = this.languageData.label.applied
+            this.makeToast("success", response.message);
+            this.missionComment = []
+            this.nextUrl = null,
+              this.postComment = false,
+              this.loadMoreComment = false,
+              this.page = 1;
+            this.missionComments('0');
+            this.$v.$reset();
+          }
+          this.postComment = false;
+        });
+      },
+
+      showMoreComment() {
+        this.page++;
+        let simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
+        let simplebarHeight = simplebarContent.offsetHeight
+        setTimeout(() => {
+          let simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
+          simplebarWrapper.scrollTop = simplebarHeight;
+        }, 100);
+        this.missionComments('1');
+      },
+
+      tabingHandle(tabsEvent) {
+        let i, tabContent, tabLinks;
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+          if (tabsEvent.currentTarget.getAttribute("data-id") === tabContent[i].getAttribute('id')) {
+            tabContent[i].style.display = "block";
+          }
+        }
+        tabLinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tabLinks.length; i++) {
+          tabLinks[i].className = tabLinks[i].className.replace("active", "");
+        }
+        tabsEvent.currentTarget.className += " active";
+      }
+    },
+    created() {
+      this.sharingUrl = document.URL
+      // Get mission detail
+      this.getMissionDetail();
+      if (store.state.search != null) {
+        this.search = store.state.search;
+      } else {
+        this.search = '';
+      }
+      this.languageData = JSON.parse(store.state.languageLabel);
+      this.applyButton = this.languageData.label.apply_now
+
+      this.isFacebookSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
+      store.state.isFacebookDisplay = this.isFacebookSharingDisplay
+      this.isTwitterSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_TWITTER)
+      store.state.isTwitterDisplay = this.isTwitterSharingDisplay
+      this.isStarDisplay = this.settingEnabled(constants.MISSION_RATINGS)
+      this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED)
+      this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE)
+      this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
+      this.isRecentVolunteerDispaly = this.settingEnabled(constants.RECENT_VOLUNTEERES)
+      this.isMissionGoalDisplay = this.settingEnabled(constants.SHOW_GOAL_OF_MISSION)
+      this.isCurrentStatusDisplay = this.settingEnabled(constants.SHOW_CURRENT_STATUS_OF_MISSION)
+      this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)
+      this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
+      this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+      this.missionRatingSetting = this.settingEnabled(constants.MISSION_RATING_VOLUNTEER)
+      this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
+    },
+    updated() {
+
+    },
+    watch: {
+      $route(to, from) {
+        this.sharingUrl = document.URL
+        this.isShownComponent = false
+        this.missionId = this.$route.params.misisonId
+        this.missionAddedToFavoriteByUser = false
+        this.query = ""
+        this.selected = ""
+        this.rating = 3.5
+        this.search = ""
+        this.userList = []
+        this.myclass = ["userdetail-modal"]
+        this.currentMissionId = 0
+        this.invitedUserId = 0
+        this.showErrorDiv = false
+        this.message = null
+        this.classVariant = "success"
+        this.autoSuggestPlaceholder = ''
+        this.submitDisable = true
+        this.recentVolunterLoader = true
+        this.missionDetail = []
+        this.disableApply = false
+        this.missionDocument = []
+        this.relatedMissionlLoader = true
+        this.isShownMediaComponent = false
+        this.max = 100,
+          this.value = 70,
+          this.missionListing = [],
+          this.missionComment = [],
+          this.submitted = false,
+          this.nextUrl = null,
+          this.postComment = false,
+          this.loadMoreComment = false,
+          this.languageData = JSON.parse(store.state.languageLabel);
+        this.applyButton = this.languageData.label.apply_now;
+        this.page = 1;
+        this.isFacebookSharingDisplay = false
+        this.isTwitterSharingDisplay = false
+        this.isStarDisplay = false
+        this.isThemeDisplay = false
+        this.isInviteCollegueDisplay = false
+        this.isCommentDisplay = false
+        this.isRecentVolunteerDispaly = false
+        this.isSkillDispaly = false
+        this.isMissionGoalDisplay = false
+        this.isCurrentStatusDisplay = false
+        this.isRemainingGoalDisplay = false
+        this.isQuickAccessFilterDisplay = false
+        this.relatedMissionsDisplay = false
+        this.timeSheetId = false
+        this.hideApply = false,
+          this.customInformation = []
+        this.getMissionDetail();
+        this.languageData = JSON.parse(store.state.languageLabel);
+        this.applyButton = this.languageData.label.apply_now
+        this.isFacebookSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
+        store.state.isFacebookDisplay = this.isFacebookSharingDisplay
+        this.isTwitterSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_TWITTER)
+        store.state.isTwitterDisplay = this.isTwitterSharingDisplay
+        this.isStarDisplay = this.settingEnabled(constants.MISSION_RATINGS)
+        this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED)
+        this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE)
+        this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
+        this.isRecentVolunteerDispaly = this.settingEnabled(constants.RECENT_VOLUNTEERES)
+        this.isMissionGoalDisplay = this.settingEnabled(constants.SHOW_GOAL_OF_MISSION)
+        this.isCurrentStatusDisplay = this.settingEnabled(constants.SHOW_CURRENT_STATUS_OF_MISSION)
+        this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)
+        this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
+        this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+        this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
+        this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT + "social-sharing/" + this.domainName + "/" +
+          this.missionId + "/" + store.state.defaultLanguageId;
+        this.missionRatingSetting = true
+        this.isStarRatingDisable = false
+        let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+        tabItem.forEach(function (tabItemEvent) {
+          tabItemEvent.classList.remove('active')
+        });
+        tabItem[0].classList.add('active')
+        let i, tabContent, tabLinks;
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+          if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
+            tabContent[i].style.display = "block";
+          }
+        }
+        tabLinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tabLinks.length; i++) {
+          tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+        }
+        tabItem[0].className += " active";
+
+      }
+    }
+  };
+
+</script>
