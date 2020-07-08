@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-class ResetStyleSettingsJob extends Job
+class RecompileCustomStylesJob extends Job
 {
     /**
      * @var string $tenantName
@@ -26,9 +26,6 @@ class ResetStyleSettingsJob extends Job
      */
     public function handle()
     {
-        // Remove tenant's custom SCSS from S3
-        dispatch(new DeleteCustomScssFromS3Job($this->tenantName));
-
         // Create the temporary SCSS directory
         dispatch(new CreateScssTemporaryFolderJob($this->tenantName));
 

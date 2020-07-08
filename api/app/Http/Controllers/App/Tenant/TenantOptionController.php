@@ -144,25 +144,35 @@ class TenantOptionController extends Controller
      */
     public function getCustomCss(Request $request): JsonResponse
     {
-        $tenantCustomCss = '';
-        // find custom css
+        $isCustomCssEnabled = false;
+        $tenantCustomCssUrl = '';
+
+        // Check presence of custom css option
         try {
-            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
-            if ($tenantOptions) {
-                $tenantCustomCss = $tenantOptions->option_value;
-            }
+            $tenantOption = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
+            $isCustomCssEnabled = $tenantOption !== null && $tenantOption->option_value === 1;
         } catch (\Exception $e) {
+            /*
+             * If there was some trouble when retrieving this option
+             * we have nothing to do as the default is to consider
+             * the custom css option turned off
+             */
+        }
+
+        if ($isCustomCssEnabled) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
             $customCssName = env('S3_CUSTOME_CSS_NAME');
 
-            $tenantCustomCss = S3Helper::makeTenantS3BaseUrl($tenantName)
+            $tenantCustomCssUrl = S3Helper::makeTenantS3BaseUrl($tenantName)
                 . $assetsFolder
                 . '/css/'
                 . $customCssName;
         }
 
-        $apiData = ['custom_css' => $tenantCustomCss];
+        $apiData = [
+            'custom_css' => $isCustomCssEnabled ? $tenantCustomCssUrl : false,
+        ];
         $apiStatus = Response::HTTP_OK;
 
         return $this->responseHelper->success($apiStatus, '', $apiData);
