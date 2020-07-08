@@ -292,7 +292,7 @@ class UserController extends Controller
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "max:16",
-				"nullable",
+                "nullable",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
@@ -339,6 +339,15 @@ class UserController extends Controller
             }
         }
 
+        $request->expiry = (isset($request->expiry) && $request->expiry)
+            ? $request->expiry : null;
+
+        if (isset($request->status)) {
+            $request->status = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
         //Remove params
         $request->request->remove("email");
 
@@ -346,7 +355,7 @@ class UserController extends Controller
         $this->userFilterRepository->saveFilter($request);
 
         // Update user
-        $user = $this->userRepository->update($request, $id);
+        $user = $this->userRepository->update($request->toArray(), $id);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -361,6 +370,8 @@ class UserController extends Controller
             $this->userRepository->deleteSkills($id);
             $this->userRepository->linkSkill($request->toArray(), $id);
         }
+
+        $this->helpers->syncUserData($request, $id);
 
         // Set response data
         $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
@@ -412,10 +423,7 @@ class UserController extends Controller
         $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
         $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
 
-        $request->merge([
-            'avatar' => $imagePath
-        ]);
-        $this->userRepository->update($request, $userId);
+        $this->userRepository->update(['avatar' => $imagePath], $userId);
 
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');

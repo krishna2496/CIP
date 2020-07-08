@@ -220,10 +220,11 @@ class SamlController extends Controller
 
         $userData['email'] = $email;
 
-        $request->merge($userData);
         $userDetail = $userDetail ?
-            $this->userRepository->update($request, $userDetail->user_id) :
-            $this->userRepository->store($request);
+            $this->userRepository->update($userData, $userDetail->user_id) :
+            $this->userRepository->store($userData);
+
+        $this->helpers->syncUserData($request, $userDetail->user_id);
 
         if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
             return $this->responseHelper->error(

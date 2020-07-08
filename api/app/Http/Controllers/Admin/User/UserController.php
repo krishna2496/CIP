@@ -295,8 +295,11 @@ class UserController extends Controller
             }
         }
 
+        $request->expiry = (isset($request->expiry) && $request->expiry)
+            ? $request->expiry : null;
+
         // Create new user
-        $user = $this->userRepository->store($request);
+        $user = $this->userRepository->store($request->toArray());
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -399,8 +402,16 @@ class UserController extends Controller
                 }
             }
 
+            $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+            ? $request->expiry : null;
+            if (isset($request->status)) {
+                $requestData['status'] = $request->status
+                    ? config('constants.user_statuses.ACTIVE')
+                    : config('constants.user_statuses.INACTIVE');
+            }
+
             // Update user
-            $user = $this->userRepository->update($request, $id);
+            $user = $this->userRepository->update($requestData, $id);
 
             // Check profile complete status
             $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);

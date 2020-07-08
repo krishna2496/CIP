@@ -12,19 +12,19 @@ interface UserInterface
     /**
      * Store a newly created resource in storage.
      *
-     * @param Illuminate\Http\Request $request
+     * @param Array $request
      * @return App\User
      */
-    public function store(Request $request): User;
+    public function store(Array $request): User;
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Illuminate\Http\Request $request
+     * @param Array $request
      * @param  int  $id
      * @return App\User
      */
-    public function update(Request $request, int $id): User;
+    public function update(Array $request, int $id): User;
 
     /**
      * Get listing of users

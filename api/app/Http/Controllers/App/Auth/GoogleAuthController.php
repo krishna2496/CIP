@@ -132,10 +132,11 @@ class GoogleAuthController extends Controller
             $userData['timezone_id'] = $timezone->timezone_id;
         }
 
-        $request->merge($userData);
         $userDetail = $userDetail ?
-            $this->userRepository->update($request, $userDetail->user_id) :
-            $this->userRepository->store($request);
+            $this->userRepository->update($userData, $userDetail->user_id) :
+            $this->userRepository->store($userData);
+
+        $this->helpers->syncUserData($request, $userDetail->user_id);
 
         $tenantName = $this->helpers->getTenantDomainByTenantId($tenantId);
 

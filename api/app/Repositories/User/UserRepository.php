@@ -95,21 +95,12 @@ class UserRepository implements UserInterface
     /**
      * Store a newly created resource in storage.
      *
-     * @param Illuminate\Http\Request $request
+     * @param Array $request
      * @return App\User
      */
-    public function store(Request $request): User
+    public function store(Array $request): User
     {
-        // Default user to active
-        if (!isset($request->status)) {
-            $request->status = config('constants.user_statuses.ACTIVE');
-        }
-        $requestData = $this->getUserArrayDataFromRequest($request);
-        $user = $this->user->create($requestData);
-
-        $this->helpers
-            ->syncUserData($request, $user->user_id);
-
+        $user = $this->user->create($request);
         return $user;
     }
 
@@ -201,18 +192,14 @@ class UserRepository implements UserInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param Illuminate\Http\Request $request
+     * @param Array $request
      * @param  int  $id
      * @return App\User
      */
-    public function update(Request $request, int $id): User
+    public function update(Array $request, int $id): User
     {
-        $requestData = $this->getUserArrayDataFromRequest($request);
         $user = $this->user->findOrFail($id);
-        $user->update($requestData);
-
-        $this->helpers
-            ->syncUserData($request, $user->user_id);
+        $user->update($request);
         return $user;
     }
 
