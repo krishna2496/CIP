@@ -21,7 +21,7 @@ class CurrencyRepository
     private $tenant;
 
     /**
-     * Create a new Language repository instance.
+     * Create a new Currency repository instance.
      *
      * @param App\Models\TenantCurrency $tenantCurrency
      * @param App\Models\Tenant $tenant
@@ -50,24 +50,24 @@ class CurrencyRepository
     }
 
     /**
-     * Check request language is available in language list
+     * Check request currency is available in currency list
      *
      * @param Request $request
      * @return boolean
      */
-    public function checkAvailableLanguage(Request $request) : bool
+    public function checkAvailableCurrency(Request $request) : bool
     {
-        $requestLanguages = $request->toArray();
-        $allLanguagesList = $this->findAll();
-        $allLanguageArray = [];
+        $requestCurrency = $request->toArray();
+        $allCurrencyList = $this->findAll();
+        $allCurrencyArray = [];
 
-        foreach ($allLanguagesList as $key => $value) {
+        foreach ($allCurrencyList as $key => $value) {
             $code = $value->code;
-            array_push($allLanguageArray, $code);
+            array_push($allCurrencyArray, $code);
         }
 
-        foreach ($requestLanguages['currency'] as $key => $value) {
-            if (!in_array($value['code'], $allLanguageArray)) {
+        foreach ($requestCurrency['currency'] as $key => $value) {
+            if (!in_array($value['code'], $allCurrencyArray)) {
                 return false;
             }
         }

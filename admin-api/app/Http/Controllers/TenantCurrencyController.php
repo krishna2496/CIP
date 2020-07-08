@@ -34,7 +34,7 @@ class TenantCurrencyController extends Controller
     private $responseHelper;
 
     /**
-     * Create a new Tenant has setting controller instance.
+     * Create a new Tenant currency controller instance.
      *
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
@@ -76,7 +76,7 @@ class TenantCurrencyController extends Controller
     }
 
     /**
-     * Store a newly created tenant settings into database
+     * Store a newly created tenant currency into database
      *
      * @param \Illuminate\Http\Request $request
      * @param int $tenantId
@@ -101,7 +101,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->checkAvailableLanguage($request)) {
+        if (!$this->currencyRepository->checkAvailableCurrency($request)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
