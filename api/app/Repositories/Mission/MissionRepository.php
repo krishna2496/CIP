@@ -1579,7 +1579,7 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-    * Get mission tab details
+    * Get impact donation mission details
     *
     * @param int $missionId
     * @param string $missionImpactDonationId

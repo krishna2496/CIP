@@ -27,6 +27,7 @@ class ImpactDonationMissionRepository
     /**
      * @var App\Models\MissionImpactDonationLanguage MissionImpactDonationLanguage
      */
+    private $missionImpactDonationLanguage;
 
     /**
     * @var App\Services\Mission\ModelsService
@@ -43,9 +44,9 @@ class ImpactDonationMissionRepository
      *
      * @param  Mission $mission
      * @param  ResponseHelper $responseHelper
-     * @param   App\Services\Mission\ModelsService $modelsService
-     * @param       App\Models\MissionImpactDonationLanguage $missionImpactDonationLanguage
-     * @param App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Models\MissionImpactDonationLanguage $missionImpactDonationLanguage
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
