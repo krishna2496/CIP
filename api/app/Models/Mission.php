@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\MissionImpactDonation;
 
 class Mission extends Model
 {
@@ -394,8 +395,8 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function missionDonationImpact($value): HasMany
+    public function missionDonationImpact(): HasMany
     {
-        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionImpactDonation::class, 'mission_id', 'mission_id');
     }
 }

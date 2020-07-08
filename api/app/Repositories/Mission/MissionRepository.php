@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
+use App\Models\MissionImpactDonation;
 
 class MissionRepository implements MissionInterface
 {

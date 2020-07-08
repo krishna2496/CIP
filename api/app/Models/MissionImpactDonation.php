@@ -36,7 +36,7 @@ class MissionImpactDonation extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_donation_id', 'mission_id,', 'amount'];
+    protected $visible = ['mission_impact_donation_id', 'mission_id,', 'amount', 'getMissionImpactDonationDetail'];
 
     /**
      * The attributes that are mass assignable.
@@ -51,7 +51,7 @@ class MissionImpactDonation extends Model
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
 
-    public function getMissionImpactDonationDetail() : HasMany
+    public function getMissionImpactDonationDetail()
     {
         return $this->hasMany(MissionImpactDonationLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
     }
