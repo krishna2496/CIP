@@ -49,7 +49,7 @@ class TenantCurrencyController extends Controller
     }
 
     /**
-     * Show tenant Setting details
+     * Show tenant currency details
      *
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
@@ -79,7 +79,6 @@ class TenantCurrencyController extends Controller
      * Store a newly created tenant currency into database
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
     public function store(Request $request): JsonResponse
