@@ -422,7 +422,13 @@ class MissionRepository implements MissionInterface
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
             $query->orderBy('sort_order');
-        }]);
+        }])
+        ->with(['missionDocument' => function ($query) {
+            $query->orderBy('sort_order');
+        }])->with(['impactDonation' => function ($query) {
+            $query->orderBy('amount');
+        }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }])->findOrFail($id);
         
         if (isset($mission->missionLanguage)) {
             $languages = $this->languageHelper->getLanguages();
@@ -433,6 +439,10 @@ class MissionRepository implements MissionInterface
                 )->first()->code;
             }
         }
+
+        // Impact donation mission array modification
+        $this->impactMissionDonationTransformArray($mission, $languages);
+
         return $mission;
     }
     
@@ -481,6 +491,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['impactDonation' => function ($query) {
+            $query->orderBy('amount');
+        }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -514,7 +527,11 @@ class MissionRepository implements MissionInterface
                     $value->default_media_path = $mediaValue->media_path;
                 }
             }
+
+            // Impact donation mission array modification
+            $this->impactMissionDonationTransformArray($value, $languages);
         }
+
         return $mission;
     }
 
@@ -1572,5 +1589,34 @@ class MissionRepository implements MissionInterface
     public function isMissionDonationImpactLinkedToMission(int $missionId, string $missionImpactDonationId)
     {
         return $this->modelsService->missionImpactDonation->where([['mission_id', '=', $missionId], ['mission_impact_donation_id', '=', $missionImpactDonationId]])->firstOrFail();
+    }
+
+    
+    /**
+     * Transfrom impact donation array for response
+     *
+     * @param $value
+     * @param $languages
+     */
+    public function impactMissionDonationTransformArray($value, $languages)
+    {
+        $impactDonationMissionInfo =  $value['impactDonation']->toArray();
+        if ($impactDonationMissionInfo != null) {
+            // $missionLanguageArray = [];
+            $impactDonationLanguageArray = [];
+            foreach ($impactDonationMissionInfo as $impactDonationKey => $impactDonationValue) {
+                $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
+                $impactDonationLanguageArray["languages"] = [];
+                foreach ($impactDonationValue['get_mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
+                    $languageCode = $languages->where('language_id', $impactDonationLanguadeValue['language_id'])->first()->code;
+                    $impactDonationLanguage['language_id'] = $impactDonationLanguadeValue['language_id'];
+                    $impactDonationLanguage['language_code'] = $languageCode;
+                    $impactDonationLanguage['content'] = json_decode($impactDonationLanguadeValue['content']);
+                    array_push($impactDonationLanguageArray["languages"], $impactDonationLanguage);
+                }
+
+                $value['impactDonation'][$impactDonationKey] = $impactDonationLanguageArray;
+            }
+        }
     }
 }

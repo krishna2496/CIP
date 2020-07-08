@@ -48,7 +48,6 @@ class MissionImpactDonation extends Model
     /**
      * Find the specified resource.
      * 
-     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
 
     public function getMissionImpactDonationDetail()
