@@ -1,18 +1,19 @@
 <template>
-    <div id="app">
+    <div id="app" :class="{'loaded': stylesLoaded}">
         <router-view />
     </div>
 </template>
-
-
 
 <script>
     import {
         setTimeout
     } from "timers";
+    import customCss from './services/CustomCss';
     export default {
         data() {
-            return {};
+            return {
+              stylesLoaded: false
+            };
         },
         mounted() {
             document.addEventListener("click", this.onClick);
@@ -75,6 +76,15 @@
             this.signinAdj();
         },
         created() {
+            document.body.classList.add("loader-enable");
+            customCss()
+              .catch(() => {
+                import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
+              }).finally(() => {
+                document.body.classList.remove("loader-enable");
+                this.stylesLoaded = true;
+            });
+
             let ua = navigator.userAgent.toLowerCase();
             if (ua.indexOf("safari") != -1) {
                 if (ua.indexOf("chrome") > -1) {

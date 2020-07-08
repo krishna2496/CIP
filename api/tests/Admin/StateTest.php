@@ -54,6 +54,16 @@ class StateTest extends TestCase
         $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
 
         DB::setDefaultConnection('mysql');
+
+        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
+        DB::setDefaultConnection('mysql');
+
         // Get all states
         $this->get('/entities/states?search=' . $stateName, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
@@ -561,21 +571,21 @@ class StateTest extends TestCase
         $state->setConnection($connection);
         $state->save();
         $stateId = $state->state_id;
-        
+
         $city = factory(\App\Models\City::class)->make();
         $city->setConnection($connection);
         $city->save();
         $city->state_id = $stateId;
         $city->update();
         $cityId = $city->city_id;
-        
+
         DB::setDefaultConnection('mysql');
-        
+
         // Add user for this country and state
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-       
+
         $mission->city_id = $cityId;
         $mission->update();
 
@@ -583,12 +593,12 @@ class StateTest extends TestCase
         ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
-        
+
         App\Models\City::where('city_id', $cityId)->delete();
-        
+
         App\Models\State::where('state_id', $stateId)->delete();
     }
-    
+
     /**
      * @test
      *
@@ -651,7 +661,7 @@ class StateTest extends TestCase
         $this->delete("entities/states/" . $stateId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
         /* Delete state details end */
-        
+
         DB::setDefaultConnection('mysql');
         // Get all states
         $this->get('/entities/countries/' . $countryId . '/states', ['Authorization' => Helpers::getBasicAuth()])
@@ -664,7 +674,7 @@ class StateTest extends TestCase
         $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
-    
+
     /**
      * @test
      *
@@ -735,7 +745,7 @@ class StateTest extends TestCase
         $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
-    
+
     /**
      * @test
      *
@@ -750,7 +760,7 @@ class StateTest extends TestCase
         $this->get('/entities/countries/' . rand(10000, 99999) . '/states', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
-    
+
     /**
      * @test
      *
@@ -805,7 +815,7 @@ class StateTest extends TestCase
         $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
-    
+
     /**
      * @test
      *

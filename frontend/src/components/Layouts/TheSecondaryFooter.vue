@@ -30,7 +30,7 @@
                 <b-col md="6" class="copyright-text">
                     <p>© {{year}} Optimy.com. {{ languageData.label.all_rights_reserved }}.</p>
                     <div class="lang-drodown-wrap">
-                        <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
+                        <AppCustomDropdown :optionList="langList" :defaultText="defautLang.toUpperCase()"
                                            translationEnable="false" @updateCall="setLanguage" />
                     </div>
                 </b-col>
