@@ -97,7 +97,7 @@ class AppPolicyPageTest extends TestCase
                 ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('policy/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -212,7 +212,7 @@ class AppPolicyPageTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing?order=test', ['token' => $token])
-          ->seeStatusCode(500)
+          ->seeStatusCode(400)
           ->seeJsonStructure([
               "errors" => [
                   [
@@ -261,3 +261,4 @@ class AppPolicyPageTest extends TestCase
         $policyPage->delete();
     }
 }
+

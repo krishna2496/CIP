@@ -139,7 +139,6 @@ class Mission extends Model
     public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
-        //  ->select('country_id', 'name', 'ISO');
     }
 
     /**
@@ -330,30 +329,28 @@ class Mission extends Model
     }
 
     /**
-     * Set organisation detail in serialize form.
+     * Set organisation detail in json_encode form
      *
      * @param array|null $value
      */
     public function setOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && !empty($value)) {
-            $this->attributes['organisation_detail'] = serialize($value);
+            $this->attributes['organisation_detail'] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
     }
 
     /**
-     * Get organisation detail in unserialize form.
-     *
-     * @param string|null $value
-     *
-     * @return array|null
+     * @param $value
+     * @return mixed|null
      */
     public function getOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && ($value !== '')) {
-            $data = @unserialize($value);
-            if ($data !== false) {
-                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
+            $data = @json_decode($value);
+
+            if ($data !== null) {
+                return json_decode($value, true);
             }
         }
 

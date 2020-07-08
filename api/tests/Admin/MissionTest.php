@@ -165,7 +165,7 @@ class MissionTest extends TestCase
                 ];
 
         \DB::setDefaultConnection('mysql');
-
+        
         $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
@@ -525,7 +525,7 @@ class MissionTest extends TestCase
         $mission->save();
 
         $this->patch(
-            'missions/'.$mission->mission_id,
+            'missions/' . $mission->mission_id,
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -551,7 +551,7 @@ class MissionTest extends TestCase
             ];
 
         $this->patch(
-            'missions/'.rand(1000000, 50000000),
+            'missions/' . rand(1000000, 50000000),
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -583,7 +583,7 @@ class MissionTest extends TestCase
         $mission->save();
 
         $this->delete(
-            'missions/'.$mission->mission_id,
+            'missions/' . $mission->mission_id,
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -600,7 +600,7 @@ class MissionTest extends TestCase
     public function it_should_return_mission_not_found_on_delete()
     {
         $this->delete(
-            'missions/'.rand(1000000, 50000000),
+            'missions/' . rand(1000000, 50000000),
             [],
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -741,7 +741,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get('missions/'.$mission->mission_id, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('missions/' . $mission->mission_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
                 'message',
@@ -761,7 +761,7 @@ class MissionTest extends TestCase
     {
         $missionId = rand(100000, 5000000);
 
-        $this->get('missions/'.$missionId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('missions/' . $missionId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -793,7 +793,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch('missions/'.$mission->mission_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('missions/' . $mission->mission_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1050,7 +1050,7 @@ class MissionTest extends TestCase
         ];
 
         $this->patch(
-            'missions/'.$mission[0]['mission_id'],
+            'missions/' . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1169,7 +1169,7 @@ class MissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->patch(
-            'missions/'.$mission[0]['mission_id'],
+            'missions/' . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1373,7 +1373,7 @@ class MissionTest extends TestCase
                 ];
 
         $this->patch(
-            'missions/'.$mission->mission_id,
+            'missions/' . $mission->mission_id,
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )
@@ -1469,38 +1469,8 @@ class MissionTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
-
-        DB::setDefaultConnection('mysql');
-        // Return error if media not found in system
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(404)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'message',
-                    'code',
-                ],
-            ],
-        ]);
-
-        $missionMediaId = App\Models\MissionMedia::where(['mission_id' => $missionId, 'default' => '1'])->first()->mission_media_id;
-        // Return error if you are trying to delete default mission media
-        DB::setDefaultConnection('mysql');
-        $this->delete('missions/media/'.$missionMediaId, [], ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'message',
-                    'code',
-                ],
-            ],
-        ]);
-        App\Models\Mission::where('mission_id', $missionId)->delete();
+ 
+        App\Models\Mission::where("mission_id", $missionId)->delete();
     }
 
     /**
@@ -1692,7 +1662,7 @@ class MissionTest extends TestCase
                 ];
 
         \DB::setDefaultConnection('mysql');
-
+        
         $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
@@ -1808,7 +1778,7 @@ class MissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->patch(
-            'missions/'.$mission[0]['mission_id'],
+            'missions/' . $mission[0]['mission_id'],
             $params,
             ['Authorization' => Helpers::getBasicAuth()]
         )

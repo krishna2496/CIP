@@ -236,15 +236,14 @@ class MissionController extends Controller
     /**
      * Display the specified mission detail.
      *
-     * @param int $id
-     *
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(int $missionId): JsonResponse
     {
         try {
             // Get data for parent table
-            $mission = $this->missionRepository->find($id);
+            $mission = $this->missionRepository->find($missionId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -262,8 +261,7 @@ class MissionController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $missionId
-     *
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
     public function update(Request $request, int $missionId): JsonResponse
@@ -492,16 +490,15 @@ class MissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $missionId): JsonResponse
     {
         try {
-            $mission = $this->missionRepository->delete($id);
+            $mission = $this->missionRepository->delete($missionId);
             // delete notification related to mission
-            $this->notificationRepository->deleteMissionNotifications($id);
+            $this->notificationRepository->deleteMissionNotifications($missionId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
 
@@ -514,7 +511,7 @@ class MissionController extends Controller
                 get_class($this),
                 null,
                 null,
-                $id
+                $missionId
             ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
