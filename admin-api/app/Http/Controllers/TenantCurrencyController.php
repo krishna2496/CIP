@@ -64,10 +64,10 @@ class TenantCurrencyController extends Controller
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
-    public function getTenantCurrencyList(Request $request, int $tenantId): JsonResponse
+    public function index(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $tenantCurrencyList = $this->currencyRepository->getCurrencyDetails($request, $tenantId);
+            $tenantCurrencyList = $this->currencyRepository->getTenantCurrencyList($request, $tenantId);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
