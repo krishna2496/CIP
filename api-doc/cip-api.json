@@ -8347,7 +8347,7 @@
               },
               "amount": {
                 "type": "integer",
-                "description": "amount for imapct donatiom mission. It must be numeric value. Example: 10, 15, 30…"
+                "description": "amount for impact donation mission. It must be numeric value. Example: 10, 15, 30…"
               },
               "translations": {
                 "type": "array",

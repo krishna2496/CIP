@@ -2,7 +2,6 @@
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
-use Mockery;
 use  App\Repositories\Mission\MissionRepository;
 use  App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
@@ -19,9 +18,11 @@ class MissionControllerTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function testStoreImpactDonationAttribute()
     {
         $this->assertTrue(true);
+        $request = new Request();
+        $missionData = factory(App\Models\Mission::class)->make();
     }
 
     /**
