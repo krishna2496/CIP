@@ -504,7 +504,7 @@ return [
         'MISSION_TAB_NOT_FOUND' => '400051'
     ],
 
-    /*
+    /**
      * Notification types
      */
     'notification_type_keys' => [
@@ -539,7 +539,7 @@ return [
         'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING'
     ],
 
-    /*
+    /**
      * Notification type icons
      */
     'notification_icons' => [
@@ -652,5 +652,5 @@ return [
     'user_statuses' => [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
-    ],
+    ]
 ];
