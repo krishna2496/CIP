@@ -50,29 +50,6 @@ class CurrencyRepository
     }
 
     /**
-     * Check request currency is available in currency list
-     *
-     * @param Request $request
-     * @return boolean
-     */
-    public function checkAvailableCurrency(Request $request) : bool
-    {
-        $allCurrencyList = $this->findAll();
-        $allCurrencyArray = [];
-
-        foreach ($allCurrencyList as $key => $value) {
-            $code = $value->code;
-            array_push($allCurrencyArray, $code);
-        }
-
-        if (!in_array($request['code'], $allCurrencyArray)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Store currency
      *
      * @param Request $request
@@ -98,7 +75,7 @@ class CurrencyRepository
     }
 
     /**
-     * update currency
+     * Update currency
      *
      * @param Request $request
      * @param int $tenantId
@@ -125,17 +102,6 @@ class CurrencyRepository
     }
 
     /**
-     * Tenant id is available or not
-     *
-     * @param int $tenantId
-     * @return void
-     */
-    public function checkTenantId(int $tenantId)
-    {
-        $this->tenant->findOrFail($tenantId);
-    }
-
-    /**
      * List of all tenant currency
      *
      * @param array $request
@@ -147,7 +113,33 @@ class CurrencyRepository
         // Check tenant is present in the system
         $tenantData = $this->tenant->findOrFail($tenantId);
 
-        $currencyTenantDetails = $this->tenantCurrency->where(['tenant_id' => $tenantId])->orderBy('code', 'ASC')->paginate($request->perPage);
+        $currencyTenantDetails = $this->tenantCurrency
+            ->where(['tenant_id' => $tenantId])
+            ->orderBy('code', 'ASC')
+            ->paginate($request->perPage);
         return $currencyTenantDetails;
+    }
+
+    /**
+     * Check request currency is available in currency list
+     *
+     * @param Request $request
+     * @return boolean
+     */
+    public function isValidCurrency(Request $request) : bool
+    {
+        $allCurrencyList = $this->findAll();
+        $allCurrencyArray = [];
+
+        foreach ($allCurrencyList as $key => $value) {
+            $code = $value->code;
+            array_push($allCurrencyArray, $code);
+        }
+
+        if (!in_array($request['code'], $allCurrencyArray)) {
+            return false;
+        }
+
+        return true;
     }
 }

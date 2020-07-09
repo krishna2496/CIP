@@ -16,6 +16,7 @@ use App\Events\ActivityLogEvent;
 use Validator;
 use App\Rules\DefaultCurrencyAvailable;
 use Illuminate\Validation\Rule;
+use App\Repositories\Tenant\TenantRepository;
 
 //!  TenantCurrencyController controller
 /*!
@@ -36,6 +37,11 @@ class TenantCurrencyController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Repositories\Tenant\TenantRepository
+     */
+    private $tenantRepository;
+
+    /**
      * Create a new Tenant currency controller instance.
      *
      * @param  App\Helpers\ResponseHelper $responseHelper
@@ -44,19 +50,21 @@ class TenantCurrencyController extends Controller
      */
     public function __construct(
         ResponseHelper $responseHelper,
-        CurrencyRepository $currencyRepository
+        CurrencyRepository $currencyRepository,
+        TenantRepository $tenantRepository
     ) {
         $this->responseHelper = $responseHelper;
         $this->currencyRepository = $currencyRepository;
+        $this->tenantRepository = $tenantRepository;
     }
 
     /**
-     * Show tenant currency details
+     * List tenant’s currency
      *
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
-    public function index(Request $request, int $tenantId): JsonResponse
+    public function getTenantCurrencyList(Request $request, int $tenantId): JsonResponse
     {
         try {
             $tenantCurrencyList = $this->currencyRepository->getCurrencyDetails($request, $tenantId);
@@ -87,7 +95,7 @@ class TenantCurrencyController extends Controller
     public function store(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $this->currencyRepository->checkTenantId($tenantId);
+            $this->tenantRepository->find($tenantId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
@@ -111,7 +119,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->checkAvailableCurrency($request)) {
+        if (!$this->currencyRepository->isValidCurrency($request)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -142,12 +150,13 @@ class TenantCurrencyController extends Controller
      * Update tenant currency for tenant into database
      *
      * @param \Illuminate\Http\Request $request
+     * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
     public function update(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $this->currencyRepository->checkTenantId($tenantId);
+            $this->tenantRepository->find($tenantId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
@@ -170,7 +179,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->checkAvailableCurrency($request)) {
+        if (!$this->currencyRepository->isValidCurrency($request)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

@@ -711,7 +711,7 @@
             "post": {
                 "operationId": "POST_team4-cip-admin-api-add-currency",
                 "summary": "Add currency for a tenant",
-                "description": "This is for master database of currency. This endpoint will add currency in system",
+                "description": "Add currency for a tenant",
                 "tags":[  
                     "Currency management"
                 ],
@@ -741,7 +741,7 @@
         "/tenants/tenant-currency/{tenantId}": {
             "get": {
                 "operationId": "GET_team4-cip-admin-api-get-currency",
-                "summary": "Listing currency",
+                "summary": "List tenant’s currency",
                 "description": "To fetch all tenant currency",
                 "tags":[  
                     "Currency management"
