@@ -48,7 +48,7 @@ class Mission extends Model
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual', ];
+    'organisation_detail', 'availability_id', 'is_virtual'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -70,14 +70,14 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'missionTab', 'donationAttribute', 'getMissionTabDetail', ];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'missionTab', 'donationAttribute', 'getMissionTabDetail'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument', 'missionMedia', 'missionLanguage',
         'favouriteMission', 'missionInvite', 'missionRating', 'missionApplication', 'missionSkill',
-        'goalMission', 'timeMission', 'comment', 'timesheet', 'missionTab', 'donationAttribute',
+        'goalMission', 'timeMission', 'comment', 'timesheet', 'missionTab', 'donationAttribute'
     ];
 
     /**
