@@ -57,7 +57,6 @@ class CurrencyRepository
      */
     public function checkAvailableCurrency(Request $request) : bool
     {
-        $requestCurrency = $request->toArray();
         $allCurrencyList = $this->findAll();
         $allCurrencyArray = [];
 
@@ -66,29 +65,74 @@ class CurrencyRepository
             array_push($allCurrencyArray, $code);
         }
 
-        foreach ($requestCurrency['currency'] as $key => $value) {
-            if (!in_array($value['code'], $allCurrencyArray)) {
-                return false;
-            }
+        if (!in_array($request['code'], $allCurrencyArray)) {
+            return false;
         }
 
         return true;
     }
 
     /**
-     * Store or update currency
+     * Store currency
      *
-     * @param array $request
+     * @param Request $request
      * @param int $tenantId
-     * @return array
+     * @return void
      */
-    public function storeOrUpdate(array $request)
+    public function store(Request $request, int $tenantId)
     {
-        foreach ($request['currency'] as $key => $value) {
-            $condition = array('tenant_id' => $value['tenant_id'],
-            'code' => $value['code']);
-            $this->tenantCurrency->createOrUpdate($condition, $value);
+        $tenant = $this->tenant->findOrFail($tenantId);
+
+        $currencyData = [
+            'tenant_id' => $tenantId,
+            'code' => $request['code'],
+            'default' => $request['default'],
+            'is_active' => $request['is_active']
+        ];
+
+        if ($request['is_active'] === '1' && $request['default'] === '1') {
+            $this->tenantCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
         }
+
+        $this->tenantCurrency->create($currencyData);
+    }
+
+    /**
+     * update currency
+     *
+     * @param Request $request
+     * @param int $tenantId
+     * @return void
+     */
+    public function update(Request $request, int $tenantId)
+    {
+        $tenantCurrencyData = $this->tenantCurrency
+            ->where(['tenant_id' => $tenantId, 'code' => $request['code']])
+            ->firstOrFail();
+
+        $currencyData = [
+            'tenant_id' => $tenantId,
+            'code' => $request['code'],
+            'default' => $request['default'],
+            'is_active' => $request['is_active']
+        ];
+
+        if ($request['is_active'] === '1' && $request['default'] === '1') {
+            $this->tenantCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
+        }
+        $this->tenantCurrency->where(['tenant_id' => $tenantId, 'code' => $request['code']])
+            ->update($currencyData);
+    }
+
+    /**
+     * Tenant id is available or not
+     *
+     * @param int $tenantId
+     * @return void
+     */
+    public function checkTenantId(int $tenantId)
+    {
+        $this->tenant->findOrFail($tenantId);
     }
 
     /**

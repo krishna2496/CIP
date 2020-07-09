@@ -45,16 +45,4 @@ class TenantCurrency extends Model
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
-
-    /**
-     * Store/Update tenant currency details.
-     *
-     * @param  array $condition
-     * @param  array $data
-     * @return App\Models\TenantCurrency
-     */
-    public function createOrUpdate(array $condition, array $data): TenantCurrency
-    {
-        return static::updateOrCreate($condition, $data);
-    }
 }

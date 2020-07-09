@@ -127,7 +127,7 @@ $router->group(
 
         // Currency routes
         $router->post(
-            '/tenant-currency',
+            '/tenant-currency/{tenantId}',
             ['as' => 'tenants.store-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
             'uses' => 'TenantCurrencyController@store']
         );
@@ -135,6 +135,11 @@ $router->group(
             '/tenant-currency/{tenantId}',
             ['as' => 'tenants.get-tenantcurrency', 'middleware' => ['PaginationMiddleware'],
             'uses' => 'TenantCurrencyController@index']
+        );
+        $router->patch(
+            '/tenant-currency/{tenantId}',
+            ['as' => 'tenants.update-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
+            'uses' => 'TenantCurrencyController@update']
         );
     }
 );

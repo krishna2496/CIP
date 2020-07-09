@@ -22,7 +22,8 @@
             'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => '200108',
             'ERROR_LANGUAGE_UNABLE_TO_DELETE' => '200109',
             'ERROR_TENANT_CURRENCY_FIELD_REQUIRED' => '2001010',
-            'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => '2001011'
+            'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => '2001011',
+            'CURRENCY_CODE_NOT_FOUND' => '2001012'
         ],
         'background_process_status' => [
             'PENDING' => '0',
