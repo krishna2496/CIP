@@ -25,20 +25,18 @@ class MissionControllerTest extends TestCase
     {
         $connection = 'tenant';
         $mission = factory(Mission::class)->make();
-        dd($mission['donationAttribute']);
         $mission->mission_type = config('constants.mission_type.DONATION');
-        $mission->donation_attribute['goal_amount_currency'] = 'USD';
-        $mission->donation_attribute['goal_amount'] = 23;
-        $mission->donation_attribute['show_goal_amount'] = 3;
-        $mission->donation_attribute['show_donation_percentage'] = 0;
-        $mission->donation_attribute['show_donation_meter'] = 0;
-        $mission->donation_attribute['show_donation_count'] = 0;
-        $mission->donation_attribute['show_donors_count'] = 0;
-        $mission->donation_attribute['disable_when_funded'] = 0;
-        $mission->donation_attribute['is_disabled'] = 0;
+        $mission = $mission->toArray();
 
-        dd($mission->toArray());
-        // $user->setConnection($connection);
-        // $user->save();
+        //set donation attributes
+        $mission['donation_attribute']['goal_amount_currency'] = 'USD';
+        $mission['donation_attribute']['goal_amount'] = 23;
+        $mission['donation_attribute']['show_goal_amount'] = 3;
+        $mission['donation_attribute']['show_donation_percentage'] = 0;
+        $mission['donation_attribute']['show_donation_meter'] = 0;
+        $mission['donation_attribute']['show_donation_count'] = 0;
+        $mission['donation_attribute']['show_donors_count'] = 0;
+        $mission['donation_attribute']['disable_when_funded'] = 0;
+        $mission['donation_attribute']['is_disabled'] = 0;
     }
 }
