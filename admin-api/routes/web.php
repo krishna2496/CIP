@@ -126,7 +126,6 @@ $router->group(
                 'uses' => 'ActivityLogController@index']);
 
         // Currency routes
-
         Route::group(['prefix' => 'tenant-currency'], function($router) {
             $router->post(
                 '/{tenantId}',
@@ -136,7 +135,7 @@ $router->group(
             $router->get(
                 '/{tenantId}',
                 ['as' => 'tenants.get-tenantcurrency', 'middleware' => ['PaginationMiddleware'],
-                'uses' => 'TenantCurrencyController@getTenantCurrencyList']
+                'uses' => 'TenantCurrencyController@index']
             );
             $router->patch(
                 '/{tenantId}',
