@@ -179,7 +179,7 @@ class MissionRepository implements MissionInterface
         }
         //Add donation attribute
         
-        if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'), 
+        if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'),
                 config('constants.mission_type.EAF'),
                 config('constants.mission_type.DISASTER_RELIEF')))) {
             if ($request->donation_attribute) {
@@ -292,7 +292,7 @@ class MissionRepository implements MissionInterface
             $mission->goalMission()->update($goalMissionArray);
         }
         //Add donation attribute
-        if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'), 
+        if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'),
                 config('constants.mission_type.EAF'),
                 config('constants.mission_type.DISASTER_RELIEF')))) {
             if (isset($request->donation_attribute) && !empty($request->donation_attribute)) {
@@ -701,7 +701,6 @@ class MissionRepository implements MissionInterface
                 $missionQuery->where('mission.organisation_id', $request->input('explore_mission_params'));
             }
         }
-
         //donation attribute
         if ($request->has('with_donation_attributes ') && $request->input('with_donation_attributes ') !== ''
             && $request->input('with_donation_attributes ') !== 0) {
@@ -1355,6 +1354,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers',
             ]);
+            
+        //donation attribute
+        if ($request->has('with_donation_attributes ') && $request->input('with_donation_attributes ') !== ''
+            && $request->input('with_donation_attributes ') !== 0) {
+            $missionQuery->with(['donationAttribute']);
+        }
 
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
