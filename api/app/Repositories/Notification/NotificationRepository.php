@@ -205,7 +205,9 @@ class NotificationRepository implements NotificationInterface
                 config("constants.notification_type")["RECOMMENDED_MISSIONS"],
                 config("constants.notification_type")["VOLUNTEERING_HOURS"],
                 config("constants.notification_type")["VOLUNTEERING_GOALS"],
-                config("constants.notification_type")["MY_COMMENTS"]
+                config("constants.notification_type")["MY_COMMENTS"],
+                config("constants.notification_type")["MY_STORIES"],
+                config("constants.notification_type")["MISSION_APPLICATION"]
             ]);
         }])
         ->where([
