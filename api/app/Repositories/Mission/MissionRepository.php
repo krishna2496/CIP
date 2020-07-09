@@ -178,10 +178,10 @@ class MissionRepository implements MissionInterface
             }
         }
         //Add donation attribute
-        if ($request->mission_type == config('constants.mission_type.DONATION') ||
-            $request->mission_type == config('constants.mission_type.EAF') ||
-            $request->mission_type == config('constants.mission_type.DISASTER_RELIEF')
-            ) {
+        
+        if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'), 
+                config('constants.mission_type.EAF'),
+                config('constants.mission_type.DISASTER_RELIEF')))) {
             if ($request->donation_attribute) {
                 $donationData = array(
                     'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'],
@@ -292,48 +292,47 @@ class MissionRepository implements MissionInterface
             $mission->goalMission()->update($goalMissionArray);
         }
         //Add donation attribute
-        if ($mission->mission_type == config('constants.mission_type.DONATION') ||
-         $mission->mission_type == config('constants.mission_type.EAF') ||
-         $mission->mission_type == config('constants.mission_type.DISASTER_RELIEF')
-         ) {
+        if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'), 
+                config('constants.mission_type.EAF'),
+                config('constants.mission_type.DISASTER_RELIEF')))) {
             if (isset($request->donation_attribute) && !empty($request->donation_attribute)) {
-                $donationMissionDetail = $mission->donationAttribute()->first();
-                if (!is_null($donationMissionDetail)) {
+                $donationAttributes = $mission->donationAttribute()->first();
+                if (!is_null($donationAttributes)) {
                     if ($request->donation_attribute['goal_amount_currency']) {
-                        $donationMissionDetail->goal_amount_currency =
+                        $donationAttributes->goal_amount_currency =
                         $request->donation_attribute['goal_amount_currency'];
                     }
                     if ($request->donation_attribute['goal_amount']) {
-                        $donationMissionDetail->goal_amount = $request->donation_attribute['goal_amount'];
+                        $donationAttributes->goal_amount = $request->donation_attribute['goal_amount'];
                     }
                     if (isset($request->donation_attribute['show_goal_amount'])) {
-                        $donationMissionDetail->show_goal_amount =
+                        $donationAttributes->show_goal_amount =
                         (string) $request->donation_attribute['show_goal_amount'];
                     }
                     if (isset($request->donation_attribute['show_donation_percentage'])) {
-                        $donationMissionDetail->show_donation_percentage =
+                        $donationAttributes->show_donation_percentage =
                         (string) $request->donation_attribute['show_donation_percentage'];
                     }
                     if (isset($request->donation_attribute['show_donation_meter'])) {
-                        $donationMissionDetail->show_donation_meter =
+                        $donationAttributes->show_donation_meter =
                         (string) $request->donation_attribute['show_donation_meter'];
                     }
                     if (isset($request->donation_attribute['show_donation_count'])) {
-                        $donationMissionDetail->show_donation_count =
+                        $donationAttributes->show_donation_count =
                         (string) $request->donation_attribute['show_donation_count'];
                     }
                     if (isset($request->donation_attribute['show_donors_count'])) {
-                        $donationMissionDetail->show_donors_count =
+                        $donationAttributes->show_donors_count =
                         (string) $request->donation_attribute['show_donors_count'];
                     }
                     if (isset($request->donation_attribute['disable_when_funded'])) {
-                        $donationMissionDetail->disable_when_funded =
+                        $donationAttributes->disable_when_funded =
                         (string) $request->donation_attribute['disable_when_funded'];
                     }
                     if (isset($request->donation_attribute['is_disabled'])) {
-                        $donationMissionDetail->is_disabled = (string) $request->donation_attribute['is_disabled'];
+                        $donationAttributes->is_disabled = (string) $request->donation_attribute['is_disabled'];
                     }
-                    $donationMissionDetail->save();
+                    $donationAttributes->save();
                 }
             }
         }

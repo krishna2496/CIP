@@ -92,17 +92,17 @@ class MissionController extends Controller
     /**
      * Create a new Mission controller instance.
      *
-     * @param App\Repositories\Mission\MissionRepository           $missionRepository
-     * @param Illuminate\Helpers\ResponseHelper                    $responseHelper
-     * @param Illuminate\Http\UserFilterRepository                 $userFilterRepository
-     * @param Illuminate\Helpers\LanguageHelper                    $languageHelper
-     * @param App\Helpers\Helpers                                  $helpers
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param Illuminate\Helpers\ResponseHelper $responseHelper
+     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
+     * @param Illuminate\Helpers\LanguageHelper $languageHelper
+     * @param App\Helpers\Helpers $helpers
      * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
-     * @param App\Repositories\Skill\SkillRepository               $skillRepository
-     * @param App\Repositories\Country\CountryRepository           $countryRepository
-     * @param App\Repositories\City\CityRepository                 $cityRepository
-     * @param App\Repositories\User\UserRepository                 $userRepository
-     * @param App\Repositories\State\StateRepository               $stateRepository
+     * @param App\Repositories\Skill\SkillRepository $skillRepository
+     * @param App\Repositories\Country\CountryRepository $countryRepository
+     * @param App\Repositories\City\CityRepository $cityRepository
+     * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\State\StateRepository $stateRepository
      *
      * @return void
      */
@@ -160,7 +160,7 @@ class MissionController extends Controller
             $exploreMissionType = $request->input('explore_mission_type');
             $authorizedMissionTypes = array(config('constants.TOP_RECOMMENDED'), config('constants.RANDOM'),
                 config('constants.THEME'), config('constants.COUNTRY'), config('constants.ORGANIZATION'),
-                config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'), config('constants.VIRTUAL'), );
+                config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'), config('constants.VIRTUAL'));
 
             if (!in_array($exploreMissionType, $authorizedMissionTypes)
             ) {

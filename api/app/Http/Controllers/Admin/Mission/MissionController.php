@@ -66,13 +66,13 @@ class MissionController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\Mission\MissionRepository                               $missionRepository
-     * @param App\Helpers\ResponseHelper                                               $responseHelper
-     * @param Illuminate\Http\Request                                                  $request
-     * @param App\Helpers\LanguageHelper                                               $languageHelper
-     * @param App\Repositories\MissionMedia\MissionMediaRepository                     $missionMediaRepository
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
+     * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
-     * @param App\Repositories\Notification\NotificationRepository                     $notificationRepository
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      *
      * @return void
      */
