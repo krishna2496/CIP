@@ -58,7 +58,7 @@ return [
         'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
         'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.',
         'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => 'Currency code is not available in system.',
-        'ERROR_TENANT_CURRENCY_NOT_FOUND' => 'Tenant language not found in the system',
+        'ERROR_TENANT_CURRENCY_NOT_FOUND' => 'Tenant currency not found in the system',
         'ERROR_CURRENCY_CODE_NOT_FOUND' => 'Currency not found in system'
     ],
     'email_text' => [
