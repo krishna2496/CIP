@@ -459,8 +459,10 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                         <h3 v-b-toggle="`tab_${index}`">{{getCustomTabLabel(missionTab.languages)}}</h3>
                                     </div>
                                     <b-collapse :id="'tab_' + index" visible accordion="my-accordion" role="tabpanel" class="tab-content">
-
-                                        sadsdasd
+                                        <div v-for="(section, index) in getCustomTabDescription(missionTab.languages)" :key=index>
+                                            <h2>{{section.title}}</h2>
+                                            <p class="mission-description-content" v-html="section.content"></p>
+                                        </div>
                                     </b-collapse>
                                 </div>
 
@@ -1060,6 +1062,7 @@ export default {
                 }
             }
         },
+
         getSkills(missionDetail) {
             let skills = '';
             if (missionDetail.skill) {
@@ -1165,6 +1168,7 @@ export default {
             }
             tabsEvent.currentTarget.className += " active";
         },
+
         getCustomTabLabel(translations) {
             if (translations) {
                 let filteredObj = translations.filter((item, i) => {
@@ -1186,6 +1190,29 @@ export default {
                     }
                 }
             }
+        },
+
+        getCustomTabDescription(translations) {
+            if (translations) {
+                let filteredObj = translations.filter((item, i) => {
+                    if (item.language_code === store.state.defaultLanguage.toLowerCase()) {
+                        return translations[i].section;
+                    }
+                });
+                if (filteredObj[0]) {
+                    return filteredObj[0].section;
+                } else {
+                    let filtereObj = translations.filter((item, i) => {
+                        if (item.language_code === store.state.defaultTenantLanguage.toLowerCase()) {
+                            return translations[i].section;
+                        }
+                    });
+
+                    if (filtereObj[0]) {
+                        return filtereObj[0].section;
+                    }
+                }
+            }
         }
     },
     created() {
@@ -1199,7 +1226,6 @@ export default {
         }
         this.languageData = JSON.parse(store.state.languageLabel);
         this.applyButton = this.languageData.label.apply_now
-
         this.isFacebookSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
         store.state.isFacebookDisplay = this.isFacebookSharingDisplay
         this.isTwitterSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_TWITTER)
@@ -1216,26 +1242,6 @@ export default {
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
         this.missionRatingSetting = this.settingEnabled(constants.MISSION_RATING_VOLUNTEER)
         this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
-        // setTimeout(() => {
-        //       let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-        //         tabItem.forEach(function (tabItemEvent) {
-        //           tabItemEvent.classList.remove('active')
-        //         });
-        //         tabItem[0].classList.add('active')
-        //         let i, tabContent, tabLinks;
-        //         tabContent = document.getElementsByClassName("tab-content");
-        //         for (i = 0; i < tabContent.length; i++) {
-        //           tabContent[i].style.display = "none";
-        //           if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
-        //             tabContent[i].style.display = "block";
-        //           }
-        //         }
-        //         tabLinks = document.getElementsByClassName("tablinks");
-        //         for (i = 0; i < tabLinks.length; i++) {
-        //           tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-        //         }
-        //         tabItem[0].className += " active";
-        //         }, 1000);
     },
     updated() {
 
