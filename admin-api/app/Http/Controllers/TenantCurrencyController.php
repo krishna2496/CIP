@@ -74,7 +74,7 @@ class TenantCurrencyController extends Controller
             $apiData = $tenantCurrencyList;
             $apiMessage = (count($apiData) > 0)  ?
                 trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING') :
-                trans('messages.custom_error_message.ERROR_TENANT_CURRENCY_NOT_FOUND');
+                trans('messages.custom_error_message.ERROR_TENANT_CURRENCY_EMPTY_LIST');
                         
             return $this->responseHelper->successWithPagination($apiData, $apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
