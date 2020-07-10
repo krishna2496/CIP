@@ -1,10 +1,10 @@
 @import "default-theme-variables";
 @import "assets";
-@import "mixin";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootstrap-vue/src/index.scss";
 @import "node_modules/slick-carousel/slick/slick.scss";
 
+@import "mixin";
 @import "typography";
 @import "footer";
 @import "header";
