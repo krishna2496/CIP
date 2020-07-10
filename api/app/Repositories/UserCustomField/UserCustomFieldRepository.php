@@ -176,9 +176,10 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      * @param  array  $ids
      * @return int
      */
-    public function deleteMultiple(array $ids): Int
+    public function deleteMultiple(array $ids)
     {
-        return $this->field->whereIn('field_id', $ids)->delete();
+        $this->field->findOrFail($ids);
+        return $this->field->destroy($ids);
     }
 
     /**

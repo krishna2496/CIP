@@ -2446,7 +2446,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserCustomField"
+              "$ref": "#/definitions/UserCustomFieldPatch"
             }
           },
           {
@@ -8651,7 +8651,7 @@
         }
       }
     },
-    "UserCustomField": {
+    "UserCustomFieldPatch": {
       "type": "object",
       "properties": {
         "name": {
@@ -8673,6 +8673,50 @@
           "type": "integer",
           "format": "int32",
           "description": "Field order"
+        },
+        "translations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code"
+              },
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "is_mandatory": {
+          "type": "boolean"
+        },
+        "internal_note": {
+          "type": "string"
+        }
+      }
+    },
+    "UserCustomField": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "email",
+            "drop-down",
+            "radio",
+            "checkbox",
+            "multiselect",
+            "textarea"
+          ]
         },
         "translations": {
           "type": "array",

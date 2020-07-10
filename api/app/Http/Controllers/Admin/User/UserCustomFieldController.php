@@ -163,7 +163,7 @@ class UserCustomFieldController extends Controller
                     "max:100",
                     Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')
                 ],
-                "order" => "required|numeric|min:1",
+                "order" => "sometimes|required|numeric|min:1",
                 "is_mandatory" => "sometimes|required|boolean",
                 "type" => [
                     "sometimes",
@@ -192,7 +192,7 @@ class UserCustomFieldController extends Controller
             $currentOrder = $fieldDetail->order;
             $requestOrder = $request->order;
 
-            if ($currentOrder !== $requestOrder) {
+            if ($currentOrder !== $requestOrder && $request->has('order')) {
                 $maxOrder = $this->userCustomFieldRepository->findMaxOrder();
 
                 $validator = Validator::make($request->toArray(), [
@@ -283,12 +283,23 @@ class UserCustomFieldController extends Controller
     public function destroy(Request $request, $id): JsonResponse
     {
         try {
-            $payload = array_merge($request->toArray(), [$id]);
-            $customMessage['integer'] = 'The custom field ID must be an integer.';
+            $payload = $request->toArray();
 
+            if ($request->has('id') && !is_array($payload['id'])) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                    'Field id must be an array'
+                );
+            }
+
+            $customMessage['integer'] = 'The custom field ID must be an integer.';
             $validator = Validator::make($payload, [
-                '*' => 'sometimes|required|integer'
+                'id' => 'sometimes|required|array',
+                'id.*' => 'sometimes|required|integer'
             ], $customMessage);
+            $payload['id'][] = $id;
 
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -299,7 +310,17 @@ class UserCustomFieldController extends Controller
                 );
             }
 
+            if ((!empty($request->all()) && !$request->has('id')) || count(['id']) < count($request->all())) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                    'Field id is the only required parameter'
+                );
+            }
+
             $method = 'deleteMultiple';
+            $payload = $payload['id'];
             if (count($payload) === 1) {
                 $method = 'delete';
                 $payload = $id;
