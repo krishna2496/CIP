@@ -17,7 +17,7 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-        
+
         App\Models\Mission::whereNull('deleted_at')->delete();
         \DB::setDefaultConnection('mysql');
 
@@ -48,7 +48,7 @@ class AppMissionTest extends TestCase
             "location" => [
                 "city_id" => $cityId,
                 "country_code" => $countryDetail->ISO
-                
+
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -102,7 +102,7 @@ class AppMissionTest extends TestCase
 
         $res = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
-        
+
         DB::setDefaultConnection('mysql');
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
@@ -120,7 +120,7 @@ class AppMissionTest extends TestCase
             ],
             "message"
           ]);
-        
+
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -142,7 +142,7 @@ class AppMissionTest extends TestCase
         App\Models\Mission::whereNull('deleted_at')->delete();
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
+
         $this->get(route('app.missions'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -249,7 +249,7 @@ class AppMissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        
+
         $params = [
                 'mission_id' => $mission->mission_id
             ];
@@ -438,7 +438,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         $missionId = rand(1000000, 2000000);
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/' . $missionId, ['token' => $token])
         ->seeStatusCode(404)
@@ -619,7 +619,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         $missionId = rand(1000000, 2000000);
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/' . $missionId, ['token' => $token])
         ->seeStatusCode(404)
@@ -678,7 +678,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         $missionId = rand(1000000, 2000000);
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/mission/' . $missionId . '/volunteers', ['token' => $token])
         ->seeStatusCode(404)
@@ -1402,7 +1402,7 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
-        
+
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/missions?explore_mission_type=favourite-missions&explore_mission_params=' . $organizationName, ['token' => $token])
@@ -2207,9 +2207,9 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-             
+
         \DB::setDefaultConnection('mysql');
-        
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2301,7 +2301,7 @@ class AppMissionTest extends TestCase
             "status",
             "data"
           ]);
-        
+
         $countryName = App\Models\CountryLanguage::where("country_id", $mission->country_id)->first()->name;
 
         // For country filters
@@ -2347,14 +2347,14 @@ class AppMissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        
+
         $missionId = $mission->mission_id;
 
         $missionLanguage = factory(\App\Models\MissionLanguage::class)->make();
         $missionLanguage->setConnection($connection);
         $missionLanguage->mission_id = $mission->mission_id;
         $missionLanguage->save();
-        
+
         $langId = 1;
 
         $this->get('/social-sharing/' . $fqdn . '/' . $missionId . '/' . $langId)
@@ -2581,14 +2581,14 @@ class AppMissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
 
         DB::setDefaultConnection('mysql');
-      
+
         $params = [
             'mission_id' => $mission->mission_id,
             'motivation' => str_random(10),
             'availability_id' => 1
         ];
         DB::setDefaultConnection('mysql');
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
@@ -2624,7 +2624,7 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-        
+
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2635,7 +2635,7 @@ class AppMissionTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -2701,9 +2701,9 @@ class AppMissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-      
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
+
         $this->get('app/missions?search=title&country_id=' . $mission->country_id . '&city_id=' . $mission->city_id . '&theme_id=1&skill_id=' . $skill->skill_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -2737,7 +2737,7 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-        
+
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2748,7 +2748,7 @@ class AppMissionTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -2814,9 +2814,9 @@ class AppMissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-      
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
+
         $this->get('app/missions?search=title&explore_mission_type=recommended-missions', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -2933,7 +2933,7 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
-        
+
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/missions?sort_by=my_favourite', ['token' => $token])
@@ -2955,9 +2955,9 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-              
+
         \DB::setDefaultConnection('mysql');
-        
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2966,7 +2966,7 @@ class AppMissionTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -3032,9 +3032,9 @@ class AppMissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-      
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
+
         $this->get('app/missions?search=title&country_id=' . $mission->country_id . '&theme_id=1&skill_id=' . $skill->skill_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -3330,7 +3330,7 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -3393,14 +3393,14 @@ class AppMissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
 
         DB::setDefaultConnection('mysql');
-      
+
         $params = [
             'mission_id' => $mission->mission_id,
             'motivation' => str_random(10),
             'availability_id' => 1
         ];
         DB::setDefaultConnection('mysql');
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
@@ -3414,7 +3414,7 @@ class AppMissionTest extends TestCase
             "status",
             "message"
           ]);
-                
+
         $user->delete();
     }
 }

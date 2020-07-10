@@ -216,6 +216,17 @@ trait MissionTransformable
             unset($mission['donationAttribute']['is_disabled']);
         }
 
+        // Mission tab details
+        if (!empty($mission['missionTab']) && (isset($mission['missionTab']))
+        ) {
+            $missionTab = $mission['missionTab']->toArray();
+            array_multisort(
+                array_column($missionTab, 'sort_key'),
+                SORT_ASC,
+                $missionTab
+            );
+        }
+
         return $mission;
     }
 }

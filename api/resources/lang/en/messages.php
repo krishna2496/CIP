@@ -350,7 +350,7 @@ return [
 
         'ERROR_COUNTRY_ENABLE_TO_DELETE' => 'You can not delete this country as it is either link to mission or user',
         'ERROR_STATE_NOT_FOUND' => 'State not found in the system',
-        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is either link to mission or user',
+        'ERROR_STATE_ENABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => 'Invalid identity provider.',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => 'Invalid SAML arguments for language.',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
@@ -360,6 +360,9 @@ return [
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
+
+        //mission tab module
+        'MISSION_TAB_NOT_FOUND' => 'Mission tab id not found in the system.',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
        ]
 ];

@@ -66,13 +66,13 @@ class MissionController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\Mission\MissionRepository                               $missionRepository
-     * @param App\Helpers\ResponseHelper                                               $responseHelper
-     * @param Illuminate\Http\Request                                                  $request
-     * @param App\Helpers\LanguageHelper                                               $languageHelper
-     * @param App\Repositories\MissionMedia\MissionMediaRepository                     $missionMediaRepository
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
+     * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
-     * @param App\Repositories\Notification\NotificationRepository                     $notificationRepository
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      *
      * @return void
      */
@@ -170,6 +170,13 @@ class MissionController extends Controller
                 'is_virtual' => 'sometimes|required|in:0,1',
                 'mission_detail.*.label_goal_achieved' => 'sometimes|required_if:mission_type,GOAL|max:255',
                 'mission_detail.*.label_goal_objective' => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'mission_tab_details.*.sort_key' => 'required|integer',
+                'mission_tab_details.*.translations' => 'required',
+                'mission_tab_details.*.translations.*.lang' => 'required_with:mission_tab_details.*.translations|max:2',
+                'mission_tab_details.*.translations.*.name' => 'required_with:mission_tab_details.*.translations',
+                'mission_tab_details.*.translations.*.sections' => 'required_with:mission_tab_details.*.translations',
+                'mission_tab_details.*.translations.*.sections.*.title' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'mission_tab_details.*.translations.*.sections.*.content' => 'required_with:mission_tab_details.*.translations.*.sections',
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF_if:mission_type,DISASTER_RELIEF|numeric|min:1',
@@ -229,15 +236,14 @@ class MissionController extends Controller
     /**
      * Display the specified mission detail.
      *
-     * @param int $id
-     *
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(int $missionId): JsonResponse
     {
         try {
             // Get data for parent table
-            $mission = $this->missionRepository->find($id);
+            $mission = $this->missionRepository->find($missionId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -255,14 +261,13 @@ class MissionController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $missionId): JsonResponse
     {
         try {
-            $this->missionRepository->find($id);
+            $this->missionRepository->find($missionId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -304,6 +309,15 @@ class MissionController extends Controller
                 'is_virtual' => 'sometimes|required|in:0,1',
                 'mission_detail.*.label_goal_achieved' => 'sometimes|required_if:mission_type,GOAL|max:255',
                 'mission_detail.*.label_goal_objective' => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'mission_tab_details.*.sort_key' => 'required|integer',
+                'mission_tab_details.*.mission_tab_id' => 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
+                'mission_tab_details.*.sort_key' => 'required_without:mission_tab_details.*.mission_tab_id|integer',
+                'mission_tab_details.*.translations' => 'required_without:mission_tab_details.*.mission_tab_id',
+                'mission_tab_details.*.translations.*.lang' => 'required_with:mission_tab_details.*.translations|max:2',
+                'mission_tab_details.*.translations.*.name' => 'required_with:mission_tab_details.*.translations',
+                'mission_tab_details.*.translations.*.sections.*.title' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'mission_tab_details.*.translations.*.sections.*.content' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'mission_tab_details.*.translations.*.sections' => 'required_without:mission_tab_details.*.mission_tab_id',
                 'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF_if:mission_type,DISASTER_RELIEF|numeric|min:1',
@@ -334,7 +348,7 @@ class MissionController extends Controller
                         $this->missionMediaRepository->find($mediaImages['media_id']);
                         $mediaImage = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaImages['media_id'],
-                            $id
+                            $missionId
                         );
                         if (!$mediaImage) {
                             return $this->responseHelper->error(
@@ -354,7 +368,7 @@ class MissionController extends Controller
                         $this->missionMediaRepository->find($mediaVideos['media_id']);
                         $mediaVideo = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaVideos['media_id'],
-                            $id
+                            $missionId
                         );
                         if (!$mediaVideo) {
                             return $this->responseHelper->error(
@@ -381,7 +395,7 @@ class MissionController extends Controller
                         $this->missionRepository->findDocument($mediaDocuments['document_id']);
                         $mediaDocument = $this->missionRepository->isDocumentLinkedToMission(
                             $mediaDocuments['document_id'],
-                            $id
+                            $missionId
                         );
                         if (!$mediaDocument) {
                             return $this->responseHelper->error(
@@ -402,7 +416,7 @@ class MissionController extends Controller
         }
 
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
-        $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
+        $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
 
         // Check for default language delete
         if (isset($request->mission_detail)) {
@@ -422,7 +436,23 @@ class MissionController extends Controller
             }
         }
 
-        $this->missionRepository->update($request, $id);
+        // Check for mission tab id is valid or not
+        try {
+            if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
+                foreach ($request->mission_tab_details as $missionTabValue) {
+                    if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== '')) {
+                        $this->missionRepository->isMissionTabLinkedToMission($missionId, $missionTabValue['mission_tab_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+
+        $this->missionRepository->update($request, $missionId);
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
@@ -437,7 +467,7 @@ class MissionController extends Controller
             get_class($this),
             $request->toArray(),
             null,
-            $id
+            $missionId
         ));
 
         // Send notification to user if mission publication status is PUBLISHED
@@ -448,7 +478,7 @@ class MissionController extends Controller
         ) {
             // Send notification to all users
             $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
-            $entityId = $id;
+            $entityId = $missionId;
             $action = config('constants.notification_actions.'.$request->publication_status);
 
             event(new UserNotificationEvent($notificationType, $entityId, $action));
@@ -460,16 +490,15 @@ class MissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $missionId): JsonResponse
     {
         try {
-            $mission = $this->missionRepository->delete($id);
+            $mission = $this->missionRepository->delete($missionId);
             // delete notification related to mission
-            $this->notificationRepository->deleteMissionNotifications($id);
+            $this->notificationRepository->deleteMissionNotifications($missionId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
 
@@ -482,7 +511,7 @@ class MissionController extends Controller
                 get_class($this),
                 null,
                 null,
-                $id
+                $missionId
             ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage);

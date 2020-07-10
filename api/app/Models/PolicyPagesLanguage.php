@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PolicyPagesLanguage extends Model
 {
     use SoftDeletes;
-    
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'policy_pages_language';
-    
+
     /**
      * The primary key for the model.
      *
@@ -30,14 +30,14 @@ class PolicyPagesLanguage extends Model
      * @var array
      */
     protected $fillable = ['page_id', 'language_id', 'title', 'description'];
-    
+
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
     protected $visible = ['language_id', 'title', 'description', 'sections'];
-     
+
     /**
      * Set description attribute on the model.
      *
@@ -46,9 +46,9 @@ class PolicyPagesLanguage extends Model
      */
     public function setDescriptionAttribute(array $value): void
     {
-        $this->attributes['description'] = serialize($value);
+        $this->attributes['description'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -57,7 +57,7 @@ class PolicyPagesLanguage extends Model
      */
     public function getDescriptionAttribute(string $value): array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**
@@ -68,7 +68,7 @@ class PolicyPagesLanguage extends Model
      */
     public function getSectionsAttribute(string $value): array
     {
-        return unserialize($value);
+        return json_decode($value, true);
     }
 
     /**
