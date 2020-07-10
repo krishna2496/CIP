@@ -436,24 +436,24 @@ class Helpers
      * Sync volunteer to Optimyapp
      *
      * @param Request $request
-     * @param int $userId
+     * @param User $user
      *
-     * @return void
+     * @return boolean
      */
-    public function syncUserData($request, $userId)
+    public function syncUserData($request, $user)
     {
+        if ($user->pseudonymize_at  && $user->pseudonymize_at !== '0000-00-00 00:00:00') {
+            return false;
+        }
+
         $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
 
         $params = [
             'activity_type' => 'user',
             'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
-            'ci_user_id' => $userId,
+            'ci_user_id' => $user->user_id,
             'tenant_id' => $tenantIdAndSponsorId->tenant_id
         ];
-
-        if ($request->backend_internal_notes) {
-            $params['backend_internal_notes'] = $request->backend_internal_notes;
-        }
 
         $payload = json_encode($params);
 
@@ -464,6 +464,8 @@ class Helpers
                 'queue' => 'ciSynchronizer'
             ]
         );
+
+        return true;
     }
 
     /**
@@ -518,5 +520,16 @@ class Helpers
         $this->switchDatabaseConnection($connection);
 
         return (bool)$adminUser;
+    }
+
+    public function getSupportedFieldsToPseudonymize()
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email',
+            'employee_id',
+            'linked_in_url'
+        ];
     }
 }

@@ -354,8 +354,32 @@ class UserController extends Controller
         // Update user filter
         $this->userFilterRepository->saveFilter($request);
 
+        $userDetail = $this->userRepository->find($id);
+        $requestData = $request->toArray();
+        // Skip updaing pseudonymize fields
+        if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
+            $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+            foreach ($pseudonymizeFields as $field) {
+                if (array_key_exists($field, $requestData)) {
+                    unset($requestData[$field]);
+                }
+            }
+
+
+            if (array_key_exists('pseudonymize_at', $requestData)) {
+                unset($requestData['pseudonymize_at']);
+            }
+        }
+
+        // Set user status to inactive when pseudonymized
+        if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
+            array_key_exists('pseudonymize_at', $requestData)
+        ) {
+            $requestData['status'] = config('constants.user_statuses.INACTIVE');
+        }
+
         // Update user
-        $user = $this->userRepository->update($request->toArray(), $id);
+        $user = $this->userRepository->update($requestData, $id);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -371,7 +395,7 @@ class UserController extends Controller
             $this->userRepository->linkSkill($request->toArray(), $id);
         }
 
-        $this->helpers->syncUserData($request, $id);
+        $this->helpers->syncUserData($request, $user);
 
         // Set response data
         $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];

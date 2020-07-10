@@ -410,6 +410,31 @@ class UserController extends Controller
                     : config('constants.user_statuses.INACTIVE');
             }
 
+
+            $userDetail = $this->userRepository->find($id);
+
+            // Skip updaing pseudonymize fields
+            if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
+                $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+                foreach ($pseudonymizeFields as $field) {
+                    if (array_key_exists($field, $requestData)) {
+                        unset($requestData[$field]);
+                    }
+                }
+
+
+                if (array_key_exists('pseudonymize_at', $requestData)) {
+                    unset($requestData['pseudonymize_at']);
+                }
+            }
+
+            // Set user status to inactive when pseudonymized
+            if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
+                array_key_exists('pseudonymize_at', $requestData)
+            ) {
+                $requestData['status'] = config('constants.user_statuses.INACTIVE');
+            }
+
             // Update user
             $user = $this->userRepository->update($requestData, $id);
 
@@ -490,6 +515,24 @@ class UserController extends Controller
             $fieldsToValidate['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
         }
 
+        $pseudomizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+        if (array_key_exists('pseudonymize_at', $requestData)) {
+            $user = $this->userService->findById($id);
+            if ($user->pseudonymize_at === '0000-00-00 00:00:00' || $user->pseudonymize_at === null) {
+                foreach ($pseudomizeFields as $field) {
+                    $rules = ['sometimes', 'required'];
+
+                    if ($field === 'email') {
+                        $fieldsToValidate[$field] = array_push($rules, 'email');
+                    } else if ($field === 'linked_in_url') {
+                        $fieldsToValidate[$field] = array_push($rules, 'valid_linkedin_url');
+                    }
+
+                    $fieldsToValidate[$field] = implode('|', $rules);
+                }
+            }
+        }
+
         $nullableFields = [
             'employee_id',
             'department',
@@ -500,7 +543,6 @@ class UserController extends Controller
             'city_id',
             'country_id'
         ];
-
         foreach ($nullableFields as $field) {
             if (array_key_exists($field, $requestData) && !$requestData[$field]) {
                 $fieldsToValidate[$field] = 'nullable';

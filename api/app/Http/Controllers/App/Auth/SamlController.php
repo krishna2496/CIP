@@ -224,7 +224,7 @@ class SamlController extends Controller
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
 
-        $this->helpers->syncUserData($request, $userDetail->user_id);
+        $this->helpers->syncUserData($request, $userDetail);
 
         if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
             return $this->responseHelper->error(
