@@ -61,6 +61,7 @@ class TenantCurrencyController extends Controller
     /**
      * List tenant’s currency
      *
+     * @param Request $request
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
@@ -102,8 +103,12 @@ class TenantCurrencyController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         }
+
         $validator = Validator::make($request->toArray(), [
-            'code' => ['required', 'regex:/^[A-Z]{3}$/', Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
+            'code' => [
+                'required',
+                'regex:/^[A-Z]{3}$/', 
+                Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
                 $query->where(['tenant_id' => $tenantId]);
             })],
             'default' => 'in:0,1',
@@ -119,7 +124,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isValidCurrency($request)) {
+        if (!$this->currencyRepository->isValidCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -179,7 +184,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isValidCurrency($request)) {
+        if (!$this->currencyRepository->isValidCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

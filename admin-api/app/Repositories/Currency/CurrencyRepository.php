@@ -123,10 +123,10 @@ class CurrencyRepository
     /**
      * Check request currency is available in currency list
      *
-     * @param Request $request
+     * @param string $currencyCode
      * @return boolean
      */
-    public function isValidCurrency(Request $request) : bool
+    public function isValidCurrency(string $currencyCode) : bool
     {
         $allCurrencyList = $this->findAll();
         $allCurrencyArray = [];
@@ -136,7 +136,7 @@ class CurrencyRepository
             array_push($allCurrencyArray, $code);
         }
 
-        if (!in_array($request['code'], $allCurrencyArray)) {
+        if (!in_array($currencyCode, $allCurrencyArray)) {
             return false;
         }
 
