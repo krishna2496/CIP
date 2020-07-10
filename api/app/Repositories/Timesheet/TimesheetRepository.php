@@ -493,7 +493,6 @@ class TimesheetRepository implements TimesheetInterface
         ->where([
             'publication_status' => config("constants.publication_status")["APPROVED"],
             'mission_type'=> $missionType])
-        ->whereRaw('CURDATE() <= date(DATE_ADD(end_date, INTERVAL '.$extraWeeks.' WEEK))')
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
@@ -525,6 +524,7 @@ class TimesheetRepository implements TimesheetInterface
             )
             ->where('user_id', $userId);
         }]);
+
         return $timesheet->paginate($request->perPage);
     }
 
