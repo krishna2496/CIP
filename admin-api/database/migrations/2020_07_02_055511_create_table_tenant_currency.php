@@ -30,6 +30,6 @@ class CreateTableTenantCurrency extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_tenant_currency');
+        Schema::dropIfExists('tenant_currency');
     }
 }

@@ -61,6 +61,7 @@ class TenantCurrencyController extends Controller
     /**
      * List tenant’s currency
      *
+     * @param Request $request
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
@@ -74,7 +75,7 @@ class TenantCurrencyController extends Controller
             $apiData = $tenantCurrencyList;
             $apiMessage = (count($apiData) > 0)  ?
                 trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING') :
-                trans('messages.custom_error_message.ERROR_TENANT_CURRENCY_NOT_FOUND');
+                trans('messages.custom_error_message.ERROR_TENANT_CURRENCY_EMPTY_LIST');
                         
             return $this->responseHelper->successWithPagination($apiData, $apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
@@ -102,8 +103,12 @@ class TenantCurrencyController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         }
+
         $validator = Validator::make($request->toArray(), [
-            'code' => ['required', 'regex:/^[A-Z]{3}$/', Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
+            'code' => [
+                'required',
+                'regex:/^[A-Z]{3}$/', 
+                Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
                 $query->where(['tenant_id' => $tenantId]);
             })],
             'default' => 'in:0,1',
@@ -119,7 +124,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isValidCurrency($request)) {
+        if (!$this->currencyRepository->isValidCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -149,7 +154,7 @@ class TenantCurrencyController extends Controller
     /**
      * Update tenant currency for tenant into database
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
@@ -179,7 +184,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isValidCurrency($request)) {
+        if (!$this->currencyRepository->isValidCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
