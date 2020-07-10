@@ -1,16 +1,24 @@
 <?php
 
+namespace Tests\Unit\Http\Controllers\Admin\Mission;
+
+use TestCase;
+use Mockery;
+use App\Models\Mission;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use Illuminate\Http\JsonResponse;
+use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
-use  App\Repositories\Mission\MissionRepository;
-use  App\Helpers\ResponseHelper;
-use Illuminate\Http\Request;
-use App\Helpers\LanguageHelper;
+use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\Notification\NotificationRepository;
-use App\Http\Controllers\Admin\MissionController;
-use App\Models\Mission;
+use App\Http\Controllers\Admin\Mission\MissionController;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionControllerTest extends TestCase
 {
@@ -21,9 +29,9 @@ class MissionControllerTest extends TestCase
      */
     public function testStoreImpactDonationAttribute()
     {
+        \DB::setDefaultConnection('tenant');
+
         $this->assertTrue(true);
-        $request = new Request();
-        // $missionData = factory(App\Models\Mission::class)->make();
         $missionParam = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -105,8 +113,7 @@ class MissionControllerTest extends TestCase
             "goal_objective" => rand(1, 1000),
             "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
-            "publication_status" => "DRAFT",
-            "theme_id" => 1,
+            "publication_status" => "APPROVED",
             "availability_id" => 1,
             "impact_donation" => [
                 [
@@ -125,20 +132,74 @@ class MissionControllerTest extends TestCase
             ]
         ];
 
+        $missionRepositoryMockResponse = new Mission();
+        $methodResponse = [
+            "status"=> Response::HTTP_CREATED,
+            "data"=> [
+                "mission_id" => $missionRepositoryMockResponse->mission_id
+            ],
+            "message"=> trans('messages.success.MESSAGE_MISSION_ADDED')
+        ];
+
+        $JsonResponse = new JsonResponse(
+            $methodResponse
+        );
+
         $request = new Request($missionParam);
-        $mockResponse = new Mission();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
 
         $missionRepository = $this->mock(MissionRepository::class);
-        $missionRepository
+        $missionResult = $missionRepository
             ->shouldReceive('store')
             ->once()
             ->with($request)
-            ->andReturn($mockResponse);
+            ->andReturn($missionRepositoryMockResponse);
+       
+        dd($missionResult);
+            
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_CREATED,
+                trans('messages.success.MESSAGE_MISSION_ADDED'),
+                ['mission_id' => $missionRepositoryMockResponse->mission_id]
+            )
+            ->andReturn($JsonResponse); 
 
-        $service = $this->getController(
+        // $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+        // $entityId = $missionRepositoryMockResponse->mission_id;
+        // $action = config('constants.notification_actions.CREATED');
+        // event(new UserNotificationEvent($notificationType, $entityId, $action));
+
+        // event(new UserActivityLogEvent(
+        //     config('constants.activity_log_types.MISSION'),
+        //     config('constants.activity_log_actions.CREATED'),
+        //     config('constants.activity_log_user_types.API'),
+        //     $request->header('php-auth-user'),
+        //     get_class($this),
+        //     $request->toArray(),
+        //     null,
+        //     $missionRepositoryMockResponse->mission_id
+        // ));
+
+        $callController = $this->getController(
+            $missionRepository,
             $responseHelper,
-            $repository
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository
         );
+
+        $response = $callController->store($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
 
     /**
@@ -158,13 +219,12 @@ class MissionControllerTest extends TestCase
         NotificationRepository $notificationRepository
     ) {
         return new MissionController(
-            $userRepository,
+            $missionRepository,
             $responseHelper,
-            $languageHelper,
-            $userService,
-            $timesheetService,
-            $helpers,
             $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
             $notificationRepository
         );
     }
