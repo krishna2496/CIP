@@ -99,8 +99,8 @@ class TenantOptionController extends Controller
                 ) {
                     $optionValue = [
                       'saml_access_only' => $optionValue['saml_access_only'],
-                      'sso_url' => $optionValue['idp']['singleSignOnService']['url'],
-                      'slo_url' => $optionValue['idp']['singleLogoutService']['url'],
+                      'sso_url' => route('saml.sso', ['t' => $optionValue['idp_id']]),
+                      'slo_url' => route('saml.slo', ['t' => $optionValue['idp_id']]),
                     ];
                 }
                 $optionData[$value->option_name] = $optionValue;
