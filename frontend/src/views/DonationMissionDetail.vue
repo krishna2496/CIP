@@ -280,7 +280,7 @@
                                         <h3 v-b-toggle.sponser>{{ languageData.label.sponser }}</h3>
                                     </div>
                                     <b-collapse id="sponser" accordion="my-accordion" role="tabpanel" class="tab-content">
-                                      <div  class="organization-detail"></div>
+                                        <div class="organization-detail"></div>
                                     </b-collapse>
                                 </div>
                                 <div class="tabs">
@@ -463,6 +463,43 @@
                 <b-button class="btn btn-fillsecondary">{{ languageData.label.start_fundraiser}}</b-button>
             </b-container>
         </div>
+        <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" hide-footer size="lg">
+            <template slot="modal-header" slot-scope="{ close }">
+                <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                <h5 class="modal-title">{{languageData.label.search_user}}</h5>
+            </template>
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+                {{ message }}
+            </b-alert>
+            <div class="autocomplete-control">
+                <div class="autosuggest-container">
+                    <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions" @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue" :input-props="{
+
+                        id:'autosuggest__input', 
+
+                        placeholder:autoSuggestPlaceholder,
+
+                        ref:'inputAutoSuggest'
+
+                        }">
+                        <div slot-scope="{suggestion}">
+                            <img :src="suggestion.item.avatar" />
+                            <div>
+                                {{suggestion.item.first_name}} {{suggestion.item.last_name}}
+                            </div>
+                        </div>
+                    </VueAutosuggest>
+                </div>
+            </div>
+            <b-form>
+                <div class="btn-wrap">
+                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
+                        {{ languageData.label.close }}</b-button>
+                    <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
+                        {{ languageData.label.submit }}</b-button>
+                </div>
+            </b-form>
+        </b-modal>
     </main>
     <footer v-if="isShownComponent">
         <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
