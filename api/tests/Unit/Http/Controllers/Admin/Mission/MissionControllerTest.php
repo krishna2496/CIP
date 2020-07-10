@@ -10,6 +10,7 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Http\Controllers\Admin\MissionController;
+use App\Models\Mission;
 
 class MissionControllerTest extends TestCase
 {
@@ -30,8 +31,8 @@ class MissionControllerTest extends TestCase
                 "organisation_detail" => ''
             ],
             "location" => [
-                'city_id' => $cityId,
-                'country_code' => $countryDetail->ISO
+                'city_id' => 1,
+                'country_code' => 'US'
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -100,18 +101,13 @@ class MissionControllerTest extends TestCase
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
-            "mission_type" => config("constants.mission_type.GOAL"),
+            "mission_type" => "GOAL",
             "goal_objective" => rand(1, 1000),
             "total_seats" => rand(10, 1000),
             "application_deadline" => "2022-07-28 11:40:00",
-            "publication_status" => config("constants.publication_status.APPROVED"),
+            "publication_status" => "DRAFT",
             "theme_id" => 1,
             "availability_id" => 1,
-            "skills" => [
-                [
-                    "skill_id" => $skill->skill_id
-                ]
-            ],
             "impact_donation" => [
                 [
                     "amount" => 1,
@@ -128,6 +124,21 @@ class MissionControllerTest extends TestCase
                 ]
             ]
         ];
+
+        $request = new Request($missionParam);
+        $mockResponse = new Mission();
+
+        $missionRepository = $this->mock(MissionRepository::class);
+        $missionRepository
+            ->shouldReceive('store')
+            ->once()
+            ->with($request)
+            ->andReturn($mockResponse);
+
+        $service = $this->getController(
+            $responseHelper,
+            $repository
+        );
     }
 
     /**
