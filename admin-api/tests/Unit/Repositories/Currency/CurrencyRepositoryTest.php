@@ -166,7 +166,7 @@ class CurrencyRepositoryTest extends TestCase
              ->once()
              ->with(['tenant_id' => $tenantId])
              ->andReturn(new TenantCurrency());
-             
+
         $items = [
             "code"=> "INR",
             "default"=> 1,
@@ -212,7 +212,7 @@ class CurrencyRepositoryTest extends TestCase
         ];
 
         $this->assertEquals($allCurrencies, $service->findAll());
-        $response = $service->isValidCurrency($request);
+        $response = $service->isValidCurrency($request['code']);
         $this->assertEquals(false, $response);
     }
 
@@ -249,7 +249,7 @@ class CurrencyRepositoryTest extends TestCase
         ];
 
         $this->assertEquals($allCurrencies, $service->findAll());
-        $response = $service->isValidCurrency($request);
+        $response = $service->isValidCurrency($request['code']);
         $this->assertEquals(true, $response);
     }
 

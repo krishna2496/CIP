@@ -278,7 +278,7 @@ class TenantCurrencyControllerTest extends TestCase
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
             ->once()
-            ->with($request)
+            ->with($request['code'])
             ->andReturn(false);
 
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -341,7 +341,7 @@ class TenantCurrencyControllerTest extends TestCase
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
             ->once()
-            ->with($request)
+            ->with($request['code'])
             ->andReturn(true);
 
         $repository->shouldReceive('store')
@@ -519,7 +519,7 @@ class TenantCurrencyControllerTest extends TestCase
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
             ->once()
-            ->with($request)
+            ->with($request['code'])
             ->andReturn(false);
 
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -582,7 +582,7 @@ class TenantCurrencyControllerTest extends TestCase
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
             ->once()
-            ->with($request)
+            ->with($request['code'])
             ->andReturn(true);
 
         $repository->shouldReceive('update')
@@ -650,7 +650,7 @@ class TenantCurrencyControllerTest extends TestCase
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
             ->once()
-            ->with($request)
+            ->with($request['code'])
             ->andReturn(true);
 
         $repository->shouldReceive('update')
