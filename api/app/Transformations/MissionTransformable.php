@@ -225,8 +225,6 @@ trait MissionTransformable
                 SORT_ASC,
                 $missionTab
             );
-            unset($mission['missionTab']);
-            $mission['missionTab'] = $missionTab;
         }
 
         return $mission;
