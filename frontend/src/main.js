@@ -42,7 +42,7 @@ let entryUrl = null;
 router.beforeEach(async(to, from, next) => {
     if (store.state.isLoggedIn) {
         if(store.state.isProfileComplete != 1) {
-           if(to.path != '/my-account') {
+           if(to.path != '/my-account' && to.path !== '/auth/slo') {
                 next({
                     name: "myAccount"
                 });
