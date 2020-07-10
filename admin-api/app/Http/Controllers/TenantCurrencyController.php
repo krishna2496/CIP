@@ -154,7 +154,7 @@ class TenantCurrencyController extends Controller
     /**
      * Update tenant currency for tenant into database
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
