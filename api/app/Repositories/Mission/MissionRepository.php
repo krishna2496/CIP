@@ -98,6 +98,8 @@ class MissionRepository implements MissionInterface
     public function store(Request $request): Mission
     {
         $languages = $this->languageHelper->getLanguages();
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id != "" ? $request->theme_id : null,
@@ -194,7 +196,9 @@ class MissionRepository implements MissionInterface
 
         // Add impact donation mission
         if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
-            $this->impactDonationMissionRepository->store($request->impact_donation, $mission->mission_id);
+            foreach ($request->impact_donation as $impactDonationValue) {
+                $this->impactDonationMissionRepository->store($impactDonationValue, $mission->mission_id, $defaultTenantLanguageId);
+            }
         }
             
         // Add mission documents
@@ -225,6 +229,9 @@ class MissionRepository implements MissionInterface
     public function update(Request $request, int $id): Mission
     {
         $languages = $this->languageHelper->getLanguages();
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+
         // Set data for update record
         if (isset($request->location['country_code'])) {
             $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
@@ -383,16 +390,16 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        // Add/Update mission tab details
+        // Add/Update mission impact donation details
 
         if (isset($request->impact_donation) && count($request->impact_donation)) {
             foreach ($request->impact_donation as $impactDonationValue) {
                 if (isset($impactDonationValue['impact_donation_id'])) {
-                    $this->impactDonationMissionRepository->update($impactDonationValue, $id);
+                    $this->impactDonationMissionRepository->update($impactDonationValue, $id, $defaultTenantLanguageId);
                 } else {
 
                     //Impact donation id is not available and create the impact donation and details
-                    $this->impactDonationMissionRepository->store($impactDonationValue, $id);
+                    $this->impactDonationMissionRepository->store($impactDonationValue, $id, $defaultTenantLanguageId);
                 }
             }
         }
