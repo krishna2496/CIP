@@ -733,7 +733,7 @@
                         "description":"Bad request"
                     },
                     "422":{  
-                        "descrip,tion":"Unprocessable entity - Invalid input"
+                        "description":"Unprocessable entity - Invalid input"
                     },
                     "404":{  
                         "description":"Tenant not found in the system"
@@ -777,7 +777,7 @@
                     "Currency management"
                 ],
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "parameters": [
                     {
