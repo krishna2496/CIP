@@ -165,9 +165,10 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 
                 "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
-                "volunteering_attribute.total_seats" => "integer|min:1",
-                "volunteering_attribute.availability_id" => "integer|required|
+                "volunteering_attribute.total_seats" => "required_if:volunteering_attribute|integer|min:1",
+                "volunteering_attribute.availability_id" => "required_if:volunteering_attribute|integer|required|
                                                             exists:availability,availability_id,deleted_at,NULL",
+                
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_tab_details.*.sort_key" => 'required|integer',
@@ -283,10 +284,12 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
+
                 "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
-                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.total_seats" => "required_if:volunteering_attribute|integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required|integer|
                 exists:availability,availability_id,deleted_at,NULL",
+                
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",

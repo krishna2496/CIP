@@ -270,14 +270,6 @@ class MissionRepository implements MissionInterface
             $request->request->set('total_seats', null);
         }
 
-        if (isset($request->availability_id)) {
-            $request->request->set(['availability_id' => $request->availability_id]);
-        }
-
-        if (isset($request->is_virtual)) {
-            $request->request->set(['is_virtual' => (string)$request->volunteering_attribute['is_virtual']]);
-        }
-        
         $mission = $this->modelsService->mission->findOrFail($id);
         $mission->update($request->toArray());
 
