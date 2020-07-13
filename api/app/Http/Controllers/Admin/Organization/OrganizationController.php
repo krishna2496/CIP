@@ -113,14 +113,14 @@ class OrganizationController extends Controller
             $request->all(),
             [
                 "name" => "required|max:255",
-                "legal_number" => "required|max:16",
-                "phone_number" => "required|numeric|digits:10",
-                "address_line_1" => "required|max:255",
-                "address_line_2" => "required|max:255",
+                "legal_number" => "max:16",
+                "phone_number" => "numeric|digits:10",
+                "address_line_1" => "max:255",
+                "address_line_2" => "max:255",
                 "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
                 "state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                 "country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
-                "postal_code" => "required|max:8",
+                "postal_code" => "max:8",
             ]
         );
 
@@ -182,14 +182,14 @@ class OrganizationController extends Controller
                 $request->all(),
                 [
                     "name" => "sometimes|required|max:255",
-                    "legal_number" => "sometimes|required|max:16",
-                    "phone_number" => "sometimes|required|numeric|digits:10",
-                    "address_line_1" => "sometimes|required|max:255",
-                    "address_line_2" => "sometimes|required|max:255",
+                    "legal_number" => "max:16",
+                    "phone_number" => "numeric|digits:10",
+                    "address_line_1" => "max:255",
+                    "address_line_2" => "max:255",
                     "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
                     "state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                     "country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
-                    "postal_code" => "sometimes|required|max:8",
+                    "postal_code" => "max:8",
                 ]
             );
 
