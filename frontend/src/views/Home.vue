@@ -269,7 +269,7 @@
                     }, 200);
                 }
                 setTimeout(() => {
-                    if(this.tabNumber == 0) {
+                    if (this.tabNumber == 0) {
                         this.$refs.gridView.cardHeightAdj();
                     }
                 }, 200);

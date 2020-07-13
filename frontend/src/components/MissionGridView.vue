@@ -4,7 +4,7 @@
 		}">
 			<b-row>
 				<b-col lg="4" sm="6" class="card-outer" 
-				:id='"gridview-"+key'
+				:id="`gridview-${key}`"
 				data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
 					<div class="card-inner">
 					<b-card no-body>
@@ -68,7 +68,7 @@
 									</b-card-text>
 								</div>
 								<div class="event-block has-progress">
-									<p class="event-name">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
+									<p class="event-name">{{ languageData.label.for }} <span>{{mission.organisation_name}}</span></p>
 									<div class="progress-block detail-column" v-if="!checkMissionTypeTime(mission.mission_type)">
 									</div>
 									<b-button class="like-btn">

@@ -1,7 +1,9 @@
 <template>
     <div class="cards-wrapper" v-if="items.length > 0">
         <div class="card-listing">
-            <div class="card-outer" :id='"listview-"+index' v-for="(mission, index) in items" :key=index>
+            <div class="card-outer" 
+			:id="`listview-${index}`"
+			v-for="(mission, index) in items" :key=index>
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
@@ -52,7 +54,7 @@
                                 <b-card-text>
                                     {{mission.short_description | substring(150)}}
                                 </b-card-text>
-                                <p class="event-name">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
+                                <p class="event-name">{{ languageData.label.for }} <span>{{mission.organisation_name}}</span></p>
                             </div>
                             <div class="group-details volunteer-progress">
                                 <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
