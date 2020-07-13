@@ -58,26 +58,25 @@ class CompileAndUploadCustomCssJob extends Job
     public function handle()
     {
         $scss = new Compiler();
+
+        // Add the SCSS path as well as the main path so that "node_modules" can be accessed
         $scssToCompilePath = realpath(storage_path() . '/app/' . $this->tenantName . self::SCSS_PATH);
         $scss->addImportPath($scssToCompilePath);
+        $scss->addImportPath(base_path());
 
         $assetUrl = S3Helper::makeTenantS3BaseUrl($this->tenantName) . 'assets/images';
 
-        $importScss = '@import "_variables";';
-
         // Check if a custom variables file as been used
         $tenantScssFolderName = $this->tenantName . self::SCSS_PATH;
-        $hasNoCustomVariables = !Storage::disk('s3')->exists($tenantScssFolderName . '/_variables.scss');
+        $hasNoCustomVariables = !Storage::disk('s3')->exists($tenantScssFolderName . '/_custom-variables.scss');
 
+        $importScss = '';
         // Color set & other file || Color set & no file
         if ((isset($this->options['primary_color']) && $hasNoCustomVariables)) {
             $importScss .= '$primary: ' . $this->options['primary_color'] . ';';
         }
 
-        $importScss .= '@import "_assets";
-        $assetUrl: "'.$assetUrl.'";
-        @import "' . base_path() . '/node_modules/bootstrap/scss/bootstrap";
-        @import "' . base_path() . '/node_modules/bootstrap-vue/src/index";
+        $importScss .= '$assetUrl: "'.$assetUrl.'";
         @import "custom";';
 
         $compiledCss = $scss->compile($importScss);
