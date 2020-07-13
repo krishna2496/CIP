@@ -29,7 +29,7 @@ class MissionControllerTest extends TestCase
      */
     public function testStoreDonationAttribute()
     {
-        // \DB::setDefaultConnection('tenant');
+        \DB::setDefaultConnection('tenant');
 
         $this->assertTrue(true);
         $mission = factory(\App\Models\Mission::class)->make();
