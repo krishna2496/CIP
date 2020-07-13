@@ -311,11 +311,12 @@ class MissionControllerTest extends TestCase
             ]
         ];
 
+        $missionId = rand(1000, 9000);
         $missionRepositoryMockResponse = new Mission();
         $methodResponse = [
             "status"=> Response::HTTP_CREATED,
             "data"=> [
-                "mission_id" => $missionRepositoryMockResponse->mission_id
+                "mission_id" => $missionId
             ],
             "message"=> trans('messages.success.MESSAGE_MISSION_ADDED')
         ];
@@ -337,10 +338,6 @@ class MissionControllerTest extends TestCase
             ->with($request)
             ->andReturn($missionRepositoryMockResponse);
             
-        $test = DB::getPdo()->lastInsertId();
-        dd($test);
-        dd($missionResult);
-            
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper
             ->shouldReceive('success')
@@ -348,13 +345,13 @@ class MissionControllerTest extends TestCase
             ->with(
                 Response::HTTP_CREATED,
                 trans('messages.success.MESSAGE_MISSION_ADDED'),
-                ['mission_id' => $missionRepositoryMockResponse->mission_id]
+                ['mission_id' => $missionId]
             )
             ->andReturn($JsonResponse);
 
-        // $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
-        // $entityId = $missionRepositoryMockResponse->mission_id;
-        // $action = config('constants.notification_actions.CREATED');
+        $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+        $entityId = $missionId;
+        $action = config('constants.notification_actions.CREATED');
         // event(new UserNotificationEvent($notificationType, $entityId, $action));
 
         // event(new UserActivityLogEvent(
@@ -365,7 +362,7 @@ class MissionControllerTest extends TestCase
         //     get_class($this),
         //     $request->toArray(),
         //     null,
-        //     $missionRepositoryMockResponse->mission_id
+        //     $missionId
         // ));
 
         $callController = $this->getController(
