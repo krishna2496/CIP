@@ -182,6 +182,9 @@ class MissionController extends Controller
                 "required_with:mission_tab_details.*.translations.*.sections",
                 "mission_tab_details.*.translations.*.sections.*.content" =>
                 "required_with:mission_tab_details.*.translations.*.sections",
+                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
+                "total_seats" => "integer|min:1",
+                "is_virtual" => "sometimes|required|in:0,1"
             ]
         );
         // If request parameter have any error

@@ -112,7 +112,11 @@ class MissionRepository implements MissionInterface
                 'organisation_name' => $request->organisation['organisation_name'],
                 'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
                 $request->organisation['organisation_detail'] : null,
-                'mission_type' => $request->mission_type
+                'mission_type' => $request->mission_type,
+                'total_seats' => (isset($request->total_seats) && ($request->total_seats !== '')) ?
+                $request->total_seats : null,
+                'availability_id' => $request->availability_id,
+                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
             );
         
         // Create new record
@@ -255,6 +259,25 @@ class MissionRepository implements MissionInterface
             $request->request->set('theme_id', null);
         }
 
+        if (isset($request->total_seats)) {
+            $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
+            $request->total_seats : null;
+            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+            $request->request->add(['total_seats' => $totalSeats]);
+        }
+
+        if (isset($request->total_seats) && ($request->total_seats === '')) {
+            $request->request->set('total_seats', null);
+        }
+
+        if (isset($request->availability_id)) {
+            $request->request->set(['availability_id' => $request->availability_id]);
+        }
+
+        if (isset($request->is_virtual)) {
+            $request->request->set(['is_virtual' => (string)$request->volunteering_attribute['is_virtual']]);
+        }
+        
         $mission = $this->modelsService->mission->findOrFail($id);
         $mission->update($request->toArray());
 
