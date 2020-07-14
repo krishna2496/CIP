@@ -707,7 +707,7 @@
                 }
             }
         },
-        "/tenants/tenant-currency/": {
+        "/tenants/tenant-currency/{TenantId}": {
             "post": {
                 "operationId": "POST_team4-cip-admin-api-add-currency",
                 "summary": "Add currency for a tenant",
@@ -734,11 +734,12 @@
                     },
                     "422":{  
                         "description":"Unprocessable entity - Invalid input"
+                    },
+                    "404":{  
+                        "description":"Tenant not found in the system"
                     }
                 }
-            }
-        },
-        "/tenants/tenant-currency/{tenantId}": {
+            },
             "get": {
                 "operationId": "GET_team4-cip-admin-api-get-currency",
                 "summary": "List tenant’s currency",
@@ -767,7 +768,42 @@
                         "description":"Tenant not found in the system"
                     }
                 }
+            },
+            "patch": {
+                "operationId": "GET_team4-cip-admin-api-update-currency",
+                "summary": "Update tenant’s currency",
+                "description": "To update tenant currency",
+                "tags":[  
+                    "Currency management"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                        "$ref":"#/definitions/Currency"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400":{  
+                        "description":"Bad request"
+                    },
+                    "404":{  
+                        "description":"Tenant not found in the system"
+                    },
+                    "422":{  
+                        "descrip,tion":"Unprocessable entity - Invalid input"
+                    }
+                }
             }
+        },
+        "/tenants/tenant-currency/{tenantId}": {
+            
         }
     },
     "definitions": {
@@ -826,36 +862,26 @@
         "Currency":{
             "type": "object",
             "properties": {
-                "currency":{
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "tenant_id": {
-                                "type": "integer"
-                            },
-                            "code": {
-                                "type":"string"
-                            },
-                            "default": {
-                                "type":"integer",
-                                "description":"Set default currency of the platform",
-                                "enum":[  
-                                    "1",
-                                    "0"
-                                ]
-                            },
-                            "is_active": {
-                                "type":"integer",
-                                "description":"Set currency active for tenant of the platform",
-                                "enum":[  
-                                    "1",
-                                    "0"
-                                ]
-                            }
-                        }
-                    }
-                } 
+                "code": {
+                    "type": "string",
+                    "description" : "Currency code according to ISO-4217"
+                },
+                "default": {
+                    "type":"integer",
+                    "description":"Set default currency of the platform",
+                    "enum":[  
+                        "1",
+                        "0"
+                    ]
+                },
+                "is_active": {
+                    "type":"integer",
+                    "description":"Set currency active or in-active of the platform",
+                    "enum":[
+                        "1",
+                        "0"
+                    ]
+                }
             }
         }
     }
