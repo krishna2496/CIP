@@ -30,7 +30,16 @@ class Organization extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'legal_number', 'phone_number', 'address_line_1', 'address_line_2','city_id','state_id','country_id','postal_code'];
+    protected $fillable = [
+        'name',
+        'legal_number',
+        'phone_number',
+        'address_line_1',
+        'address_line_2',
+        'city_id','state_id',
+        'country_id',
+        'postal_code'
+    ];
 
     /**
      * Indicates if the IDs are auto-incrementing.
