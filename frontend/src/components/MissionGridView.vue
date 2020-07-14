@@ -538,7 +538,7 @@ export default {
 					let getCard = event.parentNode;
 					let cardHeight = event.children[0].offsetHeight + getCard.children[1].offsetHeight;
 					let cardOuterHeight = event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight + event.children[0].children[1].offsetHeight + event.children[0].children[0].offsetHeight;
-						getCard.style.height = cardHeight +"px";	
+						getCard.style.height = `${cardHeight}px`;	
 					
 					event.parentNode.addEventListener("mouseover", function (mouseEvent) {
 					let cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;

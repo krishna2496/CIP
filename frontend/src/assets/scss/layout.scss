@@ -4816,7 +4816,7 @@ main {
         .custom-checkbox
           .custom-control-input:checked
           ~ .custom-control-label::after {
-          background-image: url(../images/check-icon.svg);
+          background-image: url($assetUrl+"/check-icon.svg");
         }
       }
       .amount-control {
