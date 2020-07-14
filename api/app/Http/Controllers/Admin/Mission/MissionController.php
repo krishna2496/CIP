@@ -165,8 +165,8 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 
                 "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
-                "volunteering_attribute.total_seats" => "required_if:volunteering_attribute|integer|min:1",
-                "volunteering_attribute.availability_id" => "required_if:volunteering_attribute|integer|required|
+                "volunteering_attribute.total_seats" => "integer|min:1|after:volunteering_attribute",
+                "volunteering_attribute.availability_id" => "integer|required|after:volunteering_attribute|
                                                             exists:availability,availability_id,deleted_at,NULL",
                 
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
