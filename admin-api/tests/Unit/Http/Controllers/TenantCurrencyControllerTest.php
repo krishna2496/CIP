@@ -43,14 +43,13 @@ class TenantCurrencyControllerTest extends TestCase
         $id = rand(5000, 10000);
         
         $repository = $this->mock(CurrencyRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
         $repository->shouldReceive('getTenantCurrencyList')
             ->once()
             ->with($request, $id)
-            ->andThrow(new ModelNotFoundException());
+            ->andThrow($modelNotFoundException);
 
-        $mockResponse = new LengthAwarePaginator([], 0, 10, 1);
         $jsonResponse = $this->getJson($methodResponse);
-
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper
         ->shouldReceive('error')
@@ -64,13 +63,13 @@ class TenantCurrencyControllerTest extends TestCase
 
         $tenantRepository = $this->mock(TenantRepository::class);
         
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->index($request, $id);
+        $response = $controller->index($request, $id);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -94,20 +93,11 @@ class TenantCurrencyControllerTest extends TestCase
 
         $methodResponse = [
             "status"=> Response::HTTP_OK,
-            "data"=> [
-                "code"=> "INR",
-                "default"=> 1,
-                "is_active"=> 1
-            ],
-            "pagination"=>[
-                "total"=> 1,
-                "per_page"=> 10,
-                "current_page"=> 1,
-                "total_pages"=> 1,
-                "next_url"=> null
-            ],
+            "data"=> [],
+            "pagination"=>[],
             "message"=> trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING')
         ];
+
         $jsonResponse = $this->getJson($methodResponse);
 
         $repository = $this->mock(CurrencyRepository::class);
@@ -129,13 +119,13 @@ class TenantCurrencyControllerTest extends TestCase
 
         $tenantRepository = $this->mock(TenantRepository::class);
 
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->index($request, 1);
+        $response = $controller->index($request, 1);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -155,10 +145,11 @@ class TenantCurrencyControllerTest extends TestCase
         $request = new Request($data);
         $tenantId = rand(50000, 100000);
         $tenantRepository = $this->mock(TenantRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andThrow(new ModelNotFoundException());
+            ->andThrow($modelNotFoundException);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -186,13 +177,13 @@ class TenantCurrencyControllerTest extends TestCase
         )->andReturn($jsonResponse);
 
         $repository = $this->mock(CurrencyRepository::class);
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->store($request, $tenantId);
+        $response = $controller->store($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -210,13 +201,14 @@ class TenantCurrencyControllerTest extends TestCase
             "is_active"=> "1"
         ];
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'ZWD','tenant_id'=>$tenantId])->delete();
+
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
+            ->andReturn($tenant);
             
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -244,13 +236,13 @@ class TenantCurrencyControllerTest extends TestCase
         )->andReturn($jsonResponse);
 
         $repository = $this->mock(CurrencyRepository::class);
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->store($request, $tenantId);
+        $response = $controller->store($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -270,10 +262,11 @@ class TenantCurrencyControllerTest extends TestCase
         $request = new Request($data);
         $tenantId = 1;
         $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andThrow(new Tenant());
+            ->andThrow($tenant);
 
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
@@ -306,13 +299,13 @@ class TenantCurrencyControllerTest extends TestCase
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
         )->andReturn($jsonResponse);
 
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->store($request, $tenantId);
+        $response = $controller->store($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -325,18 +318,18 @@ class TenantCurrencyControllerTest extends TestCase
     public function testStoreSuccess()
     {
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
         $data = [
             "code"=> "USD",
             "default"=> "1",
             "is_active"=> "1"
         ];
         $request = new Request($data);
+        $tenant = $this->mock(Tenant::class);
         $tenantRepository = $this->mock(TenantRepository::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
+            ->andReturn($tenant);
 
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
@@ -370,13 +363,13 @@ class TenantCurrencyControllerTest extends TestCase
             trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED')
         )->andReturn($jsonResponse);
 
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->store($request, $tenantId);
+        $response = $controller->store($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -396,10 +389,11 @@ class TenantCurrencyControllerTest extends TestCase
         $request = new Request($data);
         $tenantId = rand(50000, 100000);
         $tenantRepository = $this->mock(TenantRepository::class);
+        $modelNotFoundExeption = $this->mock(ModelNotFoundException::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andThrow(new ModelNotFoundException());
+            ->andThrow($modelNotFoundExeption);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -427,13 +421,13 @@ class TenantCurrencyControllerTest extends TestCase
         )->andReturn($jsonResponse);
 
         $repository = $this->mock(CurrencyRepository::class);
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->update($request, $tenantId);
+        $response = $controller->update($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -451,13 +445,13 @@ class TenantCurrencyControllerTest extends TestCase
             "is_active"=> "1"
         ];
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'ZWD','tenant_id'=>$tenantId])->delete();
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
+            ->andReturn($tenant);
             
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -485,13 +479,13 @@ class TenantCurrencyControllerTest extends TestCase
         )->andReturn($jsonResponse);
 
         $repository = $this->mock(CurrencyRepository::class);
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->update($request, $tenantId);
+        $response = $controller->update($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -511,10 +505,11 @@ class TenantCurrencyControllerTest extends TestCase
         $request = new Request($data);
         $tenantId = 1;
         $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andThrow(new Tenant());
+            ->andThrow($tenant);
 
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
@@ -547,13 +542,13 @@ class TenantCurrencyControllerTest extends TestCase
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
         )->andReturn($jsonResponse);
 
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->update($request, $tenantId);
+        $response = $controller->update($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -566,7 +561,7 @@ class TenantCurrencyControllerTest extends TestCase
     public function testUpdateCurrencyNotFound()
     {
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
+
         $data = [
             "code"=> "USD",
             "default"=> "1",
@@ -574,10 +569,12 @@ class TenantCurrencyControllerTest extends TestCase
         ];
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
+        $modelNotFoundExeption = $this->mock(ModelNotFoundException::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
+            ->andReturn($tenant);
 
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
@@ -588,7 +585,7 @@ class TenantCurrencyControllerTest extends TestCase
         $repository->shouldReceive('update')
             ->once()
             ->with($request, $tenantId)
-            ->andThrow(new ModelNotFoundException());
+            ->andThrow($modelNotFoundExeption);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -615,13 +612,13 @@ class TenantCurrencyControllerTest extends TestCase
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_FOUND')
         )->andReturn($jsonResponse);
 
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->update($request, $tenantId);
+        $response = $controller->update($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -634,7 +631,7 @@ class TenantCurrencyControllerTest extends TestCase
     public function testUpdateSuccess()
     {
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
+
         $data = [
             "code"=> "USD",
             "default"=> "1",
@@ -642,10 +639,11 @@ class TenantCurrencyControllerTest extends TestCase
         ];
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
+            ->andReturn($tenant);
 
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isValidCurrency')
@@ -679,13 +677,13 @@ class TenantCurrencyControllerTest extends TestCase
             trans('messages.success.MESSAGE_TENANT_CURRENCY_UPDATED')
         )->andReturn($jsonResponse);
 
-        $service = $this->getController(
+        $controller = $this->getController(
             $responseHelper,
             $repository,
             $tenantRepository
         );
 
-        $response = $service->update($request, $tenantId);
+        $response = $controller->update($request, $tenantId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
