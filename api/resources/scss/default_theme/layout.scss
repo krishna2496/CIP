@@ -136,19 +136,23 @@ ul {
 }
 
 #app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100%;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	min-height: 100%;
 
-  @include md-max {
-    position: relative;
-    @include transition(all 0.4s);
-    left: 0;
+	@include md-max {
+		position: relative;
+		@include transition(all 0.4s);
+		left: 0;
 
-    .open-nav & {
-      left: 300px;
+		.open-nav & {
+			left: 300px;
+		}
+	}
+
+    &.loaded {
+        display: block;
     }
-  }
 }
 
 .container {
