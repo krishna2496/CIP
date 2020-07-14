@@ -121,7 +121,7 @@ class MissionRepository implements MissionInterface
         
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
-        
+
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = array(
             'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
@@ -129,9 +129,8 @@ class MissionRepository implements MissionInterface
             'availability_id' => $request->volunteering_attribute['availability_id'],
             'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
             );
+            $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
         }
-        $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
-
         // Entry into goal_mission table
         if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
             $goalMissionArray = array(
