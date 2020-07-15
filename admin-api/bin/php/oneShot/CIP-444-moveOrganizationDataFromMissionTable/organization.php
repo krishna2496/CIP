@@ -55,25 +55,5 @@ if (count($tenants) > 0) {
                 }
             }
         }
-
-        $organizationTableData = $pdo->query('select organization_id, name  from organization')->fetchAll();
-
-        if (!empty($organizationTableData)) {
-            foreach ($organizationTableData as $organizationData) {
-                $id = $organizationData['id'];
-                $organizationName = $organizationData['name'];
-                $pdo->prepare('
-                    UPDATE mission
-                    SET `organisation_id` = :id,
-                    `updated_at` = :updated_at
-                    WHERE organisation_name = :organizationName
-                ')
-                ->execute([
-                    'id' => $id,
-                    'organizationName' => $organizationName,
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
-            }
-        }
     }
 }
