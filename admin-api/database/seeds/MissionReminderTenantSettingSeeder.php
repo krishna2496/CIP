@@ -12,7 +12,7 @@ class MissionReminderTenantSettingSeeder extends Seeder
      */
     public function run()
     {
-        $items = [            
+        $item = [            
             'title' => 'Mission reminder',
             'description' => 'Enable/disable mission reminder on platform',
             'key' => 'mission_reminder',
