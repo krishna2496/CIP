@@ -2,18 +2,19 @@
 
 namespace App\Repositories\Currency;
 
-use App\Repositories\Currency\Currency;
+use App\Models\Currency;
 use Illuminate\Http\Request;
-use App\Models\TenantCurrency;
+use App\Models\TenantAvailableCurrency;
 use App\Models\Tenant;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repositories\Currency\AvailableCurrencyRepository;
 
 class CurrencyRepository
 {
     /**
-     * @var App\Models\TenantCurrency
+     * @var App\Models\TenantAvailableCurrency
      */
-    private $tenantCurrency;
+    private $tenantAvailableCurrency;
 
     /**
      * @var App\Models\Tenant
@@ -21,32 +22,22 @@ class CurrencyRepository
     private $tenant;
 
     /**
+     * @var App\Repositories\Currency\AvailableCurrencyRepository
+     */
+    private $availableCurrencyRepository;
+
+    /**
      * Create a new Currency repository instance.
      *
-     * @param App\Models\TenantCurrency $tenantCurrency
+     * @param App\Models\TenantAvailableCurrency $tenantCurrency
      * @param App\Models\Tenant $tenant
      * @return void
      */
-    public function __construct(TenantCurrency $tenantCurrency, Tenant $tenant)
+    public function __construct(TenantAvailableCurrency $tenantAvailableCurrency, Tenant $tenant, AvailableCurrencyRepository $availableCurrencyRepository)
     {
-        $this->tenantCurrency = $tenantCurrency;
+        $this->tenantAvailableCurrency = $tenantAvailableCurrency;
         $this->tenant = $tenant;
-    }
-
-    /**
-     * Get list of all currency
-     *
-     * @return array
-     */
-    public function findAll()
-    {
-        return [
-            new Currency('INR', '₹'),
-            new Currency('EUR', '€'),
-            new Currency('USD', '$'),
-            new Currency('BRL', 'R$'),
-            new Currency('ZWD', 'Z$'),
-        ];
+        $this->availableCurrencyRepository = $availableCurrencyRepository;
     }
 
     /**
@@ -68,10 +59,10 @@ class CurrencyRepository
         ];
 
         if ($request['is_active'] === '1' && $request['default'] === '1') {
-            $this->tenantCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
+            $this->tenantAvailableCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
         }
 
-        $this->tenantCurrency->create($currencyData);
+        $this->tenantAvailableCurrency->create($currencyData);
     }
 
     /**
@@ -83,7 +74,7 @@ class CurrencyRepository
      */
     public function update(Request $request, int $tenantId)
     {
-        $tenantCurrencyData = $this->tenantCurrency
+        $tenantCurrencyData = $this->tenantAvailableCurrency
             ->where(['tenant_id' => $tenantId, 'code' => $request['code']])
             ->firstOrFail();
 
@@ -95,9 +86,9 @@ class CurrencyRepository
         ];
 
         if ($request['is_active'] === '1' && $request['default'] === '1') {
-            $this->tenantCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
+            $this->tenantAvailableCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
         }
-        $this->tenantCurrency->where(['tenant_id' => $tenantId, 'code' => $request['code']])
+        $this->tenantAvailableCurrency->where(['tenant_id' => $tenantId, 'code' => $request['code']])
             ->update($currencyData);
     }
 
@@ -113,7 +104,7 @@ class CurrencyRepository
         // Check tenant is present in the system
         $tenantData = $this->tenant->findOrFail($tenantId);
 
-        $currencyTenantDetails = $this->tenantCurrency
+        $currencyTenantDetails = $this->tenantAvailableCurrency
             ->where(['tenant_id' => $tenantId])
             ->orderBy('code', 'ASC')
             ->paginate($request->perPage);
@@ -126,30 +117,23 @@ class CurrencyRepository
      * @param string $currencyCode
      * @return boolean
      */
-    public function isValidCurrency(string $currencyCode) : bool
+    public function isAvailableCurrency(string $currencyCode) : bool
     {
-        $allCurrencyList = $this->findAll();
-        // dd($allCurrencyList);
-        $allCurrencyArray = [];
-        $codes = 0;
 
+        $allCurrencyList = $this->availableCurrencyRepository->findAll();
+        $allCurrencyArray = [];
+        $currencyMatch = 0;
 
         foreach ($allCurrencyList as $key => $value) {
-            $test = $value->code();
-            if($test === $currencyCode){
-                $codes = 1;
+            $getAvailableCurrencyCode = $value->code();
+            if($getAvailableCurrencyCode === $currencyCode){
+                $currencyMatch = 1;
             }
-            // $code = $value->code;
-            // array_push($allCurrencyArray, $code);
         }
 
-        if($codes === 1){
+        if($currencyMatch === 1){
             return true;
         }
-
-        // if (!in_array($currencyCode, $allCurrencyArray)) {
-        //     return false;
-        // }
 
         return false;
     }

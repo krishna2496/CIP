@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use App\Models\TenantCurrency;
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
@@ -124,7 +123,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isValidCurrency($request['code'])) {
+        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -184,7 +183,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isValidCurrency($request['code'])) {
+        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
