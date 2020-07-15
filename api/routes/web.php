@@ -26,7 +26,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
-    
+
     /* Password reset routing */
     $router->post('/reset-password/{token}', ['as' => 'password.reset',
         'uses' => 'App\Auth\AuthController@reset_password']);
@@ -34,6 +34,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* reset password  */
     $router->put('/app/password-reset', ['middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@passwordReset']);
+
+    /* create password */
+    $router->post('/app/create-password', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+        'uses' => 'App\Auth\AuthController@createPassword']);
+
+    /* update password  */
+    $router->put('/app/update-password', ['middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\AuthController@updatePassword']);
+
+    /* used in app/Notifications/CreatePassword.php */
+    $router->get('/create-password/{token}', ['as' => 'password.create']);
 
     /* CMS footer pages  */
     $router->get('/app/cms/listing', ['as' => 'app.cms.listing', 'middleware' => 'tenant.connection',

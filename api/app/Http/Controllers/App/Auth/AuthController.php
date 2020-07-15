@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use App\Providers\Passwords\CreatePasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Config;
 use App\Helpers\Helpers;
@@ -105,6 +106,7 @@ class AuthController extends Controller
         $this->userRepository = $userRepository;
         $this->passwordReset = $passwordReset;
         $this->passwordBrokerManager = new PasswordBrokerManager(app());
+        $this->createPasswordBrokerManager = new CreatePasswordBrokerManager(app());
     }
 
     /**
@@ -228,6 +230,104 @@ class AuthController extends Controller
         ));
         header('Token: '.$this->helpers->getJwtToken($userDetail->user_id, $tenantName));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Create Password - Send create password link to user's email address
+     *
+     * @param App\User $user
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function createPassword(User $user, Request $request): JsonResponse
+    {
+        // Server side validations
+        $validator = Validator::make($request->toArray(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_CREATE_PASSWORD_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        if (!$userDetail) {
+            return $this->responseHelper->error(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
+                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+
+        if ($userDetail->status !== config('constants.user_statuses.INACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_USER_ACTIVE')
+            );
+        }
+
+        if ($userDetail->expiry) {
+            $userExpirationDate = new DateTime($userDetail->expiry);
+            if ($userExpirationDate < new DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                );
+            }
+        }
+
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
+        config(['app.user_language_code' => $languageCode]);
+
+        $refererUrl = $this->helpers->getRefererFromRequest($request);
+        config(['app.mail_url' => $refererUrl . '/create-password/']);
+
+        // set tenant logo
+        $tenantLogo = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_logo']);
+        config(['app.tenant_logo' => $tenantLogo->option_value]);
+
+        // Verify email address and send create password link
+        $response = $this->createPasswordBroker()->sendCreatePasswordLink(
+            $request->only('email')
+        );
+
+        // If create password link was not sent
+        if (!$response === $this->passwordReset->RESET_LINK_SENT) {
+            return $this->responseHelper->error(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+                config('constants.error_codes.ERROR_SEND_CREATE_PASSWORD_LINK'),
+                trans('messages.custom_error_message.ERROR_SEND_CREATE_PASSWORD_LINK')
+            );
+        }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CREATE_LINK_SEND_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_CREATE_REQUEST'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
@@ -414,6 +514,94 @@ class AuthController extends Controller
     }
 
     /**
+     * Create password and activate user
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $request->merge(['token'=>$request->create_password_token]);
+
+        // Server side validations
+        $validator = Validator::make($request->toArray(), [
+                'email' => 'required|email',
+                'token' => 'required',
+                'password' => 'required|min:8',
+                'password_confirmation' => 'required|min:8|same:password',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                $validator->errors()->first()
+            );
+        }
+
+        // get record of user by checking password expiry time
+        $record = $this->passwordReset->where('email', $request->get('email'))
+        ->where(
+            'created_at',
+            '>',
+            Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME'))
+        )->first();
+
+        // if record not found
+        if (!$record) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_CREATE_PASSWORD_LINK'),
+                trans('messages.custom_error_message.ERROR_INVALID_CREATE_PASSWORD_LINK')
+            );
+        }
+
+        if (!Hash::check($request->get('token'), $record->token)) {
+            // invalid hash
+            return $this->responseHelper->error(
+                Response::HTTP_UNAUTHORIZED,
+                Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                config('constants.error_codes.ERROR_INVALID_CREATE_PASSWORD_LINK'),
+                trans('messages.custom_error_message.ERROR_INVALID_CREATE_PASSWORD_LINK')
+            );
+        }
+
+        // Create password and activate user
+        $this->broker()->reset(
+            $this->credentials($request),
+            function ($user, $password) {
+                $user->password = $password;
+                $user->status = config('constants.user_statuses.ACTIVE');
+                $user->save();
+            }
+        );
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CREATE_SUCCESS');
+
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        // Remove password before logging it
+        $request->request->remove("password");
+        $request->request->remove("password_confirmation");
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_CREATE'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
      * Get the password reset credentials from the request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -432,6 +620,16 @@ class AuthController extends Controller
     public function broker()
     {
         return $this->passwordBrokerManager->broker();
+    }
+
+    /**
+     * Get the broker to be used during password create.
+     *
+     * @return CreatePasswordBroker
+     */
+    public function createPasswordBroker()
+    {
+        return $this->createPasswordBrokerManager->broker();
     }
 
     /**

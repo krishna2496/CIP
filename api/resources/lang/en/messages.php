@@ -22,7 +22,9 @@ return [
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
         'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
+        'MESSAGE_PASSWORD_CREATE_LINK_SEND_SUCCESS' => 'Create password link is sent to your email account. Link will expire in ' . config('constants.CREATE_PASSWORD_EXPIRY_TIME') . ' hours.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
+        'MESSAGE_PASSWORD_CREATE_SUCCESS' => 'Your password has been created successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
         'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
@@ -222,6 +224,7 @@ return [
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         'ERROR_USER_EXPIRED' => 'Your account has expired. Please contact your administrator.',
         'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
+        'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
 
 

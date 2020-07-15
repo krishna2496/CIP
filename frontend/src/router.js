@@ -150,6 +150,12 @@ let routes = [
           import ('./views/Auth/ResetPassword.vue')
     },
     {
+        path: '/create-password/:token',
+        name: 'createPassword',
+        component: () =>
+          import ('./views/Auth/CreatePassword.vue')
+    },
+    {
         path: '/my-account',
         name: 'myAccount',
         meta: {

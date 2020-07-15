@@ -3,6 +3,7 @@ import missionListing from "./Mission/MissionListing";
 import login from "./Auth/Login";
 import forgotPassword from "./Auth/ForgotPassword";
 import resetPassword from "./Auth/ResetPassword";
+import createPassword from "./Auth/CreatePassword";
 import databaseConnection from "./Tenant/DatabaseConnection";
 import cmsPages from "./Cms/CmsListing";
 import filterList from "./filterList";
@@ -74,6 +75,7 @@ export {
     databaseConnection,
     forgotPassword,
     resetPassword,
+    createPassword,
     cmsPages,
     missionFilterListing,
     exploreMission,

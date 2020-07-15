@@ -18,6 +18,14 @@ return [
         'PARAGRAPH_TWO' => "If you didn’t request to change your optimy password, you don’t have to do anything. So that’s easy.",
         'FOOTER_TEXT' => "If you’re having trouble clicking the “Reset Password” button, copy and paste the URL below into your web browser."
     ],
+    'create_password' => [
+        'HEADING_ONE' => 'Creating your',
+        'HEADING_TWO' => 'Optimy password',
+        'PARAGRAPH_ONE' => 'Need to create your password? No Problem. Just click below to get started.',
+        'CREATE_PASSWORD_BUTTON' => 'Create my password',
+        'PARAGRAPH_TWO' => "If you didn’t request to create your optimy password, you don’t have to do anything. So that’s easy.",
+        'FOOTER_TEXT' => "If you’re having trouble clicking the “Create Password” button, copy and paste the URL below into your web browser."
+    ],
     'other_text' => [
         'ALL_RIGHTS_RESERVED' => 'All Rights Reserved.'
     ],
