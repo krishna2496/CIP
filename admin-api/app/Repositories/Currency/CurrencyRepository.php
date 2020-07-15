@@ -129,17 +129,28 @@ class CurrencyRepository
     public function isValidCurrency(string $currencyCode) : bool
     {
         $allCurrencyList = $this->findAll();
+        // dd($allCurrencyList);
         $allCurrencyArray = [];
+        $codes = 0;
+
 
         foreach ($allCurrencyList as $key => $value) {
-            $code = $value->code;
-            array_push($allCurrencyArray, $code);
+            $test = $value->code();
+            if($test === $currencyCode){
+                $codes = 1;
+            }
+            // $code = $value->code;
+            // array_push($allCurrencyArray, $code);
         }
 
-        if (!in_array($currencyCode, $allCurrencyArray)) {
-            return false;
+        if($codes === 1){
+            return true;
         }
 
-        return true;
+        // if (!in_array($currencyCode, $allCurrencyArray)) {
+        //     return false;
+        // }
+
+        return false;
     }
 }

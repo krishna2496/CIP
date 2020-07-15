@@ -29,7 +29,7 @@ final class Currency
      * @return void
      */
 
-    public function __construct(string $code, string $symbol)
+    public function __construct($code,$symbol)
     {
         $this->setCode($code);
         $this->symbol = $symbol;
@@ -41,7 +41,7 @@ final class Currency
      * @param string $code
      * @return string|App\Exceptions\InvalidCurrencyArgumentException
      */
-    public function setCode(string $code)
+    private function setCode(string $code)
     {
         $pattern = '/^[A-Z]{3}$/m';
         $result = preg_match_all($pattern, $code, $matches);
@@ -58,10 +58,22 @@ final class Currency
      * @param string $property
      * @return string|App\Exceptions\InvalidCurrencyArgumentException
      */
-    public function __get(string $property)
+    // public function __get(string $property)
+    // {
+    //     if (property_exists($this, $property)) {
+    //         return $this->$property;
+    //     }
+    // }
+
+    public function code()
     {
-        if (property_exists($this, $property)) {
-            return $this->$property;
-        }
+        return $this->code;
     }
+
+    public function symbol()
+    {
+        return $this->symbol;
+    }
+
+
 }
