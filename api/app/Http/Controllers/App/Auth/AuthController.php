@@ -569,7 +569,7 @@ class AuthController extends Controller
         }
 
         // Create password and activate user
-        $this->broker()->reset(
+        $this->createPasswordBroker()->reset(
             $this->credentials($request),
             function ($user, $password) {
                 $user->password = $password;
