@@ -553,13 +553,8 @@ class MissionRepository implements MissionInterface
             'mission.is_virtual'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission']);
+        'missionLanguage', 'goalMission', 'timeMission', 'donationAttribute']);
         
-        //donation attribute
-        if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
-            && $request->with_donation_attributes !== 0) {
-            $missionQuery->with(['donationAttribute']);
-        }
         $missionQuery->withCount('missionApplication');
         $missionQuery->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
