@@ -41,7 +41,7 @@ final class Currency
      * @param string $code
      * @return string|App\Exceptions\InvalidCurrencyArgumentException
      */
-    public function setCode(string $code)
+    private function setCode(string $code)
     {
         $pattern = '/^[A-Z]{3}$/m';
         $result = preg_match_all($pattern, $code, $matches);
@@ -50,5 +50,25 @@ final class Currency
         } else {
             throw new InvalidCurrencyArgumentException("Currency code {$code} is invalid.");
         }
+    }
+
+    /**
+     * Get currency code
+     * 
+     * @return string $code
+     */
+    public function code()
+    {
+        return $this->code;
+    }
+    
+    /**
+     * Get currency symbol
+     * 
+     * @return string $symbol
+     */
+	public function symbol()
+    {
+        return $this->symbol;
     }
 }
