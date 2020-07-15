@@ -553,9 +553,15 @@ class MissionRepository implements MissionInterface
             'mission.is_virtual'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission', 'donationAttribute'])
-        ->withCount('missionApplication')
-        ->with(['missionSkill' => function ($query) {
+        'missionLanguage', 'goalMission', 'timeMission']);
+        
+        //donation attribute
+        if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
+            && $request->with_donation_attributes !== 0) {
+            $missionQuery->with(['donationAttribute']);
+        }
+        $missionQuery->withCount('missionApplication');
+        $missionQuery->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])
         ->with(['missionMedia' => function ($query) {
@@ -569,7 +575,7 @@ class MissionRepository implements MissionInterface
         }, 'missionTab.getMissionTabDetail' => function ($query) {
             $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
-
+        
         if ($request->has('search') && $request->has('search') !== '') {
             $searchString = $request->search;
             $missionQuery->where(function ($query) use ($searchString) {
@@ -704,8 +710,8 @@ class MissionRepository implements MissionInterface
             }
         }
         //donation attribute
-        if ($request->has('with_donation_attributes ') && $request->input('with_donation_attributes ') !== ''
-            && $request->input('with_donation_attributes ') !== 0) {
+        if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
+            && $request->with_donation_attributes !== 0) {
             $missionQuery->with(['donationAttribute']);
         }
 
@@ -1358,8 +1364,8 @@ class MissionRepository implements MissionInterface
             ]);
             
         //donation attribute
-        if ($request->has('with_donation_attributes ') && $request->input('with_donation_attributes ') !== ''
-            && $request->input('with_donation_attributes ') !== 0) {
+        if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
+            && $request->with_donation_attributes !== 0) {
             $missionQuery->with(['donationAttribute']);
         }
 
