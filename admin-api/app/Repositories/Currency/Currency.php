@@ -53,27 +53,22 @@ final class Currency
     }
 
     /**
-     * __get magic method to get private property code and symbol
-     *
-     * @param string $property
-     * @return string|App\Exceptions\InvalidCurrencyArgumentException
+     * Get currency code
+     * 
+     * @return string $code
      */
-    // public function __get(string $property)
-    // {
-    //     if (property_exists($this, $property)) {
-    //         return $this->$property;
-    //     }
-    // }
-
     public function code()
     {
         return $this->code;
     }
-
-    public function symbol()
+    
+    /**
+     * Get currency symbol
+     * 
+     * @return string $symbol
+     */
+	public function symbol()
     {
         return $this->symbol;
     }
-
-
 }
