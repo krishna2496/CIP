@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin\Mission;
 
 use App\Http\Controllers\Controller;
@@ -14,7 +15,6 @@ use Validator;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
@@ -66,13 +66,14 @@ class MissionController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param  App\Repositories\Mission\MissionRepository $missionRepository
-     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @param Illuminate\Http\Request $request
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     *
      * @return void
      */
     public function __construct(
@@ -97,6 +98,7 @@ class MissionController extends Controller
      * Display a listing of Mission.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -110,6 +112,7 @@ class MissionController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_MISSION_LISTING');
+
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -123,6 +126,7 @@ class MissionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
@@ -131,43 +135,58 @@ class MissionController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "theme_id" => "integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
-                "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
-                "location" => "required",
-                "location.city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
-                "location.country_code" => "required|exists:country,ISO,deleted_at,NULL",
-                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
-                "mission_detail" => "required",
-                "mission_detail.*.lang" => "required|max:2",
-                "mission_detail.*.title" => "required",
-                "mission_detail.*.section" => "required",
-                "mission_detail.*.section.*.title" => "required_with:mission_detail.*.section",
-                "mission_detail.*.section.*.description" =>
-                "required_with:mission_detail.*.section",
-                "organisation" => "required",
-                "organisation.organisation_id" => "required",
-                "organisation.organisation_name" => "required",
-                "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
-                "media_images.*.media_path" => "required|valid_media_path",
-                "media_videos.*.media_name" => "required",
-                "media_videos.*.media_path" => "required|valid_video_url",
-                "documents.*.document_path" => "required|valid_document_path",
-                "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
-                "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
-                "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-                "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
-                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
-                "mission_detail.*.custom_information.*.description" =>
-                "required_with:mission_detail.*.custom_information",
-                "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
-                "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                'theme_id' => 'integer|exists:mission_theme,mission_theme_id,deleted_at,NULL',
+                'mission_type' => ['required', Rule::in(config('constants.mission_type'))],
+                'location' => 'required',
+                'location.city_id' => 'integer|required|exists:city,city_id,deleted_at,NULL',
+                'location.country_code' => 'required|exists:country,ISO,deleted_at,NULL',
+                'availability_id' => 'integer|required|exists:availability,availability_id,deleted_at,NULL',
+                'mission_detail' => 'required',
+                'mission_detail.*.lang' => 'required|max:2',
+                'mission_detail.*.title' => 'required',
+                'mission_detail.*.section' => 'required',
+                'mission_detail.*.section.*.title' => 'required_with:mission_detail.*.section',
+                'mission_detail.*.section.*.description' => 'required_with:mission_detail.*.section',
+                'organisation' => 'required',
+                'organisation.organisation_id' => 'required',
+                'organisation.organisation_name' => 'required',
+                'publication_status' => ['required', Rule::in(config('constants.publication_status'))],
+                'media_images.*.media_path' => 'required|valid_media_path',
+                'media_videos.*.media_name' => 'required',
+                'media_videos.*.media_path' => 'required|valid_video_url',
+                'documents.*.document_path' => 'required|valid_document_path',
+                'start_date' => 'required_if:mission_type,TIME|required_with:end_date|date',
+                'end_date' => 'sometimes|after:start_date|date',
+                'total_seats' => 'integer|min:1',
+                'goal_objective' => 'required_if:mission_type,GOAL|integer|min:1',
+                'skills.*.skill_id' => 'integer|exists:skill,skill_id,deleted_at,NULL',
+                'mission_detail.*.short_description' => 'max:1000',
+                'mission_detail.*.custom_information' => 'nullable',
+                'mission_detail.*.custom_information.*.title' => 'required_with:mission_detail.*.custom_information',
+                'mission_detail.*.custom_information.*.description' => 'required_with:mission_detail.*.custom_information',
+                'media_images.*.sort_order' => 'required|numeric|min:0|not_in:0',
+                'media_videos.*.sort_order' => 'required|numeric|min:0|not_in:0',
+                'documents.*.sort_order' => 'required|numeric|min:0|not_in:0',
+                'is_virtual' => 'sometimes|required|in:0,1',
+                'mission_detail.*.label_goal_achieved' => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'mission_detail.*.label_goal_objective' => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'mission_tab_details.*.sort_key' => 'required|integer',
+                'mission_tab_details.*.translations' => 'required',
+                'mission_tab_details.*.translations.*.lang' => 'required_with:mission_tab_details.*.translations|max:2',
+                'mission_tab_details.*.translations.*.name' => 'required_with:mission_tab_details.*.translations',
+                'mission_tab_details.*.translations.*.sections' => 'required_with:mission_tab_details.*.translations',
+                'mission_tab_details.*.translations.*.sections.*.title' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'mission_tab_details.*.translations.*.sections.*.content' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
+                'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
             ]
         );
 
@@ -210,6 +229,7 @@ class MissionController extends Controller
             null,
             $mission->mission_id
         ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -227,6 +247,7 @@ class MissionController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -258,37 +279,55 @@ class MissionController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "mission_type" => [Rule::in(config('constants.mission_type'))],
-                "location.city_id" => "required_with:location|integer|exists:city,city_id,deleted_at,NULL",
-                "location.country_code" => "required_with:location|exists:country,ISO",
-                "mission_detail.*.lang" => "required_with:mission_detail|max:2",
-                "mission_detail.*.title" => "sometimes|required",
-                "publication_status" => [Rule::in(config('constants.publication_status'))],
-                "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-                "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
-                "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-                "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
-                "application_deadline" => "date",
-                "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
-                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
-                "mission_detail.*.custom_information.*.description" =>
-                "required_with:mission_detail.*.custom_information",
-                "media_images.*.media_path" => "sometimes|required|valid_media_path",
-                "media_videos.*.media_name" => "sometimes|required",
-                "media_videos.*.media_path" => "sometimes|required|valid_video_url",
-                "documents.*.document_path" => "sometimes|required|valid_document_path",
-                "organisation.organisation_id" => "sometimes|required",
-                "organisation.organisation_name" => "sometimes|required",
-                "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
-                "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
-                "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
-                "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                'mission_type' => [Rule::in(config('constants.mission_type'))],
+                'location.city_id' => 'required_with:location|integer|exists:city,city_id,deleted_at,NULL',
+                'location.country_code' => 'required_with:location|exists:country,ISO',
+                'mission_detail.*.lang' => 'required_with:mission_detail|max:2',
+                'mission_detail.*.title' => 'sometimes|required',
+                'publication_status' => [Rule::in(config('constants.publication_status'))],
+                'goal_objective' => 'required_if:mission_type,GOAL|integer|min:1',
+                'start_date' => 'sometimes|required_if:mission_type,TIME,required_with:end_date|date',
+                'end_date' => 'sometimes|after:start_date|date',
+                'total_seats' => 'integer|min:1',
+                'availability_id' => 'sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL',
+                'skills.*.skill_id' => 'integer|exists:skill,skill_id,deleted_at,NULL',
+                'theme_id' => 'sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL',
+                'application_deadline' => 'date',
+                'mission_detail.*.short_description' => 'max:1000',
+                'mission_detail.*.custom_information' => 'nullable',
+                'mission_detail.*.custom_information.*.title' => 'required_with:mission_detail.*.custom_information',
+                'mission_detail.*.custom_information.*.description' => 'required_with:mission_detail.*.custom_information',
+                'media_images.*.media_path' => 'sometimes|required|valid_media_path',
+                'media_videos.*.media_name' => 'sometimes|required',
+                'media_videos.*.media_path' => 'sometimes|required|valid_video_url',
+                'documents.*.document_path' => 'sometimes|required|valid_document_path',
+                'organisation.organisation_id' => 'sometimes|required',
+                'organisation.organisation_name' => 'sometimes|required',
+                'media_images.*.sort_order' => 'sometimes|required|numeric|min:0|not_in:0',
+                'media_videos.*.sort_order' => 'sometimes|required|numeric|min:0|not_in:0',
+                'documents.*.sort_order' => 'sometimes|required|numeric|min:0|not_in:0',
+                'is_virtual' => 'sometimes|required|in:0,1',
+                'mission_detail.*.label_goal_achieved' => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'mission_detail.*.label_goal_objective' => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'mission_tab_details.*.sort_key' => 'required|integer',
+                'mission_tab_details.*.mission_tab_id' => 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
+                'mission_tab_details.*.sort_key' => 'required_without:mission_tab_details.*.mission_tab_id|integer',
+                'mission_tab_details.*.translations' => 'required_without:mission_tab_details.*.mission_tab_id',
+                'mission_tab_details.*.translations.*.lang' => 'required_with:mission_tab_details.*.translations|max:2',
+                'mission_tab_details.*.translations.*.name' => 'required_with:mission_tab_details.*.translations',
+                'mission_tab_details.*.translations.*.sections.*.title' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'mission_tab_details.*.translations.*.sections.*.content' => 'required_with:mission_tab_details.*.translations.*.sections',
+                'mission_tab_details.*.translations.*.sections' => 'required_without:mission_tab_details.*.mission_tab_id',
+                'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
+                'donation_attribute.goal_amount_currency' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF_if:mission_type,DISASTER_RELIEF|numeric|min:1',
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
             ]
         );
 
@@ -301,11 +340,11 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
- 
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
-                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== "")) {
+                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== '')) {
                         $this->missionMediaRepository->find($mediaImages['media_id']);
                         $mediaImage = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaImages['media_id'],
@@ -325,7 +364,7 @@ class MissionController extends Controller
 
             if (isset($request->media_videos) && count($request->media_videos) > 0) {
                 foreach ($request->media_videos as $mediaVideos) {
-                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != "")) {
+                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != '')) {
                         $this->missionMediaRepository->find($mediaVideos['media_id']);
                         $mediaVideo = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaVideos['media_id'],
@@ -352,7 +391,7 @@ class MissionController extends Controller
         try {
             if (isset($request->documents) && count($request->documents) > 0) {
                 foreach ($request->documents as $mediaDocuments) {
-                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== "")) {
+                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== '')) {
                         $this->missionRepository->findDocument($mediaDocuments['document_id']);
                         $mediaDocument = $this->missionRepository->isDocumentLinkedToMission(
                             $mediaDocuments['document_id'],
@@ -397,6 +436,22 @@ class MissionController extends Controller
             }
         }
 
+        // Check for mission tab id is valid or not
+        try {
+            if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
+                foreach ($request->mission_tab_details as $missionTabValue) {
+                    if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== '')) {
+                        $this->missionRepository->isMissionTabLinkedToMission($missionId, $missionTabValue['mission_tab_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+
         $this->missionRepository->update($request, $missionId);
 
         // Set response data
@@ -428,6 +483,7 @@ class MissionController extends Controller
 
             event(new UserNotificationEvent($notificationType, $entityId, $action));
         }
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -471,6 +527,7 @@ class MissionController extends Controller
      * Remove the mission media from storage.
      *
      * @param int $mediaId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function removeMissionMedia(int $mediaId): JsonResponse
@@ -505,6 +562,7 @@ class MissionController extends Controller
      * Remove the mission document from storage.
      *
      * @param int $documentId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function removeMissionDocument(int $documentId): JsonResponse
