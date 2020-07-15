@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class DonationAttribute extends Model
 {
@@ -32,8 +33,8 @@ class DonationAttribute extends Model
     'show_donors_count', 'disable_when_funded', 'is_disabled', ];
 
     // Donation related static code added,because donation related functionality is pending for development
-    
     protected $appends = ['donation_amount_raised', 'donor_count', 'donation_count'];
+    
     /**
      * The attributes that should be visible in arrays.
      *
@@ -42,6 +43,7 @@ class DonationAttribute extends Model
     protected $visible = ['goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
     'show_donors_count', 'disable_when_funded', 'is_disabled', 'donation_amount_raised', 'donor_count', 'donation_count'];
 
+    // Donation related static code added,because donation related functionality is pending for development
     public function getDonationAmountRaisedAttribute()
     {
         return 358;
