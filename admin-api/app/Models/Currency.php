@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Currency;
+namespace App\Models;
 
 use App\Exceptions\InvalidCurrencyArgumentException;
 
