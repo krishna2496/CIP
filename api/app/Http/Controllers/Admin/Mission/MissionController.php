@@ -179,7 +179,7 @@ class MissionController extends Controller
                 'mission_tab_details.*.translations.*.sections.*.content' => 'required_with:mission_tab_details.*.translations.*.sections',
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
-                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF_if:mission_type,DISASTER_RELIEF|numeric|min:1',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
                 'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
