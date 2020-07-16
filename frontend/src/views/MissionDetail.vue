@@ -968,7 +968,7 @@ export default {
             if (this.$route.params.misisonId) {
                 let data = {
                     'mission_id' : this.$route.params.misisonId,
-                    'donation_mission' : true
+                    'donation_mission' : false
                 }
                 missionDetail(data).then(response => {
                     this.isShownMediaComponent = true;
