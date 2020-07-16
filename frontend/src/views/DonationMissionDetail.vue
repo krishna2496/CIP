@@ -76,14 +76,16 @@
                                 <div class="group-details-inner" v-if="missionDetail.donation_attribute">
                                     <div class="detail-column progress-block">
                                         <div class="text-wrap">
-                                            <p><b>€10 952</b> {{ languageData.label.raised_by}} <b>45 {{ languageData.label.donar}}</b></p>
-                                            <b-progress :value="value" :max="max"></b-progress>
+                                            <p><b>€ {{missionDetail.donation_attribute.donation_amount_raised}}</b> {{ languageData.label.raised_by}} <b>{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b></p>
+                                            <b-progress 
+                                            v-if="missionDetail.donation_attribute.show_donation_meter"
+                                            :value="missionDetail.donation_attribute.donation_amount_raised" :max="missionDetail.donation_attribute.goal_amount"></b-progress>
                                             <div class="progress-info">
-                                                <span class="subtitle-text">
-                                                    70%
+                                                <span class="subtitle-text" v-if="missionDetail.donation_attribute.show_donation_percentage">
+                                                    {{donationPercentage}}%
                                                     <em>{{ languageData.label.achieved}}</em>
                                                 </span>
-                                                <span class="subtitle-text">
+                                                <span class="subtitle-text" v-if="missionDetail.donation_attribute.show_goal_amount">
                                                     <em>€{{missionDetail.donation_attribute.goal_amount}}</em>
                                                     <em>{{ languageData.label.goal}}</em>
                                                 </span>
@@ -93,7 +95,7 @@
                                 </div>
                             </div>
                             <div class="btn-row">
-                                <b-button class="btn btn-fillsecondary donate-btn">{{ languageData.label.donate_now}}</b-button>
+                                <b-button class="btn btn-fillsecondary donate-btn" :disabled="disableDonationButton">{{ languageData.label.donate_now}}</b-button>
                             </div>
                             <b-list-group class="info-box">
                                 <b-list-group-item>
@@ -728,6 +730,8 @@ export default {
                     id: 24
                 }
             ],
+            disableDonationButton :false,
+            donationPercentage : 0
         };
     },
     mounted() {
@@ -1058,6 +1062,19 @@ export default {
                             if (response.data[0].custom_information != null) {
                                 this.customInformation = response.data[0].custom_information;
                             }
+
+                            if( response.data[0].donation_attribute.is_disabled == 1) {
+                                this.disableDonationButton = true;
+                            }
+                            
+                            if( response.data[0].donation_attribute.disable_when_funded == 1 && response.data[0].donation_attribute.goal_amount != null &&
+                                (response.data[0].donation_attribute.goal_amount <= response.data[0].donation_attribute.donation_amount_raised)
+                            ) {
+                                this.disableDonationButton = true;
+                            }
+
+                            this.donationPercentage = Math.round((100 * response.data[0].donation_attribute.donation_amount_raised)/response.data[0].donation_attribute.goal_amount);
+
                         } else {
                             this.$router.push('/404');
                         }
