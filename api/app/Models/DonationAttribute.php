@@ -32,7 +32,7 @@ class DonationAttribute extends Model
     protected $fillable = ['mission_id', 'goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
     'show_donors_count', 'disable_when_funded', 'is_disabled', ];
 
-    // As of now, we have added below static code as payment related functionality is yet to be developed by Optimy
+    // As of now, we are returning static values as payment related functionality is yet to be developed by Optimy
     protected $appends = ['donation_amount_raised', 'donor_count', 'donation_count'];
     
     /**
