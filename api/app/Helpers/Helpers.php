@@ -476,4 +476,33 @@ class Helpers
 
         return (bool)$adminUser;
     }
+
+    /**
+     * Get fetch tenant currency
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mix
+     */
+    public function getTenantCurrency(Request $request)
+    {
+        $tenant = $this->getTenantDetail($request);
+
+        // Connect master database to get tenant currency
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantSetting = $this->db->table('tenant_currency')
+            ->select(
+                'tenant_currency.code',
+                'tenant_currency.default',
+                'tenant_currency.is_active'
+            )
+            ->where('tenant_id', $tenant->tenant_id)
+            ->orderBy('tenant_currency.code', 'ASC')
+            ->get();
+
+        // Connect tenant database
+        $this->switchDatabaseConnection('tenant');
+
+        return $tenantSetting;
+    }
 }
