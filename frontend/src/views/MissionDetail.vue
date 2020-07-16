@@ -966,7 +966,11 @@ export default {
 
         getMissionDetail() {
             if (this.$route.params.misisonId) {
-                missionDetail(this.$route.params.misisonId).then(response => {
+                let data = {
+                    'mission_id' : this.$route.params.misisonId,
+                    'donation_mission' : true
+                }
+                missionDetail(data).then(response => {
                     this.isShownMediaComponent = true;
                     if (response.error == false) {
                         if (response.data[0]) {

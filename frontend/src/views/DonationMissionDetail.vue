@@ -21,14 +21,13 @@
                                 </div>
                                 <div class="btn-outer">
                                     <b-button v-bind:class="{ 
+                                            'btn-borderprimary': true, 
 
-'btn-borderprimary': true, 
+                                            'icon-btn': true,
 
-'icon-btn': true,
+                                            'added-fav' : missionAddedToFavoriteByUser
 
-'added-fav' : missionAddedToFavoriteByUser
-
-}" @click="favoriteMission(missionId)">
+                                            }" @click="favoriteMission(missionId)">
                                         <i class="normal-img">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
                                                 <g id="Main Content">
@@ -50,10 +49,11 @@
                                             </svg>
                                         </i>
                                         <span v-if="missionAddedToFavoriteByUser">
-                                            Remove from Favourite
+                                            {{ languageData.label.remove_from_favourite }}
                                         </span>
+
                                         <span v-else>
-                                            Add to Favourite
+                                            {{ languageData.label.add_to_favourite }}
                                         </span>
                                     </b-button>
                                 </div>
@@ -62,20 +62,15 @@
                             <div class="group-details">
                                 <div class="top-strip">
                                     <span>
-                                        <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
-                                            <template v-if="missionDetail.end_date !== null">
-                                                {{ languageData.label.from }}
-                                                {{missionDetail.start_date | formatDate }}
-                                                {{ languageData.label.until}}
-                                                {{ missionDetail.end_date | formatDate }}
-                                            </template>
-                                            <template v-else>
-                                                {{ languageData.label.on_going_opportunities }}
-                                            </template>
+                                        <template v-if="missionDetail.end_date !== null">
+                                            {{ languageData.label.from }}
+                                            {{missionDetail.start_date | formatDate }}
+                                            {{ languageData.label.until}}
+                                            {{ missionDetail.end_date | formatDate }}
                                         </template>
                                         <template v-else>
-                                            {{missionDetail.objective}}
-                                        </template>
+                                            {{ languageData.label.on_going_opportunities }}
+                                        </template> 
                                     </span>
                                 </div>
                                 <div class="group-details-inner" v-if="missionDetail.donation_attribute">
@@ -124,11 +119,9 @@
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
                                         </i>
-                                        <span class="label">{{ languageData.label.start_date}}</span>
+                                        <span class="label">{{ languageData.label.created_date}}</span>
                                         <p class="text-wrap">
-                                            <template v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
-                                                <p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
-                                            </template>
+                                            <p class="text-wrap">{{missionDetail.created_at | formatDate}}</p>
                                         </p>
 
                                     </div>
@@ -289,52 +282,6 @@
                                     </div>
                                     <b-collapse id="mission" visible accordion="my-accordion" role="tabpanel" class="tab-content">
 
-                                        <div class="mission-tab-block row" v-if="!checkMissionTypeTime(missionDetail.mission_type)">
-                                            <div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
-                                                <div class="mission-tab-inner">
-                                                    <p v-if="missionDetail.goal_objective">
-                                                        {{missionDetail.goal_objective}}
-                                                        <span v-if="missionDetail.label_goal_objective != ''">
-                                                            {{missionDetail.label_goal_objective}}
-                                                        </span>
-                                                        <span v-else>{{ languageData.label.goal_objective }}
-                                                        </span>
-                                                    </p>
-                                                    <p v-else>
-                                                        0 <span v-if="missionDetail.label_goal_objective != ''">
-                                                            {{missionDetail.label_goal_objective}}
-                                                        </span>
-                                                        <span v-else>{{ languageData.label.goal_objective }}
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4 mission-tab-col" v-if="isCurrentStatusDisplay">
-                                                <div class="mission-tab-inner">
-                                                    <p v-if="missionDetail.achieved_goal">
-                                                        {{missionDetail.achieved_goal}}
-                                                        <span v-if="missionDetail.label_goal_achieved != ''">
-                                                            {{ missionDetail.label_goal_achieved }}
-                                                        </span>
-                                                        <span v-else>{{ languageData.label.achieved }}</span>
-                                                    </p>
-                                                    <p v-else>
-                                                        0
-                                                        <span v-if="missionDetail.label_goal_achieved != ''">
-                                                            {{ missionDetail.label_goal_achieved }}
-                                                        </span>
-                                                        <span v-else>{{ languageData.label.achieved }}</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4 mission-tab-col" v-if="isRemainingGoalDisplay">
-                                                <div class="mission-tab-inner">
-                                                    <p>{{pendingGoal(missionDetail)}}<span>
-                                                            {{languageData.label.remaining}}
-                                                        </span></p>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div v-if="missionDetail.description && missionDetail.description.length > 0">
                                             <div v-for="(section, index) in missionDetail.description" :key=index>
                                                 <h2>{{section.title}}</h2>
@@ -616,7 +563,6 @@ export default {
             isRemainingGoalDisplay: false,
             isSkillDispaly: false,
             isQuickAccessFilterDisplay: false,
-            relatedMissionsDisplay: false,
             allowAddEntry: false,
             currentTimeData: {
                 missionId: '',
@@ -988,7 +934,7 @@ export default {
         searchUsers() {
             searchUser().then(userResponse => {
                 this.userList = userResponse;
-                this.getRelatedMissions();
+                this.customTab();
             });
         },
         // Apply for mission
@@ -1008,17 +954,8 @@ export default {
                 }
             })
         },
-        getRelatedMissions() {
-            if (this.$route.params.misisonId) {
-                this.relatedMissionlLoader = true;
-                relatedMissions(this.$route.params.misisonId).then(response => {
-                    if (response.error == false) {
-                        this.missionListing = response.data;
-                    }
-                    this.relatedMissionlLoader = false;
-                    this.isShownComponent = true;
-                });
-            }
+        customTab() {
+            this.isShownComponent = true;
             let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
             tabItem.forEach(function (tabItemEvent) {
                 tabItemEvent.classList.remove('active')
@@ -1061,7 +998,11 @@ export default {
 
         getMissionDetail() {
             if (this.$route.params.misisonId) {
-                missionDetail(this.$route.params.misisonId).then(response => {
+                let data = {
+                    'mission_id' : this.$route.params.misisonId,
+                    'donation_mission' : true
+                }
+                missionDetail(data).then(response => {
                     this.isShownMediaComponent = true;
                     if (response.error == false) {
                         if (response.data[0]) {
@@ -1156,21 +1097,6 @@ export default {
                     }
                 }
             }
-        },
-        getSkills(missionDetail) {
-            let skills = '';
-            if (missionDetail.skill) {
-                (missionDetail.skill).filter((item) => {
-                    if (skills == '') {
-                        skills = item.title;
-                    } else {
-                        skills = skills + ", " + item.title;
-                    }
-                });
-            } else {
-                skills = '-';
-            }
-            return skills;
         },
 
         missionComments(commentStatus) {
@@ -1336,105 +1262,6 @@ export default {
         this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
         this.missionRatingSetting = this.settingEnabled(constants.MISSION_RATING_VOLUNTEER)
-        this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
-    },
-    updated() {
-
-    },
-    watch: {
-        $route(to, from) {
-            this.sharingUrl = document.URL
-            this.isShownComponent = false
-            this.missionId = this.$route.params.misisonId
-            this.missionAddedToFavoriteByUser = false
-            this.query = ""
-            this.selected = ""
-            this.rating = 3.5
-            this.search = ""
-            this.userList = []
-            this.myclass = ["userdetail-modal"]
-            this.currentMissionId = 0
-            this.invitedUserId = 0
-            this.showErrorDiv = false
-            this.message = null
-            this.classVariant = "success"
-            this.autoSuggestPlaceholder = ''
-            this.submitDisable = true
-            this.recentVolunterLoader = true
-            this.missionDetail = []
-            this.disableApply = false
-            this.missionDocument = []
-            this.relatedMissionlLoader = true
-            this.isShownMediaComponent = false
-            this.max = 100,
-                this.value = 70,
-                this.missionListing = [],
-                this.missionComment = [],
-                this.submitted = false,
-                this.nextUrl = null,
-                this.postComment = false,
-                this.loadMoreComment = false,
-                this.languageData = JSON.parse(store.state.languageLabel);
-            this.applyButton = this.languageData.label.apply_now;
-            this.page = 1;
-            this.isFacebookSharingDisplay = false
-            this.isTwitterSharingDisplay = false
-            this.isStarDisplay = false
-            this.isThemeDisplay = false
-            this.isInviteCollegueDisplay = false
-            this.isCommentDisplay = false
-            this.isRecentVolunteerDispaly = false
-            this.isSkillDispaly = false
-            this.isMissionGoalDisplay = false
-            this.isCurrentStatusDisplay = false
-            this.isRemainingGoalDisplay = false
-            this.isQuickAccessFilterDisplay = false
-            this.relatedMissionsDisplay = false
-            this.timeSheetId = false
-            this.hideApply = false,
-                this.customInformation = []
-            this.getMissionDetail();
-            this.languageData = JSON.parse(store.state.languageLabel);
-            this.applyButton = this.languageData.label.apply_now
-            this.isFacebookSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
-            store.state.isFacebookDisplay = this.isFacebookSharingDisplay
-            this.isTwitterSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_TWITTER)
-            store.state.isTwitterDisplay = this.isTwitterSharingDisplay
-            this.isStarDisplay = this.settingEnabled(constants.MISSION_RATINGS)
-            this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED)
-            this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE)
-            this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
-            this.isRecentVolunteerDispaly = this.settingEnabled(constants.RECENT_VOLUNTEERES)
-            this.isMissionGoalDisplay = this.settingEnabled(constants.SHOW_GOAL_OF_MISSION)
-            this.isCurrentStatusDisplay = this.settingEnabled(constants.SHOW_CURRENT_STATUS_OF_MISSION)
-            this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)
-            this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
-            this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
-            this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
-            this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT + "social-sharing/" + this.domainName + "/" +
-                this.missionId + "/" + store.state.defaultLanguageId;
-            this.missionRatingSetting = true
-            this.isStarRatingDisable = false
-            let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-            tabItem.forEach(function (tabItemEvent) {
-                tabItemEvent.classList.remove('active')
-            });
-            tabItem[0].classList.add('active')
-            let i, tabContent, tabLinks;
-            tabContent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabContent.length; i++) {
-                tabContent[i].style.display = "none";
-                if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
-                    tabContent[i].style.display = "block";
-                }
-            }
-            tabLinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tabLinks.length; i++) {
-                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-            }
-            tabItem[0].className += " active";
-
-        }
     }
 };
 </script>

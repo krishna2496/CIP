@@ -1,15 +1,18 @@
 import store from '../../store'
 import axios from 'axios'
 
-export default async(missionId) => {
+export default async(data) => {
     let responseData = {};
     let defaultLanguage = '';
 
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
+    let missionId = data.mission_id;
+
     document.body.classList.add("loader-enable");
     let url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId
+    if(data.donation_mission)
     await axios({
         url: url,
         method: 'get',
