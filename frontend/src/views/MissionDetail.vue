@@ -21,14 +21,10 @@
                                 </div>
                                 <div class="btn-outer">
                                     <b-button v-bind:class="{ 
-
-'btn-borderprimary': true, 
-
-'icon-btn': true,
-
-'added-fav' : missionAddedToFavoriteByUser
-
-}" @click="favoriteMission(missionId)">
+                                        'btn-borderprimary': true, 
+                                        'icon-btn': true,
+                                        'added-fav' : missionAddedToFavoriteByUser
+                                        }" @click="favoriteMission(missionId)">
                                         <i class="normal-img">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
                                                 <g id="Main Content">
