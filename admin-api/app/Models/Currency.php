@@ -57,7 +57,7 @@ final class Currency
      * 
      * @return string $code
      */
-    public function code()
+    public function code(): string
     {
         return $this->code;
     }
@@ -67,7 +67,7 @@ final class Currency
      * 
      * @return string $symbol
      */
-	public function symbol()
+	public function symbol(): string
     {
         return $this->symbol;
     }
