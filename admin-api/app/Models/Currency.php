@@ -54,7 +54,7 @@ final class Currency
 
     /**
      * Get currency code
-     * 
+     *
      * @return string $code
      */
     public function code(): string
@@ -64,10 +64,10 @@ final class Currency
     
     /**
      * Get currency symbol
-     * 
+     *
      * @return string $symbol
      */
-	public function symbol(): string
+    public function symbol(): string
     {
         return $this->symbol;
     }

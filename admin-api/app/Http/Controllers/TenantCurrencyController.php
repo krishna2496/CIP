@@ -16,6 +16,7 @@ use Validator;
 use App\Rules\DefaultCurrencyAvailable;
 use Illuminate\Validation\Rule;
 use App\Repositories\Tenant\TenantRepository;
+use App\Repositories\Currency\CurrencyRepository;
 
 //!  TenantCurrencyController controller
 /*!
@@ -41,20 +42,29 @@ class TenantCurrencyController extends Controller
     private $tenantRepository;
 
     /**
+     * @var App\Repositories\Currency\CurrencyRepository;
+     */
+    private $currencyRepository;
+
+    /**
      * Create a new Tenant currency controller instance.
      *
-     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Repositories\Currency\TenantAvailableCurrencyRepository $tenantAvailableCurrencyRepository
+     * @param App\Repositories\Tenant\TenantRepository $tenantRepository
+     * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
         TenantAvailableCurrencyRepository $tenantAvailableCurrencyRepository,
-        TenantRepository $tenantRepository
+        TenantRepository $tenantRepository,
+        CurrencyRepository $currencyRepository
     ) {
         $this->responseHelper = $responseHelper;
         $this->tenantAvailableCurrencyRepository = $tenantAvailableCurrencyRepository;
         $this->tenantRepository = $tenantRepository;
+        $this->currencyRepository = $currencyRepository;
     }
 
     /**
@@ -123,7 +133,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->tenantAvailableCurrencyRepository->isAvailableCurrency($request['code'])) {
+        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -183,7 +193,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->tenantAvailableCurrencyRepository->isAvailableCurrency($request['code'])) {
+        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

@@ -28,4 +28,30 @@ class CurrencyRepository
             new Currency('ZWD', 'Z$'),
         ];
     }
+
+    /**
+     * Check request currency is available in currency list
+     *
+     * @param string $currencyCode
+     * @return boolean
+     */
+    public function isAvailableCurrency(string $currencyCode) : bool
+    {
+        $allCurrencyList = $this->findAll();
+        $allCurrencyArray = [];
+        $currencyMatch = 0;
+
+        foreach ($allCurrencyList as $key => $value) {
+            $getAvailableCurrencyCode = $value->code();
+            if ($getAvailableCurrencyCode === $currencyCode) {
+                $currencyMatch = 1;
+            }
+        }
+
+        if ($currencyMatch === 1) {
+            return true;
+        }
+
+        return false;
+    }
 }
