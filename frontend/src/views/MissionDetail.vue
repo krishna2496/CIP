@@ -290,7 +290,7 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                 <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments" class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
                                 <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
-                                    <a href="javascript:void(0)" :data-id="'tab_' + index" class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
+                                    <a href="javascript:void(0)" :data-id="`tab_${index}`" class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
                                     </a>
                                 </li>
                             </ul>
@@ -458,7 +458,7 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                     <div class="tab-title">
                                         <h3 v-b-toggle="`tab_${index}`">{{getCustomTabLabel(missionTab.languages)}}</h3>
                                     </div>
-                                    <b-collapse :id="'tab_' + index" visible accordion="my-accordion" role="tabpanel" class="tab-content">
+                                    <b-collapse :id="`tab_${index}`" visible accordion="my-accordion" role="tabpanel" class="tab-content">
                                         <div v-for="(section, index) in getCustomTabDescription(missionTab.languages)" :key=index>
                                             <h2>{{section.title}}</h2>
                                             <p class="mission-description-content" v-html="section.content"></p>
@@ -1175,7 +1175,7 @@ export default {
 
         getCustomTabLabel(translations) {
             if (translations) {
-                let filteredObj = translations.filter((item, i) => {
+                const filteredObj = translations.filter((item, i) => {
                     if (item.language_code === store.state.defaultLanguage.toLowerCase()) {
                         return translations[i].name;
                     }
@@ -1183,7 +1183,7 @@ export default {
                 if (filteredObj[0]) {
                     return filteredObj[0].name;
                 } else {
-                    let filtereObj = translations.filter((item, i) => {
+                    const filtereObj = translations.filter((item, i) => {
                         if (item.language_code === store.state.defaultTenantLanguage.toLowerCase()) {
                             return translations[i].name;
                         }
@@ -1198,7 +1198,7 @@ export default {
 
         getCustomTabDescription(translations) {
             if (translations) {
-                let filteredObj = translations.filter((item, i) => {
+                const filteredObj = translations.filter((item, i) => {
                     if (item.language_code === store.state.defaultLanguage.toLowerCase()) {
                         return translations[i].section;
                     }
@@ -1206,7 +1206,7 @@ export default {
                 if (filteredObj[0]) {
                     return filteredObj[0].section;
                 } else {
-                    let filtereObj = translations.filter((item, i) => {
+                    const filtereObj = translations.filter((item, i) => {
                         if (item.language_code === store.state.defaultTenantLanguage.toLowerCase()) {
                             return translations[i].section;
                         }

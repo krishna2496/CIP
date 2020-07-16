@@ -197,7 +197,7 @@
                                 <li><a href="javascript:void(0)" data-id="sponsor" class="tablinks">{{ languageData.label.sponser}}</a></li>
                                 <li><a href="javascript:void(0)" data-id="mission" class="tablinks">{{ languageData.label.mission}}</a></li>
                                 <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
-                                    <a href="javascript:void(0)" :data-id="'tab_' + index" class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
+                                    <a href="javascript:void(0)" :data-id="`tab_${index}`" class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
                                     </a>
                                 </li>
                             </ul>
@@ -321,7 +321,7 @@
                                     <div class="tab-title">
                                         <h3 v-b-toggle="`tab_${index}`">{{getCustomTabLabel(missionTab.languages)}}</h3>
                                     </div>
-                                    <b-collapse :id="'tab_' + index" visible accordion="my-accordion" role="tabpanel" class="tab-content">
+                                    <b-collapse :id="`tab_${index}`" visible accordion="my-accordion" role="tabpanel" class="tab-content">
                                         <div v-for="(section, index) in getCustomTabDescription(missionTab.languages)" :key=index>
                                             <h2>{{section.title}}</h2>
                                             <p class="mission-description-content" v-html="section.content"></p>
@@ -762,7 +762,7 @@ export default {
                 .port ? ':' + window.location.port : '');
         }
 
-        let currentUrl = (((window.location.origin).split('.')));
+        const currentUrl = (((window.location.origin).split('.')));
 
         if (currentUrl[0]) {
             if (process.env.NODE_ENV == 'production') {
@@ -881,8 +881,8 @@ export default {
         },
         //This is what the <input/> value is set to when you are selecting a suggestion.
         getSuggestionValue(suggestion) {
-            let firstName = suggestion.item.first_name;
-            let lastName = suggestion.item.last_name;
+            const firstName = suggestion.item.first_name;
+            const lastName = suggestion.item.last_name;
             return `${firstName} ${lastName}`;
         },
         // Open auto suggest modal
@@ -1078,7 +1078,7 @@ export default {
             if (missionTheme) {
                 const translations = missionTheme.translations
                 if (translations) {
-                    let filteredObj = translations.filter((item, i) => {
+                    const filteredObj = translations.filter((item, i) => {
                         if (item.lang === store.state.defaultLanguage.toLowerCase()) {
                             return translations[i].title;
                         }
@@ -1086,7 +1086,7 @@ export default {
                     if (filteredObj[0]) {
                         return filteredObj[0].title;
                     } else {
-                        let filtereObj = translations.filter((item, i) => {
+                        const filtereObj = translations.filter((item, i) => {
                             if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
                                 return translations[i].title;
                             }
@@ -1192,7 +1192,7 @@ export default {
 
         getCustomTabLabel(translations) {
             if (translations) {
-                let filteredObj = translations.filter((item, i) => {
+                const filteredObj = translations.filter((item, i) => {
                     if (item.language_code === store.state.defaultLanguage.toLowerCase()) {
                         return translations[i].name;
                     }
@@ -1200,7 +1200,7 @@ export default {
                 if (filteredObj[0]) {
                     return filteredObj[0].name;
                 } else {
-                    let filtereObj = translations.filter((item, i) => {
+                    const filtereObj = translations.filter((item, i) => {
                         if (item.language_code === store.state.defaultTenantLanguage.toLowerCase()) {
                             return translations[i].name;
                         }
@@ -1215,7 +1215,7 @@ export default {
 
         getCustomTabDescription(translations) {
             if (translations) {
-                let filteredObj = translations.filter((item, i) => {
+                const filteredObj = translations.filter((item, i) => {
                     if (item.language_code === store.state.defaultLanguage.toLowerCase()) {
                         return translations[i].section;
                     }
@@ -1223,7 +1223,7 @@ export default {
                 if (filteredObj[0]) {
                     return filteredObj[0].section;
                 } else {
-                    let filtereObj = translations.filter((item, i) => {
+                    const filtereObj = translations.filter((item, i) => {
                         if (item.language_code === store.state.defaultTenantLanguage.toLowerCase()) {
                             return translations[i].section;
                         }
