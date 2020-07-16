@@ -31,14 +31,14 @@ class TenantAvailableCurrencyRepository
      *
      * @param App\Models\TenantAvailableCurrency $tenantCurrency
      * @param App\Models\Tenant $tenant
+     * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     public function __construct(
         TenantAvailableCurrency $tenantAvailableCurrency,
         Tenant $tenant,
         CurrencyRepository $currencyRepository
-    )
-    {
+    ) {
         $this->tenantAvailableCurrency = $tenantAvailableCurrency;
         $this->tenant = $tenant;
         $this->currencyRepository = $currencyRepository;
@@ -115,31 +115,5 @@ class TenantAvailableCurrencyRepository
             ->orderBy('code', 'ASC')
             ->paginate($request->perPage);
         return $currencyTenantDetails;
-    }
-
-    /**
-     * Check request currency is available in currency list
-     *
-     * @param string $currencyCode
-     * @return boolean
-     */
-    public function isAvailableCurrency(string $currencyCode) : bool
-    {
-        $allCurrencyList = $this->currencyRepository->findAll();
-        $allCurrencyArray = [];
-        $currencyMatch = 0;
-
-        foreach ($allCurrencyList as $key => $value) {
-            $getAvailableCurrencyCode = $value->code();
-            if ($getAvailableCurrencyCode === $currencyCode) {
-                $currencyMatch = 1;
-            }
-        }
-
-        if ($currencyMatch === 1) {
-            return true;
-        }
-
-        return false;
     }
 }
