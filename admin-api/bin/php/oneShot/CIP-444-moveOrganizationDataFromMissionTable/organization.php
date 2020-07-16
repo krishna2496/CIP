@@ -29,7 +29,7 @@ if (count($tenants) > 0) {
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
         $uniqueOrganizationDataFromMission = $pdo
-        ->query('select organisation_id, organisation_name created_at from mission GROUP BY organisation_id ORDER BY created_at DESC')
+        ->query('select organisation_id, organisation_name, created_at from mission GROUP BY organisation_id ORDER BY created_at DESC')
         ->fetchAll();
 
         if (!empty($uniqueOrganizationDataFromMission)) {
