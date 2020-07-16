@@ -13,7 +13,7 @@ export default async(data) => {
     document.body.classList.add("loader-enable");
     let url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId
     if(data.donation_mission) {
-        url = `${url}?with_donation_attributes=true`
+        url = `${url}?with_donation_attributes=1`
     }
     await axios({
         url: url,
