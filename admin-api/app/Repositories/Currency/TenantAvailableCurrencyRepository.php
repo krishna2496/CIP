@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Currency;
 
-use App\Models\Currency;
 use Illuminate\Http\Request;
 use App\Models\TenantAvailableCurrency;
 use App\Models\Tenant;
@@ -22,26 +21,18 @@ class TenantAvailableCurrencyRepository
     private $tenant;
 
     /**
-     * @var App\Repositories\Currency\CurrencyRepository
-     */
-    private $currencyRepository;
-
-    /**
      * Create a new Currency repository instance.
      *
      * @param App\Models\TenantAvailableCurrency $tenantCurrency
      * @param App\Models\Tenant $tenant
-     * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     public function __construct(
         TenantAvailableCurrency $tenantAvailableCurrency,
-        Tenant $tenant,
-        CurrencyRepository $currencyRepository
+        Tenant $tenant
     ) {
         $this->tenantAvailableCurrency = $tenantAvailableCurrency;
         $this->tenant = $tenant;
-        $this->currencyRepository = $currencyRepository;
     }
 
     /**
