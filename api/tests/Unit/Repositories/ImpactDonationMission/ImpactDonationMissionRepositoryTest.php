@@ -15,8 +15,8 @@ use App\Helpers\ResponseHelper;
 use Illuminate\Support\Collection;
 use App\Models\MissionImpactDonation;
 use Illuminate\Support\Str;
-use App\Models\Language;
 use DB;
+use App\Models\Language;
 
 class ImpactDonationMissionRepositoryTest extends TestCase
 {
@@ -90,7 +90,7 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             "amount" => 145,
             "translations" => [
                 [
-                    "language_code" => "tr",
+                    "language_code" => "en",
                     "content" => "this is test impact donation mission in english 2 language."
                 ]
             ]
@@ -105,7 +105,7 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $collection = $this->mock(Collection::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
-        $languageTenantMock = $this->mock(Language::class);
+        $languageObjectMock = $this->mock(Language::class);
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -121,18 +121,14 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         ->with(['amount'=>$data['amount']])
         ->andReturn($missionImpactDonation);
 
-        DB::setDefaultConnection('mysql');
-
-        $languageTenantMock->shouldReceive('where')
+        $collection->shouldReceive('where')
         ->once()
         ->with('code', $data['translations'][0]['language_code'])
-        ->andReturn($languageTenantMock);
+        ->andReturn($collection);
 
-        $languageTenantMock->shouldReceive('first')
+        $collection->shouldReceive('first')
         ->once()
-        ->andReturn($languageTenantMock);
-
-        DB::setDefaultConnection('tenant');
+        ->andReturn($languageObjectMock);
 
         $repository = $this->getRepository(
             $mission,
