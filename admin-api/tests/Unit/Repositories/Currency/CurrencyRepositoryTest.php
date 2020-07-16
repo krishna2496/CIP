@@ -1,5 +1,5 @@
 <?php
-    
+
 namespace Tests\Unit\Repositories\Currency;
 
 use App\Models\TenantCurrency;
@@ -15,55 +15,45 @@ use Mockery;
 class CurrencyRepositoryTest extends TestCase
 {
     /**
-    * @testdox Test findAll success
-    *
-    * @return void
-    */
-    public function testfindAllsuccess()
+     * @testdox Test findAll success
+     *
+     * @return void
+     */
+    public function testfindAllSuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $tenantCurrency = $this->mock(TenantCurrency::class);
-        $service = $this->getRepository(
+        $repository = $this->getRepository(
             $tenantCurrency,
             $tenant
         );
 
-        $methodResponse = [
-            new Currency('INR', '₹'),
-            new Currency('EUR', '€'),
-            new Currency('USD', '$'),
-            new Currency('BRL', 'R$'),
-            new Currency('ZWD', 'Z$'),
-        ];
-
-        $response = $service->findAll();
-        $this->assertIsArray($response);
-        $this->assertEquals($methodResponse, $response);
+        $currencies = $repository->findAll();
+        $this->assertIsArray($currencies);
     }
 
     /**
-    * @testdox Test store success
-    *
-    * @return void
-    */
+     * @testdox Test store success
+     *
+     * @return void
+     */
     public function testStoreSuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $tenantCurrency = $this->mock(TenantCurrency::class);
 
-        $service = $this->getRepository(
+        $repository = $this->getRepository(
             $tenantCurrency,
             $tenant
         );
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
         $data = [
-            "code"=> "USD",
-            "default"=> "1",
-            "is_active"=> "1"
+            'code'=> 'USD',
+            'default'=> '1',
+            'is_active'=> '1'
         ];
         $request = new Request($data);
-        
+
         $currencyData = [
             'tenant_id' => $tenantId,
             'code' => $request['code'],
@@ -74,46 +64,47 @@ class CurrencyRepositoryTest extends TestCase
         $tenant->shouldReceive('findOrFail')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
+            ->andReturn($tenant);
 
         $tenantCurrency->shouldReceive('where')
             ->once()
             ->with('tenant_id', $tenantId)
-            ->andReturn(new TenantCurrency());
+            ->andReturn($tenantCurrency);
+
+        $tenantCurrency->shouldReceive('update')
+            ->with(['default' => 0])
+            ->andReturn($tenantCurrency);
 
         $tenantCurrency->shouldReceive('create')
             ->once()
-            ->with($currencyData)
-            ->andReturn(new TenantCurrency());
+            ->with($currencyData);
 
-        $response = $service->store($request, $tenantId);
-        $this->assertNull($response);
+        $repository->store($request, $tenantId);
     }
 
     /**
-    * @testdox Test update success
-    *
-    * @return void
-    */
+     * @testdox Test update success
+     *
+     * @return void
+     */
     public function testUpdateSuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $tenantCurrency = $this->mock(TenantCurrency::class);
 
-        $service = $this->getRepository(
+        $repository = $this->getRepository(
             $tenantCurrency,
             $tenant
         );
 
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
         $data = [
-            "code"=> "USD",
-            "default"=> "1",
-            "is_active"=> "1"
+            'code'=> 'USD',
+            'default'=> '1',
+            'is_active'=> '1'
         ];
         $request = new Request($data);
-        
+
         $currencyData = [
             'tenant_id' => $tenantId,
             'code' => $request['code'],
@@ -122,34 +113,42 @@ class CurrencyRepositoryTest extends TestCase
         ];
 
         $tenantCurrency->shouldReceive('where')
-            ->once()
+            ->twice()
             ->with(['tenant_id' => $tenantId, 'code' => $request['code']])
-            ->andReturn(new TenantCurrency());
+            ->andReturn($tenantCurrency);
+
+        $tenantCurrency->shouldReceive('firstOrFail')
+            ->once()
+            ->andReturn($tenantCurrency);
 
         $tenantCurrency->shouldReceive('where')
             ->once()
             ->with('tenant_id', $tenantId)
-            ->andReturn(new TenantCurrency());
+            ->andReturn($tenantCurrency);
 
-        $tenantCurrency->shouldReceive('where')
+        $tenantCurrency->shouldReceive('update')
             ->once()
-            ->with(['tenant_id' => $tenantId, 'code' => $request['code']])
-            ->andReturn(new TenantCurrency());
+            ->with(['default' => '0'])
+            ->andReturn($tenantCurrency);
 
-        $response = $service->update($request, $tenantId);
-        $this->assertNull($response);
+        $tenantCurrency->shouldReceive('update')
+            ->once()
+            ->with($currencyData)
+            ->andReturn($tenantCurrency);
+
+        $repository->update($request, $tenantId);
     }
 
     /**
-    * @testdox Test get tenant currency list
-    *
-    * @return void
-    */
+     * @testdox Test get tenant currency list
+     *
+     * @return void
+     */
     public function testGetTenantCurrencyListSuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $tenantCurrency = $this->mock(TenantCurrency::class);
-        $service = $this->getRepository(
+        $repository = $this->getRepository(
             $tenantCurrency,
             $tenant
         );
@@ -160,97 +159,87 @@ class CurrencyRepositoryTest extends TestCase
         $tenant->shouldReceive('findOrFail')
             ->once()
             ->with($tenantId)
-            ->andReturn(new Tenant());
-        
+            ->andReturn($tenant);
+
         $tenantCurrency->shouldReceive('where')
              ->once()
              ->with(['tenant_id' => $tenantId])
-             ->andReturn(new TenantCurrency());
+             ->andReturn($tenantCurrency);
+
+        $tenantCurrency->shouldReceive('orderBy')
+             ->once()
+             ->with('code', 'ASC')
+             ->andReturn($tenantCurrency);
 
         $items = [
-            "code"=> "INR",
-            "default"=> 1,
-            "is_active"=> 1
+            'code'=> 'INR',
+            'default'=> 1,
+            'is_active'=> 1
         ];
-    
-        $mockResponse = new LengthAwarePaginator($items, 0, 10, 1);
-        $jsonResponse = new JsonResponse($mockResponse);
-        $response = $service->getTenantCurrencyList($request, $tenantId);
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $mockTenantCurrencies = new LengthAwarePaginator($items, 0, 10, 1);
+        $tenantCurrency->shouldReceive('paginate')
+            ->once()
+            ->with($data['perPage'])
+            ->andReturn($mockTenantCurrencies);
+
+        $tenantCurrencies = $repository->getTenantCurrencyList($request, $tenantId);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $tenantCurrencies);
+        $this->assertSame($mockTenantCurrencies, $tenantCurrencies);
     }
 
     /**
-    * @testdox Test get tenant currency list false
-    *
-    * @return void
-    */
+     * @testdox Test get tenant currency list false
+     *
+     * @return void
+     */
     public function testIsValidCurrencyFalse()
     {
         $tenant = $this->mock(Tenant::class);
         $tenantCurrency = $this->mock(TenantCurrency::class);
 
-        $service = $this->getRepository(
+        $repository = $this->getRepository(
             $tenantCurrency,
             $tenant
         );
 
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
         $data = [
-            "code"=> "FAK",
-            "default"=> "1",
-            "is_active"=> "1"
+            'code'=> 'FAK',
+            'default'=> '1',
+            'is_active'=> '1'
         ];
         $request = new Request($data);
 
-        $allCurrencies = [
-            new Currency('INR', '₹'),
-            new Currency('EUR', '€'),
-            new Currency('USD', '$'),
-            new Currency('BRL', 'R$'),
-            new Currency('ZWD', 'Z$'),
-        ];
-
-        $this->assertEquals($allCurrencies, $service->findAll());
-        $response = $service->isValidCurrency($request['code']);
-        $this->assertEquals(false, $response);
+        $isValid = $repository->isValidCurrency($request['code']);
+        $this->assertEquals(false, $isValid);
     }
 
     /**
-    * @testdox Test get tenant currency list
-    *
-    * @return void
-    */
+     * @testdox Test get tenant currency list
+     *
+     * @return void
+     */
     public function testIsValidCurrencySuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $tenantCurrency = $this->mock(TenantCurrency::class);
 
-        $service = $this->getRepository(
+
+        $repository = $this->getRepository(
             $tenantCurrency,
             $tenant
         );
 
         $tenantId = 1;
-        TenantCurrency::where(['code'=>'USD','tenant_id'=>$tenantId])->delete();
         $data = [
-            "code"=> "USD",
-            "default"=> "1",
-            "is_active"=> "1"
+            'code'=> 'USD',
+            'default'=> '1',
+            'is_active'=> '1'
         ];
         $request = new Request($data);
 
-        $allCurrencies = [
-            new Currency('INR', '₹'),
-            new Currency('EUR', '€'),
-            new Currency('USD', '$'),
-            new Currency('BRL', 'R$'),
-            new Currency('ZWD', 'Z$'),
-        ];
-
-        $this->assertEquals($allCurrencies, $service->findAll());
-        $response = $service->isValidCurrency($request['code']);
-        $this->assertEquals(true, $response);
+        $isValid = $repository->isValidCurrency($request['code']);
+        $this->assertEquals(true, $isValid);
     }
 
     /**
@@ -271,12 +260,12 @@ class CurrencyRepositoryTest extends TestCase
     }
 
     /**
-    * Mock an object
-    *
-    * @param string name
-    *
-    * @return Mockery
-    */
+     * Mock an object
+     *
+     * @param string name
+     *
+     * @return Mockery
+     */
     private function mock($class)
     {
         return Mockery::mock($class);
