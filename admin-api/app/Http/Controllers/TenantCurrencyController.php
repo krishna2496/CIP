@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Currency\CurrencyRepository;
+use App\Repositories\Currency\TenantAvailableCurrencyRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
@@ -26,9 +26,9 @@ class TenantCurrencyController extends Controller
     use RestExceptionHandlerTrait;
 
     /**
-     * @var App\Repositories\Currency\CurrencyRepository
+     * @var App\Repositories\Currency\TenantAvailableCurrencyRepository
      */
-    private $currencyRepository;
+    private $tenantAvailableCurrencyRepository;
 
     /**
      * @var App\Helpers\ResponseHelper
@@ -44,16 +44,16 @@ class TenantCurrencyController extends Controller
      * Create a new Tenant currency controller instance.
      *
      * @param  App\Helpers\ResponseHelper $responseHelper
-     * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
+     * @param App\Repositories\Currency\TenantAvailableCurrencyRepository $tenantAvailableCurrencyRepository
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
-        CurrencyRepository $currencyRepository,
+        TenantAvailableCurrencyRepository $tenantAvailableCurrencyRepository,
         TenantRepository $tenantRepository
     ) {
         $this->responseHelper = $responseHelper;
-        $this->currencyRepository = $currencyRepository;
+        $this->tenantAvailableCurrencyRepository = $tenantAvailableCurrencyRepository;
         $this->tenantRepository = $tenantRepository;
     }
 
@@ -67,7 +67,7 @@ class TenantCurrencyController extends Controller
     public function index(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $tenantCurrencyList = $this->currencyRepository->getTenantCurrencyList($request, $tenantId);
+            $tenantCurrencyList = $this->tenantAvailableCurrencyRepository->getTenantCurrencyList($request, $tenantId);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
@@ -123,7 +123,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
+        if (!$this->tenantAvailableCurrencyRepository->isAvailableCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -133,7 +133,7 @@ class TenantCurrencyController extends Controller
         }
 
         // Store tenant currency details
-        $this->currencyRepository->store($request, $tenantId);
+        $this->tenantAvailableCurrencyRepository->store($request, $tenantId);
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED');
@@ -183,7 +183,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
+        if (!$this->tenantAvailableCurrencyRepository->isAvailableCurrency($request['code'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -193,7 +193,7 @@ class TenantCurrencyController extends Controller
         }
 
         try {
-            $this->currencyRepository->update($request, $tenantId);
+            $this->tenantAvailableCurrencyRepository->update($request, $tenantId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.CURRENCY_CODE_NOT_FOUND'),

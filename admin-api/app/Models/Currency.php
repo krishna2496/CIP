@@ -29,7 +29,7 @@ final class Currency
      * @return void
      */
 
-    public function __construct($code,$symbol)
+    public function __construct(string $code, string $symbol)
     {
         $this->setCode($code);
         $this->symbol = $symbol;
