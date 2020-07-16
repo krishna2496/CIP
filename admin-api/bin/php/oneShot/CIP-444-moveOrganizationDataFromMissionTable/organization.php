@@ -7,7 +7,6 @@ $db = app()->make('db');
 $pdo = $db->connection('mysql')->getPdo();
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
-use Illuminate\Support\Str;
 
 $tenants = $pdo->query('select * from tenant where status=1 AND deleted_at IS NULL')->fetchAll();
 
@@ -29,12 +28,15 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
-        $uniqueOrganizationDataFromMission = $pdo->query('select organisation_id ,organisation_name from mission GROUP BY organisation_name')->fetchAll();
+        $uniqueOrganizationDataFromMission = $pdo
+        ->query('select organisation_id ,organisation_name, created_at from mission GROUP BY organisation_id ORDER BY created_at DESC')
+        ->fetchAll();
 
         if (!empty($uniqueOrganizationDataFromMission)) {
             foreach ($uniqueOrganizationDataFromMission as $organizationData) {
                 $id = $organizationData['organisation_id'];
                 $name = $organizationData['organisation_name'];
+                $createdAt = $organizationData['created_at'];
                 $pdo->exec('SET NAMES utf8mb4');
                 $pdo->exec('SET CHARACTER SET utf8mb4');
 
