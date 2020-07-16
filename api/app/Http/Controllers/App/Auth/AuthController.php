@@ -35,6 +35,7 @@ use App\Events\User\UserActivityLogEvent;
 /*!
 This controller is responsible for handling authenticate, change password and reset password operations.
  */
+
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -119,10 +120,11 @@ class AuthController extends Controller
     public function authenticate(User $user, Request $request): JsonResponse
     {
         $samlSettings = $this->tenantOptionRepository->getOptionValue(
-          TenantOption::SAML_SETTINGS
+            TenantOption::SAML_SETTINGS
         );
 
-        if ($samlSettings
+        if (
+            $samlSettings
             && count($samlSettings)
             && $samlSettings[0]['option_value']
             && $samlSettings[0]['option_value']['saml_access_only']
@@ -199,20 +201,18 @@ class AuthController extends Controller
         $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
         $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
         $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
-        $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar !="") ? $userDetail->avatar :
-        $this->helpers->getUserDefaultProfileImage($tenantName);
+        $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar != "") ? $userDetail->avatar : $this->helpers->getUserDefaultProfileImage($tenantName);
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
-                                         $userDetail->cookie_agreement_date : '';
-        $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
-        $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone !="") ?
-        $userDetail->timezone['timezone'] : '';
+            $userDetail->cookie_agreement_date : '';
+        $data['email'] = ((isset($userDetail->email)) && $userDetail->email != "") ? $userDetail->email : '';
+        $data['timezone'] = ((isset($userDetail->timezone)) && $userDetail->timezone != "") ?
+            $userDetail->timezone['timezone'] : '';
         $data['is_profile_complete'] = ((isset($userDetail->is_profile_complete))
-        && $userDetail->is_profile_complete != "") ? $userDetail->is_profile_complete : '';
+            && $userDetail->is_profile_complete != "") ? $userDetail->is_profile_complete : '';
 
         $data['receive_email_notification'] = (
-            (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification !=""
-        ) ?
-        $userDetail->receive_email_notification : '0';
+            (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification != "") ?
+            $userDetail->receive_email_notification : '0';
 
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
@@ -228,7 +228,7 @@ class AuthController extends Controller
             null,
             $userDetail->user_id
         ));
-        header('Token: '.$this->helpers->getJwtToken($userDetail->user_id, $tenantName));
+        header('Token: ' . $this->helpers->getJwtToken($userDetail->user_id, $tenantName));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -291,11 +291,11 @@ class AuthController extends Controller
         $languageCode = $language->code;
         config(['app.user_language_code' => $languageCode]);
 
-        $refererUrl = $this->helpers->getRefererFromRequest($request);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $refererUrl = 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName;
         config(['app.mail_url' => $refererUrl . '/create-password/']);
 
-        // set tenant logo
-        $tenantLogo = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_logo']);
+        $tenantLogo = $this->tenantOptionRepository->getOptionValueFromOptionName('custom_logo');
         config(['app.tenant_logo' => $tenantLogo->option_value]);
 
         // Verify email address and send create password link
@@ -390,7 +390,7 @@ class AuthController extends Controller
         config(['app.user_language_code' => $languageCode]);
 
         $refererUrl = $this->helpers->getRefererFromRequest($request);
-        config(['app.mail_url' => $refererUrl.'/reset-password/']);
+        config(['app.mail_url' => $refererUrl . '/reset-password/']);
 
         //set tenant logo
         $tenantLogo = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_logo']);
@@ -436,14 +436,14 @@ class AuthController extends Controller
      */
     public function passwordReset(Request $request): JsonResponse
     {
-        $request->merge(['token'=>$request->reset_password_token]);
+        $request->merge(['token' => $request->reset_password_token]);
 
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
-                'email' => 'required|email',
-                'token' => 'required',
-                'password' => 'required|min:8',
-                'password_confirmation' => 'required|min:8|same:password',
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8',
+            'password_confirmation' => 'required|min:8|same:password',
         ]);
 
         if ($validator->fails()) {
@@ -457,11 +457,11 @@ class AuthController extends Controller
 
         //get record of user by checking password expiry time
         $record = $this->passwordReset->where('email', $request->get('email'))
-        ->where(
-            'created_at',
-            '>',
-            Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME'))
-        )->first();
+            ->where(
+                'created_at',
+                '>',
+                Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME'))
+            )->first();
 
         //if record not found
         if (!$record) {
@@ -521,14 +521,14 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request): JsonResponse
     {
-        $request->merge(['token'=>$request->create_password_token]);
+        $request->merge(['token' => $request->create_password_token]);
 
         // Server side validations
         $validator = Validator::make($request->toArray(), [
-                'email' => 'required|email',
-                'token' => 'required',
-                'password' => 'required|min:8',
-                'password_confirmation' => 'required|min:8|same:password',
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8',
+            'password_confirmation' => 'required|min:8|same:password',
         ]);
 
         if ($validator->fails()) {
@@ -542,11 +542,11 @@ class AuthController extends Controller
 
         // get record of user by checking password expiry time
         $record = $this->passwordReset->where('email', $request->get('email'))
-        ->where(
-            'created_at',
-            '>',
-            Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME'))
-        )->first();
+            ->where(
+                'created_at',
+                '>',
+                Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME'))
+            )->first();
 
         // if record not found
         if (!$record) {

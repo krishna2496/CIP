@@ -13,6 +13,7 @@
         "change_password": "Change password",
         "create_password": "Create password",
         "new_password_message": "Please enter a new password in the fields below.",
+		"create_password_message": "Please enter your password in the fields below.",
         "logout": "Logout",
         "apply": "Apply",
         "from": "From",

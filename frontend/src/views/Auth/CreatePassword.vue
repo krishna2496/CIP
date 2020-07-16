@@ -10,8 +10,8 @@
                     <img :src="this.$store.state.logo">
                 </router-link>
                 <div class="form-title-block">
-                    <h1>{{ languageData.label.new_password }}</h1>
-                    <p>{{ languageData.label.new_password_message }}</p>
+                    <h1>{{ languageData.label.create_password }}</h1>
+                    <p>{{ languageData.label.create_password_message }}</p>
                 </div>
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}
@@ -51,7 +51,7 @@
                         </div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary">
-                        {{ languageData.label.change_password }}
+                        {{ languageData.label.create_password }}
                     </b-button>
                 </b-form>
                 <div class="form-link">
