@@ -3,7 +3,7 @@
 		<div v-bind:class="{'card-grid' : !relatedMission,
 		}">
 			<b-row>
-				<b-col lg="4" sm="6" class="card-outer" 
+				<b-col lg="4" sm="6" class="card-outer"
 				:id="`gridview-${key}`"
 				data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
 					<div class="card-inner">
@@ -37,10 +37,10 @@
 						</b-card-header>
 
 						<b-card-body>
-							
+
 							<div class="content-block">
 								<div class="mission-label-wrap">
-									
+
 									<!-- <div class="mission-label volunteer-label">
 										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon.svg'" alt="volunteer icon"></i>Volunteer</span>
 									</div> -->
@@ -50,7 +50,7 @@
 									<!-- <div class="mission-label donation-label">
 										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/donation-icon.svg'" alt=""></i>Donation</span>
 									</div> -->
-									
+
 								</div>
 								<div class="content-inner-block">
 									<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
@@ -157,7 +157,7 @@
 												<b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
 												<span class="subtitle-text">
 													{{mission.achieved_goal}}
-													<em 
+													<em
 														v-if="mission.label_goal_achieved != ''">
 														{{ mission.label_goal_achieved }}
 													</em>
@@ -185,7 +185,7 @@
 										@click="handleModal(mission.mission_id)">
 										<img :src="$store.state.imagePath+'/assets/images/multi-user-icon.svg'" alt="multi user icon">
 								</b-button>
-								
+
 								<b-button
 								v-bind:class="{
 									'icon-btn' : true,
@@ -197,7 +197,7 @@
 									<img v-if="mission.is_favourite == 0" :src="$store.state.imagePath+'/assets/images/heart-icon.svg'" alt="heart icon">
 									<img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="heart icon">
 								</b-button>
-								
+
 							</div>
 							</div>
 							</div>
@@ -266,18 +266,19 @@
 </template>
 
 <script>
-import store from "../store";
-import constants from "../constant";
-import StarRating from "vue-star-rating";
+import store from '../store';
+import constants from '../constant';
+import StarRating from 'vue-star-rating';
 import {
 	favoriteMission,
 	inviteColleague,
 	applyMission
-} from "../services/service";
-import { VueAutosuggest } from "vue-autosuggest";
-import moment from "moment";
+} from '../services/service';
+import { VueAutosuggest } from 'vue-autosuggest';
+import moment from 'moment';
+
 export default {
-	name: "MissionGridView",
+	name: 'MissionGridView',
 	components: {
 		StarRating,
 		VueAutosuggest
@@ -289,287 +290,290 @@ export default {
 	},
 	data() {
 		return {
-		query: "",
-		selected: "",
-		myclass: ["userdetail-modal"],
+		query: '',
+		selected: '',
+		myclass: ['userdetail-modal'],
 		currentMissionId: 0,
 		invitedUserId: 0,
 		showErrorDiv: false,
 		message: null,
-		classVariant: "success",
-		autoSuggestPlaceholder: "",
+		classVariant: 'success',
+		autoSuggestPlaceholder: '',
 		submitDisable: true,
 		languageData: [],
 		isInviteCollegueDisplay: true,
 		isStarRatingDisplay: true,
 		isSubmitNewMissionSet: true,
 		isThemeSet: true,
-		submitNewMissionUrl: ""
+		submitNewMissionUrl: '',
+		cardHeightAdjIntervalId: null
 		};
 	},
 	computed: {
 		filteredOptions() {
-		if (this.userList) {
-			return [
-			{
-				data: this.userList.filter(option => {
-				let firstName = option.first_name.toLowerCase();
-				let lastName = option.last_name.toLowerCase();
-				let email = option.email.toLowerCase();
-				let searchString = firstName + "" + lastName + "" + email;
-				return searchString.indexOf(this.query.toLowerCase()) > -1;
-				})
+			if (this.userList) {
+				return [
+					{
+						data: this.userList.filter(option => {
+							const firstName = option.first_name.toLowerCase();
+							const lastName = option.last_name.toLowerCase();
+							const email = option.email.toLowerCase();
+							const searchString = `${firstName}${lastName}${email}`;
+							return searchString.indexOf(this.query.toLowerCase()) > -1;
+						})
+					}
+				];
 			}
-			];
-		}
 		}
 	},
 	methods: {
 		hideModal() {
-		this.autoSuggestPlaceholder = "";
-		this.submitDisable = true;
-		this.invitedUserId = "";
-		this.query = "";
-		this.selected = "";
+			this.autoSuggestPlaceholder = '';
+			this.submitDisable = true;
+			this.invitedUserId = '';
+			this.query = '';
+			this.selected = '';
 		},
 		getAppliedStatus(missionDetail) {
-		let currentDate = moment().format("YYYY-MM-DD");
-		let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-		let checkEndDateExist = true;
-		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-			if (currentDate > missionEndDate) {
-			checkEndDateExist = false;
+			const currentDate = moment().format('YYYY-MM-DD');
+			const missionEndDate = moment(missionDetail.end_date).format('YYYY-MM-DD');
+			let checkEndDateExist = true;
+			if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+				if (currentDate > missionEndDate) {
+				checkEndDateExist = false;
+				}
 			}
-		}
-		if (missionDetail.user_application_count == 1 && checkEndDateExist) {
-			return true;
-		}
+			if (missionDetail.user_application_count == 1 && checkEndDateExist) {
+				return true;
+			}
 		},
 		getClosedStatus(missionDetail) {
-		let currentDate = moment().format("YYYY-MM-DD");
-		let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-			if (currentDate > missionEndDate) {
-			return true;
-			}
-		}
-		},
-		//No record found
-		noRecordFound() {
-		let defaultLang = store.state.defaultLanguage.toLowerCase();
-		if (JSON.parse(store.state.missionNotFoundText) != "") {
-			let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-			let data = missionNotFoundArray.filter(item => {
-			if (item.lang == defaultLang) {
-				return item;
-			}
-			});
-
-			if (data[0] && data[0].message) {
-			return data[0].message;
-			} else {
-			return this.languageData.label.no_record_found;
-			}
-		} else {
-			return this.languageData.label.no_record_found;
-		}
-		},
-
-		handleFav() {
-		let btn_active = document.querySelector(".favourite-icon");
-		btn_active.classList.toggle("active");
-		},
-		//get theme title
-		getThemeTitle(translations) {
-		if (translations) {
-			let filteredObj = translations.filter((item, i) => {
-			if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-				return translations[i].title;
-			}
-			});
-
-			if (filteredObj[0]) {
-			return filteredObj[0].title;
-			} else {
-			let filtereObj = translations.filter((item, i) => {
-				if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
-				return translations[i].title;
+			const currentDate = moment().format('YYYY-MM-DD');
+			const missionEndDate = moment(missionDetail.end_date).format('YYYY-MM-DD');
+			if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+				if (currentDate > missionEndDate) {
+					return true;
 				}
-			});
+			}
+		},
+		// No record found
+		noRecordFound() {
+			const defaultLang = store.state.defaultLanguage.toLowerCase();
+			if (JSON.parse(store.state.missionNotFoundText) != '') {
+				const missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
+				const data = missionNotFoundArray.filter(item => {
+					if (item.lang == defaultLang) {
+						return item;
+					}
+				});
 
-			if (filtereObj[0]) {
-				return filtereObj[0].title;
+				if (data[0] && data[0].message) {
+					return data[0].message;
+				} else {
+					return this.languageData.label.no_record_found;
+				}
+			} else {
+				return this.languageData.label.no_record_found;
 			}
+		},
+		handleFav() {
+			const btn_active = document.querySelector('.favourite-icon');
+			btn_active.classList.toggle('active');
+		},
+		// get theme title
+		getThemeTitle(translations) {
+			if (translations) {
+				const filteredObj = translations.filter((item, i) => {
+					if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+						return translations[i].title;
+					}
+				});
+
+				if (filteredObj[0]) {
+					return filteredObj[0].title;
+				} else {
+					let filtereObj = translations.filter((item, i) => {
+						if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+							return translations[i].title;
+						}
+					});
+
+					if (filtereObj[0]) {
+						return filtereObj[0].title;
+					}
+				}
 			}
-		}
 		},
 		// Is default media is video or not
 		checkDefaultMediaFormat(mediaType) {
-		return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
+			return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
 		},
 		// Check mission type
 		checkMissionTypeTime(missionType) {
-		return missionType == constants.MISSION_TYPE_TIME;
+			return missionType == constants.MISSION_TYPE_TIME;
 		},
 		// Get Youtube Thumb images
 		youtubeThumbImage(videoPath) {
-		let data = videoPath.split("=");
-		return (
-			"https://img.youtube.com/vi/" + data.slice(-1)[0] + "/mqdefault.jpg"
-		);
+			let data = videoPath.split('=');
+			return `https://img.youtube.com/vi/${data.slice(-1)[0]}/mqdefault.jpg`;
 		},
 		// Add mission to favorite
 		favoriteMission(missionId) {
-		let missionData = {
-			mission_id: ""
-		};
-		missionData.mission_id = missionId;
-		favoriteMission(missionData).then(response => {
-			if (response.error == true) {
-			this.makeToast("danger", response.message);
-			} else {
-			this.makeToast("success", response.message);
-			this.$emit("getMissions", "removeLoader");
-			}
-		});
+			const missionData = {
+				mission_id: ''
+			};
+			missionData.mission_id = missionId;
+			favoriteMission(missionData).then(response => {
+				if (response.error == true) {
+					this.makeToast('danger', response.message);
+				} else {
+					this.makeToast('success', response.message);
+					this.$emit('getMissions', 'removeLoader');
+				}
+			});
 		},
 		onInputChange() {
-		this.submitDisable = true;
+			this.submitDisable = true;
 		},
 		// For selected user id.
 		onSelected(item) {
-		if (item) {
-			this.selected = item.item;
-			this.submitDisable = false;
-			this.invitedUserId = item.item.user_id;
-		}
+			if (item) {
+				this.selected = item.item;
+				this.submitDisable = false;
+				this.invitedUserId = item.item.user_id;
+			}
 		},
-		//This is what the <input/> value is set to when you are selecting a suggestion.
+		// This is what the <input/> value is set to when you are selecting a suggestion.
 		getSuggestionValue(suggestion) {
-		let firstName = suggestion.item.first_name;
-		let lastName = suggestion.item.last_name;
-		return firstName + " " + lastName;
+			const firstName = suggestion.item.first_name;
+			const lastName = suggestion.item.last_name;
+			return `${firstName} ${lastName}`;
 		},
 		getMediaPath(mediaPath) {
-		if (mediaPath != "") {
-			return mediaPath;
-		} else {
-			return (
-			store.state.imagePath +
-			"/assets/images/" +
-			constants.MISSION_DEFAULT_PLACEHOLDER
-			);
-		}
+			if (mediaPath != '') {
+				return mediaPath;
+			} else {
+				return `${store.state.imagePath}/assets/images/${constants.MISSION_DEFAULT_PLACEHOLDER}`;
+			}
 		},
 		// Open auto suggest modal
 		handleModal(missionId) {
-		this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
-		this.showErrorDiv = false;
-		this.message = null;
-		this.$refs.userDetailModal.show();
-		this.currentMission = missionId;
-		setTimeout(() => {
-			this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-			var input = document.getElementById("autosuggest__input");
-			input.addEventListener("keyup", event => {
-			if (event.keyCode === 13 && !this.submitDisable) {
-				event.preventDefault();
-				this.inviteColleagues();
-			}
-			});
-		}, 100);
+			this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
+			this.showErrorDiv = false;
+			this.message = null;
+			this.$refs.userDetailModal.show();
+			this.currentMission = missionId;
+			setTimeout(() => {
+				this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+				const input = document.getElementById('autosuggest__input');
+				input.addEventListener('keyup', event => {
+					if (event.keyCode === 13 && !this.submitDisable) {
+						event.preventDefault();
+						this.inviteColleagues();
+					}
+				});
+			}, 100);
 		},
 		// invite collegues api call
 		inviteColleagues() {
-		let inviteData = {};
-		inviteData.mission_id = this.currentMission;
-		inviteData.to_user_id = this.invitedUserId;
-		inviteColleague(inviteData).then(response => {
-			this.submitDisable = true;
-			if (response.error == true) {
-			this.classVariant = "danger";
-			this.message = response.message;
-			this.$refs.autosuggest.$data.currentIndex = null;
-			this.$refs.autosuggest.$data.internalValue = "";
-			this.showErrorDiv = true;
-			} else {
-			this.query = "";
-			this.selected = "";
-			this.currentMissionId = 0;
-			this.invitedUserId = 0;
-			this.$refs.autosuggest.$data.currentIndex = null;
-			this.$refs.autosuggest.$data.internalValue = "";
-			this.classVariant = "success";
-			this.message = response.message;
-			this.showErrorDiv = true;
-			}
-		});
+			const inviteData = {};
+			inviteData.mission_id = this.currentMission;
+			inviteData.to_user_id = this.invitedUserId;
+			inviteColleague(inviteData).then(response => {
+				this.submitDisable = true;
+				if (response.error == true) {
+					this.classVariant = 'danger';
+					this.message = response.message;
+					this.$refs.autosuggest.$data.currentIndex = null;
+					this.$refs.autosuggest.$data.internalValue = "";
+					this.showErrorDiv = true;
+				} else {
+					this.query = '';
+					this.selected = '';
+					this.currentMissionId = 0;
+					this.invitedUserId = 0;
+					this.$refs.autosuggest.$data.currentIndex = null;
+					this.$refs.autosuggest.$data.internalValue = '';
+					this.classVariant = 'success';
+					this.message = response.message;
+					this.showErrorDiv = true;
+				}
+			});
 		},
 		// Apply for mission
 		applyForMission(mission) {
-		let missionData = {};
-		missionData.mission_id = mission.mission_id;
-		missionData.availability_id = mission.availability_id;
-		applyMission(missionData).then(response => {
-			if (response.error == true) {
-			this.makeToast("danger", response.message);
-			} else {
-			this.makeToast("success", response.message);
-			this.$emit("getMissions");
-			}
-		});
+			const missionData = {};
+			missionData.mission_id = mission.mission_id;
+			missionData.availability_id = mission.availability_id;
+			applyMission(missionData).then(response => {
+				if (response.error == true) {
+					this.makeToast('danger', response.message);
+				} else {
+					this.makeToast('success', response.message);
+					this.$emit('getMissions');
+				}
+			});
 		},
 		makeToast(variant = null, message) {
-		this.$bvToast.toast(message, {
-			variant: variant,
-			solid: true,
-			autoHideDelay: 1000
-		});
+			this.$bvToast.toast(message, {
+				variant: variant,
+				solid: true,
+				autoHideDelay: 1000
+			});
 		},
 		submitNewMission() {
-		if (this.submitNewMissionUrl != "") {
-			window.open(this.submitNewMissionUrl, "_self");
-		}
+			if (this.submitNewMissionUrl != '') {
+				window.open(this.submitNewMissionUrl, '_self');
+			}
 		},
 		cardHeightAdj() {
-			let cardBody = document.querySelectorAll(".card-grid .card-body");
-			let cardText = document.querySelectorAll(".card-grid .card-body .card-text");
-				cardBody.forEach(function (event) {
-					let getCard = event.parentNode;
-					let cardHeight = event.children[0].offsetHeight + getCard.children[1].offsetHeight;
-					let cardOuterHeight = event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight + event.children[0].children[1].offsetHeight + event.children[0].children[0].offsetHeight;
-						getCard.style.height = `${cardHeight}px`;	
-					
-					event.parentNode.addEventListener("mouseover", function (mouseEvent) {
-					let cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
-					let cardTotalHeight = cardBodyH - this.offsetHeight;
-						this.children[1].style.transform = "translateY(-" + cardTotalHeight + "px)";
-						this.children[2].style.transform = "translateY(-" + cardTotalHeight + "px)";
-						this.parentNode.classList.add("active");
-					});
-					event.parentNode.addEventListener("mouseleave", function () {
-						this.children[1].style.transform = "translateY(0)";
-						this.children[2].style.transform = "translateY(0)";
-						this.parentNode.classList.remove("active");
-					});
+			const cardBodyList = document.querySelectorAll('.card-grid .card-body');
+
+			// check if card content is already visible in the DOM
+			if (!cardBodyList[0].children[0].offsetHeight) {
+				return;
+			}
+
+			cardBodyList.forEach((cardBody) => {
+				const card = cardBody.parentNode;
+				const cardHeight = cardBody.children[0].offsetHeight + card.children[1].offsetHeight;
+				card.style.height = `${cardHeight}px`;
+
+				cardBody.parentNode.addEventListener('mouseover', function(mouseEvent) {
+					const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
+					const cardTotalHeight = cardBodyH - this.offsetHeight;
+					this.children[1].style.transform = `translateY(-${cardTotalHeight}px)`;
+					this.children[2].style.transform = `translateY(-${cardTotalHeight}px)`;
+					this.parentNode.classList.add('active');
 				});
+
+				cardBody.parentNode.addEventListener('mouseleave', function() {
+					this.children[1].style.transform = 'translateY(0)';
+					this.children[2].style.transform = 'translateY(0)';
+					this.parentNode.classList.remove('active');
+				});
+			});
+
+			if (this.cardHeightAdjIntervalId) {
+				clearInterval(this.cardHeightAdjIntervalId);
+			}
 		}
-		
+
 	},
 	created() {
 		this.languageData = JSON.parse(store.state.languageLabel);
 		this.isInviteCollegueDisplay = this.settingEnabled(
-		constants.INVITE_COLLEAGUE
+			constants.INVITE_COLLEAGUE
 		);
 		this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
 		this.isSubmitNewMissionSet = this.settingEnabled(
-		constants.USER_CAN_SUBMIT_MISSION
+			constants.USER_CAN_SUBMIT_MISSION
 		);
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 	},
 	mounted() {
-		this.cardHeightAdj();	
+		this.cardHeightAdjIntervalId = setInterval(this.cardHeightAdj, 500);
 	}
 };
 </script>
