@@ -266,7 +266,7 @@ class AuthController extends Controller
             );
         }
 
-        if ($userDetail->status !== config('constants.user_statuses.INACTIVE')) {
+        if ($userDetail->status === config('constants.user_statuses.ACTIVE')) {
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
