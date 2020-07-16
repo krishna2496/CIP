@@ -43,6 +43,22 @@ class DonationAttribute extends Model
     protected $visible = ['goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
     'show_donors_count', 'disable_when_funded', 'is_disabled', 'donation_amount_raised', 'donor_count', 'donation_count'];
 
+    /**
+     * listen for any Eloquent events
+     *
+     * @return void
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($donationAttribute) {
+            if (! $donationAttribute->getKey()) {
+                $donationAttribute->{$donationAttribute->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
+    
     // As of now, we are returning static values as payment related functionality is yet to be developed by Optimy
     public function getDonationAmountRaisedAttribute()
     {
