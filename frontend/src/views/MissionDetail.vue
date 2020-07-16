@@ -69,21 +69,7 @@ Add entry
                             </div>
 
                             <p>{{missionDetail.short_description}}</p>
-                            <div class="share-block">
-                                <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title" :description="missionDetail.short_description" inline-template>
-                                    <div class="social-block">
-                                        <network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
-                                            <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
-
-                                        </network>
-                                        <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
-                                            <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
-                                        </network>
-                                    </div>
-                                </social-sharing>
-                            </div>
+                            
                             <div class="group-details">
                                 <div class="top-strip">
                                     <span>
@@ -188,7 +174,7 @@ Add entry
                             </div>
                             <b-list-group class="info-box">
                                 <b-list-group-item>
-                                    <div>
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
                                         </i>
@@ -197,7 +183,7 @@ Add entry
                                     </div>
                                 </b-list-group-item>
                                 <b-list-group-item v-if="isThemeDisplay && getThemeTitle(missionDetail.mission_theme)">
-                                    <div>
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
                                         </i>
@@ -206,8 +192,7 @@ Add entry
                                     </div>
                                 </b-list-group-item>
                                 <b-list-group-item>
-
-                                    <div>
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
                                         </i>
@@ -218,11 +203,10 @@ Add entry
                                         <template v-else>
                                             <p class="text-wrap">{{ languageData.label.on_going_opportunities }}</p>
                                         </template>
-
                                     </div>
                                 </b-list-group-item>
-                                <b-list-group-item>
-                                    <div>
+                                <b-list-group-item class="full-width-box">
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
                                         </i>
@@ -268,6 +252,21 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                         </i>
                                     </b-button>
                                 </div>
+                                <div class="share-block">
+                                <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title" :description="missionDetail.short_description" inline-template>
+                                    <div class="social-block">
+                                        <network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
+                                            <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
+                                            <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
+
+                                        </network>
+                                        <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
+                                            <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                            <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                        </network>
+                                    </div>
+                                </social-sharing>
+                            </div>
                             </div>
                         </div>
                     </b-col>
@@ -498,6 +497,26 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                         <span class="label-col">{{data.title}}</span>
                                         <span class="detail-col">{{data.description}}</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="un-block right-inner-block">
+                            <h2 class="title-with-border"><span>{{ languageData.label.un_sdg}}</span></h2>
+                            <div class="un-list">
+                                <div class="un-column">
+                                    <i class="img-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/un-img01.png'" alt="UN Image">
+                                    </i>
+                                </div>
+                                <div class="un-column">
+                                    <i class="img-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/un-img02.png'" alt="UN Image">
+                                    </i>
+                                </div>
+                                <div class="un-column">
+                                    <i class="img-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/un-img03.png'" alt="UN Image">
+                                    </i>
                                 </div>
                             </div>
                         </div>
@@ -963,8 +982,8 @@ export default {
         getMissionDetail() {
             if (this.$route.params.misisonId) {
                 let data = {
-                    'mission_id' : this.$route.params.misisonId,
-                    'donation_mission' : false
+                    'mission_id': this.$route.params.misisonId,
+                    'donation_mission': false
                 }
                 missionDetail(data).then(response => {
                     this.isShownMediaComponent = true;
