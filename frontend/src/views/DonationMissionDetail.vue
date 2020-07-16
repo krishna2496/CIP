@@ -146,12 +146,12 @@
                                     </i>
                                     <span>{{ languageData.label.recommend_to_co_worker }}</span>
                                 </b-button>
-                                <b-button class="btn-borderprimary icon-btn remind-icon gray-btn">
+                                <b-button class="btn-borderprimary icon-btn remind-icon">
                                     <i>
                                         <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 11 15" style="enable-background:new 0 0 11 15;" xml:space="preserve">
                                             <g>
                                                 <g>
-                                                    <path style="fill:#AAAAAA;" d="M10.5,0H0.5C0.2,0,0,0.2,0,0.4v14.1c0,0.2,0.1,0.3,0.3,0.4c0.1,0,0.1,0,0.2,0c0.1,0,0.2,0,0.3-0.1
+                                                    <path d="M10.5,0H0.5C0.2,0,0,0.2,0,0.4v14.1c0,0.2,0.1,0.3,0.3,0.4c0.1,0,0.1,0,0.2,0c0.1,0,0.2,0,0.3-0.1
                                                         l4.7-4.4l4.7,4.4c0.1,0.1,0.3,0.2,0.5,0.1c0.2-0.1,0.3-0.2,0.3-0.4V0.4C11,0.2,10.8,0,10.5,0z M5.5,9.4c-0.1,0-0.2,0-0.3,0.1
                                                         l-4.2,4V0.9h9.1v12.6l-4.2-4C5.7,9.5,5.6,9.4,5.5,9.4z" />
                                                 </g>
@@ -778,18 +778,16 @@ export default {
     computed: {
         filteredOptions() {
             if (this.userList) {
-				return [
-					{
-						data: this.userList.filter(option => {
-							const firstName = option.first_name.toLowerCase();
-							const lastName = option.last_name.toLowerCase();
-							const email = option.email.toLowerCase();
-							const searchString = `${firstName}${lastName}${email}`;
-							return searchString.indexOf(this.query.toLowerCase()) > -1;
-						})
-					}
-				];
-			}
+                return [{
+                    data: this.userList.filter(option => {
+                        const firstName = option.first_name.toLowerCase();
+                        const lastName = option.last_name.toLowerCase();
+                        const email = option.email.toLowerCase();
+                        const searchString = `${firstName}${lastName}${email}`;
+                        return searchString.indexOf(this.query.toLowerCase()) > -1;
+                    })
+                }];
+            }
         },
         rows() {
             return this.volunteerList.length;
@@ -941,7 +939,7 @@ export default {
                 this.customTab();
             });
         },
-        
+
         customTab() {
             this.isShownComponent = true;
             let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
@@ -1046,19 +1044,19 @@ export default {
                             if (response.data[0].custom_information != null) {
                                 this.customInformation = response.data[0].custom_information;
                             }
+                            if (response.data[0].donation_attribute) {
+                                if (response.data[0].donation_attribute.is_disabled == 1) {
+                                    this.disableDonationButton = true;
+                                }
 
-                            if (response.data[0].donation_attribute.is_disabled == 1) {
-                                this.disableDonationButton = true;
+                                if (response.data[0].donation_attribute.disable_when_funded == 1 && response.data[0].donation_attribute.goal_amount != null &&
+                                    (response.data[0].donation_attribute.goal_amount <= response.data[0].donation_attribute.donation_amount_raised)
+                                ) {
+                                    this.disableDonationButton = true;
+                                }
+
+                                this.donationPercentage = Math.round((100 * response.data[0].donation_attribute.donation_amount_raised) / response.data[0].donation_attribute.goal_amount);
                             }
-
-                            if (response.data[0].donation_attribute.disable_when_funded == 1 && response.data[0].donation_attribute.goal_amount != null &&
-                                (response.data[0].donation_attribute.goal_amount <= response.data[0].donation_attribute.donation_amount_raised)
-                            ) {
-                                this.disableDonationButton = true;
-                            }
-
-                            this.donationPercentage = Math.round((100 * response.data[0].donation_attribute.donation_amount_raised) / response.data[0].donation_attribute.goal_amount);
-
                         } else {
                             this.$router.push('/404');
                         }
