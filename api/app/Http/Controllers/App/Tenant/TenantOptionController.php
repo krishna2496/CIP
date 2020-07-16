@@ -84,8 +84,9 @@ class TenantOptionController extends Controller
      */
     public function getTenantOption(Request $request): JsonResponse
     {
+        $tenantDetail = $this->helpers->getTenantDetail($request);
         $optionData = [
-            'tenantName' => $this->helpers->getTenantDetail($request)->name
+            'tenantName' => $tenantDetail->name
         ];
 
         // Find custom data
@@ -99,7 +100,7 @@ class TenantOptionController extends Controller
                 ) {
                     $optionValue = [
                       'saml_access_only' => $optionValue['saml_access_only'],
-                      'sso_url' => $optionValue['idp']['singleSignOnService']['url'],
+                      'sso_url' => route('saml.sso', ['t' => $optionValue['idp_id'], 'tenant' => $tenantDetail->tenant_id]),
                       'slo_url' => $optionValue['idp']['singleLogoutService']['url'],
                     ];
                 }
