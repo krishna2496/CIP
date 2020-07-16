@@ -70,16 +70,14 @@
                                         </template>
                                         <template v-else>
                                             {{ languageData.label.on_going_opportunities }}
-                                        </template> 
+                                        </template>
                                     </span>
                                 </div>
                                 <div class="group-details-inner" v-if="missionDetail.donation_attribute">
                                     <div class="detail-column progress-block">
                                         <div class="text-wrap">
-                                            <p><b>€ {{missionDetail.donation_attribute.donation_amount_raised}}</b> {{ languageData.label.raised_by}} <b>{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b></p>
-                                            <b-progress 
-                                            v-if="missionDetail.donation_attribute.show_donation_meter"
-                                            :value="missionDetail.donation_attribute.donation_amount_raised" :max="missionDetail.donation_attribute.goal_amount"></b-progress>
+                                            <p><b>€ {{missionDetail.donation_attribute.donation_amount_raised}}</b> {{ languageData.label.raised_by}} <span> {{ languageData.label.by}} </span v-if="missionDetail.donation_attribute.show_donors_count"> <b v-if="missionDetail.donation_attribute.show_donors_count">{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b></p>
+                                            <b-progress v-if="missionDetail.donation_attribute.show_donation_meter" :value="missionDetail.donation_attribute.donation_amount_raised" :max="missionDetail.donation_attribute.goal_amount"></b-progress>
                                             <div class="progress-info">
                                                 <span class="subtitle-text" v-if="missionDetail.donation_attribute.show_donation_percentage">
                                                     {{donationPercentage}}%
@@ -370,7 +368,7 @@
                                     <span class="euro-sign">€</span>
                                 </div>
                             </b-form-group>
-                            <b-button class="btn btn-fillsecondary donate-btn">{{ languageData.label.donate_now}}</b-button>
+                            <b-button class="btn btn-fillsecondary donate-btn" :disabled="disableDonationButton">{{ languageData.label.donate_now}}</b-button>
                             <div class="secure-text-wrap">
                                 <p class="secure-text">
                                     <i class="img-wrap">
@@ -730,13 +728,13 @@ export default {
                     id: 24
                 }
             ],
-            disableDonationButton :false,
-            donationPercentage : 0
+            disableDonationButton: false,
+            donationPercentage: 0
         };
     },
     mounted() {
         setTimeout(() => {
-            let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+            const tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
             tabItem.forEach(function (tabItemEvent) {
                 tabItemEvent.addEventListener("click", tabsHandle);
             });
@@ -780,16 +778,18 @@ export default {
     computed: {
         filteredOptions() {
             if (this.userList) {
-                return [{
-                    data: this.userList.filter(option => {
-                        let firstName = option.first_name.toLowerCase();
-                        let lastName = option.last_name.toLowerCase();
-                        let email = option.email.toLowerCase();
-                        let searchString = firstName + '' + lastName + '' + email;
-                        return searchString.indexOf(this.query.toLowerCase()) > -1;
-                    })
-                }];
-            }
+				return [
+					{
+						data: this.userList.filter(option => {
+							const firstName = option.first_name.toLowerCase();
+							const lastName = option.last_name.toLowerCase();
+							const email = option.email.toLowerCase();
+							const searchString = `${firstName}${lastName}${email}`;
+							return searchString.indexOf(this.query.toLowerCase()) > -1;
+						})
+					}
+				];
+			}
         },
         rows() {
             return this.volunteerList.length;
@@ -813,7 +813,7 @@ export default {
             this.selected = ""
         },
         addEntry() {
-            let missionData = {
+            const missionData = {
                 "missionId": '',
                 "missionType": ''
             }
@@ -825,9 +825,9 @@ export default {
         // Get comment create date format
         getCommentDate(commentDate) {
             if (commentDate != null) {
-                let day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
-                let date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
-                return day + ', ' + date;
+                const day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
+                const date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
+                return `${day}, ${date}`;
             } else {
                 return '';
             }
@@ -838,7 +838,7 @@ export default {
         },
 
         setRating: function (rating) {
-            let missionData = {
+            const missionData = {
                 mission_id: '',
                 rating: ''
             };
@@ -854,7 +854,7 @@ export default {
         },
         // Add mission to favorite
         favoriteMission(missionId) {
-            let missionData = {
+            const missionData = {
                 mission_id: ''
             };
             missionData.mission_id = missionId;
@@ -883,7 +883,7 @@ export default {
         getSuggestionValue(suggestion) {
             let firstName = suggestion.item.first_name;
             let lastName = suggestion.item.last_name;
-            return firstName + ' ' + lastName;
+            return `${firstName} ${lastName}`;
         },
         // Open auto suggest modal
         handleModal(missionId) {
@@ -894,7 +894,7 @@ export default {
             this.currentMission = missionId;
             setTimeout(() => {
                 this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-                var input = document.getElementById("autosuggest__input");
+                const input = document.getElementById("autosuggest__input");
                 input.addEventListener("keyup", (event) => {
                     if (event.keyCode === 13 && !this.submitDisable) {
                         event.preventDefault();
@@ -910,7 +910,7 @@ export default {
         },
         // invite collegues api call
         inviteColleagues() {
-            let inviteData = {};
+            const inviteData = {};
             inviteData.mission_id = this.currentMission;
             inviteData.to_user_id = this.invitedUserId;
             inviteColleague(inviteData).then(response => {
@@ -941,23 +941,7 @@ export default {
                 this.customTab();
             });
         },
-        // Apply for mission
-        applyForMission(missionId) {
-            let missionData = {};
-            missionData.mission_id = missionId;
-            missionData.availability_id = 1;
-
-            applyMission(missionData).then(response => {
-                if (response.error == true) {
-                    this.makeToast("danger", response.message);
-                } else {
-                    this.disableApply = true;
-                    this.applyButton = this.languageData.label.applied
-                    this.makeToast("success", response.message);
-                    this.$emit("getMissions");
-                }
-            })
-        },
+        
         customTab() {
             this.isShownComponent = true;
             let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
@@ -1002,11 +986,11 @@ export default {
 
         getMissionDetail() {
             if (this.$route.params.misisonId) {
-                let data = {
-                    'mission_id' : this.$route.params.misisonId,
-                    'donation_mission' : true
+                const requestParams = {
+                    'mission_id': this.$route.params.misisonId,
+                    'donation_mission': true
                 }
-                missionDetail(data).then(response => {
+                missionDetail(requestParams).then(response => {
                     this.isShownMediaComponent = true;
                     if (response.error == false) {
                         if (response.data[0]) {
@@ -1026,10 +1010,10 @@ export default {
                                 }
                             }
 
-                            let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+                            const currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
 
                             if (response.data[0].end_date != '' && response.data[0].end_date != null) {
-                                let missionEndDate = moment(response.data[0].end_date).format(
+                                const missionEndDate = moment(response.data[0].end_date).format(
                                     "YYYY-MM-DD HH::mm:ss");
                                 if (currentDate > missionEndDate && response.data[0].set_view_detail == 1) {
                                     this.hideApply = true
@@ -1037,7 +1021,7 @@ export default {
                             }
                             if (response.data[0].application_deadline != '' && response.data[0]
                                 .application_deadline != null) {
-                                let missionDeadline = moment(response.data[0].application_deadline).format(
+                                const missionDeadline = moment(response.data[0].application_deadline).format(
                                     "YYYY-MM-DD HH::mm:ss");
                                 if (currentDate > missionDeadline && response.data[0].set_view_detail == 1) {
                                     this.hideApply = true
@@ -1063,17 +1047,17 @@ export default {
                                 this.customInformation = response.data[0].custom_information;
                             }
 
-                            if( response.data[0].donation_attribute.is_disabled == 1) {
+                            if (response.data[0].donation_attribute.is_disabled == 1) {
                                 this.disableDonationButton = true;
                             }
-                            
-                            if( response.data[0].donation_attribute.disable_when_funded == 1 && response.data[0].donation_attribute.goal_amount != null &&
+
+                            if (response.data[0].donation_attribute.disable_when_funded == 1 && response.data[0].donation_attribute.goal_amount != null &&
                                 (response.data[0].donation_attribute.goal_amount <= response.data[0].donation_attribute.donation_amount_raised)
                             ) {
                                 this.disableDonationButton = true;
                             }
 
-                            this.donationPercentage = Math.round((100 * response.data[0].donation_attribute.donation_amount_raised)/response.data[0].donation_attribute.goal_amount);
+                            this.donationPercentage = Math.round((100 * response.data[0].donation_attribute.donation_amount_raised) / response.data[0].donation_attribute.goal_amount);
 
                         } else {
                             this.$router.push('/404');
@@ -1092,7 +1076,7 @@ export default {
         //get theme title
         getThemeTitle(missionTheme) {
             if (missionTheme) {
-                let translations = missionTheme.translations
+                const translations = missionTheme.translations
                 if (translations) {
                     let filteredObj = translations.filter((item, i) => {
                         if (item.lang === store.state.defaultLanguage.toLowerCase()) {
@@ -1181,8 +1165,8 @@ export default {
 
         showMoreComment() {
             this.page++;
-            let simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
-            let simplebarHeight = simplebarContent.offsetHeight
+            const simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
+            const simplebarHeight = simplebarContent.offsetHeight
             setTimeout(() => {
                 let simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
                 simplebarWrapper.scrollTop = simplebarHeight;
