@@ -24,19 +24,11 @@
                                          :alt="languageData.label.location">
                                 </i>{{mission.city_name}}
                             </div>
-<<<<<<< HEAD
-=======
-                         
->>>>>>> 001c141fec290f2c968a559ac34183c9deaea2a4
                         </div>
                     </b-card-header>
 
                     <b-card-body>
                         <div class="card-detail-column">
-<<<<<<< HEAD
-=======
-                            
->>>>>>> 001c141fec290f2c968a559ac34183c9deaea2a4
                             <div class="content-block">
                                 <div class="mission-label-wrap">
                                     <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span></div>
