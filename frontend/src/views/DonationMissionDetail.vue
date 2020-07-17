@@ -76,7 +76,7 @@
                                 <div class="group-details-inner" v-if="missionDetail.donation_attribute">
                                     <div class="detail-column progress-block">
                                         <div class="text-wrap">
-                                            <p><b>€ {{missionDetail.donation_attribute.donation_amount_raised}}</b> {{ languageData.label.raised_by}} <span> {{ languageData.label.by}} </span v-if="missionDetail.donation_attribute.show_donors_count"> <b v-if="missionDetail.donation_attribute.show_donors_count">{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b></p>
+                                            <p><b v-if="missionDetail.donation_attribute.show_donation_count">€ {{missionDetail.donation_attribute.donation_amount_raised}}</b> <span v-if="missionDetail.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> <span v-if="missionDetail.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span v-if="missionDetail.donation_attribute.show_donors_count"> <b v-if="missionDetail.donation_attribute.show_donors_count">{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b></p>
                                             <b-progress v-if="missionDetail.donation_attribute.show_donation_meter" :value="missionDetail.donation_attribute.donation_amount_raised" :max="missionDetail.donation_attribute.goal_amount"></b-progress>
                                             <div class="progress-info">
                                                 <span class="subtitle-text" v-if="missionDetail.donation_attribute.show_donation_percentage">
@@ -99,16 +99,16 @@
                                 <b-list-group-item>
                                     <div class="info-box-inner">
                                         <i class="img-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
+                                            <img :src="`${$store.state.imagePath}/assets/images/location-black.svg`" alt="" />
                                         </i>
                                         <span class="label">{{ languageData.label.city}}</span>
                                         <p class="text-wrap">{{missionDetail.city_name}}</p>
                                     </div>
                                 </b-list-group-item>
-                                <b-list-group-item  v-if="isThemeDisplay && getThemeTitle(missionDetail.mission_theme)">
+                                <b-list-group-item v-if="isThemeDisplay && getThemeTitle(missionDetail.mission_theme)">
                                     <div class="info-box-inner">
                                         <i class="img-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
+                                            <img :src="`${$store.state.imagePath}/assets/images/earth-ic.svg`" alt="" />
                                         </i>
                                         <span class="label">{{ languageData.label.theme}}</span>
                                         <p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
@@ -117,7 +117,7 @@
                                 <b-list-group-item>
                                     <div class="info-box-inner">
                                         <i class="img-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
+                                            <img :src="`${$store.state.imagePath}/assets/images/calendar.svg`" alt="" />
                                         </i>
                                         <span class="label">{{ languageData.label.created_date}}</span>
                                         <p class="text-wrap">
@@ -129,7 +129,7 @@
                                 <b-list-group-item class="full-width-box">
                                     <div class="info-box-inner">
                                         <i class="img-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
+                                            <img :src="`${$store.state.imagePath}/assets/images/group-ic.svg`" alt="" />
                                         </i>
                                         <span class="label">{{ languageData.label.organisation}}</span>
                                         <p class="text-wrap">{{missionDetail.organisation_name}}</p>
@@ -164,20 +164,24 @@
                                     <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title" :description="missionDetail.short_description" inline-template>
                                         <div class="social-block">
                                             <div class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
-                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
+                                                <network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/facebook-ic-grey.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
+                                                    <img :src="`${$store.state.imagePath}/assets/images/facebook-ic-gray-h.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
+                                                </network>
                                             </div>
                                             <div class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
-                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                                <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/twitter-ic-grey.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                                    <img :src="`${$store.state.imagePath}/assets/images/twitter-ic-gray-h.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                                </network>
                                             </div>
                                             <div class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="normal-img" />
-                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="hover-img" />
+                                                <img :src="`${$store.state.imagePath}/assets/images/linkedin-ic-grey.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="normal-img" />
+                                                <img :src="`${$store.state.imagePath}/assets/images/linkedin-ic-white.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="hover-img" />
                                             </div>
                                             <div class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
-                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                                <img :src="`${$store.state.imagePath}/assets/images/link-ic-grey.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                                <img :src="`${$store.state.imagePath}/assets/images/link-ic-white.svg`" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
                                             </div>
                                         </div>
                                     </social-sharing>
@@ -372,8 +376,8 @@
                             <div class="secure-text-wrap">
                                 <p class="secure-text">
                                     <i class="img-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/lock-icon.svg'" alt="Lock icon">
-                                        <img :src="$store.state.imagePath+'/assets/images/shield-icon.svg'" alt="Shield icon">
+                                        <img :src="`${$store.state.imagePath}/assets/images/lock-icon.svg`" alt="Lock icon">
+                                        <img :src="`${$store.state.imagePath}/assets/images/shield-icon.svg`" alt="Shield icon">
                                     </i>
                                     <span>{{ languageData.label.donation_safety}}</span>
                                 </p>
@@ -384,17 +388,17 @@
                             <div class="un-list">
                                 <div class="un-column">
                                     <i class="img-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/un-img01.png'" alt="UN Image">
+                                        <img :src="`${$store.state.imagePath}/assets/images/un-img01.png`" alt="UN Image">
                                     </i>
                                 </div>
                                 <div class="un-column">
                                     <i class="img-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/un-img02.png'" alt="UN Image">
+                                        <img :src="`${$store.state.imagePath}/assets/images/un-img02.png`" alt="UN Image">
                                     </i>
                                 </div>
                                 <div class="un-column">
                                     <i class="img-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/un-img03.png'" alt="UN Image">
+                                        <img :src="`${$store.state.imagePath}/assets/images/un-img03.png`" alt="UN Image">
                                     </i>
                                 </div>
                             </div>
