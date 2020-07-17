@@ -88,6 +88,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'code' => [
+            'regex' => 'The code field must be of 3 uppercase characters only.'
+        ]
     ],
 
     /*

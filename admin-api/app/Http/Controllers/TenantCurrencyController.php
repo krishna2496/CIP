@@ -145,7 +145,7 @@ class TenantCurrencyController extends Controller
         // Store tenant currency details
         $this->tenantAvailableCurrencyRepository->store($request, $tenantId);
 
-        $apiStatus = Response::HTTP_OK;
+        $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED');
 
         // Make activity log
