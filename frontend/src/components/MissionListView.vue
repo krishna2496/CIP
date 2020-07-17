@@ -24,23 +24,28 @@
                                          :alt="languageData.label.location">
                                 </i>{{mission.city_name}}
                             </div>
+<<<<<<< HEAD
+=======
+                         
+>>>>>>> 001c141fec290f2c968a559ac34183c9deaea2a4
                         </div>
                     </b-card-header>
 
                     <b-card-body>
                         <div class="card-detail-column">
+<<<<<<< HEAD
+=======
+                            
+>>>>>>> 001c141fec290f2c968a559ac34183c9deaea2a4
                             <div class="content-block">
                                 <div class="mission-label-wrap">
                                     <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span></div>
-                                    <!-- <div class="mission-label volunteer-label">
-                                        <span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon'.svg" alt="volunteer icon"></i>Volunteer</span>
-                                    </div> -->
+                                    <div class="mission-label volunteer-label" v-if="isDispalyMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
+										<span :style="{ backgroundColor: volunteeringMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon" alt="volunteer icon"></i>{{volunteeringMissionTypeLabels.label}}</span>
+									</div>
                                     <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
                                         <span>{{languageData.label.virtual_mission}}</span>
                                     </div>
-                                    <!-- <div class="mission-label donation-label">
-                                        <span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/donation-icon.'svg" alt=""></i>Donation</span>
-                                    </div> -->
                                     
                                 </div>
                                 <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
@@ -262,7 +267,21 @@ export default {
 		isSubmitNewMissionSet: true,
 		isThemeSet: true,
 		submitNewMissionUrl: "",
-		isSkillDisplay: true
+		isSkillDisplay: true,
+		isDispalyMissionLabel : false,
+		isVolunteeringSet : true,
+		isDonationSet : true,
+		missionTypeLabels : "",
+		volunteeringMissionTypeLabels : {
+			'icon' : '',
+			'label' : '',
+			'backgroundColor' : ''
+		},
+		donationMissionTypeLabels : {
+			'icon' : '',
+			'label' : '',
+			'backgroundColor' : ''
+		}
 		};
 	},
 	computed: {
@@ -436,17 +455,17 @@ export default {
 		},
 		// Apply for mission
 		applyForMission(missionId) {
-		let missionData = {};
-		missionData.mission_id = missionId;
-		missionData.availability_id = 1;
-		applyMission(missionData).then(response => {
-			if (response.error == true) {
-			this.makeToast("danger", response.message);
-			} else {
-			this.makeToast("success", response.message);
-			this.$emit("getMissions");
-			}
-		});
+			let missionData = {};
+			missionData.mission_id = missionId;
+			missionData.availability_id = 1;
+			applyMission(missionData).then(response => {
+				if (response.error == true) {
+				this.makeToast("danger", response.message);
+				} else {
+				this.makeToast("success", response.message);
+				this.$emit("getMissions");
+				}
+			});
 		},
 		makeToast(variant = null, message) {
 		this.$bvToast.toast(message, {
@@ -456,50 +475,64 @@ export default {
 		});
 		},
 		getAppliedStatus(missionDetail) {
-		let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
-		let missionEndDate = moment(missionDetail.end_date).format(
-			"YYYY-MM-DD HH::mm:ss"
-		);
-		let checkEndDateExist = true;
-		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-			if (currentDate > missionEndDate) {
-			checkEndDateExist = false;
-			}
-		}
-		if (missionDetail.user_application_count == 1 && checkEndDateExist) {
-			return true;
-		}
-		},
-		getClosedStatus(missionDetail) {
-		let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
-		let missionEndDate = moment(missionDetail.end_date).format(
-			"YYYY-MM-DD HH::mm:ss"
-		);
-		if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-			if (currentDate > missionEndDate) {
-			return true;
-			}
-		}
-		},
-		submitNewMission() {
-		if (this.submitNewMissionUrl != "") {
-			window.open(this.submitNewMissionUrl, "_self");
-		}
-		},
-		getSkills(skills) {
-		let skillString = "";
-		if (skills) {
-			skills.filter((data, index) => {
-			if (data) {
-				if (skillString != "") {
-				skillString = skillString + ", " + data.title;
-				} else {
-				skillString = data.title;
+			let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+			let missionEndDate = moment(missionDetail.end_date).format(
+				"YYYY-MM-DD HH::mm:ss"
+			);
+			let checkEndDateExist = true;
+			if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+				if (currentDate > missionEndDate) {
+				checkEndDateExist = false;
 				}
 			}
-			});
-		}
-		return skillString;
+			if (missionDetail.user_application_count == 1 && checkEndDateExist) {
+				return true;
+			}
+		},
+		getClosedStatus(missionDetail) {
+			let currentDate = moment().format("YYYY-MM-DD HH::mm:ss");
+			let missionEndDate = moment(missionDetail.end_date).format(
+				"YYYY-MM-DD HH::mm:ss"
+			);
+			if (missionDetail.end_date != "" && missionDetail.end_date != null) {
+				if (currentDate > missionEndDate) {
+				return true;
+				}
+			}
+		},
+		submitNewMission() {
+			if (this.submitNewMissionUrl != "") {
+				window.open(this.submitNewMissionUrl, "_self");
+			}
+		},
+		getSkills(skills) {
+			let skillString = "";
+			if (skills) {
+				skills.filter((data, index) => {
+				if (data) {
+					if (skillString != "") {
+					skillString = skillString + ", " + data.title;
+					} else {
+					skillString = data.title;
+					}
+				}
+				});
+			}
+			return skillString;
+		},
+		checkMissionTypeVolunteering(missionType) {
+			if (constants.MISSION_TYPE_TIME == missionType || constants.MISSION_TYPE_GOAL == missionType) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		checkMissionTypeDonation(missionType) {
+			if (constants.MISSION_TYPE_DONATION == missionType) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	},
 	created() {
@@ -515,6 +548,45 @@ export default {
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 		this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+
+		this.isVolunteeringSet = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+		this.isDonationSet = this.settingEnabled(constants.DONATION_ENABLED);
+		if (this.isDonationSet && this.isVolunteeringSet) {
+			this.isDispalyMissionLabel = true;
+		}
+		this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
+		if (JSON.parse(store.state.missionTypeLabels) != "") {
+			let defaultLang = store.state.defaultLanguage.toLowerCase();
+			this.missionTypeLabels.filter((item, i) => {
+				// volunteering mission label
+				if (item.type == constants.VOLUNTERRING_ENABLED) {
+					this.volunteeringMissionTypeLabels.icon = item.icon;
+					this.volunteeringMissionTypeLabels.backgroundColor = item.background_color;
+					let data = item.translations.filter(translationsItem => {
+						if (translationsItem.language_code == defaultLang) {
+							this.volunteeringMissionTypeLabels.label = translationsItem.description;
+						}
+					});
+					if (this.volunteeringMissionTypeLabels.label == "" && data[0] && data[0].description) {
+						this.volunteeringMissionTypeLabels.label = data[0].description;
+					}
+				}
+				// Donation mission label
+				if (item.type == constants.VOLUNTERRING_ENABLED) {
+					this.donationMissionTypeLabels.icon = item.icon;
+					this.donationMissionTypeLabels.backgroundColor = item.background_color;
+					let data = item.translations.filter(translationsItem => {
+						if (translationsItem.language_code == defaultLang) {
+							this.donationMissionTypeLabels.label = translationsItem.description;
+						}
+					});
+					if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
+						this.donationMissionTypeLabels.label = data[0].description;
+					}
+				}
+
+			});
+		}
 	}
 };
 </script>

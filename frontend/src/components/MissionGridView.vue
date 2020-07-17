@@ -40,15 +40,15 @@
 
 							<div class="content-block">
 								<div class="mission-label-wrap">
-
-									<!-- <div class="mission-label volunteer-label">
-										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon.svg'" alt="volunteer icon"></i>Volunteer</span>
-									</div> -->
+									
+									<div class="mission-label volunteer-label" v-if="isDispalyMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
+										<span :style="{ backgroundColor: volunteeringMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon" alt="volunteer icon"></i>{{volunteeringMissionTypeLabels.label}}</span>
+									</div>
 									<div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
 										<span>{{languageData.label.virtual_mission}}</span>
 									</div>
-									<!-- <div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/donation-icon.svg'" alt=""></i>Donation</span>
+									<!-- <div class="mission-label donation-label" v-if="isDispalyMissionLabel && checkMissionTypeDonation(mission.mission_type)">
+										<span><i class="icon-wrap"><img :src="donationMissionTypeLabels.icon" alt="Donation icon"></i>{{donationMissionTypeLabels.label}}</span>
 									</div> -->
 
 								</div>
@@ -305,8 +305,22 @@ export default {
 		isStarRatingDisplay: true,
 		isSubmitNewMissionSet: true,
 		isThemeSet: true,
-		submitNewMissionUrl: '',
-		cardHeightAdjIntervalId: null
+		submitNewMissionUrl: "",
+		cardHeightAdjIntervalId: null,
+		isDispalyMissionLabel : false,
+		isVolunteeringSet : true,
+		isDonationSet : true,
+		missionTypeLabels : "",
+		volunteeringMissionTypeLabels : {
+			'icon' : '',
+			'label' : '',
+			'backgroundColor' : ''
+		},
+		donationMissionTypeLabels : {
+			'icon' : '',
+			'label' : '',
+			'backgroundColor' : ''
+		}
 		};
 	},
 	computed: {
@@ -557,6 +571,21 @@ export default {
 			if (this.cardHeightAdjIntervalId) {
 				clearInterval(this.cardHeightAdjIntervalId);
 			}
+		},
+
+		checkMissionTypeVolunteering(missionType) {
+			if (constants.MISSION_TYPE_TIME == missionType || constants.MISSION_TYPE_GOAL == missionType) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		checkMissionTypeDonation(missionType) {
+			if (constants.MISSION_TYPE_DONATION == missionType) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 	},
@@ -571,6 +600,45 @@ export default {
 		);
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
+		
+		this.isVolunteeringSet = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+		this.isDonationSet = this.settingEnabled(constants.DONATION_ENABLED);
+		if (this.isDonationSet && this.isVolunteeringSet) {
+			this.isDispalyMissionLabel = true;
+		}
+		this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
+		if (JSON.parse(store.state.missionTypeLabels) != "") {
+			let defaultLang = store.state.defaultLanguage.toLowerCase();
+			this.missionTypeLabels.filter((item, i) => {
+				// volunteering mission label
+				if (item.type == constants.VOLUNTERRING_ENABLED) {
+					this.volunteeringMissionTypeLabels.icon = item.icon;
+					this.volunteeringMissionTypeLabels.backgroundColor = item.background_color;
+					let data = item.translations.filter(translationsItem => {
+						if (translationsItem.language_code == defaultLang) {
+							this.volunteeringMissionTypeLabels.label = translationsItem.description;
+						}
+					});
+					if (this.volunteeringMissionTypeLabels.label == "" && data[0] && data[0].description) {
+						this.volunteeringMissionTypeLabels.label = data[0].description;
+					}
+				}
+				// Donation mission label
+				if (item.type == constants.VOLUNTERRING_ENABLED) {
+					this.donationMissionTypeLabels.icon = item.icon;
+					this.donationMissionTypeLabels.backgroundColor = item.background_color;
+					let data = item.translations.filter(translationsItem => {
+						if (translationsItem.language_code == defaultLang) {
+							this.donationMissionTypeLabels.label = translationsItem.description;
+						}
+					});
+					if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
+						this.donationMissionTypeLabels.label = data[0].description;
+					}
+				}
+
+			});
+		}
 	},
 	mounted() {
 		this.cardHeightAdjIntervalId = setInterval(this.cardHeightAdj, 500);
