@@ -69,7 +69,7 @@ class CreateScssTemporaryFolderJob extends Job
         $customScssFiles = Storage::disk('s3')->allFiles($tenantScssFolderName);
         foreach ($customScssFiles as $customScssFile) {
             // Skip files that are not custom SCSS
-            if (!in_array($customScssFile, CustomStyleFilenames::EDITABLE_FILES)) {
+            if (!in_array(basename($customScssFile), CustomStyleFilenames::EDITABLE_FILES)) {
                 continue;
             }
 
