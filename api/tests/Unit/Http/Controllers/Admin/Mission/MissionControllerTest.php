@@ -19,94 +19,20 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Http\Controllers\Admin\Mission\MissionController;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use DB;
 
 class MissionControllerTest extends TestCase
 {
+    
     /**
-     * A donation store method
+     * @testdox Test store mission with impact donation attribute with success status
      *
      * @return void
      */
-    public function testStoreDonationAttribute()
+    public function testStoreImpactDonationAttributeSuccess()
     {
         \DB::setDefaultConnection('tenant');
 
-        $this->assertTrue(true);
-        $mission = factory(\App\Models\Mission::class)->make();
-      
-        $mission->mission_type = config('constants.mission_type.DONATION');
-        $missionParam = $mission->toArray();
-        $missionParam['goal_amount_currency'] = 'USD';
-        $missionParam['goal_amount'] = 233;
-        $missionParam['show_goal_amount'] = 0;
-        $missionParam['show_donation_percentage'] = 0 ;
-        $missionParam['show_donation_meter'] = 0;
-        $missionParam['show_donation_count'] = 0;
-        $missionParam['show_donors_count'] = 0;
-        $missionParam['disable_when_funded'] = 0 ;
-        $missionParam['is_disabled'] = 0;
-        
-        $missionRepositoryMockResponse = new Mission();
-        $methodResponse = [
-            "status"=> Response::HTTP_CREATED,
-            "data"=> [
-                "mission_id" => $missionRepositoryMockResponse->mission_id
-            ],
-            "message"=> trans('messages.success.MESSAGE_MISSION_ADDED')
-        ];
-
-        $JsonResponse = new JsonResponse(
-            $methodResponse
-        );
-
-        $request = new Request($missionParam);
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $notificationRepository = $this->mock(NotificationRepository::class);
-
-        $missionRepository = $this->mock(MissionRepository::class);
-        $missionResult = $missionRepository
-            ->shouldReceive('store')
-            ->once()
-            ->with($request)
-            ->andReturn($missionRepositoryMockResponse);
-           
-        $responseHelper = $this->mock(ResponseHelper::class);
-        $responseHelper
-            ->shouldReceive('success')
-            ->once()
-            ->with(
-                Response::HTTP_CREATED,
-                trans('messages.success.MESSAGE_MISSION_ADDED'),
-                ['mission_id' => $missionRepositoryMockResponse->mission_id]
-            )
-            ->andReturn($JsonResponse); 
-
-        $callController = $this->getController(
-            $missionRepository,
-            $responseHelper,
-            $request,
-            $languageHelper,
-            $missionMediaRepository,
-            $tenantActivatedSettingRepository,
-            $notificationRepository
-        );
-        
-        $response = $callController->store($request);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
-    }
-
-    /**
-     * A donation update method
-     *
-     * @return void
-     */
-    public function testUpdateDonationAttribute()
-    {
-        \DB::setDefaultConnection('tenant');
-        $missionId = 13;
         $this->assertTrue(true);
         $mission = factory(\App\Models\Mission::class)->make();
       
@@ -121,12 +47,13 @@ class MissionControllerTest extends TestCase
         $missionParam['show_donors_count'] = 0;
         $missionParam['disable_when_funded'] = 0 ;
         $missionParam['is_disabled'] = 0;
-        
-        $missionRepositoryMockResponse = new Mission();
+
+        $missionId = rand(1000, 9000);
+        $missionModelMockResponse = new Mission();
         $methodResponse = [
-            "status"=> Response::HTTP_OK,
+            "status"=> Response::HTTP_CREATED,
             "data"=> [
-                "mission_id" => $missionRepositoryMockResponse->mission_id
+                "mission_id" => $missionId
             ],
             "message"=> trans('messages.success.MESSAGE_MISSION_ADDED')
         ];
@@ -142,22 +69,27 @@ class MissionControllerTest extends TestCase
         $notificationRepository = $this->mock(NotificationRepository::class);
 
         $missionRepository = $this->mock(MissionRepository::class);
-        $missionResult = $missionRepository
-            ->shouldReceive('update')
+        $missionRepository
+            ->shouldReceive('store')
             ->once()
             ->with($request)
-            ->andReturn($missionRepositoryMockResponse);
-           
+            ->andReturn($missionModelMockResponse);
+            
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper
             ->shouldReceive('success')
             ->once()
             ->with(
-                Response::HTTP_OK,
+                Response::HTTP_CREATED,
                 trans('messages.success.MESSAGE_MISSION_ADDED'),
-                ['mission_id' => $missionRepositoryMockResponse->mission_id]
+                ['mission_id' => $missionId]
             )
-            ->andReturn($JsonResponse); 
+            ->andReturn($JsonResponse);
+
+        // $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+        // $entityId = $missionId;
+        // $action = config('constants.notification_actions.CREATED');
+        
 
         $callController = $this->getController(
             $missionRepository,
@@ -168,8 +100,8 @@ class MissionControllerTest extends TestCase
             $tenantActivatedSettingRepository,
             $notificationRepository
         );
-        
-        $response = $callController->update($request,$missionId);
+
+        $response = $callController->store($request);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
