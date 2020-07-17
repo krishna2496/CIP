@@ -127,6 +127,7 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        dd($request);
         // Server side validataions
         $validator = Validator::make(
             $request->all(),

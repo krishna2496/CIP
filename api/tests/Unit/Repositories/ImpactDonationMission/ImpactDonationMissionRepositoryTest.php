@@ -2,21 +2,27 @@
     
 namespace Tests\Unit\Repositories\ImpactDonationMission;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use TestCase;
+use DB;
 use Mockery;
-use App\Services\Mission\ModelsService;
-use App\Models\MissionImpactDonationLanguage;
-use App\Helpers\LanguageHelper;
+use TestCase;
 use App\Models\Mission;
-use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
+use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
+use App\Helpers\LanguageHelper;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use App\Models\MissionImpactDonation;
-use Illuminate\Support\Str;
-use DB;
-use App\Models\Language;
+use App\Services\Mission\ModelsService;
+use App\Models\MissionImpactDonationLanguage;
+use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
+use App\Models\TimeMission;
+use App\Models\MissionLanguage;
+use App\Models\MissionDocument;
+use App\Models\FavouriteMission;
+use App\Models\MissionSkill;
+use App\Models\MissionRating;
+use App\Models\MissionApplication;
+use App\Models\City;
 
 class ImpactDonationMissionRepositoryTest extends TestCase
 {
@@ -27,18 +33,38 @@ class ImpactDonationMissionRepositoryTest extends TestCase
     */
     public function testImpactDonationStoreSuccess()
     {
-
         $data = [
             "amount" => 512,
             "translations" => [
                 [
-                    "language_code" => "tr",
+                    "language_code" => "en",
                     "content" => "this is test impact donation mission in english 2 language."
                 ]
             ]
         ];
 
-        // $request = new Request($data);
+        $languagesData = [
+            (object)[
+                "language_id"=>1,
+                "name"=> "English",
+                "code"=> "en",
+                "status"=> "1",
+                "created_at"=> null,
+                "updated_at"=> null,
+                "deleted_at"=> null,
+            ],
+            (object)[
+                "language_id" => 2,
+                "name" => "French",
+                "code" => "fr",
+                "status"=>"1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null,
+            ]
+        ];
+
+        $collectionLanguageData = collect($languagesData);
         $missionId = 13;
         $defaultTenantLanguageId = 1;
 
@@ -50,21 +76,46 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
 
-        
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionImpactDonation
+        );
+
         $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collection);
 
-        $impactDonationArray = [
-            'mission_impact_donation_id' => (String) Str::uuid(),
-            'mission_id' => $missionId,
-            'amount' => $data['amount']
-        ];
+        // dd($modelService);
 
-        $missionImpactDonation->shouldReceive('create')
+        $modelService->missionImpactDonation->shouldReceive('create')
         ->once()
-        ->with($impactDonationArray)
         ->andReturn(new MissionImpactDonation());
+
+        $collection->shouldReceive('where')
+        ->once()
+        ->with('code', $data['translations'][0]['language_code'])
+        ->andReturn($collectionLanguageData);
+
+        $missionImpactDonationLanguage->shouldReceive('create')
+        ->once()
+        ->andReturn($missionImpactDonationLanguage);
         
         $repository = $this->getRepository(
             $mission,
@@ -86,16 +137,39 @@ class ImpactDonationMissionRepositoryTest extends TestCase
     public function testImpactDonationUpdateSuccess()
     {
         $data = [
-            "impact_donation_id" => "53f994a9-b3c0-454a-b81d-8723a8e31808",
-            "amount" => 145,
+            "impact_donation_id" => str_random(36),
+            "amount" => rand(10000, 100000),
             "translations" => [
                 [
                     "language_code" => "en",
-                    "content" => "this is test impact donation mission in english 2 language."
+                    "content" => str_random(160)
                 ]
             ]
         ];
-        $missionId = 13;
+
+        $languagesData = [
+            (object)[
+                "language_id"=>1,
+                "name"=> "English",
+                "code"=> "en",
+                "status"=> "1",
+                "created_at"=> null,
+                "updated_at"=> null,
+                "deleted_at"=> null,
+            ],
+            (object)[
+                "language_id" => 2,
+                "name" => "French",
+                "code" => "fr",
+                "status"=>"1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null,
+            ]
+        ];
+
+        $collectionLanguageData = collect($languagesData);
+        $missionId = rand(10000, 100000);
         $defaultTenantLanguageId = 1;
 
         $mission = $this->mock(Mission::class);
@@ -105,18 +179,39 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $collection = $this->mock(Collection::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
-        $languageObjectMock = $this->mock(Language::class);
+
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionImpactDonation
+        );
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collection);
 
-        $missionImpactDonation->shouldReceive('where')
+        $modelService->missionImpactDonation->shouldReceive('where')
         ->once()
         ->with(["mission_impact_donation_id"=>$data["impact_donation_id"]])
         ->andReturn($missionImpactDonation);
 
-        $missionImpactDonation->shouldReceive('update')
+        $modelService->missionImpactDonation->shouldReceive('update')
         ->once()
         ->with(['amount'=>$data['amount']])
         ->andReturn($missionImpactDonation);
@@ -124,11 +219,11 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $collection->shouldReceive('where')
         ->once()
         ->with('code', $data['translations'][0]['language_code'])
-        ->andReturn($collection);
+        ->andReturn($collectionLanguageData);
 
-        $collection->shouldReceive('first')
+        $missionImpactDonationLanguage->shouldReceive('createOrUpdateDonationImpactTranslation')
         ->once()
-        ->andReturn($languageObjectMock);
+        ->andReturn();
 
         $repository = $this->getRepository(
             $mission,
@@ -140,7 +235,6 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         );
 
         $response = $repository->update($data, $missionId, $defaultTenantLanguageId);
-
     }
 
     /**
@@ -169,6 +263,48 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionImpactDonationLanguage,
             $languageHelper,
             $missionImpactDonation
+        );
+    }
+
+
+    /**
+     * Create a new service instance.
+     *
+     * @param  App\Models\Mission $mission
+     * @param  App\Models\TimeMission $timeMission
+     * @param  App\Models\MissionLanguage $missionLanguage
+     * @param  App\Models\MissionDocument $missionDocument
+     * @param  App\Models\FavouriteMission $favouriteMission
+     * @param  App\Models\MissionSkill $missionSkill
+     * @param  App\Models\MissionRating $missionRating
+     * @param  App\Models\MissionApplication $missionApplication
+     * @param  App\Models\City $city
+     * @param  App\Models\MissionImpactDonation $missionImpactDonation
+     * @return void
+     */
+    private function modelService(
+        Mission $mission,
+        TimeMission $timeMission,
+        MissionLanguage $missionLanguage,
+        MissionDocument $missionDocument,
+        FavouriteMission $favouriteMission,
+        MissionSkill $missionSkill,
+        MissionRating $missionRating,
+        MissionApplication $missionApplication,
+        City $city,
+        MissionImpactDonation $missionImpactDonation
+    ) {
+        return new ModelsService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionImpactDonation,
         );
     }
 
