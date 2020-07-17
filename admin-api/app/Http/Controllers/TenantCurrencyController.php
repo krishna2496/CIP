@@ -120,8 +120,8 @@ class TenantCurrencyController extends Controller
                 Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
                 $query->where(['tenant_id' => $tenantId]);
             })],
-            'default' => 'in:0,1',
-            'is_active' => 'in:0,1',
+            'default' => 'required|in:0,1',
+            'is_active' => 'required|in:0,1',
         ]);
 
         if ($validator->fails()) {
@@ -180,8 +180,8 @@ class TenantCurrencyController extends Controller
 
         $validator = Validator::make($request->toArray(), [
             'code' => 'required|regex:/^[A-Z]{3}$/',
-            'default' => 'in:0,1',
-            'is_active' => 'in:0,1',
+            'default' => 'required|in:0,1',
+            'is_active' => 'required|in:0,1',
         ]);
 
         if ($validator->fails()) {
