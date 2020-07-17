@@ -801,9 +801,6 @@
                     }
                 }
             }
-        },
-        "/tenants/tenant-currency/{tenantId}": {
-            
         }
     },
     "definitions": {
