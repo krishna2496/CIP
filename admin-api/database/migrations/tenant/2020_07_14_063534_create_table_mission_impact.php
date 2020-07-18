@@ -16,7 +16,7 @@ class CreateTableMissionImpact extends Migration
         Schema::create('mission_impact', function (Blueprint $table) {
             $table->uuid('mission_impact_id')->primary();
             $table->unsignedBigInteger('mission_id');
-            $table->text('icon');
+            $table->text('icon')->nullable();
             $table->integer('sort_key', false);
             $table->timestamps();
             $table->softDeletes();
