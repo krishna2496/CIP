@@ -55,7 +55,7 @@ class MissionImpactRepository implements MissionImpactInterface
         $languages = $this->languageHelper->getLanguages();
         $missionImpactPostData = [
             'mission_id' => $missionId,
-            'icon' => $missionImpact['icon_path'],
+            'icon' => isset($missionImpact['icon_path']) ? $missionImpact['icon_path'] : null,
             'sort_key' => $missionImpact['sort_key']
         ];
 
