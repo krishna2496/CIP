@@ -41,13 +41,13 @@
 							<div class="content-block">
 								<div class="mission-label-wrap">
 									
-									<div class="mission-label volunteer-label" v-if="isDispalyMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
+									<div class="mission-label volunteer-label" v-if="isDisplayMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
 										<span :style="{ backgroundColor: volunteeringMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon" alt="volunteer icon"></i>{{volunteeringMissionTypeLabels.label}}</span>
 									</div>
 									<div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
 										<span>{{languageData.label.virtual_mission}}</span>
 									</div>
-									<!-- <div class="mission-label donation-label" v-if="isDispalyMissionLabel && checkMissionTypeDonation(mission.mission_type)">
+									<!-- <div class="mission-label donation-label" v-if="isDisplayMissionLabel && checkMissionTypeDonation(mission.mission_type)">
 										<span><i class="icon-wrap"><img :src="donationMissionTypeLabels.icon" alt="Donation icon"></i>{{donationMissionTypeLabels.label}}</span>
 									</div> -->
 
@@ -307,9 +307,9 @@ export default {
 		isThemeSet: true,
 		submitNewMissionUrl: "",
 		cardHeightAdjIntervalId: null,
-		isDispalyMissionLabel : false,
-		isVolunteeringSet : true,
-		isDonationSet : true,
+		isDisplayMissionLabel : false,
+		isVolunteeringSettingEnabled : true,
+		isDonationSettingEnabled : true,
 		missionTypeLabels : "",
 		volunteeringMissionTypeLabels : {
 			'icon' : '',
@@ -601,11 +601,12 @@ export default {
 		this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 		
-		this.isVolunteeringSet = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-		this.isDonationSet = this.settingEnabled(constants.DONATION_ENABLED);
-		if (this.isDonationSet && this.isVolunteeringSet) {
-			this.isDispalyMissionLabel = true;
+		this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+		this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
+		if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
+			this.isDisplayMissionLabel = true;
 		}
+		
 		this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
 		if (JSON.parse(store.state.missionTypeLabels) != "") {
 			let defaultLang = store.state.defaultLanguage.toLowerCase();

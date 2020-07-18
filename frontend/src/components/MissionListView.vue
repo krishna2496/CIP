@@ -32,7 +32,7 @@
                             <div class="content-block">
                                 <div class="mission-label-wrap">
                                     <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span></div>
-                                    <div class="mission-label volunteer-label" v-if="isDispalyMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
+                                    <div class="mission-label volunteer-label" v-if="isDisplayMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
 										<span :style="{ backgroundColor: volunteeringMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon" alt="volunteer icon"></i>{{volunteeringMissionTypeLabels.label}}</span>
 									</div>
                                     <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
@@ -260,9 +260,9 @@ export default {
 		isThemeSet: true,
 		submitNewMissionUrl: "",
 		isSkillDisplay: true,
-		isDispalyMissionLabel : false,
-		isVolunteeringSet : true,
-		isDonationSet : true,
+		isDisplayMissionLabel : false,
+		isVolunteeringSettingEnabled : true,
+		isDonationSettingEnabled : true,
 		missionTypeLabels : "",
 		volunteeringMissionTypeLabels : {
 			'icon' : '',
@@ -541,10 +541,10 @@ export default {
 		this.submitNewMissionUrl = store.state.submitNewMissionUrl;
 		this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
 
-		this.isVolunteeringSet = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-		this.isDonationSet = this.settingEnabled(constants.DONATION_ENABLED);
-		if (this.isDonationSet && this.isVolunteeringSet) {
-			this.isDispalyMissionLabel = true;
+		this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+		this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
+		if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
+			this.isDisplayMissionLabel = true;
 		}
 		this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
 		if (JSON.parse(store.state.missionTypeLabels) != "") {
