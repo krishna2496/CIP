@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
+use App\Repositories\MissionImpact\MissionImpactRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -51,6 +52,11 @@ class MissionRepository implements MissionInterface
     * @var App\Services\Mission\ModelsService
     */
     private $modelsService;
+
+    /**
+     * @var App\Repositories\MissionImpact\MissionImpactRepository
+     */
+    private $missionImpactRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -61,6 +67,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
      * @return void
      */
     public function __construct(
@@ -69,7 +76,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        MissionImpactRepository $missionImpactRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -77,6 +85,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->missionImpactRepository = $missionImpactRepository;
     }
     
     /**
@@ -88,6 +97,8 @@ class MissionRepository implements MissionInterface
     public function store(Request $request): Mission
     {
         $languages = $this->languageHelper->getLanguages();
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id != "" ? $request->theme_id : null,
@@ -202,7 +213,7 @@ class MissionRepository implements MissionInterface
         if(isset($request->impact) && count($request->impact) > 0){
             if (!empty($request->impact)) {
                 foreach($request->impact as $impactValue){
-                    $this->missionImpactRepository->store($impactValue, $mission->mission_id);
+                    $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId);
                 }
             }
         }
@@ -1103,8 +1114,8 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
 
-        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
-        : (($relatedCityCount === 0) && ($relatedCountryCount > 0))
+        $missionQuery = (($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount === 0) && ($relatedCountryCount > 0)))
         ? $missionQuery->where('country_id', $mission->country_id)
         : $missionQuery->where('theme_id', $mission->theme_id);
 
