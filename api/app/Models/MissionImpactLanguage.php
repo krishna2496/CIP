@@ -43,7 +43,7 @@ class MissionImpactLanguage extends Model
      *
      * @var array
      */
-    protected $fillable = ['language_id', 'content'];
+    protected $fillable = ['mission_impact_id', 'language_id', 'content'];
 
     /**
      * Binds creating/saving events to create UUIDs.
