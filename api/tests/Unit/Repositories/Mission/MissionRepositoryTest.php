@@ -47,8 +47,6 @@ class MissionRepositoryTest extends TestCase
 
         $requestParams = [
             "theme_id" => 1,
-            "city_id" => 1,
-            "country_id" => 233,
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "total_seats" => rand(10, 1000),
@@ -122,6 +120,7 @@ class MissionRepositoryTest extends TestCase
         $requestData = new Request($requestParams);
 
         $mission = $this->mock(Mission::class);
+        // $this->app->instance('Mission', $mission);
         $timeMission = $this->mock(TimeMission::class);
         $missionLanguage = $this->mock(MissionLanguage::class);
         $missionDocument = $this->mock(MissionDocument::class);
@@ -154,35 +153,22 @@ class MissionRepositoryTest extends TestCase
             $missionTab,
             $missionTabLanguage
         );
-
-        $missionData = array(
-            'theme_id' =>null,
-            'city_id' => 1,
-            'country_id' => 233,
-            'start_date' => null,
-            'end_date' => null,
-            'total_seats' => null,
-            'publication_status' => 'APPROVED',
-            'organisation_id' => 34,
-            'organisation_name' => "Sdfsd",
-            'organisation_detail' => null,
-            'availability_id' => 1,
-            'mission_type' => "DONATION",
-            'is_virtual' => '0',
-        );
-        
-
+dd($modelsService->mission->shouldReceive('create'));
+       
         // ModelsService
-        
-        // dd($modelsService->mission->shouldReceive('create'));
-        // $mission->shouldReceive('create')
-        // ->once()
-        // ->with($requestData->all())
-        // ->andReturn($mission);
+        // $modelsService->shouldReceive('mission')
+        //     ->once()
+        //     ->andReturn($mission);
 
+        //     $modelsService->shouldReceive('create')
+        //     ->once()
+        //     ->with($requestData->all())
+        //     ->andReturn($mission);
+
+        dd($modelsService->mission);
         $modelsService->mission->shouldReceive('create')
         ->once()
-        ->with($missionData)
+        ->with($requestData->all())
         ->andReturn($mission);
         
         $collectionLanguageData = collect($languagesArray);
@@ -193,14 +179,14 @@ class MissionRepositoryTest extends TestCase
 
         //     $collection->shouldReceive('where')
         //     ->once()
-        //     ->with('code','en')
+        //     ->with('code', $languagesArray[0]->code)
         //     ->andReturn($collectionLanguageData);
 
-        //    $test = $collection->shouldReceive('first')
+        //   $collection->shouldReceive('first')
         //     ->once()
         //     ->andReturn($languagesArray[0]);
         
-        $countryId= rand(111, 555);
+        $countryId= $requestParams['location']['country_id'];
         
         $countryRepository->shouldReceive('getCountryId')
         ->once()
@@ -233,7 +219,7 @@ class MissionRepositoryTest extends TestCase
         $helpers->shouldReceive('getSubDomainFromRequest')
         ->once()
         ->with($requestData)
-        ->andReturn("donation");
+        ->andReturn($tenantName);
 
         $repository = $this->getRepository(
             $languageHelper,
@@ -292,6 +278,7 @@ class MissionRepositoryTest extends TestCase
         $modelsService = $this->mock(ModelsService::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $collection = $this->mock(Collection::class);
+        $countryRepository = $this->mock(CountryRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -353,21 +340,27 @@ class MissionRepositoryTest extends TestCase
         ->once()
         ->andReturn($collectionLanguageData);
 
-        $collection->shouldReceive('where')
-        ->once()
-        ->with('code', 'en')
-        ->andReturn($collectionLanguageData);
+        // $collection->shouldReceive('where')
+        // ->once()
+        // ->with('code', 'en')
+        // ->andReturn($collectionLanguageData);
 
-        $test = $collection->shouldReceive('first')
-        ->once()
-        ->andReturn($languagesArray[0]);
+        // $test = $collection->shouldReceive('first')
+        // ->once()
+        // ->andReturn($languagesArray[0]);
         
-        $countryId= rand(111, 555);
-        $countryRepository = $this->mock(CountryRepository::class);
-        $countryRepository->shouldReceive('getCountryId')
+        // $countryId= $requestParams['location']['country_id'];
+        
+        // $countryRepository->shouldReceive('getCountryId')
+        // ->once()
+        // ->with($requestData->location['country_code'])
+        // ->andReturn($countryId);
+
+        $tenantName = str_random(10);
+        $helpers->shouldReceive('getSubDomainFromRequest')
         ->once()
-        ->with($requestData->location['country_code'])
-        ->andReturn($countryId);
+        ->with($requestData)
+        ->andReturn($tenantName);
 
         $repository = $this->getRepository(
             $languageHelper,
@@ -378,8 +371,8 @@ class MissionRepositoryTest extends TestCase
             $modelsService,
             $missionTabRepository
         );
-
-        $response = $repository->update($requestData, 13);
+        $missionId = str_random(2);
+        $response = $repository->update($requestData, $missionId);
         
         $this->assertInstanceOf(mission::class, $response);
     }
