@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\App\Tenant;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Helpers\Helpers;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Helpers\ResponseHelper;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 
 class TenantCurrencyController extends Controller
 {
@@ -14,33 +17,39 @@ class TenantCurrencyController extends Controller
     private $helpers;
 
     /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Helpers\Helpers $helpers
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
-        Helpers $helpers
+        Helpers $helpers,
+        ResponseHelper $responseHelper
     ) {
         $this->helpers = $helpers;
+        $this->responseHelper = $responseHelper;
     }
 
     /**
      * Fetch all tenant currency
-     * 
+     *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request): JsonResponse{
+    public function index(Request $request): JsonResponse
+    {
 
-        // Fetch tenant all settings details
+        // Fetch tenant all currency details
         $getTenantCurrency = $this->helpers->getTenantCurrency($request);
 
-        dd($getTenantCurrency);
-
-        $apiData = $getTenantCurrency;
-
         // Set response data
+        $apiData = $getTenantCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($getTenantCurrency->isEmpty() || $getTenantCurrency->isEmpty())
         ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
