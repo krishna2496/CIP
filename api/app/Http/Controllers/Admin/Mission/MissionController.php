@@ -167,7 +167,12 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact.*.icon_path" => 'sometimes|required',
+                "impact.*.sort_key" => 'required|integer',
+                "impact.*.translations" => 'required',
+                "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
+                "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
             ]
         );
 

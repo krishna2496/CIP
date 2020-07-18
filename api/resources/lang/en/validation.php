@@ -218,6 +218,11 @@ return [
         'states.*.translations' => 'translations',
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
+        'impact.*.icon_path' => 'icon path',
+        'impact.*.sort_key' => 'sort key',
+        'impact.*.translations' => 'translations',
+        'impact.*.translations.*.language_code' => 'language code',
+        'impact.*.translations.*.content' => 'content'
 		],
 
 ];

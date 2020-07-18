@@ -197,6 +197,15 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
+
+        //Add mission impact
+        if(isset($request->impact) && count($request->impact) > 0){
+            if (!empty($request->impact)) {
+                foreach($request->impact as $impactValue){
+                    $this->missionImpactRepository->store($impactValue, $mission->mission_id);
+                }
+            }
+        }
         return $mission;
     }
     
