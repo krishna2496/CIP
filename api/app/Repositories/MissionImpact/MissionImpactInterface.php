@@ -18,7 +18,8 @@ interface MissionImpactInterface
      *
      * @param array $missionImpact
      * @param int $missionId
+     * @param int $defaultTenantLanguageId
      * @return void
      */
-    // public function update(array $missionImpact, int $missionId);
+    public function update(array $missionImpact, int $missionId, int $defaultTenantLanguageId);
 }

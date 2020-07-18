@@ -59,4 +59,18 @@ class MissionImpactLanguage extends Model
             $model->mission_impact_language_id = Uuid::uuid4()->toString();
         });
     }
+    
+    /**
+     * Store/update specified resource for mission impact translations.
+     * 
+     * @param array $condition
+     * @param array $data
+     * @return App\Models\MissionImpactLanguage 
+     */
+    public function createOrUpdateMissionImpactTranslation(
+        array $condition,
+        array $data
+    ): MissionImpactLanguage {
+        return static::updateOrCreate($condition, $data);
+    }
 }

@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\MissionImpact\MissionImpactRepository;
+use App\Services\Mission\AdminMissionTransformService;
 
 class MissionRepository implements MissionInterface
 {
@@ -57,6 +58,11 @@ class MissionRepository implements MissionInterface
      * @var App\Repositories\MissionImpact\MissionImpactRepository
      */
     private $missionImpactRepository;
+
+    /**
+     * @var App\Services\Mission\AdminMissionTransformService
+     */
+    private $adminMissionTransformService;
     
     /**
      * Create a new Mission repository instance.
@@ -68,6 +74,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
+     * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
      * @return void
      */
     public function __construct(
@@ -77,7 +84,8 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        MissionImpactRepository $missionImpactRepository
+        MissionImpactRepository $missionImpactRepository,
+        AdminMissionTransformService $adminMissionTransformService
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -86,6 +94,7 @@ class MissionRepository implements MissionInterface
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
         $this->missionImpactRepository = $missionImpactRepository;
+        $this->adminMissionTransformService = $adminMissionTransformService;
     }
     
     /**
@@ -230,6 +239,9 @@ class MissionRepository implements MissionInterface
     public function update(Request $request, int $id): Mission
     {
         $languages = $this->languageHelper->getLanguages();
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+
         // Set data for update record
         if (isset($request->location['country_code'])) {
             $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
@@ -387,6 +399,19 @@ class MissionRepository implements MissionInterface
                 unset($missionDocument);
             }
         }
+
+        // Add/update impact mission 
+        if (isset($request->impact) && count($request->impact)) {
+            foreach ($request->impact as $impactValue) {
+                if (isset($impactValue['mission_impact_id'])) {
+                    $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId);
+                } else {
+                    //Mission impact id is not available and create the mission impact and details
+                    $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId);
+                }
+            }
+        }
+
         return $mission;
     }
     
@@ -415,6 +440,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['impactMission' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
         }])->findOrFail($id);
         
         if (isset($mission->missionLanguage)) {
@@ -426,6 +454,9 @@ class MissionRepository implements MissionInterface
                 )->first()->code;
             }
         }
+
+        $this->adminMissionTransformService->transfromAdminMission($mission);
+        
         return $mission;
     }
     
@@ -1552,5 +1583,21 @@ class MissionRepository implements MissionInterface
         ->where(['mission_id'=> $missionId, 'user_id'=> $userId])
         ->whereIn('approval_status', $statusArray)->get();
         return $applicationStatusData->isEmpty() ? true : false;
+    }
+
+    /**
+     * Check impact mission is available for mission 
+     * 
+     * @param int $missionId
+     * @param string $missionImpactId
+     */
+
+    public function isMissionImpactLinkedToMission(int $missionId, string $missionImpactId)
+    {
+        return $this->modelsService->missionImpact
+            ->where([
+                ['mission_id', '=', $missionId],
+                ['mission_impact_id', '=', $missionImpactId]
+            ])->firstOrFail();
     }
 }

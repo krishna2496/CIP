@@ -36,7 +36,7 @@ class MissionImpact extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_id', 'mission_id', 'icon', 'sort_key'];
+    protected $visible = ['mission_impact_id', 'mission_id', 'icon', 'sort_key', 'missionImpactLanguageDetails'];
 
     /**
      * The attributes that are mass assignable.
@@ -58,5 +58,13 @@ class MissionImpact extends Model
             // Generate UUID
             $model->mission_impact_id = Uuid::uuid4()->toString();
         });
+    }
+
+    /**
+     * Get mission impact language details
+     */
+    public function missionImpactLanguageDetails()
+    {
+        return $this->hasMany(MissionImpactLanguage::class, 'mission_impact_id', 'mission_impact_id');
     }
 }

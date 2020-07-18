@@ -222,7 +222,8 @@ return [
         'impact.*.sort_key' => 'sort key',
         'impact.*.translations' => 'translations',
         'impact.*.translations.*.language_code' => 'language code',
-        'impact.*.translations.*.content' => 'content'
+        'impact.*.translations.*.content' => 'content',
+        'impact.*.mission_impact_id' => 'mission impact id'
 		],
 
 ];

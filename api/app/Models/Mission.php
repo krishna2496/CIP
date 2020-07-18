@@ -393,10 +393,9 @@ class Mission extends Model
     /**
      * Set impact mission attribute on the model.
      *
-     * @param $value
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function impactMission($value): HasMany
+    public function impactMission(): HasMany
     {
         return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id');
     }
