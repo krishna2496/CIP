@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MissionImpact extends Model
 {
@@ -62,8 +63,10 @@ class MissionImpact extends Model
 
     /**
      * Get mission impact language details
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function missionImpactLanguageDetails()
+    public function missionImpactLanguageDetails() : HasMany
     {
         return $this->hasMany(MissionImpactLanguage::class, 'mission_impact_id', 'mission_impact_id');
     }

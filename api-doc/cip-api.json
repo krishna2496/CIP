@@ -5,8 +5,8 @@
     "title": "CI Platform",
     "description": ""
   },
-  "host": "ci-api-doc-service",
-  "basePath": "/team4/cip-api",
+  "host": "localhost",
+  "basePath": "/cip/api",
   "tags": [
     {
       "name": "Mission"
@@ -8332,6 +8332,42 @@
                 "type": "integer",
                 "format": "int64",
                 "description": "Skill id from `skill` table"
+              }
+            }
+          }
+        },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_impact_id": {
+                "type": "string",
+                "description": "mission impact id is only neccessary when want to update specific impact mission data. If have not specified mission_impact_id then it will create a new data for impact mission."
+              },
+              "icon_path": {
+                "type": "text",
+                "description": "Mention particulat URL for impact mission icon,"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language code.(i.e. en, fr etc)"
+                    },
+                    "content" : {
+                      "type": "text",
+                      "description": "Add description for impact mission"
+                    }
+                  }
+                }
               }
             }
           }

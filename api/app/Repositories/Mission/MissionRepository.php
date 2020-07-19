@@ -505,6 +505,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['impactMission' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -538,7 +541,10 @@ class MissionRepository implements MissionInterface
                     $value->default_media_path = $mediaValue->media_path;
                 }
             }
+
+            $this->adminMissionTransformService->transfromAdminMission($value);
         }
+
         return $mission;
     }
 

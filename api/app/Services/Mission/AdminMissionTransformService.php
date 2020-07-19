@@ -26,10 +26,10 @@ class AdminMissionTransformService
     /**
      * Transfrom getting mission data into proper format
      *
-     * @param  App\Models\Mission $mission
+     * @param  $mission
      * @return void
      */
-    public function transfromAdminMission(Mission $mission)
+    public function transfromAdminMission($mission)
     {
         // Transform impact mission attribute
         $languages = $this->languageHelper->getLanguages();
