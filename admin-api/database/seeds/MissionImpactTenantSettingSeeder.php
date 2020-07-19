@@ -14,9 +14,9 @@ class MissionImpactTenantSettingSeeder extends Seeder
     {
         $items = [
             [
-                'title' => 'Impact donation',
-                'description' => 'Impact donation is enabled/disabled',
-                'key' => 'impact_donation',
+                'title' => 'Mission impact',
+                'description' => 'Mission impact is enabled/disabled',
+                'key' => 'mission_impact',
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
