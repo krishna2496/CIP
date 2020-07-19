@@ -5,8 +5,8 @@
     "title": "CI Platform",
     "description": ""
   },
-  "host": "ci-api-doc-service",
-  "basePath": "/team4/cip-api",
+  "host": "localhost",
+  "basePath": "/cip/api",
   "tags": [
     {
       "name": "Mission"
@@ -4322,6 +4322,24 @@
           },
           "401": {
             "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    },
+    "/app/tenant-currency": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-tenant-currency",
+        "summary": "App - Get tenant currency",
+        "description": "In front end - It will fetch tenant currency set by tenant super admin.",
+        "tags": [
+          "Tenant - App"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
           }
         }
       }

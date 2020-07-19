@@ -10,6 +10,7 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
+use Illuminate\Support\Collection;
 
 class Helpers
 {
@@ -478,12 +479,12 @@ class Helpers
     }
 
     /**
-     * Get fetch tenant currency
+     * Get tenant currency
      *
      * @param \Illuminate\Http\Request $request
-     * @return mix
+     * @return Illuminate\Support\Collection
      */
-    public function getTenantCurrency(Request $request)
+    public function getTenantCurrency(Request $request) : Collection
     {
         $tenant = $this->getTenantDetail($request);
 

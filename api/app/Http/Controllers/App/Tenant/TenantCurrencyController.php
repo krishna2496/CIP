@@ -39,8 +39,8 @@ class TenantCurrencyController extends Controller
     /**
      * Fetch all tenant currency
      *
-     * @param Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
