@@ -83,6 +83,8 @@ class SamlController extends Controller
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
         $auth->processResponse();
         if (!$auth->isAuthenticated()) {
+            $errors = $auth->getErrors();
+            die('200-Not authenticated. ' . implode('; ', $errors).' - '.$auth->getLastErrorReason());
             $auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
         }
 
@@ -153,7 +155,7 @@ class SamlController extends Controller
                     $country = $this->countryRepository->searchCountry($value);
                 }
                 $value = $country ? $country->country_id : null;
-            }
+            };
 
             $userData[$name] = $value;
         }
@@ -165,12 +167,14 @@ class SamlController extends Controller
             );
         }
 
+        // if language code is not provided, we default the user's language to tenant's default language.
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
         if (isset($userData['language_id'])) {
             $language = $this->languageHelper->getTenantLanguageByCode($request, $userData['language_id']);
         }
         $userData['language_id'] = $language->language_id;
 
+        // if the timezone is not provided, we defaults the user's timezone base on the config.
         $timezoneCode = $userData['timezone_id'] ?? env('SAML_DEFAULT_TIMEZONE');
         $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
             $timezoneCode
@@ -341,7 +345,13 @@ class SamlController extends Controller
 
     private function syncContact($userDetail, $settings)
     {
-        $country = $this->countryRepository->getCountryData($userDetail->country_id);
+        $country = [];
+        if ($userDetail->country_id) {
+            $country = $this->countryRepository->getCountryData(
+                $userDetail->country_id
+            );
+        }
+
         $language = $this->languageHelper->getLanguage($userDetail->language_id);
         $postalCity = null;
 
@@ -349,7 +359,8 @@ class SamlController extends Controller
             $city = $this->cityRepository->getCityData($userDetail->city_id);
             $cityLanguages = collect($city['languages']);
             if ($cityLanguages->count()) {
-                $postalCity = $cityLanguages->where('language_id', $userDetail->country_id)
+                $postalCity = $cityLanguages
+                    ->where('language_id', $userDetail->language_id)
                     ->first();
                 if ($postalCity) {
                     $postalCity = $postalCity['name'];
@@ -366,8 +377,8 @@ class SamlController extends Controller
                 'position' => $userDetail->title,
                 'first_name' => $userDetail->first_name,
                 'last_name' => $userDetail->last_name,
-                'postal_city' => $postalCity ?: '',
-                'postal_country' => $country['ISO'],
+                'postal_city' => $postalCity ?? '',
+                'postal_country' => $country['ISO'] ?? '',
                 'preferred_language' => $language->code,
                 'department' => $userDetail->department
             ]
