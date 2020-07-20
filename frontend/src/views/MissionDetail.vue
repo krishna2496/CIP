@@ -692,7 +692,8 @@ export default {
             },
             customInformation: [],
             missionRatingSetting: true,
-            isStarRatingDisable: false
+            isStarRatingDisable: false,
+            isVolunteeringSettingEnabled: true
         };
     },
     mounted() {
@@ -1220,6 +1221,10 @@ export default {
         }
     },
     created() {
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+        if (!this.isVolunteeringSettingEnabled) {
+            this.$router.push('/home')
+        }
         this.sharingUrl = document.URL
         // Get mission detail
         this.getMissionDetail();
@@ -1246,6 +1251,7 @@ export default {
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
         this.missionRatingSetting = this.settingEnabled(constants.MISSION_RATING_VOLUNTEER)
         this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
+        
     },
     updated() {
 

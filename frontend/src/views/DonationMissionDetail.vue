@@ -733,7 +733,8 @@ export default {
                 }
             ],
             disableDonationButton: false,
-            donationPercentage: 0
+            donationPercentage: 0,
+            isDonationSettingEnabled : true
         };
     },
     mounted() {
@@ -1240,6 +1241,10 @@ export default {
     },
     created() {
         this.sharingUrl = document.URL
+        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
+        if (!this.isDonationSettingEnabled) {
+            this.$router.push('/home')
+        }
         // Get mission detail
         this.getMissionDetail();
         if (store.state.search != null) {
