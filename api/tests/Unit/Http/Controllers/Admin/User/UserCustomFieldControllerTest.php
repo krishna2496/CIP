@@ -224,18 +224,30 @@ class UserCustomFieldControllerTest extends TestCase
         $repository = $this->mock(UserCustomFieldRepository::class);
         $repository->shouldReceive('delete')
             ->andReturn(true)
-            ->shouldReceive('findMinOrder')
-            ->shouldReceive('deleteMultiple');
+            ->shouldReceive('deleteMultiple')
+            ->shouldReceive('findMinOrder');
 
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper->shouldReceive('success')
             ->once()
             ->with(Response::HTTP_NO_CONTENT, trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED'));
 
+        $responseHelper->shouldReceive('error')
+            ->never()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                'Field id must be an array'
+            );
+
         $request = $this->mock(Request::class);
         $request->shouldReceive('header')
             ->shouldReceive('toArray')
-            ->andReturn([1]);
+            ->andReturn(['id' => [2]]);
+        $request->shouldReceive('has')
+            ->shouldReceive('all')
+            ->andReturn([]);
 
         $this->withoutEvents();
 

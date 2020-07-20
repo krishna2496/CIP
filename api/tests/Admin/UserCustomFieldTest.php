@@ -100,7 +100,11 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_no_user_custom_field_found()
     {
-        $this->get(route("metadata.users.custom_fields"), ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+        $this->get(
+            route("metadata.users.custom_fields"), [
+                'Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))
+            ]
+        )
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 "status",
@@ -205,12 +209,15 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
+        $userCustomField2 = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField2->setConnection($connection);
+        $userCustomField2->save();
+
         $this->delete(
             "metadata/users/custom_fields/" . $userCustomField->field_id,
-            [1, 2, 3],
+            ['id' => [$userCustomField2->field_id]],
             ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
-        )
-            ->seeStatusCode(204);
+        )->seeStatusCode(204);
     }
 
     /**
@@ -269,7 +276,7 @@ class UserCustomFieldTest extends TestCase
             $params,
             ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-            ->seeStatusCode(422)
+            ->seeStatusCode(404)
             ->seeJsonStructure([
                 "errors" => [
                     [
