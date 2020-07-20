@@ -121,6 +121,7 @@ export default new Vuex.Store({
                 localStorage.removeItem('ssoLogin');
                 state.ssoLogin = false;
                 window.location.href = state.samlSettings.slo_url;
+                return;
             }
 
             if (!data || !data.stay) {
