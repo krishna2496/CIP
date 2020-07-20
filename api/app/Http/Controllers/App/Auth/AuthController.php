@@ -319,7 +319,7 @@ class AuthController extends Controller
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
-            config('constants.activity_log_actions.PASSWORD_CREATE_REQUEST'),
+            config('constants.activity_log_actions.CREATED'),
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
@@ -583,18 +583,14 @@ class AuthController extends Controller
 
         $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
 
-        // Remove password before logging it
-        $request->request->remove("password");
-        $request->request->remove("password_confirmation");
-
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
-            config('constants.activity_log_actions.PASSWORD_CREATE'),
+            config('constants.activity_log_actions.UPDATED'),
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
-            $request->toArray(),
+            $request->except(['password', 'password_confirmation']),
             $userDetail->user_id
         ));
 

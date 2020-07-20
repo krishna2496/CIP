@@ -274,6 +274,8 @@ return [
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Something went wrong while sending reset password link',
+        'ERROR_INVALID_CREATE_PASSWORD_LINK' => 'Create password link is expired or invalid',
+        'ERROR_SEND_CREATE_PASSWORD_LINK' => 'Something went wrong while sending create password link',
         'ERROR_INVALID_DETAIL' => 'Invalid reset password token or email address',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Tenant domain not found',
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
