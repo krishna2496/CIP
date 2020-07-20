@@ -93,6 +93,10 @@ class MissionRepositoryTest extends TestCase
                   ]
                 ]
               ],
+              "organisation"=>[
+                  "organisation_id"=> '1',
+                  "organisation_name"=> 'namee'
+              ]
               
         ];
 
@@ -153,7 +157,13 @@ class MissionRepositoryTest extends TestCase
             $missionTab,
             $missionTabLanguage
         );
-dd($modelsService->mission->shouldReceive('create'));
+        $missionModel = new Mission();
+        //dd($missionModel->mission_id);
+        $missionModel->mission_id = 6587;
+        $modelsService->mission
+        ->shouldReceive('create')
+        ->once()
+        ->andReturn($missionModel);
        
         // ModelsService
         // $modelsService->shouldReceive('mission')
@@ -164,27 +174,52 @@ dd($modelsService->mission->shouldReceive('create'));
         //     ->once()
         //     ->with($requestData->all())
         //     ->andReturn($mission);
-
-        dd($modelsService->mission);
-        $modelsService->mission->shouldReceive('create')
-        ->once()
-        ->with($requestData->all())
-        ->andReturn($mission);
         
+        // $missionLanguageData = new Request(array(
+        //     'mission_id' => $missionModel->mission_id,
+        //     'language_id' => 1,
+        //     'title' => 'New Organization Mission created',
+        //     'short_description' => 'this is testing api with all mission details',
+        //     'description' => [
+        //         "title"=> "Section title",
+        //         "description"=> "Section description"
+        //     ],
+        //     'objective' => 'To test and check',
+        //     'custom_information' => [
+        //         "title"=> "Customer info",
+        //         "description"=> "Description of customer info"
+        //       ],
+        //     'label_goal_achieved' => 'test percentage',
+        //     'label_goal_objective' => 'check test percentage'
+        // ));
+       // dd($missionLanguageData->all());
+           
+
+       // dd($modelsService->mission);
+        // $modelsService->mission->shouldReceive('create')
+        // ->once()
+        // ->with($requestData->all())
+        // ->andReturn($mission);
+
+        // $modelsService->missionLanguage->shouldReceive('create')
+        // ->once()
+        // ->with($missionLanguageData->all())
+        // ->andReturn(false);
+
         $collectionLanguageData = collect($languagesArray);
        
         $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collectionLanguageData);
 
-        //     $collection->shouldReceive('where')
-        //     ->once()
-        //     ->with('code', $languagesArray[0]->code)
-        //     ->andReturn($collectionLanguageData);
+            $collection->shouldReceive('where')
+            ->once()
+            ->with('code', $languagesArray[0]->code)
+            ->andReturn($collectionLanguageData);
 
-        //   $collection->shouldReceive('first')
-        //     ->once()
-        //     ->andReturn($languagesArray[0]);
+          $collection->shouldReceive('first')
+            ->once()
+            ->andReturn($languagesArray[0]);
         
         $countryId= $requestParams['location']['country_id'];
         
@@ -206,11 +241,35 @@ dd($modelsService->mission->shouldReceive('create'));
         //     'label_goal_achieved' => str_random(10),
         //     'label_goal_objective' => str_random(10)
         // );
-
-        // $missionLanguage->shouldReceive('create')
+        //  $missionLanguageData = new Request(array(
+        //     'mission_id' => $missionModel->mission_id,
+        //     'language_id' => 1,
+        //     'title' => 'New Organization Mission created',
+        //     'short_description' => 'this is testing api with all mission details',
+        //     'description' => [
+        //         "title"=> "Section title",
+        //         "description"=> "Section description"
+        //     ],
+        //     'objective' => 'To test and check',
+        //     'custom_information' => [
+        //         "title"=> "Customer info",
+        //         "description"=> "Description of customer info"
+        //       ],
+        //     'label_goal_achieved' => 'test percentage',
+        //     'label_goal_objective' => 'check test percentage'
+        // ));
+        $modelsService->missionLanguage->shouldReceive('create')
+        ->once()
+        ->andReturn(false);
+            $donationModel = $this->mock(\App\Models\DonationAttribute::class); 
+        // $mission->shouldReceive('donationAttribute')
         // ->once()
-        // ->with($missionLanguageData)
-        // ->andReturn($missionLanguage);
+        // ->andReturn($donationModel);
+        
+        $donationModel->shouldReceive('create')
+        ->once()
+        ->andReturn(false);
+        //->andReturn(false);
 
        
         
