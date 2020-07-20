@@ -4,7 +4,7 @@ namespace App\Repositories\UnitedNationSDG;
 use App\Models\UnitedNationSDG;
 use Illuminate\Support\Collection;
 
-class UnitedNationSDGRepository implements UnitedNationSDGRInterface
+class UnitedNationSDGRepository implements UnitedNationSDGInterface
 {
     /**
      * Display a listing of the United Nation SDG.

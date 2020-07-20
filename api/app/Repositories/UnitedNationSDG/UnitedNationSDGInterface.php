@@ -3,7 +3,7 @@ namespace App\Repositories\UnitedNationSDG;
 
 use Illuminate\Support\Collection;
 
-interface UnitedNationSDGRInterface
+interface UnitedNationSDGInterface
 {
     /**
      * Display a listing of the United Nation SDG.
