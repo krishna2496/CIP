@@ -65,9 +65,8 @@ class SamlController extends Controller
             SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
-        //$settings['security']['wantAssertionsSigned'] = true;
-
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
+
         return $auth->login();
     }
 
@@ -81,14 +80,10 @@ class SamlController extends Controller
             SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
-        //$settings['security']['wantAssertionsSigned'] = true;
-
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
         $auth->processResponse();
         if (!$auth->isAuthenticated()) {
-            $errors = $auth->getErrors();
-            die('200-Not authenticated. ' . implode('; ', $errors).' - '.$auth->getLastErrorReason());
-            //$auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
+            $auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
         }
 
         $attributes = [];
@@ -152,39 +147,15 @@ class SamlController extends Controller
 
             $value = $attributes[$mapping['value']];
 
-            if ($name === 'language_id') {
-                $language = $this->languageHelper->getTenantLanguageByCode($request, $value);
-                if (!$language) {
-                  //$validationErrors[] = 'Language';
-                    $value = 1; // English
-                } else {
-                  $value = $language->language_id;
-                }
-            }
-
-            if ($name === 'timezone_id') {
-                $timezone = $this->timezoneRepository->getTenantTimezoneByCode($value);
-                if (!$timezone) {
-                  //$validationErrors[] = 'Timezone';
-                    $value = 351; // Paris
-                } else {
-                  $value = $timezone->timezone_id;
-                }
-                $userData['timezone'] = 351;
-            }
-
             if ($name === 'country_id') {
                 $country = $this->countryRepository->getCountryByCode($value);
                 if (!$country) {
-                  //$validationErrors[] = 'Country';
-                   $value = 1; // France
-                } else {
-                  $value = $country->country_id;
+                    $country = $this->countryRepository->searchCountry($value);
                 }
+                $value = $country ? $country->country_id : null;
             }
 
             $userData[$name] = $value;
-
         }
 
         if ($validationErrors) {
@@ -193,6 +164,18 @@ class SamlController extends Controller
                 ['errors' => implode(',', $validationErrors), 'source' => 'saml']
             );
         }
+
+        $language = $this->languageHelper->getDefaultTenantLanguage($request);
+        if (isset($userData['language_id'])) {
+            $language = $this->languageHelper->getTenantLanguageByCode($request, $userData['language_id']);
+        }
+        $userData['language_id'] = $language->language_id;
+
+        $timezoneCode = $userData['timezone_id'] ?? env('SAML_DEFAULT_TIMEZONE');
+        $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
+            $timezoneCode
+        );
+        $userData['timezone_id'] = $timezone->timezone_id;
 
         if (isset($userData['city_id']) ) {
             $city = $this->cityRepository->searchCity(
@@ -204,7 +187,6 @@ class SamlController extends Controller
             if ($city) {
                 $userData['city_id'] = $city->city_id;
             }
-            $userData['city_id'] = 1;
         }
 
         if (isset($userData['availability_id'])) {
@@ -248,11 +230,6 @@ class SamlController extends Controller
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
-<<<<<<< HEAD
-
-
-=======
->>>>>>> baa006f75ef1dcad9378853848df6cf9c11eca63
 
         $this->syncContact($userDetail, $settings);
 
@@ -319,68 +296,16 @@ class SamlController extends Controller
                 config('constants.error_codes.ERROR_INVALID_SAML_IDENTITY_PROVIDER')
             );
         }
-       // $settings['security']['wantAssertionsSigned'] = true;
 
-        $samlSettings = new Settings($this->getSamlSettings($settings, $request->query('tenant'), true));
+        $samlSettings = new Settings($this->getSamlSettings($settings, $request->query('tenant')));
         $metadata = $samlSettings->getSPMetadata();
         $errors = $samlSettings->validateMetadata($metadata);
         return $response->header('Content-Type', 'text/xml')
             ->setContent($metadata);
     }
 
-    private function getSamlSettings(array $settings, $tenantId,$escape=false)
+    private function getSamlSettings(array $settings, $tenantId)
     {
-<<<<<<< HEAD
-        if(!$escape) {
-            return [
-                'debug' => env('APP_DEBUG'),
-                'strict' => $settings['strict'],
-                'security' => $settings['security'],
-                'idp' => $settings['idp'],
-                'sp' => [
-                    'entityId' => route('saml.metadata', ['t' => $settings['idp_id'], 'tenant' => $tenantId]),
-                    'singleSignOnService' => [
-                        'url' => route('saml.sso', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
-                    ],
-                    'singleLogoutService' => [
-                        'url' => route('saml.slo', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
-                    ],
-                    'assertionConsumerService' => [
-                        'url' => route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
-                    ],
-                    //'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
-                    'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-                    'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
-                    'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
-                ]
-            ];
-        } else {
-            return [
-                'debug' => env('APP_DEBUG'),
-                'strict' => $settings['strict'],
-                'security' => $settings['security'],
-                'idp' => $settings['idp'],
-                'sp' => [
-                    'entityId' => str_replace('&','&amp;',route('saml.metadata', ['t' => $settings['idp_id'], 'tenant' => $tenantId])),
-                    'singleSignOnService' => [
-                        'url' => str_replace('&','&amp;',route('saml.sso', ['t' => $settings['idp_id'], 'tenant' => $tenantId]))
-                    ],
-                    'singleLogoutService' => [
-                        'url' => str_replace('&','&amp;',route('saml.slo', ['t' => $settings['idp_id'], 'tenant' => $tenantId]))
-                    ],
-                    'assertionConsumerService' => [
-                        'url' => str_replace('&','&amp;',route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId]))
-                    ],
-                    //'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
-                    'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-                    'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
-                    'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
-                ]
-            ];
-        }
-
-
-=======
         return [
             'debug' => env('APP_DEBUG'),
             'strict' => $settings['strict'],
@@ -402,7 +327,6 @@ class SamlController extends Controller
                 'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
             ]
         ];
->>>>>>> baa006f75ef1dcad9378853848df6cf9c11eca63
     }
 
     private function getIdentityProviderSettings()
@@ -417,13 +341,10 @@ class SamlController extends Controller
 
     private function syncContact($userDetail, $settings)
     {
-        if($userDetail->country_id) {
+        $country = $this->countryRepository->getCountryData($userDetail->country_id);
+        $language = $this->languageHelper->getLanguage($userDetail->language_id);
+        $postalCity = null;
 
-            $country = $this->countryRepository->getCountryData($userDetail->country_id);
-            $language = $this->languageHelper->getLanguage($userDetail->language_id);
-            $postalCity = null;
-
-        }
         if ($userDetail->city_id) {
             $city = $this->cityRepository->getCityData($userDetail->city_id);
             $cityLanguages = collect($city['languages']);
@@ -445,17 +366,17 @@ class SamlController extends Controller
                 'position' => $userDetail->title,
                 'first_name' => $userDetail->first_name,
                 'last_name' => $userDetail->last_name,
-                'postal_city' => isset($postalCity) ? $postalCity : '',
-                'postal_country' => (isset($country) ? $country['ISO'] : null),
-                'preferred_language' => (isset($language) ? $language->code : null),
-                'department' => (isset($userDetail->department) ? $userDetail->department : null),
+                'postal_city' => $postalCity ?: '',
+                'postal_country' => $country['ISO'],
+                'preferred_language' => $language->code,
+                'department' => $userDetail->department
             ]
         ]);
 
-//        (new Amqp)->publish(
-//            'ciContacts',
-//            $payload,
-//            ['queue' => 'ciContacts']
-//        );
+        (new Amqp)->publish(
+            'ciContacts',
+            $payload,
+            ['queue' => 'ciContacts']
+        );
     }
 }
