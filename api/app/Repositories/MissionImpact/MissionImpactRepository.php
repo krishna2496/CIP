@@ -86,10 +86,18 @@ class MissionImpactRepository implements MissionImpactInterface
         $languages = $this->languageHelper->getLanguages();
         $missionImpactId = $missionImpact['mission_impact_id'];
 
-        if (isset($missionImpact['sort_key'])) {
+        // Update sort_key
+        if (isset($missionImpact['sort_key']) && !empty($missionImpact['sort_key'])) {
             $this->missionImpactModel
             ->where(["mission_impact_id" => $missionImpactId])
             ->update(['sort_key' => $missionImpact['sort_key']]);
+        }
+
+        // Update icon
+        if (isset($missionImpact['icon_path']) && !empty($missionImpact['icon_path'])) {
+            $this->missionImpactModel
+            ->where(["mission_impact_id" => $missionImpactId])
+            ->update(['icon' => $missionImpact['icon_path']]);
         }
 
         if (isset($missionImpact['translations'])) {
