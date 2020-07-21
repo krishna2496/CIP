@@ -55,7 +55,10 @@ return [
         'TEXT' => 'text',
         'EMAIL' => 'email',
         'DROP-DOWN' => 'drop-down',
-        'RADIO' => 'radio'
+        'RADIO' => 'radio',
+        'CHECKBOX' => 'checkbox',
+        'MULTISELECT' => 'multiselect',
+        'TEXTAREA' => 'textarea',
      ],
 
      /*

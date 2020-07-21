@@ -1,24 +1,25 @@
 <?php
+
 namespace App\Http\Controllers\Admin\User;
 
+use App\Events\User\UserActivityLogEvent;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
-use App\Models\UserCustomField;
+use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
-use Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
-use App\Events\User\UserActivityLogEvent;
+use Validator;
 
 //!  User custom field controller
 /*!
 This controller is responsible for handling user custom field listing, show, store, update and delete operations.
  */
+
 class UserCustomFieldController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -71,7 +72,7 @@ class UserCustomFieldController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($customFields->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-             : trans('messages.success.MESSAGE_CUSTOM_FIELD_LISTING');
+            : trans('messages.success.MESSAGE_CUSTOM_FIELD_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $customFields);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -93,7 +94,7 @@ class UserCustomFieldController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                "name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
+                "name" => "required|max:100|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
                 "type" => [
                     'required',
                     Rule::in(config('constants.custom_field_types'))
@@ -105,7 +106,7 @@ class UserCustomFieldController extends Controller
                     $request->type === config('constants.custom_field_types.DROP-DOWN') ||
                     $request->type === config('constants.custom_field_types.RADIO')
                 ),
-                "internal_note" => "sometimes|nullable|string"
+                "internal_note" => "sometimes|nullable|string|max:500"
             ]
         );
         // If post parameter have any missing parameter
@@ -117,6 +118,10 @@ class UserCustomFieldController extends Controller
                 $validator->errors()->first()
             );
         }
+
+        $lastOrderInDb = $this->userCustomFieldRepository->findMaxOrder();
+        $order = ($lastOrderInDb === null) ? 1 : $lastOrderInDb + 1;
+        $request->merge(['order' => $order]);
 
         // Create new user custom field record
         $customField = $this->userCustomFieldRepository->store($request->toArray());
@@ -151,27 +156,26 @@ class UserCustomFieldController extends Controller
     {
         try {
             // Server side validations
-            $validator = Validator::make(
-                $request->toArray(),
-                [
-                    "name" => [
-                        "sometimes",
-                        "required",
-                        "max:255",
-                        Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')
-                    ],
-                    "is_mandatory" => "sometimes|required|boolean",
-                    "type" => [
-                        "sometimes",
-                        "required",
-                        Rule::in(config('constants.custom_field_types'))
-                    ],
-                    "translations.*.lang" => "max:2",
-                    "translations.*.values" => Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
-                        || $request->type === config('constants.custom_field_types.RADIO')),
-                    "internal_note" => "sometimes|nullable|max:255"
-                ]
-            );
+            $validator = Validator::make($request->toArray(), [
+                "name" => [
+                    "sometimes",
+                    "required",
+                    "max:100",
+                    Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')
+                ],
+                "order" => "sometimes|required|numeric|min:1",
+                "is_mandatory" => "sometimes|required|boolean",
+                "type" => [
+                    "sometimes",
+                    "required",
+                    Rule::in(config('constants.custom_field_types'))
+                ],
+                "translations.*.lang" => "max:2",
+                "translations.*.values" => Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
+                    || $request->type === config('constants.custom_field_types.RADIO')),
+                "internal_note" => "sometimes|nullable|max:500"
+            ]);
+
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -182,7 +186,42 @@ class UserCustomFieldController extends Controller
                 );
             }
 
-            $customField = $this->userCustomFieldRepository->update($request->toArray(), $id);
+            $data = $request;
+
+            $fieldDetail = $this->userCustomFieldRepository->find($id);
+            $currentOrder = $fieldDetail->order;
+            $requestOrder = $request->order;
+
+            if ($currentOrder !== $requestOrder && $request->has('order')) {
+                $maxOrder = $this->userCustomFieldRepository->findMaxOrder();
+
+                $validator = Validator::make($request->toArray(), [
+                    "order" => "numeric|max:$maxOrder"
+                ]);
+
+                if ($validator->fails()) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                        $validator->errors()->first()
+                    );
+                }
+
+                $newOrder = $currentOrder < $requestOrder ? $currentOrder : $requestOrder + 1;
+
+                $records = $this->userCustomFieldRepository->findBetweenOrder($currentOrder, $requestOrder);
+                foreach ($records as $record) {
+                    $record->order = $newOrder;
+                    $this->userCustomFieldRepository->update($record->toArray(), $record->field_id);
+                    $newOrder++;
+                }
+
+                $fieldDetail->order = $requestOrder;
+                $data = $fieldDetail;
+            }
+
+            $customField = $this->userCustomFieldRepository->update($data->toArray(), $id);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
@@ -237,13 +276,70 @@ class UserCustomFieldController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, $id): JsonResponse
     {
         try {
-            $customField = $this->userCustomFieldRepository->delete($id);
+            $payload = $request->toArray();
+
+            if ($request->has('id') && !is_array($payload['id'])) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                    'Field id must be an array'
+                );
+            }
+
+            $customMessage['integer'] = 'The custom field ID must be an integer.';
+            $validator = Validator::make($payload, [
+                'id' => 'sometimes|required|array',
+                'id.*' => 'sometimes|required|integer'
+            ], $customMessage);
+            $payload['id'][] = $id;
+
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            if ((!empty($request->all()) && !$request->has('id')) || count(['id']) < count($request->all())) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                    'Field id is the only required parameter'
+                );
+            }
+
+            $method = 'deleteMultiple';
+            $payload = $payload['id'];
+            if (count($payload) === 1) {
+                $method = 'delete';
+                $payload = $id;
+            }
+
+            $minOrder = $this->userCustomFieldRepository->findMinOrder($payload);
+            $minOrder = is_array($payload) ? $minOrder : $minOrder->order;
+
+            $this->userCustomFieldRepository->{$method}($payload);
+
+            if (!empty($minOrder)) {
+                $records = $this->userCustomFieldRepository->findAfterMinOrder($minOrder);
+
+                foreach ($records as $record) {
+                    $record->order = $minOrder;
+                    $this->userCustomFieldRepository->update($record->toArray(), $record->field_id);
+                    $minOrder++;
+                }
+            }
 
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
