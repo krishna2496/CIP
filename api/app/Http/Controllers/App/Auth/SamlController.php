@@ -167,25 +167,24 @@ class SamlController extends Controller
             );
         }
 
-        // if language code is not provided, we default the user's language to tenant's default language.
-        $language = $this->languageHelper->getDefaultTenantLanguage($request);
         if (isset($userData['language_id'])) {
             $language = $this->languageHelper->getTenantLanguageByCode($request, $userData['language_id']);
+            $userData['language_id'] = $language->language_id;
         }
-        $userData['language_id'] = $language->language_id;
 
-        // if the timezone is not provided, we defaults the user's timezone base on the config.
-        $timezoneCode = $userData['timezone_id'] ?? 'Europe/Paris'; //env('SAML_DEFAULT_TIMEZONE');
-        $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
-            $timezoneCode
-        );
-        $userData['timezone_id'] = $timezone->timezone_id;
+        if (isset($userData['timezone_id'])) {
+            // $timezoneCode = $userData['timezone_id'] ?? 'Europe/Paris'; //env('SAML_DEFAULT_TIMEZONE');
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
+                $userData['timezone_id']
+            );
+            $userData['timezone_id'] = $timezone->timezone_id;
+        }
 
         if (isset($userData['city_id']) ) {
             $city = $this->cityRepository->searchCity(
                 $userData['city_id'],
-                (int)$userData['language_id'],
-                (int)$userData['country_id']
+                $userData['language_id'],
+                $userData['country_id']
             );
             unset($userData['city_id']);
             if ($city) {
@@ -231,9 +230,32 @@ class SamlController extends Controller
 
         $isNewUser = $userDetail === null;
 
-        $userDetail = $userDetail ?
-            $this->userRepository->update($userData, $userDetail->user_id) :
-            $this->userRepository->store($userData);
+        // Default user's timezone to config default timezone
+        //  - if an existing user has not yet set his/her timezone configuration.
+        //  - if a new user did not provided a timezone.
+        if ((!$isNewUser && !isset($userData['timezone_id']) && !$userDetail->timezone_id)
+            || ($isNewUser && !isset($userData['timezone_id']))
+        ) {
+            // env('SAML_DEFAULT_TIMEZONE')
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
+                'Europe/Paris'
+            );
+            $userData['timezone_id'] = $timezone->timezone_id;
+        }
+
+        // Default user's lanugage to tenant's default language
+        //  - if an existing user has not yet set his/her language configuration.
+        //  - if a new user did not provided a language code.
+        if ((!$isNewUser && !isset($userData['language_id']) && !$userDetail->lanugage_id)
+            || ($isNewUser && !isset($userData['language_id']))
+        ) {
+            $language = $this->languageHelper->getDefaultTenantLanguage($request);
+            $userData['language_id'] = $language->language_id;
+        }
+
+        $userDetail = $isNewUser ?
+            $this->userRepository->store($userData) :
+            $this->userRepository->update($userData, $userDetail->user_id);
 
         $this->syncContact($userDetail, $settings);
 
