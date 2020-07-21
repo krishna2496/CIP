@@ -8414,6 +8414,11 @@
             "0",
             "1"
           ]
+        },
+        "un_sdg": {
+          "type": "array",
+          "description": "Array of UN SDG numbers are valid only from 1 to 17 only.",
+          "example": [1, 2, 3]
         }
       }
     },

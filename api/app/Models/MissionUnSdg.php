@@ -63,5 +63,4 @@ class MissionUnSdg extends Model
             $model->mission_un_sdg_id = Uuid::uuid4()->toString();
         });
     }
-
 }

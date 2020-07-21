@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
+use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -51,6 +52,11 @@ class MissionRepository implements MissionInterface
     * @var App\Services\Mission\ModelsService
     */
     private $modelsService;
+
+    /**
+     * @var App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
+     */
+    private $unitedNationSDGRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -61,6 +67,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @return void
      */
     public function __construct(
@@ -69,7 +76,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        UnitedNationSDGRepository $unitedNationSDGRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -77,6 +85,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->unitedNationSDGRepository = $unitedNationSDGRepository;
     }
     
     /**
@@ -197,6 +206,12 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
+
+        // Add UN SDG for mission
+        if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
+            $this->unitedNationSDGRepository->addUnSdg($mission->mission_id, $request);
+        }
+
         return $mission;
     }
     
@@ -367,6 +382,12 @@ class MissionRepository implements MissionInterface
                 unset($missionDocument);
             }
         }
+
+        // Update UN SDG for mission
+        if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
+            $this->unitedNationSDGRepository->updateUnSdg($mission->mission_id, $request);
+        }
+
         return $mission;
     }
     
@@ -387,7 +408,8 @@ class MissionRepository implements MissionInterface
             'country.languages',
             'missionLanguage',
             'timeMission',
-            'goalMission'
+            'goalMission',
+            'missionUnSdg'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {

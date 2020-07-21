@@ -199,7 +199,12 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-      
+
+        // get UN SDG
+        if (isset($mission['missionUnSdg']) && count($mission['missionUnSdg']) > 0) {
+            $mission['un_sdg'] = $mission['missionUnSdg']->pluck('un_sdg_number')->toArray();
+            unset($mission['missionUnSdg']);
+        }
         return $mission;
     }
 }
