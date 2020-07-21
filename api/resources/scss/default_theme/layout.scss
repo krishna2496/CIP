@@ -150,6 +150,10 @@ ul {
 			left: 300px;
 		}
 	}
+
+    &.loaded {
+        display: block;
+    }
 }
 
 .container {

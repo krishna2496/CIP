@@ -184,6 +184,7 @@ class MissionRepository implements MissionInterface
                 config('constants.mission_type.DISASTER_RELIEF')))) {
             if ($request->donation_attribute) {
                 $donationData = array(
+                    'mission_id' => $mission->mission_id,
                     'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'],
                     'goal_amount' => $request->donation_attribute['goal_amount'] != '' ? $request->donation_attribute['goal_amount'] : null,
                     'show_goal_amount' => (string) $request->donation_attribute['show_goal_amount'] ?? '0',
@@ -194,7 +195,8 @@ class MissionRepository implements MissionInterface
                     'disable_when_funded' => (string) $request->donation_attribute['disable_when_funded'] ?? '0',
                     'is_disabled' => (string) $request->donation_attribute['is_disabled'] ?? '0',
                 );
-                $mission->donationAttribute()->create($donationData);
+                // $mission->donationAttribute()->create($donationData);
+                $this->modelsService->donationAttribute->create($donationData);
             }
         }
         // For skills
@@ -295,6 +297,7 @@ class MissionRepository implements MissionInterface
         if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'),
                 config('constants.mission_type.EAF'),
                 config('constants.mission_type.DISASTER_RELIEF')))) {
+                 
             if (isset($request->donation_attribute) && !empty($request->donation_attribute)) {
                 $donationAttributes = $mission->donationAttribute()->first();
                 if (!is_null($donationAttributes)) {

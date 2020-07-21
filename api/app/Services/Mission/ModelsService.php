@@ -12,6 +12,7 @@ use App\Models\MissionApplication;
 use App\Models\City;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
+use App\Models\DonationAttribute;
 
 class ModelsService
 {
@@ -71,6 +72,11 @@ class ModelsService
     public $missionTabLanguage;
 
     /**
+     * @var App\Models\DonationAttribute
+     */
+    public $donationAttribute;
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -97,7 +103,8 @@ class ModelsService
         MissionApplication $missionApplication,
         City $city,
         MissionTab $missionTab,
-        MissionTabLanguage $missionTabLanguage
+        MissionTabLanguage $missionTabLanguage,
+        DonationAttribute $donationAttribute
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -110,5 +117,6 @@ class ModelsService
         $this->city = $city;
         $this->missionTab = $missionTab;
         $this->missionTabLanguage = $missionTabLanguage;
+        $this->donationAttribute = $donationAttribute;
     }
 }

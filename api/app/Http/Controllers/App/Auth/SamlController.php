@@ -85,8 +85,6 @@ class SamlController extends Controller
             $auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
         }
 
-        $email = $auth->getNameId();
-        $userDetail = $user->where('email', $email)->first();
         $attributes = [];
         $userData = [];
 
@@ -216,17 +214,32 @@ class SamlController extends Controller
             }
         }
 
+        $email = $auth->getNameId();
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $email = $userData['email'] ?? '';
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $validationErrors[] = 'Email';
+            $auth->redirectTo(
+                'http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn'].'/auth/sso/error',
+                ['errors' => implode(',', $validationErrors), 'source' => 'saml']
+            );
+        }
+
+        $userDetail = $user->where('email', $email)->first();
         $userData['email'] = $email;
+
+        $isNewUser = $userDetail === null;
 
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
-            
-        
 
         $this->syncContact($userDetail, $settings);
 
-        if ($userDetail->status !== config('constants.user_statuses.ACTIVE')) {
+        if (!$isNewUser && $userDetail->status !== config('constants.user_statuses.ACTIVE')) {
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
@@ -315,7 +328,7 @@ class SamlController extends Controller
                 'assertionConsumerService' => [
                     'url' => route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
                 ],
-                'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
+                'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified',
                 'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
                 'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
             ]
