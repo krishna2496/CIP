@@ -31,6 +31,7 @@
                         <ul v-if="this.$store.state.isLoggedIn">
                             <li v-if="this.$store.state.logoRedirectUrl !== 'home'" class="has-menu no-dropdown home-link">
                                 <router-link :to="{ path: '/home'}" 
+                                    @click.native="homePage()"
                                     :title="languageData.label.home" class="home-icon">
                                     <img class="home-icon"
                                         :src="$store.state.imagePath+'/assets/images/home-ic.svg'"  
@@ -659,6 +660,9 @@
                     if (this.submitNewMissionUrl != '') {
                         window.open(this.submitNewMissionUrl, '_self');
                     }
+                },
+                homePage() {
+                    location.reload();
                 }
             },
             created() {
