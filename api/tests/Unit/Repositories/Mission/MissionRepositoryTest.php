@@ -366,14 +366,12 @@ class MissionRepositoryTest extends TestCase
     }
 
     /**
-    * @testdox Test impact mission donation find by missionId success
-    *
-    * @return void
-    */
-    public function testFindByMissionIDMissionSuccess()
+     * @testdox tranform imact donation mission attribute in display format
+     * 
+     * @return void
+     */
+    public function testTransformImpactDonatiomMissionSuccess()
     {
-        $missionId = rand(50000, 70000);
-        
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $s3Helper = $this->mock(S3Helper::class);
@@ -381,6 +379,78 @@ class MissionRepositoryTest extends TestCase
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
         $missionImpactDonationRepository = $this->mock(ImpactDonationMissionRepository::class);
+        $collection = $this->mock(Collection::class);
+        $mission = $this->mock(Mission::class);
+
+        $missionModel = new Mission();
+        $missionModel->impactDonation = (object)[
+            [
+                "mission_impact_donation_id" => str_random(36),
+                "amount" => 2,
+                "get_mission_impact_donation_detail" => [
+                    [
+                        "language_id" => 1,
+                        "content" => json_encode(str_random(160))
+                    ]
+                ]
+            ]
+        ];
+
+        $missionModel->impactDonation = collect($missionModel->impactDonation);
+
+        $languages = [
+            (object)[
+                "language_id"=>1,
+                "name"=> "English",
+                "code"=> "en",
+                "status"=> "1",
+                "created_at"=> null,
+                "updated_at"=> null,
+                "deleted_at"=> null,
+            ],
+            (object)[
+                "language_id" => 2,
+                "name" => "French",
+                "code" => "fr",
+                "status"=>"1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null,
+            ]
+        ];
+
+        $collectionLanguages = collect($languages);
+
+        $repository = $this->getRepository(
+            $languageHelper,
+            $helpers,
+            $s3Helper,
+            $countryRepository,
+            $missionMediaRepository,
+            $modelService,
+            $missionImpactDonationRepository,
+            $mission
+        );
+
+        $response = $repository->impactMissionDonationTransformArray($missionModel, $collectionLanguages);
+        $this->assertNull(null);
+    }
+
+    /**
+     * @testdox mission donation impact linked to mission
+     * 
+     */
+    public function testMissionDonationImpactLinkedToMissionSuccess()
+    {
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $s3Helper = $this->mock(S3Helper::class);
+        $countryRepository = $this->mock(CountryRepository::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $missionImpactDonationRepository = $this->mock(ImpactDonationMissionRepository::class);
+        $collection = $this->mock(Collection::class);
+
         $mission = $this->mock(Mission::class);
         $timeMission = $this->mock(TimeMission::class);
         $missionLanguage = $this->mock(MissionLanguage::class);
@@ -391,7 +461,6 @@ class MissionRepositoryTest extends TestCase
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
-        $collection = $this->mock(Collection::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -406,29 +475,6 @@ class MissionRepositoryTest extends TestCase
             $missionImpactDonation
         );
 
-        \DB::setDefaultConnection('tenant');
-        
-        $missionModel = new Mission();
-        $missionModel->mission_id = 13; 
-        $modelService->mission->shouldReceive('with')
-        ->once()
-        ->with('missionTheme', 'city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionLanguage', 'timeMission', 'goalMission')
-        ->andReturn($modelService->mission);
-
-        $modelService->mission->shouldReceive('with')
-        ->once()
-        ->with(['missionSkill', function ($argument) {
-            $missionSkill->shouldReceive('with')
-            ->once()
-            ->with('mission', 'skill')
-            ->andReturn($missionSkill);
-        }])
-        ->andReturn($modelService->mission);
-
-        $modelService->mission->shouldReceive('findOrFail')
-        ->once()
-        ->andReturn();
-
         $repository = $this->getRepository(
             $languageHelper,
             $helpers,
@@ -440,15 +486,33 @@ class MissionRepositoryTest extends TestCase
             $mission
         );
 
-        $response = $repository->find($missionId);
+        $missionId = rand(50000, 70000);
+        $missionImpactDonationId = rand(50000, 70000);
 
-        $this->assertInstanceOf(mission::class, $response);
+        $modelService->missionImpactDonation->shouldReceive("where")
+        ->once()
+        ->with([['mission_id', '=', $missionId], ['mission_impact_donation_id', '=', $missionImpactDonationId]])
+        ->andReturn($missionImpactDonation);
+
+        $modelService->missionImpactDonation->shouldReceive("firstOrFail")
+        ->once()
+        ->andReturn($missionImpactDonation);
+
+        $response = $repository->isMissionDonationImpactLinkedToMission($missionId, $missionImpactDonationId);
+        $this->assertInstanceOf(MissionImpactDonation::class ,$response);
     }
 
     /**
      * Create a new respository instance.
      *
-     * @param  App\Models\mission
+     * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Helpers\Helpers $helpers
+     * @param  App\Helpers\S3Helper $s3helper
+     * @param  App\Repositories\Country\CountryRepository $countryRepository
+     * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
+     * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository $missionImpactDonationRepository
+     * @param  App\Models\Mission $mission
      * @return void
      */
     private function getRepository(
