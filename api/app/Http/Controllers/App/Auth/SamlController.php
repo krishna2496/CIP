@@ -175,7 +175,7 @@ class SamlController extends Controller
         $userData['language_id'] = $language->language_id;
 
         // if the timezone is not provided, we defaults the user's timezone base on the config.
-        $timezoneCode = $userData['timezone_id'] ?? env('SAML_DEFAULT_TIMEZONE');
+        $timezoneCode = $userData['timezone_id'] ?? 'Europe/Paris'; //env('SAML_DEFAULT_TIMEZONE');
         $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
             $timezoneCode
         );
