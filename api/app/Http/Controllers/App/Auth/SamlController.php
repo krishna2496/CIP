@@ -248,11 +248,6 @@ class SamlController extends Controller
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
-<<<<<<< HEAD
-
-
-=======
->>>>>>> baa006f75ef1dcad9378853848df6cf9c11eca63
 
         $this->syncContact($userDetail, $settings);
 
@@ -330,57 +325,6 @@ class SamlController extends Controller
 
     private function getSamlSettings(array $settings, $tenantId,$escape=false)
     {
-<<<<<<< HEAD
-        if(!$escape) {
-            return [
-                'debug' => env('APP_DEBUG'),
-                'strict' => $settings['strict'],
-                'security' => $settings['security'],
-                'idp' => $settings['idp'],
-                'sp' => [
-                    'entityId' => route('saml.metadata', ['t' => $settings['idp_id'], 'tenant' => $tenantId]),
-                    'singleSignOnService' => [
-                        'url' => route('saml.sso', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
-                    ],
-                    'singleLogoutService' => [
-                        'url' => route('saml.slo', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
-                    ],
-                    'assertionConsumerService' => [
-                        'url' => route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
-                    ],
-                    //'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
-                    'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-                    'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
-                    'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
-                ]
-            ];
-        } else {
-            return [
-                'debug' => env('APP_DEBUG'),
-                'strict' => $settings['strict'],
-                'security' => $settings['security'],
-                'idp' => $settings['idp'],
-                'sp' => [
-                    'entityId' => str_replace('&','&amp;',route('saml.metadata', ['t' => $settings['idp_id'], 'tenant' => $tenantId])),
-                    'singleSignOnService' => [
-                        'url' => str_replace('&','&amp;',route('saml.sso', ['t' => $settings['idp_id'], 'tenant' => $tenantId]))
-                    ],
-                    'singleLogoutService' => [
-                        'url' => str_replace('&','&amp;',route('saml.slo', ['t' => $settings['idp_id'], 'tenant' => $tenantId]))
-                    ],
-                    'assertionConsumerService' => [
-                        'url' => str_replace('&','&amp;',route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId]))
-                    ],
-                    //'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
-                    'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-                    'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
-                    'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
-                ]
-            ];
-        }
-
-
-=======
         return [
             'debug' => env('APP_DEBUG'),
             'strict' => $settings['strict'],
@@ -402,7 +346,6 @@ class SamlController extends Controller
                 'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
             ]
         ];
->>>>>>> baa006f75ef1dcad9378853848df6cf9c11eca63
     }
 
     private function getIdentityProviderSettings()
