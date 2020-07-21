@@ -498,6 +498,7 @@ class Helpers
                 'tenant_currency.is_active'
             )
             ->where('tenant_id', $tenant->tenant_id)
+            ->where('tenant_currency.is_active', '1')
             ->orderBy('tenant_currency.code', 'ASC')
             ->get();
 

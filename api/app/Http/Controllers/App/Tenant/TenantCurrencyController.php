@@ -51,7 +51,7 @@ class TenantCurrencyController extends Controller
         // Set response data
         $apiData = $getTenantCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($getTenantCurrency->isEmpty() || $getTenantCurrency->isEmpty())
+        $apiMessage = $getTenantCurrency->isEmpty()
         ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
         trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING');
 
