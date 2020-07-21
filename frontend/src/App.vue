@@ -163,7 +163,7 @@
                     });
                 });
 
-                let validationButton = document.querySelectorAll(".btn");
+                let validationButton = document.querySelectorAll(".btn-validate");
                 validationButton.forEach((saveButton) => {
                     saveButton.addEventListener("click", () => {
                         let windowTop = window.pageYOffset;

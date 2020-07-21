@@ -150,6 +150,7 @@
 									'icon-btn' : true,
 									'fill-heart-btn' : mission.is_favourite == 1
 								}"
+								v-b-tooltip.hover
 								:title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
 								@click="favoriteMission(mission.mission_id)"
 								>

@@ -190,6 +190,7 @@
 									'icon-btn' : true,
 									'fill-heart-btn' : mission.is_favourite == 1
 								}"
+								v-b-tooltip.hover
 								:title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
 								@click="favoriteMission(mission.mission_id)"
 								>
@@ -332,6 +333,15 @@ export default {
 			this.invitedUserId = '';
 			this.query = '';
 			this.selected = '';
+			const cardList = document.querySelectorAll(
+				".card-grid .card-inner .card"
+			);
+			cardList.forEach((card) => {
+				card.style.height = "";
+				setTimeout(() => {
+				this.cardHeightAdj();
+				}, 500);
+			});
 		},
 		getAppliedStatus(missionDetail) {
 			const currentDate = moment().format('YYYY-MM-DD');
@@ -527,7 +537,9 @@ export default {
 		},
 		cardHeightAdj() {
 			const cardBodyList = document.querySelectorAll('.card-grid .card-body');
-
+	
+if(cardBodyList.length !== 0) {
+	
 			// check if card content is already visible in the DOM
 			if (!cardBodyList[0].children[0].offsetHeight) {
 				return;
@@ -556,6 +568,7 @@ export default {
 			if (this.cardHeightAdjIntervalId) {
 				clearInterval(this.cardHeightAdjIntervalId);
 			}
+		}
 		}
 
 	},
