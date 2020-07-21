@@ -33,6 +33,9 @@ use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
 use App\Models\City;
 use App\Models\DonationAttribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class MissionRepositoryTest extends TestCase
 {
@@ -301,7 +304,7 @@ class MissionRepositoryTest extends TestCase
     }
 
     /**
-    * @testdox Test donation attribute updatesuccess
+    * @testdox Test donation attribute update success
     *
     * @return void
     */
@@ -374,7 +377,7 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $countryRepository = $this->mock(CountryRepository::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
-
+        $hasOne = $this->mock(HasOne::class);
         $modelsService = $this->modelService(
             $mission,
             $timeMission,
@@ -389,69 +392,18 @@ class MissionRepositoryTest extends TestCase
             $missionTabLanguage,
             $donationAttribute
         );
+
         $missionModel = new Mission();
         $donationAttributeModel = new DonationAttribute();
-        $missionId = 233;
-        //dd($missionModel->mission_id);
+        $missionId = 13;
         $missionModel->mission_id = $missionId;
-        // $donationAttributeModel->mission_id =  $missionId;
         $modelsService->mission
         ->shouldReceive('findOrFail')
         ->once()
         ->with($missionId)
         ->andReturn($missionModel);
-
-        $mission
-        ->shouldReceive('donationAttribute')
-        ->once()
-        ->andReturn($donationAttributeModel);
-
-        $mission
-        ->shouldReceive('first')
-        ->once()
-        ->andReturn($donationAttributeModel);
-       
-       
-        // ModelsService
-        // $modelsService->shouldReceive('mission')
-        //     ->once()
-        //     ->andReturn($mission);
-
-        //     $modelsService->shouldReceive('create')
-        //     ->once()
-        //     ->with($requestData->all())
-        //     ->andReturn($mission);
         
-        // $missionLanguageData = new Request(array(
-        //     'mission_id' => $missionModel->mission_id,
-        //     'language_id' => 1,
-        //     'title' => 'New Organization Mission created',
-        //     'short_description' => 'this is testing api with all mission details',
-        //     'description' => [
-        //         "title"=> "Section title",
-        //         "description"=> "Section description"
-        //     ],
-        //     'objective' => 'To test and check',
-        //     'custom_information' => [
-        //         "title"=> "Customer info",
-        //         "description"=> "Description of customer info"
-        //       ],
-        //     'label_goal_achieved' => 'test percentage',
-        //     'label_goal_objective' => 'check test percentage'
-        // ));
-       // dd($missionLanguageData->all());
-           
-
-       // dd($modelsService->mission);
-        // $modelsService->mission->shouldReceive('create')
-        // ->once()
-        // ->with($requestData->all())
-        // ->andReturn($mission);
-
-        // $modelsService->missionLanguage->shouldReceive('create')
-        // ->once()
-        // ->with($missionLanguageData->all())
-        // ->andReturn(false);
+        $donationAttributeModel->mission_id = $missionId;
 
         $collectionLanguageData = collect($languagesArray);
        
@@ -459,69 +411,12 @@ class MissionRepositoryTest extends TestCase
         ->once()
         ->andReturn($collectionLanguageData);
 
-        //     $collection->shouldReceive('where')
-        //     ->once()
-        //     ->with('code', $languagesArray[0]->code)
-        //     ->andReturn($collectionLanguageData);
-
-        //   $collection->shouldReceive('first')
-        //     ->once()
-        //     ->andReturn($languagesArray[0]);
-        
         $countryId= $requestParams['location']['country_id'];
         
         $countryRepository->shouldReceive('getCountryId')
         ->once()
         ->with($requestData->location['country_code'])
         ->andReturn($countryId);
-
-        //save missonLanguage
-        
-        // $missionLanguageData = array(
-        //     'mission_id' => rand(1000,9999),
-        //     'language_id' => 1,
-        //     'title' => str_random(10),
-        //     'short_description' => str_random(10),
-        //     'description' => str_random(10),
-        //     'objective' => str_random(10),
-        //     'custom_information' => str_random(10),
-        //     'label_goal_achieved' => str_random(10),
-        //     'label_goal_objective' => str_random(10)
-        // );
-        //  $missionLanguageData = new Request(array(
-        //     'mission_id' => $missionModel->mission_id,
-        //     'language_id' => 1,
-        //     'title' => 'New Organization Mission created',
-        //     'short_description' => 'this is testing api with all mission details',
-        //     'description' => [
-        //         "title"=> "Section title",
-        //         "description"=> "Section description"
-        //     ],
-        //     'objective' => 'To test and check',
-        //     'custom_information' => [
-        //         "title"=> "Customer info",
-        //         "description"=> "Description of customer info"
-        //       ],
-        //     'label_goal_achieved' => 'test percentage',
-        //     'label_goal_objective' => 'check test percentage'
-        // ));
-        // $modelsService->missionLanguage->shouldReceive('create')
-        // ->once()
-        // ->andReturn(false);
-        
-        // $modelsService->donationAttribute->shouldReceive('create')
-        // ->once()
-        // ->andReturn(false);
-            
-        // $mission->shouldReceive('donationAttribute')
-        // ->once()
-        // ->andReturn($donationModel);
-        
-        
-        //->andReturn(false);
-
-       
-        
         
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')

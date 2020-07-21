@@ -297,10 +297,9 @@ class MissionRepository implements MissionInterface
         if (in_array($request->mission_type, array(config('constants.mission_type.DONATION'),
                 config('constants.mission_type.EAF'),
                 config('constants.mission_type.DISASTER_RELIEF')))) {
-                   
+                 
             if (isset($request->donation_attribute) && !empty($request->donation_attribute)) {
                 $donationAttributes = $mission->donationAttribute()->first();
-                dd($donationAttributes);
                 if (!is_null($donationAttributes)) {
                     if ($request->donation_attribute['goal_amount_currency']) {
                         $donationAttributes->goal_amount_currency =
