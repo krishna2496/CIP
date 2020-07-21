@@ -78,7 +78,7 @@ $factory->define(App\Models\Slider::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
     \DB::setDefaultConnection('tenant');
     $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-    $cityId = $countryDetail->city->first()->city_id;
+    $cityId = 1;
     \DB::setDefaultConnection('mysql');
 
     return [
@@ -280,5 +280,13 @@ $factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $f
         'country_id' => 1, 
         'language_id' => 1,
         'name' => $faker->name,
+    ];
+});
+
+$factory->define(App\Models\DonationAttribute::class, function (Faker\Generator $faker) {
+   
+    return [
+        "mission_id" => 1,
+        "goal_amount_currency" => "USD"
     ];
 });

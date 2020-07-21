@@ -195,7 +195,6 @@ class MissionRepository implements MissionInterface
                     'disable_when_funded' => (string) $request->donation_attribute['disable_when_funded'] ?? '0',
                     'is_disabled' => (string) $request->donation_attribute['is_disabled'] ?? '0',
                 );
-                // $mission->donationAttribute()->create($donationData);
                 $this->modelsService->donationAttribute->create($donationData);
             }
         }
