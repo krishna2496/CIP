@@ -76,7 +76,14 @@
                                 <div class="group-details-inner" v-if="missionDetail.donation_attribute">
                                     <div class="detail-column progress-block">
                                         <div class="text-wrap">
-                                            <p><b v-if="missionDetail.donation_attribute.show_donation_count">€ {{missionDetail.donation_attribute.donation_amount_raised}}</b> <span v-if="missionDetail.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> <span v-if="missionDetail.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span v-if="missionDetail.donation_attribute.show_donors_count"> <b v-if="missionDetail.donation_attribute.show_donors_count">{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b></p>
+                                            <p>
+                                                <b v-if="missionDetail.donation_attribute.show_donation_count">€ {{missionDetail.donation_attribute.donation_amount_raised}}</b>
+                                                <span v-if="missionDetail.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> 
+                                                <span v-if="missionDetail.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span>
+                                                <span v-if="missionDetail.donation_attribute.show_donors_count">
+                                                    <b v-if="missionDetail.donation_attribute.show_donors_count">{{missionDetail.donation_attribute.donor_count}} {{ languageData.label.donar}}</b>
+                                                </span>
+                                            </p>
                                             <b-progress v-if="missionDetail.donation_attribute.show_donation_meter" :value="missionDetail.donation_attribute.donation_amount_raised" :max="missionDetail.donation_attribute.goal_amount"></b-progress>
                                             <div class="progress-info">
                                                 <span class="subtitle-text" v-if="missionDetail.donation_attribute.show_donation_percentage">

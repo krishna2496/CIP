@@ -1,1276 +1,704 @@
 <template>
-	<div class="cards-wrapper">
-		<div class="card-grid">
-			<b-row>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card01">
-					<div class="card-inner">
-					 <b-card no-body>
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[0]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Environment</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label volunteer-label">
-										<span><i class="icon-wrap"><img src="../assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
-									</div>
-									<div class="mission-label virtual-label">
-										<span>Virtual</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Abandoned Pets Caretaker
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="1" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-									<b-button class="like-btn">
-										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
-									</b-button>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner volunteer-progress">
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">149</span>
-												<span class="subtitle-text">Seats left</span>
-											</div>
-										</div>
-										<div class="detail-column progress-block ">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
-													 alt="user">
-											</i>
-											<div class="text-wrap">
-												<b-progress :value="value" :max="max"
-													class="mb-2"></b-progress>
-												<span class="subtitle-text">5000
-                                                <span>achieved
+<div class="cards-wrapper" v-if="items.length > 0">
+    <div v-bind:class="{'card-grid' : !relatedMission,
+
+}">
+        <b-row>
+            <b-col lg="4" sm="6" class="card-outer" :id="`gridview-${key}`" data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
+                <div class="card-inner">
+                    <b-card no-body>
+                        <div class="location">
+                            <i>
+                                <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
+                            </i>
+                            {{mission.city_name}}
+                        </div>
+                        <b-card-header>
+                            <div class="header-img-block">
+                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
+                                    {{languageData.label.applied}}</b-alert>
+                                <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
+                                    {{languageData.label.closed}}</b-alert>
+                                <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                                    <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
+                                </div>
+
+                                <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
+                                </div>
+
+                            </div>
+                            <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
+                            </div>
+                        </b-card-header>
+
+                        <b-card-body>
+
+                            <div class="content-block">
+                                <div class="mission-label-wrap">
+
+                                    <div class="mission-label volunteer-label" v-if="isDisplayMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
+                                        <span :style="{ backgroundColor: volunteeringMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon" alt="volunteer icon"></i>{{volunteeringMissionTypeLabels.label}}</span>
+                                    </div>
+                                    <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
+                                        <span>{{languageData.label.virtual_mission}}</span>
+                                    </div>
+                                    <div class="mission-label donation-label" v-if="isDisplayMissionLabel && checkMissionTypeDonation(mission.mission_type)">
+                                        <span :style="{ backgroundColor: donationMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="donationMissionTypeLabels.icon" alt="donation icon"></i>{{donationMissionTypeLabels.label}}</span>
+                                    </div>
+
+                                </div>
+                                <div class="content-inner-block">
+                                    <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id" class="card-title mb-2">
+                                        {{mission.title | substring(60)}}
+                                    </b-link>
+                                    <div class="group-ratings">
+                                        <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18" :rating="mission.mission_rating_count" :read-only="true">
+                                        </star-rating>
+                                    </div>
+                                    <b-card-text>
+                                        {{mission.short_description | substring(105)}}
+                                    </b-card-text>
+                                </div>
+                                <div class="event-block has-progress">
+                                    <p class="event-name">{{ languageData.label.for }} <span>{{mission.organisation_name}}</span></p>
+
+                                    <!-- donation -->
+                                    <div class="progress-block detail-column " v-if="checkMissionTypeDonation(mission.mission_type) && mission.donation_attribute.show_donation_meter">
+                                        <div class="text-wrap">
+                                            <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
+                                            <div class="progress-info">
+                                                <span class="subtitle-text">
+                                                    <em> 70% </em>
+                                                    <em>{{languageData.label.achieved}}</em>
                                                 </span>
-                                            </span>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<!-- <b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button> -->
-										<b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card02">
-					<div class="card-inner">
-					 <b-card no-body>
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[1]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Reforestation</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label volunteer-label">
-										<span><i class="icon-wrap"><img src="../assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Donate $1 to plant a tree
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">149</span>
-												<span class="subtitle-text">Seats left</span>
-											</div>
-										</div>
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">09/05/2020</span>
-												<span class="subtitle-text">Registration deadline</span>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
-										<!-- <b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button> -->
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card03">
-					<div class="card-inner">
-					 <b-card no-body>
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[0]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Environment</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label volunteer-label">
-										<span><i class="icon-wrap"><img src="../assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
-									</div>
-									<div class="mission-label virtual-label">
-										<span>Virtual</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Abandoned Pets Caretaker
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">149</span>
-												<span class="subtitle-text">Seats left</span>
-											</div>
-										</div>
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">09/05/2020</span>
-												<span class="subtitle-text">Registration deadline</span>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
-										<!-- <b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button> -->
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card04">
-					<div class="card-inner">
-					 <b-card no-body class="donate-card">
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[2]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Education</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Child immigration health
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block has-progress">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-									<div class="progress-block detail-column" >
-										<div class="text-wrap">
-											<b-progress :value="value" :max="max" ></b-progress>	
-                                            <div class="progress-info">
-												<span class="subtitle-text">
-		                                            <em> 70% </em>
-		                                            <em>Achieved</em>
-                                            	</span>
-	                                            <span class="subtitle-text">
-	                                            	<em><b>$250,000</b></em>
-	                                            	<em>Goal</em>
-	                                            </span>
+                                                <span class="subtitle-text">
+                                                    <em><b>${{mission.donation_attribute.goal_amount}}</b></em>
+                                                    <em>{{languageData.label.goal}}</em>
+                                                </span>
                                             </div>
-										</div>
-									</div>
-									<b-button class="like-btn">
-										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
-									</b-button>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner has-progress">
-										<div class="detail-column progress-block">
-											<div class="text-wrap">
-												<p><b>$210,851</b> raised by <b>25 Donors</b></p>
-												<b-progress :value="value" :max="max"></b-progress>
-												<div class="progress-info">
-													<span class="subtitle-text">
-		                                                70% 
-		                                                <em>Achieved</em>
-		                                            </span>
-			                                        <span class="subtitle-text">
-		                                            	<em>$250,000</em>
-		                                            	<em>Goal</em>
-			                                        </span>
-		                                        </div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<!-- <b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button> -->
-										<b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card05">
-					<div class="card-inner">
-					 <b-card no-body class="donate-card">
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[2]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Education</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Child immigration health
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block has-progress">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-									<div class="progress-block detail-column" >
-										<div class="text-wrap">
-											<b-progress :value="value" :max="max" ></b-progress>	
-                                            <div class="progress-info">
-												<span class="subtitle-text">
-		                                            <em> 70% </em>
-		                                            <em>Achieved</em>
-                                            	</span>
-	                                            <span class="subtitle-text">
-	                                            	<em><b>$250,000</b></em>
-	                                            	<em>Goal</em>
-	                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="progress-block detail-column success-donate" v-if="checkMissionTypeDonation(mission.mission_type) && !mission.donation_attribute.show_donation_meter">
+                                        <div class="text-wrap">
+                                            <p><b class="donate-success" v-if="mission.donation_attribute.show_donation_count">${{mission.donation_attribute.donation_amount_raised}}</b> <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> <span v-if="mission.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span v-if="mission.donation_attribute.show_donors_count"> {{ languageData.label.donar}}</p>
+                                        </div>
+                                    </div>
+
+                                    <b-button class="like-btn">
+                                        <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="Heart Icon" />
+                                    </b-button>
+                                </div>
+
+                            </div>
+                            <div class="init-hidden">hover
+                                <div class="group-details">
+                                    <div class="top-strip">
+                                        <span>
+                                            <!-- Mission type time -->
+                                            <template v-if="checkMissionTypeTime(mission.mission_type) || checkMissionTypeDonation(mission.mission_type)">
+                                                <template v-if="mission.end_date !== null">
+                                                    {{ languageData.label.from }}
+                                                    {{mission.start_date | formatDate }}
+                                                    {{ languageData.label.until}}
+                                                    {{ mission.end_date | formatDate }}
+                                                </template>
+                                                <template v-else>
+                                                    {{ languageData.label.on_going_opportunities }}
+                                                </template>
+                                            </template>
+                                            <!-- Mission type goal -->
+                                            <template v-else>
+                                                <template v-if="mission.objective != ''">
+                                                    {{mission.objective}}
+                                                </template>
+                                            </template>
+                                        </span>
+                                    </div>
+                                    <template v-if="checkMissionTypeTime(mission.mission_type)">
+                                        <div class="group-details-inner">
+                                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
+                                                <div class="detail-column info-block">
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{mission.seats_left}}</span>
+                                                        <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+
+                                            <template v-if="mission.application_deadline != null">
+                                                <div class="detail-column info-block">
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
+                                                        <span class="subtitle-text">{{ languageData.label.deadline }}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template v-if="checkMissionTypeGoal(mission.mission_type)">
+                                        <div class="group-details-inner volunteer-progress">
+                                            <div class="detail-column info-block">
+                                                <i class="icon-wrap">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <span class="title-text mb-1">{{mission.seats_left}}</span>
+                                                    <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                                </div>
                                             </div>
-										</div>
-									</div>
-									<b-button class="like-btn">
-										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
-									</b-button>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner has-progress">
-										<div class="detail-column progress-block">
-											<div class="text-wrap">
-												<p><b>$210,851</b> raised by <b>25 Donors</b></p>
-												<b-progress :value="value" :max="max"></b-progress>
-												<div class="progress-info">
-													<span class="subtitle-text">
-		                                                70% 
-		                                                <em>Achieved</em>
-		                                            </span>
-			                                        <span class="subtitle-text">
-		                                            	<em>$250,000</em>
-		                                            	<em>Goal</em>
-			                                        </span>
-		                                        </div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<!-- <b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button> -->
-										<b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card06">
-					<div class="card-inner">
-					 <b-card no-body>
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[3]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Environment</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label volunteer-label">
-										<span><i class="icon-wrap"><img src="../assets/images/volunteer-icon.svg" alt="volunteer icon"></i>Volunteer</span>
-									</div>
-									<div class="mission-label virtual-label">
-										<span>Virtual</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										#LGBTQIAPK pride
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block">
-									<p class="event-name">For <span>Friendly Paws</span></p>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">149</span>
-												<span class="subtitle-text">Seats left</span>
-											</div>
-										</div>
-										<div class="detail-column info-block">
-											<i class="icon-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-											</i>
-											<div class="text-wrap">
-												<span class="title-text">09/05/2020</span>
-												<span class="subtitle-text">Registration deadline</span>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
-										<!-- <b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button> -->
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card07">
-					<div class="card-inner">
-					 <b-card no-body class="donate-card">
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[4]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Culture</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Donate $50 for art school
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block has-progress">
-									<p class="event-name">For <span>Artists Club SRL</span></p>
-									<div class="progress-block detail-column success-donate" >
-										<div class="text-wrap">	
-												<p><b class="donate-success">$210,851</b> raised by 25 donors</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column progress-block donate-success-detail">
-											<div class="text-wrap">
-												<p><b>$210,851</b> raised by <b>25 Donors</b></p>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
-										<!-- <b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button> -->
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card08">
-					<div class="card-inner">
-					 <b-card no-body class="donate-card">
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[4]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Culture</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Donate $50 for art school
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block has-progress">
-									<p class="event-name">For <span>Artists Club SRL</span></p>
-									<div class="progress-block detail-column success-donate" >
-										<div class="text-wrap">	
-												<p><b class="donate-success">$210,851</b> raised by 25 donors</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column progress-block donate-success-detail">
-											<div class="text-wrap">
-												<p><b>$210,851</b> raised by <b>25 Donors</b></p>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button>
-										<!-- <b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button> -->
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card09">
-					<div class="card-inner">
-					 <b-card no-body class="donate-card">
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[4]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Culture</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Donate $50 for art school
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block has-progress">
-									<p class="event-name">For <span>Artists Club SRL</span></p>
-									<div class="progress-block detail-column success-donate" >
-										<div class="text-wrap">	
-												<p><b class="donate-success">$210,851</b> raised by 25 donors</p>
-										</div>
-									</div>
-									<b-button class="like-btn">
-										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
-									</b-button>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column donate-info">
-											<div class="text-wrap">
-												<p><span>70%</span> <span>Achieved</span></p>
-											</div>
-											<div class="text-wrap donate-price">
-												<p><span><b>$210,851</b></span> <span>raised by 25 Donors</span></p>
-											</div>
-											<div class="text-wrap">
-												<p><span>$250,000</span> <span>Goal</span></p>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<!-- <b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button> -->
-										<b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-				<b-col lg="4" sm="6" class="card-outer" id="grid-card10">
-					<div class="card-inner">
-					 <b-card no-body class="donate-card">
-					 	<div class="location">
-							<i>
-								<img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
-							</i>
-							Paris
-						</div>
-            			<b-card-header>
-            				 <div class="header-img-block">
-            				 	<div class="group-img" :style="{backgroundImage: 'url('+grpImages[4]+')'}">
-								</div>
-            				 </div>
-            				 <div class="group-category"><span class="category-text">Culture</span></div>
-            			</b-card-header>
-            			<b-card-body>
-            				<div class="content-block">
-								<div class="mission-label-wrap">
-									<div class="mission-label donation-label">
-										<span><i class="icon-wrap"><img src="../assets/images/donation-icon.svg" alt=""></i>Donation</span>
-									</div>
-								</div>
-								<div class="content-inner-block">
-									<b-link target="_blank" class="card-title mb-2">
-										Donate $50 for art school
-									</b-link>
-									<div class="group-ratings">
-										<star-rating  v-bind:increment="0.5" v-bind:max-rating="5"
-													 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-													  :read-only="true" rating="4.5">
-										</star-rating>
-									</div>
-									<b-card-text>
-										Take this chance to take care of abused and abandoned pets at a center located in the Greater Vancouver area of Canada.
-									</b-card-text>
-								</div>
-								<div class="event-block has-progress">
-									<p class="event-name">For <span>Artists Club SRL</span></p>
-									<div class="progress-block detail-column success-donate" >
-										<div class="text-wrap">	
-												<p><b class="donate-success">$210,851</b> raised by 25 donors</p>
-										</div>
-									</div>
-									<b-button class="like-btn">
-										<img src="../assets/images/heart-fill-icon.svg" alt="Heart Icon"/>
-									</b-button>
-								</div>
-							</div>
-							<div class="init-hidden">
-								<div class="group-details">
-									<div class="top-strip">
-										<span>From 04/07/2020 Until 05/07/2020</span>
-									</div>
-									<div class="group-details-inner">
-										<div class="detail-column donate-info">
-											<div class="text-wrap">
-												<p><span>70%</span> <span>Achieved</span></p>
-											</div>
-											<div class="text-wrap donate-price">
-												<p><span><b>$210,851</b></span> <span>raised by 25 Donors</span></p>
-											</div>
-											<div class="text-wrap">
-												<p><span>$250,000</span> <span>Goal</span></p>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-action-block">
-									<div class="left-btn">
-										<b-link class="btn-bordersecondary icon-btn">
-											<span>View details</span>
-											<i class="icon-wrap">
-												<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff"/>
-												</svg>
-											</i>
-										</b-link>
-									</div>
-									<div class="social-btn">
-										<b-button class="icon-btn"><img src="../assets/images/multi-user-icon.svg" alt="multi user icon"></b-button>
-										<!-- <b-button class="icon-btn"><img src="../assets/images/heart-icon.svg" alt="heart icon"></b-button> -->
-										<b-button class="icon-btn fill-heart-btn"><img src="../assets/images/heart-fill-icon.svg" alt="heart icon"></b-button>
-									</div>
-								</div>
-							</div>
-            			</b-card-body>
-            		 </b-card>
-            		</div>
-				</b-col>
-			</b-row>
-		</div>
-	</div>
+                                            <div v-bind:class="{
+
+'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
+
+'detail-column' : true,
+
+'progress-block' :true
+
+}">
+                                                <i class="icon-wrap">
+                                                    <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
+                                                    <span class="subtitle-text">
+                                                        {{mission.achieved_goal}}
+                                                        <em v-if="mission.label_goal_achieved != ''">
+                                                            {{ mission.label_goal_achieved }}
+                                                        </em>
+                                                        <em v-else>{{ languageData.label.achieved }}</em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-if="checkMissionTypeDonation(mission.mission_type)">
+                                        <div class="group-details-inner has-progress" v-if="mission.donation_attribute.show_donation_meter">
+                                            <div class="detail-column progress-block">
+                                                <div class="text-wrap">
+
+                                                    <p>
+                                                        <b v-if="mission.donation_attribute.show_donation_count">€ {{mission.donation_attribute.donation_amount_raised}}</b>
+                                                        <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span>
+                                                        <span v-if="mission.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span>
+                                                        <span v-if="mission.donation_attribute.show_donors_count">
+                                                            <b v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donar}}</b>
+                                                        </span>
+                                                    </p>
+                                                    <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
+                                                    <div class="progress-info">
+                                                        <span class="subtitle-text">
+                                                            70%
+                                                            <em>>{{languageData.label.achieved}}</em>
+                                                        </span>
+                                                        <span class="subtitle-text">
+                                                            <em>${{mission.donation_attribute.goal_amount}}</em>
+                                                            <em>{{languageData.label.goal}}</em>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="group-details-inner" v-if="!mission.donation_attribute.show_donation_meter">
+                                            <div class="detail-column progress-block donate-success-detail">
+                                                <div class="text-wrap">
+                                                    <p>
+                                                        <b v-if="mission.donation_attribute.show_donation_count">€ {{mission.donation_attribute.donation_amount_raised}}</b>
+                                                        <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span>
+                                                        <span v-if="mission.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span>
+                                                        <span v-if="mission.donation_attribute.show_donors_count">
+                                                            <b v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donar}}</b>
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="card-action-block">
+                                    <div class="left-btn">
+                                        <b-link :to="'/mission-detail/' + mission.mission_id" class="btn-bordersecondary icon-btn">
+                                            <span>{{ languageData.label.view_detail }}</span>
+                                            <i class="icon-wrap">
+                                                <svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff" />
+                                                </svg>
+                                            </i>
+                                        </b-link>
+                                    </div>
+                                    <div class="social-btn">
+                                        <b-button class="icon-btn" v-if="isInviteCollegueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
+                                            <img :src="$store.state.imagePath+'/assets/images/multi-user-icon.svg'" alt="multi user icon">
+                                        </b-button>
+
+                                        <b-button v-bind:class="{
+
+'icon-btn' : true,
+
+'fill-heart-btn' : mission.is_favourite == 1
+
+}" :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite" @click="favoriteMission(mission.mission_id)">
+                                            <img v-if="mission.is_favourite == 0" :src="$store.state.imagePath+'/assets/images/heart-icon.svg'" alt="heart icon">
+                                            <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="heart icon">
+                                        </b-button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </b-card-body>
+                    </b-card>
+                </div>
+            </b-col>
+        </b-row>
+    </div>
+    <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
+        <template slot="modal-header" slot-scope="{ close }">
+            <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+            <h5 class="modal-title">{{languageData.label.search_user}}</h5>
+        </template>
+        <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
+        <div class="autocomplete-control">
+            <div class="autosuggest-container">
+                <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions" @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue" :input-props="{
+                        id:'autosuggest__input',
+                        placeholder:autoSuggestPlaceholder,
+
+ref:'inputAutoSuggest'
+                        }">
+                    <div slot-scope="{suggestion}">
+                        <img :src="suggestion.item.avatar" />
+                        <div>
+                            {{suggestion.item.first_name}} {{suggestion.item.last_name}}
+                        </div>
+                    </div>
+                </VueAutosuggest>
+            </div>
+        </div>
+        <b-form>
+            <div class="btn-wrap">
+                <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
+                    {{ languageData.label.close }}</b-button>
+                <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
+                    {{ languageData.label.submit }}</b-button>
+            </div>
+        </b-form>
+    </b-modal>
+</div>
+<div class="no-data-found" v-else>
+    <h2 class="text-center">{{noRecordFound()}}</h2>
+    <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+        <b-button class="btn-bordersecondary icon-btn">
+            <span>{{ languageData.label.submit_new_mission }}</span>
+            <i>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                    <g id="Main Content">
+                        <g id="1">
+                            <g id="Button">
+                                <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+            </i>
+        </b-button>
+    </div>
+</div>
 </template>
 
 <script>
-	import store from "../store";
-	import constants from "../constant";
-	import StarRating from "vue-star-rating";
-	import {
-		favoriteMission,
-		inviteColleague,
-		applyMission
-	} from "../services/service";
-	import {
-		VueAutosuggest
-	} from "vue-autosuggest";
-	import moment from "moment";
-	export default {
-		name: "MissionGridView",
-		components: {
-			StarRating,
-			VueAutosuggest
-		},
-		props: {
-			items: Array,
-			userList: Array,
-			relatedMission: Boolean
-		},
-		data() {
-			return {
-				query: "",
-				selected: "",
-				myclass: ["userdetail-modal"],
-				currentMissionId: 0,
-				invitedUserId: 0,
-				showErrorDiv: false,
-				message: null,
-				classVariant: "success",
-				autoSuggestPlaceholder: "",
-				submitDisable: true,
-				languageData: [],
-				isInviteCollegueDisplay: true,
-				isStarRatingDisplay: true,
-				isSubmitNewMissionSet: true,
-				isThemeSet: true,
-				submitNewMissionUrl : '',
-				max: 100,
-      			value: 80,
-				 grpImages: [
-			        // require("@/assets/images/card-img01.png"),
-			        // require("@/assets/images/card-img02.png"),
-			        // require("@/assets/images/card-img03.png"),
-			        // require("@/assets/images/card-img04.png"),
-			        // require("@/assets/images/card-img05.png"),
-			        // require("@/assets/images/card-img06.png"),
-			        // require("@/assets/images/card-img07.png"),
-			        // require("@/assets/images/card-img08.png")
-			    ],
-			};
-		},
-		computed: {
-			filteredOptions() {
-				if (this.userList) {
-					return [{
-						data: this.userList.filter(option => {
-							let firstName = option.first_name.toLowerCase();
-							let lastName = option.last_name.toLowerCase();
-							let email = option.email.toLowerCase();
-							let searchString = firstName + "" + lastName + "" + email;
-							return searchString.indexOf(this.query.toLowerCase()) > -1;
-						})
-					}];
-				}
-			}
-		},
-		methods: {
+import store from '../store';
+import constants from '../constant';
+import StarRating from 'vue-star-rating';
+import {
+    favoriteMission,
+    inviteColleague,
+    applyMission
+} from '../services/service';
+import {
+    VueAutosuggest
+} from 'vue-autosuggest';
+import moment from 'moment';
 
-			hideModal() {
-				this.autoSuggestPlaceholder = ""
-				this.submitDisable  = true
-				this.invitedUserId  = ""
-				this.query = ""
-				this.selected = ""
-			},
-			getAppliedStatus(missionDetail) {
-				let currentDate = moment().format("YYYY-MM-DD");
-				let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-				let checkEndDateExist = true;
-				if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-					if (currentDate > missionEndDate) {
-						checkEndDateExist = false;
-					}
-				}
-				if (missionDetail.user_application_count == 1 && checkEndDateExist) {
-					return true;
-				}
-			},
-			getClosedStatus(missionDetail) {
-				let currentDate = moment().format("YYYY-MM-DD");
-				let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
-				if (missionDetail.end_date != "" && missionDetail.end_date != null) {
-					if (currentDate > missionEndDate) {
-						return true;
-					}
-				}
-			},
-			//No record found
-			noRecordFound() {
-				let defaultLang = store.state.defaultLanguage.toLowerCase();
-				if (JSON.parse(store.state.missionNotFoundText) != "") {
-					let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-					let data = missionNotFoundArray.filter((item) => {
-						if (item.lang == defaultLang) {
-							return item;
-						}
-					});
+export default {
+    name: 'MissionGridView',
+    components: {
+        StarRating,
+        VueAutosuggest
+    },
+    props: {
+        items: Array,
+        userList: Array,
+        relatedMission: Boolean
+    },
+    data() {
+        return {
+            query: '',
+            selected: '',
+            myclass: ['userdetail-modal'],
+            currentMissionId: 0,
+            invitedUserId: 0,
+            showErrorDiv: false,
+            message: null,
+            classVariant: 'success',
+            autoSuggestPlaceholder: '',
+            submitDisable: true,
+            languageData: [],
+            isInviteCollegueDisplay: true,
+            isStarRatingDisplay: true,
+            isSubmitNewMissionSet: true,
+            isThemeSet: true,
+            submitNewMissionUrl: "",
+            cardHeightAdjIntervalId: null,
+            isDisplayMissionLabel: false,
+            isVolunteeringSettingEnabled: true,
+            isDonationSettingEnabled: true,
+            missionTypeLabels: "",
+            volunteeringMissionTypeLabels: {
+                'icon': '',
+                'label': '',
+                'backgroundColor': ''
+            },
+            donationMissionTypeLabels: {
+                'icon': '',
+                'label': '',
+                'backgroundColor': ''
+            }
+        };
+    },
+    computed: {
+        filteredOptions() {
+            if (this.userList) {
+                return [{
+                    data: this.userList.filter(option => {
+                        const firstName = option.first_name.toLowerCase();
+                        const lastName = option.last_name.toLowerCase();
+                        const email = option.email.toLowerCase();
+                        const searchString = `${firstName}${lastName}${email}`;
+                        return searchString.indexOf(this.query.toLowerCase()) > -1;
+                    })
+                }];
+            }
+        }
+    },
+    methods: {
+        hideModal() {
+            this.autoSuggestPlaceholder = '';
+            this.submitDisable = true;
+            this.invitedUserId = '';
+            this.query = '';
+            this.selected = '';
+        },
+        getAppliedStatus(missionDetail) {
+            const currentDate = moment().format('YYYY-MM-DD');
+            const missionEndDate = moment(missionDetail.end_date).format('YYYY-MM-DD');
+            let checkEndDateExist = true;
+            if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+                if (currentDate > missionEndDate) {
+                    checkEndDateExist = false;
+                }
+            }
+            if (missionDetail.user_application_count == 1 && checkEndDateExist) {
+                return true;
+            }
+        },
+        getClosedStatus(missionDetail) {
+            const currentDate = moment().format('YYYY-MM-DD');
+            const missionEndDate = moment(missionDetail.end_date).format('YYYY-MM-DD');
+            if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+                if (currentDate > missionEndDate) {
+                    return true;
+                }
+            }
+        },
+        // No record found
+        noRecordFound() {
+            const defaultLang = store.state.defaultLanguage.toLowerCase();
+            if (JSON.parse(store.state.missionNotFoundText) != '') {
+                const missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
+                const data = missionNotFoundArray.filter(item => {
+                    if (item.lang == defaultLang) {
+                        return item;
+                    }
+                });
 
-					if (data[0] && data[0].message) {
-						return data[0].message;
-					} else {
-						return this.languageData.label.no_record_found;
-					}
-				} else {
-					return this.languageData.label.no_record_found;
-				}
-			},
+                if (data[0] && data[0].message) {
+                    return data[0].message;
+                } else {
+                    return this.languageData.label.no_record_found;
+                }
+            } else {
+                return this.languageData.label.no_record_found;
+            }
+        },
+        handleFav() {
+            const btn_active = document.querySelector('.favourite-icon');
+            btn_active.classList.toggle('active');
+        },
+        // get theme title
+        getThemeTitle(translations) {
+            if (translations) {
+                const filteredObj = translations.filter((item, i) => {
+                    if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+                        return translations[i].title;
+                    }
+                });
 
-			handleFav() {
-				let btn_active = document.querySelector(".favourite-icon");
-				btn_active.classList.toggle("active");
-			},
-			//get theme title
-			getThemeTitle(translations) {
-				if (translations) {
-					let filteredObj = translations.filter((item, i) => {
-						if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-							return translations[i].title;
-						}
-					});
+                if (filteredObj[0]) {
+                    return filteredObj[0].title;
+                } else {
+                    let filtereObj = translations.filter((item, i) => {
+                        if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+                            return translations[i].title;
+                        }
+                    });
 
-					if (filteredObj[0]) {
-						return filteredObj[0].title;
-					} else {
+                    if (filtereObj[0]) {
+                        return filtereObj[0].title;
+                    }
+                }
+            }
+        },
+        // Is default media is video or not
+        checkDefaultMediaFormat(mediaType) {
+            return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
+        },
+        // Check mission type
+        checkMissionTypeTime(missionType) {
+            return missionType == constants.MISSION_TYPE_TIME;
+        },
+        // Check mission type
+        checkMissionTypeVolunteering(missionType) {
+            if (missionType == constants.MISSION_TYPE_TIME || missionType == constants.MISSION_TYPE_GOAL) {
+                return true
+            }
+            return false;
+        },
+        // Get Youtube Thumb images
+        youtubeThumbImage(videoPath) {
+            let data = videoPath.split('=');
+            return `https://img.youtube.com/vi/${data.slice(-1)[0]}/mqdefault.jpg`;
+        },
+        // Add mission to favorite
+        favoriteMission(missionId) {
+            const missionData = {
+                mission_id: ''
+            };
+            missionData.mission_id = missionId;
+            favoriteMission(missionData).then(response => {
+                if (response.error == true) {
+                    this.makeToast('danger', response.message);
+                } else {
+                    this.makeToast('success', response.message);
+                    this.$emit('getMissions', 'removeLoader');
+                }
+            });
+        },
+        onInputChange() {
+            this.submitDisable = true;
+        },
+        // For selected user id.
+        onSelected(item) {
+            if (item) {
+                this.selected = item.item;
+                this.submitDisable = false;
+                this.invitedUserId = item.item.user_id;
+            }
+        },
+        // This is what the <input/> value is set to when you are selecting a suggestion.
+        getSuggestionValue(suggestion) {
+            const firstName = suggestion.item.first_name;
+            const lastName = suggestion.item.last_name;
+            return `${firstName} ${lastName}`;
+        },
+        getMediaPath(mediaPath) {
+            if (mediaPath != '') {
+                return mediaPath;
+            } else {
+                return `${store.state.imagePath}/assets/images/${constants.MISSION_DEFAULT_PLACEHOLDER}`;
+            }
+        },
+        // Open auto suggest modal
+        handleModal(missionId) {
+            this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
+            this.showErrorDiv = false;
+            this.message = null;
+            this.$refs.userDetailModal.show();
+            this.currentMission = missionId;
+            setTimeout(() => {
+                this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+                const input = document.getElementById('autosuggest__input');
+                input.addEventListener('keyup', event => {
+                    if (event.keyCode === 13 && !this.submitDisable) {
+                        event.preventDefault();
+                        this.inviteColleagues();
+                    }
+                });
+            }, 100);
+        },
+        // invite collegues api call
+        inviteColleagues() {
+            const inviteData = {};
+            inviteData.mission_id = this.currentMission;
+            inviteData.to_user_id = this.invitedUserId;
+            inviteColleague(inviteData).then(response => {
+                this.submitDisable = true;
+                if (response.error == true) {
+                    this.classVariant = 'danger';
+                    this.message = response.message;
+                    this.$refs.autosuggest.$data.currentIndex = null;
+                    this.$refs.autosuggest.$data.internalValue = "";
+                    this.showErrorDiv = true;
+                } else {
+                    this.query = '';
+                    this.selected = '';
+                    this.currentMissionId = 0;
+                    this.invitedUserId = 0;
+                    this.$refs.autosuggest.$data.currentIndex = null;
+                    this.$refs.autosuggest.$data.internalValue = '';
+                    this.classVariant = 'success';
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                }
+            });
+        },
+        // Apply for mission
+        applyForMission(mission) {
+            const missionData = {};
+            missionData.mission_id = mission.mission_id;
+            missionData.availability_id = mission.availability_id;
+            applyMission(missionData).then(response => {
+                if (response.error == true) {
+                    this.makeToast('danger', response.message);
+                } else {
+                    this.makeToast('success', response.message);
+                    this.$emit('getMissions');
+                }
+            });
+        },
+        makeToast(variant = null, message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 1000
+            });
+        },
+        submitNewMission() {
+            if (this.submitNewMissionUrl != '') {
+                window.open(this.submitNewMissionUrl, '_self');
+            }
+        },
+        cardHeightAdj() {
+            const cardBodyList = document.querySelectorAll('.card-grid .card-body');
 
-						let filtereObj = translations.filter((item, i) => {
-							if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
-								return translations[i].title;
-							}
-						});
+            // check if card content is already visible in the DOM
+            if (!cardBodyList[0].children[0].offsetHeight) {
+                return;
+            }
 
-						if (filtereObj[0]) {
-							return filtereObj[0].title;
-						}
-					}
-				}
-			},
-			// Is default media is video or not
-			checkDefaultMediaFormat(mediaType) {
-				return mediaType != constants.YOUTUBE_VIDEO_FORMAT;
-			},
-			// Check mission type
-			checkMissionTypeTime(missionType) {
-				return missionType == constants.MISSION_TYPE_TIME;
-			},
-			// Get Youtube Thumb images
-			youtubeThumbImage(videoPath) {
-				let data = videoPath.split("=");
-				return (
-						"https://img.youtube.com/vi/" + data.slice(-1)[0] + "/mqdefault.jpg"
-				);
-			},
-			// Add mission to favorite
-			favoriteMission(missionId) {
-				let missionData = {
-					mission_id: ""
-				};
-				missionData.mission_id = missionId;
-				favoriteMission(missionData).then(response => {
-					if (response.error == true) {
-						this.makeToast("danger", response.message);
-					} else {
-						this.makeToast("success", response.message);
-						this.$emit("getMissions", "removeLoader");
-					}
-				});
-			},
-			onInputChange() {
-				this.submitDisable = true;
-			},
-			// For selected user id.
-			onSelected(item) {
-				if(item) {
-					this.selected = item.item;
-					this.submitDisable = false;
-					this.invitedUserId = item.item.user_id;
-				}
-			},
-			//This is what the <input/> value is set to when you are selecting a suggestion.
-			getSuggestionValue(suggestion) {
-				let firstName = suggestion.item.first_name;
-				let lastName = suggestion.item.last_name;
-				return firstName + " " + lastName;
-			},
-			getMediaPath(mediaPath) {
-				if(mediaPath != '') {
-					return mediaPath;
-				} else {
-					return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
-				}
-			},
-			// Open auto suggest modal
-			handleModal(missionId) {
-				this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
-				this.showErrorDiv = false;
-				this.message = null;
-				this.$refs.userDetailModal.show();
-				this.currentMission = missionId;
-				setTimeout(() => {
-					this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-					var input = document.getElementById("autosuggest__input");
-					input.addEventListener("keyup", (event) => {
-						if (event.keyCode === 13 && !this.submitDisable) {
-							event.preventDefault();
-							this.inviteColleagues()
-						}
-					});
-				}, 100);
-			},
-			// invite collegues api call
-			inviteColleagues() {
-				let inviteData = {};
-				inviteData.mission_id = this.currentMission;
-				inviteData.to_user_id = this.invitedUserId;
-				inviteColleague(inviteData).then(response => {
-					this.submitDisable = true;
-					if (response.error == true) {
-						this.classVariant = "danger";
-						this.message = response.message;
-						this.$refs.autosuggest.$data.currentIndex = null;
-						this.$refs.autosuggest.$data.internalValue = "";
-						this.showErrorDiv = true;
-					} else {
-						this.query = "";
-						this.selected = "";
-						this.currentMissionId = 0;
-						this.invitedUserId = 0;
-						this.$refs.autosuggest.$data.currentIndex = null;
-						this.$refs.autosuggest.$data.internalValue = "";
-						this.classVariant = "success";
-						this.message = response.message;
-						this.showErrorDiv = true;
-					}
-				});
-			},
-			// Apply for mission
-			applyForMission(mission) {
-				let missionData = {};
-				missionData.mission_id = mission.mission_id;
-				missionData.availability_id = mission.availability_id;
-				applyMission(missionData).then(response => {
-					if (response.error == true) {
-						this.makeToast("danger", response.message);
-					} else {
-						this.makeToast("success", response.message);
-						this.$emit("getMissions");
-					}
-				});
-			},
-			makeToast(variant = null, message) {
-				this.$bvToast.toast(message, {
-					variant: variant,
-					solid: true,
-					autoHideDelay: 1000
-				});
-			},
-			submitNewMission() {
-				if(this.submitNewMissionUrl != '') {
-					window.open(this.submitNewMissionUrl, '_self');
-				}
-			},
-			cardHeightAdj() {
-				setTimeout(function () {
-				var cardBody = document.querySelectorAll(".card-grid .card-body");
-				var cardText = document.querySelectorAll(".card-grid .card-body .card-text");
+            cardBodyList.forEach((cardBody) => {
+                const card = cardBody.parentNode;
+                const cardHeight = cardBody.children[0].offsetHeight + card.children[1].offsetHeight;
+                card.style.height = `${cardHeight}px`;
 
-					// cardText.forEach(function (textEvent) {
-					// 	var cardTextH = textEvent.offsetHeight;
-					// 	console.log("max height",Math.max(...cardTextH));
-					// 	// textEvent.style.height =  Math.max.apply( Math, cardTextH) + 'px';
-					// });
+                cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
+                    const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
+                    const cardTotalHeight = cardBodyH - this.offsetHeight;
+                    this.children[1].style.transform = `translateY(-${cardTotalHeight}px)`;
+                    this.children[2].style.transform = `translateY(-${cardTotalHeight}px)`;
+                    this.parentNode.classList.add('active');
+                });
 
-					cardBody.forEach(function (event) {
-						var getCard = event.parentNode;
-						var cardHeight = event.children[0].offsetHeight + getCard.children[1].offsetHeight;
-						var cardOuterHeight = event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight + event.children[0].children[1].offsetHeight + event.children[0].children[0].offsetHeight;
-						// console.log('card body', event.children[0].children[1].offsetHeight);
-						// console.log("card inner height", event.parentNode.parentNode.offsetHeight - getCard.children[0].offsetHeight);
-							getCard.style.height = cardHeight +"px";	
-						// if(cardHeight == cardOuterHeight){
-						// }
-						// else{
-						// 	getCard.style.height = cardOuterHeight +"px";	
-						// }
-						event.parentNode.addEventListener("mouseover", function (mouseEvent) {
-						var cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
-						var cardTotalHeight = cardBodyH - this.offsetHeight;
+                cardBody.parentNode.addEventListener('mouseleave', function () {
+                    this.children[1].style.transform = 'translateY(0)';
+                    this.children[2].style.transform = 'translateY(0)';
+                    this.parentNode.classList.remove('active');
+                });
+            });
 
-							this.children[1].style.transform = "translateY(-" + cardTotalHeight + "px)";
-							this.children[2].style.transform = "translateY(-" + cardTotalHeight + "px)";
-							this.parentNode.classList.add("active");
-		                });
-						event.parentNode.addEventListener("mouseleave", function () {
-							this.children[1].style.transform = "translateY(0)";
-							this.children[2].style.transform = "translateY(0)";
-							this.parentNode.classList.remove("active");
-		                });
-					});
-				},500);
-			}
-		},
-		created() {
-			this.languageData = JSON.parse(store.state.languageLabel);
-			this.isInviteCollegueDisplay = this.settingEnabled(
-					constants.INVITE_COLLEAGUE
-			);
-			this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
-			this.isSubmitNewMissionSet = this.settingEnabled(
-					constants.USER_CAN_SUBMIT_MISSION
-			);
-			this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
-			this.submitNewMissionUrl = store.state.submitNewMissionUrl
+            if (this.cardHeightAdjIntervalId) {
+                clearInterval(this.cardHeightAdjIntervalId);
+            }
+        },
 
-			this.cardHeightAdj();
-			var _this = this;
-			window.addEventListener("resize", this.cardHeightAdj());
-			var tabButton = document.querySelectorAll(".view-tab .nav-link");
-			tabButton.forEach(function(btnEvent){
-				btnEvent.addEventListener("click", _this.cardHeightAdj());
-			});
-		},
-		// updated() {
-  //     		this.cardHeightAdj();
-  //     		console.log("updated")
-  //   	}
-	};
+        checkMissionTypeDonation(missionType) {
+            if (constants.MISSION_TYPE_DONATION == missionType) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        checkMissionTypeGoal(missionType) {
+            if (constants.MISSION_TYPE_GOAL == missionType) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    },
+    created() {
+        this.languageData = JSON.parse(store.state.languageLabel);
+        this.isInviteCollegueDisplay = this.settingEnabled(
+            constants.INVITE_COLLEAGUE
+        );
+        this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
+        this.isSubmitNewMissionSet = this.settingEnabled(
+            constants.USER_CAN_SUBMIT_MISSION
+        );
+        this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+        this.submitNewMissionUrl = store.state.submitNewMissionUrl;
+
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
+        if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
+            this.isDisplayMissionLabel = true;
+        }
+
+        this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
+        if (JSON.parse(store.state.missionTypeLabels) != "") {
+            let defaultLang = store.state.defaultLanguage.toLowerCase();
+            this.missionTypeLabels.filter((item, i) => {
+                // volunteering mission label
+                if (item.type.toLowerCase() == constants.VOLUNTERRING_ENABLED) {
+                    this.volunteeringMissionTypeLabels.icon = item.icon;
+                    this.volunteeringMissionTypeLabels.backgroundColor = item.background_color;
+                    let data = item.translations.filter(translationsItem => {
+                        if (translationsItem.language_code == defaultLang) {
+                            this.volunteeringMissionTypeLabels.label = translationsItem.description;
+                        }
+                    });
+                    if (this.volunteeringMissionTypeLabels.label == "" && data[0] && data[0].description) {
+                        this.volunteeringMissionTypeLabels.label = data[0].description;
+                    }
+                }
+
+                if (item.type.toLowerCase() == constants.DONATION_ENABLED) {
+
+                    this.donationMissionTypeLabels.icon = item.icon;
+                    this.donationMissionTypeLabels.backgroundColor = item.background_color;
+                    let data = item.translations.filter(translationsItem => {
+                        if (translationsItem.language_code == defaultLang) {
+                            this.donationMissionTypeLabels.label = translationsItem.description;
+                        }
+                    });
+                    if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
+                        this.donationMissionTypeLabels.label = data[0].description;
+                    }
+                }
+
+            });
+        }
+    },
+    mounted() {
+        this.cardHeightAdjIntervalId = setInterval(this.cardHeightAdj, 500);
+    }
+};
 </script>
