@@ -53,7 +53,7 @@
                                 </b-card-text>
                                 <p class="event-name">{{ languageData.label.for }} <span>{{mission.organisation_name}}</span></p>
                             </div>
-                            <div class="group-details volunteer-progress">
+                            <div class="group-details volunteer-progress" v-if="checkMissionTypeGoal(mission.mission_type) || checkMissionTypeTime(mission.mission_type)">
                                 <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                     <div class="detail-column seat-info">
                                         <i class="icon-wrap">
@@ -113,6 +113,40 @@
                                         <span class="subtitle-text skill-text-wrap">{{ languageData.label.skills }}</span>
                                     </div>
                                 </div>
+                            </div>
+
+							 <div class="group-details progress-details" v-else>
+                                <div class="detail-column progress-block" v-if="mission.donation_attribute.show_donation_meter">
+                                    <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
+                                </div>
+                               <div class="detail-column progress-info-column">
+                                   <div class="text-wrap">
+                                       <p><b class="progress-success" v-if="mission.donation_attribute.show_donation_count">${{mission.donation_attribute.donation_amount_raised}}</b> 
+									   <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> 
+									   <span v-if="mission.donation_attribute.show_goal_amount"> {{ languageData.label.of}} </span>
+									   <span v-if="mission.donation_attribute.show_goal_amount">${{mission.donation_attribute.goal_amount}} {{ languageData.label.goal}}</span>
+									   </p>
+                                    </div>
+                               </div>
+                                   <div class="detail-column achieved-column">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"alt="target icon">
+                                        </i>
+                                        <div class="text-wrap" v-if="mission.donation_attribute.show_donation_percentage">
+                                            <span class="title-text">70%</span>
+                                            <span class="subtitle-text">{{ languageData.label.achieved}}</span>
+                                        </div>
+                                    </div>
+                                        <div class="detail-column info-block">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                        </i>
+										
+                                        <div class="text-wrap" v-if="mission.application_deadline != null">
+                                            <span class="title-text">{{mission.application_deadline | formatDate}}</span>
+                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                         <div class="card-action-block">
@@ -525,7 +559,14 @@ export default {
 			} else {
 				return false;
 			}
-		}
+		},
+		checkMissionTypeGoal(missionType) {
+            if (constants.MISSION_TYPE_GOAL == missionType) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 	},
 	created() {
 		this.languageData = JSON.parse(store.state.languageLabel);

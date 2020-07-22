@@ -68,7 +68,7 @@
                                             <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
                                             <div class="progress-info">
                                                 <span class="subtitle-text">
-                                                    <em> 70% </em>
+                                                    <em> {{countDonationPercentage(mission.donation_attribute.donation_amount_raised,mission.donation_attribute.goal_amount)}} </em>
                                                     <em>{{languageData.label.achieved}}</em>
                                                 </span>
                                                 <span class="subtitle-text">
@@ -196,7 +196,7 @@
                                                     <div class="progress-info">
                                                         <span class="subtitle-text">
                                                             70%
-                                                            <em>>{{languageData.label.achieved}}</em>
+                                                            <em>{{languageData.label.achieved}}</em>
                                                         </span>
                                                         <span class="subtitle-text">
                                                             <em>${{mission.donation_attribute.goal_amount}}</em>
@@ -370,7 +370,8 @@ export default {
                 'icon': '',
                 'label': '',
                 'backgroundColor': ''
-            }
+            },
+            donationPercentage : 0
         };
     },
     computed: {
@@ -641,6 +642,9 @@ export default {
             } else {
                 return false;
             }
+        },
+        countDonationPercentage(donationAmountRaised, goalAmount) {
+            // this.donationPercentage(donationAmountRaised,goalAmount);
         }
 
     },
@@ -661,7 +665,7 @@ export default {
         if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
             this.isDisplayMissionLabel = true;
         }
-
+this.donationPercentage(340,450);
         this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
         if (JSON.parse(store.state.missionTypeLabels) != "") {
             let defaultLang = store.state.defaultLanguage.toLowerCase();

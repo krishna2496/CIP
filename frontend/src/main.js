@@ -148,7 +148,7 @@ window.addEventListener('storage', function (e) {
 Vue.mixin({
     methods: {
         settingEnabled(key) {
-            let settingArray = JSON.parse(store.state.tenantSetting)
+            const settingArray = JSON.parse(store.state.tenantSetting)
             if (settingArray != null) {
                 if (settingArray.indexOf(key) !== -1) {
                     return true;
@@ -157,6 +157,11 @@ Vue.mixin({
                 }
             } else {
                 return false;
+            }
+        },
+        donationPercentage : function(donationAmountRaised, goalAmount) {
+            if (donationAmountRaised && goalAmount) {
+                return Math.round((100 * donationAmountRaised) / goalAmount);
             }
         }
     }
