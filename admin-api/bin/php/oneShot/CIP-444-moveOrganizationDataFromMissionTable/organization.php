@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../../../bootstrap/app.php');
+require_once(__DIR__.'/../../../../bootstrap/app.php');
 
 $db = app()->make('db');
 
