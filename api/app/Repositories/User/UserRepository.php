@@ -136,7 +136,8 @@ class UserRepository implements UserInterface
             status,
             language_id,
             title,
-            expiry
+            expiry,
+            invitation_sent_at
         ")->with('city', 'country', 'timezone');
 
         if ($request->has('search')) {

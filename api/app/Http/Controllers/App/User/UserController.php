@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 use App\Transformations\CityTransformable;
 use App\Notifications\InviteUser;
+use Carbon\Carbon;
 
 //!  User controller
 /*!
@@ -567,6 +568,7 @@ class UserController extends Controller
 
         $userDetail->password = $password;
         // $userDetail->status = config('constants.user_statuses.ACTIVE');
+        $userDetail->invitation_sent_at = Carbon::now()->toDateTimeString();
         $userDetail->save();
 
         $apiStatus = Response::HTTP_OK;

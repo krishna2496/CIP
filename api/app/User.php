@@ -81,7 +81,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'hours_goal',
         'is_profile_complete',
         'receive_email_notification',
-        'expiry'
+        'expiry',
+        'invitation_sent_at'
     ];
 
     /**
@@ -129,7 +130,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'mission',
         'favourite_mission',
         'hours_goal',
-        'expiry'
+        'expiry',
+        'invitation_sent_at'
     ];
 
      /*
