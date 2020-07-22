@@ -43,76 +43,64 @@ class MissionRepositoryTest extends TestCase
     */
     public function testAddUnSDGMissionRepositorySuccess()
     {
-        $requestData = new Request();
-        $missionModel = new Mission();
-        $missionId = $missionModel->mission_id;
-
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $helpers = $this->mock(Helpers::class);
-        $s3Helper = $this->mock(S3Helper::class);
-        $countryRepository = $this->mock(CountryRepository::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $modelService = $this->mock(ModelsService::class);
-        $missionImpactDonationRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $mission = $this->mock(Mission::class);
-        $timeMission = $this->mock(TimeMission::class);
-        $missionLanguage = $this->mock(MissionLanguage::class);
-        $missionDocument = $this->mock(MissionDocument::class);
-        $favouriteMission = $this->mock(FavouriteMission::class);
-        $missionSkill = $this->mock(MissionSkill::class);
-        $missionRating = $this->mock(MissionRating::class);
-        $missionApplication = $this->mock(MissionApplication::class);
-        $city = $this->mock(City::class);
-        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
-        $collection = $this->mock(Collection::class);
-
-        $repository = $this->getRepository(
-            $languageHelper,
-            $helpers,
-            $s3Helper,
-            $countryRepository,
-            $missionMediaRepository,
-            $modelService,
-            $missionImpactDonationRepository,
-            $mission
-        );
-
-        $response = $repository->store($requestData, $missionId);
-    }
-
-    /**
-    * @testdox Test impact mission donation update success
-    *
-    * @return void
-    */
-    public function testUpdateImpactDonationMissionSuccess()
-    {
         $data = [
-            "impact_donation" => [
+            "location" => [
+                "city_id" => 1,
+                "country_id" => 233,
+                "country_code" => "US"
+            ],
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10)
+            ],
+            "mission_detail"=> [
                 [
-                    "impact_donation_id" => str_random(36),
-                    "amount" => rand(100000, 200000),
-                    "translations" => [
+                    "lang"=> "en",
+                    "title"=> "New Organization Mission created",
+                    "short_description"=> "this is testing api with all mission details",
+                    "objective"=> "To test and check",
+                    "label_goal_achieved"=> "test percentage",
+                    "label_goal_objective"=> "check test percentage",
+                    "section"=> [
                         [
-                            "language_code" => "es",
-                            "content" => str_random(160)
+                            "title"=> "Section title",
+                            "description"=> "Section description"
                         ]
-                    ]
-                ],
-                [
-                    "amount" => rand(100000, 200000),
-                    "translations" => [
+                    ],
+                    "custom_information"=> [
                         [
-                            "language_code" => "es",
-                            "content" => str_random(160)
+                            "title"=> "Customer info",
+                            "description"=> "Description of customer info"
                         ]
                     ]
                 ]
-            ]
+            ],
+            "un_sdg"=> [3,6,8,15]
         ];
-        $missionId = rand(50000, 70000);
-
         $requestData = new Request($data);
+        $missionModel = new Mission();
+
+        $languages = collect([
+            [
+                "language_id"=>1,
+                "name"=> "English",
+                "code"=> "en",
+                "status"=> "1",
+                "created_at"=> null,
+                "updated_at"=> null,
+                "deleted_at"=> null,
+            ],
+            [
+                "language_id" => 2,
+                "name" => "French",
+                "code" => "fr",
+                "status"=>"1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null,
+            ]
+        ]);
+        
 
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
@@ -120,7 +108,6 @@ class MissionRepositoryTest extends TestCase
         $countryRepository = $this->mock(CountryRepository::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
-        $missionImpactDonationRepository = $this->mock(ImpactDonationMissionRepository::class);
         $mission = $this->mock(Mission::class);
         $timeMission = $this->mock(TimeMission::class);
         $missionLanguage = $this->mock(MissionLanguage::class);
@@ -130,8 +117,10 @@ class MissionRepositoryTest extends TestCase
         $missionRating = $this->mock(MissionRating::class);
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
-        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $collection = $this->mock(Collection::class);
+        $unitedNationSDGRepository = $this->mock(UnitedNationSDGRepository::class);
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand(10, 100);
 
         $modelService = $this->modelService(
             $mission,
@@ -142,8 +131,7 @@ class MissionRepositoryTest extends TestCase
             $missionSkill,
             $missionRating,
             $missionApplication,
-            $city,
-            $missionImpactDonation
+            $city
         );
 
         $languages = [
@@ -166,26 +154,119 @@ class MissionRepositoryTest extends TestCase
                 "deleted_at" => null,
             ]
         ];
-
-        $defaultLanguage = (object)[
-            "language_id" => 1,
-            "code" => "en",
-            "name" => "English",
-            "default" => "1"
-        ];
-
         $collectionLanguages = collect($languages);
-
         $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collectionLanguages);
 
-        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+        $countryRepository->shouldReceive('getCountryId')
+        ->once()
+        ->with($requestData->location['country_code'])
+        ->andReturn(1);
+
+        $modelService->mission->shouldReceive('create')
+        ->once()
+        ->andReturn($missionModel);
+        
+        $modelService->missionLanguage->shouldReceive('create')
+        ->once()
+        ->andReturn(false);
+
+        $tenantName = str_random(10);
+        $helpers->shouldReceive('getSubDomainFromRequest')
         ->once()
         ->with($requestData)
-        ->andReturn($defaultLanguage);
+        ->andReturn($tenantName);
 
+        $unitedNationSDGRepository->shouldReceive('addUnSdg')
+        ->once()
+        ->with($missionModel->mission_id, $requestData)
+        ->andReturn(false);
+
+
+        $repository = $this->getRepository(
+            $languageHelper,
+            $helpers,
+            $s3Helper,
+            $countryRepository,
+            $missionMediaRepository,
+            $modelService,
+            $unitedNationSDGRepository
+        );
+
+        $response = $repository->store($requestData);
+        $this->assertInstanceOf(Mission::class, $response);
+    }
+
+    /**
+    * @testdox Test update UN sdg with update method
+    *
+    * @return void
+    */
+    public function testUpdateUnSDGMissionRepositorySuccess()
+    {
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $s3Helper = $this->mock(S3Helper::class);
+        $countryRepository = $this->mock(CountryRepository::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $mission = $this->mock(Mission::class);
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $collection = $this->mock(Collection::class);
+        $unitedNationSDGRepository = $this->mock(UnitedNationSDGRepository::class);
         $missionModel = new Mission();
+        $missionModel->mission_id = rand(10, 100);
+
+        $data = [
+            "un_sdg"=> [3,6,8,15]
+        ];
+        $requestData = new Request($data);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city
+        );
+
+        $languages = [
+            (object)[
+                "language_id"=>1,
+                "name"=> "English",
+                "code"=> "en",
+                "status"=> "1",
+                "created_at"=> null,
+                "updated_at"=> null,
+                "deleted_at"=> null,
+            ],
+            (object)[
+                "language_id" => 2,
+                "name" => "French",
+                "code" => "fr",
+                "status"=>"1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null,
+            ]
+        ];
+        $collectionLanguages = collect($languages);
+        $languageHelper->shouldReceive('getLanguages')
+        ->once()
+        ->andReturn($collectionLanguages);
+
         $modelService->mission->shouldReceive('findOrFail')
         ->once()
         ->andReturn($missionModel);
@@ -196,14 +277,12 @@ class MissionRepositoryTest extends TestCase
         ->with($requestData)
         ->andReturn($tenantName);
 
-        $missionImpactDonationRepository->shouldReceive('update')
+        $unitedNationSDGRepository->shouldReceive('updateUnSdg')
         ->once()
-        ->andReturn();
+        ->with($missionModel->mission_id, $requestData)
+        ->andReturn(false);
 
-        $missionImpactDonationRepository->shouldReceive('store')
-        ->once()
-        ->andReturn();
-
+        
         $repository = $this->getRepository(
             $languageHelper,
             $helpers,
@@ -211,15 +290,13 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
-            $missionImpactDonationRepository,
-            $mission
+            $unitedNationSDGRepository
         );
 
-        $response = $repository->update($requestData, $missionId);
-
-        $this->assertInstanceOf(mission::class, $response);
+        $response = $repository->update($requestData, rand(10, 100));
+        $this->assertInstanceOf(Mission::class, $response);
     }
-    
+
     /**
      * Create a new respository instance.
      *
@@ -229,7 +306,6 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
-     * @param  App\Models\Mission $mission
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @return void
      */
@@ -240,7 +316,6 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        Mission $mission,
         UnitedNationSDGRepository $unitedNationSDGRepository
     ) {
         return new MissionRepository(
@@ -250,10 +325,10 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
-            $mission,
             $unitedNationSDGRepository
         );
     }
+    
 
     /**
     * Mock an object
@@ -291,7 +366,6 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
-     * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @return void
      */
     public function modelService(
@@ -303,8 +377,7 @@ class MissionRepositoryTest extends TestCase
         MissionSkill $missionSkill,
         MissionRating $missionRating,
         MissionApplication $missionApplication,
-        City $city,
-        MissionImpactDonation $missionImpactDonation
+        City $city
     ) {
         return new ModelsService(
             $mission,
@@ -315,8 +388,7 @@ class MissionRepositoryTest extends TestCase
             $missionSkill,
             $missionRating,
             $missionApplication,
-            $city,
-            $missionImpactDonation,
+            $city
         );
     }
 }
