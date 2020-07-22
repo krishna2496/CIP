@@ -48,7 +48,7 @@ class MissionControllerTest extends TestCase
                     "amount" => rand(100000, 200000),
                     "translations" => [
                         [
-                            "language_code" => "es",
+                            "language_code" => "ab",
                             "content" => str_random(160)
                         ]
                     ]
@@ -58,7 +58,7 @@ class MissionControllerTest extends TestCase
         ];
 
         $requestData = new Request($data);
-        $missionId = 13;
+        $missionId = rand(50000, 70000);
 
         $languageHelper = $this->mock(LanguageHelper::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
@@ -105,6 +105,7 @@ class MissionControllerTest extends TestCase
 
         $missionRepository->shouldReceive('isMissionDonationImpactLinkedToMission')
         ->once()
+        ->with($missionId, $data['impact_donation'][0]['impact_donation_id'])
         ->andReturn();
 
         $missionRepository->shouldReceive('update')
@@ -142,7 +143,7 @@ class MissionControllerTest extends TestCase
     }
 
     /**
-     * @testdox Test udpate mission with impact donation attribute with success status
+     * @testdox Test not found mission with impact donation attribute with error status
      */
     public function testImpactDonationMissionNotLinkWithMissionError()
     {
@@ -165,7 +166,7 @@ class MissionControllerTest extends TestCase
         ];
 
         $requestData = new Request($data);
-        $missionId = 13;
+        $missionId = rand(50000, 70000);
 
         $languageHelper = $this->mock(LanguageHelper::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
@@ -175,6 +176,7 @@ class MissionControllerTest extends TestCase
         $responseHelper = $this->mock(ResponseHelper::class);
         $request = $this->mock(Request::class);
         $mission = $this->mock(Mission::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
 
         $defaultLanguage = (object)[
             "language_id" => 1,
@@ -210,28 +212,32 @@ class MissionControllerTest extends TestCase
         ->with($missionId, $defaultLanguage->language_id)
         ->andReturn($missionModel);
 
-        $this->expectException(ModelNotFoundException::class);
-
-        // $missionRepository->shouldReceive('isMissionDonationImpactLinkedToMission')
-        // ->willThrowException(new ModelNotFoundException());
-
-        // $missionRepository->shouldReceive('update')
-        // ->once()
-        // ->andReturn();
-
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+        $missionRepository->shouldReceive('isMissionDonationImpactLinkedToMission')
+        ->once()
+        ->with($missionId, $data['impact_donation'][0]['impact_donation_id'])
+        ->andThrow($modelNotFoundException);
 
         $methodResponse = [
-            "status" => $apiStatus,
-            "message" => $apiMessage
+            "errors"=> [
+                [
+                    "status"=> Response::HTTP_NOT_FOUND,
+                    "type"=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                    "code"=>  config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                    "message"=> trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+                ]
+            ]
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
 
-        $responseHelper->shouldReceive('success')
+        $responseHelper->shouldReceive('error')
         ->once()
-        ->with($apiStatus, $apiMessage)
+        ->with(
+            Response::HTTP_NOT_FOUND,
+            Response::$statusTexts[Response::HTTP_NOT_FOUND],
+            config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+            trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+        )
         ->andReturn($jsonResponse);
 
         $callController = $this->getController(
@@ -247,16 +253,6 @@ class MissionControllerTest extends TestCase
         $response = $callController->update($requestData, $missionId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionCode 400051
-     * @expectedExceptionMessage Impact donation mission not found.
-     */
-    public function testExceptionHasRightMessage()
-    {
-        throw new InvalidArgumentException('Impact donation mission not found.', 400051);
     }
 
     /**
