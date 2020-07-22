@@ -539,16 +539,7 @@ class UserController extends Controller
         $tenantLogo = $this->tenantOptionRepository->getOptionValueFromOptionName('custom_logo');
         $password = str_random(8);
 
-        // config([
-        //     'app.user_language_code' => $language->code,
-        //     'app.mail_url' => 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName,
-        //     'app.tenant_logo' => $tenantLogo->option_value,
-        //     'app.mail_customer_name' => 'customer_nameX',
-        //     'app.mail_site_name' => 'site_nameX',
-        //     'app.mail_password' => $password,
-        // ]);
-
-        $mailConfig = [
+        $details = [
             'subject' => 'Create Password Notification',
             'first_name' => $userDetail->first_name,
             'last_name' => $userDetail->last_name,
@@ -563,16 +554,16 @@ class UserController extends Controller
             'site_name' => 'site_name',
         ];
 
-        $response = $userDetail->notify(new InviteUser($mailConfig));
-
-        // if (!$response) {
-        //     return $this->responseHelper->error(
-        //         Response::HTTP_INTERNAL_SERVER_ERROR,
-        //         Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
-        //         config('constants.error_codes.ERROR_SEND_USER_INVITE_LINK'),
-        //         trans('messages.custom_error_message.ERROR_SEND_USER_INVITE_LINK')
-        //     );
-        // }
+        try {
+            $userDetail->notify(new InviteUser($details));
+        } catch (\Exception $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+                config('constants.error_codes.ERROR_SEND_USER_INVITE_LINK'),
+                trans('messages.custom_error_message.ERROR_SEND_USER_INVITE_LINK')
+            );
+        }
 
         $userDetail->password = $password;
         // $userDetail->status = config('constants.user_statuses.ACTIVE');

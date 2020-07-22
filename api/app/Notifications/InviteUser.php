@@ -9,21 +9,21 @@ use Illuminate\Support\Facades\Lang;
 class InviteUser extends Notification
 {
     /**
-     * The mail variables.
+     * Mail details.
      *
      * @var array
      */
-    public $mailConfig;
+    public $details;
 
     /**
      * Create a notification instance.
      *
-     * @param  array  $mailConfig
+     * @param  array  $details
      * @return void
      */
-    public function __construct($mailConfig)
+    public function __construct($details)
     {
-        $this->mailConfig = $mailConfig;
+        $this->details = $details;
     }
 
     /**
@@ -45,7 +45,7 @@ class InviteUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->view('vendor.notifications.invite', $this->mailConfig)
-            ->subject($this->mailConfig['subject']);
+            ->view('vendor.notifications.invite', $this->details)
+            ->subject($this->details['subject']);
     }
 }
