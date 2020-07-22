@@ -9,19 +9,15 @@ use App\Repositories\Country\CountryRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\MissionTab\MissionTabRepository;
-use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Mission\MissionRepository;
 use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\User;
 use Mockery;
 use TestCase;
-use Validator;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\TimeMission;
 use App\Models\MissionDocument;
@@ -33,9 +29,6 @@ use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
 use App\Models\City;
 use App\Models\DonationAttribute;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Builder;
-
 
 class MissionRepositoryTest extends TestCase
 {
@@ -69,56 +62,56 @@ class MissionRepositoryTest extends TestCase
                 "goal_amount" => 253,
                 "show_goal_amount" => 1,
                 "show_donation_percentage" => 0,
-                "show_donation_meter"=> 0,
-                "show_donation_count" =>0,
-                "show_donors_count" =>0,
+                "show_donation_meter" => 0,
+                "show_donation_count" => 0,
+                "show_donors_count" => 0,
                 "disable_when_funded" => 0,
                 "is_disabled" => 0
             ],
             "mission_detail"=> [
                 [
-                  "lang"=> "en",
-                  "title"=> "New Organization Mission created",
-                  "short_description"=> "this is testing api with all mission details",
-                  "objective"=> "To test and check",
-                  "label_goal_achieved"=> "test percentage",
-                  "label_goal_objective"=> "check test percentage",
-                  "section"=> [
+                  "lang" => "en",
+                  "title" => "New Organization Mission created",
+                  "short_description" => "this is testing api with all mission details",
+                  "objective" => "To test and check",
+                  "label_goal_achieved" => "test percentage",
+                  "label_goal_objective" => "check test percentage",
+                  "section" => [
                     [
-                      "title"=> "Section title",
-                      "description"=> "Section description"
+                      "title" => "Section title",
+                      "description" => "Section description"
                     ]
                   ],
-                  "custom_information"=> [
+                  "custom_information" => [
                     [
-                      "title"=> "Customer info",
-                      "description"=> "Description of customer info"
+                      "title" => "Customer info",
+                      "description" => "Description of customer info"
                     ]
                   ]
                 ]
               ],
-              "organisation"=>[
-                  "organisation_id"=> '1',
-                  "organisation_name"=> 'namee'
+              "organisation" => [
+                  "organisation_id" => '1',
+                  "organisation_name" => 'namee'
               ]
               
         ];
 
         $languagesArray = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                "language_id" => 1,
+                "name" => "English",
+                "code" => "en",
+                "status" => "1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null,
             ],
             (object)[
                 "language_id" => 2,
                 "name" => "French",
                 "code" => "fr",
-                "status"=>"1",
+                "status" => "1",
                 "created_at" => null,
                 "updated_at" => null,
                 "deleted_at" => null,
@@ -128,7 +121,6 @@ class MissionRepositoryTest extends TestCase
         $requestData = new Request($requestParams);
 
         $mission = $this->mock(Mission::class);
-        // $this->app->instance('Mission', $mission);
         $timeMission = $this->mock(TimeMission::class);
         $missionLanguage = $this->mock(MissionLanguage::class);
         $missionDocument = $this->mock(MissionDocument::class);
@@ -164,69 +156,19 @@ class MissionRepositoryTest extends TestCase
             $donationAttribute
         );
         $missionModel = new Mission();
-        //dd($missionModel->mission_id);
-        $missionModel->mission_id = 6587;
+
+        $missionModel->mission_id = 13;
         $modelsService->mission
         ->shouldReceive('create')
         ->once()
         ->andReturn($missionModel);
-       
-        // ModelsService
-        // $modelsService->shouldReceive('mission')
-        //     ->once()
-        //     ->andReturn($mission);
-
-        //     $modelsService->shouldReceive('create')
-        //     ->once()
-        //     ->with($requestData->all())
-        //     ->andReturn($mission);
-        
-        // $missionLanguageData = new Request(array(
-        //     'mission_id' => $missionModel->mission_id,
-        //     'language_id' => 1,
-        //     'title' => 'New Organization Mission created',
-        //     'short_description' => 'this is testing api with all mission details',
-        //     'description' => [
-        //         "title"=> "Section title",
-        //         "description"=> "Section description"
-        //     ],
-        //     'objective' => 'To test and check',
-        //     'custom_information' => [
-        //         "title"=> "Customer info",
-        //         "description"=> "Description of customer info"
-        //       ],
-        //     'label_goal_achieved' => 'test percentage',
-        //     'label_goal_objective' => 'check test percentage'
-        // ));
-       // dd($missionLanguageData->all());
-           
-
-       // dd($modelsService->mission);
-        // $modelsService->mission->shouldReceive('create')
-        // ->once()
-        // ->with($requestData->all())
-        // ->andReturn($mission);
-
-        // $modelsService->missionLanguage->shouldReceive('create')
-        // ->once()
-        // ->with($missionLanguageData->all())
-        // ->andReturn(false);
-
+ 
         $collectionLanguageData = collect($languagesArray);
        
         $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collectionLanguageData);
 
-        //     $collection->shouldReceive('where')
-        //     ->once()
-        //     ->with('code', $languagesArray[0]->code)
-        //     ->andReturn($collectionLanguageData);
-
-        //   $collection->shouldReceive('first')
-        //     ->once()
-        //     ->andReturn($languagesArray[0]);
-        
         $countryId= $requestParams['location']['country_id'];
         
         $countryRepository->shouldReceive('getCountryId')
@@ -234,36 +176,6 @@ class MissionRepositoryTest extends TestCase
         ->with($requestData->location['country_code'])
         ->andReturn($countryId);
 
-        //save missonLanguage
-        
-        // $missionLanguageData = array(
-        //     'mission_id' => rand(1000,9999),
-        //     'language_id' => 1,
-        //     'title' => str_random(10),
-        //     'short_description' => str_random(10),
-        //     'description' => str_random(10),
-        //     'objective' => str_random(10),
-        //     'custom_information' => str_random(10),
-        //     'label_goal_achieved' => str_random(10),
-        //     'label_goal_objective' => str_random(10)
-        // );
-        //  $missionLanguageData = new Request(array(
-        //     'mission_id' => $missionModel->mission_id,
-        //     'language_id' => 1,
-        //     'title' => 'New Organization Mission created',
-        //     'short_description' => 'this is testing api with all mission details',
-        //     'description' => [
-        //         "title"=> "Section title",
-        //         "description"=> "Section description"
-        //     ],
-        //     'objective' => 'To test and check',
-        //     'custom_information' => [
-        //         "title"=> "Customer info",
-        //         "description"=> "Description of customer info"
-        //       ],
-        //     'label_goal_achieved' => 'test percentage',
-        //     'label_goal_objective' => 'check test percentage'
-        // ));
         $modelsService->missionLanguage->shouldReceive('create')
         ->once()
         ->andReturn(false);
@@ -271,16 +183,6 @@ class MissionRepositoryTest extends TestCase
         $modelsService->donationAttribute->shouldReceive('create')
         ->once()
         ->andReturn(false);
-            
-        // $mission->shouldReceive('donationAttribute')
-        // ->once()
-        // ->andReturn($donationModel);
-        
-        
-        //->andReturn(false);
-
-       
-        
         
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')
@@ -326,32 +228,32 @@ class MissionRepositoryTest extends TestCase
                 "goal_amount" => 253,
                 "show_goal_amount" => 1,
                 "show_donation_percentage" => 0,
-                "show_donation_meter"=> 0,
-                "show_donation_count" =>0,
-                "show_donors_count" =>0,
+                "show_donation_meter" => 0,
+                "show_donation_count" => 0,
+                "show_donors_count" => 0,
                 "disable_when_funded" => 0,
                 "is_disabled" => 0
-            ] 
+            ]
         ];
 
         $languagesArray = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                "language_id" => 1,
+                "name" => "English",
+                "code" => "en",
+                "status" => "1",
+                "created_at" => null,
+                "updated_at" => null,
+                "deleted_at" => null
             ],
             (object)[
                 "language_id" => 2,
                 "name" => "French",
                 "code" => "fr",
-                "status"=>"1",
+                "status" => "1",
                 "created_at" => null,
                 "updated_at" => null,
-                "deleted_at" => null,
+                "deleted_at" => null
             ]
         ];
 
@@ -377,7 +279,6 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $countryRepository = $this->mock(CountryRepository::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
-        $hasOne = $this->mock(HasOne::class);
         $modelsService = $this->modelService(
             $mission,
             $timeMission,
@@ -394,7 +295,6 @@ class MissionRepositoryTest extends TestCase
         );
 
         $missionModel = new Mission();
-        $donationAttributeModel = new DonationAttribute();
         $missionId = 13;
         $missionModel->mission_id = $missionId;
         $modelsService->mission
@@ -403,8 +303,6 @@ class MissionRepositoryTest extends TestCase
         ->with($missionId)
         ->andReturn($missionModel);
         
-        $donationAttributeModel->mission_id = $missionId;
-
         $collectionLanguageData = collect($languagesArray);
        
         $languageHelper->shouldReceive('getLanguages')
