@@ -18,9 +18,6 @@ class EventServiceProvider extends ServiceProvider
         ActivityLogEvent::class => [
             ActivityLogListner::class
         ],
-        TenantLanguageAddedEvent::class => [
-            CopyLanguageFileListener::class
-        ]
     ];
 
     /**

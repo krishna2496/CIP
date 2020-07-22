@@ -110,8 +110,10 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "Выберите действительные документы учёта времени",
-            'max' => "Размер файла документа должен быть "
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Размер файла документа должен быть "
+                . (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "Вы не можете добавить время на даты в будущем",
@@ -124,8 +126,10 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "Выберите действительный тип изображения",
-            'max' => "Размер изображения должен быть "
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Размер изображения должен быть "
+                . (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "Введите действительную ссылку на видео",
@@ -162,14 +166,14 @@ return [
         'media_videos.*.media_path' => "путь медиа",
         'documents.*.document_name' => "имя документа",
         'documents.*.document_type' => "тип документа",
-        'documents.*.document_path' => "путь документа",        
+        'documents.*.document_path' => "путь документа",
         'slider_detail.translations.*.lang' => "код языка",
-        'skills.*.skill_id' => "id навыка",  
-        'location.city' => "город", 
-        'location.country' => "страна",   
-        'password_confirmation' => "подтвердите пароль",         
-        'translations.*.lang' => "код языка",         
-        'is_mandatory' => "обязательно",       
+        'skills.*.skill_id' => "id навыка",
+        'location.city' => "город",
+        'location.country' => "страна",
+        'password_confirmation' => "подтвердите пароль",
+        'translations.*.lang' => "код языка",
+        'is_mandatory' => "обязательно",
 		'page_details.translations.*.sections.*.title' => "заголовок",
 		'page_details.translations.*.sections.*.description' => "описание",
 		'location.city_id' => "город",
@@ -200,10 +204,10 @@ return [
         'cities.*.translations' => "переводы",
         'media_images.*.sort_order' => "порядок сортировки",
         'media_videos.*.sort_order' => "порядок сортировки",
-        'documents.*.sort_order' => "порядок сортировки", 
+        'documents.*.sort_order' => "порядок сортировки",
         'countries.*.translations.*.lang' => "код языка",
         'countries.*.translations.*.name' => "имя",
-        'countries.*.translations' => "переводы",   
+        'countries.*.translations' => "переводы",
         'countries.*.iso' => "ISO",
         'translations.*.lang' => "код языка",
         'translations.*.name' => "имя",

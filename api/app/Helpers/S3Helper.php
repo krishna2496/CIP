@@ -198,8 +198,7 @@ class S3Helper
      */
     public function getLanguageFile(string $tenantName, string $code)
     {
-        $languageFilePath = $tenantName.'/'.config('constants.AWS_S3_LANGUAGES_FOLDER_NAME').'/'.
-        $code.config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
+        $languageFilePath = $this->getCustomLanguageFilePath($tenantName, $code);
         $languageFileUrl = Storage::disk('s3')->url($languageFilePath);
 
 		if (!Storage::disk('s3')->exists($languageFilePath)) {
@@ -209,6 +208,22 @@ class S3Helper
 		}
 
         return $languageFileUrl;
+    }
+
+    /**
+     * @param string $tenantName
+     * @param string $isoCode
+     * @return string
+     */
+    public function getCustomLanguageFilePath(string $tenantName, string $isoCode)
+    {
+        return
+            $tenantName
+            . '/'
+            . config('constants.AWS_S3_LANGUAGES_FOLDER_NAME')
+            . '/'
+            . $isoCode
+            . config('constants.AWS_S3_LANGUAGE_FILE_EXTENSION');
     }
 
     /**

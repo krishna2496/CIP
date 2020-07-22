@@ -959,6 +959,7 @@
       applyForMission(missionId) {
         let missionData = {};
         missionData.mission_id = missionId;
+        // TODO change that hardcoded value
         missionData.availability_id = 1;
 
         applyMission(missionData).then(response => {
