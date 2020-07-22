@@ -34,20 +34,65 @@ class TenantCurrencyControllerTest extends TestCase
             ]
         ];
 
-        $collectionLanguages = collect($currencies);
+        $collectionCurrency = collect($currencies);
 
         $helpers->shouldReceive('getTenantCurrency')
         ->times()
         ->with($request)
-        ->andReturn($collectionLanguages);
+        ->andReturn($collectionCurrency);
 
-        $apiData = $collectionLanguages->toArray();
+        $apiData = $collectionCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING');
 
         $methodResponse = [
             "status" => $apiStatus,
             "data" => $apiData,
+            "message" => $apiMessage,
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper->shouldReceive('success')
+        ->once()
+        ->with($apiStatus, $apiMessage, $apiData)
+        ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $helpers,
+            $responseHelper
+        );
+
+        $response = $callController->index($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+     * @testdox get tenant currency list empty success
+     */
+    public function testGetTenantCurrencyListEmptySuccess()
+    {
+        $request = new Request();
+        $helpers = $this->mock(Helpers::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $collection = $this->mock(Collection::class);
+
+        $currencies = [];
+
+        $collectionCurrency = collect($currencies);
+
+        $helpers->shouldReceive('getTenantCurrency')
+        ->times()
+        ->with($request)
+        ->andReturn($collectionCurrency);
+
+        $apiData = $collectionCurrency->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+
+        $methodResponse = [
+            "status" => $apiStatus,
             "message" => $apiMessage,
         ];
 
