@@ -54,6 +54,7 @@ class Organization extends Model
      * @var array
      */
     protected $visible = [
+        'organization_id',
         'name',
         'legal_number',
         'phone_number',
