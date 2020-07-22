@@ -127,7 +127,6 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        dd($request);
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -171,9 +170,9 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact_donation.*.amount" => 'required|integer',
                 "impact_donation.*.translations" => 'required',
-                "impact_donation.*.translations.*.language_code" => 
+                "impact_donation.*.translations.*.language_code" =>
                 'required_with:impact_donation.*.translations|max:2',
-                "impact_donation.*.translations.*.content" => 
+                "impact_donation.*.translations.*.content" =>
                 'required_with:impact_donation.*.translations|max:160',
             ]
         );
@@ -414,8 +413,8 @@ class MissionController extends Controller
             }
         }
 
-         // Check for mission impact donation id is valid or not
-         try {
+        // Check for mission impact donation id is valid or not
+        try {
             if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
                 foreach ($request->impact_donation as $impactDonationValue) {
                     if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== "")) {

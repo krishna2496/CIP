@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 use App\Services\Mission\ModelsService;
 use App\Models\MissionImpactDonationLanguage;
 use App\Helpers\LanguageHelper;
-use App\Models\MissionImpactDonation;
 
 class ImpactDonationMissionRepository
 {
@@ -41,11 +40,6 @@ class ImpactDonationMissionRepository
     private $languageHelper;
 
     /**
-     * @var App\Models\MissionImpactDonation
-     */
-    public $missionImpactDonation;
-
-    /**
      * Create a new ImpactDonationMission repository instance.
      *
      * @param  Mission $mission
@@ -53,7 +47,6 @@ class ImpactDonationMissionRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Models\MissionImpactDonationLanguage $missionImpactDonationLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
-     * @param  App\Models\MissionImpactDonation $missionImpactDonation   
      * @return void
      */
     public function __construct(
@@ -61,15 +54,13 @@ class ImpactDonationMissionRepository
         ResponseHelper $responseHelper,
         ModelsService $modelsService,
         MissionImpactDonationLanguage $missionImpactDonationLanguage,
-        LanguageHelper $languageHelper,
-        MissionImpactDonation $missionImpactDonation
+        LanguageHelper $languageHelper
     ) {
         $this->mission = $mission;
         $this->responseHelper = $responseHelper;
         $this->modelsService = $modelsService;
         $this->missionImpactDonationLanguage = $missionImpactDonationLanguage;
         $this->languageHelper = $languageHelper;
-        $this->missionImpactDonation = $missionImpactDonation;
     }
 
     /**
@@ -90,7 +81,7 @@ class ImpactDonationMissionRepository
             'amount' => $impactDonationValue['amount']
         ];
 
-        $missionImpactDonationModelData = $this->missionImpactDonation->create($impactDonationArray);
+        $missionImpactDonationModelData = $this->modelsService->missionImpactDonation->create($impactDonationArray);
         foreach ($impactDonationValue['translations'] as $impactDonationLanguageValue) {
             $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
             $impactDonationLanguageArray = [
@@ -102,7 +93,7 @@ class ImpactDonationMissionRepository
             $impactDonationLanguage = $this->missionImpactDonationLanguage->create($impactDonationLanguageArray);
             unset($impactDonationLanguageArray);
         }
-        unset($impactDonationArray);        
+        unset($impactDonationArray);
     }
 
     /**
@@ -118,7 +109,7 @@ class ImpactDonationMissionRepository
         $languages = $this->languageHelper->getLanguages();
         $missionImpactDonationId = $missionDonationValue['impact_donation_id'];
         if (isset($missionDonationValue['amount'])) {
-            $this->missionImpactDonation
+            $this->modelsService->missionImpactDonation
             ->where(["mission_impact_donation_id"=>$missionImpactDonationId])
             ->update(['amount'=>$missionDonationValue['amount']]);
         }
@@ -127,7 +118,7 @@ class ImpactDonationMissionRepository
             foreach ($missionDonationValue['translations'] as $impactDonationLanguageValue) {
                 $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
                 $impactDonationArray['mission_impact_donation_language_id'] = (String) Str::uuid();
-                $impactDonationArray['impact_donation_id'] = $missionImpactDonationId;                
+                $impactDonationArray['impact_donation_id'] = $missionImpactDonationId;
                 $impactDonationArray['language_id'] = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
                                 
                 if (isset($impactDonationLanguageValue['content'])) {

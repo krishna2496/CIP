@@ -120,8 +120,7 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $responseHelper,
             $modelService,
             $missionImpactDonationLanguage,
-            $languageHelper,
-            $missionImpactDonation
+            $languageHelper
         );
 
         $response = $repository->store($data, $missionId, $defaultTenantLanguageId);
@@ -228,8 +227,7 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $responseHelper,
             $modelService,
             $missionImpactDonationLanguage,
-            $languageHelper,
-            $missionImpactDonation
+            $languageHelper            
         );
 
         $response = $repository->update($data, $missionId, $defaultTenantLanguageId);
@@ -243,7 +241,6 @@ class ImpactDonationMissionRepositoryTest extends TestCase
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Models\MissionImpactDonationLanguage $missionImpactDonationLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
-     * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @return void
      */
     private function getRepository(
@@ -251,16 +248,14 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         ResponseHelper $responseHelper,
         ModelsService $modelsService,
         MissionImpactDonationLanguage $missionImpactDonationLanguage,
-        LanguageHelper $languageHelper,
-        MissionImpactDonation $missionImpactDonation
+        LanguageHelper $languageHelper
     ) {
         return new ImpactDonationMissionRepository(
             $mission,
             $responseHelper,
             $modelsService,
             $missionImpactDonationLanguage,
-            $languageHelper,
-            $missionImpactDonation
+            $languageHelper
         );
     }
 
