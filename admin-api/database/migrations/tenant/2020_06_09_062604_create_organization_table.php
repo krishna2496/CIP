@@ -16,14 +16,14 @@ class CreateOrganizationTable extends Migration
         Schema::create('organization', function (Blueprint $table) {
             $table->uuid('organization_id')->primary();
             $table->string('name', 255);
-            $table->string('legal_number', 16)->nullable();
-            $table->string('phone_number', 10)->nullable();
+            $table->string('legal_number', 255)->nullable();
+            $table->string('phone_number', 120)->nullable();
             $table->string('address_line_1', 255)->nullable();
             $table->string('address_line_2', 255)->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
             $table->unsignedBigInteger('state_id')->nullable();
             $table->unsignedBigInteger('country_id')->nullable();
-            $table->string('postal_code', 8)->nullable();
+            $table->string('postal_code', 120)->nullable();
             $table->softDeletes();
             $table->timestamps();
 
