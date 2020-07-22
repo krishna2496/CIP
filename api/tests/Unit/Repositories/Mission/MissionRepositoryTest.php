@@ -33,6 +33,7 @@ use App\Models\City;
 use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Services\Mission\AdminMissionTransformService;
 use App\Models\MissionImpact;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -130,6 +131,7 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -207,6 +209,16 @@ class MissionRepositoryTest extends TestCase
         ->with($requestData)
         ->andReturn($tenantName);
 
+        $activatedTenantSetting =  [
+            "volunteering",
+            "mission_impact"
+        ];
+        
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
+        ->once()
+        ->with($requestData)
+        ->andReturn($activatedTenantSetting);
+
         $missionImpactRepository->shouldReceive('store')
         ->once()
         ->andReturn();
@@ -219,7 +231,8 @@ class MissionRepositoryTest extends TestCase
             $missionMediaRepository,
             $modelService,
             $missionImpactRepository,
-            $adminMissionTransformService
+            $adminMissionTransformService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $repository->store($requestData);
@@ -282,7 +295,7 @@ class MissionRepositoryTest extends TestCase
         $missionImpact = $this->mock(MissionImpact::class);
         $collection = $this->mock(Collection::class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -347,6 +360,16 @@ class MissionRepositoryTest extends TestCase
         ->with($requestData)
         ->andReturn($tenantName);
 
+        $activatedTenantSetting =  [
+            "volunteering",
+            "mission_impact"
+        ];
+        
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
+        ->times(2)
+        ->with($requestData)
+        ->andReturn($activatedTenantSetting);
+
         $missionImpactRepository->shouldReceive('update')
         ->once()
         ->andReturn();
@@ -363,12 +386,81 @@ class MissionRepositoryTest extends TestCase
             $missionMediaRepository,
             $modelService,
             $missionImpactRepository,
-            $adminMissionTransformService
+            $adminMissionTransformService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $repository->update($requestData, $missionId);
 
         $this->assertInstanceOf(mission::class, $response);
+    }
+
+    /**
+    * @testdox mission impact linked to mission
+    *
+    */
+    public function testMissionImpactLinkedToMissionSuccess()
+    {
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $s3Helper = $this->mock(S3Helper::class);
+        $countryRepository = $this->mock(CountryRepository::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $mission = $this->mock(Mission::class);
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $collection = $this->mock(Collection::class);
+        $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionImpact
+        );
+
+        $repository = $this->getRepository(
+            $languageHelper,
+            $helpers,
+            $s3Helper,
+            $countryRepository,
+            $missionMediaRepository,
+            $modelService,
+            $missionImpactRepository,
+            $adminMissionTransformService,
+            $tenantActivatedSettingRepository
+        );
+
+        $missionId = rand(50000, 70000);
+        $missionImpactId = rand(50000, 70000);
+
+        $modelService->missionImpact->shouldReceive("where")
+        ->once()
+        ->with([['mission_id', '=', $missionId], ['mission_impact_id', '=', $missionImpactId]])
+        ->andReturn($missionImpact);
+
+        $modelService->missionImpact->shouldReceive("firstOrFail")
+        ->once()
+        ->andReturn($missionImpact);
+
+        $response = $repository->isMissionImpactLinkedToMission($missionId, $missionImpactId);
+        $this->assertInstanceOf(MissionImpact::class, $response);
     }
 
     /**
@@ -382,6 +474,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
      * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
+     * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     private function getRepository(
@@ -392,7 +485,8 @@ class MissionRepositoryTest extends TestCase
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
         MissionImpactRepository $missionImpactRepository,
-        AdminMissionTransformService $adminMissionTransformService
+        AdminMissionTransformService $adminMissionTransformService,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         return new MissionRepository(
             $languageHelper,
@@ -402,7 +496,8 @@ class MissionRepositoryTest extends TestCase
             $missionMediaRepository,
             $modelsService,
             $missionImpactRepository,
-            $adminMissionTransformService
+            $adminMissionTransformService,
+            $tenantActivatedSettingRepository
         );
     }
 

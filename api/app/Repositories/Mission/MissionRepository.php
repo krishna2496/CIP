@@ -21,6 +21,7 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Services\Mission\AdminMissionTransformService;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -63,6 +64,11 @@ class MissionRepository implements MissionInterface
      * @var App\Services\Mission\AdminMissionTransformService
      */
     private $adminMissionTransformService;
+
+    /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -75,6 +81,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
      * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
+     * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -85,7 +92,8 @@ class MissionRepository implements MissionInterface
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
         MissionImpactRepository $missionImpactRepository,
-        AdminMissionTransformService $adminMissionTransformService
+        AdminMissionTransformService $adminMissionTransformService,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -95,6 +103,7 @@ class MissionRepository implements MissionInterface
         $this->modelsService = $modelsService;
         $this->missionImpactRepository = $missionImpactRepository;
         $this->adminMissionTransformService = $adminMissionTransformService;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
     
     /**
@@ -221,8 +230,11 @@ class MissionRepository implements MissionInterface
         //Add mission impact
         if(isset($request->impact) && count($request->impact) > 0){
             if (!empty($request->impact)) {
-                foreach($request->impact as $impactValue){
-                    $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId);
+                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
+                if(in_array('mission_impact', $allTenantActivatedSetting)){
+                    foreach($request->impact as $impactValue){
+                        $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId);
+                    }
                 }
             }
         }
@@ -403,11 +415,14 @@ class MissionRepository implements MissionInterface
         // Add/update impact mission 
         if (isset($request->impact) && count($request->impact)) {
             foreach ($request->impact as $impactValue) {
-                if (isset($impactValue['mission_impact_id'])) {
-                    $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId);
-                } else {
-                    //Mission impact id is not available and create the mission impact and details
-                    $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId);
+                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
+                if(in_array('mission_impact', $allTenantActivatedSetting)){
+                    if (isset($impactValue['mission_impact_id'])) {
+                        $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId);
+                    } else {
+                        //Mission impact id is not available and create the mission impact and details
+                        $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId);
+                    }
                 }
             }
         }
