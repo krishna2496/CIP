@@ -35,17 +35,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->put('/app/password-reset', ['middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@passwordReset']);
 
-    /* create password */
-    $router->post('/app/create-password', ['middleware' => 'tenant.connection|JsonApiMiddleware',
-        'uses' => 'App\Auth\AuthController@createPassword']);
-
-    /* update password  */
-    $router->put('/app/update-password', ['middleware' => 'tenant.connection',
-        'uses' => 'App\Auth\AuthController@updatePassword']);
-
-    /* used in app/Notifications/CreatePassword.php */
-    $router->get('/create-password/{token}', ['as' => 'password.create']);
-
     /* CMS footer pages  */
     $router->get('/app/cms/listing', ['as' => 'app.cms.listing', 'middleware' => 'tenant.connection',
         'uses' => 'App\FooterPage\FooterPageController@index']);
@@ -118,6 +107,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/search-user', ['as' => 'app.user',
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
         'uses' => 'App\User\UserController@index']);
+
+    $router->post('/app/invite-user', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@inviteUser']);
 
     /* Fetch dashboard data for users */
     $router->get('/app/dashboard', ['as' => 'app.user',

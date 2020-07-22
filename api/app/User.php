@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
-use App\Providers\Passwords\CanCreatePassword as CanCreatePasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +37,7 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
-    use Authenticatable, Authorizable, CanResetPasswordTrait, CanCreatePasswordTrait, Notifiable, SoftDeletes, SearchableTrait,
+    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait,
     CascadeSoftDeletes;
 
     /**

@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
 use App\Repositories\UserFilter\UserFilterRepository;
+use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Repositories\City\CityRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
@@ -23,6 +24,7 @@ use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 use App\Transformations\CityTransformable;
+use App\Notifications\InviteUser;
 
 //!  User controller
 /*!
@@ -73,6 +75,13 @@ class UserController extends Controller
     private $userFilterRepository;
 
     /**
+     * The response instance.
+     *
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    private $tenantOptionRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
@@ -83,6 +92,7 @@ class UserController extends Controller
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\S3Helper $s3helper
+     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @return void
      */
     public function __construct(
@@ -93,7 +103,8 @@ class UserController extends Controller
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        TenantOptionRepository $tenantOptionRepository
     ) {
         $this->userRepository = $userRepository;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
@@ -103,6 +114,7 @@ class UserController extends Controller
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->tenantOptionRepository = $tenantOptionRepository;
     }
 
     /**
@@ -465,5 +477,121 @@ class UserController extends Controller
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Create Password - Send create password link to user's email address
+     *
+     * @param App\User $user
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function inviteUser(User $user, Request $request): JsonResponse
+    {
+        // Server side validations
+        $validator = Validator::make($request->toArray(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVITE_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        if (!$userDetail) {
+            return $this->responseHelper->error(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
+                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+
+        if ($userDetail->status === config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_USER_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_USER_ACTIVE')
+            );
+        }
+
+        if ($userDetail->expiry) {
+            $userExpirationDate = new DateTime($userDetail->expiry);
+            if ($userExpirationDate < new DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_USER_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                );
+            }
+        }
+
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $tenantLogo = $this->tenantOptionRepository->getOptionValueFromOptionName('custom_logo');
+        $password = str_random(8);
+
+        // config([
+        //     'app.user_language_code' => $language->code,
+        //     'app.mail_url' => 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName,
+        //     'app.tenant_logo' => $tenantLogo->option_value,
+        //     'app.mail_customer_name' => 'customer_nameX',
+        //     'app.mail_site_name' => 'site_nameX',
+        //     'app.mail_password' => $password,
+        // ]);
+
+        $mailConfig = [
+            'subject' => 'Create Password Notification',
+            'first_name' => $userDetail->first_name,
+            'last_name' => $userDetail->last_name,
+            'customer_name' => 'customer_name',
+            'site_name' => 'site_name',
+            'email' => $userDetail->email,
+            'password' => $password,
+            'language_code' => $language->code,
+            'mail_url' => 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName,
+            'company_logo' => $tenantLogo->option_value,
+            'customer_name' => 'customer_name',
+            'site_name' => 'site_name',
+        ];
+
+        $response = $userDetail->notify(new InviteUser($mailConfig));
+
+        // if (!$response) {
+        //     return $this->responseHelper->error(
+        //         Response::HTTP_INTERNAL_SERVER_ERROR,
+        //         Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+        //         config('constants.error_codes.ERROR_SEND_USER_INVITE_LINK'),
+        //         trans('messages.custom_error_message.ERROR_SEND_USER_INVITE_LINK')
+        //     );
+        // }
+
+        $userDetail->password = $password;
+        // $userDetail->status = config('constants.user_statuses.ACTIVE');
+        $userDetail->save();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_INVITE_LINK_SEND_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

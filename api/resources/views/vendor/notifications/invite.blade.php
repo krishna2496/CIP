@@ -69,13 +69,6 @@
 </head>
 
 <body>
-	@php
-	$companyLogo = (config('app.tenant_logo') != '') ? config('app.tenant_logo') : url('/images/optimy_logo.png');
-	$createArowPasswordBtn = url('/images/arrow.png');
-	$parts = explode('/', $actionUrl);
-	$token = end($parts);
-	$mailUrl = config('app.mail_url') . $token;
-	@endphp
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2f2" align="center" style="background:#f2f2f2;">
 		<tr>
 			<td height="70" style="font-size:0; line-height:0;" align="left" valign="top"></td>
@@ -94,30 +87,32 @@
 							<table width="500" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF" style="background:#FFFFFF;" class="inner-table">
 								<tr>
 									<td>
-										<img src="{{ $companyLogo }}" height="50" width="150" alt="Logo" />
+										<img src="{{ $company_logo }}" height="50" width="150" alt="Logo" />
 									</td>
 								</tr>
 								<tr>
 									<td height="40" style="font-size:0; line-height:0;"></td>
 								</tr>
 								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:30px; line-height: 46px;" class="title_text">{{ trans('mail.create_password.HEADING_ONE', [], config('app.user_language_code')) }}<br />{{ trans('mail.create_password.HEADING_TWO', [], config('app.user_language_code')) }}</td>
-								</tr>
-								<tr>
-									<td height="15" style="font-size:0; line-height:0;"></td>
-								</tr>
-								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">{{ trans('mail.create_password.PARAGRAPH_ONE', [], config('app.user_language_code')) }}</td>
-								</tr>
-								<tr>
-									<td height="25" style="font-size:0; line-height:0;"></td>
+									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
+										<p>Hi {{ $first_name }} {{ $last_name }},</p>
+
+										<p>{{ $customer_name }} has invited you to use {{ $site_name }}.</p>
+
+										<p>Your account has been created. Below is your information:</p>
+
+										<p>Login: {{ $email }}<br/>
+										Password: {{ $password }}</p>
+
+										<p>Use the button below to set up your account and get started:</p>
+									</td>
 								</tr>
 								<tr>
 									<td>
 										<table cellpadding="0" cellspacing="0" border="0" class="button" style="border: 2px solid #f88634; border-radius:50px; -ms-border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px; border-radius: 24px; color:#f88634; font-size:17px; background-color: #ffffff; display:inline-block;">
 											<tr>
 												<td style=" width:20px;"></td>
-												<td class="button_text" style="color:#f88634; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle"><a href="{{ $mailUrl }}" title="{{ trans('mail.create_password.CREATE_PASSWORD_BUTTON', [], config('app.user_language_code')) }}" style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">{{ trans('mail.create_password.CREATE_PASSWORD_BUTTON', [], config('app.user_language_code')) }}</a></td>
+												<td class="button_text" style="color:#f88634; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle"><a href="{{ $mail_url }}" title="Set up account" style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">Set up account</a></td>
 												<td style=" width: 20px;"></td>
 											</tr>
 										</table>
@@ -127,27 +122,7 @@
 									<td height="25" style="font-size:0; line-height:0;"></td>
 								</tr>
 								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">{{ trans('mail.create_password.PARAGRAPH_TWO', [], config('app.user_language_code')) }}</td>
-								</tr>
-								<tr>
-									<td height="45" style="font-size:0; line-height:0;"></td>
-								</tr>
-								<tr>
-									<td height="1" style="background:#e8e8e8;"></td>
-								</tr>
-								<tr>
-									<td height="45" style="font-size:0; line-height:0;"></td>
-								</tr>
-								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px;">{{ trans('mail.create_password.FOOTER_TEXT', [], config('app.user_language_code')) }}</td>
-								</tr>
-								<tr>
-									<td height="5" style="font-size:0; line-height:0;"></td>
-								</tr>
-								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
-										<a href="{{ $mailUrl }}" title="{{ $mailUrl }}" style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">{{ $mailUrl }}</a>
-									</td>
+									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">To create a new password, click on change password in your user account.</td>
 								</tr>
 								<tr>
 									<td height="45" style="font-size:0; line-height:0;"></td>
@@ -168,7 +143,7 @@
 						<td height="40" style="font-size:0; line-height:0;"></td>
 					</tr>
 					<tr>
-						<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px; align:center; text-align:center">&copy; {{date('Y')}} Optimy, {{ trans('mail.other_text.ALL_RIGHTS_RESERVED', [], config('app.user_language_code')) }}</td>
+						<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px; align:center; text-align:center">&copy; {{date('Y')}} Optimy, {{ trans('mail.other_text.ALL_RIGHTS_RESERVED', [], $language_code) }}</td>
 					</tr>
 					<tr>
 						<td height="40" style="font-size:0; line-height:0;"></td>
