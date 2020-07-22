@@ -113,14 +113,14 @@ class OrganizationController extends Controller
             $request->all(),
             [
                 "name" => "required|max:255",
-                "legal_number" => "max:16",
-                "phone_number" => "numeric|digits:10",
+                "legal_number" => "max:255",
+                "phone_number" => "numeric|digits:120",
                 "address_line_1" => "max:255",
                 "address_line_2" => "max:255",
                 "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
                 "state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                 "country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
-                "postal_code" => "max:8",
+                "postal_code" => "max:120",
             ]
         );
 
@@ -182,14 +182,14 @@ class OrganizationController extends Controller
                 $request->all(),
                 [
                     "name" => "sometimes|required|max:255",
-                    "legal_number" => "max:16",
-                    "phone_number" => "numeric|digits:10",
+                    "legal_number" => "max:255",
+                    "phone_number" => "numeric|digits:120",
                     "address_line_1" => "max:255",
                     "address_line_2" => "max:255",
                     "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
                     "state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                     "country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
-                    "postal_code" => "max:8",
+                    "postal_code" => "max:120",
                 ]
             );
 
