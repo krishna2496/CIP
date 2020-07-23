@@ -545,7 +545,7 @@ class UserController extends Controller
             'first_name' => $userDetail->first_name,
             'last_name' => $userDetail->last_name,
             'customer_name' => 'customer_name',
-            'site_name' => 'site_name',
+            'site_name' => $tenantName,
             'email' => $userDetail->email,
             'password' => $password,
             'language_code' => $language->code,
