@@ -158,11 +158,6 @@ Vue.mixin({
             } else {
                 return false;
             }
-        },
-        donationPercentage : function(donationAmountRaised, goalAmount) {
-            if (donationAmountRaised && goalAmount) {
-                return Math.round((100 * donationAmountRaised) / goalAmount);
-            }
         }
     }
 })

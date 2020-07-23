@@ -8,7 +8,7 @@ export default async(data) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    let missionId = data.mission_id;
+    const missionId = data.mission_id;
 
     document.body.classList.add("loader-enable");
     let url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId

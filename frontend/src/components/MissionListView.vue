@@ -133,7 +133,8 @@
                                             <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"alt="target icon">
                                         </i>
                                         <div class="text-wrap" v-if="mission.donation_attribute.show_donation_percentage">
-                                            <span class="title-text">70%</span>
+                                            <span class="title-text">{{countDonationPercentage(mission.donation_attribute.donation_amount_raised,mission.donation_attribute.goal_amount)}}%
+											</span>
                                             <span class="subtitle-text">{{ languageData.label.achieved}}</span>
                                         </div>
                                     </div>
@@ -566,6 +567,12 @@ export default {
             } else {
                 return false;
             }
+		},
+		countDonationPercentage(donationAmountRaised, goalAmount) {
+            if (donationAmountRaised && goalAmount) {
+                return Math.round((100 * donationAmountRaised) / goalAmount);
+			}
+			return 0;
         }
 	},
 	created() {

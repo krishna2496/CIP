@@ -68,7 +68,7 @@
                                             <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
                                             <div class="progress-info">
                                                 <span class="subtitle-text">
-                                                    <em> {{countDonationPercentage(mission.donation_attribute.donation_amount_raised,mission.donation_attribute.goal_amount)}} </em>
+                                                    <em> {{countDonationPercentage(mission.donation_attribute.donation_amount_raised,mission.donation_attribute.goal_amount)}}% </em>
                                                     <em>{{languageData.label.achieved}}</em>
                                                 </span>
                                                 <span class="subtitle-text">
@@ -91,7 +91,7 @@
                                 </div>
 
                             </div>
-                            <div class="init-hidden">hover
+                            <div class="init-hidden">
                                 <div class="group-details">
                                     <div class="top-strip">
                                         <span>
@@ -195,7 +195,7 @@
                                                     <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
                                                     <div class="progress-info">
                                                         <span class="subtitle-text">
-                                                            70%
+                                                            {{countDonationPercentage(mission.donation_attribute.donation_amount_raised,mission.donation_attribute.goal_amount)}}%
                                                             <em>{{languageData.label.achieved}}</em>
                                                         </span>
                                                         <span class="subtitle-text">
@@ -644,7 +644,10 @@ export default {
             }
         },
         countDonationPercentage(donationAmountRaised, goalAmount) {
-            // this.donationPercentage(donationAmountRaised,goalAmount);
+            if (donationAmountRaised && goalAmount) {
+                return Math.round((100 * donationAmountRaised) / goalAmount);
+			}
+			return 0;
         }
 
     },
@@ -664,8 +667,8 @@ export default {
         this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
         if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
             this.isDisplayMissionLabel = true;
-        }
-this.donationPercentage(340,450);
+		}
+		
         this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
         if (JSON.parse(store.state.missionTypeLabels) != "") {
             let defaultLang = store.state.defaultLanguage.toLowerCase();
