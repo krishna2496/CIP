@@ -183,8 +183,8 @@ class SamlController extends Controller
         if (isset($userData['city_id']) ) {
             $city = $this->cityRepository->searchCity(
                 $userData['city_id'],
-                $userData['language_id'],
-                $userData['country_id']
+                $userData['language_id'] ?? null,
+                $userData['country_id'] ?? null
             );
             unset($userData['city_id']);
             if ($city) {
