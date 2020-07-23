@@ -567,7 +567,7 @@ class UserController extends Controller
         }
 
         $userDetail->password = $password;
-        // $userDetail->status = config('constants.user_statuses.ACTIVE');
+        $userDetail->status = config('constants.user_statuses.ACTIVE');
         $userDetail->invitation_sent_at = Carbon::now()->toDateTimeString();
         $userDetail->save();
 
