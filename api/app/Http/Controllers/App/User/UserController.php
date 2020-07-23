@@ -552,7 +552,6 @@ class UserController extends Controller
             'mail_url' => 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName,
             'company_logo' => $tenantLogo->option_value,
             'customer_name' => 'customer_name',
-            'site_name' => 'site_name',
         ];
 
         try {
