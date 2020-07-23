@@ -108,14 +108,14 @@
 									</td>
 								</tr>
 								<tr>
-									<td>
-										<table cellpadding="0" cellspacing="0" border="0" class="button" style="border: 2px solid #f88634; border-radius:50px; -ms-border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px; border-radius: 24px; color:#f88634; font-size:17px; background-color: #ffffff; display:inline-block;">
+									<td align="center">
+										<table cellpadding="0" cellspacing="0" border="0" class="button" style="border: 2px solid #3B6CD1; border-radius:5px; -ms-border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius: 5px; color:#ffffff; font-size:17px; background-color: #3B6CD1; height: 40px; ">
 											<tr>
 												<td style=" width:20px;"></td>
-												<td class="button_text" style="color:#f88634; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle"><a href="{{ $mail_url }}" title="Set up account" style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">Set up account</a></td>
+												<td class="button_text" style="color:#ffffff; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle"><a href="{{ $mail_url }}" title="Set up account" style="display:inline-block; color:#ffffff; font-size:17px; vertical-align: middle; display: block;">Set up account</a></td>
 												<td style=" width: 20px;"></td>
 											</tr>
-										</table>
+                                        </table>
 									</td>
 								</tr>
 								<tr>
