@@ -97,7 +97,7 @@
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
 										<p>Hi {{ $first_name }} {{ $last_name }},</p>
 
-										<p>{{ $customer_name }} has invited you to use {{ $site_name }}.</p>
+										<p>{{ $customer_name }} has invited you to use <a href="{{ $mail_url }}">{{ $site_name }}</a>.</p>
 
 										<p>Your account has been created. Below is your information:</p>
 

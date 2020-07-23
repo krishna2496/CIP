@@ -541,7 +541,7 @@ class UserController extends Controller
         $password = str_random(8);
 
         $details = [
-            'subject' => 'Create Password Notification',
+            'subject' => 'Set Up Account',
             'first_name' => $userDetail->first_name,
             'last_name' => $userDetail->last_name,
             'customer_name' => 'customer_name',
