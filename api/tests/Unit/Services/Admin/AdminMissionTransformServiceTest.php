@@ -25,13 +25,13 @@ class AdminMissionTransformServiceTest extends TestCase
         $missionModel = new Mission();
         $missionModel->impactMission = (object)[
             [
-                "mission_impact_id" => str_random(36),
-                "icon" => str_random(100),
-                "sort_key" => rand(100, 200),
-                "mission_impact_language_details" => [
+                'mission_impact_id' => str_random(36),
+                'icon' => str_random(100),
+                'sort_key' => rand(100, 200),
+                'mission_impact_language_details' => [
                     [
-                        "language_id" => 1,
-                        "content" => json_encode(str_random(200))
+                        'language_id' => 1,
+                        'content' => json_encode(str_random(200))
                     ]
                 ]
             ]
@@ -41,22 +41,22 @@ class AdminMissionTransformServiceTest extends TestCase
 
         $languages = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id'=>1,
+                'name'=> 'English',
+                'code'=> 'en',
+                'status'=> '1',
+                'created_at'=> null,
+                'updated_at'=> null,
+                'deleted_at'=> null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status'=>'1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 

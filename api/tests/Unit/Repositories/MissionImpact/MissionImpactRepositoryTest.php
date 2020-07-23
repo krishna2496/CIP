@@ -26,34 +26,34 @@ class MissionImpactRepositoryTest extends TestCase
     public function testImpactMissionStoreSuccess()
     {
         $data = [
-            "icon_path" => str_random(100),
-            "sort_key" => rand(50000, 70000),
-            "translations" => [
+            'icon_path' => str_random(100),
+            'sort_key' => rand(50000, 70000),
+            'translations' => [
                 [
-                    "language_code" => "fr",
-                    "content" => str_random(160)
+                    'language_code' => 'fr',
+                    'content' => str_random(160)
                 ]
             ]
         ];
 
         $languagesData = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id'=>1,
+                'name'=> 'English',
+                'code'=> 'en',
+                'status'=> '1',
+                'created_at'=> null,
+                'updated_at'=> null,
+                'deleted_at'=> null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status'=>'1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
@@ -102,35 +102,35 @@ class MissionImpactRepositoryTest extends TestCase
     public function testImpactMissionssUpdateSuccess()
     {
         $data = [
-            "mission_impact_id" => str_random(36),
-            "icon_path" => str_random(100),
-            "sort_key" => rand(10000, 100000),
-            "translations" => [
+            'mission_impact_id' => str_random(36),
+            'icon_path' => str_random(100),
+            'sort_key' => rand(10000, 100000),
+            'translations' => [
                 [
-                    "language_code" => "en",
-                    "content" => str_random(160)
+                    'language_code' => 'en',
+                    'content' => str_random(160)
                 ]
             ]
         ];
 
         $languagesData = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id'=>1,
+                'name'=> 'English',
+                'code'=> 'en',
+                'status'=> '1',
+                'created_at'=> null,
+                'updated_at'=> null,
+                'deleted_at'=> null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status'=>'1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
@@ -151,7 +151,7 @@ class MissionImpactRepositoryTest extends TestCase
 
         $missionImpact->shouldReceive('where')
         ->once()
-        ->with(["mission_impact_id"=>$data["mission_impact_id"]])
+        ->with(['mission_impact_id'=>$data['mission_impact_id']])
         ->andReturn($missionImpact);
 
         $missionImpact->shouldReceive('update')
@@ -161,7 +161,7 @@ class MissionImpactRepositoryTest extends TestCase
 
         $missionImpact->shouldReceive('where')
         ->once()
-        ->with(["mission_impact_id"=>$data["mission_impact_id"]])
+        ->with(['mission_impact_id'=>$data['mission_impact_id']])
         ->andReturn($missionImpact);
         
         $missionImpact->shouldReceive('update')

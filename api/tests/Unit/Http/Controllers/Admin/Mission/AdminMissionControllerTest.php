@@ -33,29 +33,29 @@ class AdminMissionControllerTest extends Testcase
         \DB::setDefaultConnection('tenant');
 
         $data = [
-            "impact" => [
+            'impact' => [
                 [
-                    "mission_impact_id" => str_random(36),
-                    "icon_path" => str_random(100),
-                    "sort_key" => rand(100, 200),
-                    "translations" => [
+                    'mission_impact_id' => str_random(36),
+                    'icon_path' => str_random(100),
+                    'sort_key' => rand(100, 200),
+                    'translations' => [
                         [
-                            "language_code" => "es",
-                            "content" => str_random(160)
+                            'language_code' => 'es',
+                            'content' => str_random(160)
                         ]
                     ]
                 ],
                 [
-                    "sort_key" => rand(100, 200),
-                    "translations" => [
+                    'sort_key' => rand(100, 200),
+                    'translations' => [
                         [
-                            "language_code" => "ab",
-                            "content" => str_random(160)
+                            'language_code' => 'ab',
+                            'content' => str_random(160)
                         ]
                     ]
                 ]
             ],
-            "publication_status" => "DRAFT"
+            'publication_status' => 'DRAFT'
         ];
 
         $requestData = new Request($data);
@@ -71,10 +71,10 @@ class AdminMissionControllerTest extends Testcase
         $mission = $this->mock(Mission::class);
 
         $defaultLanguage = (object)[
-            "language_id" => 1,
-            "code" => "en",
-            "name" => "English",
-            "default" => "1"
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
         ];
 
         $key = str_random(16);
@@ -98,7 +98,7 @@ class AdminMissionControllerTest extends Testcase
         ->andReturn($defaultLanguage);
 
         $missionModel = new Mission();
-        $missionModel->publication_status = "DRAFT";
+        $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
         ->once()
         ->with($missionId, $defaultLanguage->language_id)
@@ -117,8 +117,8 @@ class AdminMissionControllerTest extends Testcase
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
 
         $methodResponse = [
-            "status" => $apiStatus,
-            "message" => $apiMessage
+            'status' => $apiStatus,
+            'message' => $apiMessage
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
@@ -151,20 +151,20 @@ class AdminMissionControllerTest extends Testcase
         \DB::setDefaultConnection('tenant');
 
         $data = [
-            "impact" => [
+            'impact' => [
                 [
-                    "mission_impact_id" => str_random(36),
-                    "icon_path" => str_random(100),
-                    "sort_key" => rand(100, 200),
-                    "translations" => [
+                    'mission_impact_id' => str_random(36),
+                    'icon_path' => str_random(100),
+                    'sort_key' => rand(100, 200),
+                    'translations' => [
                         [
-                            "language_code" => "es",
-                            "content" => str_random(160)
+                            'language_code' => 'es',
+                            'content' => str_random(160)
                         ]
                     ]
                 ]
             ],
-            "publication_status" => "DRAFT"
+            'publication_status' => 'DRAFT'
         ];
 
         $requestData = new Request($data);
@@ -181,10 +181,10 @@ class AdminMissionControllerTest extends Testcase
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
 
         $defaultLanguage = (object)[
-            "language_id" => 1,
-            "code" => "en",
-            "name" => "English",
-            "default" => "1"
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
         ];
 
         $key = str_random(16);
@@ -208,7 +208,7 @@ class AdminMissionControllerTest extends Testcase
         ->andReturn($defaultLanguage);
 
         $missionModel = new Mission();
-        $missionModel->publication_status = "DRAFT";
+        $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
         ->once()
         ->with($missionId, $defaultLanguage->language_id)
@@ -220,12 +220,12 @@ class AdminMissionControllerTest extends Testcase
         ->andThrow($modelNotFoundException);
 
         $methodResponse = [
-            "errors"=> [
+            'errors'=> [
                 [
-                    "status"=> Response::HTTP_NOT_FOUND,
-                    "type"=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
-                    "code"=>  config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
-                    "message"=> trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+                    'status'=> Response::HTTP_NOT_FOUND,
+                    'type'=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                    'code'=>  config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                    'message'=> trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
                 ]
             ]
         ];

@@ -45,65 +45,65 @@ class MissionRepositoryTest extends TestCase
     public function testStoreImpactMissionSuccess()
     {
         $data = [
-            "theme_id" => 1,
-            "city_id" => 1,
-            "country_id" => 233,
-            "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2022-10-15 10:40:00",
-            "total_seats" => rand(10, 1000),
-            "mission_type" => "DONATION",
-            "publication_status" => "APPROVED",
-            "availability_id" => 1,
-            "organisation" => [
-                "organisation_id" => 1,
-                "organisation_name" => str_random(10)
+            'theme_id' => 1,
+            'city_id' => 1,
+            'country_id' => 233,
+            'start_date' => '2019-05-15 10:40:00',
+            'end_date' => '2022-10-15 10:40:00',
+            'total_seats' => rand(10, 1000),
+            'mission_type' => 'DONATION',
+            'publication_status' => 'APPROVED',
+            'availability_id' => 1,
+            'organisation' => [
+                'organisation_id' => 1,
+                'organisation_name' => str_random(10)
             ],
-            "location" => [
-                "city_id" => 1,
-                "country_id" => 233,
-                "country_code" => "US"
+            'location' => [
+                'city_id' => 1,
+                'country_id' => 233,
+                'country_code' => 'US'
             ],
-            "donation_attribute" => [
-                "goal_amount_currency" => "CAD",
-                "goal_amount" => 253,
-                "show_goal_amount" => 1,
-                "show_donation_percentage" => 0,
-                "show_donation_meter"=> 0,
-                "show_donation_count" =>0,
-                "show_donors_count" =>0,
-                "disable_when_funded" => 0,
-                "is_disabled" => 0
+            'donation_attribute' => [
+                'goal_amount_currency' => 'CAD',
+                'goal_amount' => 253,
+                'show_goal_amount' => 1,
+                'show_donation_percentage' => 0,
+                'show_donation_meter'=> 0,
+                'show_donation_count' =>0,
+                'show_donors_count' =>0,
+                'disable_when_funded' => 0,
+                'is_disabled' => 0
             ],
-            "mission_detail"=> [
+            'mission_detail'=> [
                 [
-                    "lang"=> "en",
-                    "title"=> "New Organization Mission created",
-                    "short_description"=> "this is testing api with all mission details",
-                    "objective"=> "To test and check",
-                    "label_goal_achieved"=> "test percentage",
-                    "label_goal_objective"=> "check test percentage",
-                    "section"=> [
+                    'lang'=> 'en',
+                    'title'=> 'New Organization Mission created',
+                    'short_description'=> 'this is testing api with all mission details',
+                    'objective'=> 'To test and check',
+                    'label_goal_achieved'=> 'test percentage',
+                    'label_goal_objective'=> 'check test percentage',
+                    'section'=> [
                         [
-                            "title"=> "Section title",
-                            "description"=> "Section description"
+                            'title'=> 'Section title',
+                            'description'=> 'Section description'
                         ]
                     ],
-                    "custom_information"=> [
+                    'custom_information'=> [
                         [
-                            "title"=> "Customer info",
-                            "description"=> "Description of customer info"
+                            'title'=> 'Customer info',
+                            'description'=> 'Description of customer info'
                         ]
                     ]
                 ]
             ],
-            "impact" => [
+            'impact' => [
                 [
-                    "icon_path" => str_random(100),
-                    "sort_key" => rand(10000, 200000),
-                    "translations" => [
+                    'icon_path' => str_random(100),
+                    'sort_key' => rand(10000, 200000),
+                    'translations' => [
                         [
-                            "language_code" => "en",
-                            "content" => str_random(160)
+                            'language_code' => 'en',
+                            'content' => str_random(160)
                         ]
                     ]
                 ]
@@ -148,30 +148,30 @@ class MissionRepositoryTest extends TestCase
 
         $languages = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id'=>1,
+                'name'=> 'English',
+                'code'=> 'en',
+                'status'=> '1',
+                'created_at'=> null,
+                'updated_at'=> null,
+                'deleted_at'=> null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status'=>'1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
         $defaultLanguage = (object)[
-            "language_id" => 1,
-            "code" => "en",
-            "name" => "English",
-            "default" => "1"
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
         ];
 
         $collectionLanguages = collect($languages);
@@ -210,8 +210,8 @@ class MissionRepositoryTest extends TestCase
         ->andReturn($tenantName);
 
         $activatedTenantSetting =  [
-            "volunteering",
-            "mission_impact"
+            'volunteering',
+            'mission_impact'
         ];
         
         $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
@@ -248,25 +248,25 @@ class MissionRepositoryTest extends TestCase
     public function testUpdateImpactMissionSuccess()
     {
         $data = [
-            "impact" => [
+            'impact' => [
                 [
-                    "mission_impact_id" => str_random(36),
-                    "icon_path" => str_random(100),
-                    "sort_key" => rand(50000, 70000),
-                    "translations" => [
+                    'mission_impact_id' => str_random(36),
+                    'icon_path' => str_random(100),
+                    'sort_key' => rand(50000, 70000),
+                    'translations' => [
                         [
-                            "language_code" => "fr",
-                            "content" => str_random(160)
+                            'language_code' => 'fr',
+                            'content' => str_random(160)
                         ]
                     ]
                 ],
                 [
-                    "sort_key" => rand(50000, 70000),
-                    "amount" => rand(100000, 200000),
-                    "translations" => [
+                    'sort_key' => rand(50000, 70000),
+                    'amount' => rand(100000, 200000),
+                    'translations' => [
                         [
-                            "language_code" => "es",
-                            "content" => str_random(160)
+                            'language_code' => 'es',
+                            'content' => str_random(160)
                         ]
                     ]
                 ]
@@ -312,30 +312,30 @@ class MissionRepositoryTest extends TestCase
 
         $languages = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id'=>1,
+                'name'=> 'English',
+                'code'=> 'en',
+                'status'=> '1',
+                'created_at'=> null,
+                'updated_at'=> null,
+                'deleted_at'=> null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status'=>'1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
         $defaultLanguage = (object)[
-            "language_id" => 1,
-            "code" => "en",
-            "name" => "English",
-            "default" => "1"
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
         ];
 
         $collectionLanguages = collect($languages);
@@ -361,8 +361,8 @@ class MissionRepositoryTest extends TestCase
         ->andReturn($tenantName);
 
         $activatedTenantSetting =  [
-            "volunteering",
-            "mission_impact"
+            'volunteering',
+            'mission_impact'
         ];
         
         $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
@@ -450,12 +450,12 @@ class MissionRepositoryTest extends TestCase
         $missionId = rand(50000, 70000);
         $missionImpactId = rand(50000, 70000);
 
-        $modelService->missionImpact->shouldReceive("where")
+        $modelService->missionImpact->shouldReceive('where')
         ->once()
         ->with([['mission_id', '=', $missionId], ['mission_impact_id', '=', $missionImpactId]])
         ->andReturn($missionImpact);
 
-        $modelService->missionImpact->shouldReceive("firstOrFail")
+        $modelService->missionImpact->shouldReceive('firstOrFail')
         ->once()
         ->andReturn($missionImpact);
 
