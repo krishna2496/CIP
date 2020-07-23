@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\MissionTab\MissionTabRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -58,6 +59,11 @@ class MissionRepository implements MissionInterface
     private $missionTabRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param App\Helpers\LanguageHelper                           $languageHelper
@@ -67,6 +73,7 @@ class MissionRepository implements MissionInterface
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Services\Mission\ModelsService                   $modelsService
      * @param App\Repositories\MissionMedia\MissionTabRepository   $missionTabRepository
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      *
      * @return void
      */
@@ -77,7 +84,8 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        MissionTabRepository $missionTabRepository
+        MissionTabRepository $missionTabRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -86,6 +94,7 @@ class MissionRepository implements MissionInterface
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
         $this->missionTabRepository = $missionTabRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -622,6 +631,8 @@ class MissionRepository implements MissionInterface
      */
     public function getMissions(Request $request, array $userFilterData): LengthAwarePaginator
     {
+        $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
+        
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
@@ -674,6 +685,18 @@ class MissionRepository implements MissionInterface
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
             }, ]);
         $missionQuery->with(['missionRating']);
+        
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+            config('constants.mission_type')['GOAL']));
+        }
+
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+        }
 
         //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
@@ -829,6 +852,7 @@ class MissionRepository implements MissionInterface
      */
     public function exploreMission(Request $request, string $topFilterParams): Collection
     {
+        $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('*')
         ->where('publication_status', config('constants.publication_status')['APPROVED']);
@@ -854,6 +878,18 @@ class MissionRepository implements MissionInterface
                 ->orderBY('mission_organisation_count', 'desc');
                 break;
         }
+                
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission.mission_type', array(config('constants.mission_type')['TIME'],
+    config('constants.mission_type')['GOAL']));
+        }
+
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission.mission_type', array(config('constants.mission_type')['DONATION'],
+    config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+        }
         $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();
 
         return $mission;
@@ -869,6 +905,7 @@ class MissionRepository implements MissionInterface
      */
     public function missionFilter(Request $request, string $filterParams): Collection
     {
+        $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
         // Get  mission filter data
         switch ($filterParams) {
             case config('constants.COUNTRY'):
@@ -920,6 +957,17 @@ class MissionRepository implements MissionInterface
                 }])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
+                // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+            config('constants.mission_type')['GOAL']));
+        }
+
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+        }
                 $mission = $missionQuery->get();
                 break;
 
@@ -977,6 +1025,17 @@ class MissionRepository implements MissionInterface
                         $query->whereIn('city.state_id', explode(',', $request->input('state_id')));
                     }]);
                 }
+                // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+            config('constants.mission_type')['GOAL']));
+        }
+
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+        }
                 $missionQuery->groupBy('mission.city_id');
                 $mission = $missionQuery->get();
                 break;
@@ -1036,13 +1095,24 @@ class MissionRepository implements MissionInterface
                     $missionQuery->whereIn('mission.city_id', explode(',', $request->input('city_id')));
                 }
                 $missionQuery->groupBy('mission.theme_id');
+                // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+            config('constants.mission_type')['GOAL']));
+        }
+
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+        }
                 $mission = $missionQuery->get();
                 break;
 
             case config('constants.SKILL'):
                 $missionSkillQuery = $this->modelsService->missionSkill->select('*');
                 $missionSkillQuery->selectRaw('COUNT(mission_id) as mission_count');
-                $missionSkillQuery->wherehas('mission', function ($query) use ($request) {
+                $missionSkillQuery->wherehas('mission', function ($query) use ($request, $allTenantActivatedSetting) {
                     $query->with('missionLanguage');
                     if ($request->has('search') && $request->input('search') !== '') {
                         $query->where(function ($searchQuery) use ($request) {
@@ -1078,6 +1148,18 @@ class MissionRepository implements MissionInterface
                         $query->whereIn('mission.theme_id', explode(',', $request->input('theme_id')));
                     }
 
+                    // check if volunteering setting is enable or not
+                    if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+                        $query->whereNotIn('mission.mission_type', array(config('constants.mission_type')['TIME'],
+            config('constants.mission_type')['GOAL']));
+                    }
+
+                    // check if volunteering setting is enable or not
+                    if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+                        $query->whereNotIn('mission.mission_type', array(config('constants.mission_type')['DONATION'],
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+                    }
+
                     if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
                         if ($request->input('explore_mission_type') === config('constants.THEME')) {
                             $query->where('mission.theme_id', $request->input('explore_mission_params'));
@@ -1109,6 +1191,7 @@ class MissionRepository implements MissionInterface
                 $missionSkillQuery->with('mission', 'skill');
                 $missionSkillQuery->groupBy('skill_id');
                 $missionSkillQuery->orderBy('mission_count', 'desc');
+
                 $mission = $missionSkillQuery->get();
                 break;
 
@@ -1162,6 +1245,17 @@ class MissionRepository implements MissionInterface
                 }
                 $missionQuery->groupBy('mission.city_id');
                 $missionQuery->with(['city.state', 'city.state.languages']);
+                // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+            config('constants.mission_type')['GOAL']));
+        }
+
+        // check if volunteering setting is enable or not
+        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+        }
                 $mission = $missionQuery->get();
                 break;
         }

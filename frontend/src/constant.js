@@ -60,5 +60,10 @@ export default Object.freeze({
     VOLUNTERRING_ENABLED : "volunteering",
     DONATION_ENABLED : "donation",
     MISSION_TYPE_GOAL : "GOAL",
-    MISSION_TYPE_DONATION : "DONATION"
+    MISSION_TYPE_DONATION : "DONATION",
+    RECENT_DONORS : "recent_donors",
+    MISSION_IMPACT : "mission_impact",
+    MISSION_REMINDER : "mission_reminder",
+    DONATION_MISSION_RATINGS : "donation_mission_ratings",
+    DONATION_MISSION_COMMENTS : "donation_mission_comments"
 })

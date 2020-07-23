@@ -298,7 +298,7 @@
 		"home" : "Home",
 		"for" : "For",
 		"donate_now" : "Donate Now",
-		"raised_by" : "raised by",
+		"raised_by" : "raised",
 		"donar" : "Donar",
 		"remind_me" : "Remind me",
 		"linkedin" : "linkedin",
@@ -315,7 +315,10 @@
 		"want_to_help_raise_money" : "Want to help raise money?",
 		"create_your_own_fundraising_page" : "Create your own fundraising page",
 		"start_fundraiser": "Start A Fundraiser",
-		"story" : "Story"
+		"story" : "Story",
+		"created_date" : "Created date",
+		"donate" : "Donate",
+		"of" : "of"
  	},
 	"placeholder": {
 		"email_address": "Enter email address",
