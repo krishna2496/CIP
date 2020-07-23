@@ -282,11 +282,3 @@ $factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $f
         'name' => $faker->name,
     ];
 });
-
-$factory->define(App\Models\DonationAttribute::class, function (Faker\Generator $faker) {
-   
-    return [
-        "mission_id" => 1,
-        "goal_amount_currency" => "USD"
-    ];
-});

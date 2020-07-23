@@ -90,6 +90,7 @@ class ModelsService
      * @param  App\Models\City $city
      * @param App\Models\MissionTab $missionTab
      * @param App\Models\MissionTabLanguage $missionTabLanguage
+     * @param App\Models\DonationAttribute $donationAttribute
      * @return void
      */
     public function __construct(
