@@ -120,8 +120,7 @@ class AuthController extends Controller
             TenantOption::SAML_SETTINGS
         );
 
-        if (
-            $samlSettings
+        if ($samlSettings
             && count($samlSettings)
             && $samlSettings[0]['option_value']
             && $samlSettings[0]['option_value']['saml_access_only']
@@ -198,7 +197,8 @@ class AuthController extends Controller
         $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
         $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
         $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
-        $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar != "") ? $userDetail->avatar : $this->helpers->getUserDefaultProfileImage($tenantName);
+        $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar != "") ? $userDetail->avatar :
+        $this->helpers->getUserDefaultProfileImage($tenantName);
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
             $userDetail->cookie_agreement_date : '';
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email != "") ? $userDetail->email : '';
@@ -208,7 +208,8 @@ class AuthController extends Controller
             && $userDetail->is_profile_complete != "") ? $userDetail->is_profile_complete : '';
 
         $data['receive_email_notification'] = (
-            (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification != "") ?
+            (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification != ""
+            ) ?
             $userDetail->receive_email_notification : '0';
 
         $apiData = $data;

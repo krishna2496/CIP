@@ -97,7 +97,7 @@
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
 										<p>Hi {{ $first_name }} {{ $last_name }},</p>
 
-										<p>{{ $customer_name }} has invited you to use <a href="{{ $mail_url }}">{{ $site_name }}</a>.</p>
+										<p>{{ $customer_name }} has invited you to use <a href="{{ $site_url }}">{{ $site_name }}</a>.</p>
 
 										<p>Your account has been created. Below is your information:</p>
 
@@ -112,7 +112,7 @@
 										<table cellpadding="0" cellspacing="0" border="0" class="button" style="border: 2px solid #3B6CD1; border-radius:5px; -ms-border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius: 5px; color:#ffffff; font-size:17px; background-color: #3B6CD1; height: 40px; ">
 											<tr>
 												<td style=" width:20px;"></td>
-												<td class="button_text" style="color:#ffffff; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle"><a href="{{ $mail_url }}" title="Set up account" style="display:inline-block; color:#ffffff; font-size:17px; vertical-align: middle; display: block;">Set up account</a></td>
+												<td class="button_text" style="color:#ffffff; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle"><a href="{{ $login_url }}" title="Set up account" style="display:inline-block; color:#ffffff; font-size:17px; vertical-align: middle; display: block;">Set up account</a></td>
 												<td style=" width: 20px;"></td>
 											</tr>
                                         </table>
@@ -122,7 +122,7 @@
 									<td height="25" style="font-size:0; line-height:0;"></td>
 								</tr>
 								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">To create a new password, click on change password in your user account.</td>
+									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">To change the default password, click on change password in your <a href="{{ $account_url }}">user account</a>.</td>
 								</tr>
 								<tr>
 									<td height="45" style="font-size:0; line-height:0;"></td>

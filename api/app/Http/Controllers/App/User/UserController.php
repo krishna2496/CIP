@@ -24,6 +24,7 @@ use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 use App\Transformations\CityTransformable;
+use App\Models\TenantOption;
 use App\Notifications\InviteUser;
 use Carbon\Carbon;
 
@@ -489,6 +490,22 @@ class UserController extends Controller
      */
     public function inviteUser(User $user, Request $request): JsonResponse
     {
+        $samlSettings = $this->tenantOptionRepository->getOptionValue(TenantOption::SAML_SETTINGS);
+
+        if (
+            $samlSettings
+            && count($samlSettings)
+            && $samlSettings[0]['option_value']
+            && $samlSettings[0]['option_value']['saml_access_only']
+        ) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_UNAUTHORIZED_LOGIN_METHOD'),
+                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_LOGIN_METHOD')
+            );
+        }
+
         // Server side validations
         $validator = Validator::make($request->toArray(), [
             'email' => 'required|email'
@@ -539,19 +556,21 @@ class UserController extends Controller
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $tenantLogo = $this->tenantOptionRepository->getOptionValueFromOptionName('custom_logo');
         $password = str_random(8);
+        $siteUrl = 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName;
 
         $details = [
             'subject' => 'Set Up Account',
             'first_name' => $userDetail->first_name,
             'last_name' => $userDetail->last_name,
-            'customer_name' => 'customer_name',
+            'customer_name' => $request->get('sponsor_frontend_name'),
             'site_name' => $tenantName,
             'email' => $userDetail->email,
             'password' => $password,
             'language_code' => $language->code,
-            'mail_url' => 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName,
+            'site_url' => $siteUrl,
+            'login_url' => $siteUrl,
+            'account_url' => $siteUrl . '/my-account',
             'company_logo' => $tenantLogo->option_value,
-            'customer_name' => 'customer_name',
         ];
 
         try {
@@ -576,7 +595,7 @@ class UserController extends Controller
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
-            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_actions.UPDATED'),
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
