@@ -257,14 +257,24 @@ Add entry
                                     <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title" :description="missionDetail.short_description" inline-template>
                                         <div class="social-block">
                                             <network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
                                                 <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
 
                                             </network>
+                                            <div class="social-icon">
                                             <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
                                                 <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
                                             </network>
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="hover-img" />
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                            </div>
                                         </div>
                                     </social-sharing>
                                 </div>
@@ -285,7 +295,7 @@ Add entry
 
                                 <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments" class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
-                                <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
+                                <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index v-if="getCustomTabLabel(missionTab.languages)">
                                     <a href="javascript:void(0)" :data-id="`tab_${index}`" class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
                                     </a>
                                 </li>
@@ -450,7 +460,7 @@ Add entry
                                     </b-collapse>
                                 </div>
 
-                                <div class="tabs" v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
+                                <div class="tabs" v-for="(missionTab, index) in missionDetail.mission_tab" :key=index v-if="getCustomTabLabel(missionTab.languages)">
                                     <div class="tab-title">
                                         <h3 v-b-toggle="`tab_${index}`">{{getCustomTabLabel(missionTab.languages)}}</h3>
                                     </div>
