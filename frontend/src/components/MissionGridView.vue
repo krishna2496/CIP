@@ -240,7 +240,7 @@
                                             </i>
                                         </b-link>
                                         <b-link :to="'/donation-mission-detail/' + mission.mission_id" 
-                                            v-if="checkMissionTypeVolunteering(mission.mission_type)"
+                                            v-if="checkMissionTypeDonation(mission.mission_type)"
                                             class="btn-bordersecondary icon-btn">
                                             <span>{{ languageData.label.view_detail }}</span>
                                             <i class="icon-wrap">
