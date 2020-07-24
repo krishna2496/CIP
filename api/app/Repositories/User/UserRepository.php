@@ -114,9 +114,16 @@ class UserRepository implements UserInterface
     {
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
+        $activityLogAction = config('constants.activity_log_actions.LOGIN');
+        $activityLogType = config('constants.activity_log_types.AUTH');
 
-        $userQuery = $this->user->selectRaw("
-            user_id,
+        /**
+        * TODO: optimize query instead of getting first login|last_login column
+        * in activity_log, add new column to user first login|last_login
+        */
+        $user = $this->user;
+        $userQuery = $user->selectRaw("
+            user.user_id,
             first_name,
             last_name,
             email,
@@ -138,8 +145,15 @@ class UserRepository implements UserInterface
             language_id,
             title,
             expiry,
-            pseudonymize_at
-        ")->with('city', 'country', 'timezone');
+            pseudonymize_at,
+            MIN(activity_log.date) as first_login,
+            MAX(activity_log.date) as last_login
+        ")->with('city', 'country', 'timezone')
+        ->leftJoin('activity_log', function ($join) use ($user, $activityLogAction, $activityLogType) {
+            $join->on('user.user_id', '=', 'activity_log.user_id')
+                ->where('activity_log.action', $activityLogAction)
+                ->where('activity_log.type', $activityLogType);
+        });
 
         if ($request->has('search')) {
             $userQuery->where(function ($query) use ($request) {
@@ -186,6 +200,9 @@ class UserRepository implements UserInterface
             }
             $userQuery->orderBy($sortBy, $orderDirection);
         }
+
+        // Needed as we use MIN/MAX(activity_log.date)
+        $userQuery->groupBy('user.user_id');
 
         return $userQuery->paginate($request->perPage);
     }
