@@ -31,7 +31,7 @@ use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
 use DB;
-use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -118,7 +118,7 @@ class MissionRepositoryTest extends TestCase
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
         $collection = $this->mock(Collection::class);
-        $unitedNationSDGRepository = $this->mock(UnitedNationSDGRepository::class);
+        $unitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionModel = new Mission();
         $missionModel->mission_id = rand(10, 100);
 
@@ -194,7 +194,7 @@ class MissionRepositoryTest extends TestCase
             $unitedNationSDGRepository
         );
 
-        $response = $repository->store($requestData);
+        $response = $repository->store(rand(10,100), $requestData);
         $this->assertInstanceOf(Mission::class, $response);
     }
 
@@ -221,7 +221,7 @@ class MissionRepositoryTest extends TestCase
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
         $collection = $this->mock(Collection::class);
-        $unitedNationSDGRepository = $this->mock(UnitedNationSDGRepository::class);
+        $unitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionModel = new Mission();
         $missionModel->mission_id = rand(10, 100);
 
@@ -316,7 +316,7 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        UnitedNationSDGRepository $unitedNationSDGRepository
+        MissionUnitedNationSDGRepository $unitedNationSDGRepository
     ) {
         return new MissionRepository(
             $languageHelper,
