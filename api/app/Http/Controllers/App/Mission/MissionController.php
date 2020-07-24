@@ -25,6 +25,7 @@ use App\Transformations\MissionTransformable;
 use App\Events\User\UserActivityLogEvent;
 use App\Repositories\User\UserRepository;
 use App\Repositories\State\StateRepository;
+use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
 
 //!  Mission controller
 /*!
@@ -90,6 +91,11 @@ class MissionController extends Controller
     private $stateRepository;
 
     /**
+     *@var App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
+     */
+    private $unitedNationSDGRepository;
+
+    /**
      * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -103,6 +109,7 @@ class MissionController extends Controller
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\State\StateRepository $stateRepository
+     * @param App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @return void
      */
     public function __construct(
@@ -116,7 +123,8 @@ class MissionController extends Controller
         CountryRepository $countryRepository,
         CityRepository $cityRepository,
         UserRepository $userRepository,
-        StateRepository $stateRepository
+        StateRepository $stateRepository,
+        UnitedNationSDGRepository $unitedNationSDGRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -129,6 +137,7 @@ class MissionController extends Controller
         $this->cityRepository = $cityRepository;
         $this->userRepository = $userRepository;
         $this->stateRepository = $stateRepository;
+        $this->unitedNationSDGRepository = $unitedNationSDGRepository;
     }
 
     /**
@@ -686,6 +695,15 @@ class MissionController extends Controller
                     );
                 }
             )->all();
+            
+            // Get the associated UN SDG
+            if(!empty($mission[0]->missionUnSdg) && count($mission[0]->missionUnSdg)>0){
+                $sdgData = [];
+                foreach ($mission[0]->missionUnSdg as $key => $unSdg) {
+                    $sdgData[] = $this->unitedNationSDGRepository->getUnSdg($unSdg->un_sdg_number);
+                }
+                $mission[0]->un_sdg = $sdgData;
+            }
 
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;

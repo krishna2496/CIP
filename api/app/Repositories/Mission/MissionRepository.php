@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
-use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -54,9 +54,9 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
-     * @var App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
+     * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
      */
-    private $unitedNationSDGRepository;
+    private $missionUnitedNationSDGRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -68,6 +68,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
+     * @param  App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository;
      * @return void
      */
     public function __construct(
@@ -77,7 +78,7 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        UnitedNationSDGRepository $unitedNationSDGRepository
+        MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -85,7 +86,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
-        $this->unitedNationSDGRepository = $unitedNationSDGRepository;
+        $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
     }
     
     /**
@@ -209,7 +210,7 @@ class MissionRepository implements MissionInterface
 
         // Add UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
-            $this->unitedNationSDGRepository->addUnSdg($mission->mission_id, $request);
+            $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request);
         }
 
         return $mission;
@@ -385,7 +386,7 @@ class MissionRepository implements MissionInterface
 
         // Update UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
-            $this->unitedNationSDGRepository->updateUnSdg($mission->mission_id, $request);
+            $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request);
         }
 
         return $mission;
@@ -1116,8 +1117,8 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
 
-        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
-        : (($relatedCityCount === 0) && ($relatedCountryCount > 0))
+        $missionQuery = (($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount === 0) && ($relatedCountryCount > 0)))
         ? $missionQuery->where('country_id', $mission->country_id)
         : $missionQuery->where('theme_id', $mission->theme_id);
 

@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
  
-class UnitedNationSDG{
+final class UnitedNationSDG{
     
     //The number of UN SDG.
     public $number;
@@ -21,6 +21,26 @@ class UnitedNationSDG{
     {
         $this->number = $number;
         $this->unSdg = $unSdg;
+    }
+
+    /**
+     * Get number
+     *
+     * @return int $number
+     */
+    public function number(): int
+    {
+        return $this->number;
+    }
+    
+    /**
+     * Get UN SDG
+     *
+     * @return string $unSdg
+     */
+    public function unSdg(): string
+    {
+        return $this->unSdg;
     }
     
 }
