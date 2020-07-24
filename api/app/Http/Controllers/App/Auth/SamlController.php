@@ -65,9 +65,8 @@ class SamlController extends Controller
             SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
-        //$settings['security']['wantAssertionsSigned'] = true;
-
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
+
         return $auth->login();
     }
 
@@ -81,14 +80,12 @@ class SamlController extends Controller
             SamlException::throw('ERROR_INVALID_SAML_ACCESS');
         }
 
-        //$settings['security']['wantAssertionsSigned'] = true;
-
         $auth = new Auth($this->getSamlSettings($settings, $request->query('tenant')));
         $auth->processResponse();
         if (!$auth->isAuthenticated()) {
             $errors = $auth->getErrors();
             die('200-Not authenticated. ' . implode('; ', $errors).' - '.$auth->getLastErrorReason());
-            //$auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
+            $auth->redirectTo('http'.($request->secure() ? 's' : '').'://'.$settings['frontend_fqdn']);
         }
 
         $attributes = [];
@@ -154,39 +151,15 @@ class SamlController extends Controller
 
             $value = $attributes[$mapping['value']];
 
-            if ($name === 'language_id') {
-                $language = $this->languageHelper->getTenantLanguageByCode($request, $value);
-                if (!$language) {
-                  //$validationErrors[] = 'Language';
-                    $value = 1; // English
-                } else {
-                  $value = $language->language_id;
-                }
-            }
-
-            if ($name === 'timezone_id') {
-                $timezone = $this->timezoneRepository->getTenantTimezoneByCode($value);
-                if (!$timezone) {
-                  //$validationErrors[] = 'Timezone';
-                    $value = 351; // Paris
-                } else {
-                  $value = $timezone->timezone_id;
-                }
-                $userData['timezone'] = 351;
-            }
-
             if ($name === 'country_id') {
                 $country = $this->countryRepository->getCountryByCode($value);
                 if (!$country) {
-                  //$validationErrors[] = 'Country';
-                   $value = 1; // France
-                } else {
-                  $value = $country->country_id;
+                    $country = $this->countryRepository->searchCountry($value);
                 }
-            }
+                $value = $country ? $country->country_id : null;
+            };
 
             $userData[$name] = $value;
-
         }
 
         if ($validationErrors) {
@@ -196,17 +169,29 @@ class SamlController extends Controller
             );
         }
 
+        if (isset($userData['language_id'])) {
+            $language = $this->languageHelper->getTenantLanguageByCode($request, $userData['language_id']);
+            $userData['language_id'] = $language->language_id;
+        }
+
+        if (isset($userData['timezone_id'])) {
+            // $timezoneCode = $userData['timezone_id'] ?? 'Europe/Paris'; //env('SAML_DEFAULT_TIMEZONE');
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
+                $userData['timezone_id']
+            );
+            $userData['timezone_id'] = $timezone->timezone_id;
+        }
+
         if (isset($userData['city_id']) ) {
             $city = $this->cityRepository->searchCity(
                 $userData['city_id'],
-                (int)$userData['language_id'],
-                (int)$userData['country_id']
+                $userData['language_id'] ?? null,
+                $userData['country_id'] ?? null
             );
             unset($userData['city_id']);
             if ($city) {
                 $userData['city_id'] = $city->city_id;
             }
-            $userData['city_id'] = 1;
         }
 
         if (isset($userData['availability_id'])) {
@@ -247,9 +232,32 @@ class SamlController extends Controller
 
         $isNewUser = $userDetail === null;
 
-        $userDetail = $userDetail ?
-            $this->userRepository->update($userData, $userDetail->user_id) :
-            $this->userRepository->store($userData);
+        // Default user's timezone to config default timezone
+        //  - if an existing user has not yet set his/her timezone configuration.
+        //  - if a new user did not provided a timezone.
+        if ((!$isNewUser && !isset($userData['timezone_id']) && !$userDetail->timezone_id)
+            || ($isNewUser && !isset($userData['timezone_id']))
+        ) {
+            // env('SAML_DEFAULT_TIMEZONE')
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
+                'Europe/Paris'
+            );
+            $userData['timezone_id'] = $timezone->timezone_id;
+        }
+
+        // Default user's lanugage to tenant's default language
+        //  - if an existing user has not yet set his/her language configuration.
+        //  - if a new user did not provided a language code.
+        if ((!$isNewUser && !isset($userData['language_id']) && !$userDetail->lanugage_id)
+            || ($isNewUser && !isset($userData['language_id']))
+        ) {
+            $language = $this->languageHelper->getDefaultTenantLanguage($request);
+            $userData['language_id'] = $language->language_id;
+        }
+
+        $userDetail = $isNewUser ?
+            $this->userRepository->store($userData) :
+            $this->userRepository->update($userData, $userDetail->user_id);
 
         $this->helpers->syncUserData($request, $userDetail);
 
@@ -316,16 +324,15 @@ class SamlController extends Controller
                 config('constants.error_codes.ERROR_INVALID_SAML_IDENTITY_PROVIDER')
             );
         }
-       // $settings['security']['wantAssertionsSigned'] = true;
 
-        $samlSettings = new Settings($this->getSamlSettings($settings, $request->query('tenant'), true));
+        $samlSettings = new Settings($this->getSamlSettings($settings, $request->query('tenant')));
         $metadata = $samlSettings->getSPMetadata();
         $errors = $samlSettings->validateMetadata($metadata);
         return $response->header('Content-Type', 'text/xml')
             ->setContent($metadata);
     }
 
-    private function getSamlSettings(array $settings, $tenantId,$escape=false)
+    private function getSamlSettings(array $settings, $tenantId)
     {
         return [
             'debug' => env('APP_DEBUG'),
