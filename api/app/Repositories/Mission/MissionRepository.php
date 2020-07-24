@@ -692,7 +692,7 @@ class MissionRepository implements MissionInterface
             config('constants.mission_type')['GOAL']));
         }
 
-        // check if volunteering setting is enable or not
+        // check if donation setting is enable or not
         if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
             $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
             config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
@@ -882,13 +882,13 @@ class MissionRepository implements MissionInterface
         // check if volunteering setting is enable or not
         if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
             $missionQuery->whereNotIn('mission.mission_type', array(config('constants.mission_type')['TIME'],
-    config('constants.mission_type')['GOAL']));
+            config('constants.mission_type')['GOAL']));
         }
 
-        // check if volunteering setting is enable or not
+        // check if donation setting is enable or not
         if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
             $missionQuery->whereNotIn('mission.mission_type', array(config('constants.mission_type')['DONATION'],
-    config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
         }
         $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();
 
@@ -958,16 +958,17 @@ class MissionRepository implements MissionInterface
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
                 // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
-            config('constants.mission_type')['GOAL']));
-        }
+                if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+                    config('constants.mission_type')['GOAL']));
+                }
 
-        // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
-            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
-        }
+                // check if donation setting is enable or not
+                if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+                    config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+                }
+
                 $mission = $missionQuery->get();
                 break;
 
@@ -1026,16 +1027,16 @@ class MissionRepository implements MissionInterface
                     }]);
                 }
                 // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
-            config('constants.mission_type')['GOAL']));
-        }
+                if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+                    config('constants.mission_type')['GOAL']));
+                }
 
-        // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
-            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
-        }
+                // check if donation setting is enable or not
+                if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+                    config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+                }
                 $missionQuery->groupBy('mission.city_id');
                 $mission = $missionQuery->get();
                 break;
@@ -1096,16 +1097,16 @@ class MissionRepository implements MissionInterface
                 }
                 $missionQuery->groupBy('mission.theme_id');
                 // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
-            config('constants.mission_type')['GOAL']));
-        }
+                if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+                    config('constants.mission_type')['GOAL']));
+                }
 
-        // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
-            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
-        }
+                // check if donation setting is enable or not
+                if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+                    config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+                }
                 $mission = $missionQuery->get();
                 break;
 
@@ -1151,13 +1152,13 @@ class MissionRepository implements MissionInterface
                     // check if volunteering setting is enable or not
                     if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
                         $query->whereNotIn('mission.mission_type', array(config('constants.mission_type')['TIME'],
-            config('constants.mission_type')['GOAL']));
+                        config('constants.mission_type')['GOAL']));
                     }
 
-                    // check if volunteering setting is enable or not
+                    // check if donation setting is enable or not
                     if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
                         $query->whereNotIn('mission.mission_type', array(config('constants.mission_type')['DONATION'],
-            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+                        config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
                     }
 
                     if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
@@ -1246,16 +1247,16 @@ class MissionRepository implements MissionInterface
                 $missionQuery->groupBy('mission.city_id');
                 $missionQuery->with(['city.state', 'city.state.languages']);
                 // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
-            config('constants.mission_type')['GOAL']));
-        }
+                if (!in_array(config('constants.tenant_settings')['VOLUNTEERING'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['TIME'],
+                    config('constants.mission_type')['GOAL']));
+                }
 
-        // check if volunteering setting is enable or not
-        if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
-            $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
-            config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
-        }
+                // check if donation setting is enable or not
+                if (!in_array(config('constants.tenant_settings')['DONATION'], $allTenantActivatedSetting)) {
+                    $missionQuery->whereNotIn('mission_type', array(config('constants.mission_type')['DONATION'],
+                    config('constants.mission_type')['EAF'], config('constants.mission_type')['DISASTER_RELIEF']));
+                }
                 $mission = $missionQuery->get();
                 break;
         }
