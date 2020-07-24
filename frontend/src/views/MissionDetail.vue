@@ -173,31 +173,32 @@ Add entry
                                 </template>
                             </div>
                             <div class="btn-row">
-                            <b-button class="btn btn-fillsecondary donate-btn icon-btn" v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
+                                <b-button class="btn btn-fillsecondary donate-btn icon-btn" v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
 
                                     missionDetail.user_application_status == 'PENDING'" :disabled="true">
-                                <span>
-                                    {{ languageData.label.applied }}
-                                </span>
+                                    <span>
+                                        {{ languageData.label.applied }}
+                                    </span>
 
-                            </b-button>
-
-                            <b-button v-else class="btn btn-fillsecondary donate-btn icon-btn" v-if="!hideApply" :disabled="disableApply" @click="applyForMission(missionDetail.mission_id)">
-                                <span>
-                                    {{ applyButton }}
-                                </span>
-                                <i v-if="!disableApply">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Button">
-                                                    <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                </b-button>
+                                <div v-else>
+                                    <b-button class="btn btn-fillsecondary donate-btn icon-btn" v-if="!hideApply" :disabled="disableApply" @click="applyForMission(missionDetail.mission_id)">
+                                        <span>
+                                            {{ applyButton }}
+                                        </span>
+                                        <i v-if="!disableApply">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                                                <g id="Main Content">
+                                                    <g id="1">
+                                                        <g id="Button">
+                                                            <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                                        </g>
+                                                    </g>
                                                 </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                            </b-button>
+                                            </svg>
+                                        </i>
+                                    </b-button>
+                                </div>
                             </div>
                             <b-list-group class="info-box">
                                 <b-list-group-item>
@@ -262,10 +263,10 @@ Add entry
 
                                             </network>
                                             <div class="social-icon">
-                                            <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
-                                                <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
-                                            </network>
+                                                <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
+                                                    <img :src="$store.state.imagePath+'/assets/images/twitter-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                                    <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                                </network>
                                             </div>
                                             <div class="social-icon">
                                                 <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linkedin}`" class="normal-img" />
@@ -532,7 +533,7 @@ Add entry
                                 </div>
                             </div>
                         </div>
-                        
+
                     </b-col>
                 </b-row>
             </div>
@@ -951,24 +952,26 @@ export default {
                     this.isShownComponent = true;
                 });
             }
-            let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-            tabItem.forEach(function (tabItemEvent) {
-                tabItemEvent.classList.remove('active')
-            });
-            tabItem[0].classList.add('active')
-            let i, tabContent, tabLinks;
-            tabContent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabContent.length; i++) {
-                tabContent[i].style.display = "none";
-                if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
-                    tabContent[i].style.display = "block";
+            setTimeout(() => {
+                let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+                tabItem.forEach(function (tabItemEvent) {
+                    tabItemEvent.classList.remove('active')
+                });
+                tabItem[0].classList.add('active')
+                let i, tabContent, tabLinks;
+                tabContent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabContent.length; i++) {
+                    tabContent[i].style.display = "none";
+                    if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
+                        tabContent[i].style.display = "block";
+                    }
                 }
-            }
-            tabLinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tabLinks.length; i++) {
-                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-            }
-            tabItem[0].className += " active";
+                tabLinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tabLinks.length; i++) {
+                    tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+                }
+                tabItem[0].className += " active";
+            }, 500)
         },
 
         makeToast(variant = null, message) {
