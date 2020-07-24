@@ -754,7 +754,7 @@
       .left-btn {
         .icon-btn {
           display: inline-flex;
-          min-width: 172px;
+          min-width: 195px;
           min-height: 40px;
           align-items: center;
           font-size: 18px;
@@ -762,6 +762,15 @@
           padding: 5px 20px;
           background: transparent;
           color: $primary;
+          max-width: 195px;
+          flex: 0 0 195px;
+          font-size: 15px;
+          justify-content: space-between;
+           @include sm-max{
+            min-width:156px;
+            max-width: 156px;
+            flex: 0 0 156px; 
+          }
           svg {
             path {
               fill: $primary;
@@ -779,6 +788,9 @@
           }
           i {
             margin-left: 8px;
+            min-width: 18px;
+            flex: 0 0 18px;
+            width: 18px;
           }
         }
       }
@@ -1142,6 +1154,22 @@
               min-height: 40px;
               line-height: normal;
               padding: 6px 17px;
+              min-width: 172px;
+              max-width: 172px;
+              flex: 0 0 172px;
+              font-size: 15px;
+              display: flex!important;
+              align-items: center;
+              justify-content: space-between;
+              @include sm-max{
+                min-width:156px;
+                max-width: 156px;
+                flex: 0 0 156px; 
+              }
+              .icon-wrap{
+                min-width: 20px;
+                flex: 0 0 20px;
+              }
               &:not(.gray-btn) {
                 svg {
                   path {
