@@ -273,8 +273,8 @@ Add entry
                                                 <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.linked_in}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linked_in}`" class="hover-img" />
                                             </div>
                                             <div class="social-icon">
-                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.link}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
-                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.link}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.link}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.link}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.link}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.link}`" class="hover-img" />
                                             </div>
                                         </div>
                                     </social-sharing>
