@@ -167,6 +167,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/user/missions', [
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@getUserMissions']);
+
+    /* Forgot password routing for API */
+    $router->post('/users/request-password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 });
 
 /* SAML */
