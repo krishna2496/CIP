@@ -4274,8 +4274,8 @@ main {
             align-items: center;
             justify-content: center;
             outline: none;
+            cursor : pointer;
             @include transition(all 0.3s);
-
             img {
                 width: 20px;
                 height: 20px;
