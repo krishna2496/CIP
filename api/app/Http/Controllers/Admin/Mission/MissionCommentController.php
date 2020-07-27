@@ -16,6 +16,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  Mission comment controller
 /*!
@@ -46,24 +47,32 @@ class MissionCommentController extends Controller
     private $userApiKey;
 
     /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param Illuminate\Http\Request $request
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
         MissionCommentRepository $missionCommentRepository,
         ResponseHelper $responseHelper,
+        NotificationRepository $notificationRepository,
         Request $request
     ) {
         $this->missionRepository = $missionRepository;
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -219,6 +228,7 @@ class MissionCommentController extends Controller
         // First find mission
         try {
             $mission = $this->missionRepository->find($missionId);
+            $this->notificationRepository->deleteCommentNotifications($commentId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

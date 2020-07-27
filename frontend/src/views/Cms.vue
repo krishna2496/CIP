@@ -123,7 +123,7 @@
       },
       //List cms pages
       cmsListing(slug) {
-        axios.get(process.env.VUE_APP_API_ENDPOINT + "app/cms/" + slug)
+        axios.get(process.env.VUE_APP_API_ENDPOINT + "app/cms/" + slug, { headers: {"X-localization":  store.state.defaultLanguage} })
           .then((response) => {
             if (response.data.data) {
               let dataList = [];

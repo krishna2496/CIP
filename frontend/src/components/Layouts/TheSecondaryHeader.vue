@@ -643,9 +643,12 @@
                 userFilter.tags = [];
                 userFilter.sortBy = store.state.sortBy;
                 store.commit("userFilter", userFilter);
-                this.$router.push({
-                    name: 'home'
-                })
+                const currentPath = this.$route.name;
+                if (currentPath !== 'home') {
+                    this.$router.push({
+                        name: 'home'
+                    });
+                }
                 this.$parent.getMissions("removeLoader");
                 setTimeout(() => {
                     this.selectedfilterParams.countryId = store.state.countryId;

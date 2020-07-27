@@ -8,7 +8,7 @@ class TenantOption extends Model
 {
     use SoftDeletes;
     const SAML_SETTINGS = 'saml_settings';
- 
+
     /**
      * The table associated with the model.
      *
@@ -36,7 +36,7 @@ class TenantOption extends Model
      * @var array
      */
     protected $visible = ['option_name','option_value'];
-    
+
     /**
      * Update resource.
      *
@@ -50,8 +50,12 @@ class TenantOption extends Model
         return $tenantOption->update(['option_value' => $colorData['option_value']]);
     }
 
+    /**
+     * @param $value
+     * @return array|null|string
+     */
     public function getOptionValueAttribute($value)
     {
-        return (@unserialize($value) === false) ? $value : unserialize($value);
+        return (@json_decode($value) === null) ? $value : json_decode($value, true);
     }
 }

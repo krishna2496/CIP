@@ -5,13 +5,13 @@ class LanguageTest extends TestCase
     /**
      * @test
      *
-     * Get language file 
+     * Get language file
      *
      * @return void
      */
     public function it_should_return_language_details_by_laguage_code()
     {
-        // Upload language file 
+        // Upload language file
 
         //Get language file details
         $this->get('language/en', [])

@@ -40,7 +40,6 @@ class TenantConnectionMiddleware
     public function handle($request, Closure $next)
     {
         $domain = $this->helpers->getSubDomainFromRequest($request);
-        
         $this->helpers->switchDatabaseConnection('mysql');
         $tenant = $this->db->table('tenant')->select('tenant_id')
         ->where('name', $domain)->whereNull('deleted_at')->first();

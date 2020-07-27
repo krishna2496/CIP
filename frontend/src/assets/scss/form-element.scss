@@ -346,7 +346,7 @@ textarea {
     outline: none;
     overflow: hidden;
     @include placeholder {
-        color: $black-primary;
+        color: $gray-secondary;
         font-family: $general-font;
         font-size: 14px;
         font-weight: 400;
@@ -446,6 +446,64 @@ label {
                 }
             }
         }
+    }
+}
+
+.optimy-multiselect {
+    & .multiselect__tags {
+        border-radius: 3px !important;
+        border: 1px solid $control-border;
+        cursor: pointer;
+        box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+        -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+        -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+        -o-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    }
+    & .multiselect__select {
+        &:before{
+            border-style: none;
+            margin-top: 0;
+            position: absolute;
+            content: "";
+            background: url($assetUrl + "/down-arrow.svg") no-repeat;
+            background-size: 11px;
+            width: 11px;
+            height: 11px;
+            right: 13px;
+            top: 50%;
+            @include transformY(-50%);
+            @include transition(all 0.3s);
+        }
+    }
+    & .multiselect__tag {
+        background: $primary;
+        margin-bottom: 0;
+    }
+    & .multiselect__input {
+        padding-top: 2px;
+    }
+    & .multiselect__placeholder {
+        color: $gray-secondary;
+        font-size: 16px;
+        margin: 0;
+        padding-left: 5px;
+        padding-top: 0;
+    }
+    & .multiselect__option--highlight {
+        background: $primary;
+        &:after {
+            background: $primary;
+        }
+    }
+    & .multiselect__tag-icon:hover {
+        background: $primary;
+    }
+    & .multiselect__tag-icon:after {
+        color: $white;
+    }
+    & .multiselect__tag-icon:hover:after {
+        color: $secondary;
     }
 }
 
@@ -1369,7 +1427,9 @@ span {
         visibility: hidden !important;
     }
 }
-
+.cke_inner{
+		z-index: 9999!important;
+	}
 .ckeditor {
     textarea {
         resize: none;
@@ -1395,7 +1455,7 @@ span {
         -webkit-border-radius: 3px;
         -ms-border-radius: 3px;
         -moz-border-radius: 3px;
-    }
+	}
     .cke_bottom {
         border-radius: 0 0 3px 3px;
         -webkit-border-radius: 0 0 3px 3px;

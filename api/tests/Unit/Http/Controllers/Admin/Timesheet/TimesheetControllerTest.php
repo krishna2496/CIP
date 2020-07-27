@@ -40,17 +40,18 @@ class TimesheetControllerTest extends TestCase
         );
     }
 
-    private function getUserRepositoryMock() {
+    private function getUserRepositoryMock()
+    {
         return $this->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    private function getTimesheetRepositoryMock() {
+    private function getTimesheetRepositoryMock()
+    {
         return $this->getMockBuilder(TimesheetRepository::class)
             ->setMethods(['getSumOfUsersTotalMinutes'])
             ->disableOriginalConstructor()
             ->getMock();
     }
-
 }

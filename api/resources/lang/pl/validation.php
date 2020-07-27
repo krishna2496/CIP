@@ -110,8 +110,10 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "Proszę wybrać prawidłową kartę czasu pracy",
-            'max' => "Rozmiar pliku dokumentu musi być "
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Rozmiar pliku dokumentu musi być "
+                . (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "Nie można dodawać wpisów czasowych dla przyszłych dat",
@@ -124,8 +126,10 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "Proszę wybrać prawidłowy typ obrazu",
-            'max' => "Rozmiar obrazu musi być "
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Rozmiar obrazu musi być "
+                . (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "Proszę wprowadzić prawidłowy adres url wideo",
@@ -162,14 +166,14 @@ return [
         'media_videos.*.media_path' => "ścieżka nośnika",
         'documents.*.document_name' => "nazwa dokumentu",
         'documents.*.document_type' => "rodzaj dokumentu",
-        'documents.*.document_path' => "ścieżka dokumentu",        
+        'documents.*.document_path' => "ścieżka dokumentu",
         'slider_detail.translations.*.lang' => "kod języka",
-        'skills.*.skill_id' => "identyfikator umiejętności",  
-        'location.city' => "miasto", 
-        'location.country' => "kraj",   
-        'password_confirmation' => "potwierdź hasło",         
-        'translations.*.lang' => "kod języka",         
-        'is_mandatory' => "obowiązkowe",       
+        'skills.*.skill_id' => "identyfikator umiejętności",
+        'location.city' => "miasto",
+        'location.country' => "kraj",
+        'password_confirmation' => "potwierdź hasło",
+        'translations.*.lang' => "kod języka",
+        'is_mandatory' => "obowiązkowe",
 		'page_details.translations.*.sections.*.title' => "tytuł",
 		'page_details.translations.*.sections.*.description' => "opis",
 		'location.city_id' => "miasto",
@@ -200,10 +204,10 @@ return [
         'cities.*.translations' => "tłumaczenia",
         'media_images.*.sort_order' => "kolejność sortowania",
         'media_videos.*.sort_order' => "kolejność sortowania",
-        'documents.*.sort_order' => "kolejność sortowania", 
+        'documents.*.sort_order' => "kolejność sortowania",
         'countries.*.translations.*.lang' => "kod języka",
         'countries.*.translations.*.name' => "imię",
-        'countries.*.translations' => "tłumaczenia",   
+        'countries.*.translations' => "tłumaczenia",
         'countries.*.iso' => "ISO",
         'translations.*.lang' => "kod języka",
         'translations.*.name' => "imię",
