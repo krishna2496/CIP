@@ -1975,7 +1975,7 @@ main {
             padding: 23px 29px 10px;
             margin-bottom: 40px;
             font-size: 13px;
-
+            border-radius: 10px;
             @include lg-max {
                 padding: 20px 20px 10px;
             }
@@ -4274,8 +4274,8 @@ main {
             align-items: center;
             justify-content: center;
             outline: none;
+            cursor : pointer;
             @include transition(all 0.3s);
-
             img {
                 width: 20px;
                 height: 20px;

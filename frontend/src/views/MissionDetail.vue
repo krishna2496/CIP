@@ -21,14 +21,10 @@
                                 </div>
                                 <div class="btn-outer">
                                     <b-button v-bind:class="{ 
-
-'btn-borderprimary': true, 
-
-'icon-btn': true,
-
-'added-fav' : missionAddedToFavoriteByUser
-
-}" @click="favoriteMission(missionId)">
+                                        'btn-borderprimary': true, 
+                                        'icon-btn': true,
+                                        'added-fav' : missionAddedToFavoriteByUser
+                                        }" @click="favoriteMission(missionId)">
                                         <i class="normal-img">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
                                                 <g id="Main Content">
@@ -73,21 +69,7 @@ Add entry
                             </div>
 
                             <p>{{missionDetail.short_description}}</p>
-                            <div class="share-block">
-                                <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title" :description="missionDetail.short_description" inline-template>
-                                    <div class="social-block">
-                                        <network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
-                                            <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
 
-                                        </network>
-                                        <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
-                                            <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
-                                            <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
-                                        </network>
-                                    </div>
-                                </social-sharing>
-                            </div>
                             <div class="group-details">
                                 <div class="top-strip">
                                     <span>
@@ -190,9 +172,37 @@ Add entry
                                     </div>
                                 </template>
                             </div>
+                            <div class="btn-row">
+                                <b-button class="btn btn-fillsecondary donate-btn icon-btn" v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
+
+                                    missionDetail.user_application_status == 'PENDING'" :disabled="true">
+                                    <span>
+                                        {{ languageData.label.applied }}
+                                    </span>
+
+                                </b-button>
+                                <div v-else>
+                                    <b-button class="btn btn-fillsecondary donate-btn icon-btn" v-if="!hideApply" :disabled="disableApply" @click="applyForMission(missionDetail.mission_id)">
+                                        <span>
+                                            {{ applyButton }}
+                                        </span>
+                                        <i v-if="!disableApply">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                                                <g id="Main Content">
+                                                    <g id="1">
+                                                        <g id="Button">
+                                                            <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </i>
+                                    </b-button>
+                                </div>
+                            </div>
                             <b-list-group class="info-box">
                                 <b-list-group-item>
-                                    <div>
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
                                         </i>
@@ -201,7 +211,7 @@ Add entry
                                     </div>
                                 </b-list-group-item>
                                 <b-list-group-item v-if="isThemeDisplay && getThemeTitle(missionDetail.mission_theme)">
-                                    <div>
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
                                         </i>
@@ -210,8 +220,7 @@ Add entry
                                     </div>
                                 </b-list-group-item>
                                 <b-list-group-item>
-
-                                    <div>
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
                                         </i>
@@ -222,11 +231,10 @@ Add entry
                                         <template v-else>
                                             <p class="text-wrap">{{ languageData.label.on_going_opportunities }}</p>
                                         </template>
-
                                     </div>
                                 </b-list-group-item>
-                                <b-list-group-item>
-                                    <div>
+                                <b-list-group-item class="full-width-box">
+                                    <div class="info-box-inner">
                                         <i class="img-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
                                         </i>
@@ -245,32 +253,31 @@ Add entry
                                     </i>
                                     <span>{{ languageData.label.recommend_to_co_worker }}</span>
                                 </b-button>
-                                <b-button class="btn-bordersecondary" v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
 
-missionDetail.user_application_status == 'PENDING'" :disabled="true">
-                                    <span>
-                                        {{ languageData.label.applied }}
-                                    </span>
+                                <div class="share-block">
+                                    <social-sharing v-bind:url="socialSharingUrl" :title="missionDetail.title" :description="missionDetail.short_description" inline-template>
+                                        <div class="social-block">
+                                            <network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`" class="hover-img" />
 
-                                </b-button>
-
-                                <div v-else>
-                                    <b-button class="btn-bordersecondary icon-btn" v-if="!hideApply" :disabled="disableApply" @click="applyForMission(missionDetail.mission_id)">
-                                        <span>
-                                            {{ applyButton }}
-                                        </span>
-                                        <i v-if="!disableApply">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                                                <g id="Main Content">
-                                                    <g id="1">
-                                                        <g id="Button">
-                                                            <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-                                                        </g>
-                                                    </g>
-                                                </g>
-                                            </svg>
-                                        </i>
-                                    </b-button>
+                                            </network>
+                                            <div class="social-icon">
+                                                <network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
+                                                    <img :src="$store.state.imagePath+'/assets/images/twitter-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="normal-img" />
+                                                    <img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`" class="hover-img" />
+                                                </network>
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.linked_in}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linked_in}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.linked_in}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.linked_in}`" class="hover-img" />
+                                            </div>
+                                            <div class="social-icon">
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-grey.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.link}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.link}`" class="normal-img" />
+                                                <img :src="$store.state.imagePath+'/assets/images/link-ic-white.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.link}`" :title="`${JSON.parse(this.$store.state.languageLabel).label.link}`" class="hover-img" />
+                                            </div>
+                                        </div>
+                                    </social-sharing>
                                 </div>
                             </div>
                         </div>
@@ -289,7 +296,7 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
 
                                 <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments" class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
-                                <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
+                                <li v-for="(missionTab, index) in missionDetail.mission_tab" :key=index v-if="getCustomTabLabel(missionTab.languages)">
                                     <a href="javascript:void(0)" :data-id="`tab_${index}`" class="tablinks">{{getCustomTabLabel(missionTab.languages)}}
                                     </a>
                                 </li>
@@ -454,7 +461,7 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                     </b-collapse>
                                 </div>
 
-                                <div class="tabs" v-for="(missionTab, index) in missionDetail.mission_tab" :key=index>
+                                <div class="tabs" v-for="(missionTab, index) in missionDetail.mission_tab" :key=index v-if="getCustomTabLabel(missionTab.languages)">
                                     <div class="tab-title">
                                         <h3 v-b-toggle="`tab_${index}`">{{getCustomTabLabel(missionTab.languages)}}</h3>
                                     </div>
@@ -468,6 +475,7 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
 
                             </div>
                         </div>
+                        <RecentVolunteers v-if="isShownComponent && isRecentVolunteerDispaly"></RecentVolunteers>
                     </b-col>
                     <b-col xl="4" lg="5" class="platform-details-right">
                         <div class="info-block">
@@ -505,7 +513,27 @@ missionDetail.user_application_status == 'PENDING'" :disabled="true">
                                 </div>
                             </div>
                         </div>
-                        <RecentVolunteers v-if="isShownComponent && isRecentVolunteerDispaly"></RecentVolunteers>
+                        <div class="un-block right-inner-block">
+                            <h2 class="title-with-border"><span>{{ languageData.label.un_sdg}}</span></h2>
+                            <div class="un-list">
+                                <div class="un-column">
+                                    <i class="img-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/un-img01.png'" alt="UN Image">
+                                    </i>
+                                </div>
+                                <div class="un-column">
+                                    <i class="img-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/un-img02.png'" alt="UN Image">
+                                    </i>
+                                </div>
+                                <div class="un-column">
+                                    <i class="img-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/un-img03.png'" alt="UN Image">
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+
                     </b-col>
                 </b-row>
             </div>
@@ -925,24 +953,26 @@ export default {
                     this.isShownComponent = true;
                 });
             }
-            let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-            tabItem.forEach(function (tabItemEvent) {
-                tabItemEvent.classList.remove('active')
-            });
-            tabItem[0].classList.add('active')
-            let i, tabContent, tabLinks;
-            tabContent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabContent.length; i++) {
-                tabContent[i].style.display = "none";
-                if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
-                    tabContent[i].style.display = "block";
+            setTimeout(() => {
+                let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+                tabItem.forEach(function (tabItemEvent) {
+                    tabItemEvent.classList.remove('active')
+                });
+                tabItem[0].classList.add('active')
+                let i, tabContent, tabLinks;
+                tabContent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabContent.length; i++) {
+                    tabContent[i].style.display = "none";
+                    if (tabItem[0].getAttribute("data-id") === tabContent[i].getAttribute('id')) {
+                        tabContent[i].style.display = "block";
+                    }
                 }
-            }
-            tabLinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tabLinks.length; i++) {
-                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-            }
-            tabItem[0].className += " active";
+                tabLinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tabLinks.length; i++) {
+                    tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+                }
+                tabItem[0].className += " active";
+            }, 500)
         },
 
         makeToast(variant = null, message) {
@@ -968,8 +998,8 @@ export default {
         getMissionDetail() {
             if (this.$route.params.misisonId) {
                 let data = {
-                    'mission_id' : this.$route.params.misisonId,
-                    'donation_mission' : false
+                    'mission_id': this.$route.params.misisonId,
+                    'donation_mission': false
                 }
                 missionDetail(data).then(response => {
                     this.isShownMediaComponent = true;

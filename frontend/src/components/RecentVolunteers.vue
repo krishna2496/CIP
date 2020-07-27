@@ -21,7 +21,7 @@
 					</div>
 				</b-list-group-item>
 			</b-list-group>
-			<div class="custom-pagination" v-if="rows > 9">
+			<div class="custom-pagination" v-if="rows > perPage">
 				<b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" @change="pageChange">
 				</b-pagination>
 				<span>
@@ -50,7 +50,7 @@
 				rows: 0,
 				volunteerList: [],
 				recentVolunterLoader: true,
-				perPage: 9,
+				perPage: 12,
 				noVolunteerFound: false,
 				hidePagination: true,
 				languageData: [],
