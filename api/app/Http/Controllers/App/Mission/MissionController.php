@@ -195,11 +195,7 @@ class MissionController extends Controller
                 return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
             })->toArray();
 
-<<<<<<< HEAD
         $requestString = $request->except(['page', 'perPage']);
-=======
-        $requestString = $request->except(['page','perPage']);
->>>>>>> 21800456ad818d3438b9918233883239f832dbda
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $missionsTransformed,
             $missionList->total(),
@@ -433,10 +429,6 @@ class MissionController extends Controller
             $stateIdArray = [];
             foreach ($missionState as $key => $value) {
                 if (isset($value->city->state)) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 21800456ad818d3438b9918233883239f832dbda
                     $translation = $value->city->state->languages->toArray();
                     $translationkey = '';
 
@@ -593,13 +585,8 @@ class MissionController extends Controller
                 }
             }
 
-<<<<<<< HEAD
             if ($filterData['filters']['theme_id'] && $filterData['filters']['theme_id'] !== '') {
                 $themeTag = $this->themeRepository->missionThemeList($request, $filterData['filters']['theme_id']);
-=======
-            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
-                $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
->>>>>>> 21800456ad818d3438b9918233883239f832dbda
                 if ($themeTag) {
                     foreach ($themeTag as $value) {
                         if ($value->translations) {
