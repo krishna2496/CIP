@@ -350,7 +350,7 @@ class SamlController extends Controller
                 'assertionConsumerService' => [
                     'url' => route('saml.acs', ['t' => $settings['idp_id'], 'tenant' => $tenantId])
                 ],
-                'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified',
+                'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
                 'x509cert' => Storage::disk('local')->get('samlCertificate/optimy.cer'),
                 'privateKey' => Storage::disk('local')->get('samlCertificate/optimy.pem'),
             ]
