@@ -330,7 +330,7 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li v-if="missionDetail.organisation_detail != '' && missionDetail.organisation_detail != null"><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-if="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
@@ -724,6 +724,7 @@
         isStarDisplay: false,
         isThemeDisplay: false,
         isInviteCollegueDisplay: false,
+        isOrganizationDisplay: false,
         isCommentDisplay: false,
         isRecentVolunteerDispaly: false,
         isMissionGoalDisplay: false,
@@ -1073,6 +1074,8 @@
             }
 
             this.searchUsers();
+
+            this.isOrganizationDisplay = !this.isOrganizationDetailsEmpty();
           })
         } else {
           this.$router.push('/404');
@@ -1208,6 +1211,15 @@
           tabLinks[i].className = tabLinks[i].className.replace("active", "");
         }
         tabsEvent.currentTarget.className += " active";
+      },
+
+      isOrganizationDetailsEmpty() {
+          let organizationDetails = this.missionDetail.organisation_detail.replace(/<div>/g, '')
+            .replace(/<\/div>/g, '')
+            .replace(/\n/g, '')
+            .replace(/ /g, '');
+
+          return organizationDetails === '';
       }
     },
     created() {
