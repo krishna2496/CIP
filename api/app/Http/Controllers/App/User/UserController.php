@@ -499,10 +499,10 @@ class UserController extends Controller
             && $samlSettings[0]['option_value']['saml_access_only']
         ) {
             return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_UNAUTHORIZED_LOGIN_METHOD'),
-                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_LOGIN_METHOD')
+                Response::HTTP_BAD_REQUEST,
+                Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                config('constants.error_codes.ERROR_SAML_ACCESS_ONLY_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_SAML_ACCESS_ONLY_ACTIVE')
             );
         }
 
@@ -533,21 +533,21 @@ class UserController extends Controller
 
         if ($userDetail->status === config('constants.user_statuses.ACTIVE')) {
             return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                Response::HTTP_BAD_REQUEST,
+                Response::$statusTexts[Response::HTTP_BAD_REQUEST],
                 config('constants.error_codes.ERROR_USER_ACTIVE'),
                 trans('messages.custom_error_message.ERROR_USER_ACTIVE')
             );
         }
 
         if ($userDetail->expiry) {
-            $userExpirationDate = new DateTime($userDetail->expiry);
-            if ($userExpirationDate < new DateTime()) {
+            $userExpirationDate = new \DateTime($userDetail->expiry);
+            if ($userExpirationDate < new \DateTime()) {
                 return $this->responseHelper->error(
-                    Response::HTTP_FORBIDDEN,
-                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    config('constants.error_codes.ERROR_USER_EXPIRED'),
-                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                    Response::HTTP_BAD_REQUEST,
+                    Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                    config('constants.error_codes.ERROR_ACCOUNT_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_ACCOUNT_EXPIRED')
                 );
             }
         }

@@ -2621,6 +2621,12 @@
               "properties": {
                 "email": {
                   "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
                 }
               }
             }

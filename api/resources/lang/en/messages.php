@@ -225,6 +225,7 @@ return [
         'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
         'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
+        'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -359,6 +360,7 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_SAML_ACCESS_ONLY_ACTIVE' => 'Saml Access Only is currently active.',
         'ERROR_STATE_UNABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
