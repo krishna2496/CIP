@@ -21,6 +21,9 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Models\MissionImpactDonation;
+use App\Repositories\MissionImpact\MissionImpactRepository;
+use App\Services\Mission\AdminMissionTransformService;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -58,6 +61,21 @@ class MissionRepository implements MissionInterface
     * @var App\Repositories\MissionMedia\ImpactDonationMissionRepository
     */
     private $impactDonationMissionRepository;
+
+    /**
+     * @var App\Repositories\MissionImpact\MissionImpactRepository
+     */
+    private $missionImpactRepository;
+
+    /**
+     * @var App\Services\Mission\AdminMissionTransformService
+     */
+    private $adminMissionTransformService;
+
+    /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -69,6 +87,9 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionMedia\ImpactDonationMissionRepository $impactDonationMissionRepository
+     * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
+     * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
+     * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -78,7 +99,10 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        ImpactDonationMissionRepository $impactDonationMissionRepository
+        ImpactDonationMissionRepository $impactDonationMissionRepository,
+        MissionImpactRepository $missionImpactRepository,
+        AdminMissionTransformService $adminMissionTransformService,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -87,6 +111,9 @@ class MissionRepository implements MissionInterface
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
         $this->impactDonationMissionRepository = $impactDonationMissionRepository;
+        $this->missionImpactRepository = $missionImpactRepository;
+        $this->adminMissionTransformService = $adminMissionTransformService;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
     
     /**
@@ -213,6 +240,18 @@ class MissionRepository implements MissionInterface
                                             'sort_order' => $value['sort_order']);
                     $this->modelsService->missionDocument->create($missionDocument);
                     unset($missionDocument);
+                }
+            }
+        }
+
+        //Add mission impact
+        if (isset($request->impact) && count($request->impact) > 0) {
+            if (!empty($request->impact)) {
+                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
+                if (in_array('mission_impact', $allTenantActivatedSetting)) {
+                    foreach ($request->impact as $impactValue) {
+                        $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId);
+                    }
                 }
             }
         }
@@ -391,7 +430,6 @@ class MissionRepository implements MissionInterface
         }
 
         // Add/Update mission impact donation details
-
         if (isset($request->impact_donation) && count($request->impact_donation)) {
             foreach ($request->impact_donation as $impactDonationValue) {
                 if (isset($impactDonationValue['impact_donation_id'])) {
@@ -400,6 +438,21 @@ class MissionRepository implements MissionInterface
 
                     //Impact donation id is not available and create the impact donation and details
                     $this->impactDonationMissionRepository->store($impactDonationValue, $id, $defaultTenantLanguageId);
+                }
+            }
+        }
+
+        // Add/update impact mission
+        if (isset($request->impact) && count($request->impact)) {
+            foreach ($request->impact as $impactValue) {
+                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
+                if (in_array('mission_impact', $allTenantActivatedSetting)) {
+                    if (isset($impactValue['mission_impact_id'])) {
+                        $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId);
+                    } else {
+                        //Mission impact id is not available and create the mission impact and details
+                        $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId);
+                    }
                 }
             }
         }
@@ -435,6 +488,9 @@ class MissionRepository implements MissionInterface
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
         }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }])->with(['impactMission' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
         }])->findOrFail($id);
         
         if (isset($mission->missionLanguage)) {
@@ -450,6 +506,8 @@ class MissionRepository implements MissionInterface
         // Impact donation mission array modification
         $this->impactMissionDonationTransformArray($mission, $languages);
 
+        $this->adminMissionTransformService->transfromAdminMission($mission);
+        
         return $mission;
     }
     
@@ -501,6 +559,9 @@ class MissionRepository implements MissionInterface
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
         }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }])->with(['impactMission' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
         }]);
         
         if ($request->has('search') && $request->has('search') !== '') {
@@ -537,6 +598,8 @@ class MissionRepository implements MissionInterface
 
             // Impact donation mission array modification
             $this->impactMissionDonationTransformArray($value, $languages);
+
+            $this->adminMissionTransformService->transfromAdminMission($value);
         }
 
         return $mission;
@@ -604,6 +667,14 @@ class MissionRepository implements MissionInterface
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
             }]);
         $missionQuery->with(['missionRating']);
+
+        $missionQuery->with(['impactDonation' => function ($query) {
+            $query->orderBy('amount');
+        }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }])->with(['impactMission' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
+        }]);
        
         //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
@@ -1273,6 +1344,9 @@ class MissionRepository implements MissionInterface
             ])->with(['impactDonation' => function ($query) {
                 $query->orderBy('amount');
             }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+            }])->with(['impactMission' => function ($query) {
+                $query->orderBy('sort_key');
+            }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
             }]);
             
         $missionQuery->withCount([
@@ -1628,5 +1702,21 @@ class MissionRepository implements MissionInterface
                 $value['impactDonation'][$impactDonationKey] = $impactDonationLanguageArray;
             }
         }
+    }
+    
+    /**
+     * Check impact mission is available for mission
+     *
+     * @param int $missionId
+     * @param string $missionImpactId
+     */
+
+    public function isMissionImpactLinkedToMission(int $missionId, string $missionImpactId)
+    {
+        return $this->modelsService->missionImpact
+            ->where([
+                ['mission_id', '=', $missionId],
+                ['mission_impact_id', '=', $missionImpactId]
+            ])->firstOrFail();
     }
 }

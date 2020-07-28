@@ -362,6 +362,8 @@ return [
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
 
-        'ERROR_IMPACT_DONATION_MISSION_NOT_FOUND' => 'Impact donation mission not found.'
+        'ERROR_IMPACT_DONATION_MISSION_NOT_FOUND' => 'Impact donation mission not found.',
+        
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Impact mission not found for a mission.'
        ]
 ];

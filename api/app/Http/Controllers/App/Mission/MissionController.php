@@ -142,6 +142,7 @@ class MissionController extends Controller
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         $languageCode = $language->code;
+        $tenantLanguages = $this->languageHelper->getLanguages();
         $userFilterData = [];
 
         //Save User search data
@@ -189,8 +190,8 @@ class MissionController extends Controller
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone) {
-                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages);
             })->toArray();
 
         $requestString = $request->except(['page','perPage']);

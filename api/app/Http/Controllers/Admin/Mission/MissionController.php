@@ -170,10 +170,15 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact_donation.*.amount" => 'required|integer|min:1',
                 "impact_donation.*.translations" => 'required',
-                "impact_donation.*.translations.*.language_code" => 
+                "impact_donation.*.translations.*.language_code" =>
                 'required_with:impact_donation.*.translations|max:2',
-                "impact_donation.*.translations.*.content" => 
+                "impact_donation.*.translations.*.content" =>
                 'required_with:impact_donation.*.translations|max:160',
+                "impact.*.icon_path" => 'sometimes|required',
+                "impact.*.sort_key" => 'required|integer',
+                "impact.*.translations" => 'required',
+                "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
+                "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
             ]
         );
 
@@ -305,6 +310,13 @@ class MissionController extends Controller
                 "required_with:impact_donation.*.translations|max:2",
                 "impact_donation.*.translations.*.content" =>
                 "required_with:impact_donation.*.translations|max:160",
+                "impact.*.mission_impact_id" =>
+                "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
+                "impact.*.icon_path" => "sometimes|required",
+                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer",
+                "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
+                "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
+                "impact.*.translations.*.content" => "required_with:impact.*.translations|max:300",
             ]
         );
 
@@ -413,8 +425,8 @@ class MissionController extends Controller
             }
         }
 
-         // Check for mission impact donation id is valid or not
-         try {
+        // Check for mission impact donation id is valid or not
+        try {
             if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
                 foreach ($request->impact_donation as $impactDonationValue) {
                     if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== "")) {
@@ -426,6 +438,23 @@ class MissionController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            );
+        }
+
+        // Check for mission impact id is valid or not
+        try {
+            if (isset($request->impact) && count($request->impact) > 0) {
+                foreach ($request->impact as $impactValue) {
+                    if (isset($impactValue['mission_impact_id']) && ($impactValue['mission_impact_id'] !== "")) {
+                        $this->missionRepository
+                        ->isMissionImpactLinkedToMission($missionId, $impactValue['mission_impact_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
 

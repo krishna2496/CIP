@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
 use App\Models\MissionImpactDonation;
+use App\Models\MissionImpact;
 
 class Mission extends Model
 {
@@ -80,14 +81,15 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'impactDonation'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'impactDonation', 'impactMission'
+    ];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'impactDonation'
+        'goalMission','timeMission','comment','timesheet', 'impactDonation', 'impactMission'
     ];
 
     /**
@@ -398,5 +400,15 @@ class Mission extends Model
     public function impactDonation(): HasMany
     {
         return $this->hasMany(MissionImpactDonation::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Set impact mission attribute on the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function impactMission(): HasMany
+    {
+        return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id');
     }
 }
