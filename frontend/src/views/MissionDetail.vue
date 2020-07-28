@@ -758,6 +758,7 @@
      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
       tabItem.forEach(function (tabItemEvent) {
         tabItemEvent.addEventListener("click", tabsHandle);
+      });
 
       function tabsHandle(tabsEvent) {
 
@@ -775,8 +776,6 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
-      }, 1000);
-     
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
