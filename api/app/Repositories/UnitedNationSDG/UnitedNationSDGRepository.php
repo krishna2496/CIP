@@ -33,8 +33,8 @@ class UnitedNationSDGRepository
     public function find(): Collection
     {
         return collect([
-            new UnitedNationSDG(1, 'No poverty'),
-            new UnitedNationSDG(2, 'Zero hunger'),
+            new UnitedNationSDG(1, 'No Poverty'),
+            new UnitedNationSDG(2, 'Zero Hunger'),
             new UnitedNationSDG(3, 'Good Health and Well-being'),
             new UnitedNationSDG(4, 'Quality Education'),
             new UnitedNationSDG(5, 'Gender Equality'),
