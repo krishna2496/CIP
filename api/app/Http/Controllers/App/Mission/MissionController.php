@@ -667,6 +667,7 @@ class MissionController extends Controller
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
             $languageCode = $language->code;
+            $tenantLanguages = $this->languageHelper->getLanguages();
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
 
@@ -675,14 +676,16 @@ class MissionController extends Controller
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
 
             $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone,
+                 $tenantLanguages
                 ) {
                     return $this->transformMission(
                         $mission,
                         $languageCode,
                         $languageId,
                         $defaultTenantLanguageId,
-                        $timezone
+                        $timezone,
+                        $tenantLanguages
                     );
                 }
             )->all();

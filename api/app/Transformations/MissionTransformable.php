@@ -14,6 +14,7 @@ trait MissionTransformable
      * @param int $languageId
      * @param int $defaultTenantLanguage
      * @param string $timezone
+     * @param object $tenantLanguages
      * @return App\Models\Mission
      */
     protected function transformMission(
@@ -21,7 +22,8 @@ trait MissionTransformable
         string $languageCode,
         int $languageId,
         int $defaultTenantLanguage,
-        string $timezone
+        string $timezone,
+        object $tenantLanguages = null
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
@@ -199,6 +201,25 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
+
+        //get impact donation mission
+        $impactDonationMissionInfo =  $mission['impactDonation']->toArray();
+        if ($impactDonationMissionInfo != null) {
+            $impactDonationLanguageArray = [];
+            foreach ($impactDonationMissionInfo as $impactDonationKey => $impactDonationValue) {
+                $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
+                $impactDonationLanguageArray['languages'] = [];
+                foreach ($impactDonationValue['get_mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
+                    $languageCode = $tenantLanguages->where('language_id', $impactDonationLanguadeValue['language_id'])->first()->code;
+                    $impactDonationLanguage['language_id'] = $impactDonationLanguadeValue['language_id'];
+                    $impactDonationLanguage['language_code'] = $languageCode;
+                    $impactDonationLanguage['content'] = json_decode($impactDonationLanguadeValue['content']);
+                    array_push($impactDonationLanguageArray['languages'], $impactDonationLanguage);
+                }
+
+                $mission['impactDonation'][$impactDonationKey] = $impactDonationLanguageArray;
+            }
+        }
       
         return $mission;
     }

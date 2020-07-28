@@ -1270,7 +1270,10 @@ class MissionRepository implements MissionInterface
                 }
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
-            ]);
+            ])->with(['impactDonation' => function ($query) {
+                $query->orderBy('amount');
+            }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+            }]);
             
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
