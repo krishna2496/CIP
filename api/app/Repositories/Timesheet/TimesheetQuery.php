@@ -257,7 +257,47 @@ class TimesheetQuery implements QueryableInterface
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
 
+        $this->addCityCountryLanguageCode($timesheets, $tenantLanguages, $defaultLanguage);
+
         return $timesheets;
+    }
+
+    /**
+     * Add the property 'language_code' in the 'translations' property of the mission city and country.
+     *
+     * Iterates over all the objects contained in 'translations' and set the relevant language code.
+     * If no language is matched when trying to add the property, set the language code to tenant's default language.
+     * If the tenant's default language cannot be found, set it to english.
+     *
+     * @param LengthAwarePaginator $timesheets
+     * @param Collection $tenantLanguages
+     * @param $defaultLanguage
+     */
+    private function addCityCountryLanguageCode($timesheets, $tenantLanguages, $defaultLanguage)
+    {
+        // Getting default language code
+        $defaultLanguageCode = $defaultLanguage !== null
+            ? $defaultLanguage->code
+            : 'en'; // Fallback to english if nothing is found
+
+        // Setting the language_code property
+        foreach ($timesheets as $timesheet) {
+            // Adding property for country
+            foreach ($timesheet->mission->country->languages as $countryLanguage) {
+                $matchedCountryLanguage = $tenantLanguages->where('language_id', $countryLanguage->language_id)->first();
+                $countryLanguage->language_code = $matchedCountryLanguage !== null
+                    ? $matchedCountryLanguage->code
+                    : $defaultLanguageCode;
+            }
+
+            // Adding property for city
+            foreach ($timesheet->mission->city->languages as $cityLanguage) {
+                $matchedCityLanguage = $tenantLanguages->where('language_id', $cityLanguage->language_id)->first();
+                $cityLanguage->language_code = $matchedCityLanguage !== null
+                    ? $matchedCityLanguage->code
+                    : $defaultLanguageCode;
+            }
+        }
     }
 
     /**
