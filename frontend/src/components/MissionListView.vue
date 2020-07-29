@@ -94,7 +94,7 @@
                                     </div>
                                      <div class="text-wrap" v-else>
                                         <span class="title-text">{{ languageData.label.ongoing}}</span>
-                                        <span class="title-text gray-text"><em>{{ languageData.label.oppotunity}}</em></span>
+                                        <span class="title-text gray-text"><em>{{ languageData.label.opportunities}}</em></span>
                                       </div>
                                 </div>
                                 <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
@@ -123,7 +123,7 @@
                                             <span v-if="getSkillsCount(mission.skill) > 0"> & {{getSkillsCount(mission.skill)}} </span>
                                             <b-button v-if="getSkillsCount(mission.skill) > 0" 
                                                 :id="`skillPopover_${mission.mission_id}`" class="more-btn">
-                                            {{ languageData.label.more }} more</b-button>
+                                            {{ languageData.label.more }}</b-button>
                                             <b-popover :target="`skillPopover_${mission.mission_id}`" triggers="hover focus" placement="top" custom-class="skill-popover" 
                                             :container="`skillWrap_${mission.mission_id}`">
                                             <b-list-group v-if="skill" v-for="(skill ,key) in getRemainingSkill(mission.skill)" 

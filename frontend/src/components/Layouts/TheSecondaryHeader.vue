@@ -599,6 +599,7 @@
                         }
                     } else {
                         this.defaultCountry = this.languageData.label.country;
+                        this.countryList = []
                         this.stateList = []
                         this.cityList = []
                         this.themeList = []
