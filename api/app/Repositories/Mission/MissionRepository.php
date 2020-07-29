@@ -1348,13 +1348,14 @@ class MissionRepository implements MissionInterface
                 $query->orderBy('sort_key');
             }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
             }]);
-            
+
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
                     $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
                     config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
                 }]);
+                
         return $missionQuery->get();
     }
 
@@ -1718,5 +1719,23 @@ class MissionRepository implements MissionInterface
                 ['mission_id', '=', $missionId],
                 ['mission_impact_id', '=', $missionImpactId]
             ])->firstOrFail();
+    }
+
+    /**
+     * Get user selected currency details
+     *
+     * @param Illuminate\Http\Request $request
+     * @return object
+     */
+    public function getUserCurrencyDetails(Request $request) : object
+    {
+        $userDetail = DB::table('user')->where('user_id', $request->auth->user_id)->get()->toArray();
+        $currencyCode = isset($userDetail['currency']) ? $userDetail['currency'] : 'EUR';
+        $currencySymbol = '€';
+        $currencyObject = (object)[
+            'code' => $currencyCode,
+            'symbol' => $currencySymbol
+        ];
+        return $currencyObject;
     }
 }
