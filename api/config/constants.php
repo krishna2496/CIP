@@ -327,7 +327,9 @@ return [
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection'
+        'STATE_ENABLED' => 'state_selection',
+        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
+        'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission'
     ],
 
     'TOP_THEME' => "top_themes",

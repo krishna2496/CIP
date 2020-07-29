@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -51,6 +52,11 @@ class MissionRepository implements MissionInterface
     * @var App\Services\Mission\ModelsService
     */
     private $modelsService;
+
+    /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -61,6 +67,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -69,7 +76,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -77,6 +85,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
     
     /**
@@ -675,6 +684,24 @@ class MissionRepository implements MissionInterface
 
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
             $missionQuery->where("mission.is_virtual", "1");
+        }
+
+        // Need to check activated setting for volunteering time mission
+        $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+            $request
+        );
+        if (!$isTimeMissionEnabled) {
+            $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.TIME'));
+        }
+
+        // Need to check activated setting for volunteering goal mission
+        $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
+            $request
+        );
+        if (!$isGoalMissionEnabled) {
+            $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.GOAL'));
         }
         
         $page = $request->page ?? 1;
