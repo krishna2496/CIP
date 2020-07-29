@@ -89,7 +89,7 @@
                                     <div class="progress-block detail-column success-donate" v-if="checkMissionTypeDonation(mission.mission_type) && !mission.donation_attribute.show_donation_meter">
                                         <div class="text-wrap">
                                             <p><b class="donate-success" v-if="mission.donation_attribute.show_donation_count">${{mission.donation_attribute.donation_amount_raised}}</b> <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> <span v-if="mission.donation_attribute.show_donors_count && mission.donation_attribute.show_donation_count"> {{ languageData.label.by}} </span>
-                                            <span v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donar}}</span></p>
+                                            <span v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donars}}</span></p>
                                         </div>
                                     </div>
 
@@ -193,7 +193,7 @@
                                                         <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span>
                                                         <span v-if="mission.donation_attribute.show_donors_count && mission.donation_attribute.show_donation_count"> {{ languageData.label.by}} </span>
                                                         <span v-if="mission.donation_attribute.show_donors_count">
-                                                            <b>{{mission.donation_attribute.donor_count}} {{ languageData.label.donar}}</b>
+                                                            <b>{{mission.donation_attribute.donor_count}} {{ languageData.label.donars}}</b>
                                                         </span>
                                                     </p>
                                                     <b-progress :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
@@ -219,7 +219,7 @@
                                                         <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span>
                                                         <span v-if="mission.donation_attribute.show_donors_count"> {{ languageData.label.by}} </span>
                                                         <span v-if="mission.donation_attribute.show_donors_count">
-                                                            <b v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donar}}</b>
+                                                            <b v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donars}}</b>
                                                         </span>
                                                     </p>
                                                 </div>

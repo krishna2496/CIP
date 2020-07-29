@@ -38,6 +38,9 @@
                                     <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
                                         <span>{{languageData.label.virtual_mission}}</span>
                                     </div>
+                                    <div class="mission-label donation-label" v-if="isDisplayMissionLabel && checkMissionTypeDonation(mission.mission_type)">
+                                        <span :style="{ backgroundColor: donationMissionTypeLabels.backgroundColor}"><i class="icon-wrap"><img :src="donationMissionTypeLabels.icon" alt="donation icon"></i>{{donationMissionTypeLabels.label}}</span>
+                                    </div>
                                     
                                 </div>
                                 <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
@@ -141,7 +144,8 @@
 									   </p>
                                     </div>
                                </div>
-                                   <div class="detail-column achieved-column">
+                                   <div class="detail-column achieved-column" 
+                                   v-if="mission.donation_attribute.show_donation_percentage">
                                         <i class="icon-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"alt="target icon">
                                         </i>
@@ -151,7 +155,8 @@
                                             <span class="subtitle-text">{{ languageData.label.achieved}}</span>
                                         </div>
                                     </div>
-                                        <div class="detail-column info-block">
+                                        <div class="detail-column info-block" 
+                                        v-if="mission.application_deadline != null">
                                         <i class="icon-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
                                         </i>
@@ -638,18 +643,19 @@ export default {
 					}
 				}
 				// Donation mission label
-				if (item.type == constants.VOLUNTERRING_ENABLED) {
-					this.donationMissionTypeLabels.icon = item.icon;
-					this.donationMissionTypeLabels.backgroundColor = item.background_color;
-					let data = item.translations.filter(translationsItem => {
-						if (translationsItem.language_code == defaultLang) {
-							this.donationMissionTypeLabels.label = translationsItem.description;
-						}
-					});
-					if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
-						this.donationMissionTypeLabels.label = data[0].description;
-					}
-				}
+				if (item.type.toLowerCase() == constants.DONATION_ENABLED) {
+
+                    this.donationMissionTypeLabels.icon = item.icon;
+                    this.donationMissionTypeLabels.backgroundColor = item.background_color;
+                    let data = item.translations.filter(translationsItem => {
+                        if (translationsItem.language_code == defaultLang) {
+                            this.donationMissionTypeLabels.label = translationsItem.description;
+                        }
+                    });
+                    if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
+                        this.donationMissionTypeLabels.label = data[0].description;
+                    }
+                }
 
 			});
 		}
