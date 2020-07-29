@@ -1,5 +1,5 @@
 <template>
-    <div class="profile-page inner-pages">
+    <div class="profile-page inner-pages donation-profile">
         <header>
             <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
         </header>
@@ -77,6 +77,8 @@
                                 </div>
                             </b-form-group>
                         </div>
+                 <!-- dashboard breadcrum -->
+                 <MyAccountDashboardBreadcrumb></MyAccountDashboardBreadcrumb>
                     </b-col>
                     <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
                         <b-form class="profile-form">
@@ -317,7 +319,7 @@
                         </b-button>
                     </div>
                 </b-modal>
-
+                
             </b-container>
         </main>
         <footer>
@@ -360,7 +362,9 @@
       MultiSelect,
       PictureInput,
       CustomField,
-      ModelSelect
+      ModelSelect,
+      CustomFieldDropdown,
+      MyAccountDashboardBreadcrumb: () => import("../components/MyAccountDashboardBreadcrumb")
     },
     data() {
       return {

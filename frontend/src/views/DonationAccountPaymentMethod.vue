@@ -1,0 +1,736 @@
+<template>
+  <div class="profile-page inner-pages donation-profile">
+    <header>
+      <ThePrimaryHeader></ThePrimaryHeader>
+    </header>
+    <main>
+      <b-container>
+        <b-row class="profile-content">
+          <b-col xl="3" lg="4" md="12" class="profile-left-col">
+            <div class="profile-details">
+              <div class="profile-block">
+                <div v-bind:class="{
+                    'content-loader-wrap': true,
+                    'loader-active ': false,
+                  }">
+                  <div class="content-loader"></div>
+                </div>
+                <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
+                  accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
+                    upload: '<h1>Bummer!</h1>',
+                    drag: 'Drag a 😺 GIF or GTFO',
+                  }">
+                </picture-input>
+              </div>
+              <h4>Evan Donohue</h4>
+              <b-list-group class="social-nav">
+                <b-list-group-item>:src="$store.state.imagePath+'/assets/
+                  <b-link href="#" target="_blank" class="linkedin-link">
+                    <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-blue.svg'" class="normal-img" alt="linkedin img" />
+                    <img :src="$store.state.imagePath+'/assets/images/linkedin-ic.svg'" class="hover-img" alt="linkedin img" />
+                  </b-link>
+                </b-list-group-item>
+              </b-list-group>
+              <div class="link-wrap">
+                <b-button class="btn-link-border">Change Password</b-button>
+              </div>
+              <b-form-group>
+                <label>Language</label>
+                <CustomFieldDropdown v-model="profile.language" :defaultText="languageDefault"
+                  :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
+                <div class="invalid-feedback">
+                  Invalid input.
+                </div>
+              </b-form-group>
+              <b-form-group>
+                <label>Timezone</label>
+                <model-select class="search-dropdown" :options="timeList" v-model="selectTimeZone"
+                  :placeholder="timeDefault" @input="updateTime">
+                </model-select>
+                <div class="invalid-feedback">
+                  Error message !
+                </div>
+              </b-form-group>
+            </div>
+            <ul class="profile-navs">
+              <li>
+                <b-link href="#" title="Profile">
+                  <i class="profile-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 26" width="27" height="26">
+                      <g id="Main Content">
+                        <g id="Group 14 copy">
+                          <path id="Forma 1 copy" class="shp0"
+                            d="M13.96 15.03C17.8 15.03 20.92 11.88 20.92 8C20.92 4.12 17.8 1 13.96 1C10.11 1 7 4.15 7 8C7 11.86 10.11 15.03 13.96 15.03ZM13.96 2.83C16.77 2.83 19.08 5.16 19.08 8C19.08 10.85 16.77 13.18 13.96 13.18C11.14 13.18 8.83 10.85 8.83 8C8.83 5.16 11.14 2.83 13.96 2.83ZM1.92 26L26.08 26C26.59 26 27 25.59 27 25.07C27 20.22 23.09 16.26 18.27 16.26L9.73 16.26C4.93 16.26 1 20.2 1 25.07C1 25.59 1.41 26 1.92 26ZM9.73 18.11L18.27 18.11C21.77 18.11 24.65 20.74 25.1 24.15L2.9 24.15C3.35 20.76 6.23 18.11 9.73 18.11Z" />
+                        </g>
+                      </g>
+                    </svg>
+                  </i>
+                  Profile
+                </b-link>
+              </li>
+              <li @click="$refs.settingsModal.show()">
+                <b-link href="#" title="Settings">
+                  <i class="settings-icon">
+                    <svg id="Layer_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="m272.066 512h-32.133c-25.989 0-47.134-21.144-47.134-47.133v-10.871c-11.049-3.53-21.784-7.986-32.097-13.323l-7.704 7.704c-18.659 18.682-48.548 18.134-66.665-.007l-22.711-22.71c-18.149-18.129-18.671-48.008.006-66.665l7.698-7.698c-5.337-10.313-9.792-21.046-13.323-32.097h-10.87c-25.988 0-47.133-21.144-47.133-47.133v-32.134c0-25.989 21.145-47.133 47.134-47.133h10.87c3.531-11.05 7.986-21.784 13.323-32.097l-7.704-7.703c-18.666-18.646-18.151-48.528.006-66.665l22.713-22.712c18.159-18.184 48.041-18.638 66.664.006l7.697 7.697c10.313-5.336 21.048-9.792 32.097-13.323v-10.87c0-25.989 21.144-47.133 47.134-47.133h32.133c25.989 0 47.133 21.144 47.133 47.133v10.871c11.049 3.53 21.784 7.986 32.097 13.323l7.704-7.704c18.659-18.682 48.548-18.134 66.665.007l22.711 22.71c18.149 18.129 18.671 48.008-.006 66.665l-7.698 7.698c5.337 10.313 9.792 21.046 13.323 32.097h10.87c25.989 0 47.134 21.144 47.134 47.133v32.134c0 25.989-21.145 47.133-47.134 47.133h-10.87c-3.531 11.05-7.986 21.784-13.323 32.097l7.704 7.704c18.666 18.646 18.151 48.528-.006 66.665l-22.713 22.712c-18.159 18.184-48.041 18.638-66.664-.006l-7.697-7.697c-10.313 5.336-21.048 9.792-32.097 13.323v10.871c0 25.987-21.144 47.131-47.134 47.131zm-106.349-102.83c14.327 8.473 29.747 14.874 45.831 19.025 6.624 1.709 11.252 7.683 11.252 14.524v22.148c0 9.447 7.687 17.133 17.134 17.133h32.133c9.447 0 17.134-7.686 17.134-17.133v-22.148c0-6.841 4.628-12.815 11.252-14.524 16.084-4.151 31.504-10.552 45.831-19.025 5.895-3.486 13.4-2.538 18.243 2.305l15.688 15.689c6.764 6.772 17.626 6.615 24.224.007l22.727-22.726c6.582-6.574 6.802-17.438.006-24.225l-15.695-15.695c-4.842-4.842-5.79-12.348-2.305-18.242 8.473-14.326 14.873-29.746 19.024-45.831 1.71-6.624 7.684-11.251 14.524-11.251h22.147c9.447 0 17.134-7.686 17.134-17.133v-32.134c0-9.447-7.687-17.133-17.134-17.133h-22.147c-6.841 0-12.814-4.628-14.524-11.251-4.151-16.085-10.552-31.505-19.024-45.831-3.485-5.894-2.537-13.4 2.305-18.242l15.689-15.689c6.782-6.774 6.605-17.634.006-24.225l-22.725-22.725c-6.587-6.596-17.451-6.789-24.225-.006l-15.694 15.695c-4.842 4.843-12.35 5.791-18.243 2.305-14.327-8.473-29.747-14.874-45.831-19.025-6.624-1.709-11.252-7.683-11.252-14.524v-22.15c0-9.447-7.687-17.133-17.134-17.133h-32.133c-9.447 0-17.134 7.686-17.134 17.133v22.148c0 6.841-4.628 12.815-11.252 14.524-16.084 4.151-31.504 10.552-45.831 19.025-5.896 3.485-13.401 2.537-18.243-2.305l-15.688-15.689c-6.764-6.772-17.627-6.615-24.224-.007l-22.727 22.726c-6.582 6.574-6.802 17.437-.006 24.225l15.695 15.695c4.842 4.842 5.79 12.348 2.305 18.242-8.473 14.326-14.873 29.746-19.024 45.831-1.71 6.624-7.684 11.251-14.524 11.251h-22.148c-9.447.001-17.134 7.687-17.134 17.134v32.134c0 9.447 7.687 17.133 17.134 17.133h22.147c6.841 0 12.814 4.628 14.524 11.251 4.151 16.085 10.552 31.505 19.024 45.831 3.485 5.894 2.537 13.4-2.305 18.242l-15.689 15.689c-6.782 6.774-6.605 17.634-.006 24.225l22.725 22.725c6.587 6.596 17.451 6.789 24.225.006l15.694-15.695c3.568-3.567 10.991-6.594 18.244-2.304z" />
+                      <path
+                        d="m256 367.4c-61.427 0-111.4-49.974-111.4-111.4s49.973-111.4 111.4-111.4 111.4 49.974 111.4 111.4-49.973 111.4-111.4 111.4zm0-192.8c-44.885 0-81.4 36.516-81.4 81.4s36.516 81.4 81.4 81.4 81.4-36.516 81.4-81.4-36.515-81.4-81.4-81.4z" />
+                    </svg> </i>Settings
+                </b-link>
+              </li>
+              <li>
+                <b-link href="#" title="Payment Method">
+                  <i class="payment-icon">
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 300.346 300.346"
+                      style="enable-background:new 0 0 300.346 300.346;" xml:space="preserve">
+                      <g>
+                        <g>
+                          <g>
+                            <path
+                              d="M296.725,153.904c-3.612-5.821-9.552-9.841-16.298-11.03c-6.753-1.189-13.704,0.559-19.14,4.835l-21.379,17.125
+        c-3.533-3.749-8.209-6.31-13.359-7.218c-6.746-1.189-13.703,0.559-19.1,4.805l-12.552,9.921h-32.236
+        c-5.152,0-10.302-1.238-14.892-3.579l-11.486-5.861c-9.678-4.937-20.537-7.327-31.385-6.908
+        c-15.046,0.579-29.449,6.497-40.554,16.666L2.455,229.328c-2.901,2.656-3.28,7.093-0.873,10.203l32.406,41.867
+        c1.481,1.913,3.714,2.933,5.983,2.933c1.374,0,2.762-0.374,4.003-1.151l38.971-24.37c2.776-1.736,5.974-2.654,9.249-2.654h90.429
+        c12.842,0,25.445-4.407,35.489-12.409l73.145-58.281C300.817,177.855,303.165,164.286,296.725,153.904z M216.812,174.294
+        c2.034-1.602,4.561-2.236,7.112-1.787c1.536,0.271,2.924,0.913,4.087,1.856l-12.645,10.129c-1.126-2.111-2.581-4.019-4.282-5.672
+        L216.812,174.294z M281.838,173.64l-73.147,58.282c-7.377,5.878-16.634,9.116-26.067,9.116H92.194
+        c-6.113,0-12.084,1.714-17.266,4.954l-33.17,20.743L17.799,235.78l56.755-51.969c8.468-7.753,19.45-12.267,30.924-12.708
+        c8.271-0.32,16.552,1.504,23.932,5.268l11.486,5.861c6.708,3.422,14.234,5.231,21.763,5.231h32.504
+        c4.278,0,7.757,3.48,7.757,7.758c0,4.105-3.21,7.507-7.308,7.745l-90.45,5.252c-4.169,0.242-7.352,3.817-7.11,7.985
+        c0.243,4.168,3.798,7.347,7.986,7.109l90.45-5.252c9.461-0.549,17.317-6.817,20.283-15.321l53.916-43.189
+        c2.036-1.602,4.566-2.237,7.114-1.787c2.551,0.449,4.708,1.909,6.074,4.111C286.277,165.745,285.402,170.801,281.838,173.64z" />
+                            <path d="M148.558,131.669c31.886,0,57.827-25.941,57.827-57.827s-25.941-57.827-57.827-57.827S90.731,41.955,90.731,73.842
+        S116.672,131.669,148.558,131.669z M148.558,31.135c23.549,0,42.707,19.159,42.707,42.707c0,23.549-19.159,42.707-42.707,42.707
+        c-23.549,0-42.707-19.159-42.707-42.707C105.851,50.293,125.01,31.135,148.558,31.135z" />
+                            <path d="M147.213,87.744c-2.24,0-4.618-0.546-6.698-1.538c-1.283-0.613-2.778-0.65-4.098-0.105
+        c-1.344,0.554-2.395,1.656-2.884,3.02l-0.204,0.569c-0.87,2.434,0.204,5.131,2.501,6.274c2.129,1.06,4.734,1.826,7.398,2.182
+        v2.162c0,2.813,2.289,5.101,5.171,5.101c2.814,0,5.102-2.289,5.102-5.101v-2.759c6.712-2.027,11.018-7.542,11.018-14.188
+        c0-9.156-6.754-13.085-12.625-15.479c-6.355-2.63-6.832-3.78-6.832-5.234c0-1.914,1.664-3.058,4.453-3.058
+        c2.043,0,3.883,0.366,5.63,1.121c1.273,0.549,2.682,0.553,3.966,0.009c1.28-0.543,2.297-1.599,2.79-2.901l0.204-0.541
+        c0.97-2.56-0.228-5.41-2.726-6.487c-1.676-0.723-3.51-1.229-5.46-1.508v-1.908c0-2.813-2.289-5.102-5.102-5.102
+        c-2.813,0-5.101,2.289-5.101,5.102v2.549c-6.511,1.969-10.53,7.12-10.53,13.561c0,8.421,6.76,12.208,13.342,14.789
+        c5.579,2.262,6.045,4.063,6.045,5.574C152.572,86.724,149.686,87.744,147.213,87.744z" />
+                          </g>
+                        </g>
+                      </g>
+                    </svg> </i>Payment Method
+                </b-link>
+              </li>
+              <li>
+                <b-link href="#" title="Recurring Payments">
+                  <i class="recurrence-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17" width="18" height="17">
+                      <g id="Table 3">
+                        <g id="Title">
+                          <g id="Title">
+                            <path id="Shape 1" class="shp0"
+                              d="M4.98 4.28C7.24 2.41 10.62 2.38 12.91 4.08L11.09 4.15C10.86 4.16 10.68 4.33 10.69 4.55C10.7 4.76 10.89 4.92 11.11 4.92C11.12 4.92 11.12 4.92 11.13 4.92L13.92 4.82C14.14 4.82 14.32 4.65 14.32 4.44L14.32 4.41C14.32 4.4 14.32 4.4 14.32 4.4L14.32 4.39L14.32 4.39L14.22 1.87C14.21 1.66 14.01 1.49 13.78 1.5C13.55 1.51 13.36 1.69 13.37 1.9L13.44 3.48C12.3 2.63 10.91 2.14 9.41 2.07C7.56 1.99 5.78 2.57 4.41 3.7C2.52 5.27 1.72 7.65 2.32 9.91C2.37 10.09 2.54 10.21 2.73 10.21C2.76 10.21 2.8 10.2 2.83 10.19C3.06 10.14 3.2 9.93 3.14 9.73C2.61 7.74 3.32 5.65 4.98 4.28ZM15.93 7.09C15.87 6.88 15.64 6.75 15.42 6.81C15.19 6.86 15.05 7.07 15.11 7.27C15.64 9.26 14.93 11.35 13.27 12.72C12.11 13.69 10.64 14.16 9.19 14.16C7.8 14.16 6.41 13.73 5.29 12.88L7.13 12.73C7.36 12.71 7.53 12.52 7.51 12.31C7.49 12.09 7.28 11.94 7.05 11.96L4.27 12.19C4.04 12.21 3.87 12.39 3.89 12.61L4.14 15.15C4.16 15.35 4.34 15.5 4.56 15.5C4.57 15.5 4.58 15.5 4.59 15.5C4.83 15.48 5 15.29 4.98 15.08L4.83 13.53C5.96 14.37 7.35 14.86 8.84 14.93C8.96 14.93 9.07 14.94 9.19 14.94C10.91 14.94 12.55 14.36 13.84 13.3C15.73 11.73 16.53 9.36 15.93 7.09Z" />
+                          </g>
+                        </g>
+                      </g>
+                    </svg>
+                  </i>
+                  Recurring Payments
+                </b-link>
+              </li>
+              <li>
+                <b-link href="#" title="Preview Profile">
+                  <i class="preview-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 33" width="32" height="33">
+                      <g id="Group 1">
+                        <path id="Forma 1" class="shp0"
+                          d="M26.27 24.2C28.08 21.8 27.89 18.35 25.7 16.17C25.19 15.65 24.6 15.25 23.98 14.96L23.98 9.55L16.43 2L1 2L1 32L23.98 32L23.98 26.07C24.35 25.9 24.7 25.69 25.03 25.45L29.75 30.22L31 28.98L26.27 24.2ZM16.95 5L20.98 9.03L16.95 9.03L16.95 5L16.95 5ZM22.22 30.24L2.76 30.24L2.76 3.76L15.19 3.76L15.19 10.79L22.22 10.79L22.22 14.43C20.37 14.16 18.42 14.74 16.99 16.17C14.59 18.56 14.59 22.47 16.99 24.87C18.4 26.27 20.35 26.87 22.22 26.6L22.22 30.24ZM24.45 23.62C22.74 25.34 19.95 25.34 18.24 23.62C16.52 21.91 16.52 19.12 18.24 17.41C19.95 15.69 22.74 15.69 24.45 17.41C26.17 19.12 26.17 21.91 24.45 23.62ZM4.52 12.61L16.95 12.61L16.95 14.36L4.52 14.36L4.52 12.61ZM4.52 16.12L13.43 16.12L13.43 17.88L4.52 17.88L4.52 16.12ZM4.52 23.15L13.43 23.15L13.43 24.91L4.52 24.91L4.52 23.15ZM4.52 19.64L13.43 19.64L13.43 21.39L4.52 21.39L4.52 19.64Z" />
+                      </g>
+                    </svg> </i>Preview Profile
+                </b-link>
+              </li>
+            </ul>
+          </b-col>
+          <b-col xl="9" lg="8" md="12" class="payment-content-wrap">
+            <b-row class="row-form">
+              <b-col cols="12">
+                <h2 class="title-with-border">
+                  <span>Payment Method</span>
+                </h2>
+              </b-col>
+              <b-col md="6">
+                <div class="payment-card">
+                  <div class="img-wrap">
+                    <img :src="$store.state.imagePath+'/assets/images/master-card.png'" alt="master-card" />
+                  </div>
+                  <div class="text-wrap">
+                    <h4>Master Card</h4>
+                    <p>1485 **** **** 0236</p>
+                    <p class="expire-date">Expire: 05/22</p>
+                  </div>
+                  <div class="ellipse-menu-wrap">
+                    <i class="ellipse-icon">
+                      <img :src="$store.state.imagePath+'/assets/images/ellipse.png'" alt="ellipse" />
+                    </i>
+                    <ul class="ellipse-menu">
+                      <li>
+                        <i class="edit-icon">
+                          <img :src="$store.state.imagePath+'/assets/images/edit-ic.svg'" /> </i>Edit
+                      </li>
+                      <li>
+                        <i class="delete-icon">
+                          <img :src="$store.state.imagePath+'/assets/images/delete-ic-g.svg'" /> </i>Remove
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </b-col>
+              <b-col md="6">
+                <div class="payment-card">
+                  <div class="img-wrap">
+                    <img :src="$store.state.imagePath+'/assets/images/master-card.png'" alt="master-card" />
+                  </div>
+                  <div class="text-wrap">
+                    <h4>Master Card</h4>
+                    <p>1485 **** **** 0236</p>
+                    <p>Expire: 05/22</p>
+                  </div>
+                  <div class="ellipse-menu-wrap">
+                    <i class="ellipse-icon">
+                      <img :src="$store.state.imagePath+'/assets/images/ellipse.png'" alt="ellipse" />
+                    </i>
+                    <ul class="ellipse-menu">
+                      <li>
+                        <i class="edit-icon">
+                          <img :src="$store.state.imagePath+'/assets/images/edit-ic.svg'" /> </i>Edit
+                      </li>
+                      <li>
+                        <i class="delete-icon">
+                          <img :src="$store.state.imagePath+'/assets/images/delete-ic-g.svg'" /> </i>Remove
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </b-col>
+              <b-col md="6">
+                <div class="payment-card">
+                  <div class="img-wrap">
+                    <img :src="$store.state.imagePath+'/assets/images/visa.png'" alt="visa" />
+                  </div>
+                  <div class="text-wrap">
+                    <h4>Master Card</h4>
+                    <p>1485 **** **** 0236</p>
+                    <p>Expire: 05/22</p>
+                  </div>
+                  <div class="ellipse-menu-wrap">
+                    <i class="ellipse-icon">
+                      <img :src="$store.state.imagePath+'/assets/images/ellipse.png'" alt="ellipse" />
+                    </i>
+                    <ul class="ellipse-menu">
+                      <li>
+                        <i class="edit-icon">
+                          <img :src="$store.state.imagePath+'/assets/images/edit-ic.svg'" /> </i>Edit
+                      </li>
+                      <li>
+                        <i class="delete-icon">
+                          <img :src="$store.state.imagePath+'/assets/images/delete-ic-g.svg'" /> </i>Remove
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </b-col>
+              <b-col md="6">
+                <div class="payment-card add-payment" @click="$refs.editPaymentModal.show();">
+                  + Add Payment Method
+                </div>
+              </b-col>
+            </b-row>
+          </b-col>
+        </b-row>
+        <b-modal ref="changePasswordModal" :modal-class="'password-modal sm-popup'" centered hide-footer>
+          <template slot="modal-header" slot-scope="{ close }">
+            <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+            <h5 class="modal-title">
+              {{ languageData.label.change_password }}
+            </h5>
+          </template>
+          <b-alert show :variant="classletiant" dismissible v-model="showErrorDiv">
+            {{ message }}
+          </b-alert>
+          <form action class="form-wrap">
+            <b-form-group>
+              <b-form-input id type="password" ref="oldPassword" v-model.trim="resetPassword.oldPassword" :class="{
+                  'is-invalid':
+                    passwordSubmit && $v.resetPassword.oldPassword.$error,
+                }" :placeholder="languageData.placeholder.old_password"></b-form-input>
+              <div v-if="passwordSubmit && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
+                {{ languageData.errors.field_is_required }}
+              </div>
+            </b-form-group>
+
+            <b-form-group>
+              <b-form-input id type="password" v-model.trim="resetPassword.newPassword" :class="{
+                  'is-invalid':
+                    passwordSubmit && $v.resetPassword.newPassword.$error,
+                }" :placeholder="languageData.placeholder.new_password"></b-form-input>
+              <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required" class="invalid-feedback">
+                {{ languageData.errors.field_is_required }}
+              </div>
+              <div v-if="passwordSubmit && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
+                {{ languageData.errors.invalid_password }}
+              </div>
+            </b-form-group>
+
+            <b-form-group>
+              <b-form-input id v-model.trim="resetPassword.confirmPassword" :class="{
+                  'is-invalid':
+                    passwordSubmit && $v.resetPassword.confirmPassword.$error,
+                }" :placeholder="languageData.placeholder.confirm_password" @keypress.enter.prevent="changePassword"
+                type="password">
+              </b-form-input>
+              <div v-if="
+                  passwordSubmit && !$v.resetPassword.confirmPassword.required
+                " class="invalid-feedback">
+                {{ languageData.errors.field_is_required }}
+              </div>
+              <div v-if="
+                  passwordSubmit &&
+                    $v.resetPassword.confirmPassword.required &&
+                    !$v.resetPassword.confirmPassword.sameAsPassword
+                " class="invalid-feedback">
+                {{ languageData.errors.identical_password }}
+              </div>
+            </b-form-group>
+          </form>
+          <div class="btn-wrap">
+            <b-button class="btn-borderprimary" @click="$refs.changePasswordModal.hide()">
+              {{ languageData.label.cancel }}</b-button>
+            <b-button class="btn-bordersecondary" @click="changePassword()">
+              {{ languageData.label.change_password }}
+            </b-button>
+          </div>
+        </b-modal>
+        <b-modal ref="editPaymentModal" :modal-class="'payment-modal'" centered hide-footer>
+          <template slot="modal-header" slot-scope="{ close }">
+            <i class="close" @click="close()" v-b-tooltip.hover title="Close"></i>
+            <h5 class="modal-title">
+              Payment Method
+            </h5>
+          </template>
+          <h4 class="title-with-border">
+            <span>Add Credit or Debit Card</span>
+          </h4>
+          <form action class="form-wrap">
+            <b-row class="row-form">
+              <b-col md="6">
+                <b-form-group>
+                  <label>Card Details</label>
+                  <b-form-input type="text" placeholder="Enter card details"></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col md="6">
+                <b-row>
+                  <b-col sm="6">
+                    <b-form-group>
+                      <label>Expiration</label>
+                      <b-form-input type="text" placeholder="MM/YY"></b-form-input>
+                    </b-form-group>
+                  </b-col>
+                  <b-col sm="6">
+                    <b-form-group>
+                      <label>CVV<span class="info-icon">(<b-button v-b-tooltip.hover title="CVV Details" class="cvv-tooltip">?</b-button>)</span></label>
+                      <b-form-input type="text" placeholder="Enter cvv"></b-form-input>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-col>
+            </b-row>
+            <b-row class="row-form">
+              <b-col sm="6">
+                <b-form-group>
+                  <label>Name*</label>
+                  <b-form-input type="text" placeholder="Enter your name"></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col sm="6">
+                <b-form-group>
+                  <label>Family Name*</label>
+                  <b-form-input type="text" placeholder="Enter your family name"></b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row class="row-form">
+              <b-col cols="12">
+                <b-form-group>
+                  <label>Address*</label>
+                  <b-form-input type="text" placeholder="Enter your address"></b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row class="row-form">
+              <b-col cols="12" md="4" sm="6">
+                <b-form-group>
+                  <label>Town*</label>
+                  <b-form-input type="text" placeholder="Enter your town"></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="4" sm="6">
+                <b-form-group>
+                  <label>Zip / Postal Code*</label>
+                  <b-form-input type="text" placeholder="Enter your zip/postal code"></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="4" sm="6">
+                <b-form-group>
+                  <label>Country*</label>
+                  <model-select class="search-dropdown" :options="timeList" v-model="selectTimeZone"
+              :placeholder="'USA - US Dollars'" @input="updateTime">
+            </model-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <div class="btn-row">
+              <b-button class="gray-btn cancel-btn" title="Cancel">Cancel</b-button>
+              <b-button class="btn-fillsecondary save-btn" title="Save">Save</b-button>
+            </div>
+          </form>
+        </b-modal>
+      </b-container>
+    </main>
+    <footer>
+      <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
+    </footer>
+  </div>
+</template>
+
+<script>
+  import CustomFieldDropdown from "../components/CustomFieldDropdown";
+  import MultiSelect from "../components/MultiSelect";
+  import CustomField from "../components/CustomField";
+  import store from "../store";
+  import PictureInput from "../components/vue-picture-input";
+  import { ModelSelect } from "vue-search-select";
+  import {
+    getUserDetail,
+    changeUserPassword,
+    changeProfilePicture,
+    changeCity,
+    saveUserProfile,
+    loadLocaleMessages,
+    country,
+    skill,
+    timezone,
+  } from "../services/service";
+  import {
+    required,
+    maxLength,
+    sameAs,
+    minLength,
+  } from "vuelidate/lib/validators";
+  import constants from "../constant";
+
+  export default {
+    components: {
+      ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
+      TheSecondaryFooter: () =>
+        import("../components/Layouts/TheSecondaryFooter"),
+      CustomFieldDropdown,
+      MultiSelect,
+      PictureInput,
+      CustomField,
+      ModelSelect,
+    },
+    data() {
+      return {
+        isUserProfileComplete: 1,
+        languageList: [
+          ["01", "Hindi"],
+          ["02", "English"],
+        ],
+        errorPage: false,
+        pageLoaded: false,
+        errorPageMessage: false,
+        isQuickAccessFilterDisplay: true,
+        isSkillDisplay: true,
+        languageDefault: "",
+        userIcon: require("@/assets/images/user-img-large.png"),
+        timeList: [
+          { value: "0", text: "GMT-4" },
+          { value: "01", text: "UTC-5" },
+          { value: "02", text: "UTC-6" },
+          { value: "03", text: "UTC-7" },
+        ],
+        selectTimeZone: "GMT-4",
+        timeDefault: "Select your timezone",
+        countryList: [],
+        countryDefault: "",
+        availabilityList: [],
+        passwordSubmit: false,
+        isCustomFieldSubmit: false,
+        availabilityDefault: "",
+        file: "null",
+        languageData: [],
+        skillListing: [],
+        resetSkillList: [],
+        newUrl: "",
+        isPrefilLoaded: true,
+        prefilImageType: {
+          mediaType: "",
+        },
+        userData: [],
+        isShownComponent: false,
+        cityList: [],
+        cityDefault: "",
+        resetPassword: {
+          oldPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        },
+        showErrorDiv: false,
+        message: null,
+        classletiant: "success",
+        profile: {
+          firstName: "",
+          lastName: "",
+          employeeId: "",
+          profileText: "",
+          title: "",
+          whyiVolunteer: "",
+          linkedInUrl: "",
+          department: "",
+          country: "",
+          city: "",
+          availability: 0,
+          userSkills: [],
+          language: "",
+          time: "",
+          languageCode: "",
+        },
+        submitted: false,
+        language: "",
+        languageCode: null,
+        time: "",
+        CustomFieldList: [],
+        CustomFieldValue: [],
+        returnCustomFeildData: [],
+        userSkillList: [],
+        resetUserSkillList: [],
+        imageLoader: true,
+        changePhoto: "",
+        showPage: true,
+        saveProfileData: {
+          first_name: "",
+          last_name: "",
+          timezone_id: "",
+          language_id: "",
+          availability_id: "",
+          why_i_volunteer: "",
+          employee_id: "",
+          department: "",
+          manager_name: "",
+          city_id: "",
+          country_id: "",
+          profile_text: "",
+          linked_in_url: "",
+          custom_fields: [],
+        },
+      };
+    },
+    validations: {
+      resetPassword: {
+        oldPassword: {
+          required,
+        },
+        newPassword: {
+          required,
+          minLength: minLength(constants.PASSWORD_MIN_LENGTH),
+        },
+        confirmPassword: {
+          required,
+          sameAsPassword: sameAs("newPassword"),
+        },
+      },
+      profile: {
+        firstName: {
+          required,
+        },
+        lastName: {
+          required,
+        },
+        linkedInUrl: {
+          validLinkedInUrl(linkedInUrl) {
+            if (linkedInUrl == "") {
+              return true;
+            }
+            const regexp = /^http(s)?:\/\/([\w]+\.)?linkedin\.com\/[//A-z0-9_-]+\/?$/;
+            return regexp.test(linkedInUrl);
+          },
+        },
+        country: {
+          required,
+        },
+        city: {
+          required,
+        },
+        language: {
+          required,
+        },
+        time: {
+          required,
+        },
+      },
+    },
+    updated() { },
+    methods: {
+      updateLang(value) {
+        this.languageDefault = value.selectedVal;
+        this.profile.languageCode = value.selectedVal;
+        this.profile.language = value.selectedId;
+        this.languageCode = this.userData.language_code_list[value.selectedId];
+      },
+      updateTime(value) {
+        this.selectTimeZone = value;
+      },
+      updateCity(value) {
+        this.cityDefault = value.selectedVal;
+        this.profile.city = value.selectedId;
+      },
+      updateCountry(value) {
+        this.countryDefault = value.selectedVal;
+        this.profile.country = value.selectedId;
+
+        this.changeCityData(value.selectedId);
+      },
+      updateAvailability(value) {
+        this.availabilityDefault = value.selectedVal;
+        this.profile.availability = value.selectedId;
+      },
+      changeImage(image) {
+        this.imageLoader = true;
+        let imageData = {};
+
+        imageData.avatar = image;
+        changeProfilePicture(imageData).then((response) => {
+          if (response.error == true) {
+            this.makeToast("danger", response.message);
+          } else {
+            this.makeToast("success", response.message);
+            store.commit("changeAvatar", response.data);
+          }
+          this.imageLoader = false;
+        });
+      },
+      saveSkillData() {
+        let data = JSON.parse(localStorage.getItem("currentSkill"));
+        this.resetUserSkillList = data;
+      },
+      // changePassword
+      changePassword() {
+        this.passwordSubmit = true;
+        this.$v.$touch();
+        // stop here if form is invalid
+        if (this.$v.resetPassword.$invalid) {
+          return;
+        }
+        let resetPasswordData = {};
+
+        resetPasswordData.old_password = this.resetPassword.oldPassword;
+        resetPasswordData.password = this.resetPassword.newPassword;
+        resetPasswordData.confirm_password = this.resetPassword.confirmPassword;
+        // Call to save profile service
+        changeUserPassword(resetPasswordData).then((response) => {
+          if (response.error === true) {
+            this.message = null;
+            this.showErrorDiv = true;
+            this.classletiant = "danger";
+            //set error msg
+            this.message = response.message;
+          } else {
+            this.message = null;
+            this.showErrorDiv = true;
+            this.classletiant = "success";
+            //set success msg
+            this.message = response.message;
+            //Reset to blank
+            this.passwordSubmit = false;
+            this.resetPassword.oldPassword = "";
+            this.resetPassword.newPassword = "";
+            this.resetPassword.confirmPassword = "";
+            this.$v.$reset();
+            store.commit("changeToken", response.data.token);
+            setTimeout(() => {
+              this.$refs.changePasswordModal.hide();
+              this.showErrorDiv = false;
+            }, 1000);
+          }
+        });
+      },
+      changeCityData(countryId) {
+        if (countryId) {
+          changeCity(countryId).then((response) => {
+            if (response.error === true) {
+              this.cityList = [];
+            } else {
+              this.cityList = response.data;
+              this.cityList.sort((a, b) => {
+                let cityOne = a[1].toLowerCase(),
+                  cityTwo = b[1].toLowerCase();
+                if (cityOne < cityTwo)
+                  //sort string ascending
+                  return -1;
+                if (cityOne > cityTwo) return 1;
+                return 0; //default return value (no sorting)
+              });
+            }
+            this.cityDefault = this.languageData.placeholder.city;
+            this.profile.city = "";
+          });
+        }
+      },
+      makeToast(variant = null, message) {
+        this.$bvToast.toast(message, {
+          variant: variant,
+          solid: true,
+          autoHideDelay: 3000,
+        });
+      },
+      alphaNumeric(evt) {
+        evt = evt ? evt : window.event;
+        let keyCode = evt.which ? evt.which : evt.keyCode;
+        if (
+          !(
+            (keyCode >= 48 && keyCode <= 57) ||
+            (keyCode >= 65 && keyCode <= 90) ||
+            (keyCode >= 97 && keyCode <= 122)
+          ) &&
+          keyCode != 8 &&
+          keyCode != 32
+        ) {
+          evt.preventDefault();
+        }
+      },
+      handleModel() {
+        this.$refs.changePasswordModal.show();
+
+        setTimeout(() => {
+          this.$refs.oldPassword.focus();
+        }, 100);
+      },
+    },
+    created() {
+      this.languageData = JSON.parse(store.state.languageLabel);
+      this.countryDefault = this.languageData.placeholder.country;
+      this.cityDefault = this.languageData.placeholder.city;
+      this.availabilityDefault = this.languageData.placeholder.availablity;
+      this.languageDefault = this.languageData.placeholder.language;
+      this.changePhoto = this.languageData.label.edit;
+      this.languageCode = store.state.defaultLanguage;
+      this.isQuickAccessFilterDisplay = this.settingEnabled(
+        constants.QUICK_ACCESS_FILTERS
+      );
+      this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+      if (store.state.isProfileComplete != 1) {
+        this.isUserProfileComplete = 0;
+      }
+    },
+  };
+</script>

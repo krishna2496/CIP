@@ -77,6 +77,7 @@
         },
         created() {
             document.body.classList.add("loader-enable");
+            import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
             customCss()
               .catch(() => {
                 import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
