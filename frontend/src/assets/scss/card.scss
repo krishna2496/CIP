@@ -967,6 +967,7 @@
       -webkit-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
       -ms-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
       -moz-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
+      overflow: initial;
       &:hover {
         .card-action-block {
           .btn-wrap {
@@ -992,7 +993,22 @@
         bottom: auto;
         top: 73px;
       }
-
+      .dropdown-outer{
+        .more-btn{
+          background: transparent;
+          border: none;
+          padding: 0;
+          display: inline-block!important;
+          font-size: 14px;
+          line-height: 19px;
+          color: $black-primary;
+          border-radius: 0;
+          vertical-align: text-bottom;
+          &:hover{
+            color: $black-primary;
+          }
+        }
+      }
       .location {
         opacity: 1;
         visibility: visible;
@@ -1103,6 +1119,9 @@
               flex: 0 0 166px;
               width: 166px;
               .text-wrap {
+                .gray-text{
+                  color: $gray-primary;
+                }
                 span {
                   em {
                     font-size: 12px;
@@ -1557,4 +1576,28 @@
       }
     }
   }
+}
+.skill-popover{
+  border-color: $primary-border-color;
+  padding: 5px 0;
+  border-radius: 3px;
+  max-height: 200px;
+  overflow-y: auto;
+  min-width: 160px;
+  background: #fff;
+    .arrow{
+      display: none;
+    }
+    .list-group{
+      flex-direction: column;
+      .list-group-item{
+        font-size: 14px;
+        padding:8px 15px;
+        line-height: 20px; 
+        &:active, &:hover{
+          background:$primary-border-color;
+          color: $black-primary;
+        }
+      }
+    }
 }

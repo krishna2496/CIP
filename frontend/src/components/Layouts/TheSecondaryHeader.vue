@@ -570,6 +570,7 @@
                         if (response.country) {
                             this.countryList = Object.entries(response.country);
                         } else {
+                            this.countryList = []
                             this.defaultCountry = this.languageData.label.country;
                         }
 

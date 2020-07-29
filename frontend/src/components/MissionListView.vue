@@ -82,7 +82,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <div class="detail-column calendar-col" v-if="mission.end_date !== null">
+                                <div class="detail-column calendar-col">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
@@ -92,6 +92,10 @@
                                         <span class="title-text"><em>{{ languageData.label.until}}</em>
                                             {{ mission.end_date | formatDate }}</span>
                                     </div>
+                                     <div class="text-wrap" v-else>
+                                        <span class="title-text">{{ languageData.label.ongoing}}</span>
+                                        <span class="title-text gray-text"><em>{{ languageData.label.oppotunity}}</em></span>
+                                      </div>
                                 </div>
                                 <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
                                     <i class="icon-wrap">
@@ -111,11 +115,30 @@
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/skill-icon.svg'" alt="skill icon">
                                     </i>
-                                    <div class="text-wrap">
-                                        <span class="title-text">{{getSkills(mission.skill)}}</span>
+                                    
+                                    <div class="text-wrap dropdown-outer" 
+
+                                    :id="`skillWrap_${mission.mission_id}`">
+                                        <span class="title-text">{{getSkills(mission.skill)}}
+                                            <span v-if="getSkillsCount(mission.skill) > 0"> & {{getSkillsCount(mission.skill)}} </span>
+                                            <b-button v-if="getSkillsCount(mission.skill) > 0" 
+                                                :id="`skillPopover_${mission.mission_id}`" class="more-btn">
+                                            {{ languageData.label.more }} more</b-button>
+                                            <b-popover :target="`skillPopover_${mission.mission_id}`" triggers="hover focus" placement="top" custom-class="skill-popover" 
+                                            :container="`skillWrap_${mission.mission_id}`">
+                                            <b-list-group v-if="skill" v-for="(skill ,key) in getRemainingSkill(mission.skill)" 
+                                            :key=key>
+                                                <b-list-group-item>{{skill.title}}</b-list-group-item>
+                                            </b-list-group>
+                                            </b-popover>
+                                        </span>
                                         <span class="subtitle-text skill-text-wrap">{{ languageData.label.skills }}</span>
                                     </div>
+
                                 </div>
+                                
+
+                                
                             </div>
                         </div>
                         <div class="card-action-block">
@@ -263,8 +286,8 @@ export default {
 		isSubmitNewMissionSet: true,
 		isThemeSet: true,
 		submitNewMissionUrl: "",
-		isSkillDisplay: true
-		};
+		isSkillDisplay: true,
+        };
 	},
 	computed: {
 		filteredOptions() {
@@ -284,6 +307,13 @@ export default {
 		}
 	},
 	methods: {
+        onOver() {
+         this.$refs.skillDropdown.visible = true;
+        },
+        onLeave() {
+
+          this.$refs.skillDropdown.visible = false;
+        },
 		hideModal() {
 		this.autoSuggestPlaceholder = "";
 		this.submitDisable = true;
@@ -488,20 +518,32 @@ export default {
 		}
 		},
 		getSkills(skills) {
-		let skillString = "";
-		if (skills) {
-			skills.filter((data, index) => {
-			if (data) {
-				if (skillString != "") {
-				skillString = skillString + ", " + data.title;
-				} else {
-				skillString = data.title;
-				}
-			}
-			});
+		if (skills && skills[0]) {
+            return skills[0].title;
 		}
-		return skillString;
-		}
+		},
+        getSkillsCount(skills) {
+            let skillCount = -1;
+            if (skills) {
+                skills.filter((data, index) => {
+                if (data) {
+                    skillCount++;
+                }
+                });
+            }
+            return skillCount;
+        },
+        getRemainingSkill(skills) {
+            if (skills) {
+                let skillData = skills.filter((data, index) => {
+                    if (data && index != 0) {
+
+                        return data;
+                    }
+                });
+                return skillData;
+            }
+        }
 	},
 	created() {
 		this.languageData = JSON.parse(store.state.languageLabel);
