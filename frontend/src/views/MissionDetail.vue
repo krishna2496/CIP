@@ -330,7 +330,7 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li v-if="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-if="missionDetail.organisation_detail"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
@@ -755,10 +755,11 @@
       };
     },
     mounted() {
-     let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-      tabItem.forEach(function (tabItemEvent) {
-        tabItemEvent.addEventListener("click", tabsHandle);
-      });
+      setTimeout(() => {
+         let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+          tabItem.forEach(function (tabItemEvent) {
+            tabItemEvent.addEventListener("click", tabsHandle);
+          });
 
       function tabsHandle(tabsEvent) {
 
@@ -776,6 +777,8 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
+      }, 1000);
+
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
@@ -1009,8 +1012,8 @@
           missionDetail(this.$route.params.misisonId).then(response => {
             this.isShownMediaComponent = true;
             if (response.error == false) {
-              if (response.data[0]) {
-                this.missionDetail = response.data[0];
+                if (response.data[0]) {
+                    this.missionDetail = response.data[0];
                 if (response.data[0].user_application_status ==
                   constants.AUTOMATICALLY_APPROVED && response.data[0]
                     .user_application_count > 0
