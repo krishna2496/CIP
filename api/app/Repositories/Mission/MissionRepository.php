@@ -24,6 +24,7 @@ use App\Models\MissionImpactDonation;
 use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Services\Mission\AdminMissionTransformService;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Repositories\Currency\CurrencyRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -76,6 +77,11 @@ class MissionRepository implements MissionInterface
      * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      */
     private $tenantActivatedSettingRepository;
+
+    /**
+     * @var App\Repositories\Currency\CurrencyRepository
+     */
+    private $currencyRepository;
     
     /**
      * Create a new Mission repository instance.
@@ -90,6 +96,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
      * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
+     * @param  App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     public function __construct(
@@ -102,7 +109,8 @@ class MissionRepository implements MissionInterface
         ImpactDonationMissionRepository $impactDonationMissionRepository,
         MissionImpactRepository $missionImpactRepository,
         AdminMissionTransformService $adminMissionTransformService,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        CurrencyRepository $currencyRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -114,6 +122,7 @@ class MissionRepository implements MissionInterface
         $this->missionImpactRepository = $missionImpactRepository;
         $this->adminMissionTransformService = $adminMissionTransformService;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->currencyRepository = $currencyRepository;
     }
     
     /**
@@ -1730,12 +1739,21 @@ class MissionRepository implements MissionInterface
     public function getUserCurrencyDetails(Request $request) : object
     {
         $userDetail = DB::table('user')->where('user_id', $request->auth->user_id)->get()->toArray();
-        $currencyCode = isset($userDetail['currency']) ? $userDetail['currency'] : 'EUR';
-        $currencySymbol = '€';
+        $userCurrencyCode = isset($userDetail['currency']) ? $userDetail['currency'] : 'EUR';
+        $allCurrencyList = $this->currencyRepository->findAll();
+
+        foreach ($allCurrencyList as $key => $value) {
+            $getSystemCurrencyCode = $value->code();
+            if ($getSystemCurrencyCode === $userCurrencyCode) {
+                $userCurrencySymbol = $value->symbol();
+            }
+        }
+
         $currencyObject = (object)[
-            'code' => $currencyCode,
-            'symbol' => $currencySymbol
+            'code' => $userCurrencyCode,
+            'symbol' => $userCurrencySymbol
         ];
+
         return $currencyObject;
     }
 }
