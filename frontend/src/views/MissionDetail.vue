@@ -755,7 +755,7 @@
       };
     },
     mounted() {
-      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a");
+      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
       tabItem.forEach(function (tabItemEvent) {
         tabItemEvent.addEventListener("click", tabsHandle);
       });
