@@ -330,7 +330,7 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li v-if="missionDetail.organisation_detail"><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-if="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
@@ -724,6 +724,7 @@
         isStarDisplay: false,
         isThemeDisplay: false,
         isInviteCollegueDisplay: false,
+        isOrganizationDisplay: false,
         isCommentDisplay: false,
         isRecentVolunteerDispaly: false,
         isMissionGoalDisplay: false,
@@ -754,7 +755,7 @@
       };
     },
     mounted() {
-      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a");
       tabItem.forEach(function (tabItemEvent) {
         tabItemEvent.addEventListener("click", tabsHandle);
       });
@@ -1008,8 +1009,8 @@
           missionDetail(this.$route.params.misisonId).then(response => {
             this.isShownMediaComponent = true;
             if (response.error == false) {
-                if (response.data[0]) {
-                    this.missionDetail = response.data[0];
+              if (response.data[0]) {
+                this.missionDetail = response.data[0];
                 if (response.data[0].user_application_status ==
                   constants.AUTOMATICALLY_APPROVED && response.data[0]
                     .user_application_count > 0
@@ -1070,6 +1071,13 @@
             }
 
             this.searchUsers();
+
+            /*
+             * If this.missionDetail.organisation_detail is a string it means that the details are not empty
+             * so we can display the organization tab.
+             * Otherwise this.missionDetail.organisation_detail is an array if the details are empty.
+             */
+            this.isOrganizationDisplay = typeof this.missionDetail.organisation_detail === 'string';
           })
         } else {
           this.$router.push('/404');
