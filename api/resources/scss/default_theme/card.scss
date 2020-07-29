@@ -754,7 +754,7 @@
       .left-btn {
         .icon-btn {
           display: inline-flex;
-          min-width: 172px;
+          min-width: 195px;
           min-height: 40px;
           align-items: center;
           font-size: 18px;
@@ -762,6 +762,15 @@
           padding: 5px 20px;
           background: transparent;
           color: $primary;
+          max-width: 195px;
+          flex: 0 0 195px;
+          font-size: 15px;
+          justify-content: space-between;
+           @include sm-max{
+            min-width:156px;
+            max-width: 156px;
+            flex: 0 0 156px; 
+          }
           svg {
             path {
               fill: $primary;
@@ -779,6 +788,9 @@
           }
           i {
             margin-left: 8px;
+            min-width: 18px;
+            flex: 0 0 18px;
+            width: 18px;
           }
         }
       }
@@ -858,6 +870,31 @@
       top: 16px;
       z-index: 10;
     }
+    &.active{
+      .card{
+        .init-hidden {
+          opacity: 1;
+        }
+        .group-ratings {
+        display: block;
+      }
+      .card-text {
+        margin-top: 0;
+      }
+      .location {
+        opacity: 1;
+        visibility: visible;
+      }
+      .event-block {
+        .like-btn {
+          opacity: 0;
+        }
+        .progress-block {
+          display: none;
+        }
+      }
+      }
+    }
   }
   .card {
     @include transition(all 0.5s);
@@ -876,27 +913,7 @@
       @include transition(margin-top 0.3s);
     }
     &:hover {
-      .init-hidden {
-        opacity: 1;
-      }
-      .group-ratings {
-        display: block;
-      }
-      .card-text {
-        margin-top: 0;
-      }
-      .location {
-        opacity: 1;
-        visibility: visible;
-      }
-      .event-block {
-        .like-btn {
-          opacity: 0;
-        }
-        .progress-block {
-          display: none;
-        }
-      }
+      
     }
     .card-body {
       @include transition(transform 0.3s);
@@ -955,6 +972,7 @@
       -webkit-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
       -ms-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
       -moz-box-shadow: 0px 5px 10px rgba(65, 65, 65, 0.25);
+      overflow: initial;
       &:hover {
         .card-action-block {
           .btn-wrap {
@@ -980,7 +998,22 @@
         bottom: auto;
         top: 73px;
       }
-
+      .dropdown-outer{
+        .more-btn{
+          background: transparent;
+          border: none;
+          padding: 0;
+          display: inline-block!important;
+          font-size: 14px;
+          line-height: 19px;
+          color: $black-primary;
+          border-radius: 0;
+          vertical-align: text-bottom;
+          &:hover{
+            color: $black-primary;
+          }
+        }
+      }
       .location {
         opacity: 1;
         visibility: visible;
@@ -1091,6 +1124,9 @@
               flex: 0 0 166px;
               width: 166px;
               .text-wrap {
+                .gray-text{
+                  color: $gray-primary;
+                }
                 span {
                   em {
                     font-size: 12px;
@@ -1142,6 +1178,30 @@
               min-height: 40px;
               line-height: normal;
               padding: 6px 17px;
+              min-width: 172px;
+              max-width: 172px;
+              flex: 0 0 172px;
+              font-size: 15px;
+              display: flex!important;
+              align-items: center;
+              justify-content: space-between;
+               &.gray-btn{
+                  &:focus
+                  .icon-wrap{
+                    svg{
+                      fill:$middle-gray;
+                    }
+                  }
+                }
+              @include sm-max{
+                min-width:156px;
+                max-width: 156px;
+                flex: 0 0 156px; 
+              }
+              .icon-wrap{
+                min-width: 20px;
+                flex: 0 0 20px;
+              }
               &:not(.gray-btn) {
                 svg {
                   path {
@@ -1529,4 +1589,28 @@
       }
     }
   }
+}
+.skill-popover{
+  border-color: $primary-border-color;
+  padding: 5px 0;
+  border-radius: 3px;
+  max-height: 200px;
+  overflow-y: auto;
+  min-width: 160px;
+  background: #fff;
+    .arrow{
+      display: none;
+    }
+    .list-group{
+      flex-direction: column;
+      .list-group-item{
+        font-size: 14px;
+        padding:8px 15px;
+        line-height: 20px; 
+        &:active, &:hover{
+          background:$primary-border-color;
+          color: $black-primary;
+        }
+      }
+    }
 }
