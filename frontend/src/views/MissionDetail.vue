@@ -724,7 +724,6 @@
         isStarDisplay: false,
         isThemeDisplay: false,
         isInviteCollegueDisplay: false,
-        isOrganizationDisplay: false,
         isCommentDisplay: false,
         isRecentVolunteerDispaly: false,
         isMissionGoalDisplay: false,
@@ -755,11 +754,10 @@
       };
     },
     mounted() {
-      setTimeout(() => {
-         let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-          tabItem.forEach(function (tabItemEvent) {
-            tabItemEvent.addEventListener("click", tabsHandle);
-          });
+      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+      tabItem.forEach(function (tabItemEvent) {
+        tabItemEvent.addEventListener("click", tabsHandle);
+      });
 
       function tabsHandle(tabsEvent) {
 
@@ -777,8 +775,6 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
-      }, 1000);
-
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
@@ -1074,8 +1070,6 @@
             }
 
             this.searchUsers();
-
-            this.isOrganizationDisplay = !this.isOrganizationDetailsEmpty();
           })
         } else {
           this.$router.push('/404');
@@ -1211,15 +1205,6 @@
           tabLinks[i].className = tabLinks[i].className.replace("active", "");
         }
         tabsEvent.currentTarget.className += " active";
-      },
-
-      isOrganizationDetailsEmpty() {
-          let organizationDetails = this.missionDetail.organisation_detail.replace(/<div>/g, '')
-            .replace(/<\/div>/g, '')
-            .replace(/\n/g, '')
-            .replace(/ /g, '');
-
-          return organizationDetails === '';
       }
     },
     created() {
