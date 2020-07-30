@@ -160,12 +160,21 @@ let routes = [
     },
     {
         path: '/payment',
-        name: 'DonationAccountPaymentMethod',
+        name: 'donationAccountPaymentMethod',
         meta: {
             requiresAuth: true
         },
         component: () =>
           import ('./views/DonationAccountPaymentMethod.vue')
+    },recurring-
+    {
+        path: '/recurring-payment',
+        name: 'donationAccountRecurringPayment',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+          import ('./views/DonationAccountRecurringPayment.vue')
     },
     {
         path: '/my-account',

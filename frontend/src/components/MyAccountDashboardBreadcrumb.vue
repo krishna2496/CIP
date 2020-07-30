@@ -25,7 +25,7 @@
             </b-link>
         </li>
         <li>
-            <b-link href="#" :title="languageData.label.payment_method">
+            <b-link href="#" :title="languageData.label.payment_method" @click="redirectToPage('payment')">
                 <i class="payment-icon">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 300.346 300.346" style="enable-background:new 0 0 300.346 300.346;" xml:space="preserve">
                         <g>
@@ -62,7 +62,7 @@
             </b-link>
         </li>
         <li>
-            <b-link href="#" :title="languageData.label.recurring_payments">
+            <b-link href="#" :title="languageData.label.recurring_payments" @click="redirectToPage('recurring-payment')">
                 <i class="recurrence-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17" width="18" height="17">
                         <g id="Table 3">
@@ -212,7 +212,11 @@ export default {
             this.selectTimeZone = value;
 		},
 		redirectToPage(pageName) {
-
+            if(this.$route.name !== pageName) {
+                this.$router.push({ path: pageName })
+            } else {
+                return false;
+            }
 		}
     },
     created() {
