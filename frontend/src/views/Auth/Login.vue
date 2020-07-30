@@ -173,6 +173,10 @@
                 store.commit('policyPage',null)
               }
             });
+            if (this.$route.params.navigateToPrevUrl) {
+              this.$router.back();
+              return;
+            }
             this.$router.replace({
               name: "home"
             });

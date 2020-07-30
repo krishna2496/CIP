@@ -69,7 +69,10 @@ router.beforeEach(async(to, from, next) => {
 
         entryUrl = to.path;
         next({
-            name: "login"
+            name: "login",
+            params: {
+                navigateToPrevUrl: true
+            }
         });
         return;
     }
