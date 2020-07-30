@@ -145,6 +145,7 @@ class UserRepository implements UserInterface
             language_id,
             title,
             expiry,
+            invitation_sent_at,
             pseudonymize_at,
             MIN(activity_log.date) as first_login,
             MAX(activity_log.date) as last_login
