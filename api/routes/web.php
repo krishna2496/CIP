@@ -111,6 +111,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/invite-user', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\User\UserController@inviteUser']);
 
+    $router->patch('/app/create-password', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@createPassword']);
+
     /* Fetch dashboard data for users */
     $router->get('/app/dashboard', ['as' => 'app.user',
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
