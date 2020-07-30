@@ -57,8 +57,8 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual'];
+    'publication_status', 'organisation_id', 'mission_type',
+    'organisation_detail', 'availability_id', 'is_virtual','organisation_name'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -400,5 +400,4 @@ class Mission extends Model
     {
         return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
     }
-
 }

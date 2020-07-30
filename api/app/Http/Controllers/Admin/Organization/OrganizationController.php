@@ -114,7 +114,7 @@ class OrganizationController extends Controller
             [
                 "name" => "required|max:255",
                 "legal_number" => "max:255",
-                "phone_number" => "numeric|digits:120",
+                "phone_number" => "max:120",
                 "address_line_1" => "max:255",
                 "address_line_2" => "max:255",
                 "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
@@ -183,7 +183,7 @@ class OrganizationController extends Controller
                 [
                     "name" => "sometimes|required|max:255",
                     "legal_number" => "max:255",
-                    "phone_number" => "numeric|digits:120",
+                    "phone_number" => "max:120",
                     "address_line_1" => "max:255",
                     "address_line_2" => "max:255",
                     "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",

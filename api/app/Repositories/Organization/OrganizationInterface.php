@@ -47,4 +47,12 @@ interface OrganizationInterface
     * @return Illuminate\Pagination\LengthAwarePaginator
     */
     public function getOrganizationList(Request $request): LengthAwarePaginator;
+
+    /**
+    * find the organization.
+    *
+    * @param  int  $organizationId
+    * @return App\Models\Organization
+    */
+    public function find($organizationId);
 }

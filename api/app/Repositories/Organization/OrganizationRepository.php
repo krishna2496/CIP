@@ -6,6 +6,7 @@ use App\Repositories\Organization\OrganizationInterface;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use \Illuminate\Pagination\LengthAwarePaginator;
+use Ramsey\Uuid\Uuid;
 
 class OrganizationRepository implements OrganizationInterface
 {
@@ -35,6 +36,7 @@ class OrganizationRepository implements OrganizationInterface
     public function store(Request $request): Organization
     {
         // Store organization details
+        $request->request->add(['organization_id'=> Uuid::uuid4()->toString()]);
         $organization = $this->organization->create($request->all());
 
         return $organization;
@@ -98,5 +100,16 @@ class OrganizationRepository implements OrganizationInterface
         }
 
         return $organizationData->paginate($request->perPage);
+    }
+
+    /**
+     * find organization.
+     *
+     * @param string $organizationId
+     * @return App\Models\Organization
+     */
+    public function find($organizationId)
+    {
+        return $this->organization->find($organizationId);
     }
 }

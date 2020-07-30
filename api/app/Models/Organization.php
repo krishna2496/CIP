@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
-use Ramsey\Uuid\Uuid;
 
 class Organization extends Model
 {
@@ -31,6 +30,7 @@ class Organization extends Model
      * @var array
      */
     protected $fillable = [
+        'organization_id',
         'name',
         'legal_number',
         'phone_number',
@@ -65,19 +65,4 @@ class Organization extends Model
         'country_id',
         'postal_code',
     ];
-
-    /**
-     * Binds creating/saving events to create UUIDs.
-     *
-     * @return void
-     */
-    public static function boot()
-    {
-        parent::boot();
-        
-        static::creating(function ($model) {
-            // Generate UUID
-            $model->organization_id = Uuid::uuid4()->toString();
-        });
-    }
 }

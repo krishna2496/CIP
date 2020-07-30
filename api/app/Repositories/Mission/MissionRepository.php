@@ -88,6 +88,24 @@ class MissionRepository implements MissionInterface
      */
     public function store(Request $request): Mission
     {
+        // Create or update organization
+        if (isset($request->organization)) {
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organization['organization_id']],
+                $request->organization
+            );
+        }
+
+        if (isset($request->organisation)) {
+            $organisation = $request->organisation;
+            $organisation['name'] = $organisation['organisation_name'];
+            $request->request->add(['organisation' => $organisation]);
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organisation['organisation_id']],
+                $request->organisation
+            );
+        }
+
         $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $missionData = array(
@@ -99,14 +117,18 @@ class MissionRepository implements MissionInterface
                 'total_seats' => (isset($request->total_seats) && ($request->total_seats !== '')) ?
                  $request->total_seats : null,
                 'publication_status' => $request->publication_status,
-                'organisation_id' => $request->organisation['organisation_id'],
-                'organisation_name' => $request->organisation['organisation_name'],
+                'organisation_id' => (!empty($organization->organization_id)) ? $organization->organization_id
+                 : $request->organisation['organisation_id'],
                 'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
                 $request->organisation['organisation_detail'] : null,
                 'availability_id' => $request->availability_id,
                 'mission_type' => $request->mission_type,
                 'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
             );
+
+        $missionData['organisation_name'] = (!empty($organization)) ? $organization->name :
+            $request->organisation['organisation_name'];
+
 
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
@@ -222,11 +244,8 @@ class MissionRepository implements MissionInterface
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
 
-        if (isset($request->organisation['organisation_id'])) {
+        if (empty($request->organization) && isset($request->organisation['organisation_id'])) {
             $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
-        }
-        if (isset($request->organisation['organisation_name'])) {
-            $request->request->add(['organisation_name' => $request->organisation['organisation_name']]);
         }
         if (isset($request->organisation['organisation_detail'])) {
             $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
@@ -244,6 +263,31 @@ class MissionRepository implements MissionInterface
 
         if (isset($request->theme_id) && ($request->theme_id === '')) {
             $request->request->set('theme_id', null);
+        }
+
+        // Create or update organization
+        if (isset($request->organization)) {
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organization['organization_id']],
+                $request->organization
+            );
+        }
+
+        if (isset($request->organisation)) {
+            $organisation = $request->organisation;
+            if (!empty($organisation['organisation_name'])) {
+                $organisation['name'] = $organisation['organisation_name'];
+                $request->request->add(['organisation' => $organisation]);
+            }
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organisation['organisation_id']],
+                $request->organisation
+            );
+        }
+
+        if (!empty($organization)) {
+            $request->request->add(['organisation_id' => $organization->organization_id]);
+            $request->request->add(['organisation_name' => $organization->name]);
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -392,7 +436,8 @@ class MissionRepository implements MissionInterface
             'country.languages',
             'missionLanguage',
             'timeMission',
-            'goalMission'
+            'goalMission',
+            'organization'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
@@ -1109,8 +1154,8 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config('constants.RELATED_MISSION_LIMIT'));
 
-        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
-        : (($relatedCityCount === 0) && ($relatedCountryCount > 0))
+        $missionQuery = (($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount === 0) && ($relatedCountryCount > 0)))
         ? $missionQuery->where('country_id', $mission->country_id)
         : $missionQuery->where('theme_id', $mission->theme_id);
 
