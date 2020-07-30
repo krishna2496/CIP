@@ -30,6 +30,62 @@ class DashboardService
         }
         
         return $volunteeringRank;
+    }
 
+    /**
+     * Get donated amount
+     *
+     */
+    public function getDonatedAmount()
+    {
+        return 55897.78;
+    }
+
+    /**
+     * Get contribution count
+     *
+     */
+    public function getContributionCount()
+    {
+        return 89;
+    }
+
+    /**
+     * Get matched
+     *
+     */
+    public function getMatched()
+    {
+        return 2548;
+    }
+
+    /**
+     * Get payroll donation
+     *
+     */
+    public function getPayrollDonation()
+    {
+        return 254.78;
+    }
+
+    /**
+     * Get volunteering grants
+     *
+     */
+    public function getVolunteeringGrants()
+    {
+        return 150;
+    }
+
+    /**
+     * Get tracked hours this year
+     *
+     */
+    public function getTrackedHoursThisYears()
+    {
+        return [
+            'completed_hours' => 792,
+            'goal' => 500
+        ];
     }
 }

@@ -139,6 +139,12 @@ class DashboardController extends Controller
         $apiData['total_goal_hours'] = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;
         $apiData['completed_goal_hours'] = (int)($totalGoals / 60);
         $apiData['chart'] = $chartData;
+        $apiData['donated_amount'] = $this->dashboardService->getDonatedAmount();
+        $apiData['contribution_count'] = $this->dashboardService->getContributionCount();
+        $apiData['matched'] = $this->dashboardService->getMatched();
+        $apiData['payroll_donation'] = $this->dashboardService->getPayrollDonation();
+        $apiData['volunteering_grants'] = $this->dashboardService->getVolunteeringGrants();
+        $apiData['tracked_hours'] = $this->dashboardService->getTrackedHoursThisYears();
         
         // Set response data
         $apiStatus = Response::HTTP_OK;
