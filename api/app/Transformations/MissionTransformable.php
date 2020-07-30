@@ -15,7 +15,7 @@ trait MissionTransformable
      * @param int $defaultTenantLanguage
      * @param string $timezone
      * @param object $tenantLanguages
-     * @param object $userCurrency
+     * @param array $userCurrency
      * @return App\Models\Mission
      */
     protected function transformMission(
@@ -25,7 +25,7 @@ trait MissionTransformable
         int $defaultTenantLanguage,
         string $timezone,
         object $tenantLanguages = null,
-        object $userCurrency = null
+        array $userCurrency = null
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
@@ -211,7 +211,7 @@ trait MissionTransformable
             foreach ($impactDonationMissionInfo as $impactDonationKey => $impactDonationValue) {
                 $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
                 $impactDonationLanguageArray['languages'] = [];
-                if(isset($impactDonationValue['get_mission_impact_donation_detail'])){
+                if (isset($impactDonationValue['get_mission_impact_donation_detail'])) {
                     foreach ($impactDonationValue['get_mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
                         $languageCode = $tenantLanguages->where('language_id', $impactDonationLanguadeValue['language_id'])->first()->code;
                         $impactDonationLanguage['language_id'] = $impactDonationLanguadeValue['language_id'];
@@ -233,7 +233,7 @@ trait MissionTransformable
                 $impactMissionDetails['sort_key'] = $impactMissionValue['sort_key'];
                 $impactMissionDetails['icon'] = $impactMissionValue['icon'];
                 $impactMissionDetails["languages"] = [];
-                if(isset($impactMissionValue['mission_impact_language_details'])){
+                if (isset($impactMissionValue['mission_impact_language_details'])) {
                     foreach ($impactMissionValue['mission_impact_language_details'] as $impactMissionLanguageValue) {
                         $languageCode = $tenantLanguages->where('language_id', $impactMissionLanguageValue['language_id'])
                             ->first()->code;
@@ -248,7 +248,7 @@ trait MissionTransformable
             }
         }
 
-        // Add user currency 
+        // Add user currency
         $mission['user_currency'] = $userCurrency;
       
         return $mission;

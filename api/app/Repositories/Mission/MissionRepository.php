@@ -1734,9 +1734,9 @@ class MissionRepository implements MissionInterface
      * Get user selected currency details
      *
      * @param Illuminate\Http\Request $request
-     * @return object
+     * @return array
      */
-    public function getUserCurrencyDetails(Request $request) : object
+    public function getUserCurrencyDetails(Request $request) : array
     {
         $userDetail = DB::table('user')->where('user_id', $request->auth->user_id)->get()->toArray();
         $userCurrencyCode = isset($userDetail['currency']) ? $userDetail['currency'] : 'EUR';
@@ -1749,7 +1749,7 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        $currencyObject = (object)[
+        $currencyObject = [
             'code' => $userCurrencyCode,
             'symbol' => $userCurrencySymbol
         ];
