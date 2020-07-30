@@ -81,7 +81,6 @@
               .catch(() => {
                 import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
               }).finally(() => {
-                  import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
                 document.body.classList.remove("loader-enable");
                 this.stylesLoaded = true;
             });
