@@ -306,7 +306,7 @@ class UserController extends Controller
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "max:16",
-				"nullable",
+                "nullable",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
@@ -353,14 +353,47 @@ class UserController extends Controller
             }
         }
 
+        $request->expiry = (isset($request->expiry) && $request->expiry)
+            ? $request->expiry : null;
+
+        if (isset($request->status)) {
+            $request->status = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
         //Remove params
         $request->request->remove("email");
 
         // Update user filter
         $this->userFilterRepository->saveFilter($request);
 
+        $userDetail = $this->userRepository->find($id);
+        $requestData = $request->toArray();
+        // Skip updaing pseudonymize fields
+        if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
+            $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+            foreach ($pseudonymizeFields as $field) {
+                if (array_key_exists($field, $requestData)) {
+                    unset($requestData[$field]);
+                }
+            }
+
+
+            if (array_key_exists('pseudonymize_at', $requestData)) {
+                unset($requestData['pseudonymize_at']);
+            }
+        }
+
+        // Set user status to inactive when pseudonymized
+        if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
+            array_key_exists('pseudonymize_at', $requestData)
+        ) {
+            $requestData['status'] = config('constants.user_statuses.INACTIVE');
+        }
+
         // Update user
-        $user = $this->userRepository->update($request->toArray(), $id);
+        $user = $this->userRepository->update($requestData, $id);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -375,6 +408,8 @@ class UserController extends Controller
             $this->userRepository->deleteSkills($id);
             $this->userRepository->linkSkill($request->toArray(), $id);
         }
+
+        $this->helpers->syncUserData($request, $user);
 
         // Set response data
         $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
@@ -426,8 +461,7 @@ class UserController extends Controller
         $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
         $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
 
-        $userData['avatar'] = $imagePath;
-        $this->userRepository->update($userData, $userId);
+        $this->userRepository->update(['avatar' => $imagePath], $userId);
 
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');

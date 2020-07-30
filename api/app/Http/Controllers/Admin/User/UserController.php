@@ -141,7 +141,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-       
+
         $statistics = $this->userService->statistics($user, $request->all());
 
         $data = $statistics;
@@ -240,34 +240,39 @@ class UserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $fieldsToValidate = [
+            "first_name" => "sometimes|required|max:16",
+            "last_name" => "sometimes|required|max:16",
+            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
+            "password" => "required|min:8",
+            "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+            "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "language_id" => "sometimes|required|int",
+            "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
+            "profile_text" => "sometimes|required",
+            "employee_id" => "max:16|
+            unique:user,employee_id,NULL,user_id,deleted_at,NULL",
+            "department" => "max:16",
+            "linked_in_url" => "url|valid_linkedin_url",
+            "why_i_volunteer" => "sometimes|required",
+            "expiry" => "sometimes|date|nullable",
+            "status" => [
+                "sometimes",
+                Rule::in(config('constants.user_statuses'))
+            ],
+            "position" => "sometimes|nullable"
+        ];
+
+        if (is_array($request->skills)) {
+            $fieldsToValidate['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
+        }
+
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            [
-                "first_name" => "sometimes|required|max:16",
-                "last_name" => "sometimes|required|max:16",
-                "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-                "password" => "required|min:8",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-                "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "language_id" => "sometimes|required|int",
-                "city_id" => "integer|sometimes|required|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
-                "profile_text" => "sometimes|required",
-                "employee_id" => "max:16|
-                unique:user,employee_id,NULL,user_id,deleted_at,NULL",
-                "department" => "max:16",
-                "linked_in_url" => "url|valid_linkedin_url",
-                "why_i_volunteer" => "sometimes|required",
-                "expiry" => "sometimes|date|nullable",
-                "status" => [
-                    "sometimes",
-                    Rule::in(config('constants.user_statuses'))
-                ],
-                "position" => "sometimes|nullable"
-            ]
+            $fieldsToValidate
         );
-
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -290,18 +295,11 @@ class UserController extends Controller
             }
         }
 
-        $requestData = $request->toArray();
-        $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+        $request->expiry = (isset($request->expiry) && $request->expiry)
             ? $request->expiry : null;
-        $requestData['status'] = config('constants.user_statuses.ACTIVE');
-        if (isset($request->status)) {
-            $requestData['status'] = $request->status
-                ? config('constants.user_statuses.ACTIVE')
-                : config('constants.user_statuses.INACTIVE');
-        }
 
         // Create new user
-        $user = $this->userRepository->store($requestData);
+        $user = $this->userRepository->store($request->toArray());
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -314,6 +312,10 @@ class UserController extends Controller
         // Remove password before logging it
         $request->request->remove("password");
 
+        if ($request->skills && is_array($request->skills)) {
+            $this->userRepository->linkSkill($request->toArray(), $user->user_id);
+        }
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USERS'),
@@ -325,6 +327,7 @@ class UserController extends Controller
             null,
             $user->user_id
         ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -400,11 +403,36 @@ class UserController extends Controller
             }
 
             $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
-                ? $request->expiry : null;
+            ? $request->expiry : null;
             if (isset($request->status)) {
                 $requestData['status'] = $request->status
                     ? config('constants.user_statuses.ACTIVE')
                     : config('constants.user_statuses.INACTIVE');
+            }
+
+
+            $userDetail = $this->userRepository->find($id);
+
+            // Skip updaing pseudonymize fields
+            if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
+                $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+                foreach ($pseudonymizeFields as $field) {
+                    if (array_key_exists($field, $requestData)) {
+                        unset($requestData[$field]);
+                    }
+                }
+
+
+                if (array_key_exists('pseudonymize_at', $requestData)) {
+                    unset($requestData['pseudonymize_at']);
+                }
+            }
+
+            // Set user status to inactive when pseudonymized
+            if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
+                array_key_exists('pseudonymize_at', $requestData)
+            ) {
+                $requestData['status'] = config('constants.user_statuses.INACTIVE');
             }
 
             // Update user
@@ -420,6 +448,13 @@ class UserController extends Controller
 
             // Remove password before logging it
             $request->request->remove("password");
+
+            if (is_array($request->skills)) {
+                $this->userRepository->deleteSkills($id);
+                if ($request->skills) {
+                    $this->userRepository->linkSkill($request->toArray(), $id);
+                }
+            }
 
             // Make activity log
             event(new UserActivityLogEvent(
@@ -451,7 +486,8 @@ class UserController extends Controller
                 "sometimes",
                 "required",
                 "email",
-                Rule::unique('user')->ignore($id, 'user_id')],
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
+            ],
             "password" => "sometimes|required|min:8",
             "employee_id" => [
                 "sometimes",
@@ -470,8 +506,32 @@ class UserController extends Controller
                 "sometimes",
                 Rule::in(config('constants.user_statuses'))
             ],
-            "position" => "sometimes|nullable"
+            "position" => "sometimes|nullable",
+
         ];
+
+        if (array_key_exists('skills', $requestData)) {
+            $fieldsToValidate['skills'] = 'array';
+            $fieldsToValidate['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
+        }
+
+        $pseudomizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+        if (array_key_exists('pseudonymize_at', $requestData)) {
+            $user = $this->userService->findById($id);
+            if ($user->pseudonymize_at === '0000-00-00 00:00:00' || $user->pseudonymize_at === null) {
+                foreach ($pseudomizeFields as $field) {
+                    $rules = ['sometimes', 'required'];
+
+                    if ($field === 'email') {
+                        $fieldsToValidate[$field] = array_push($rules, 'email');
+                    } else if ($field === 'linked_in_url') {
+                        $fieldsToValidate[$field] = array_push($rules, 'valid_linkedin_url');
+                    }
+
+                    $fieldsToValidate[$field] = implode('|', $rules);
+                }
+            }
+        }
 
         $nullableFields = [
             'employee_id',
@@ -483,7 +543,6 @@ class UserController extends Controller
             'city_id',
             'country_id'
         ];
-
         foreach ($nullableFields as $field) {
             if (array_key_exists($field, $requestData) && !$requestData[$field]) {
                 $fieldsToValidate[$field] = 'nullable';
@@ -504,6 +563,7 @@ class UserController extends Controller
         try {
             $user = $this->userRepository->delete($id);
             $this->notificationRepository->deleteAllNotifications($id);
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');

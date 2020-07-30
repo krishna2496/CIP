@@ -29,15 +29,15 @@ class UserCustomField extends Model
     *
     * @var array
     */
-    protected $fillable = ['name', 'type', 'translations', 'is_mandatory', 'internal_note'];
+    protected $fillable = ['order', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
-
+    protected $visible = ['field_id', 'order', 'name', 'type', 'translations', 'is_mandatory', 'internal_note'];
+    
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
