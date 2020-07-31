@@ -10,9 +10,9 @@ export default async() => {
       }
 
       // Add the CSS to the page
-      // document
-      //   .getElementById("customCss")
-      //   .setAttribute("href", custom_css);
+      document
+        .getElementById("customCss")
+        .setAttribute("href", custom_css);
 
       return Promise.resolve();
     });
