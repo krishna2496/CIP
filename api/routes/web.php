@@ -26,7 +26,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
-    
+
     /* Password reset routing */
     $router->post('/reset-password/{token}', ['as' => 'password.reset',
         'uses' => 'App\Auth\AuthController@reset_password']);
@@ -843,3 +843,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
             );
         }
     );
+
+    /* health check */
+    $router->group(
+        ['prefix' => '/health'],
+        function ($router) {
+
+            $router->get(
+                '/',
+                ['uses' => 'App\Timezone\TimezoneController@index']
+            );
+        }
+    );
+
