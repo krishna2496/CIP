@@ -7,8 +7,8 @@ use Illuminate\Http\Response;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
-use Illuminate\Support\Str;
 use App\Services\Mission\ModelsService;
+use Ramsey\Uuid\Uuid;
 
 class MissionTabRepository implements MissionTabInterface
 {
@@ -66,7 +66,7 @@ class MissionTabRepository implements MissionTabInterface
         $languages = $this->languageHelper->getLanguages();
 
         $missionTabArray = [
-            'mission_tab_id' => (String) Str::uuid(),
+            'mission_tab_id' => Uuid::uuid4()->toString(),
             'mission_id' => $missionId,
             'sort_key' => $missionTabValue['sort_key']
         ];
@@ -74,7 +74,7 @@ class MissionTabRepository implements MissionTabInterface
         foreach ($missionTabValue['translations'] as $missionTabLanguageValue) {
             $language = $languages->where('code', $missionTabLanguageValue['lang'])->first();
             $missionTabLangArray = [
-                'mission_tab_language_id' => (String) Str::uuid(),
+                'mission_tab_language_id' => Uuid::uuid4()->toString(),
                 'mission_tab_id' => $missionTab['mission_tab_id'],
                 'language_id' => $language->language_id,
                 'name' => $missionTabLanguageValue['name'],
@@ -104,7 +104,7 @@ class MissionTabRepository implements MissionTabInterface
         if (isset($missionTabValue['translations'])) {
             foreach ($missionTabValue['translations'] as $missionTabLangValue) {
                 $language = $languages->where('code', $missionTabLangValue['lang'])->first();
-                $missionTabLangArray['mission_tab_language_id'] = (String) Str::uuid();
+                $missionTabLangArray['mission_tab_language_id'] = Uuid::uuid4()->toString();
                 $missionTabLangArray['mission_tab_id'] = $missionTabId;
                 $missionTabLangArray['language_id'] = $language->language_id;
                                 
