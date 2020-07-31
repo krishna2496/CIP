@@ -1,8 +1,8 @@
 <template>
 <div>
     <ul class="profile-navs">
-        <li class="active">
-            <b-link href="#" :title="languageData.label.profile" @click="redirectToPage('myAccount')">
+        <li v-bind:class="{ active: isProfileActive }">
+            <b-link href="#" :title="languageData.label.profile" @click="redirectToPage('my-account')">
                 <i class="profile-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 26" width="27" height="26">
                         <g id="Main Content">
@@ -15,7 +15,7 @@
                 {{languageData.label.profile}}
             </b-link>
         </li>
-        <li @click="$refs.settingsModal.show()">
+        <li @click="settingModalShow()" v-bind:class="{ active: isSettingActive }">
             <b-link href="#" :title="languageData.label.settings">
                 <i class="settings-icon">
                     <svg id="Layer_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,7 @@
                     </svg> </i>{{languageData.label.settings}}
             </b-link>
         </li>
-        <li>
+        <li v-bind:class="{ active: isPaymentActive }">
             <b-link href="#" :title="languageData.label.payment_method" @click="redirectToPage('payment')">
                 <i class="payment-icon">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 300.346 300.346" style="enable-background:new 0 0 300.346 300.346;" xml:space="preserve">
@@ -61,7 +61,7 @@
                     </svg> </i>{{languageData.label.payment_method}}
             </b-link>
         </li>
-        <li>
+        <li v-bind:class="{ active: isRecurringPaymentActive }">
             <b-link href="#" :title="languageData.label.recurring_payments" @click="redirectToPage('recurring-payment')">
                 <i class="recurrence-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17" width="18" height="17">
@@ -77,7 +77,7 @@
                 {{languageData.label.recurring_payments}}
             </b-link>
         </li>
-        <li>
+        <li v-bind:class="{ active: isPreviewProfileActive }">
             <b-link href="#" :title="languageData.label.preview_profile">
                 <i class="preview-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 33" width="32" height="33">
@@ -88,7 +88,7 @@
             </b-link>
         </li>
     </ul>
-    <b-modal ref="settingsModal" :modal-class="'settings-modal'" centered hide-footer>
+    <b-modal ref="settingsModal" :modal-class="'settings-modal'" centered hide-footer @hide="closeSetting()">
         <template slot="modal-header" slot-scope="{ close }">
             <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
             <h5 class="modal-title">
@@ -101,7 +101,7 @@
         <form action class="form-wrap">
             <div class="checkbox-group-wrap">
                 <b-form-group class="site-checkbox">
-                    <b-form-checkbox class="custom-control-input">{{languageData.label.allow_all_my}} <strong>{{languageData.label.co_workers}}</strong>{{languageData.label.to_see_my_profile}}
+                    <b-form-checkbox class="custom-control-input">{{languageData.label.allow_all_my}} <strong>{{languageData.label.co_workers}} </strong>{{languageData.label.to_see_my_profile}}
                     </b-form-checkbox>
                 </b-form-group>
                 <b-form-group class="site-checkbox">
@@ -125,9 +125,6 @@
 </template>
 
 <script>
-import {
-    setTimeout
-} from "timers";
 import constants from '../constant';
 import store from "../store";
 import {
@@ -138,46 +135,9 @@ export default {
         ModelSelect,
     },
     name: "Breadcrumb",
-    props: {
-        breadcrumbActive: String
-    },
     data() {
         return {
-            isStoryDisplay: true,
-            isCommentDisplay: true,
-            isMessageDisplay: true,
             languageData: [],
-            items: [{
-                    id: 1,
-                    name: '',
-                    link: "dashboard"
-                },
-                {
-                    id: 2,
-                    name: '',
-                    link: "volunteering-history"
-                },
-                {
-                    id: 3,
-                    name: '',
-                    link: "volunteering-timesheet"
-                },
-                {
-                    id: 4,
-                    name: "",
-                    link: "messages"
-                },
-                {
-                    id: 5,
-                    name: "",
-                    link: "comment-history"
-                },
-                {
-                    id: 6,
-                    name: "",
-                    link: "my-stories"
-                }
-            ],
             timeList: [{
                     value: "0",
                     text: "GMT-4"
@@ -196,31 +156,62 @@ export default {
                 },
             ],
             selectTimeZone: "GMT-4",
-            timeDefault: "Select your timezone",
+            isProfileActive: false,
+            isSettingActive: false,
+            isPaymentActive: false,
+            isRecurringPaymentActive: false,
+            isPreviewProfileActive: false
         };
     },
     methods: {
-        handleBreadcrumb() {
-            if (screen.width < 768) {
-                let breadcrumbDropdown = document.querySelector(
-                    ".breadcrumb-dropdown-wrap"
-                );
-                breadcrumbDropdown.classList.toggle("open");
-            }
-        },
         updateTime(value) {
             this.selectTimeZone = value;
-		},
-		redirectToPage(pageName) {
-            if(this.$route.name !== pageName) {
-                this.$router.push({ path: pageName })
+        },
+        redirectToPage(pageName) {
+            if (this.$route.name !== pageName) {
+                this.$router.push({
+                    path: pageName
+                })
             } else {
                 return false;
             }
-		}
+        },
+        settingModalShow() {
+            this.$refs.settingsModal.show();
+            const settingPath = `${this.$route.path}#setting`;
+            this.$router.push(settingPath)
+            this.isSettingActive = true
+            this.isProfileActive = false
+            this.isPaymentActive = false
+            this.isRecurringPaymentActive = false
+        },
+        closeSetting() {
+            this.$router.push(this.$route.path)
+            this.isSettingActive = false;
+            if (this.$route.path == '/my-account') {
+                this.isProfileActive = true
+            }
+            if (this.$route.path == '/payment') {
+                this.isPaymentActive = true
+            }
+            if (this.$route.path == '/recurring-payment') {
+                this.isRecurringPaymentActive = true
+            }
+        }
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
+        console.log(this.$route.path)
+        if (this.$route.path == '/my-account') {
+            this.isProfileActive = true
+        }
+
+        if (this.$route.path == '/payment') {
+            this.isPaymentActive = true
+        }
+        if (this.$route.path == '/recurring-payment') {
+            this.isRecurringPaymentActive = true
+        }
     }
 };
 </script>

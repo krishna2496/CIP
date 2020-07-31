@@ -166,7 +166,7 @@ let routes = [
         },
         component: () =>
           import ('./views/DonationAccountPaymentMethod.vue')
-    },recurring-
+    },
     {
         path: '/recurring-payment',
         name: 'donationAccountRecurringPayment',
