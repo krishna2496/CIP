@@ -6,6 +6,7 @@
         "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",
         "build-staging": "vue-cli-service build --mode staging",
+        "build-preprod": "vue-cli-service build --mode preprod",
         "lint": "vue-cli-service lint",
         "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
     },
@@ -26,6 +27,7 @@
         "vue-backtotop": "^1.6.1",
         "vue-ckeditor2": "^2.1.5",
         "vue-i18n": "^8.0.0",
+        "vue-multiselect": "^2.1.6",
         "vue-owl-carousel": "^2.0.3",
         "vue-router": "^3.0.3",
         "vue-scrollto": "^2.15.0",

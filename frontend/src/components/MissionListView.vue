@@ -492,10 +492,10 @@
         })
       },
       // Apply for mission
-      applyForMission(missionId) {
+      applyForMission(missionDetail) {
         let missionData = {};
-        missionData.mission_id = missionId;
-        missionData.availability_id = 1;
+        missionData.mission_id = missionDetail.mission_id;
+        missionData.availability_id = missionDetail.availability_id;
         applyMission(missionData).then(response => {
           if (response.error == true) {
             this.makeToast("danger", response.message);

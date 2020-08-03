@@ -493,7 +493,6 @@ class TimesheetRepository implements TimesheetInterface
         ->where([
             'publication_status' => config("constants.publication_status")["APPROVED"],
             'mission_type'=> $missionType])
-        ->whereRaw('CURDATE() <= date(DATE_ADD(end_date, INTERVAL '.$extraWeeks.' WEEK))')
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
@@ -525,6 +524,7 @@ class TimesheetRepository implements TimesheetInterface
             )
             ->where('user_id', $userId);
         }]);
+
         return $timesheet->paginate($request->perPage);
     }
 
@@ -763,6 +763,49 @@ class TimesheetRepository implements TimesheetInterface
         $timesheetQuery->whereIn('status', $statusArray);
 
         return $timesheetQuery;
+    }
+
+    /**
+     * Get specific user timesheets stats
+     *
+     * @param App\User $user
+     * @param Array|null $params
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function summary($user, $params = null): Collection
+    {
+        return $user->timesheets()
+            ->selectRaw('
+                COUNT(*) as total_timesheet,
+                MIN(date_volunteered) as first_volunteered_date,
+                SUM(timesheet.action) as total_timesheet_action,
+                SEC_TO_TIME(SUM(
+                    TIME_TO_SEC(timesheet.time)
+                )) as total_timesheet_time,
+                SUM(
+                    TIME_TO_SEC(timesheet.time)
+                ) as total_time_seconds
+            ')
+            ->isApproved()
+            ->isYear($params['year'] ?? null)
+            ->isMonth($params['month'] ?? null)
+            ->get();
+    }
+
+    /**
+     * Get specific user timesheets stats
+     *
+     * @param App\User $user
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function findByUser($user): Collection
+    {
+        return $user->timesheets()
+            ->isApproved()
+            ->orderBy('date_volunteered', 'ASC')
+            ->get();
     }
 
 }

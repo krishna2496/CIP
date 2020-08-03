@@ -286,10 +286,10 @@
                 volunteeringHoursCurrentYear: '',
                 volunteeringHoursWeeks: [],
                 volunteeringHoursWeekName: [],
-                volunteeringHoursMonthArray: [],
-                volunteeringHoursYearArray: [],
-                volunteeringGoalMonthArray: [],
-                volunteeringGoalYearArray: [],
+                volunteeringHoursMonths: [],
+                volunteeringHoursYears: [],
+                volunteeringGoalMonths: [],
+                volunteeringGoalYears: [],
                 volunteeringGoalCurrentMonth: '',
                 volunteeringGoalCurrentYear: '',
                 volunteeringGoalWeeks: [],
@@ -493,7 +493,8 @@
           let latestDate = date - 1
           let latestMonth = 0
           let timeSheetArray = timeArray.timesheet;
-          this.currentTimeData.missionName = timeArray.title
+          this.currentTimeData.missionName = timeArray.title;
+          this.currentTimeData.goal = timeArray.objective;
           let months = '';
           let dates = '';
           if (timeSheetType == "time") {
@@ -503,7 +504,7 @@
                 timeMonthIndex = index
               }
             })
-            latestMonth = this.volunteeringHoursMonthArray[timeMonthIndex]
+            latestMonth = this.volunteeringHoursMonths[timeMonthIndex]
             if (Math.floor(latestMonth) < 10) {
               months = ("0" + Math.floor(latestMonth)).slice(-2);
             } else {
@@ -517,7 +518,7 @@
                 goalMonthIndex = index
               }
             })
-            latestMonth = this.volunteeringGoalMonthArray[goalMonthIndex]
+            latestMonth = this.volunteeringGoalMonths[goalMonthIndex]
             if (Math.floor(latestMonth) < 10) {
               months = ("0" + Math.floor(latestMonth)).slice(-2);
             } else {
@@ -635,8 +636,8 @@
 
           currentDataArray.filter((data, index) => {
             if (data + 1 == date) {
-              currentTimeSheetMonth = parseInt(this.volunteeringHoursMonthArray[index])
-              currentTimeSheetYear = parseInt(this.volunteeringHoursYearArray[index])
+              currentTimeSheetMonth = parseInt(this.volunteeringHoursMonths[index])
+              currentTimeSheetYear = parseInt(this.volunteeringHoursYears[index])
             }
           })
 
@@ -664,8 +665,8 @@
 
           currentDataArray.filter((data, index) => {
             if (data + 1 == date) {
-              currentTimeSheetMonth = parseInt(this.volunteeringGoalMonthArray[index])
-              currentTimeSheetYear = parseInt(this.volunteeringGoalYearArray[index])
+              currentTimeSheetMonth = parseInt(this.volunteeringGoalMonths[index])
+              currentTimeSheetYear = parseInt(this.volunteeringGoalYears[index])
             }
           })
           let goalMonth = '';
@@ -760,8 +761,8 @@
         data.weekdays.shift();
         this.volunteeringHoursWeeks = data.days;
         this.volunteeringHoursWeekName = data.weekdays
-        this.volunteeringHoursMonthArray = data.monthArray,
-          this.volunteeringHoursYearArray = data.yearArray,
+        this.volunteeringHoursMonths = data.monthArray,
+          this.volunteeringHoursYears = data.yearArray,
           setTimeout(() => {
             this.tableLoaderActive = false
           }, 500)
@@ -774,8 +775,8 @@
         data.weekdays.shift();
         this.volunteeringGoalWeeks = data.days
         this.volunteeringGoalWeekName = data.weekdays
-        this.volunteeringGoalMonthArray = data.monthArray,
-          this.volunteeringGoalYearArray = data.yearArray,
+        this.volunteeringGoalMonths = data.monthArray,
+          this.volunteeringGoalYears = data.yearArray,
           setTimeout(() => {
             this.goalsTableLoaderActive = false
           })
@@ -855,16 +856,16 @@
           currentDataArray = this.volunteeringHoursWeeks
           currentDataArray.filter((data, index) => {
             if (data == date) {
-              currentValueMonth = parseInt(this.volunteeringHoursMonthArray[index])
-              currentValueYear = parseInt(this.volunteeringHoursYearArray[index])
+              currentValueMonth = parseInt(this.volunteeringHoursMonths[index])
+              currentValueYear = parseInt(this.volunteeringHoursYears[index])
             }
           })
         } else {
           currentDataArray = this.volunteeringGoalWeeks
           currentDataArray.filter((data, index) => {
             if (data == date) {
-              currentValueMonth = parseInt(this.volunteeringGoalMonthArray[index])
-              currentValueYear = parseInt(this.volunteeringGoalYearArray[index])
+              currentValueMonth = parseInt(this.volunteeringGoalMonths[index])
+              currentValueYear = parseInt(this.volunteeringGoalYears[index])
             }
           })
         }
@@ -963,8 +964,8 @@
           currentDataArray = this.volunteeringHoursWeeks
           currentDataArray.filter((data, index) => {
             if (data + 1 == day) {
-              currentValueMonth = parseInt(this.volunteeringHoursMonthArray[index])
-              currentValueYear = parseInt(this.volunteeringHoursYearArray[index])
+              currentValueMonth = parseInt(this.volunteeringHoursMonths[index])
+              currentValueYear = parseInt(this.volunteeringHoursYears[index])
             }
           })
         } else {
@@ -972,8 +973,8 @@
           currentDataArray = this.volunteeringGoalWeeks
           currentDataArray.filter((data, index) => {
             if (data + 1 == day) {
-              currentValueMonth = parseInt(this.volunteeringGoalMonthArray[index])
-              currentValueYear = parseInt(this.volunteeringGoalYearArray[index])
+              currentValueMonth = parseInt(this.volunteeringGoalMonths[index])
+              currentValueYear = parseInt(this.volunteeringGoalYears[index])
             }
           })
         }
@@ -1062,8 +1063,8 @@
             let currentArrayMonth = timeEntry.month
             let time2 = timeEntry.time;
             if (timeSheetType == "time") {
-              if (this.volunteeringHoursCurrentYear == currentArrayYear) {
-                if (this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+              if (this.volunteeringHoursYears.includes(currentArrayYear)) {
+                if (this.volunteeringHoursMonths.includes(currentArrayMonth)) {
                   let splitTime1 = time1.split(':');
                   let splitTime2 = time2.split(':');
                   hour = parseInt(splitTime1[0]) + parseInt(splitTime2[0]);
@@ -1090,14 +1091,12 @@
                         ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
                     }
                   }
-
                 }
               }
 
             } else {
-              if (this.volunteeringGoalCurrentYear == currentArrayYear) {
-                if (this.volunteeringGoalCurrentMonth == currentArrayMonth) {
-
+              if (this.volunteeringHoursYears.includes(currentArrayYear)) {
+                if (this.volunteeringGoalMonths.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
                     actionApproved = actionApproved + timeEntry.action
@@ -1160,14 +1159,15 @@
         let currentYear = ''
         let currentMonth = ''
         if (timeSheetType == "time") {
-          timeArray = this.timeMissionData;
-          currentYear = this.volunteeringHoursCurrentYear
-          currentMonth = this.volunteeringHoursCurrentMonth
+            timeArray = this.timeMissionData;
+            currentYear = this.volunteeringHoursCurrentYear
+            currentMonth = this.volunteeringHoursCurrentMonth
         } else {
-          timeArray = this.goalMissionData;
-          currentYear = this.volunteeringGoalCurrentYear
-          currentMonth = this.volunteeringGoalCurrentMonth
+            timeArray = this.goalMissionData;
+            currentYear = this.volunteeringGoalCurrentYear
+            currentMonth = this.volunteeringGoalCurrentMonth
         }
+
         if (timeArray) {
           timeArray.filter((timeMission) => {
             let timeSheetArray = timeMission.timesheet;
@@ -1175,8 +1175,8 @@
               timeSheetArray.filter((timeSheet) => {
                 let currentArrayYear = timeSheet.year
                 let currentArrayMonth = timeSheet.month
-                if (currentYear == currentArrayYear) {
-                  if (currentMonth == currentArrayMonth) {
+                if (this.volunteeringHoursYears.includes(currentArrayYear)) {
+                  if (this.volunteeringHoursMonths.includes(currentArrayMonth)) {
                     if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
                       timeSheetId.timesheet_entries.push({
                         'timesheet_id': timeSheet.timesheet_id

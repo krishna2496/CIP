@@ -34,13 +34,13 @@ class AppMessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
         
         $messageId = (json_decode($response->response->getContent())->data->message_id)[0];
         
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->delete('message/' . $messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -156,12 +156,12 @@ class AppMessagesTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * This case will cover three things together
      * Admin : Send message to user
      * User : Get messages list which sent by admin
      * User : Delete messages of user sent by admin
-     * 
+     *
      * @return void
      */
     public function it_should_send_message_to_user_and_get_list_and_delete_messages_from_admin()
@@ -175,8 +175,7 @@ class AppMessagesTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        for ($i=0; $i<5; $i++)
-        {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $params = [
                 "subject" => str_random('50'),
@@ -187,9 +186,9 @@ class AppMessagesTest extends TestCase
                 ]
             ];
             // Add messages from admin side
-            $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+            $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
             ->seeStatusCode(201);
-        }        
+        }
         DB::setDefaultConnection('mysql');
         // Fetch those created message by admin
         $response = $this->get('app/messages', ['token' => $token])
@@ -198,12 +197,11 @@ class AppMessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<5; $i++)
-        {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(204);
         }
         $user->delete();
@@ -211,9 +209,9 @@ class AppMessagesTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should empty list messages from admin
-     * 
+     *
      * @return void
      */
     public function it_should_return_empty_list_messages_from_admin()
@@ -240,9 +238,9 @@ class AppMessagesTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * It should return error, message not found on delete messages from admin
-     * 
+     *
      * @return void
      */
     public function it_should_return_error_message_not_found_on_delete_messages_from_admin()
@@ -256,9 +254,9 @@ class AppMessagesTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        $messageId = rand(50000000000000,500000000000000);
+        $messageId = rand(50000000000000, 500000000000000);
 
-        $this->delete('app/message/'.$messageId, [], ['token' => $token])
+        $this->delete('app/message/' . $messageId, [], ['token' => $token])
         ->seeStatusCode(404);
 
         $user->delete();
@@ -266,9 +264,9 @@ class AppMessagesTest extends TestCase
     
     /**
      * @test
-     * 
+     *
      * It should read message sent from admin
-     * 
+     *
      * @return void
      */
     public function it_should_read_message_sent_from_admin()
@@ -282,8 +280,7 @@ class AppMessagesTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        for ($i=0; $i<5; $i++)
-        {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $params = [
                 "subject" => str_random('50'),
@@ -294,7 +291,7 @@ class AppMessagesTest extends TestCase
                 ]
             ];
             // Add messages from admin side
-            $response = $this->post('message/send', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+            $response = $this->post('message/send', $params, ['Authorization' => Helpers::getBasicAuth()])
             ->seeStatusCode(201);
         }
 
@@ -306,12 +303,11 @@ class AppMessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<5; $i++)
-        {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Read message sent from admin
-            $this->post('app/message/read/'.$message->message_id, [], ['token' => $token])
+            $this->post('app/message/read/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'message',
@@ -322,17 +318,17 @@ class AppMessagesTest extends TestCase
             ]);
             DB::setDefaultConnection('mysql');
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(204);
         }
-        $user->delete();        
+        $user->delete();
     }
 
     /**
      * @test
-     * 
+     *
      * It should read message sent from admin
-     * 
+     *
      * @return void
      */
     public function it_should_return_error_message_not_found_on_read_message_sent_from_admin()
@@ -346,8 +342,8 @@ class AppMessagesTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        $messageId = rand(50000000000000,500000000000000);
-        $this->post('app/message/read/'.$messageId, [], ['token' => $token])
+        $messageId = rand(50000000000000, 500000000000000);
+        $this->post('app/message/read/' . $messageId, [], ['token' => $token])
         ->seeStatusCode(404);
 
         $user->delete();

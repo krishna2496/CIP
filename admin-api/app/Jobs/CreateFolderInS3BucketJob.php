@@ -87,23 +87,6 @@ class CreateFolderInS3BucketJob extends Job
                 DB::reconnect('mysql');
                 DB::setDefaultConnection('mysql');
             }
-            // style.css file store into database with full path
-            if (basename($file) === env('S3_CUSTOME_CSS_NAME')) {
-                $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'.env('AWS_REGION').'.amazonaws.com/'. $this->tenant->name.''.$sourcePath;
-
-                // Connect with tenant database
-                $tenantOptionData['option_name'] = "custom_css";
-                $tenantOptionData['option_value'] = $pathInS3;
-
-                // Create connection with tenant database
-                $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
-                DB::table('tenant_option')->insert($tenantOptionData);
-
-                // Disconnect tenant database and reconnect with default database
-                DB::disconnect('tenant');
-                DB::reconnect('mysql');
-                DB::setDefaultConnection('mysql');
-            }
         }
     }
 }
