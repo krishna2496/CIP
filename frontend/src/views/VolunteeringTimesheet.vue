@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto" v-bind:class="{
-                                        disabled : enableSubmitTimeTimeSheet    
+                                        disabled : enableSubmitTimeTimeSheet
                                     }" @click="submitVolunteerTimeSheet('time')">{{languageData.label.submit}}
                                     </b-button>
                                 </div>
@@ -163,7 +163,7 @@
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto"
                                               @click="submitVolunteerTimeSheet('goal')" v-bind:class="{
-                                            disabled : enableSubmitGoalTimeSheet    
+                                            disabled : enableSubmitGoalTimeSheet
                                         }">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
@@ -1238,7 +1238,7 @@
                 ['mission']: item.title,
                 ['time']: item.time,
                 ['hours']: item.hours,
-                ['organisation']: item.organisation_name,
+                ['organisation']: item.organization_name,
                 ['mission_id']: item.mission_id
               })
               this.timesheetRequestItems = currentData;
@@ -1293,7 +1293,7 @@
               currentData.push({
                 ['mission']: item.title,
                 ['action']: item.action,
-                ['organisation']: item.organisation_name,
+                ['organisation']: item.organization_name,
                 ['mission_id']: item.mission_id
               })
               this.goalRequestItems = currentData

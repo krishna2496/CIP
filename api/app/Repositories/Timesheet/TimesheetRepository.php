@@ -379,7 +379,7 @@ class TimesheetRepository implements TimesheetInterface
 
         $timeRequests = $this->mission->query()
         ->leftjoin('organization', 'organization.organization_id', '=', 'mission.organisation_id')
-        ->select('mission.mission_id', 'organization.name as organisation_name');
+        ->select('mission.mission_id', 'organization.name as organization_name');
         $timeRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> config('constants.mission_type.TIME')])
         ->with(['missionLanguage' => function ($query) use ($languageId) {
@@ -438,7 +438,7 @@ class TimesheetRepository implements TimesheetInterface
 
         $goalRequests = $this->mission->query()
         ->leftjoin('organization', 'organization.organization_id', '=', 'mission.organisation_id')
-        ->select('mission.mission_id', 'organization.name as organisation_name');
+        ->select('mission.mission_id', 'organization.name as organization_name');
         $goalRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> config('constants.mission_type.GOAL')])
         ->with(['missionLanguage' => function ($query) use ($languageId) {

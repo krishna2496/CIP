@@ -89,7 +89,7 @@
                                     <i class="left-icon">
                                         <img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
                                     </i>
-                                    <p class="text-wrap">{{mission.organisation_name}}</p>
+                                    <p class="text-wrap">{{mission.organization.name}}</p>
                                 </b-list-group-item>
                             </b-list-group>
 
@@ -164,7 +164,7 @@
                                                         :max="mission.goal_objective" class="mb-2"></b-progress>
                                             <span class="subtitle-text">
                                                     {{mission.achieved_goal}}
-                                                    <span 
+                                                    <span
                                                         v-if="mission.label_goal_achieved != ''">
                                                         {{ mission.label_goal_achieved }}
                                                     </span>
@@ -199,7 +199,7 @@
 
                             </div>
                             <div class="btn-wrap">
-                                <b-link 
+                                <b-link
                                         :to="'/mission-detail/' + mission.mission_id">
                                     <b-button class="btn-bordersecondary icon-btn">
                                         <span>{{ languageData.label.view_detail }}</span>

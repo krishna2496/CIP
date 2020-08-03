@@ -101,13 +101,20 @@ class MissionRepository implements MissionInterface
             $organisation['name'] = $organisation['organisation_name'];
             $request->request->add(['organisation' => $organisation]);
             $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id'=>$request->organisation['organisation_id']],
+                ['organization_id' => $request->organisation['organisation_id']],
                 $request->organisation
             );
         }
 
         $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
+
+        $organizationDetail = (isset($request->organisation_detail)) ?
+                $request->organisation_detail : null;
+        if ($organizationDetail === null && isset($request->organisation['organisation_detail'])) {
+            $organizationDetail = $request->organisation['organisation_detail'];
+        }
+
         $missionData = array(
                 'theme_id' => $request->theme_id != '' ? $request->theme_id : null,
                 'city_id' => $request->location['city_id'],
@@ -119,8 +126,7 @@ class MissionRepository implements MissionInterface
                 'publication_status' => $request->publication_status,
                 'organisation_id' => (!empty($organization->organization_id)) ? $organization->organization_id
                  : $request->organisation['organisation_id'],
-                'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
-                $request->organisation['organisation_detail'] : null,
+                'organisation_detail' => $organizationDetail,
                 'availability_id' => $request->availability_id,
                 'mission_type' => $request->mission_type,
                 'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',

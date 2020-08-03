@@ -8344,69 +8344,6 @@
     "Mission": {
       "type": "object",
       "properties": {
-        "organization": {
-          "type": "object",
-          "properties": {
-            "organization_id": {
-              "type": "string",
-              "description": "This id is reference to organization table"
-            },
-            "name": {
-              "type": "string",
-              "description": "Organization name"
-            },
-            "legal_number": {
-              "type": "string",
-              "description": "Organization legal number"
-            },
-            "phone_number": {
-              "type": "integer",
-              "description": "Organization phone number"
-            },
-            "address_line_1": {
-              "type": "string",
-              "description": "Organization address line 1"
-            },
-            "address_line_2": {
-              "type": "string",
-              "description": "Organization address line 2"
-            },
-            "city_id": {
-              "type": "integer",
-              "description": "Organization city"
-            },
-            "state_id": {
-              "type": "integer",
-              "description": "Organization state"
-            },
-            "country_id": {
-              "type": "integer",
-              "description": "Organization country"
-            },
-            "postal_code": {
-              "type": "string",
-              "description": "Organization postal code"
-            }
-            ,
-            "organisation_detail": {
-              "type": "array",
-              "description": "Organisation detail.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "lang": {
-                    "type": "string",
-                    "description": "Language code e.g. en, fr, de etc."
-                  },
-                  "detail": {
-                    "type": "string",
-                    "description": "Organisation detail"
-                  }
-                }
-              }
-            }
-          }
-        },
         "location": {
           "type": "object",
           "properties": {
@@ -8487,6 +8424,23 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        },
+        "organisation_detail": {
+          "type": "array",
+          "description": "Organisation detail.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code e.g. en, fr, de etc."
+              },
+              "detail": {
+                "type": "string",
+                "description": "Organisation detail"
               }
             }
           }
@@ -8668,7 +8622,52 @@
             "0",
             "1"
           ]
-        }
+        },
+        "organization": {
+          "type": "object",
+          "properties": {
+            "organization_id": {
+              "type": "string",
+              "description": "This id is reference to organization table"
+            },
+            "name": {
+              "type": "string",
+              "description": "Organization name"
+            },
+            "legal_number": {
+              "type": "string",
+              "description": "Organization legal number"
+            },
+            "phone_number": {
+              "type": "integer",
+              "description": "Organization phone number"
+            },
+            "address_line_1": {
+              "type": "string",
+              "description": "Organization address line 1"
+            },
+            "address_line_2": {
+              "type": "string",
+              "description": "Organization address line 2"
+            },
+            "city_id": {
+              "type": "integer",
+              "description": "Organization city"
+            },
+            "state_id": {
+              "type": "integer",
+              "description": "Organization state"
+            },
+            "country_id": {
+              "type": "integer",
+              "description": "Organization country"
+            },
+            "postal_code": {
+              "type": "string",
+              "description": "Organization postal code"
+            }
+          }
+        },
       }
     },
     "FooterPage": {
