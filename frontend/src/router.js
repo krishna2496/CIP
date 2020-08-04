@@ -222,7 +222,6 @@ let routes = [
           import ('./views/Policy.vue')
     } 
 ];
-
 export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
