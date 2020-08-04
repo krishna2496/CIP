@@ -45,20 +45,20 @@
         }
 
         /*.icon-btn {
-					i {
-						@include transformX(4px);
+          i {
+            @include transformX(4px);
 
-						svg {
-							fill: $white;
-						}
-					}
-					&:active:focus,
-					&:hover:focus {
-						svg {
-							fill: $white;
-						}
-					}
-				}*/
+            svg {
+              fill: $white;
+            }
+          }
+          &:active:focus,
+          &:hover:focus {
+            svg {
+              fill: $white;
+            }
+          }
+        }*/
       }
     }
     .card-header {
@@ -812,6 +812,8 @@
           }
           img {
             width: 100%;
+            height:100%;
+            vertical-align: top;
           }
         }
       }
@@ -859,6 +861,7 @@
     }
     .card {
       box-shadow: none;
+      min-height: 100%;
       .content-inner-block {
         min-height: 90px;
       }
@@ -869,6 +872,31 @@
       right: 17px;
       top: 16px;
       z-index: 10;
+    }
+    &.active{
+      .card{
+        .init-hidden {
+          opacity: 1;
+        }
+        .group-ratings {
+        display: block;
+      }
+      .card-text {
+        margin-top: 0;
+      }
+      .location {
+        opacity: 1;
+        visibility: visible;
+      }
+      .event-block {
+        .like-btn {
+          opacity: 0;
+        }
+        .progress-block {
+          display: none;
+        }
+      }
+      }
     }
   }
   .card {
@@ -888,27 +916,7 @@
       @include transition(margin-top 0.3s);
     }
     &:hover {
-      .init-hidden {
-        opacity: 1;
-      }
-      .group-ratings {
-        display: block;
-      }
-      .card-text {
-        margin-top: 0;
-      }
-      .location {
-        opacity: 1;
-        visibility: visible;
-      }
-      .event-block {
-        .like-btn {
-          opacity: 0;
-        }
-        .progress-block {
-          display: none;
-        }
-      }
+      
     }
     .card-body {
       @include transition(transform 0.3s);
@@ -1180,6 +1188,14 @@
               display: flex!important;
               align-items: center;
               justify-content: space-between;
+              &.gray-btn{
+                  &:focus
+                  .icon-wrap{
+                    svg{
+                      fill:$middle-gray;
+                    }
+                  }
+                }
               @include sm-max{
                 min-width:156px;
                 max-width: 156px;
