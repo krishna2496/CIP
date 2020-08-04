@@ -668,6 +668,7 @@
                     policy().then(response => {
                       if (response.error == false) {
                         if(response.data.length > 0) {
+                          this.policyPage = response.data;
                           return store.commit('policyPage',response.data);
                         }
                       }
