@@ -952,6 +952,5 @@ export default {
             this.isUserProfileComplete = 0;
         }
     }
-
 };
 </script>

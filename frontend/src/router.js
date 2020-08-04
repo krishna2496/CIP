@@ -220,9 +220,7 @@ let routes = [
         },
         component: () =>
           import ('./views/Policy.vue')
-    }
-    
-
+    } 
 ];
 
 export default new Router({
