@@ -294,7 +294,7 @@
             <b-modal id="helpModal" hide-footer>
                 <template slot="modal-header" slot-scope="{ close }">
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                    <h5 class="modal-title">{{languageData.label.change_password}}</h5>
+                    <h5 class="modal-title">{{languageData.label.personal_donation_goal}}</h5>
                 </template>
                 <template v-slot:modal-title>
                     {{languageData.label.personal_donation_goal}}
