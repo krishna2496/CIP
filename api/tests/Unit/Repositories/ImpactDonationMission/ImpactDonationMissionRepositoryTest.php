@@ -34,33 +34,33 @@ class ImpactDonationMissionRepositoryTest extends TestCase
     public function testImpactDonationStoreSuccess()
     {
         $data = [
-            "amount" => 512,
-            "translations" => [
+            'amount' => 512,
+            'translations' => [
                 [
-                    "language_code" => "en",
-                    "content" => "this is test impact donation mission in english 2 language."
+                    'language_code' => 'en',
+                    'content' => 'this is test impact donation mission in english 2 language.'
                 ]
             ]
         ];
 
         $languagesData = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
@@ -134,34 +134,34 @@ class ImpactDonationMissionRepositoryTest extends TestCase
     public function testImpactDonationUpdateSuccess()
     {
         $data = [
-            "impact_donation_id" => str_random(36),
-            "amount" => rand(10000, 100000),
-            "translations" => [
+            'impact_donation_id' => str_random(36),
+            'amount' => rand(10000, 100000),
+            'translations' => [
                 [
-                    "language_code" => "en",
-                    "content" => str_random(160)
+                    'language_code' => "en",
+                    'content' => str_random(160)
                 ]
             ]
         ];
 
         $languagesData = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
@@ -205,12 +205,12 @@ class ImpactDonationMissionRepositoryTest extends TestCase
 
         $modelService->missionImpactDonation->shouldReceive('where')
         ->once()
-        ->with(["mission_impact_donation_id"=>$data["impact_donation_id"]])
+        ->with(['mission_impact_donation_id' => $data['impact_donation_id']])
         ->andReturn($missionImpactDonation);
 
         $modelService->missionImpactDonation->shouldReceive('update')
         ->once()
-        ->with(['amount'=>$data['amount']])
+        ->with(['amount' => $data['amount']])
         ->andReturn($missionImpactDonation);
 
         $collection->shouldReceive('where')
