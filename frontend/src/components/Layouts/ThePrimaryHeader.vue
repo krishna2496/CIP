@@ -659,6 +659,20 @@
                     if (this.submitNewMissionUrl != '') {
                         window.open(this.submitNewMissionUrl, '_self');
                     }
+                },
+                checkIfIE() {
+                    const userAgent = window.navigator.userAgent;
+                    return /MSIE|Trident\//.test(userAgent);
+                },
+                setPolicyForIE() {
+                    policy().then(response => {
+                      if (response.error == false) {
+                        if(response.data.length > 0) {
+                          return store.commit('policyPage',response.data);
+                        }
+                      }
+                      store.commit('policyPage',null);
+                    });
                 }
             },
             created() {
@@ -672,6 +686,9 @@
                 }
                 if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
+                }
+                if (this.checkIfIE() === true && JSON.parse(store.state.policyPage) === null) {
+                    this.setPolicyForIE();
                 }
                 if (JSON.parse(store.state.policyPage) != null) {
                     this.policyPage = JSON.parse(store.state.policyPage)
