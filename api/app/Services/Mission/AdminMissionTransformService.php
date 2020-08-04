@@ -46,7 +46,7 @@ class AdminMissionTransformService
                     $impactMissionLanguage['language_id'] = $impactMissionLanguageValue['language_id'];
                     $impactMissionLanguage['language_code'] = $languageCode;
                     $impactMissionLanguage['content'] = json_decode($impactMissionLanguageValue['content']);
-                    array_push($impactMissionDetails["languages"], $impactMissionLanguage);
+                    array_push($impactMissionDetails['languages'], $impactMissionLanguage);
                 }
 
                 $mission['impactMission'][$impactMissionKey] = $impactMissionDetails;

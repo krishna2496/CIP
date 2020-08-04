@@ -38,7 +38,7 @@ class MissionImpactRepositoryTest extends TestCase
 
         $languagesData = [
             (object)[
-                'language_id'=>1,
+                'language_id' => 1,
                 'name'=> 'English',
                 'code'=> 'en',
                 'status'=> '1',
@@ -115,19 +115,19 @@ class MissionImpactRepositoryTest extends TestCase
 
         $languagesData = [
             (object)[
-                'language_id'=>1,
-                'name'=> 'English',
-                'code'=> 'en',
-                'status'=> '1',
-                'created_at'=> null,
-                'updated_at'=> null,
-                'deleted_at'=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
                 'language_id' => 2,
                 'name' => 'French',
                 'code' => 'fr',
-                'status'=>'1',
+                'status' =>'1',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
