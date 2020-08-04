@@ -7,10 +7,10 @@ use App\Models\Mission;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Str;
 use App\Services\Mission\ModelsService;
 use App\Models\MissionImpactDonationLanguage;
 use App\Helpers\LanguageHelper;
+use Ramsey\Uuid\Uuid;
 
 class ImpactDonationMissionRepository
 {
@@ -76,7 +76,7 @@ class ImpactDonationMissionRepository
     {
         $languages = $this->languageHelper->getLanguages();
         $impactDonationArray = [
-            'mission_impact_donation_id' => (String) Str::uuid(),
+            'mission_impact_donation_id' => Uuid::uuid4()->toString(),
             'mission_id' => $missionId,
             'amount' => $impactDonationValue['amount']
         ];
@@ -85,7 +85,7 @@ class ImpactDonationMissionRepository
         foreach ($impactDonationValue['translations'] as $impactDonationLanguageValue) {
             $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
             $impactDonationLanguageArray = [
-                    'mission_impact_donation_language_id' => (String) Str::uuid(),
+                    'mission_impact_donation_language_id' => Uuid::uuid4()->toString(),
                     'impact_donation_id' => $missionImpactDonationModelData['mission_impact_donation_id'],
                     'language_id' => !empty($language) ? $language->language_id : $defaultTenantLanguageId,
                     'content' => json_encode($impactDonationLanguageValue['content'])
@@ -117,7 +117,7 @@ class ImpactDonationMissionRepository
         if (isset($missionDonationValue['translations'])) {
             foreach ($missionDonationValue['translations'] as $impactDonationLanguageValue) {
                 $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
-                $impactDonationArray['mission_impact_donation_language_id'] = (String) Str::uuid();
+                $impactDonationArray['mission_impact_donation_language_id'] = Uuid::uuid4()->toString();
                 $impactDonationArray['impact_donation_id'] = $missionImpactDonationId;
                 $impactDonationArray['language_id'] = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
                                 
