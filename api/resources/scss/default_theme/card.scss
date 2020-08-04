@@ -45,20 +45,20 @@
         }
 
         /*.icon-btn {
-					i {
-						@include transformX(4px);
+          i {
+            @include transformX(4px);
 
-						svg {
-							fill: $white;
-						}
-					}
-					&:active:focus,
-					&:hover:focus {
-						svg {
-							fill: $white;
-						}
-					}
-				}*/
+            svg {
+              fill: $white;
+            }
+          }
+          &:active:focus,
+          &:hover:focus {
+            svg {
+              fill: $white;
+            }
+          }
+        }*/
       }
     }
     .card-header {
@@ -861,6 +861,7 @@
     }
     .card {
       box-shadow: none;
+      min-height: 100%;
       .content-inner-block {
         min-height: 90px;
       }
