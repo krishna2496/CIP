@@ -979,13 +979,13 @@
       &:hover {
         .card-action-block {
           .btn-wrap {
-            .icon-btn:not(.gray-btn) {
+            .icon-btn {
               background: $white;
               color: $primary;
               border-color: $primary;
               &.gray-btn {
                 background: $gray-primary;
-                color: $primary;
+                color: $white;
                 border-color: $gray-primary;
                 i {
                   svg {
@@ -994,6 +994,16 @@
                 }
               }
             }
+            .gray-btn {
+                background: $gray-primary;
+                color: $white;
+                border-color: $gray-primary;
+                i {
+                  svg {
+                    fill: $white;
+                  }
+                }
+              }
           }
         }
       }
@@ -1056,6 +1066,10 @@
         .card-detail-column {
           max-width: 70%;
           flex: 0 0 70%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         }
         .group-details {
           padding: 15px 20px 3px;
@@ -1188,7 +1202,7 @@
               display: flex!important;
               align-items: center;
               justify-content: space-between;
-              &.gray-btn{
+               &.gray-btn{
                   &:focus
                   .icon-wrap{
                     svg{
