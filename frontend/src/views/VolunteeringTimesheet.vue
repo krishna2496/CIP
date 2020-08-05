@@ -493,7 +493,8 @@
           let latestDate = date - 1
           let latestMonth = 0
           let timeSheetArray = timeArray.timesheet;
-          this.currentTimeData.missionName = timeArray.title
+          this.currentTimeData.missionName = timeArray.title;
+          this.currentTimeData.goal = timeArray.objective;
           let months = '';
           let dates = '';
           if (timeSheetType == "time") {
