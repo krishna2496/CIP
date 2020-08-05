@@ -18,10 +18,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
@@ -34,7 +34,7 @@ class CountryTest extends TestCase
         
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/countries?search='.$countryName, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/countries?search=' . $countryName, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');
@@ -382,10 +382,10 @@ class CountryTest extends TestCase
             'countries' => [
                 [
                     'iso' => str_random(2),
-                    'translations'=> [
+                    'translations' => [
                         [
-                            'lang'=> 'en',
-                            'name'=> str_random(5)
+                            'lang' => 'en',
+                            'name' => str_random(5)
                         ]
                     ]
                 ]
@@ -442,10 +442,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -473,10 +473,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => '',
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -497,10 +497,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> str_random(5),
-                            "name"=> str_random(5)
+                            "lang" => str_random(5),
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -523,11 +523,11 @@ class CountryTest extends TestCase
         $iso = str_random(3);
 
         $params = [
-            "iso"=>$iso,
-            "translations"=>[
+            "iso" => $iso,
+            "translations" => [
                 [
-                    "lang"=>"en",
-                    "name"=>str_random(10)
+                    "lang" => "en",
+                    "name" => str_random(10)
                 ]
             ]
         ];
@@ -538,7 +538,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->patch("entities/countries/".$countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/countries/" . $countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -557,11 +557,11 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_error_if_iso_is_invalid_for_update_country()
     {
         $params = [
-            "iso"=>"",
-            "translations"=>[
+            "iso" => "",
+            "translations" => [
                 [
-                    "lang"=>"en",
-                    "name"=>str_random(10)
+                    "lang" => "en",
+                    "name" => str_random(10)
                 ]
             ]
         ];
@@ -572,7 +572,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->patch("entities/countries/".$countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/countries/" . $countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -596,11 +596,11 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_error_if_data_is_invalid_for_update_country()
     {
         $params = [
-            "iso"=>"",
-            "translations"=>[
+            "iso" => "",
+            "translations" => [
                 [
-                    "lang"=>"test",
-                    "name"=>str_random(10)
+                    "lang" => "test",
+                    "name" => str_random(10)
                 ]
             ]
         ];
@@ -611,7 +611,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->patch("entities/countries/".$countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/countries/" . $countryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -635,16 +635,16 @@ class CountryTest extends TestCase
     public function city_test_it_should_return_error_if_id_is_invalid_for_update_country()
     {
         $params = [
-            "iso"=>"",
-            "translations"=>[
+            "iso" => "",
+            "translations" => [
                 [
-                    "lang"=>"test",
-                    "name"=>str_random(10)
+                    "lang" => "test",
+                    "name" => str_random(10)
                 ]
             ]
         ];
 
-        $this->patch("entities/countries/".rand(5000000, 9000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/countries/" . rand(5000000, 9000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -672,7 +672,7 @@ class CountryTest extends TestCase
         $country->save();
         $countryId = $country->country_id;
 
-        $this->delete("entities/countries/".$countryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
 
@@ -685,7 +685,7 @@ class CountryTest extends TestCase
      */
     public function city_test_it_should_return_error_for_delete_country()
     {
-        $this->delete("entities/countries/".rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/countries/" . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
     
@@ -701,10 +701,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -723,10 +723,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -756,10 +756,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
@@ -778,10 +778,10 @@ class CountryTest extends TestCase
             "countries" => [
                 [
                     "iso" => $countryISO,
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> $countryName
+                            "lang" => "en",
+                            "name" => $countryName
                         ]
                     ]
                 ]
@@ -829,7 +829,7 @@ class CountryTest extends TestCase
         $mission->country_id = $countryId;
         $mission->update();
 
-        $res = $this->delete("entities/countries/".$countryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $res = $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
@@ -868,7 +868,7 @@ class CountryTest extends TestCase
         $user->country_id = $countryId;
         $user->update();
 
-        $this->delete("entities/countries/".$countryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         App\User::where('user_id', $user->user_id)->delete();

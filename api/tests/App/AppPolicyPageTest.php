@@ -34,7 +34,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $policyPage->delete();
     }
@@ -94,10 +94,10 @@ class AppPolicyPageTest extends TestCase
                         ],
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->post("policy/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('policy/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -110,7 +110,7 @@ class AppPolicyPageTest extends TestCase
         DB::setDefaultConnection('mysql');
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/policy/'.$slug, ['token' => $token])
+        $this->get('/app/policy/' . $slug, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -125,7 +125,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\PolicyPage::where('slug', $slug)->delete();
     }
@@ -147,7 +147,7 @@ class AppPolicyPageTest extends TestCase
         $user->save();
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/policy/'.$slug, ['token' => $token])
+        $this->get('/app/policy/' . $slug, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
               "errors" => [
@@ -191,7 +191,7 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $policyPage->delete();
     }
@@ -212,7 +212,7 @@ class AppPolicyPageTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing?order=test', ['token' => $token])
-          ->seeStatusCode(500)
+          ->seeStatusCode(400)
           ->seeJsonStructure([
               "errors" => [
                   [
@@ -221,7 +221,7 @@ class AppPolicyPageTest extends TestCase
                     "message"
                   ]
               ]
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -256,8 +256,9 @@ class AppPolicyPageTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $policyPage->delete();
     }
 }
+

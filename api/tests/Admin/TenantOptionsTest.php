@@ -87,10 +87,10 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -119,10 +119,10 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -157,7 +157,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -180,7 +180,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -202,7 +202,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -224,7 +224,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -247,7 +247,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -279,7 +279,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -310,13 +310,13 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
-        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -345,10 +345,10 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         DB::setDefaultConnection('mysql');
 
@@ -363,10 +363,10 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
         
-        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -415,10 +415,10 @@ class TenantOptionsTest extends TestCase
                         'message' => str_random(20)
                     ]
                 ],
-            ],
+                ],
         ];
         
-        $this->patch("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -450,7 +450,7 @@ class TenantOptionsTest extends TestCase
             'option_value' => 1
         ];
 
-        $this->post("tenant-option/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('tenant-option/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'status',
@@ -501,7 +501,7 @@ class TenantOptionsTest extends TestCase
             'default' => '1'
         ]);
 
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret), 'X-localization' => 'en'])
+        $this->get('style/download-style', ['Authorization' => 'Basic ' . base64_encode($apiKey . ':' . $apiSecret), 'X-localization' => 'en'])
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('mysql');
@@ -533,7 +533,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -566,7 +566,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -598,7 +598,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -630,7 +630,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -654,7 +654,7 @@ class TenantOptionsTest extends TestCase
             'custom_scss_file' => ''
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("style/update-style/", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('style/update-style/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -692,7 +692,7 @@ class TenantOptionsTest extends TestCase
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
         
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        $this->get('style/download-style', ['Authorization' => 'Basic ' . base64_encode($apiKey . ':' . $apiSecret)])
         ->seeStatusCode(404);
         
         DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");
@@ -746,7 +746,7 @@ class TenantOptionsTest extends TestCase
             $params,
             [],
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => $apiKey,
@@ -796,11 +796,11 @@ class TenantOptionsTest extends TestCase
         ]);
 
         Storage::disk('s3')->put(
-            $tenant->name.'/assets/css/style.css',
-            $path  = storage_path().'/unitTestFiles/dummy.css'
+            $tenant->name . '/assets/css/style.css',
+            $path  = storage_path() . '/unitTestFiles/dummy.css'
         );
 
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        $this->get('style/download-style', ['Authorization' => 'Basic ' . base64_encode($apiKey . ':' . $apiSecret)])
         ->seeStatusCode(404);
 
         DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");
@@ -829,3 +829,4 @@ class TenantOptionsTest extends TestCase
         ->seeStatusCode(200);
     }
 }
+

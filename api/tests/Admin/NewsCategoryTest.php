@@ -168,7 +168,7 @@ class NewsCategoryTest extends TestCase
         // Get details of category, which is create above
         \DB::setDefaultConnection('mysql');
 
-        $this->get('news/category/'.$newsCategoryId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('news/category/' . $newsCategoryId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -190,7 +190,7 @@ class NewsCategoryTest extends TestCase
         // It should give an error while trying to get details of unavailable news category id
         \DB::setDefaultConnection('mysql');
 
-        $this->get('news/category/'.rand(50000000000, 500000000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('news/category/' . rand(50000000000, 500000000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -240,7 +240,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -268,7 +268,7 @@ class NewsCategoryTest extends TestCase
             ]
         ];
         $randNewsCategoryId = rand(50000000000, 900000000000);
-        $response = $this->patch('news/category/'.$randNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $randNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -318,7 +318,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -366,7 +366,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -418,7 +418,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$NewNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $NewNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $NewNewsCategoryId)->delete();
@@ -494,7 +494,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$NewNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $NewNewsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         NewsCategory::where('news_category_id', $NewNewsCategoryId)->delete();
@@ -513,7 +513,7 @@ class NewsCategoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        $response = $this->patch('news/category/'.$newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/category/' . $newsCategoryId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         NewsCategory::where('news_category_id', $newsCategoryId)->delete();
@@ -548,7 +548,7 @@ class NewsCategoryTest extends TestCase
         $newsCategoryId = json_decode($response->response->getContent())->data->news_category_id;
 
         \DB::setDefaultConnection('mysql');
-        $this->delete('news/category/'.$newsCategoryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('news/category/' . $newsCategoryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
 
@@ -562,7 +562,7 @@ class NewsCategoryTest extends TestCase
     public function news_category_it_should_return_error_news_category_id_not_found_on_deleted_news_category()
     {
         $newsCategoryId = rand(5000000000, 50000000000);
-        $this->delete('news/category/'.$newsCategoryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('news/category/' . $newsCategoryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 }

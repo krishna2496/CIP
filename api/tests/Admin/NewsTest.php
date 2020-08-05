@@ -30,12 +30,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -73,12 +73,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -115,12 +115,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -158,12 +158,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => str_random('3'),
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -201,12 +201,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -244,12 +244,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -273,7 +273,7 @@ class NewsTest extends TestCase
         $newsIdsArray = [];
         $connection = 'tenant';
                 
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $news = factory(\App\Models\News::class)->make();
             $news->setConnection($connection);
             $news->save();
@@ -296,7 +296,7 @@ class NewsTest extends TestCase
             array_push($newsIdsArray, $news->news_id);
         }
 
-        $this->get('news?order=desc&search='.$newsLanguage->title, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('news?order=desc&search=' . $newsLanguage->title, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');
@@ -304,7 +304,7 @@ class NewsTest extends TestCase
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');
-        $this->get('news?order=test&search='.$newsLanguage->title, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('news?order=test&search=' . $newsLanguage->title, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400);
 
         News::whereIn('news_id', $newsIdsArray)->delete();
@@ -337,12 +337,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -362,19 +362,19 @@ class NewsTest extends TestCase
             "translations" => [
                 [
                     "lang" => "en",
-                    "title" => "english_".str_random('10'),
+                    "title" => "english_" . str_random('10'),
                     "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                 ],
                 [
                     "lang" => "fr",
-                    "title" => "french_".str_random('10'),
+                    "title" => "french_" . str_random('10'),
                     "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                 ]
             ]
         ];
         
         DB::setDefaultConnection('mysql');
-        $response = $this->patch('news/'.$newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/' . $newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         News::where('news_id', $newsId)->delete();
@@ -407,12 +407,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -422,7 +422,7 @@ class NewsTest extends TestCase
         $newsId = rand(500000000, 5000000000);
         
         DB::setDefaultConnection('mysql');
-        $response = $this->patch('news/'.$newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/' . $newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
         $newsCategory->delete();
     }
@@ -454,12 +454,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -477,7 +477,7 @@ class NewsTest extends TestCase
         $params["user_title"] = "";
         
         DB::setDefaultConnection('mysql');
-        $response = $this->patch('news/'.$newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/' . $newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         News::where('news_id', $newsId)->delete();
@@ -511,12 +511,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -533,7 +533,7 @@ class NewsTest extends TestCase
         $params["news_content"]["translations"][0]['lang'] = str_random('3');
         
         DB::setDefaultConnection('mysql');
-        $response = $this->patch('news/'.$newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/' . $newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
@@ -567,12 +567,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -589,7 +589,7 @@ class NewsTest extends TestCase
         $params["news_image"] = "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/dummy.txt";
         
         DB::setDefaultConnection('mysql');
-        $response = $this->patch('news/'.$newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/' . $newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
@@ -623,12 +623,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -645,7 +645,7 @@ class NewsTest extends TestCase
         $params["status"] = str_random('5');
         
         DB::setDefaultConnection('mysql');
-        $response = $this->patch('news/'.$newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->patch('news/' . $newsId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         News::where('news_id', $newsId)->delete();
@@ -679,12 +679,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -698,7 +698,7 @@ class NewsTest extends TestCase
         $newsId = json_decode($response->response->getContent())->data->news_id;
 
         DB::setDefaultConnection('mysql');
-        $response = $this->get('news/'.$newsId, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->get('news/' . $newsId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         News::where('news_id', $newsId)->delete();
@@ -718,7 +718,7 @@ class NewsTest extends TestCase
         $newsId = rand(50000000, 500000000);
 
         DB::setDefaultConnection('mysql');
-        $response = $this->get('news/'.$newsId, ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->get('news/' . $newsId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -749,12 +749,12 @@ class NewsTest extends TestCase
                 "translations" => [
                     [
                         "lang" => "en",
-                        "title" => "english_".str_random('10'),
+                        "title" => "english_" . str_random('10'),
                         "description" => "We can collect the following information: name and job title, contact information, including email address, demographic information such as zip code, preferences and interests, other relevant information for surveys and / or customer offers"
                     ],
                     [
                         "lang" => "fr",
-                        "title" => "french_".str_random('10'),
+                        "title" => "french_" . str_random('10'),
                         "description" => "lNous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
                     ]
                 ]
@@ -768,7 +768,7 @@ class NewsTest extends TestCase
         $newsId = json_decode($response->response->getContent())->data->news_id;
 
         DB::setDefaultConnection('mysql');
-        $response = $this->delete('news/'.$newsId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('news/' . $newsId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
         $newsCategory->delete();
     }
@@ -784,7 +784,7 @@ class NewsTest extends TestCase
     {
         $newsId = rand(50000000, 500000000);
         DB::setDefaultConnection('mysql');
-        $response = $this->delete('news/'.$newsId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('news/' . $newsId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 }

@@ -16,7 +16,6 @@ use App\Models\MissionDocument;
 use App\Models\MissionLanguage;
 use App\Models\FavouriteMission;
 use App\Models\MissionApplication;
-use App\Models\missionTab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -51,11 +50,6 @@ class Mission extends Model
     private $helpers;
 
     /**
-     * @var App\Models\missionTab
-     */
-    public $missionTab;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -86,7 +80,7 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name',
-    'volunteeringAttribute', 'missionTab'
+    'volunteeringAttribute'
     ];
 
     /*
@@ -94,9 +88,9 @@ class Mission extends Model
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'volunteeringAttribute', 'missionTab'
+        'goalMission','timeMission','comment','timesheet', 'volunteeringAttribute'
     ];
-    
+
     /**
      * Get the document record associated with the mission.
      *
@@ -156,7 +150,6 @@ class Mission extends Model
     public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
-        //  ->select('country_id', 'name', 'ISO');
     }
 
     /**
@@ -338,7 +331,7 @@ class Mission extends Model
     }
 
     /**
-     * Set organisation detail in serialize form
+     * Set organisation detail in json_encode form
      *
      * @param array|null $value
      * @return void
@@ -346,22 +339,21 @@ class Mission extends Model
     public function setOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && !empty($value)) {
-            $this->attributes['organisation_detail'] = serialize($value);
+            $this->attributes['organisation_detail'] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
     }
 
     /**
-     * Get organisation detail in unserialize form
-     *
-     * @param string|null $value
-     * @return null|array
+     * @param $value
+     * @return mixed|null
      */
     public function getOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && ($value !== '')) {
-            $data = @unserialize($value);
-            if ($data !== false) {
-                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
+            $data = @json_decode($value);
+
+            if ($data !== null) {
+                return json_decode($value, true);
             }
         }
         return null;
@@ -376,15 +368,5 @@ class Mission extends Model
     public function volunteeringAttribute(): HasOne
     {
         return $this->hasOne(VolunteeringAttribute::class, 'mission_id', 'mission_id');
-    }
-
-    /**
-     * Get mission-tab associated with the mission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function missionTab(): HasMany
-    {        
-        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
     }
 }

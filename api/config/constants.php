@@ -34,7 +34,7 @@ return [
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
-    'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
+    'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_custom-variables.scss',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
@@ -55,7 +55,10 @@ return [
         'TEXT' => 'text',
         'EMAIL' => 'email',
         'DROP-DOWN' => 'drop-down',
-        'RADIO' => 'radio'
+        'RADIO' => 'radio',
+        'CHECKBOX' => 'checkbox',
+        'MULTISELECT' => 'multiselect',
+        'TEXTAREA' => 'textarea',
      ],
 
      /*
@@ -498,9 +501,7 @@ return [
         'ERROR_STATE_UNABLE_TO_DELETE' => '800039',
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
-        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
-
-        'MISSION_TAB_NOT_FOUND' => '400051'
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042'
     ],
 
     /**

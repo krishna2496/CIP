@@ -17,10 +17,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -54,8 +54,18 @@ class StateTest extends TestCase
         $stateId = json_decode($response->response->getContent())->data->state_ids[0]->state_id;
 
         DB::setDefaultConnection('mysql');
+
+        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+
+        DB::setDefaultConnection('mysql');
+
         // Get all states
-        $this->get('/entities/states?search='.$stateName, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/states?search=' . $stateName, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         DB::setDefaultConnection('mysql');
@@ -90,7 +100,7 @@ class StateTest extends TestCase
     {
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/states/'.rand(900000000000, 90000000000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/states/' . rand(900000000000, 90000000000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -118,10 +128,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -134,7 +144,7 @@ class StateTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/states/'.$countryId, ['Authorization' => ''])
+        $this->get('/entities/states/' . $countryId, ['Authorization' => ''])
         ->seeStatusCode(401)
         ->seeJsonStructure([
             "errors" => [
@@ -167,10 +177,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -184,7 +194,7 @@ class StateTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        $this->get('/entities/states/'.$countryId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/states/' . $countryId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
 
         /* Delete country language start */
@@ -209,10 +219,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -265,10 +275,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -316,10 +326,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -419,16 +429,16 @@ class StateTest extends TestCase
         $state->update();
 
         $params = [
-            "country_id"=> $countryId,
-            "translations"=>[
+            "country_id" => $countryId,
+            "translations" => [
                 [
-                    "lang"=>"en",
-                    "name"=>str_random(10)
+                    "lang" => "en",
+                    "name" => str_random(10)
                 ]
             ]
         ];
 
-        $this->patch("entities/states/".$state->state_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/states/" . $state->state_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -469,7 +479,7 @@ class StateTest extends TestCase
                 ]
         ];
 
-        $this->patch("entities/states/".$state->state_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/states/" . $state->state_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -493,7 +503,7 @@ class StateTest extends TestCase
      */
     public function state_test_it_should_return_error_if_id_is_invalid_for_update_state()
     {
-        $this->patch("entities/states/".rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/states/" . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -528,7 +538,7 @@ class StateTest extends TestCase
         $state->update();
 
         DB::setDefaultConnection('mysql');
-        $this->delete("entities/states/".$state->state_id, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/states/" . $state->state_id, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
         App\Models\Country::where('country_id', $countryId)->delete();
     }
@@ -542,7 +552,7 @@ class StateTest extends TestCase
      */
     public function state_test_it_should_return_error_for_delete_state()
     {
-        $this->delete("entities/states/".rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/states/" . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -561,34 +571,34 @@ class StateTest extends TestCase
         $state->setConnection($connection);
         $state->save();
         $stateId = $state->state_id;
-        
+
         $city = factory(\App\Models\City::class)->make();
         $city->setConnection($connection);
         $city->save();
         $city->state_id = $stateId;
         $city->update();
         $cityId = $city->city_id;
-        
+
         DB::setDefaultConnection('mysql');
-        
+
         // Add user for this country and state
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-       
+
         $mission->city_id = $cityId;
         $mission->update();
 
-        $res = $this->delete("entities/states/".$stateId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $res = $this->delete("entities/states/" . $stateId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
 
         App\Models\Mission::where('mission_id', $mission->mission_id)->delete();
-        
+
         App\Models\City::where('city_id', $cityId)->delete();
-        
+
         App\Models\State::where('state_id', $stateId)->delete();
     }
-    
+
     /**
      * @test
      *
@@ -603,10 +613,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -641,30 +651,30 @@ class StateTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         // Get all states
-        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/countries/' . $countryId . '/states', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         /* Delete state details start */
         DB::setDefaultConnection('mysql');
 
         // Delete country and country_language data
-        $this->delete("entities/states/".$stateId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/states/" . $stateId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
         /* Delete state details end */
-        
+
         DB::setDefaultConnection('mysql');
         // Get all states
-        $this->get('/entities/countries/'.$countryId.'/states', ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/countries/' . $countryId . '/states', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         /* Delete country language start */
         DB::setDefaultConnection('mysql');
 
         // Delete country and country_language data
-        $this->delete("entities/countries/".$countryId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/countries/" . $countryId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
-    
+
     /**
      * @test
      *
@@ -679,10 +689,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -717,14 +727,14 @@ class StateTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         // Get all states
-        $this->get('/entities/states/'.$stateId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/states/' . $stateId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
 
         /* Delete state details start */
         DB::setDefaultConnection('mysql');
 
         // Delete country and country_language data
-        $this->delete("entities/states/".$stateId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete("entities/states/" . $stateId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
         /* Delete state details end */
 
@@ -735,7 +745,7 @@ class StateTest extends TestCase
         $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
-    
+
     /**
      * @test
      *
@@ -747,10 +757,10 @@ class StateTest extends TestCase
     {
         DB::setDefaultConnection('mysql');
         // Get all states by country id
-        $this->get('/entities/countries/'.rand(10000, 99999).'/states', ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('/entities/countries/' . rand(10000, 99999) . '/states', ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
-    
+
     /**
      * @test
      *
@@ -765,10 +775,10 @@ class StateTest extends TestCase
             "countries" => [
                 [
                     "iso" => str_random(2),
-                    "translations"=> [
+                    "translations" => [
                         [
-                            "lang"=> "en",
-                            "name"=> str_random(5)
+                            "lang" => "en",
+                            "name" => str_random(5)
                         ]
                     ]
                 ]
@@ -805,7 +815,7 @@ class StateTest extends TestCase
         $this->delete("entities/countries/$countryId", [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
     }
-    
+
     /**
      * @test
      *
@@ -837,7 +847,7 @@ class StateTest extends TestCase
                 ]
         ];
 
-        $this->patch("entities/states/".$state->state_id, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch("entities/states/" . $state->state_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [

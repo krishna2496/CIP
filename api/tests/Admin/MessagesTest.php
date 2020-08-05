@@ -44,11 +44,11 @@ class MessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<count($messages); $i++) {
+        for ($i = 0; $i < count($messages); $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(204);
         }
         
@@ -167,13 +167,13 @@ class MessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
         
         $messageId = (json_decode($response->response->getContent())->data->message_id)[0];
         
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -189,7 +189,7 @@ class MessagesTest extends TestCase
     public function it_should_return_error_message_id_not_found_on_delete_user_messages()
     {
         $messageId = rand(9000000000, 90000000000);
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404);
     }
 
@@ -224,17 +224,17 @@ class MessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
 
         $messageId = (json_decode($response->response->getContent())->data->message_id)[0];
 
         \DB::setDefaultConnection('mysql');
 
-        $this->get('message/list?search='.$subject, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('message/list?search=' . $subject, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -272,7 +272,7 @@ class MessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
         
         $messageId1 = (json_decode($response->response->getContent())->data->message_id)[0];
                 
@@ -301,7 +301,7 @@ class MessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
         
         $messageId2 = (json_decode($response->response->getContent())->data->message_id)[0];
 
@@ -311,11 +311,11 @@ class MessagesTest extends TestCase
         ->seeStatusCode(200);
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId1, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId1, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId2, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId2, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -381,7 +381,7 @@ class MessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
         
         $messageId = (json_decode($response->response->getContent())->data->message_id)[0];
 
@@ -397,7 +397,7 @@ class MessagesTest extends TestCase
         ]);
 
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -471,11 +471,11 @@ class MessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<count($messages); $i++) {
+        for ($i = 0; $i < count($messages); $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(204);
         }
 
@@ -488,11 +488,11 @@ class MessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<count($messages); $i++) {
+        for ($i = 0; $i < count($messages); $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token2])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token2])
             ->seeStatusCode(204);
         }
         

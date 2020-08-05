@@ -178,10 +178,7 @@ class Helpers
         int $duration = 14400
     ) : string {
         $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
-            'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + $duration, // Expiration time
             'fqdn' => $tenantName
         ];
 
@@ -191,7 +188,24 @@ class Helpers
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
+        return Helpers::encodeJwtToken($payload, $duration);
+    }
+
+    public static function encodeJwtToken(
+        $params = [],
+        $duration = 300
+    ) {
+        $payload = array_merge([
+            'iss' => "lumen-jwt",
+            'iat' => time(),
+            'exp' => time() + $duration,
+        ], $params);
         return JWT::encode($payload, env('JWT_SECRET'));
+    }
+
+    public static function decodeJwtToken($token)
+    {
+        return JWT::decode($token, env('JWT_SECRET'), ['HS256']);
     }
 
     /**
@@ -415,7 +429,7 @@ class Helpers
      * @param Request
      * @return String
      */
-    private function getTenantDomainByTenantId($tenantId): String
+    public function getTenantDomainByTenantId($tenantId): String
     {
         $connection = Config::get('database.default');
         $this->switchDatabaseConnection('mysql');
@@ -439,5 +453,27 @@ class Helpers
     public static function getBasicAuth()
     {
         return 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'));
+    }
+
+    /** Check if email address is an admin user.
+     *
+     * @param String
+     * @return Boolean
+     */
+    public function isAdminUser($email): Bool
+    {
+        $connection = Config::get('database.default');
+        $this->switchDatabaseConnection('mysql');
+
+        $adminUser = $this->db->table('admin_user')
+            ->select('id')
+            ->where('email', $email)
+            ->where('role', 'optimy_admin')
+            ->whereNull('deleted_at')
+            ->first();
+
+        $this->switchDatabaseConnection($connection);
+
+        return (bool)$adminUser;
     }
 }

@@ -36,9 +36,9 @@ class TenantActivatedSettingControllerTest extends TestCase
         $repository->shouldReceive('fetchAllTenantSettings')
             ->once()
             ->andReturn(new Collection([
-                (Object) [
+                (object) [
                     'tenant_setting_id' => 2,
-                    'settings' => (Object) [
+                    'settings' => (object) [
                         'setting_id' => 1
                     ]
                 ]
@@ -102,13 +102,13 @@ class TenantActivatedSettingControllerTest extends TestCase
     private function mockGetAllTenantSettingResponse()
     {
         return new Collection([
-            (Object) [
+            (object) [
                 'tenant_setting_id' => 1,
                 'key' => 'total_votes',
                 'description' => 'setting description',
                 'title' => 'Total Votes In The Platform'
             ],
-            (Object) [
+            (object) [
                 'tenant_setting_id' => 2,
                 'key' => 'skills_enabled',
                 'description' => 'User profile edit page - Add new skills (Allow the user to add or manage his skills. If enabled open modal)',

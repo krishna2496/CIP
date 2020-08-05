@@ -69,7 +69,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $res = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $res = $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
@@ -97,7 +97,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -109,7 +109,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet?type=hour', ['token' => $token])
@@ -236,7 +236,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -263,7 +263,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -275,7 +275,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
@@ -344,7 +344,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -355,7 +355,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(100, 500),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -439,7 +439,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -450,7 +450,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 23),
             'minutes' => rand(60, 99),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -534,7 +534,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -545,7 +545,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 23),
             'minutes' => rand(60, 99),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -588,7 +588,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 23),
             'minutes' => rand(60, 99),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -671,7 +671,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -698,7 +698,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -711,7 +711,7 @@ class AppTimesheetTest extends TestCase
           ->seeJsonStructure([
             'status',
             'message',
-        ]);
+          ]);
 
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
@@ -781,7 +781,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -808,7 +808,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -822,7 +822,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(100, 500),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -906,7 +906,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -933,7 +933,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -947,7 +947,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(60, 100),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -1031,7 +1031,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1058,7 +1058,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1072,7 +1072,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet/', $params, ['token' => $token])
@@ -1155,7 +1155,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1182,7 +1182,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1194,12 +1194,12 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/timesheet/'.$timesheet[0]['timesheet_id'], ['token' => $token])
+        $this->get('/app/timesheet/' . $timesheet[0]['timesheet_id'], ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -1233,7 +1233,7 @@ class AppTimesheetTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/timesheet/'.rand(100000, 500000), ['token' => $token])
+        $this->get('/app/timesheet/' . rand(100000, 500000), ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -1310,7 +1310,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1337,7 +1337,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1349,7 +1349,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
         
@@ -1362,7 +1362,7 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->delete(
-            "app/timesheet/".$timesheet[0]['timesheet_id']."/document/".$timesheetDocument->timesheet_document_id,
+            "app/timesheet/" . $timesheet[0]['timesheet_id'] . "/document/" . $timesheetDocument->timesheet_document_id,
             [],
             ['token' => $token]
         )
@@ -1435,7 +1435,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1462,7 +1462,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1474,13 +1474,13 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
         DB::setDefaultConnection('mysql');
 
         $this->delete(
-            "app/timesheet/".$timesheet[0]['timesheet_id']."/document/".rand(1000000, 5000000),
+            "app/timesheet/" . $timesheet[0]['timesheet_id'] . "/document/" . rand(1000000, 5000000),
             [],
             ['token' => $token]
         )
@@ -1517,7 +1517,7 @@ class AppTimesheetTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->delete(
-            "app/timesheet/".rand(1000000, 5000000)."/document/".rand(1000000, 5000000),
+            "app/timesheet/" . rand(1000000, 5000000) . "/document/" . rand(1000000, 5000000),
             [],
             ['token' => $token]
         )
@@ -1597,7 +1597,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1624,7 +1624,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1636,7 +1636,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
         $params = [
             'timesheet_entries' => [
@@ -1646,7 +1646,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
         DB::setDefaultConnection('mysql');
-        $this->post("app/timesheet/submit", $params, ['token' => $token])
+        $this->post('app/timesheet/submit', $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -1720,7 +1720,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1747,7 +1747,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1759,7 +1759,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"]]);
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
@@ -1773,7 +1773,7 @@ class AppTimesheetTest extends TestCase
         
         DB::setDefaultConnection('mysql');
 
-        $this->post("app/timesheet/submit", $params, ['token' => $token])
+        $this->post('app/timesheet/submit', $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -1883,7 +1883,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -1910,7 +1910,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -1922,7 +1922,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update([
             'status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"],
@@ -1940,7 +1940,7 @@ class AppTimesheetTest extends TestCase
         ];
         
         DB::setDefaultConnection('mysql');
-        $this->post("app/timesheet/submit", $params, ['token' => $token])
+        $this->post('app/timesheet/submit', $params, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -2019,7 +2019,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2046,7 +2046,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -2058,7 +2058,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
@@ -2164,7 +2164,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2190,7 +2190,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -2202,7 +2202,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
@@ -2308,7 +2308,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2335,7 +2335,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -2347,7 +2347,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
@@ -2438,7 +2438,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2464,7 +2464,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -2476,7 +2476,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["SUBMIT_FOR_APPROVAL"]]);
         
@@ -2568,7 +2568,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2594,7 +2594,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -2606,7 +2606,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["AUTOMATICALLY_APPROVED"]]);
         
@@ -2690,7 +2690,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2716,7 +2716,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -2728,7 +2728,7 @@ class AppTimesheetTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status' => config("constants.timesheet_status")["APPROVED"]]);
         
@@ -2812,7 +2812,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2838,7 +2838,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(2000, 5000),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -2919,7 +2919,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -2945,7 +2945,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 50),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -3026,7 +3026,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3052,7 +3052,7 @@ class AppTimesheetTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 50),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -3133,7 +3133,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3157,7 +3157,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
   
@@ -3242,7 +3242,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3269,7 +3269,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -3343,7 +3343,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3370,7 +3370,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
@@ -3443,7 +3443,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3463,7 +3463,7 @@ class AppTimesheetTest extends TestCase
         App\Models\MissionApplication::where("mission_application_id", $missionApplication[0]['mission_application_id'])
         ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         
-        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $path  = storage_path() . '/unitTestFiles/test.jpg';
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('Y-m-d'),
@@ -3475,7 +3475,7 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
          
         $documents = array(
-            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, true)
         );
         $this->call('POST', 'app/timesheet', $params, [], ['documents' => $documents], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
@@ -3548,7 +3548,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3575,7 +3575,7 @@ class AppTimesheetTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         
@@ -3594,7 +3594,7 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->delete(
-            "app/timesheet/".$timesheet[0]['timesheet_id']."/document/".$timesheetDocument->timesheet_document_id,
+            "app/timesheet/" . $timesheet[0]['timesheet_id'] . "/document/" . $timesheetDocument->timesheet_document_id,
             [],
             ['token' => $token]
         )
@@ -3667,7 +3667,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3687,7 +3687,7 @@ class AppTimesheetTest extends TestCase
         App\Models\MissionApplication::where("mission_application_id", $missionApplication[0]['mission_application_id'])
         ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         
-        $path  = storage_path().'/unitTestFiles/test.html';
+        $path  = storage_path() . '/unitTestFiles/test.html';
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('Y-m-d'),
@@ -3698,7 +3698,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
                 
-        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'test.html', '', null, null, true))], ['HTTP_token' => $token]);
+        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'test.html', '', null, true))], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         $user->delete();
@@ -3768,7 +3768,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3788,7 +3788,7 @@ class AppTimesheetTest extends TestCase
         App\Models\MissionApplication::where("mission_application_id", $missionApplication[0]['mission_application_id'])
         ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
         
-        $path  = storage_path().'/unitTestFiles/SampleJPGImage_5mbmb.jpg';
+        $path  = storage_path() . '/unitTestFiles/SampleJPGImage_5mbmb.jpg';
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('Y-m-d'),
@@ -3799,7 +3799,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
                 
-        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, null, true))], ['HTTP_token' => $token]);
+        $this->call('POST', 'app/timesheet', $params, [], ['documents' => array(new \Illuminate\Http\UploadedFile($path, 'SampleJPGImage_5mbmb.jpg', '', null, true))], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
         $user->delete();
@@ -3869,7 +3869,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
 
-        $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->post('missions', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
        
@@ -3894,7 +3894,7 @@ class AppTimesheetTest extends TestCase
             'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'action' => rand(10, 20),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
         DB::setDefaultConnection('mysql');
         

@@ -124,7 +124,7 @@ class SkillTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
     }
 
     /**
@@ -167,7 +167,7 @@ class SkillTest extends TestCase
                 ]
             ],
             'message'
-        ]);
+            ]);
 
         $result = json_decode($response->response->getContent());
 
@@ -212,7 +212,7 @@ class SkillTest extends TestCase
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/skills/'.$skillId, ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/skills/' . $skillId, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -222,7 +222,7 @@ class SkillTest extends TestCase
                 "translations"
             ],
             "message"
-        ]);
+          ]);
         App\Models\Skill::where("skill_name", $skillName)->orderBy("skill_id", "DESC")->take(1)->delete();
     }
 
@@ -235,7 +235,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_error_if_skill_id_is_wrong()
     {
-        $this->get('entities/skills/'.rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
+        $this->get('entities/skills/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -280,12 +280,12 @@ class SkillTest extends TestCase
             "parent_skill" => 0
         ];
         
-        $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/skills/' . $skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\Skill::where("skill_id", $skillId)->delete();
     }
 
@@ -320,7 +320,7 @@ class SkillTest extends TestCase
             "skill_name" => ""
         ];
         
-        $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/skills/' . $skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -366,7 +366,7 @@ class SkillTest extends TestCase
             "parent_skill" => rand(1000000, 5000000)
         ];
         
-        $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/skills/' . $skillId, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -401,7 +401,7 @@ class SkillTest extends TestCase
             ]
         ];
 
-        $this->patch('entities/skills/'.rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
+        $this->patch('entities/skills/' . rand(1000000, 5000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -442,7 +442,7 @@ class SkillTest extends TestCase
         $skillId = $skill[0]->skill_id;
         DB::setDefaultConnection('mysql');
         
-        $this->delete('entities/skills/'.$skillId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('entities/skills/' . $skillId, [], ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(204);
     }
 
@@ -455,7 +455,7 @@ class SkillTest extends TestCase
      */
     public function it_should_return_error_for_delete_skill_for_invalid_skill_id()
     {
-        $this->delete('entities/skills/'.rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
+        $this->delete('entities/skills/' . rand(1000000, 5000000), [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [

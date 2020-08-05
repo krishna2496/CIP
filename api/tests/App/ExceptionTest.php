@@ -24,7 +24,7 @@ class ExceptionTest extends TestCase
         $countryId = App\Models\Country::get()->random()->country_id;
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->post('/app/city/'.$countryId, ['token' => $token])
+        $this->post('/app/city/' . $countryId, ['token' => $token])
         ->seeStatusCode(405);
         
         $user->delete();
@@ -57,7 +57,7 @@ class ExceptionTest extends TestCase
         $fqdn = str_random('5');
         $missionId = rand(1, 100);
         $langId = rand(1, 5);
-        $this->get('/social-sharing/'.$fqdn.'/'.$missionId.'/'.$langId)
+        $this->get('/social-sharing/' . $fqdn . '/' . $missionId . '/' . $langId)
         ->seeStatusCode(404);
     }
 

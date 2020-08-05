@@ -34,13 +34,13 @@ class AppMessagesTest extends TestCase
                 "message_id"
             ],
             "message"
-        ]);
+          ]);
         
         $messageId = (json_decode($response->response->getContent())->data->message_id)[0];
         
         
         \DB::setDefaultConnection('mysql');
-        $response = $this->delete('message/'.$messageId, [], ['Authorization' => Helpers::getBasicAuth()])
+        $response = $this->delete('message/' . $messageId, [], ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(204);
 
         $user->delete();
@@ -175,7 +175,7 @@ class AppMessagesTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $params = [
                 "subject" => str_random('50'),
@@ -197,11 +197,11 @@ class AppMessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(204);
         }
         $user->delete();
@@ -256,7 +256,7 @@ class AppMessagesTest extends TestCase
 
         $messageId = rand(50000000000000, 500000000000000);
 
-        $this->delete('app/message/'.$messageId, [], ['token' => $token])
+        $this->delete('app/message/' . $messageId, [], ['token' => $token])
         ->seeStatusCode(404);
 
         $user->delete();
@@ -280,7 +280,7 @@ class AppMessagesTest extends TestCase
         
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $params = [
                 "subject" => str_random('50'),
@@ -303,11 +303,11 @@ class AppMessagesTest extends TestCase
         // Fetch all messages, sent from admin
         $messages = json_decode($response->response->getContent())->data->message_data;
         
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             DB::setDefaultConnection('mysql');
             $message = $messages[$i];
             // Read message sent from admin
-            $this->post('app/message/read/'.$message->message_id, [], ['token' => $token])
+            $this->post('app/message/read/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'message',
@@ -318,7 +318,7 @@ class AppMessagesTest extends TestCase
             ]);
             DB::setDefaultConnection('mysql');
             // Delete message from database
-            $this->delete('app/message/'.$message->message_id, [], ['token' => $token])
+            $this->delete('app/message/' . $message->message_id, [], ['token' => $token])
             ->seeStatusCode(204);
         }
         $user->delete();
@@ -343,7 +343,7 @@ class AppMessagesTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $messageId = rand(50000000000000, 500000000000000);
-        $this->post('app/message/read/'.$messageId, [], ['token' => $token])
+        $this->post('app/message/read/' . $messageId, [], ['token' => $token])
         ->seeStatusCode(404);
 
         $user->delete();

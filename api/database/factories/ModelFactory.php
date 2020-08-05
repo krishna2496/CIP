@@ -264,3 +264,19 @@ $factory->define(App\Models\City::class, function (Faker\Generator $faker) {
         "country_id"=>1
     ];
 });
+
+$factory->define(App\Models\CityLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'city_id' => 1, 
+        'language_id' => 1,
+        'name' => $faker->name,
+    ];
+});
+
+$factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'country_id' => 1, 
+        'language_id' => 1,
+        'name' => $faker->name,
+    ];
+});

@@ -17,7 +17,7 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-        
+
         App\Models\Mission::whereNull('deleted_at')->delete();
         \DB::setDefaultConnection('mysql');
 
@@ -36,19 +36,19 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
             "location" => [
                 "city_id" => $cityId,
                 "country_code" => $countryDetail->ISO
-                
+
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -78,7 +78,7 @@ class AppMissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -105,14 +105,14 @@ class AppMissionTest extends TestCase
 
         $res = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
-        
+
         DB::setDefaultConnection('mysql');
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?search=title&theme_id=1&skill_id='.$skill->skill_id, ['token' => $token])
+        $this->get('app/missions?search=title&theme_id=1&skill_id=' . $skill->skill_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -122,8 +122,8 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
-        
+          ]);
+
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -145,13 +145,13 @@ class AppMissionTest extends TestCase
         App\Models\Mission::whereNull('deleted_at')->delete();
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
+
         $this->get(route('app.missions'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -198,7 +198,7 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -229,7 +229,7 @@ class AppMissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         App\Models\FavouriteMission::where('user_id', $user->user_id)->delete();
         $user->delete();
         $mission->delete();
@@ -252,7 +252,7 @@ class AppMissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        
+
         $params = [
                 'mission_id' => $mission->mission_id
             ];
@@ -264,7 +264,7 @@ class AppMissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         // change database connection to master
         DB::setDefaultConnection('mysql');
         $this->post('app/mission/favourite', $params, ['token' => $token])
@@ -272,7 +272,7 @@ class AppMissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -302,12 +302,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -359,7 +359,7 @@ class AppMissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -385,7 +385,7 @@ class AppMissionTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/mission/'.$mission->mission_id, ['token' => $token])
+        $this->get('app/mission/' . $mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -417,16 +417,16 @@ class AppMissionTest extends TestCase
                     "short_description",
                     "set_view_detail",
                     "city_name",
-                    "mission_theme"=> [
+                    "mission_theme" => [
                         "mission_theme_id",
                         "theme_name",
                         "translations"
                     ],
-                    "mission_document"=> []
+                    "mission_document" => []
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -444,9 +444,9 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         $missionId = rand(1000000, 2000000);
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/mission/'.$missionId, ['token' => $token])
+        $this->get('/app/mission/' . $missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -483,12 +483,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -536,7 +536,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
@@ -569,7 +569,7 @@ class AppMissionTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
+        $this->get('/app/related-missions/' . $mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -600,7 +600,7 @@ class AppMissionTest extends TestCase
                     "short_description",
                     "set_view_detail",
                     "city_name",
-                    "mission_theme"=> [
+                    "mission_theme" => [
                         "mission_theme_id",
                         "theme_name",
                         "translations"
@@ -608,7 +608,7 @@ class AppMissionTest extends TestCase
                 ],
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
         $missionRelated->delete();
@@ -628,9 +628,9 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         $missionId = rand(1000000, 2000000);
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/related-missions/'.$missionId, ['token' => $token])
+        $this->get('/app/related-missions/' . $missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -663,12 +663,12 @@ class AppMissionTest extends TestCase
         $user->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/mission/'.$mission->mission_id.'/volunteers', ['token' => $token])
+        $this->get('app/mission/' . $mission->mission_id . '/volunteers', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $mission->delete();
         $user->delete();
     }
@@ -687,9 +687,9 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         $missionId = rand(1000000, 2000000);
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
+        $this->get('app/mission/' . $missionId . '/volunteers', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -734,7 +734,7 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -766,7 +766,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -799,7 +799,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
     }
@@ -824,7 +824,7 @@ class AppMissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "data"
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -852,12 +852,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -889,7 +889,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -923,7 +923,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -952,12 +952,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -989,7 +989,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1023,7 +1023,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1052,12 +1052,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1089,7 +1089,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1123,7 +1123,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1153,12 +1153,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1190,7 +1190,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1214,7 +1214,7 @@ class AppMissionTest extends TestCase
         $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?explore_mission_type=top_organization&explore_mission_params='.$organizationName, ['token' => $token])
+        $this->get('app/missions?explore_mission_type=top_organization&explore_mission_params=' . $organizationName, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -1224,7 +1224,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1254,12 +1254,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1291,7 +1291,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1315,7 +1315,7 @@ class AppMissionTest extends TestCase
         $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?explore_mission_type=recommended-missions&explore_mission_params='.$organizationName, ['token' => $token])
+        $this->get('app/missions?explore_mission_type=recommended-missions&explore_mission_params=' . $organizationName, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -1325,7 +1325,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1355,12 +1355,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1392,7 +1392,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -1429,10 +1429,10 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
-        
+
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?explore_mission_type=favourite-missions&explore_mission_params='.$organizationName, ['token' => $token])
+        $this->get('app/missions?explore_mission_type=favourite-missions&explore_mission_params=' . $organizationName, ['token' => $token])
           ->seeStatusCode(200);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
@@ -1463,12 +1463,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1500,7 +1500,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1524,7 +1524,7 @@ class AppMissionTest extends TestCase
         $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?explore_mission_type=most-ranked-missions&explore_mission_params='.$organizationName, ['token' => $token])
+        $this->get('app/missions?explore_mission_type=most-ranked-missions&explore_mission_params=' . $organizationName, ['token' => $token])
           ->seeStatusCode(200);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
@@ -1554,12 +1554,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1591,7 +1591,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1625,7 +1625,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1655,12 +1655,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1692,7 +1692,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1716,7 +1716,7 @@ class AppMissionTest extends TestCase
         $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?explore_mission_type=organization&explore_mission_params='.$organizationName, ['token' => $token])
+        $this->get('app/missions?explore_mission_type=organization&explore_mission_params=' . $organizationName, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -1726,7 +1726,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1756,12 +1756,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1793,7 +1793,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1827,7 +1827,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1857,12 +1857,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1894,7 +1894,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -1928,7 +1928,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -1958,12 +1958,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -1995,7 +1995,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -2029,7 +2029,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -2059,12 +2059,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2096,7 +2096,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -2130,7 +2130,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -2160,12 +2160,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2201,7 +2201,7 @@ class AppMissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2240,7 +2240,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -2258,9 +2258,9 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-             
+
         \DB::setDefaultConnection('mysql');
-        
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -2271,12 +2271,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2308,7 +2308,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -2340,12 +2340,12 @@ class AppMissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/filter-data?search=title&country_id='.$mission->country_id.'&state_id='.$mission->state_id.'&city_id='.$mission->city_id.'&theme_id=1', ['token' => $token])
+        $this->get('app/filter-data?search=title&country_id=' . $mission->country_id . '&state_id=' . $mission->state_id . '&city_id=' . $mission->city_id . '&theme_id=1', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "data"
-        ]);
+          ]);
 
         // For theme filters
         DB::setDefaultConnection('mysql');
@@ -2354,23 +2354,23 @@ class AppMissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "data"
-        ]);
-        
+          ]);
+
         $countryName = App\Models\CountryLanguage::where("country_id", $mission->country_id)->first()->name;
 
         // For country filters
         DB::setDefaultConnection('mysql');
-        $res = $this->get('app/filter-data?explore_mission_type=country&explore_mission_params='.$countryName, ['token' => $token])
+        $res = $this->get('app/filter-data?explore_mission_type=country&explore_mission_params=' . $countryName, ['token' => $token])
           ->seeStatusCode(200);
 
         // For organization filters
         DB::setDefaultConnection('mysql');
-        $this->get('app/filter-data?explore_mission_type=organization&explore_mission_params='.$mission->organisation_name, ['token' => $token])
+        $this->get('app/filter-data?explore_mission_type=organization&explore_mission_params=' . $mission->organisation_name, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "data"
-        ]);
+          ]);
 
         // For theme filters
         DB::setDefaultConnection('mysql');
@@ -2379,7 +2379,7 @@ class AppMissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "data"
-        ]);
+          ]);
 
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
@@ -2401,17 +2401,17 @@ class AppMissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        
+
         $missionId = $mission->mission_id;
 
         $missionLanguage = factory(\App\Models\MissionLanguage::class)->make();
         $missionLanguage->setConnection($connection);
         $missionLanguage->mission_id = $mission->mission_id;
         $missionLanguage->save();
-        
+
         $langId = 1;
 
-        $this->get('/social-sharing/'.$fqdn.'/'.$missionId.'/'.$langId)
+        $this->get('/social-sharing/' . $fqdn . '/' . $missionId . '/' . $langId)
         ->seeStatusCode(200);
     }
 
@@ -2437,12 +2437,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2478,7 +2478,7 @@ class AppMissionTest extends TestCase
                     "sort_order" => "1"
                 ]
             ],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -2512,7 +2512,7 @@ class AppMissionTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
+        $this->get('/app/related-missions/' . $mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -2543,7 +2543,7 @@ class AppMissionTest extends TestCase
                     "short_description",
                     "set_view_detail",
                     "city_name",
-                    "mission_theme"=> [
+                    "mission_theme" => [
                         "mission_theme_id",
                         "theme_name",
                         "translations"
@@ -2551,7 +2551,7 @@ class AppMissionTest extends TestCase
                 ],
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
         $missionRelated->delete();
@@ -2582,12 +2582,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2619,7 +2619,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -2641,14 +2641,14 @@ class AppMissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
 
         DB::setDefaultConnection('mysql');
-      
+
         $params = [
             'mission_id' => $mission->mission_id,
             'motivation' => str_random(10),
             'availability_id' => 1
         ];
         DB::setDefaultConnection('mysql');
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
@@ -2666,7 +2666,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -2684,7 +2684,7 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-        
+
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2695,19 +2695,19 @@ class AppMissionTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2739,7 +2739,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -2764,10 +2764,10 @@ class AppMissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-      
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
-        $this->get('app/missions?search=title&country_id='.$mission->country_id.'&city_id='.$mission->city_id.'&theme_id=1&skill_id='.$skill->skill_id, ['token' => $token])
+
+        $this->get('app/missions?search=title&country_id=' . $mission->country_id . '&city_id=' . $mission->city_id . '&theme_id=1&skill_id=' . $skill->skill_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -2777,7 +2777,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -2800,7 +2800,7 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-        
+
         \DB::setDefaultConnection('mysql');
 
         $connection = 'tenant';
@@ -2811,19 +2811,19 @@ class AppMissionTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2855,7 +2855,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -2880,9 +2880,9 @@ class AppMissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-      
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
+
         $this->get('app/missions?search=title&explore_mission_type=recommended-missions', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -2893,7 +2893,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -2928,12 +2928,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => $organizationName,
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -2965,7 +2965,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [[
+            "media_videos" => [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg",
                 "sort_order" => "1"
@@ -3002,7 +3002,7 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
-        
+
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/missions?sort_by=my_favourite', ['token' => $token])
@@ -3024,9 +3024,9 @@ class AppMissionTest extends TestCase
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
         $cityDetail = App\Models\City::with('state')->where('city_id', $cityId)->whereNull('deleted_at')->first();
-              
+
         \DB::setDefaultConnection('mysql');
-        
+
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
@@ -3035,19 +3035,19 @@ class AppMissionTest extends TestCase
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3079,7 +3079,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -3104,10 +3104,10 @@ class AppMissionTest extends TestCase
 
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-      
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        
-        $this->get('app/missions?search=title&country_id='.$mission->country_id.'&theme_id=1&skill_id='.$skill->skill_id, ['token' => $token])
+
+        $this->get('app/missions?search=title&country_id=' . $mission->country_id . '&theme_id=1&skill_id=' . $skill->skill_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -3117,7 +3117,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -3149,12 +3149,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3202,7 +3202,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
@@ -3235,7 +3235,7 @@ class AppMissionTest extends TestCase
 
         DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
+        $this->get('/app/related-missions/' . $mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -3266,7 +3266,7 @@ class AppMissionTest extends TestCase
                     "short_description",
                     "set_view_detail",
                     "city_name",
-                    "mission_theme"=> [
+                    "mission_theme" => [
                         "mission_theme_id",
                         "theme_name",
                         "translations"
@@ -3274,7 +3274,7 @@ class AppMissionTest extends TestCase
                 ],
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         $mission->delete();
         $missionRelated->delete();
@@ -3309,12 +3309,12 @@ class AppMissionTest extends TestCase
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3346,7 +3346,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
@@ -3375,7 +3375,7 @@ class AppMissionTest extends TestCase
         $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?search=title&theme_id=1&skill_id='.$skill->skill_id, ['token' => $token])
+        $this->get('app/missions?search=title&theme_id=1&skill_id=' . $skill->skill_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -3385,7 +3385,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "message"
-        ]);
+          ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -3408,19 +3408,19 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        
+
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => [
                     [
-                       "lang"=>"en",
-                       "detail"=>"Testing organisation description in English"
+                       "lang" => "en",
+                       "detail" => "Testing organisation description in English"
                     ],
                     [
-                       "lang"=>"fr",
-                       "detail"=>"Testing organisation description in French"
+                       "lang" => "fr",
+                       "detail" => "Testing organisation description in French"
                     ]
                 ]
             ],
@@ -3452,7 +3452,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "documents" => [],
-            "media_videos"=> [],
+            "media_videos" => [],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2022-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.GOAL"),
@@ -3474,14 +3474,14 @@ class AppMissionTest extends TestCase
         App\Models\Mission::where("mission_id", "<>", $mission->mission_id)->delete();
 
         DB::setDefaultConnection('mysql');
-      
+
         $params = [
             'mission_id' => $mission->mission_id,
             'motivation' => str_random(10),
             'availability_id' => 1
         ];
         DB::setDefaultConnection('mysql');
-        
+
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
         ->seeStatusCode(201);
@@ -3489,13 +3489,13 @@ class AppMissionTest extends TestCase
         ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
 
         DB::setDefaultConnection('mysql');
-        $this->get('app/mission/'.$mission->mission_id.'/volunteers', ['token' => $token])
+        $this->get('app/mission/' . $mission->mission_id . '/volunteers', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
-                
+          ]);
+
         $user->delete();
     }
 }

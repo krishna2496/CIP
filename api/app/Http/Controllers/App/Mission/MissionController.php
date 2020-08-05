@@ -38,12 +38,12 @@ class MissionController extends Controller
      * @var MissionRepository
      */
     private $missionRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Repositories\UserFilter\UserFilterRepository
      */
@@ -153,14 +153,14 @@ class MissionController extends Controller
         if ($userFilters !== null) {
             $userFilterData = $userFilters->toArray()["filters"];
         }
-        
+
         // Checking explore mission type is out of list or not
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
             $exploreMissionType = $request->input('explore_mission_type');
             $authorizedMissionTypes = array(config('constants.TOP_RECOMMENDED'), config('constants.RANDOM'),
                 config('constants.THEME'), config('constants.COUNTRY'), config('constants.ORGANIZATION'),
                 config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'), config('constants.VIRTUAL'));
-                
+
             if (!in_array($exploreMissionType, $authorizedMissionTypes)
             ) {
                 $metaData['filters'] = $userFilterData;
@@ -173,7 +173,7 @@ class MissionController extends Controller
                 );
                 $apiStatus = Response::HTTP_OK;
                 $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-                
+
                 return $this->responseHelper->successWithPagination(
                     $apiStatus,
                     $apiMessage,
@@ -193,7 +193,7 @@ class MissionController extends Controller
             ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone) {
                 return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
             })->toArray();
-            
+
         $requestString = $request->except(['page','perPage']);
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $missionsTransformed,
@@ -240,10 +240,12 @@ class MissionController extends Controller
         $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
         // Get data by top country
         $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
-      
+
         // Get data by top organization
         $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
+        $returnData[config('constants.TOP_THEME')] = [];
+        
         // Return data by top theme
         if (!empty($topTheme->toArray())) {
             foreach ($topTheme as $key => $value) {
@@ -296,7 +298,7 @@ class MissionController extends Controller
             }
             $apiData[config('constants.TOP_ORGANISATION')] = $returnData[config('constants.TOP_ORGANISATION')];
         }
-        
+
         $apiStatus = Response::HTTP_OK;
         return $this->responseHelper->success(
             $apiStatus,
@@ -327,7 +329,7 @@ class MissionController extends Controller
         $missionTheme = $this->missionRepository->missionFilter($request, config('constants.THEME'));
         // Get Data by skills
         $missionSkill = $this->missionRepository->missionFilter($request, config('constants.SKILL'));
-        // Get Data by state        
+        // Get Data by state
         $missionState = $this->missionRepository->missionFilter($request, config('constants.STATE'));
 
         if (!empty($missionCountry->toArray())) {
@@ -379,7 +381,7 @@ class MissionController extends Controller
                 $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
             }
         }
-        
+
         if (!empty($missionTheme->toArray())) {
             foreach ($missionTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
@@ -398,7 +400,7 @@ class MissionController extends Controller
                 }
             }
         }
-        
+
         if (!empty($missionSkill->toArray())) {
             foreach ($missionSkill as $key => $value) {
                 if ($value->skill) {
@@ -423,7 +425,7 @@ class MissionController extends Controller
             foreach ($missionState as $key => $value) {
 
                 if (isset($value->city->state)) {
-                    
+
                     $translation = $value->city->state->languages->toArray();
                     $translationkey = '';
 
@@ -445,7 +447,7 @@ class MissionController extends Controller
                     $apiData[config('constants.STATE')] : [];
                     if(in_array($value->city->state_id, $stateIdArray)) {
                         $statekey = array_search($value->city->state_id, array_column($apiData[config('constants.STATE')], 'id'));
-                        $apiData[config('constants.STATE')][$statekey]['mission_count'] = 
+                        $apiData[config('constants.STATE')][$statekey]['mission_count'] =
                         $apiData[config('constants.STATE')][$statekey]['mission_count'] + $value->mission_count;
                     } else {
                         array_push($apiData[config('constants.STATE')], $returnData[config('constants.STATE')]);
@@ -454,7 +456,7 @@ class MissionController extends Controller
                 }
             }
         }
-        
+
         $apiStatus = Response::HTTP_OK;
         return $this->responseHelper->success(
             $apiStatus,
@@ -478,7 +480,7 @@ class MissionController extends Controller
                     "mission_id" => "numeric",
                 ]
             );
-    
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -499,12 +501,12 @@ class MissionController extends Controller
             $apiMessage = ($missionFavourite !== null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
-            
+
             // Make activity log
             $favouriteStatus = ($missionFavourite != null) ?
             config('constants.activity_log_actions.ADD_TO_FAVOURITE'):
             config('constants.activity_log_actions.REMOVE_FROM_FAVOURITE');
-            
+
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION'),
                 $favouriteStatus,
@@ -523,7 +525,7 @@ class MissionController extends Controller
             );
         }
     }
-    
+
     /**
      * Get Mission Filter Tags
      *
@@ -575,7 +577,7 @@ class MissionController extends Controller
                     }
                 }
             }
-            
+
             if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
                 $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 if ($themeTag) {
@@ -634,7 +636,7 @@ class MissionController extends Controller
             ) {
                 return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone);
             })->all();
-           
+
             $apiData = $mission;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!empty($mission)) ?
@@ -652,7 +654,7 @@ class MissionController extends Controller
             );
         }
     }
-    
+
     /**
      * Get missions detail
      *
@@ -668,11 +670,11 @@ class MissionController extends Controller
             $languageCode = $language->code;
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
-           
+
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
-           
+
             $mission = $missionData->map(
                 function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
                 ) {
@@ -685,7 +687,7 @@ class MissionController extends Controller
                     );
                 }
             )->all();
-               
+
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;
             $apiMessage = (empty($mission)) ? trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND') :

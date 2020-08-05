@@ -104,7 +104,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -117,7 +117,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -167,7 +167,7 @@ class AppVolunteeringHistoryTest extends TestCase
         
         DB::setDefaultConnection('mysql');
         // For specific year
-        $response = $this->get('/app/volunteer/history/theme?year='.Carbon::now()->format('Y'), ['token' => $token])
+        $response = $this->get('/app/volunteer/history/theme?year=' . Carbon::now()->format('Y'), ['token' => $token])
         ->seeStatusCode(200);
 
         $user->delete();
@@ -358,7 +358,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -372,7 +372,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -501,7 +501,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -515,7 +515,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -546,7 +546,7 @@ class AppVolunteeringHistoryTest extends TestCase
         );
         DB::setDefaultConnection('mysql');
         // For specific year
-        $response = $this->get('/app/volunteer/history/skill?year='.Carbon::now()->format('Y'), ['token' => $token])
+        $response = $this->get('/app/volunteer/history/skill?year=' . Carbon::now()->format('Y'), ['token' => $token])
         ->seeStatusCode(200);
 
         $user->delete();
@@ -723,7 +723,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -737,7 +737,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -855,7 +855,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -869,7 +869,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 

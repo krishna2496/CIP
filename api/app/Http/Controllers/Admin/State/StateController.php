@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin\State;
 
 use Illuminate\Http\Response;
@@ -39,9 +40,10 @@ class StateController extends Controller
      * Create a new controller instance.
      *
      * @param App\Repositories\State\StateRepository $stateRepository
-     * @param App\Helpers\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper $languageHelper
-     * @param \Illuminate\Http\Request $request
+     * @param App\Helpers\ResponseHelper             $responseHelper
+     * @param App\Helpers\LanguageHelper             $languageHelper
+     * @param \Illuminate\Http\Request               $request
+     *
      * @return void
      */
     public function __construct(
@@ -57,9 +59,10 @@ class StateController extends Controller
     }
 
     /**
-     * Fetch all state
+     * Fetch all state.
      *
      * @param Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -68,16 +71,18 @@ class StateController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (!$stateList->isEmpty()) ? trans('messages.success.MESSAGE_STATE_LISTING')
         : trans('messages.success.MESSAGE_NO_STATE_FOUND');
+
         return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $stateList);
     }
 
     /**
-    * Fetch state by country id
-    *
-    * @param Illuminate\Http\Request $request
-    * @param int $countryId
-    * @return Illuminate\Http\JsonResponse
-    */
+     * Fetch state by country id.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int                     $countryId
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
     public function fetchState(Request $request, int $countryId): JsonResponse
     {
         try {
@@ -86,6 +91,7 @@ class StateController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($stateList->count() > 0) ? trans('messages.success.MESSAGE_STATE_LISTING')
             : trans('messages.success.MESSAGE_NO_STATE_FOUND');
+
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $stateList);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -99,6 +105,7 @@ class StateController extends Controller
      * Store a newly created states.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
@@ -107,11 +114,11 @@ class StateController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "country_id" => 'required|exists:country,country_id,deleted_at,NULL',
-                "states" => 'required',
-                "states.*.translations" => 'required|array',
-                "states.*.translations.*.lang" => 'required|min:2|max:2',
-                "states.*.translations.*.name" => 'required|max:255'
+                'country_id' => 'required|exists:country,country_id,deleted_at,NULL',
+                'states' => 'required',
+                'states.*.translations' => 'required|array',
+                'states.*.translations.*.lang' => 'required|min:2|max:2',
+                'states.*.translations.*.name' => 'required|max:255',
             ]
         );
 
@@ -128,8 +135,8 @@ class StateController extends Controller
         if (!empty($request->states)) {
             foreach ($request->states[0]['translations'] as $key => $value) {
                 $languageCode = $value['lang'];
-                // Check for valid language code inside tenant and ci admin
-                if ($this->languageHelper->isValidAdminLanguageCode($languageCode) && !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                // Check for valid language code inside ci admin
+                if (!$this->languageHelper->isValidAdminLanguageCode($languageCode)) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -175,7 +182,8 @@ class StateController extends Controller
      * Update state data resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
@@ -186,17 +194,18 @@ class StateController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "country_id" => 'sometimes|required|exists:country,country_id,deleted_at,NULL',
-                    "translations" => 'sometimes|required|array',
-                    "translations.*.lang" => 'required|min:2|max:2',
-                    "translations.*.name" => 'required|max:255'
+                    'country_id' => 'sometimes|required|exists:country,country_id,deleted_at,NULL',
+                    'translations' => 'sometimes|required|array',
+                    'translations.*.lang' => 'required|min:2|max:2',
+                    'translations.*.name' => 'required|max:255',
                 ]
             );
             if (!empty($request->translations)) {
                 foreach ($request->translations as $key => $value) {
                     $languageCode = $value['lang'];
                     // Check for valid language code
-                    if ($this->languageHelper->isValidAdminLanguageCode($languageCode) && !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
+                    if (!$this->languageHelper->isValidAdminLanguageCode($languageCode) ||
+                    !$this->languageHelper->isValidTenantLanguageCode($request, $languageCode)) {
                         return $this->responseHelper->error(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
                             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -244,12 +253,13 @@ class StateController extends Controller
     }
 
     /**
-    * Fetch state by state Id
-    *
-    * @param Illuminate\Http\Request $request
-    * @param int $stateId
-    * @return Illuminate\Http\JsonResponse
-    */
+     * Fetch state by state Id.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int                     $stateId
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
     public function show(int $stateId): JsonResponse
     {
         try {
@@ -257,6 +267,7 @@ class StateController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STATE_FOUND');
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $stateList->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -270,6 +281,7 @@ class StateController extends Controller
      * Remove the state from storage.
      *
      * @param int $id
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function destroy(int $id): JsonResponse
@@ -300,6 +312,7 @@ class StateController extends Controller
                 null,
                 $id
             ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
