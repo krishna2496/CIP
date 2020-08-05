@@ -617,7 +617,7 @@ export default {
             const cardBodyList = document.querySelectorAll('.card-grid .card-body');
 
             // check if card content is already visible in the DOM
-            if(cardBodyList.length > 0) {
+            if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
                     return;
                 }
