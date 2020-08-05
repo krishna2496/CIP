@@ -549,6 +549,76 @@ label {
   }
 }
 
+.site-checkbox {
+  .custom-checkbox {
+    .custom-control-label {
+      font-size: 15px;
+      font-weight: 300;
+      width: 100%;
+      display: block;
+      padding-left: 30px;
+      strong {
+        font-weight: 600;
+      }
+      &:after,
+      &:before {
+        position: absolute;
+        left: 0;
+        content: "";
+        top: 2px;
+        height: 20px;
+        width: 20px;
+        box-shadow: none !important;
+        border: 1px solid $control-border !important;
+        border-radius: 2px;
+        padding: 0;
+        background: transparent;
+      }
+      &:before {
+        // background: $primary url("../images/check-icon.svg") no-repeat
+        //   center center;
+
+        background: $primary url($assetUrl+"/check-icon.svg") no-repeat center
+          center;
+        background-size: 14px 14px;
+        opacity: 0;
+        @include transition(all 0);
+      }
+    }
+  }
+  .custom-control-input {
+    position: relative;
+    padding: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 1;
+    opacity: 1;
+    width: auto;
+    cursor: pointer;
+    &:after,
+    &:before {
+      display: none;
+    }
+    &:checked {
+      ~ .custom-control-label {
+        &:after {
+          border-color: $primary !important;
+          background-image: none;
+        }
+        &::before {
+          opacity: 1;
+          background: $primary url($assetUrl+"/check-icon.svg") no-repeat center
+            center;
+          background-size: 14px 14px;
+          @include transition(all 0.3s);
+        }
+      }
+    }
+  }
+}
+
 .checkbox-select {
   display: inline-flex;
   align-items: center;
@@ -556,7 +626,7 @@ label {
   height: 100%;
   & > span {
     display: block;
-    padding: 6px 35px 6px 15px;
+    padding: 6px 33px 6px 15px;
     border: 1px solid $control-border;
     border-radius: 3px;
     text-overflow: ellipsis;
@@ -566,6 +636,10 @@ label {
     cursor: pointer;
     font-size: 16px;
     line-height: normal;
+    @include xl-max{
+      font-size: 14px;
+      padding:6px 35px 6px 10px; 
+    }
     &:after {
       position: absolute;
       content: "";
@@ -672,7 +746,7 @@ label {
   line-height: 18px;
   & > span {
     display: block;
-    padding: 6px 35px 6px 15px;
+    padding: 6px 33px 6px 15px;
     border: 1px solid $control-border;
     border-radius: 3px;
     text-overflow: ellipsis;
@@ -958,11 +1032,154 @@ label {
   }
 }
 
+.multiselect {
+  &.site-multiselect {
+    min-height: auto;
+    .multiselect__select {
+      background: url($assetUrl+"/down-arrow.svg") no-repeat;
+      background-size: 11px;
+      width: 11px;
+      height: 11px;
+      right: 13px;
+      top: 50%;
+      @include transformY(-50%);
+      padding: 0;
+      &::before {
+        display: none;
+      }
+    }
+    .multiselect__tags {
+      min-height: auto;
+      background: transparent;
+      border: 1px solid $control-border;
+      padding: 10px 35px 10px 15px;
+      line-height: 18px;
+      @include border-radius(3px);
+      box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+      -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+      -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+      -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+      -o-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    }
+    .multiselect__tags-wrap {
+      line-height: 0;
+      display: block;
+    }
+    .multiselect__tag {
+      padding: 0;
+      padding: 0;
+      color: $black-primary;
+      background: transparent;
+      margin-right: 5px;
+      margin-bottom: 0;
+      font-size: 14px;
+      line-height: 18px;
+      &:after {
+        position: relative;
+        content: ",";
+        font-size: 14px;
+        line-height: 18px;
+        color: $black-primary;
+      }
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
+      .multiselect__tag-icon {
+        display: none;
+      }
+    }
+    .multiselect__input {
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      font-size: 14px;
+      line-height: 18px;
+    }
+    .multiselect__placeholder {
+      color: $black-primary;
+      margin-bottom: 0;
+      padding-top: 0;
+    }
+    .multiselect__content-wrapper {
+      min-width: 100%;
+      right: 0;
+      top: 100%;
+      ul {
+        padding: 10px 0;
+        height: 100%;
+        li {
+          .multiselect__option {
+            padding: 6px 15px 6px 42px;
+            font-size: 14px;
+            line-height: 18px;
+            cursor: pointer;
+            position: relative;
+            color: $black-primary !important;
+            min-height: auto;
+            &:after,
+            &:before {
+              position: absolute;
+              left: 15px;
+              content: "";
+              top: 5px;
+              height: 20px;
+              width: 20px;
+              box-shadow: none !important;
+              border: 1px solid $control-border !important;
+              border-radius: 2px;
+              padding: 0;
+              background: transparent;
+            }
+            &:before {
+              // background: $primary url("../images/check-icon.svg") no-repeat
+              //   center center;
+
+              background: $primary url($assetUrl+"/check-icon.svg") no-repeat
+                center center;
+              background-size: 14px 14px;
+              opacity: 0;
+              @include transition(all 0.3s);
+            }
+            &.multiselect__option--selected {
+              background: transparent;
+              font-weight: 400;
+              &:after {
+                border-color: $primary !important;
+              }
+              &::before {
+                opacity: 1;
+              }
+            }
+            &.multiselect__option--highlight {
+              font-weight: 400;
+              background: $primary-border-color;
+            }
+          }
+        }
+      }
+    }
+    &.multiselect--active {
+      .multiselect__select {
+        transform: translateY(-50%) rotate(180deg);
+        -webkit-transform: translateY(-50%) rotate(180deg);
+        -ms-transform: translateY(-50%) rotate(180deg);
+        -moz-transform: translateY(-50%) rotate(180deg);
+        -o-transform: translateY(-50%) rotate(180deg);
+      }
+      .multiselect__placeholder {
+        display: block !important;
+      }
+    }
+  }
+}
+
 /** breadcrumb dropdown style **/
 
 .breadcrumb-current {
   display: none;
-  padding: 6px 35px 6px 15px;
+  padding: 6px 33px 6px 15px;
   border: 1px solid $control-border;
   border-radius: 3px;
   text-overflow: ellipsis;
@@ -979,7 +1196,7 @@ label {
     background-size: 11px;
     width: 11px;
     height: 11px;
-    right: 13px;
+    right: 14px;
     top: 50%;
     @include transformY(-50%);
     @include transition(all 0.3s);
@@ -1014,6 +1231,10 @@ label {
 }
 
 .breadcrumb-dropdown {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
   @include sm-max {
     position: absolute !important;
     top: 100%;
@@ -1023,6 +1244,7 @@ label {
     width: 100%;
     width: auto;
     max-height: 226px;
+    overflow: auto;
     margin-top: -1px;
     background: $white;
     border: 1px solid $control-border;
@@ -1038,19 +1260,25 @@ label {
 }
 
 .profile-block {
-  min-height: 160px;
+  min-height: 180px;
   position: relative;
   background: $primary-border-color;
   border-radius: 100%;
   overflow: hidden;
-  width: 160px;
-  margin: 0 auto;
+  width: 180px;
+  margin: 0 auto 13px;
+
+  @include sm-max {
+    min-height: 160px;
+    width: 160px;
+  }
+
   .content-loader-wrap {
     z-index: 1040;
   }
   .priimage {
-    height: 160px !important;
-    width: 160px !important;
+    height: 100%;
+    width: 100%;
     border-radius: 100%;
     overflow: hidden;
     position: absolute;
@@ -1062,30 +1290,26 @@ label {
     z-index: 1039;
   }
   .picture-input {
-    height: 160px !important;
-    width: 160px !important;
     border-radius: 100%;
     overflow: hidden;
     position: relative;
     @include transition(all 0.3s);
+
     > div {
       border-radius: 100%;
       overflow: hidden;
     }
     .preview-container {
-      height: 160px !important;
-      width: 160px !important;
       position: relative;
-      border-radius: 100% !important;
+      border-radius: 100%;
       z-index: 1039;
     }
     .picture-preview {
       background: $primary-border-color;
-      height: 160px !important;
-      width: 160px;
       overflow: hidden;
-      border-radius: 100% !important;
+      border-radius: 100%;
       z-index: 1039 !important;
+      object-fit: cover;
     }
     .picture-inner {
       border: none;
@@ -1100,8 +1324,6 @@ label {
       position: absolute;
       top: 0;
       left: 0;
-      width: 160px;
-      height: 160px;
       color: transparent;
       border-radius: 100%;
       overflow: hidden;
@@ -1110,6 +1332,8 @@ label {
       visibility: hidden;
       transform: scale(0);
       z-index: 9999;
+      width: 100%;
+      height: 100%;
       &:before {
         content: "";
         position: absolute;
@@ -1529,7 +1753,7 @@ input[type="search"]::-webkit-search-cancel-button {
   border-color: $control-border;
   border-radius: 3px;
   @extend .control_shadow;
-  padding: 6px 35px 6px 15px;
+  padding: 6px 33px 6px 15px;
   @include transition(all 0.3s);
   min-height: 1px;
   line-height: normal;
@@ -1544,7 +1768,7 @@ input[type="search"]::-webkit-search-cancel-button {
     @extend .control_shadow;
   }
   .search {
-    padding: 6px 35px 6px 15px !important;
+    padding: 6px 33px 6px 15px !important;
   }
   .text {
     overflow: hidden;
