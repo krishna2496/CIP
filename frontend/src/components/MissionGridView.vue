@@ -54,11 +54,11 @@
                                     <b-link target="_blank" :to="'/donation-mission-detail/' + mission.mission_id" class="card-title mb-2" v-if="checkMissionTypeDonation(mission.mission_type)">
                                         {{mission.title | substring(60)}}
                                     </b-link>
-                                    <div class="group-ratings"  v-if="checkMissionTypeTime(mission.mission_type) || checkMissionTypeGoal(mission.mission_type)">
+                                    <div class="group-ratings" v-if="checkMissionTypeTime(mission.mission_type) || checkMissionTypeGoal(mission.mission_type)">
                                         <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18" :rating="mission.mission_rating_count" :read-only="true">
                                         </star-rating>
                                     </div>
-                                    <div class="group-ratings"  v-if="checkMissionTypeDonation(mission.mission_type)">
+                                    <div class="group-ratings" v-if="checkMissionTypeDonation(mission.mission_type)">
                                         <star-rating v-if="isDonationMissionRatingEnabled" v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18" :rating="mission.mission_rating_count" :read-only="true">
                                         </star-rating>
                                     </div>
@@ -89,7 +89,7 @@
                                     <div class="progress-block detail-column success-donate" v-if="checkMissionTypeDonation(mission.mission_type) && !mission.donation_attribute.show_donation_meter">
                                         <div class="text-wrap">
                                             <p><b class="donate-success" v-if="mission.donation_attribute.show_donation_count">${{mission.donation_attribute.donation_amount_raised}}</b> <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}}</span> <span v-if="mission.donation_attribute.show_donors_count && mission.donation_attribute.show_donation_count"> {{ languageData.label.by}} </span>
-                                            <span v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donars}}</span></p>
+                                                <span v-if="mission.donation_attribute.show_donors_count">{{mission.donation_attribute.donor_count}} {{ languageData.label.donars}}</span></p>
                                         </div>
                                     </div>
 
@@ -229,9 +229,7 @@
                                 </div>
                                 <div class="card-action-block">
                                     <div class="left-btn">
-                                        <b-link :to="'/mission-detail/' + mission.mission_id" 
-                                            v-if="checkMissionTypeVolunteering(mission.mission_type)"
-                                            class="btn-bordersecondary icon-btn">
+                                        <b-link :to="'/mission-detail/' + mission.mission_id" v-if="checkMissionTypeVolunteering(mission.mission_type)" class="btn-bordersecondary icon-btn">
                                             <span>{{ languageData.label.view_detail }}</span>
                                             <i class="icon-wrap">
                                                 <svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -239,9 +237,7 @@
                                                 </svg>
                                             </i>
                                         </b-link>
-                                        <b-link :to="'/donation-mission-detail/' + mission.mission_id" 
-                                            v-if="checkMissionTypeDonation(mission.mission_type)"
-                                            class="btn-bordersecondary icon-btn">
+                                        <b-link :to="'/donation-mission-detail/' + mission.mission_id" v-if="checkMissionTypeDonation(mission.mission_type)" class="btn-bordersecondary icon-btn">
                                             <span>{{ languageData.label.view_detail }}</span>
                                             <i class="icon-wrap">
                                                 <svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -387,8 +383,8 @@ export default {
                 'label': '',
                 'backgroundColor': ''
             },
-            donationPercentage : 0,
-            isDonationMissionRatingEnabled : true
+            donationPercentage: 0,
+            isDonationMissionRatingEnabled: true
         };
     },
     computed: {
@@ -413,6 +409,13 @@ export default {
             this.invitedUserId = '';
             this.query = '';
             this.selected = '';
+            const cardList = document.querySelectorAll(".card-grid .card-inner .card");
+            cardList.forEach((card) => {
+                card.style.height = "";
+                setTimeout(() => {
+                    this.cardHeightAdj();
+                }, 500);
+            });
         },
         getAppliedStatus(missionDetail) {
             const currentDate = moment().format('YYYY-MM-DD');
@@ -617,7 +620,7 @@ export default {
         },
         cardHeightAdj() {
             const cardBodyList = document.querySelectorAll('.card-grid .card-body');
-            
+
             // check if card content is already visible in the DOM
             if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
@@ -667,8 +670,8 @@ export default {
         countDonationPercentage(donationAmountRaised, goalAmount) {
             if (donationAmountRaised && goalAmount) {
                 return Math.round((100 * donationAmountRaised) / goalAmount);
-			}
-			return 0;
+            }
+            return 0;
         }
 
     },
@@ -686,12 +689,12 @@ export default {
 
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
         this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
-        
+
         this.isDonationMissionRatingEnabled = this.settingEnabled(constants.DONATION_MISSION_RATINGS);
         if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
             this.isDisplayMissionLabel = true;
-		}
-		
+        }
+
         this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
         if (JSON.parse(store.state.missionTypeLabels) != "") {
             let defaultLang = store.state.defaultLanguage.toLowerCase();
