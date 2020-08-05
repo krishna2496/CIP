@@ -197,9 +197,10 @@ trait MissionTransformable
                 $mission['city_name'] = $cityTranslation[$cityTranslationkey]['name'];
             }
         }
+
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-        unset($mission['missionUnSdg']);
+        $mission->makeHidden('missionUnSdg');
         return $mission;
     }
 }
