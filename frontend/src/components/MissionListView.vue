@@ -172,7 +172,7 @@
                             <div class="donate-btn-wrap" v-if="checkMissionTypeDonation(mission.mission_type)">
                                 <b-form-group>
                                     <label for="">$</label>
-                                    <b-form-input id="" type="text" :class="form-control" value="20"></b-form-input>
+                                    <b-form-input id="" type="text" class="form-control" value="20"></b-form-input>
                                     <b-button class="btn-donate btn-fillsecondary">{{ languageData.label.donate }}</b-button>
                                 </b-form-group>
                             </div>
