@@ -979,7 +979,7 @@
       &:hover {
         .card-action-block {
           .btn-wrap {
-            .icon-btn {
+            .icon-btn:not(.gray-btn) {
               background: $white;
               color: $primary;
               border-color: $primary;
@@ -995,15 +995,15 @@
               }
             }
             .gray-btn {
-                background: $gray-primary;
-                color: $white;
-                border-color: $gray-primary;
-                i {
-                  svg {
-                    fill: $white;
-                  }
+              background: $white;
+              color: $middle-gray;
+              border-color: $gray-secondary;
+              i {
+                svg {
+                  fill: $middle-gray;
                 }
               }
+            }
           }
         }
       }
