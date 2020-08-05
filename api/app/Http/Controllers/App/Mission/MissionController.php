@@ -431,9 +431,7 @@ class MissionController extends Controller
         if (!empty($missionState->toArray())) {
             $stateIdArray = [];
             foreach ($missionState as $key => $value) {
-
                 if (isset($value->city->state)) {
-
                     $translation = $value->city->state->languages->toArray();
                     $translationkey = '';
 
@@ -453,7 +451,7 @@ class MissionController extends Controller
                 if (isset($returnData[config('constants.STATE')])) {
                     $apiData[config('constants.STATE')] = isset($apiData[config('constants.STATE')]) ?
                     $apiData[config('constants.STATE')] : [];
-                    if(in_array($value->city->state_id, $stateIdArray)) {
+                    if (in_array($value->city->state_id, $stateIdArray)) {
                         $statekey = array_search($value->city->state_id, array_column($apiData[config('constants.STATE')], 'id'));
                         $apiData[config('constants.STATE')][$statekey]['mission_count'] =
                         $apiData[config('constants.STATE')][$statekey]['mission_count'] + $value->mission_count;
@@ -697,7 +695,7 @@ class MissionController extends Controller
             )->all();
             
             // Get the associated UN SDG
-            if(!empty($mission[0]->missionUnSdg) && count($mission[0]->missionUnSdg)>0){
+            if (!empty($mission[0]->missionUnSdg) && count($mission[0]->missionUnSdg) > 0) {
                 $sdgData = [];
                 foreach ($mission[0]->missionUnSdg as $key => $unSdg) {
                     $sdgData[] = $this->unitedNationSDGRepository->getUnSdg($unSdg->un_sdg_number);

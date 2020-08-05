@@ -44,60 +44,60 @@ class MissionRepositoryTest extends TestCase
     public function testAddUnSDGMissionRepositorySuccess()
     {
         $data = [
-            "location" => [
-                "city_id" => 1,
-                "country_id" => 233,
-                "country_code" => "US"
+            'location' => [
+                'city_id' => 1,
+                'country_id' => 233,
+                'country_code' => 'US'
             ],
-            "organisation" => [
-                "organisation_id" => 1,
-                "organisation_name" => str_random(10)
+            'organisation' => [
+                'organisation_id' => 1,
+                'organisation_name' => str_random(10)
             ],
-            "mission_detail"=> [
+            'mission_detail' => [
                 [
-                    "lang"=> "en",
-                    "title"=> "New Organization Mission created",
-                    "short_description"=> "this is testing api with all mission details",
-                    "objective"=> "To test and check",
-                    "label_goal_achieved"=> "test percentage",
-                    "label_goal_objective"=> "check test percentage",
-                    "section"=> [
+                    'lang' => 'en',
+                    'title' => 'New Organization Mission created',
+                    'short_description' => 'this is testing api with all mission details',
+                    'objective' => 'To test and check',
+                    'label_goal_achieved' => 'test percentage',
+                    'label_goal_objective' => 'check test percentage',
+                    'section' => [
                         [
-                            "title"=> "Section title",
-                            "description"=> "Section description"
+                            'title' => 'Section title',
+                            'description' => 'Section description'
                         ]
                     ],
-                    "custom_information"=> [
+                    'custom_information' => [
                         [
-                            "title"=> "Customer info",
-                            "description"=> "Description of customer info"
+                            'title' => 'Customer info',
+                            'description' => 'Description of customer info'
                         ]
                     ]
                 ]
             ],
-            "un_sdg"=> [3,6,8,15]
+            'un_sdg' => [3,6,8,15]
         ];
         $requestData = new Request($data);
         $missionModel = new Mission();
 
         $languages = collect([
             [
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             [
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ]);
         
@@ -136,22 +136,22 @@ class MissionRepositoryTest extends TestCase
 
         $languages = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
         $collectionLanguages = collect($languages);
@@ -226,7 +226,7 @@ class MissionRepositoryTest extends TestCase
         $missionModel->mission_id = rand(10, 100);
 
         $data = [
-            "un_sdg"=> [3,6,8,15]
+            'un_sdg' => [3,6,8,15]
         ];
         $requestData = new Request($data);
 
@@ -244,24 +244,25 @@ class MissionRepositoryTest extends TestCase
 
         $languages = [
             (object)[
-                "language_id"=>1,
-                "name"=> "English",
-                "code"=> "en",
-                "status"=> "1",
-                "created_at"=> null,
-                "updated_at"=> null,
-                "deleted_at"=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status"=>"1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
+        
         $collectionLanguages = collect($languages);
         $languageHelper->shouldReceive('getLanguages')
         ->once()
