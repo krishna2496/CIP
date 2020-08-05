@@ -4,7 +4,6 @@ require_once(__DIR__.'/../../../../bootstrap/app.php');
 use Ramsey\Uuid\Uuid;
 
 $db = app()->make('db');
-
 $pdo = $db->connection('mysql')->getPdo();
 
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
