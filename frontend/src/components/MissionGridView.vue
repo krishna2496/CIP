@@ -506,6 +506,8 @@ export default {
         },
         // Add mission to favorite
         favoriteMission(missionId) {
+            const bodyTag = document.querySelector("body");
+            bodyTag.classList.add("has-favourite");
             const missionData = {
                 mission_id: ''
             };
@@ -615,7 +617,7 @@ export default {
         },
         cardHeightAdj() {
             const cardBodyList = document.querySelectorAll('.card-grid .card-body');
-
+            
             // check if card content is already visible in the DOM
             if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
