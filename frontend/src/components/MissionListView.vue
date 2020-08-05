@@ -178,7 +178,7 @@
                             </div>
                             <div class="btn-wrap">
                                 <b-link :to="'/mission-detail/' + mission.mission_id" v-if="checkMissionTypeVolunteering(mission.mission_type)">
-                                    <b-button class="btn-bordersecondary icon-btn gray-btn">
+                                    <b-button class="btn-bordersecondary icon-btn">
                                         <span>{{ languageData.label.view_detail }}</span>
                                         <i class="icon-wrap">
 											<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
