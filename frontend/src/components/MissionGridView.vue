@@ -257,11 +257,11 @@
 
                                         <b-button v-bind:class="{
 
-'icon-btn' : true,
+                                            'icon-btn' : true,
 
-'fill-heart-btn' : mission.is_favourite == 1
+                                            'fill-heart-btn' : mission.is_favourite == 1
 
-}" :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite" @click="favoriteMission(mission.mission_id)">
+                                            }" v-b-tooltip.hover :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite" @click="favoriteMission(mission.mission_id)">
                                             <img v-if="mission.is_favourite == 0" :src="$store.state.imagePath+'/assets/images/heart-icon.svg'" alt="heart icon">
                                             <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="heart icon">
                                         </b-button>
