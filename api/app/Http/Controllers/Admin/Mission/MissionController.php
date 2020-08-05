@@ -168,18 +168,18 @@ class MissionController extends Controller
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_tab_details.*.sort_key" => 'required|integer',
-                "mission_tab_details.*.translations"=> 'required',
-                "mission_tab_details.*.translations.*.lang" =>
-                "required_with:mission_tab_details.*.translations|max:2",
-                "mission_tab_details.*.translations.*.name" =>
-                "required_with:mission_tab_details.*.translations",
-                "mission_tab_details.*.translations.*.sections" =>
-                "required_with:mission_tab_details.*.translations",
-                "mission_tab_details.*.translations.*.sections.*.title" =>
-                "required_with:mission_tab_details.*.translations.*.sections",
-                "mission_tab_details.*.translations.*.sections.*.content" =>
-                "required_with:mission_tab_details.*.translations.*.sections",
+                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.translations"=> 'required',
+                "mission_tabs.*.translations.*.lang" =>
+                "required_with:mission_tabs.*.translations|max:2",
+                "mission_tabs.*.translations.*.name" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections.*.title" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections.*.content" =>
+                "required_with:mission_tabs.*.translations.*.sections",
             ]
         );
 
@@ -302,23 +302,23 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_achieved" =>
                 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_tab_details.*.sort_key" => 'required|integer',
-                "mission_tab_details.*.mission_tab_id" =>
+                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
-                "mission_tab_details.*.sort_key" =>
-                "required_without:mission_tab_details.*.mission_tab_id|integer",
-                "mission_tab_details.*.translations" =>
-                "required_without:mission_tab_details.*.mission_tab_id",
-                "mission_tab_details.*.translations.*.lang" =>
-                "required_with:mission_tab_details.*.translations|max:2",
-                "mission_tab_details.*.translations.*.name" =>
-                "required_with:mission_tab_details.*.translations",
-                "mission_tab_details.*.translations.*.sections.*.title" =>
-                "required_with:mission_tab_details.*.translations.*.sections",
-                "mission_tab_details.*.translations.*.sections.*.content" =>
-                "required_with:mission_tab_details.*.translations.*.sections",
-                "mission_tab_details.*.translations.*.sections" =>
-                "required_without:mission_tab_details.*.mission_tab_id",
+                "mission_tabs.*.sort_key" =>
+                "required_without:mission_tabs.*.mission_tab_id|integer",
+                "mission_tabs.*.translations" =>
+                "required_without:mission_tabs.*.mission_tab_id",
+                "mission_tabs.*.translations.*.lang" =>
+                "required_with:mission_tabs.*.translations|max:2",
+                "mission_tabs.*.translations.*.name" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections.*.title" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections.*.content" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections" =>
+                "required_without:mission_tabs.*.mission_tab_id",
             ]
         );
 
@@ -429,8 +429,8 @@ class MissionController extends Controller
         
         // Check for mission tab id is valid or not
         try {
-            if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
-                foreach ($request->mission_tab_details as $missionTabValue) {
+            if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
+                foreach ($request->mission_tabs as $missionTabValue) {
                     if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== "")) {
                         $this->missionRepository->isMissionTabLinkedToMission($missionId, $missionTabValue['mission_tab_id']);
                     }

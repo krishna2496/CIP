@@ -93,7 +93,7 @@ class MissionTest extends TestCase
                             ]
                         ]
                     ],
-                    "mission_tab_details"=>[
+                    "mission_tabs"=>[
                         [
                             "sort_key"=> 1,
                             "translations"=> [
@@ -296,7 +296,7 @@ class MissionTest extends TestCase
                     ]
                 ]
             ],
-            "mission_tab_details"=>[
+            "mission_tabs"=>[
                 [
                     "sort_key"=> 1,
                     "translations"=> [
@@ -451,7 +451,7 @@ class MissionTest extends TestCase
                             ]
                         ]
                     ],
-                    "mission_tab_details"=>[
+                    "mission_tabs"=>[
                         [
                             "sort_key"=> 1,
                             "translations"=> [
@@ -2076,7 +2076,7 @@ class MissionTest extends TestCase
                             ]
                         ]
                     ],
-                    "mission_tab_details"=>[
+                    "mission_tabs"=>[
                         [
                             'mission_tab_id'=>str_random(36),
                             "sort_key"=> 1,
@@ -2232,7 +2232,7 @@ class MissionTest extends TestCase
                             ]
                         ]
                     ],
-                    "mission_tab_details"=>[
+                    "mission_tabs"=>[
                         [
                             "sort_key"=> 1,
                             "translations"=> [

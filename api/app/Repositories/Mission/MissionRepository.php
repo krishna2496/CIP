@@ -175,8 +175,8 @@ class MissionRepository implements MissionInterface
         }
 
         // Add mission tab detail
-        if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
-            foreach($request->mission_tab_details as $missionTabValue){
+        if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
+            foreach($request->mission_tabs as $missionTabValue){
                 $this->missionTabRepository->store($missionTabValue, $mission->mission_id);
             }
         }
@@ -389,9 +389,8 @@ class MissionRepository implements MissionInterface
         }
 
         // Add/Update mission tab details
-
-        if (isset($request->mission_tab_details) && count($request->mission_tab_details)) {
-            foreach ($request->mission_tab_details as $missionTabValue) {
+        if (isset($request->mission_tabs) && count($request->mission_tabs)) {
+            foreach ($request->mission_tabs as $missionTabValue) {
                 if (isset($missionTabValue['mission_tab_id'])) {
                     $this->missionTabRepository->update($missionTabValue, $id);
                 } else {
@@ -1606,19 +1605,19 @@ class MissionRepository implements MissionInterface
     {
         $missionTabInfo =  $value['missionTab']->toArray();
         if ($missionTabInfo != null) {
-            $missionLanguageArray = [];
+            $missionTranslationsArray = [];
             foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
-                $missionLanguageArray['sort_key'] = $missionTabValue['sort_key'];
-                $missionLanguageArray["languages"] = [];
-                foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabLanguadeValue) {
-                    $languageCode = $languages->where('language_id', $missionTabLanguadeValue['language_id'])->first()->code;
-                    $missionTabLanguage['language_id'] = $missionTabLanguadeValue['language_id'];
-                    $missionTabLanguage['language_code'] = $languageCode;
-                    $missionTabLanguage['name'] = $missionTabLanguadeValue['name'];
-                    $missionTabLanguage['section'] = json_decode($missionTabLanguadeValue['section']);
-                    array_push($missionLanguageArray["languages"], $missionTabLanguage);
+                $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionTranslationsArray["translations"] = [];
+                foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
+                    $languageCode = $languages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
+                    $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
+                    $missionTabTranslations['language_code'] = $languageCode;
+                    $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
+                    $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
+                    array_push($missionTranslationsArray["translations"], $missionTabTranslations);
                 }
-                $value['missionTab'][$missionTabKey] = $missionLanguageArray;
+                $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
             }
         }
     }

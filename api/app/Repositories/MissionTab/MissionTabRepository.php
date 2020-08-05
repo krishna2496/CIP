@@ -71,17 +71,17 @@ class MissionTabRepository implements MissionTabInterface
             'sort_key' => $missionTabValue['sort_key']
         ];
         $missionTab = $this->modelsService->missionTab->create($missionTabArray);
-        foreach ($missionTabValue['translations'] as $missionTabLanguageValue) {
-            $language = $languages->where('code', $missionTabLanguageValue['lang'])->first();
-            $missionTabLangArray = [
+        foreach ($missionTabValue['translations'] as $missionTabTranslationsValue) {
+            $language = $languages->where('code', $missionTabTranslationsValue['lang'])->first();
+            $missionTabTranslationsArray = [
                 'mission_tab_language_id' => Uuid::uuid4()->toString(),
                 'mission_tab_id' => $missionTab['mission_tab_id'],
                 'language_id' => $language->language_id,
-                'name' => $missionTabLanguageValue['name'],
-                'section' => json_encode($missionTabLanguageValue['sections'])
+                'name' => $missionTabTranslationsValue['name'],
+                'section' => json_encode($missionTabTranslationsValue['sections'])
             ];
-            $missionTabLanguage = $this->modelsService->missionTabLanguage->create($missionTabLangArray);
-            unset($missionTabLangArray);
+            $missionTabLanguage = $this->modelsService->missionTabLanguage->create($missionTabTranslationsArray);
+            unset($missionTabTranslationsArray);
         }
         unset($missionTabArray);
     }
@@ -102,22 +102,22 @@ class MissionTabRepository implements MissionTabInterface
         }
 
         if (isset($missionTabValue['translations'])) {
-            foreach ($missionTabValue['translations'] as $missionTabLangValue) {
-                $language = $languages->where('code', $missionTabLangValue['lang'])->first();
-                $missionTabLangArray['mission_tab_language_id'] = Uuid::uuid4()->toString();
-                $missionTabLangArray['mission_tab_id'] = $missionTabId;
-                $missionTabLangArray['language_id'] = $language->language_id;
+            foreach ($missionTabValue['translations'] as $missionTabTranslationsValue) {
+                $language = $languages->where('code', $missionTabTranslationsValue['lang'])->first();
+                $missionTabTranslationsArray['mission_tab_language_id'] = Uuid::uuid4()->toString();
+                $missionTabTranslationsArray['mission_tab_id'] = $missionTabId;
+                $missionTabTranslationsArray['language_id'] = $language->language_id;
                                 
-                if (isset($missionTabLangValue['name'])) {
-                    $missionTabLangArray['name'] = $missionTabLangValue['name'];
+                if (isset($missionTabTranslationsValue['name'])) {
+                    $missionTabTranslationsArray['name'] = $missionTabTranslationsValue['name'];
                 }
-                if (isset($missionTabLangValue['sections'])) {
-                    $missionTabLangArray['section'] = json_encode($missionTabLangValue['sections']);
+                if (isset($missionTabTranslationsValue['sections'])) {
+                    $missionTabTranslationsArray['section'] = json_encode($missionTabTranslationsValue['sections']);
                 }
 
                 $missionTabLanguage = $this->modelsService->missionTabLanguage->createOrUpdateMissionTabLanguage(['mission_tab_id' => $missionTabId,
-                                'language_id' => $language->language_id], $missionTabLangArray);
-                unset($missionTabLangArray);
+                                'language_id' => $language->language_id], $missionTabTranslationsArray);
+                unset($missionTabTranslationsArray);
             }
         }
     }
