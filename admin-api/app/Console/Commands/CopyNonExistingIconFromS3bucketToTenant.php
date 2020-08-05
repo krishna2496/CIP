@@ -14,7 +14,7 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
      *
      * @var string
      */
-    protected $signature = 'copy:new-icons {--path=}';
+    protected $signature = 'copy:new-icons {--path=} {--file=}';
 
     /**
      * The console command description.
@@ -55,33 +55,58 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
     public function handle()
     {
         $folderPath = $this->option('path');
+        $filePath = $this->option('file');
 
-        if(!empty($folderPath)){
+        if (!empty($folderPath) && empty($filePath)) {
             $tenants = $this->tenantRepository->getAllTenants();
             $bar = $this->output->createProgressBar($tenants->count());
             if ($tenants->count() > 0) {
-                // $test = $tenants->toArray()[0]['name']; 
-                // $available = Storage::disk('s3')->exists('/file.jpg');
-                // dd($available);
+
                 // Copy default_theme folder which is already present on S3
                 $files = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME').
                 '/'.env('AWS_S3_ASSETS_FOLDER_NAME'));
+
                 $tenantsList = $tenants->toArray();
-                // dd($tenantsList);
                 $this->info('Total tenants : '. $tenants->count());
                 $this->info("\nIt is going to save new icons into tenant\n");
                 $bar->start();
+
+                $notAvailableImagesArray = [];
                 foreach ($tenantsList as $tenant) {
-                    dd("test");
-                    if(Storage::isDirectory(Storage::disk('s3')->allFiles($tenantsList['name']))){
-                        // you code...
+
+                    // Check tenant directory is exist or not 
+                    if(Storage::disk('s3')->exists('testCommand26')){
+
+                        //check --path option directory is exist or not
+                        if(Storage::disk('s3')->exists($folderPath)){
+                            $files = Storage::disk('s3')->allFiles($folderPath);
+                            foreach($files as $key=>$file){
+
+                                // Remove default_theme path from file URL
+                                $sourcePath = str_replace(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'), '', $file);
+                                if(!Storage::disk('s3')->exists('testCommand26'.$sourcePath)){
+                                    array_push($notAvailableImagesArray, $file);
+                                    // dd($tenant['name'].$sourcePath);
+                                    // Copy and paste file into tenant's folders
+                                    Storage::disk('s3')->copy($file, 'testCommand26'.$sourcePath);
+                                    // dd('testCommand26'.$sourcePath);
+                                }
+                            }
+
+                            dd($notAvailableImagesArray);
+                        }
                     }
-                    $tenantName = $tenant['name'];
+                    // $tenantName = $tenant['name'];
                 }
             }
+        } elseif (!empty($filePath) && empty($folderPath)) {
+            dump('file option is available');
         } else {
-            dump('path option is missing');
+            if (!empty($filePath) && !empty($folderPath)) {
+                dump('path and file both options are available');
+            } else {
+                dump('path or file option is missing');
+            }
         }
-
     }
 }
