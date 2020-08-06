@@ -160,6 +160,7 @@ class UserRepository implements UserInterface
             $userQuery->where(function ($query) use ($request) {
                 $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
                 $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('email', 'like', '%' . $request->input('search') . '%');
             });
         }
 
