@@ -200,7 +200,6 @@ trait MissionTransformable
 
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-        $mission->makeHidden('missionUnSdg');
         return $mission;
     }
 }
