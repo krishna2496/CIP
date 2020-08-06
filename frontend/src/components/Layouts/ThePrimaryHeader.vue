@@ -610,7 +610,7 @@ export default {
         },
         submitNewMission() {
             if (this.submitNewMissionUrl != '') {
-                window.open(this.submitNewMissionUrl, '_self');
+                window.open(this.submitNewMissionUrl, '_blank');
             }
         },
         homePage() {
