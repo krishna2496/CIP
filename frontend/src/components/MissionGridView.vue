@@ -310,7 +310,7 @@ export default {
                 card.style.height = "";
                 setTimeout(() => {
                     this.cardHeightAdj();
-                }, 500);
+                },100);
             });
         },
         getAppliedStatus(missionDetail) {
@@ -516,7 +516,6 @@ export default {
         },
         cardHeightAdj() {
             const cardBodyList = document.querySelectorAll('.card-grid .card-body');
-
             // check if card content is already visible in the DOM
             if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
