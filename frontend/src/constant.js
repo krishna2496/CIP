@@ -56,5 +56,6 @@ export default Object.freeze({
     MESSAGE : "message_enabled",
     MAX_FILE_NUMBER: 20,
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer",
-    STATE_ENABLED : "state_selection"
+    STATE_ENABLED : "state_selection",
+    MISSION_TYPE_TIME: 'GOAL'
 })
