@@ -93,7 +93,6 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
      * @param array $files
      * @return void
      */
-
     private function copyNonExistingIconPerTenant($tenants, array $files)
     {
         if ($tenants->count() > 0) {
