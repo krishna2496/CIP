@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Repositories\Tenant\TenantRepository;
-use App\Models\Tenant;
 use Illuminate\Support\Facades\Storage;
 
 class CopyNonExistingIconFromS3bucketToTenant extends Command
@@ -29,22 +28,15 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
     private $tenantRepository;
 
     /**
-     * @var App\Models\Tenant
-     */
-    private $tenant;
-
-    /**
      * Create a new command instance.
      *
      * @param App\Repositories\Tenant\TenantRepository $tenantRepository
-     * @param App\Models\Tenant $tenant
      * @return void
      */
-    public function __construct(TenantRepository $tenantRepository, Tenant $tenant)
+    public function __construct(TenantRepository $tenantRepository)
     {
         parent::__construct();
         $this->tenantRepository = $tenantRepository;
-        $this->tenant = $tenant;
     }
 
     /**
@@ -54,7 +46,7 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
      */
     public function handle()
     {
-        // --path option is available
+        // --folder option is available
         $folderPath = $this->option('folder');
 
         // --file option is available
@@ -62,16 +54,15 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
 
         if (!empty($folderPath) && empty($filePath)) {
 
-            //check --path option directory is exist or not
+            // Check --path option directory is exist or not
             if (Storage::disk('s3')->exists($folderPath)) {
                 $files = Storage::disk('s3')->allFiles($folderPath);
                 $tenants = $this->tenantRepository->getAllTenants();
-                $option = 'folder';
 
-                // Function for copy non existing icons 
-                $this->copyNonExistingIconPerTenant($tenants, $files, $option);
+                // Function for copy non existing icons
+                $this->copyNonExistingIconPerTenant($tenants, $files);
             } else {
-                dump("Given folder path is not found");
+                $this->warn('Given folder path is not found');
             }
         } elseif (!empty($filePath) && empty($folderPath)) {
 
@@ -80,51 +71,53 @@ class CopyNonExistingIconFromS3bucketToTenant extends Command
                 $encodedFileContent = Storage::disk('s3')->get($filePath);
                 $fileContent = json_decode($encodedFileContent);
                 $tenants = $this->tenantRepository->getAllTenants();
-                $option = 'file';
 
                 // Function for copy non existing icons
-                $this->copyNonExistingIconPerTenant($tenants, $fileContent->files, $option);
+                $this->copyNonExistingIconPerTenant($tenants, $fileContent->files);
             } else {
-                dump("Given filepath is not found.");
+                $this->warn('Given filepath is not found');
             }
         } else {
             if (!empty($filePath) && !empty($folderPath)) {
-                dump('Only single option is acceptable at a time');
+                $this->warn('Only single option is acceptable at a time');
             } else {
-                dump('path or file option is missing');
+                $this->warn('path or file option is missing');
             }
         }
     }
 
-    private function copyNonExistingIconPerTenant($tenants, $files, $option)
+    /**
+     * Copy non existing files
+     *
+     * @param null|Illuminate\Support\Collection $tenants
+     * @param array $files
+     * @return void
+     */
+
+    private function copyNonExistingIconPerTenant($tenants, array $files)
     {
         if ($tenants->count() > 0) {
             $bar = $this->output->createProgressBar($tenants->count());
             $tenantsList = $tenants->toArray();
             $this->info('Total tenants : '. $tenants->count());
-            $this->info("\nIt is going to save new icons into tenant\n");
             $bar->start();
-            $notAvailableImagesArray = [];
             foreach ($tenantsList as $tenant) {
 
                 // Check tenant directory is exist or not
-                if (Storage::disk('s3')->exists('testCommand25')) {
+                if (Storage::disk('s3')->exists($tenant['name'])) {
                     foreach ($files as $file) {
+                        
                         // Remove default_theme path from file URL
                         $sourcePath = str_replace(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'), '', $file);
-                        if (!Storage::disk('s3')->exists('testCommand25'.$sourcePath)) {
-                            array_push($notAvailableImagesArray, $file);
+                        if (!Storage::disk('s3')->exists($tenant['name'].$sourcePath)) {
 
                             // Copy and paste file into tenant's folders
-                            Storage::disk('s3')->copy($file, 'testCommand25'.$sourcePath);
+                            Storage::disk('s3')->copy($file, $tenant['name'].$sourcePath);
                         }
                     }
                 }
-
                 $bar->advance();
             }
-
-            dd("finish");
             $bar->finish();
             $this->info("\n \nAll non existing icons are copied from default_theme to tenant");
         }
