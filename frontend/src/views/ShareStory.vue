@@ -225,7 +225,9 @@
             ['TextColor', 'BGColor'],
             ['ShowBlocks','Maximize']
           ]
-        }
+        },
+        errorInGetStoryDetail: false,
+        unprocessableEntityStatus: 422
 
       }
     },
@@ -597,7 +599,22 @@
             },500)
 
           } else {
-            this.$router.push('/404');
+            if (response.status !== this.unprocessableEntityStatus) {
+              this.errorInGetStoryDetail = true;
+              return this.$router.push('/404');
+            }
+
+            this.$bvModal.msgBoxOk(response.message, {
+              buttonSize: 'sm',
+              size: 'md',
+              okVariant: 'danger',
+              footerClass: 'p-2 border-top-0',
+              centered: true
+            }).then(() => {
+              this.errorInGetStoryDetail = true;
+              return this.$router.push('/my-stories');
+            });
+
           }
         })
       },
@@ -623,7 +640,7 @@
 
     },
     beforeRouteLeave (to, from, next) {
-      if(this.formChange != 0) {
+      if(this.formChange != 0 && this.errorInGetStoryDetail === false) {
         this.$bvModal.msgBoxConfirm(this.languageData.label.cancel_story, {
           buttonSize: 'md',
           okTitle: this.languageData.label.yes,
