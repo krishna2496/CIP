@@ -295,7 +295,11 @@
 		"deleted_user" : "Deleted user",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtual volunteering",
-		"home" : "Home"
+		"home" : "Home",
+		"ongoing" : "Ongoing",
+		"opportunities" : "opportunities",
+		"more" : "more",
+		"and" : "&"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
