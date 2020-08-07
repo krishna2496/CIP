@@ -360,9 +360,6 @@ return [
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
-
-        //mission tab module
-        'MISSION_TAB_NOT_FOUND' => 'Mission tab id not found in the system.',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
        ]
 ];

@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
      * constants to use any where in system
      */
@@ -46,7 +47,7 @@ return [
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
-    'PER_PAGE_ALL' => '100000',
+	'PER_PAGE_ALL' => '100000',
     /*
      * User custom field types
      */
@@ -54,7 +55,10 @@ return [
         'TEXT' => 'text',
         'EMAIL' => 'email',
         'DROP-DOWN' => 'drop-down',
-        'RADIO' => 'radio'
+        'RADIO' => 'radio',
+        'CHECKBOX' => 'checkbox',
+        'MULTISELECT' => 'multiselect',
+        'TEXTAREA' => 'textarea',
      ],
 
      /*
@@ -78,10 +82,7 @@ return [
      */
     'mission_type' => [
         'TIME' => 'TIME',
-        'GOAL' => 'GOAL',
-        'DONATION' => 'DONATION',
-        'EAF' => 'EAF',
-        'DISASTER_RELIEF' => 'DISASTER_RELIEF'
+        'GOAL' => 'GOAL'
     ],
 
     /*
@@ -112,7 +113,7 @@ return [
     'image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg'
+        'JPEG' => 'jpeg',
     ],
 
     /*
@@ -121,7 +122,7 @@ return [
     'story_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg'
+        'JPEG' => 'jpeg',
     ],
 
     /*
@@ -130,7 +131,7 @@ return [
     'slider_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg'
+        'JPEG' => 'jpeg',
     ],
 
     /*
@@ -216,7 +217,7 @@ return [
 
     'ALLOW_TIMESHEET_ENTRY' => 2,
 
-    /*
+    /**
      * Export timesheet file names
      */
     'export_timesheet_file_names' => [
@@ -234,6 +235,7 @@ return [
         'UNPUBLISHED' => 'UNPUBLISHED'
     ],
 
+
     /*
      * Story status
      */
@@ -244,18 +246,18 @@ return [
         'DECLINED' => 'DECLINED'
     ],
 
-    /*
+    /**
      * Export story file names
      */
     'export_story_file_names' => [
-        'STORY_XLSX' => 'Stories.xlsx'
+        'STORY_XLSX' => 'Stories.xlsx',
     ],
 
-    /*
+    /**
      * Export mission comments file names
      */
     'export_mission_comment_file_names' => [
-        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx'
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
     ],
 
     /*
@@ -287,8 +289,8 @@ return [
         'send_message_from' => [
             'all' => 0,
             'user' => 1,
-            'admin' => 2
-        ],
+            'admin' => 2,
+        ]
     ],
 
     /*
@@ -308,7 +310,7 @@ return [
         'NEW_NEWS' => 'New News'
     ],
 
-    /*
+    /**
      * notification status
      */
     'notification' => [
@@ -328,35 +330,33 @@ return [
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection',
-        'VOLUNTEERING' => 'volunteering',
-        'DONATION' => 'donation'
+        'STATE_ENABLED' => 'state_selection'
     ],
 
-    'TOP_THEME' => 'top_themes',
-    'TOP_COUNTRY' => 'top_countries',
-    'TOP_ORGANISATION' => 'top_organization',
-    'MOST_RANKED' => 'most-ranked-missions',
-    'TOP_FAVOURITE' => 'favourite-missions',
-    'TOP_RECOMMENDED' => 'recommended-missions',
-    'THEME' => 'themes',
-    'COUNTRY' => 'country',
-    'CITY' => 'city',
-    'SKILL' => 'skill',
+    'TOP_THEME' => "top_themes",
+    'TOP_COUNTRY' => "top_countries",
+    'TOP_ORGANISATION' => "top_organization",
+    'MOST_RANKED' => "most-ranked-missions",
+    'TOP_FAVOURITE' => "favourite-missions",
+    'TOP_RECOMMENDED' => "recommended-missions",
+    'THEME' => "themes",
+    'COUNTRY' => "country",
+    'CITY' => "city",
+    'SKILL' => "skill",
     'RANDOM' => 'random-missions',
     'STATE' => 'state',
     'VIRTUAL' => 'virtual-missions',
     /* sort by */
-    'NEWEST' => 'newest',
-    'OLDEST' => 'oldest',
-    'LOWEST_AVAILABLE_SEATS' => 'lowest_available_seats',
-    'HIGHEST_AVAILABLE_SEATS' => 'highest_available_seats',
-    'MY_FAVOURITE' => 'my_favourite',
-    'DEADLINE' => 'deadline',
+    "NEWEST" => "newest",
+    "OLDEST" => "oldest",
+    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
+    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
+    "MY_FAVOURITE" => "my_favourite",
+    "DEADLINE" => "deadline",
 
-    'ORGANIZATION' => 'organization',
-    'EXPLORE_MISSION_LIMIT' => '5',
-    'IMAGE' => 'image',
+    'ORGANIZATION' => "organization",
+    'EXPLORE_MISSION_LIMIT' => "5",
+    'IMAGE' => "image",
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -470,7 +470,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' => '1100001',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
@@ -494,16 +494,14 @@ return [
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
-        'ERROR_INVALID_SAML_ARGS_COUNTRY' => '800103',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
 
         'ERROR_STATE_UNABLE_TO_DELETE' => '800039',
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
-        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
-
-        'MISSION_TAB_NOT_FOUND' => '400051'
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042'
     ],
 
     /**
@@ -522,7 +520,7 @@ return [
         'NEW_NEWS' => 'new_news'
     ],
 
-    /*
+    /**
      * Notification actions
      */
     'notification_actions' => [
@@ -547,7 +545,7 @@ return [
     'notification_icons' => [
         'APPROVED' => 'approve-ic.png',
         'DECLINED' => 'warning.png',
-        'NEW' => 'circle-plus.png'
+        'NEW' => 'circle-plus.png',
     ],
 
     'notification_status' => [
@@ -633,7 +631,7 @@ return [
         'ACTIVATED' => 'ACTIVATED',
         'DEACTIVATED' => 'DEACTIVATED',
         'CLEAR_ALL' => 'CLEAR_ALL',
-        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED'
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
     ],
 
     'activity_log_user_types' => [
@@ -641,7 +639,7 @@ return [
         'REGULAR' => 'REGULAR'
     ],
 
-    'profile_required_fields' => [
+    'profile_required_fields'=> [
         'first_name',
         'last_name',
         'email',
