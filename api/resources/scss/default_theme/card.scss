@@ -751,6 +751,13 @@
       @include lg-max {
         padding: 20px 15px;
       }
+      .icon-btn{
+      	span{
+      		@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+      			top:1px;
+      		}		
+      	}
+      }
       .left-btn {
         .icon-btn {
           display: inline-flex;
