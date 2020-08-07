@@ -168,6 +168,7 @@ header {
                     width: 11px;
                     height: 9px;
                     right: 7px;
+                    display: block;
                 }
                 @include md-max {
                     height: 52px;
@@ -1313,7 +1314,7 @@ header {
             }
             .custom-select {
                 height: 100%;
-                padding: 6px 35px 6px 15px;
+                padding: 6px 33px 6px 15px;
                 color: $black-primary;
                 font-size: 16px;
                 font-weight: 300;
@@ -1344,6 +1345,10 @@ header {
             max-width: 100%;
             overflow: hidden;
             line-height: 66px;
+             @include xl-max{
+                font-size: 14px;
+                padding: 6px 35px 6px 15px;  
+            }
             @include md-max {
                 height: auto;
                 position: relative;

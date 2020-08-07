@@ -994,7 +994,7 @@
                 }
               }
             }
-            .gray-btn {
+              .gray-btn {
               background: $white;
               color: $middle-gray;
               border-color: $gray-secondary;
@@ -1068,14 +1068,16 @@
           flex: 0 0 70%;
           height: 100%;
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
+          flex-wrap:wrap;
+          align-content: space-between;
         }
         .group-details {
           padding: 15px 20px 3px;
           flex-wrap: wrap;
           justify-content: flex-start;
           align-items: flex-start;
+          max-width: 100%;
+    	  flex: 0 0 100%;
           &:before {
             display: none;
           }
@@ -1236,7 +1238,7 @@
             }
           }
           .social-btn {
-            margin: 21px 0 0;
+            margin: 21px 0 25px;
           }
           .donate-btn-wrap {
             .form-group {
@@ -1284,6 +1286,8 @@
         .content-block {
           width: 100%;
           padding: 16px 20px 0;
+          max-width: 100%;
+    	  flex: 0 0 100%;
           .mission-label-wrap {
             margin-bottom: 8px;
             .group-category {
