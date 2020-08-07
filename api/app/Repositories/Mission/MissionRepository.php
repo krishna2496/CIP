@@ -106,6 +106,7 @@ class MissionRepository implements MissionInterface
             );
         
         // Create new record
+        $mission = $this->modelsService->mission->create($missionData);
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = array(
                 'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
