@@ -120,7 +120,7 @@ class MissionRepository implements MissionInterface
             'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
             );
             $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
-        }
+        } else if ($request->availability_id)
         // Entry into goal_mission table
         if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
             $goalMissionArray = array(
