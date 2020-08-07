@@ -173,7 +173,7 @@
                 store.commit('policyPage',null)
               }
             });
-            if (this.$route.params.navigateToPrevUrl) {
+            if (this.$route.query.returnUrl) {
               this.$router.back();
               return;
             }

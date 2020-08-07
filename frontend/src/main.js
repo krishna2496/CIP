@@ -68,10 +68,11 @@ router.beforeEach(async(to, from, next) => {
         }
 
         entryUrl = to.path;
+        const redirect = `${window.location.origin}${entryUrl}`;
         next({
             name: "login",
-            params: {
-                navigateToPrevUrl: true
+            query: {
+                'returnUrl': redirect
             }
         });
         return;

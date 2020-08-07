@@ -660,11 +660,7 @@
                         window.open(this.submitNewMissionUrl, '_blank');
                     }
                 },
-                checkIfIE() {
-                    const userAgent = window.navigator.userAgent;
-                    return /MSIE|Trident\//.test(userAgent);
-                },
-                setPolicyForIE() {
+                setPolicyPage() {
                     policy().then(response => {
                       if (response.error == false) {
                         if(response.data.length > 0) {
@@ -688,12 +684,13 @@
                 if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
                 }
-                if (this.checkIfIE() === true && JSON.parse(store.state.policyPage) === null) {
-                    this.setPolicyForIE();
+                
+                if (JSON.parse(store.state.policyPage) === null) {
+                    this.setPolicyPage();
+                } else {
+                    this.policyPage = JSON.parse(store.state.policyPage);
                 }
-                if (JSON.parse(store.state.policyPage) != null) {
-                    this.policyPage = JSON.parse(store.state.policyPage)
-                }
+
                 setTimeout(function () {
                     let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {
