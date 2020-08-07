@@ -102,25 +102,28 @@ class MissionRepository implements MissionInterface
                 'organisation_name' => $request->organisation['organisation_name'],
                 'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
                 $request->organisation['organisation_detail'] : null,
-                'mission_type' => $request->mission_type,
-                'total_seats' => (isset($request->total_seats) && ($request->total_seats !== '')) ?
-                $request->total_seats : null,
-                'availability_id' => $request->availability_id,
-                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
+                'mission_type' => $request->mission_type
             );
         
         // Create new record
-        $mission = $this->modelsService->mission->create($missionData);
-
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = array(
-            'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
-                            ($request->volunteering_attribute['total_seats'] !== '')) ? $request->volunteering_attribute['total_seats'] : null,
-            'availability_id' => $request->volunteering_attribute['availability_id'],
-            'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
+                'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
+                                ($request->volunteering_attribute['total_seats'] !== '')) ? $request->volunteering_attribute['total_seats'] : null,
+                'availability_id' => $request->volunteering_attribute['availability_id'],
+                'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
             );
-            $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
-        } else if ($request->availability_id)
+            
+        } else {
+            $volunteeringAttributeArray = array(
+                'total_seats' =>  (isset($request->total_seats) && ($request->total_seats !== '')) ?
+                                $request->total_seats : null,
+                'availability_id' => $request->availability_id,
+                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0'
+            );
+        }
+        $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
+
         // Entry into goal_mission table
         if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
             $goalMissionArray = array(
@@ -259,33 +262,49 @@ class MissionRepository implements MissionInterface
         $mission = $this->modelsService->mission->findOrFail($id);
         $mission->update($request->toArray());
 
-        if (isset($request->volunteering_attribute)) {
-            $volunteeringAttributeArray = [];
+        
+        $volunteeringAttributeArray = [];
 
-            // update volunteering attribute
-            if (isset($request->volunteering_attribute['total_seats'])) {
-                $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
-                $request->volunteering_attribute['total_seats'] : null;
+        // update volunteering attribute
+        if (isset($request->volunteering_attribute['total_seats'])) {
+            $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
+            $request->volunteering_attribute['total_seats'] : null;
+            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+            $request->request->add(['total_seats' => $totalSeats]);
+            $volunteeringAttributeArray['total_seats'] = $totalSeats;
+        } else {
+            if (isset($request->total_seats)) {
+                $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
+                $request->total_seats : null;
                 $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
                 $request->request->add(['total_seats' => $totalSeats]);
                 $volunteeringAttributeArray['total_seats'] = $totalSeats;
             }
-
-            if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
+    
+            if (isset($request->total_seats) && ($request->total_seats === '')) {
                 $volunteeringAttributeArray['total_seats'] = null;
             }
-            if (isset($request->volunteering_attribute['availability_id'])) {
-                $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
-            }
-
-            if (isset($request->volunteering_attribute['is_virtual'])) {
-                $volunteeringAttributeArray['is_virtual'] = (string)$request->volunteering_attribute['is_virtual'];
-            }
-
-            if ($volunteeringAttributeArray) {
-                $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
-            }
         }
+
+        if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
+            $volunteeringAttributeArray['total_seats'] = null;
+        }
+        if (isset($request->volunteering_attribute['availability_id'])) {
+            $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
+        } else if (isset($request->availability_id)) {
+            $volunteeringAttributeArray['availability_id'] = $request->availability_id;
+        }
+
+        if (isset($request->volunteering_attribute['is_virtual'])) {
+            $volunteeringAttributeArray['is_virtual'] = (string)$request->volunteering_attribute['is_virtual'];
+        } else if (isset($request->is_virtual)) {
+            $volunteeringAttributeArray['is_virtual'] = (string)$request->is_virtual;
+        }
+
+        if ($volunteeringAttributeArray) {
+            $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
+        }
+        
         // update goal_mission details
         if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
             $goalMissionArray = array(
