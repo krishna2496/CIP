@@ -108,7 +108,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
         'uses' => 'App\User\UserController@index']);
 
-    $router->post('/app/invite-user', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+    $router->post('/app/invite-user', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
         'uses' => 'App\User\UserController@inviteUser']);
 
     /* Fetch dashboard data for users */
