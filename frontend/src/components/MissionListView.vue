@@ -47,7 +47,7 @@
                                         class="card-title" v-if="checkMissionTypeVolunteering(mission.mission_type)">
                                     {{mission.title | substring(75)}}
                                 </b-link>
-								<b-link target="_blank" :to="'/mission-detail/' + mission.mission_id"
+								<b-link target="_blank" :to="'/donation-mission-detail/' + mission.mission_id"
                                         class="card-title" v-if="checkMissionTypeDonation(mission.mission_type)">
                                     {{mission.title | substring(75)}}
                                 </b-link>
