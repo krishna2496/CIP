@@ -5,8 +5,8 @@
     "title": "CI Platform",
     "description": ""
   },
-  "host": "ci-api-doc-service",
-  "basePath": "/team4/cip-api",
+  "host": "localhost",
+  "basePath": "/cip/api",
   "tags": [
     {
       "name": "Mission"
@@ -715,6 +715,42 @@
           },
           "404": {
             "description": "Mission not found in the system"
+          }
+        }
+      }
+    },
+    "/missions/missontab/{missionTabId}": {
+      "delete": {
+        "operationId": "delete_team4-cip-api-delete-mission-tab",
+        "summary": "Admin - Delete mission tab",
+        "description": "Delete mission tab by either missionTabId or missionId",
+        "tags": [
+          "Mission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "missionTabId",
+            "in": "path",
+            "description": "mission_tab_id or mission_id to delete",
+            "required": true
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden - mission tab deletion failed"
+          },
+          "404": {
+            "description": "Not Found - Requested mission tab id does not exist"
           }
         }
       }

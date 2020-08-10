@@ -580,4 +580,59 @@ class MissionController extends Controller
             );
         }
     }
+
+    /**
+     * Remove mission tab
+     *
+     * @param int|string $missionTabId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionTab($missionTabId): JsonResponse
+    {
+        if (preg_match('/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/i', $missionTabId)) {
+            try {
+                $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
+                $apiStatus = Response::HTTP_NO_CONTENT;
+                $apiMessage = trans('messages.success.MESSAGE_MISSION_TAB_DELETED');
+    
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.MISSION_TAB'),
+                    config('constants.activity_log_actions.DELETED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    null,
+                    null,
+                    $missionTabId
+                ));
+    
+                return $this->responseHelper->success($apiStatus, $apiMessage);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                    trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+                );
+            }
+        } else {
+            $missionId = $missionTabId;
+            $this->missionRepository->deleteMissionTabBymissionId($missionId);
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_TAB_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_TAB'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionId
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        }
+    }
 }

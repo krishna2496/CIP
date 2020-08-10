@@ -553,6 +553,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
                'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
             $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
                'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+            $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+            $router->delete('/missontab/{missionTabId}', ['as' => 'missions.missiontab.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
         }
     );
 

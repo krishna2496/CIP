@@ -197,7 +197,9 @@ return [
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
-        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+
+        'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully'
     ],
 
 
@@ -363,6 +365,7 @@ return [
 
         //mission tab module
         'MISSION_TAB_NOT_FOUND' => 'Mission tab id not found in the system.',
+        
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
        ]
 ];

@@ -226,4 +226,22 @@ interface MissionInterface
      * @return bool
      */
     public function checkUserMissionApplicationStatus(int $missionId, int $userId, array $statusArray): bool;
+
+    /**
+     * Remove mission tab by mission_tab_id
+     *
+     * @param string $missionTabId
+     *
+     * @return bool
+     */
+    public function deleteMissionTabByMissionTabId(string $missionTabId): bool;
+
+    /**
+     * Remove mission tab by mission_id
+     *
+     * @param int $missionId
+     *
+     * @return bool
+     */
+    public function deleteMissionTabBymissionId(int $missionId): bool;
 }
