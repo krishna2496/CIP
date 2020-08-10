@@ -1095,7 +1095,7 @@
               }
 
             } else {
-              if (this.volunteeringGoalMonths.includes(currentArrayYear)) {
+              if (this.volunteeringHoursYears.includes(currentArrayYear)) {
                 if (this.volunteeringGoalMonths.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
