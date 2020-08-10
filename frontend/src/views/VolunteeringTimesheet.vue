@@ -1175,15 +1175,30 @@
               timeSheetArray.filter((timeSheet) => {
                 let currentArrayYear = timeSheet.year
                 let currentArrayMonth = timeSheet.month
-                if (this.volunteeringHoursYears.includes(currentArrayYear)) {
-                  if (this.volunteeringHoursMonths.includes(currentArrayMonth)) {
-                    if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
-                      timeSheetId.timesheet_entries.push({
-                        'timesheet_id': timeSheet.timesheet_id
-                      })
-                    }
+                if (timeSheetType == "time") {
+                  if (this.volunteeringHoursYears.includes(
+                      currentArrayYear &&
+                      this.volunteeringHoursMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  )) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
+                  }
+                } else {
+                  if (this.volunteeringGoalYears.includes(
+                      currentArrayYear &&
+                      this.volunteeringGoalMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  )) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
                   }
                 }
+
               });
             }
           });
