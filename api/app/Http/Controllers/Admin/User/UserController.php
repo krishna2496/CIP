@@ -344,9 +344,7 @@ class UserController extends Controller
             $userDetail = $this->userRepository->find($id);
 
             $apiData = $userDetail->toArray();
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
-            $this->helpers->getUserDefaultProfileImage($tenantName);
+            $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] : 'default';
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
 
