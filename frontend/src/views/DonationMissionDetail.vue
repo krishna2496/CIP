@@ -591,7 +591,6 @@ export default {
                 action: ''
             },
             customInformation: [],
-            missionRatingSetting: true,
             isStarRatingDisable: false,
             currentPage: 1,
             volunteerList: [{
@@ -1014,7 +1013,7 @@ export default {
                             if (response.data[0].is_favourite == 1) {
                                 this.missionAddedToFavoriteByUser = true;
                             }
-                            if (this.missionRatingSetting) {
+                            if (this.isStarDisplay) {
                                 if (response.data[0].user_application_status != constants.AUTOMATICALLY_APPROVED) {
                                     this.isStarRatingDisable = true;
                                 }
@@ -1266,17 +1265,16 @@ export default {
         store.state.isFacebookDisplay = this.isFacebookSharingDisplay
         this.isTwitterSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_TWITTER)
         store.state.isTwitterDisplay = this.isTwitterSharingDisplay
-        this.isStarDisplay = this.settingEnabled(constants.MISSION_RATINGS)
+        this.isStarDisplay = this.settingEnabled(constants.DONATION_MISSION_RATINGS)
         this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED)
         this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE)
-        this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
+        this.isCommentDisplay = this.settingEnabled(constants.DONATION_MISSION_COMMENTS)
         this.isRecentVolunteerDispaly = this.settingEnabled(constants.RECENT_VOLUNTEERES)
         this.isMissionGoalDisplay = this.settingEnabled(constants.SHOW_GOAL_OF_MISSION)
         this.isCurrentStatusDisplay = this.settingEnabled(constants.SHOW_CURRENT_STATUS_OF_MISSION)
         this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)
         this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
-        this.missionRatingSetting = this.settingEnabled(constants.MISSION_RATING_VOLUNTEER)
     }
 };
 </script>
