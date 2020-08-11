@@ -8191,9 +8191,6 @@
                 "city_id": {
                   "type": "integer"
                 },
-                "state_id": {
-                  "type": "integer"
-                },
                 "country_id": {
                   "type": "integer"
                 },
