@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Exceptions\MaximumUsersReachedException;
+use App\Models\TenantOption;
 use App\Repositories\User\UserRepository;
+use App\Services\TenantOptionService;
 use App\User;
 use DB;
+use Exception;
 
 class UserService
 {
@@ -12,29 +16,76 @@ class UserService
      * @var App\Helpers\Helpers
      */
     private $userRepository;
-    
+
+    /**
+     * @var  TenantOptionService
+     */
+    private $tenantOptionService;
+
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\User\UserRepository $userRepository
-     * @return void
+     * @param  UserRepository       $userRepository
+     * @param  TenentOptionService  $tenentOptionService
+     *
+     * @return  void
      */
     public function __construct(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TenantOptionService $tenantOptionService
     ) {
         $this->userRepository = $userRepository;
+        $this->tenantOptionService = $tenantOptionService;
     }
 
     /**
      * Get specific user
      *
-     * @param Int $userId 
+     * @param Int $userId
      *
      * @return App\User
      */
     public function findById($userId): User
     {
         return $this->userRepository->find($userId);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  array
+     *
+     * @return  User
+     *
+     * @throws  MaximumUsersReachedException
+     */
+    public function store(array $request): User
+    {
+        $maxUsers = $this->tenantOptionService->getOptionValueFromOptionName(TenantOption::MAXIMUM_USERS);
+        if ($maxUsers && $maxUsers->option_value >= 0) {
+            $userCount = $this->getUserCount(true);
+            if ($userCount >= $maxUsers->option_value) {
+                throw new MaximumUsersReachedException(
+                    trans('messages.ERROR_MAXIMUM_USERS_REACHED'),
+                    config('constants.error_codes.ERROR_MAXIMUM_USERS_REACHED')
+                );
+            }
+        }
+
+        return $this->userRepository->store($request);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  Array
+     * @param  int
+     *
+     * @return  User
+     */
+    public function update(Array $request, int $id): User
+    {
+        return $this->userRepository->update($request, $id);
     }
 
     /**
@@ -120,10 +171,21 @@ class UserService
     public function organizationCount($user, $params = null): Int
     {
         $organization = $this->userRepository->getOrgCount($user, $params);
-        
+
         return $organization
             ->pluck('organization_count')
             ->first();
     }
 
+    /**
+     * Get the number of users.
+     *
+     * @param  bool
+     *
+     * @return  int
+     */
+    public function getUserCount(bool $includeInactive = false): int
+    {
+        return $this->userRepository->getUserCount($includeInactive);
+    }
 }

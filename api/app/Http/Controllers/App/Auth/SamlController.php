@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\App\Auth;
 
+use App\Exceptions\MaximumUsersReachedException;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
@@ -11,7 +12,7 @@ use App\Repositories\City\CityRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Repositories\Timezone\TimezoneRepository;
-use App\Repositories\User\UserRepository;
+use App\Services\UserService;
 use App\Exceptions\SamlException;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
@@ -26,7 +27,7 @@ use OneLogin\Saml2\Settings;
 class SamlController extends Controller
 {
     private $helpers;
-    private $userRepository;
+    private $userService;
     private $tenantOptionRepository;
     private $languageHelper;
     private $timezoneRepository;
@@ -37,7 +38,7 @@ class SamlController extends Controller
     public function __construct(
         Helpers $helpers,
         ResponseHelper $responseHelper,
-        UserRepository $userRepository,
+        UserService $userService,
         TenantOptionRepository $tenantOptionRepository,
         LanguageHelper $languageHelper,
         TimezoneRepository $timezoneRepository,
@@ -47,7 +48,7 @@ class SamlController extends Controller
     ) {
         $this->helpers = $helpers;
         $this->responseHelper = $responseHelper;
-        $this->userRepository = $userRepository;
+        $this->userService = $userService;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->languageHelper = $languageHelper;
         $this->timezoneRepository = $timezoneRepository;
@@ -255,9 +256,18 @@ class SamlController extends Controller
             $userData['language_id'] = $language->language_id;
         }
 
-        $userDetail = $isNewUser ?
-            $this->userRepository->store($userData) :
-            $this->userRepository->update($userData, $userDetail->user_id);
+        try {
+            $userDetail = $isNewUser ?
+                $this->userService->store($userData) :
+                $this->userService->update($userData, $userDetail->user_id);
+        } catch (MaximumUsersReachedException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_MAXIMUM_USERS_REACHED'),
+                trans('messages.custom_error_message.ERROR_MAXIMUM_USERS_REACHED')
+            );
+        }
 
         $this->helpers->syncUserData($request, $userDetail);
 

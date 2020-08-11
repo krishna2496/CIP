@@ -1,32 +1,33 @@
 <?php
 namespace App\Http\Controllers\App\Auth;
 
+use App\Exceptions\MaximumUsersReachedException;
 use App\Repositories\Timezone\TimezoneRepository;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Http\Controllers\Controller;
+use App\Services\UserService;
 use App\User;
 use Hybridauth\Hybridauth;
 use Illuminate\Http\Request;
-use App\Repositories\User\UserRepository;
 
 class GoogleAuthController extends Controller
 {
     private $helpers;
     private $user;
-    private $userRepository;
+    private $userService;
 
     public function __construct(
         LanguageHelper $languageHelper,
         Helpers $helpers,
         User $user,
-        UserRepository $userRepository,
+        UserService $userService,
         TimezoneRepository $timezoneRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->user = $user;
-        $this->userRepository = $userRepository;
+        $this->userService = $userService;
         $this->timezoneRepository = $timezoneRepository;
     }
 
@@ -69,16 +70,9 @@ class GoogleAuthController extends Controller
         $hybridauth = new Hybridauth($config);
         $adapter = $hybridauth->authenticate('Google');
         $isConnected = $adapter->isConnected();
-        $errorUrlPattern = 'http%s://%s/auth/sso/error?errors=%s&source=google';
 
         if (!$isConnected) {
-            $redirectUrl = sprintf(
-                $errorUrlPattern,
-                ($request->secure() ? 's' : ''),
-                $frontendFqdn,
-                'GOOGLE_AUTH_ERROR',
-            );
-            return redirect($redirectUrl);
+            return $this->errorRedirect($request->secure(), $frontendFqdn, 'GOOGLE_AUTH_ERROR');
         }
 
         $userProfile = $adapter->getUserProfile();
@@ -88,25 +82,13 @@ class GoogleAuthController extends Controller
         $isOptimyDomain = preg_match('/\.optimy\.com$/i', $userEmail) || preg_match('/@optimy\.com$/i', $userEmail);
 
         if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL) || !$isOptimyDomain) {
-            $redirectUrl = sprintf(
-                $errorUrlPattern,
-                ($request->secure() ? 's' : ''),
-                $frontendFqdn,
-                'INVALID_EMAIL',
-            );
-            return redirect($redirectUrl);
+            return $this->errorRedirect($request->secure(), $frontendFqdn, 'INVALID_EMAIL');
         }
 
         $isAdminUser = $this->helpers->isAdminUser($userEmail);
 
         if (!$isAdminUser) {
-            $redirectUrl = sprintf(
-                $errorUrlPattern,
-                ($request->secure() ? 's' : ''),
-                $frontendFqdn,
-                'GOOGLE_AUTH_UNAUTHORIZE',
-            );
-            return redirect($redirectUrl);
+            return $this->errorRedirect($request->secure(), $frontendFqdn, 'GOOGLE_AUTH_UNAUTHORIZE');
         }
 
         $userDetail = $this->user
@@ -133,9 +115,13 @@ class GoogleAuthController extends Controller
             $userData['timezone_id'] = $timezone->timezone_id;
         }
 
-        $userDetail = $userDetail ?
-            $this->userRepository->update($userData, $userDetail->user_id) :
-            $this->userRepository->store($userData);
+        try {
+            $userDetail = $userDetail ?
+                $this->userService->update($userData, $userDetail->user_id) :
+                $this->userService->store($userData);
+        } catch (MaximumUsersReachedException $e) {
+            return $this->errorRedirect($request->secure(), $frontendFqdn, 'MAXIMUM_USERS_REACHED');
+        }
 
         $this->helpers->syncUserData($request, $userDetail);
 
@@ -148,13 +134,63 @@ class GoogleAuthController extends Controller
             60
         );
 
-        $redirectUrl = sprintf(
-            'http%s://%s/auth/sso?token=%s',
-            ($request->secure() ? 's' : ''),
-            $frontendFqdn,
-            $token,
-        );
+        return $this->successRedirect($request->secure(), $frontendFqdn, $token);
+    }
 
-        return redirect($redirectUrl);
+    /**
+     * @param  bool
+     * @param  domain
+     * @param  string
+     *
+     * @return  Laravel\Lumen\Http\Redirector|Illuminate\Http\RedirectResponse
+     */
+    private function errorRedirect(bool $httpSecure, string $domain, string $errorMessage)
+    {
+        $url = '{protocol}://{domain}/auth/sso/error?{query}';
+        $query = [
+            'error' => $errorMessage,
+            'source' => 'google',
+        ];
+
+        return $this->redirect($url, $httpSecure, $domain, $query);
+    }
+
+    /**
+     * @param  bool
+     * @param  domain
+     * @param  string
+     *
+     * @return  Laravel\Lumen\Http\Redirector|Illuminate\Http\RedirectResponse
+     */
+    private function successRedirect(bool $httpSecure, string $domain, string $token)
+    {
+        $url = '{protocol}://{$domain}/auth/sso?{query}';
+        $query = [
+            'token' => $token,
+        ];
+
+        return $this->redirect($url, $httpSecure, $domain, $query);
+    }
+
+    /**
+     * @param  string
+     * @param  bool
+     * @param  domain
+     * @param  array
+     *
+     * @return  Laravel\Lumen\Http\Redirector|Illuminate\Http\RedirectResponse
+     */
+    private function redirect(string $urlPattern, bool $httpSecure, string $domain, array $query): string
+    {
+        // NOTE: look into using http_build_url (PECL pecl_http >= 0.21.0)
+
+        $parts = [
+            '{protocol}' => $httpSecure ? 'https' : 'http',
+            '{domain}' => $domain,
+            '{query}' => http_build_query($query),
+        ];
+        $url = strtr($urlPattern, $parts);
+
+        return redirect($url);
     }
 }

@@ -742,4 +742,24 @@ class UserRepository implements UserInterface
         return $requestData;
     }
 
+    /**
+     * @param  bool
+     *
+     * @return  int
+     */
+    public function getUserCount(bool $includeInactive = false): int
+    {
+        $query = $this->user->selectRaw('COUNT(1) AS user_count');
+        $status = [
+            config('constants.user_statuses.ACTIVE'),
+        ];
+
+        if ($includeInactive) {
+            $status[] = config('constants.user_statuses.INACTIVE');
+        }
+
+        $query->whereIn('status', $status);
+
+        return $query->first()->user_count;
+    }
 }

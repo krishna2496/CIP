@@ -1,24 +1,25 @@
 <?php
 namespace App\Http\Controllers\Admin\User;
 
+use App\Events\User\UserActivityLogEvent;
+use App\Exceptions\MaximumUsersReachedException;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\User\UserRepository;
+use App\Services\TimesheetService;
+use App\Services\UserService;
+use App\Traits\RestExceptionHandlerTrait;
+use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Repositories\User\UserRepository;
-use App\Helpers\ResponseHelper;
-use App\Traits\RestExceptionHandlerTrait;
-use Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\User;
-use InvalidArgumentException;
 use Illuminate\Validation\Rule;
-use App\Helpers\LanguageHelper;
-use App\Helpers\Helpers;
-use App\Events\User\UserActivityLogEvent;
-use App\Services\UserService;
-use App\Services\TimesheetService;
-use App\Repositories\Notification\NotificationRepository;
+use InvalidArgumentException;
+use Validator;
 
 //!  User controller
 /*!
@@ -299,7 +300,16 @@ class UserController extends Controller
             ? $request->expiry : null;
 
         // Create new user
-        $user = $this->userRepository->store($request->toArray());
+        try {
+            $user = $this->userService->store($request->toArray());
+        } catch (MaximumUsersReachedException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_MAXIMUM_USERS_REACHED'),
+                trans('messages.custom_error_message.ERROR_MAXIMUM_USERS_REACHED')
+            );
+        }
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
