@@ -529,7 +529,11 @@ class Helpers
             'last_name',
             'email',
             'employee_id',
-            'linked_in_url'
+            'linked_in_url',
+            'position',
+            'department',
+            'profile_text',
+            'why_i_volunteer'
         ];
     }
 }
