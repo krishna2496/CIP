@@ -685,7 +685,7 @@
                     this.isSubmitNewMissionSet = false
                 }
                 
-                if (JSON.parse(store.state.policyPage) === null) {
+                if (JSON.parse(store.state.policyPage) === null && store.state.isLoggedIn === true) {
                     this.setPolicyPage();
                 } else {
                     this.policyPage = JSON.parse(store.state.policyPage);
