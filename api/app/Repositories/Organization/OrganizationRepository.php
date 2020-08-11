@@ -7,6 +7,7 @@ use App\Models\Organization;
 use Illuminate\Http\Request;
 use \Illuminate\Pagination\LengthAwarePaginator;
 use Ramsey\Uuid\Uuid;
+use App\Models\Mission;
 
 class OrganizationRepository implements OrganizationInterface
 {
@@ -16,15 +17,22 @@ class OrganizationRepository implements OrganizationInterface
     private $organization;
 
     /**
+     * @var App\Models\Mission
+     */
+    private $mission;
+
+    /**
      * Create a new organization repository instance.
      *
      * @param  App\Models\Organization $organization
      * @return void
      */
     public function __construct(
-        Organization $organization
+        Organization $organization,
+        Mission $mission
     ) {
         $this->organization = $organization;
+        $this->mission = $mission;
     }
 
     /**
@@ -111,5 +119,16 @@ class OrganizationRepository implements OrganizationInterface
     public function find($organizationId)
     {
         return $this->organization->find($organizationId);
+    }
+
+    /**
+     * Check organization linked to mission or not
+     *
+     * @param string $organizationId
+     * @return integer
+     */
+    public function isOrganizationLinkedtoMission($organizationId)
+    {
+        return $this->mission->where('organisation_id', $organizationId)->count();
     }
 }

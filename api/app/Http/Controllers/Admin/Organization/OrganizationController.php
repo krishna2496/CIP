@@ -118,7 +118,6 @@ class OrganizationController extends Controller
                 "address_line_1" => "max:255",
                 "address_line_2" => "max:255",
                 "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
-                "state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                 "country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "postal_code" => "max:120",
             ]
@@ -137,9 +136,6 @@ class OrganizationController extends Controller
         // update city,state & country id to null if it's blank
         if ($request->has('city_id') && $request->get('city_id')=='') {
             $request->merge(['city_id' => null]);
-        }
-        if ($request->has('state_id') && $request->get('state_id')=='') {
-            $request->merge(['state_id' => null]);
         }
         if ($request->has('country_id') && $request->get('country_id')=='') {
             $request->merge(['country_id' => null]);
@@ -187,7 +183,6 @@ class OrganizationController extends Controller
                     "address_line_1" => "max:255",
                     "address_line_2" => "max:255",
                     "city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
-                    "state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                     "country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                     "postal_code" => "max:120",
                 ]
@@ -206,9 +201,6 @@ class OrganizationController extends Controller
             // update city,state & country id to null if it's blank
             if ($request->has('city_id') && $request->get('city_id')=='') {
                 $request->merge(['city_id' => null]);
-            }
-            if ($request->has('state_id') && $request->get('state_id')=='') {
-                $request->merge(['state_id' => null]);
             }
             if ($request->has('country_id') && $request->get('country_id')=='') {
                 $request->merge(['country_id' => null]);
@@ -250,6 +242,15 @@ class OrganizationController extends Controller
     public function destroy(string $organizationId): JsonResponse
     {
         try {
+            $isOrganizationLinked = $this->organizationRepository->isOrganizationLinkedtoMission($organizationId);
+            if($isOrganizationLinked){
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_ORGANIZATION_LINKED_TOMISSION'),
+                    trans('messages.custom_error_message.ERROR_ORGANIZATION_LINKED_TOMISSION')
+                ); 
+            }
             //Delete organization
             $organization = $this->organizationRepository->delete($organizationId);
             

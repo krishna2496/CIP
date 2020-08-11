@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\Country;
+use App\Models\City;
 
 class Organization extends Model
 {
@@ -36,7 +38,7 @@ class Organization extends Model
         'phone_number',
         'address_line_1',
         'address_line_2',
-        'city_id','state_id',
+        'city_id',
         'country_id',
         'postal_code'
     ];
@@ -61,8 +63,25 @@ class Organization extends Model
         'address_line_1',
         'address_line_2',
         'city_id',
-        'state_id',
         'country_id',
-        'postal_code',
+        'postal_code'
     ];
+
+    /**
+     * Get city id if exist in system
+     *
+     */
+    public function getCityIdAttribute($value)
+    {
+        return (!empty(City::find($value))) ? City::find($value)->city_id : null;
+    }
+
+    /**
+     * Get country id if exist in system
+     *
+     */
+    public function getCountryIdAttribute($value)
+    {
+        return (!empty(Country::find($value))) ? Country::find($value)->country_id : null;
+    }
 }

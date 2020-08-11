@@ -8337,6 +8337,46 @@
             "description": "Bad Gateway - Database operational error"
           }
         }
+      },
+      "get": {
+        "operationId": "POST_cip-api-get-organizations",
+        "summary": "Admin - Get a organization detail",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Organization not found in the system"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
       }
     }
   },
@@ -8354,11 +8394,6 @@
             "country_code": {
               "type": "string",
               "description": "ISO code of country from `country` table"
-            },
-            "state_id": {
-              "type": "integer",
-              "description": "state id from `state` table",
-              "format": "int32"
             }
           }
         },

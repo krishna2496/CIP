@@ -154,18 +154,17 @@ class MissionController extends Controller
                 "mission_detail.*.section.*.description" =>
                 "required_with:mission_detail.*.section",
                 "organization" => "required_without:organisation",
-                "organization.organization_id" => "required_without:organisation",
+                "organization.organization_id" => "required_without:organisation|uuid",
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
                 "organization.address_line_1" => "max:255",
                 "organization.address_line_2" => "max:255",
                 "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
-                "organization.state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
                 "organisation" => "required_without:organization",
-                "organisation.organisation_id" => "required_without:organization",
+                "organisation.organisation_id" => "required_without:organization|uuid",
                 "organisation.organisation_name" => "required_without:organization",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
@@ -205,11 +204,6 @@ class MissionController extends Controller
         if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
             $organization = $request->get('organization');
             $organization['city_id'] = null;
-            $request->merge(['organization' => $organization]);
-        }
-        if (isset($request->get('organization')['state_id']) && $request->get('organization')['state_id'] === '') {
-            $organization = $request->get('organization');
-            $organization['state_id'] = null;
             $request->merge(['organization' => $organization]);
         }
         if (isset($request->get('organization')['country_id']) && $request->get('organization')['country_id'] === '') {
@@ -346,19 +340,17 @@ class MissionController extends Controller
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "organization.organization_id" => "required_with:organization",
+                "organization.organization_id" => "required_with:organization|uuid",
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
                 "organization.address_line_1" => "max:255",
                 "organization.address_line_2" => "max:255",
                 "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
-                "organization.state_id" => "numeric|exists:state,state_id,deleted_at,NULL",
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
-                "organisation.organisation_id" => "sometimes|required_without:organization",
                 "organisation.organisation_name" => "sometimes|required_without:organization",
-                "organisation.organisation_id" => "required_with:organisation",
+                "organisation.organisation_id" => "required_with:organisation|uuid",
             ]
         );
 
@@ -499,11 +491,6 @@ class MissionController extends Controller
         if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
             $organization = $request->get('organization');
             $organization['city_id'] = null;
-            $request->merge(['organization' => $organization]);
-        }
-        if (isset($request->get('organization')['state_id']) && $request->get('organization')['state_id'] === '') {
-            $organization = $request->get('organization');
-            $organization['state_id'] = null;
             $request->merge(['organization' => $organization]);
         }
         if (isset($request->get('organization')['country_id']) && $request->get('organization')['country_id'] === '') {

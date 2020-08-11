@@ -73,7 +73,8 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
     'present'              => 'The :attribute field is required',
-	'distinct'             => 'The :attribute field has a duplicate value.',
+    'distinct'             => 'The :attribute field has a duplicate value.',
+    'uuid'                 => 'Please use valid UUID string for :attribute',
 
     /*
     |--------------------------------------------------------------------------
