@@ -344,7 +344,7 @@ class UserController extends Controller
             $userDetail = $this->userRepository->find($id);
 
             $apiData = $userDetail->toArray();
-            $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] : 'default';
+            $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] : 'empty';
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
 
