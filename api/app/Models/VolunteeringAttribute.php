@@ -32,7 +32,7 @@ class VolunteeringAttribute extends Model
      *
      * @var array
      */
-    protected $visible = ['volunteering_attribute_id', 'mission_id,', 'availability_id',
+    protected $visible = ['mission_id,', 'availability_id',
             'total_seats', 'is_virtual'
     ];
 
