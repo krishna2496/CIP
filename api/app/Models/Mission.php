@@ -323,6 +323,7 @@ class Mission extends Model
     public function checkAvailableSeats(int $missionId): Mission
     {
         return $this->select('*')
+        ->with(['volunteeringAttribute'])
         ->where('mission.mission_id', $missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
             $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]

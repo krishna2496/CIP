@@ -107,6 +107,7 @@ class MissionRepository implements MissionInterface
         
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
+
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = array(
                 'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
@@ -114,7 +115,6 @@ class MissionRepository implements MissionInterface
                 'availability_id' => $request->volunteering_attribute['availability_id'],
                 'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
             );
-            
         } else {
             $volunteeringAttributeArray = array(
                 'total_seats' =>  (isset($request->total_seats) && ($request->total_seats !== '')) ?
@@ -250,7 +250,20 @@ class MissionRepository implements MissionInterface
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
-        $mission->update($request->toArray());
+        $missionData = $request->toArray();
+
+        if (isset($missionData['total_seats'])) {
+            unset($missionData['total_seats']);
+        }
+        if (isset($missionData['availability_id'])) {
+            unset($missionData['availability_id']);
+        }
+        if (isset($missionData['is_virtual'])) {
+            unset($missionData['is_virtual']);
+        }
+        if ($missionData) {
+            $mission->update($missionData);
+        }
 
         
         $volunteeringAttributeArray = [];
@@ -260,14 +273,12 @@ class MissionRepository implements MissionInterface
             $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
             $request->volunteering_attribute['total_seats'] : null;
             $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-            $request->request->add(['total_seats' => $totalSeats]);
             $volunteeringAttributeArray['total_seats'] = $totalSeats;
         } else {
             if (isset($request->total_seats)) {
                 $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
                 $request->total_seats : null;
                 $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-                $request->request->add(['total_seats' => $totalSeats]);
                 $volunteeringAttributeArray['total_seats'] = $totalSeats;
             }
     
@@ -281,13 +292,13 @@ class MissionRepository implements MissionInterface
         }
         if (isset($request->volunteering_attribute['availability_id'])) {
             $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
-        } else if (isset($request->availability_id)) {
+        } elseif (isset($request->availability_id)) {
             $volunteeringAttributeArray['availability_id'] = $request->availability_id;
         }
 
         if (isset($request->volunteering_attribute['is_virtual'])) {
             $volunteeringAttributeArray['is_virtual'] = (string)$request->volunteering_attribute['is_virtual'];
-        } else if (isset($request->is_virtual)) {
+        } elseif (isset($request->is_virtual)) {
             $volunteeringAttributeArray['is_virtual'] = (string)$request->is_virtual;
         }
 
@@ -538,7 +549,6 @@ class MissionRepository implements MissionInterface
                     $value->default_media_path = $mediaValue->media_path;
                 }
             }
-
         }
         return $mission;
     }
@@ -1321,8 +1331,8 @@ class MissionRepository implements MissionInterface
     public function checkAvailableSeats(int $missionId): bool
     {
         $mission = $this->modelsService->mission->checkAvailableSeats($missionId);
-        if ($mission['total_seats'] !== null) {
-            $seatsLeft = $mission['total_seats'] - $mission['mission_application_count'];
+        if ($mission->volunteeringAttribute['total_seats'] !== null) {
+            $seatsLeft = $mission->volunteeringAttribute['total_seats'] - $mission['mission_application_count'];
             return $seatsLeft > 0;
         }
         return true;

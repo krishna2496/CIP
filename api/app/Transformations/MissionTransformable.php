@@ -90,6 +90,7 @@ trait MissionTransformable
 
         //if availability id is set
         if (isset($mission['volunteeringAttribute'])) {
+            unset($mission['volunteeringAttribute']['volunteering_attribute_id']);
             $mission['availability_id'] = $mission['volunteeringAttribute']['availability_id'];
             $mission['is_virtual'] = $mission['volunteeringAttribute']['is_virtual'];
             $mission['total_seats'] = $mission['volunteeringAttribute']['total_seats'];
