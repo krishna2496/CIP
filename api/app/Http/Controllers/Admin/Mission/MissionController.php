@@ -164,12 +164,12 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
-                "volunteering_attribute.total_seats" => "integer|min:1|required_with:volunteering_attribute",
+                "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "integer|required_with:volunteering_attribute|
                 exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
+                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
                 "total_seats" => "integer|min:1",
                 "is_virtual" => "sometimes|required|in:0,1"
             ]
@@ -271,7 +271,7 @@ class MissionController extends Controller
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
                 "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
-                "volunteering_attribute.total_seats" => "required_with:volunteering_attribute|integer|min:1",
+                "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required_with:volunteering_attribute|integer|
                 exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
