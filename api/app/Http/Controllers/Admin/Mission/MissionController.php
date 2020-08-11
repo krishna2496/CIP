@@ -589,6 +589,38 @@ class MissionController extends Controller
      */
     public function removeMissionTab($missionTabId): JsonResponse
     {
+        try{
+            if (preg_match('/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/i', $missionTabId)) {
+                $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
+            } else {
+                $missionId = $missionTabId;
+                $this->missionRepository->deleteMissionTabBymissionId($missionId);
+            }
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_TAB_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_TAB'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionTabId
+            ));
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+
         if (preg_match('/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/i', $missionTabId)) {
             try {
                 $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
