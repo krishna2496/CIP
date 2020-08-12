@@ -105,6 +105,7 @@
     cookieAgreement,
     contactUs,
     loadLocaleMessages,
+    policy
   } from "../../services/service";
   import constants from '../../constant';
   import AppCustomDropdown from '../../components/AppCustomDropdown';
@@ -141,6 +142,7 @@
         isAjaxCall : false,
         langList: [],
         defautLang: '',
+        policyData: null
       };
     },
     validations: {
@@ -248,7 +250,20 @@
         store.commit('setDefaultLanguage', language);
         this.$i18n.locale = language.selectedVal.toLowerCase()
         await loadLocaleMessages(this.$i18n.locale);
-        location.reload();
+        this.setPolicyPage();
+      },
+      setPolicyPage() {
+        policy().then(response => {
+          if (response.error == false) {
+            if(response.data.length > 0) {
+              store.commit('policyPage', response.data);
+              location.reload();
+              return;
+            }
+          }
+          store.commit('policyPage', null);
+          location.reload();
+        });
       },
       agreeCookie() {
         let data = {
