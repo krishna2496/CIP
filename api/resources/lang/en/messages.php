@@ -368,6 +368,6 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
-        'ERROR_ORGANIZATION_LINKED_TOMISSION' => 'Can not delete this organization, as its linked to the mission.'
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.'
        ]
 ];

@@ -87,7 +87,7 @@ class OrganizationController extends Controller
         try {
             // Get organization details
             $organization = $this->organizationRepository->getOrganizationDetails($organizationId);
-        
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ORGANIZATION_FOUND');
 
@@ -155,7 +155,7 @@ class OrganizationController extends Controller
             null,
             $organization->organization_id
         ));
-        
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_ORGANIZATION_CREATED');
@@ -208,7 +208,7 @@ class OrganizationController extends Controller
 
             // Update organization details
             $organization = $this->organizationRepository->update($request, $organizationId);
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.ORGANIZATION'),
@@ -243,17 +243,17 @@ class OrganizationController extends Controller
     {
         try {
             $isOrganizationLinked = $this->organizationRepository->isOrganizationLinkedtoMission($organizationId);
-            if($isOrganizationLinked){
+            if ($isOrganizationLinked) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_ORGANIZATION_LINKED_TOMISSION'),
-                    trans('messages.custom_error_message.ERROR_ORGANIZATION_LINKED_TOMISSION')
-                ); 
+                    config('constants.error_codes.ERROR_ORGANIZATION_LINKED_TO_MISSION'),
+                    trans('messages.custom_error_message.ERROR_ORGANIZATION_LINKED_TO_MISSION')
+                );
             }
             //Delete organization
             $organization = $this->organizationRepository->delete($organizationId);
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.ORGANIZATION'),
@@ -268,7 +268,7 @@ class OrganizationController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_ORGANIZATION_DELETED');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

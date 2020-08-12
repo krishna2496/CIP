@@ -8683,10 +8683,6 @@
               "type": "integer",
               "description": "Organization city"
             },
-            "state_id": {
-              "type": "integer",
-              "description": "Organization state"
-            },
             "country_id": {
               "type": "integer",
               "description": "Organization country"
