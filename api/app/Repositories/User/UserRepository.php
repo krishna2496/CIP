@@ -127,7 +127,7 @@ class UserRepository implements UserInterface
             email,
             password,
             case when(avatar = '' || avatar is null)
-                then 'empty' else avatar
+                then '' else avatar
                 end as avatar,
             timezone_id,
             availability_id,
