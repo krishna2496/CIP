@@ -539,7 +539,9 @@ class UserController extends Controller
             'timezone_id',
             'availability_id',
             'city_id',
-            'country_id'
+            'country_id',
+            'profile_text',
+            'position'
         ];
         foreach ($nullableFields as $field) {
             if (array_key_exists($field, $requestData) && !$requestData[$field]) {
