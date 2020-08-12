@@ -493,7 +493,8 @@
           let latestDate = date - 1
           let latestMonth = 0
           let timeSheetArray = timeArray.timesheet;
-          this.currentTimeData.missionName = timeArray.title
+          this.currentTimeData.missionName = timeArray.title;
+          this.currentTimeData.goal = timeArray.objective;
           let months = '';
           let dates = '';
           if (timeSheetType == "time") {
@@ -1094,7 +1095,7 @@
               }
 
             } else {
-              if (this.volunteeringHoursYears.includes(currentArrayYear)) {
+              if (this.volunteeringGoalYears.includes(currentArrayYear)) {
                 if (this.volunteeringGoalMonths.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
@@ -1174,13 +1175,25 @@
               timeSheetArray.filter((timeSheet) => {
                 let currentArrayYear = timeSheet.year
                 let currentArrayMonth = timeSheet.month
-                if (this.volunteeringHoursYears.includes(currentArrayYear)) {
-                  if (this.volunteeringHoursMonths.includes(currentArrayMonth)) {
-                    if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
-                      timeSheetId.timesheet_entries.push({
-                        'timesheet_id': timeSheet.timesheet_id
-                      })
-                    }
+                if (timeSheetType == "time") {
+                  if (this.volunteeringHoursYears.includes(currentArrayYear) &&
+                      this.volunteeringHoursMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  ) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
+                  }
+                } else {
+                  if (this.volunteeringGoalYears.includes(currentArrayYear) &&
+                      this.volunteeringGoalMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  ) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
                   }
                 }
               });
