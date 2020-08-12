@@ -142,7 +142,6 @@
         isAjaxCall : false,
         langList: [],
         defautLang: '',
-        policyData: null
       };
     },
     validations: {
