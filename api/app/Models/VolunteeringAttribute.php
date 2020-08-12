@@ -5,6 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Skill;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VolunteeringAttribute extends Model
 {
@@ -29,7 +32,7 @@ class VolunteeringAttribute extends Model
      *
      * @var array
      */
-    protected $visible = ['volunteering_attribute_id', 'mission_id,', 'availability_id',
+    protected $visible = ['mission_id,', 'availability_id',
             'total_seats', 'is_virtual'
     ];
 
@@ -41,4 +44,74 @@ class VolunteeringAttribute extends Model
     protected $fillable = ['volunteering_attribute_id', 'mission_id,', 'availability_id',
         'total_seats', 'is_virtual'
     ];
+
+    /**
+     * listen for any Eloquent events
+     *
+     * @return void
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($volunteeringAttribute) {
+            if (! $volunteeringAttribute->getKey()) {
+                $volunteeringAttribute->{$volunteeringAttribute->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
+
+    /**
+     * Get availability associated with the volunteering attribute.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function availability(): BelongsTo
+    {
+        return $this->belongsTo(Availability::class, 'availability_id', 'availability_id');
+    }
+
+    /**
+     * Set volunteering attribute id
+     *
+     * @param  mixed $value
+     * @return void
+     */
+    public function setVolunteeringAttributeIdAttribute(): void
+    {
+        $this->attributes['volunteering_attribute_id'] = (String) Str::uuid();
+    }
+
+    /**
+     * Set is virtual attribute on the model.
+     *
+     * @param $value
+     * @return void
+     */
+    public function setIsVirtualAttribute($value): void
+    {
+        if (!is_null($value)) {
+            $this->attributes['is_virtual'] = (string)$value;
+        }
+    }
+
+    /**
+     * Get users associated with the volunteering availability.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function availableUsers(): HasMany
+    {
+        return $this->hasMany('App\User', 'availability_id', 'availability_id');
+    }
+
+    /**
+     * Get the mission application associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionApplication(): HasMany
+    {
+        return $this->hasMany(MissionApplication::class, 'mission_id', 'mission_id');
+    }
 }

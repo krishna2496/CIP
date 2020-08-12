@@ -218,6 +218,9 @@ return [
         'states.*.translations' => 'translations',
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
+        'volunteering_attribute.availability_id' => 'availability id',
+        'volunteering_attribute.is_virtual' => 'is virtual',
+        'volunteering_attribute.total_seats' => 'total seats'
 		],
 
 ];

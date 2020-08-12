@@ -45,7 +45,7 @@ trait MissionTransformable
                 $mission['timeMission']['application_deadline'],
                 config('constants.TIMEZONE')
             )->setTimezone($timezone)->toDateString() : null;
-        
+
             $mission['application_start_date'] =
                 isset($mission['timeMission']['application_start_date']) ? Carbon::parse(
                     $mission['timeMission']['application_start_date'],
@@ -62,7 +62,7 @@ trait MissionTransformable
                     $mission['timeMission']['application_start_time'],
                     config('constants.TIMEZONE')
                 )->setTimezone($timezone)->toDateTimeString() : null;
-            
+
             $mission['application_end_time'] = isset($mission['timeMission']['application_end_time']) ?
                 Carbon::parse(
                     $mission['timeMission']['application_end_time'],
@@ -79,7 +79,7 @@ trait MissionTransformable
         unset($mission['missionRating']);
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
-        
+
         if (isset($mission['availability'])) {
             $arrayKey = array_search($languageCode, array_column($mission['availability']['translations'], 'lang'));
             if ($arrayKey  !== '') {
@@ -87,9 +87,18 @@ trait MissionTransformable
             }
             unset($mission['availability']);
         }
+
+        if (isset($mission['volunteeringAttribute'])) {
+            $mission['availability_id'] = $mission['volunteeringAttribute']['availability_id'];
+            $mission['is_virtual'] = $mission['volunteeringAttribute']['is_virtual'];
+            $mission['total_seats'] = $mission['volunteeringAttribute']['total_seats'];
+            unset($mission['volunteeringAttribute']);
+        }
+
         // Set seats_left or already_volunteered
         if ($mission['total_seats'] !== 0 && $mission['total_seats'] !== null) {
-            $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
+            $mission['seats_left'] = ($mission['total_seats']) -
+            ($mission['mission_application_count']);
         } else {
             $mission['already_volunteered'] = $mission['mission_application_count'];
         }
@@ -103,7 +112,7 @@ trait MissionTransformable
         $key = array_search($languageId, array_column($mission['missionLanguage']->toArray(), 'language_id'));
         $language = ($key === false) ? $defaultTenantLanguage : $languageId;
         $missionLanguage = $mission['missionLanguage']->where('language_id', $language)->first();
-        
+
         // Set title and description
         $mission['title'] = $missionLanguage->title ?? '';
         $mission['short_description'] = $missionLanguage->short_description ?? '';
@@ -111,7 +120,7 @@ trait MissionTransformable
             $mission['description'] = $missionLanguage->description ?? '';
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
-       
+
         $mission['label_goal_achieved'] =  $missionLanguage->label_goal_achieved ?? '';
         $mission['label_goal_objective'] =  $missionLanguage->label_goal_objective ?? '';
         $mission['custom_information'] = $missionLanguage->custom_information ?? null;
@@ -122,19 +131,21 @@ trait MissionTransformable
         $todayDate = Carbon::parse(date(config("constants.DB_DATE_FORMAT")));
         $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
-       
-        if (($mission['user_application_count'] > 0) ||
-            ($mission['total_seats'] !== 0 && $mission['total_seats'] === $mission['mission_application_count']) ||
+
+        if ($mission['volunteeringAttribute']) {
+            if (($mission['user_application_count'] > 0) ||
+            ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] === $mission['mission_application_count']) ||
             ($mission['end_date'] !== null && $mission['end_date'] <= $today)
             ) {
-            $mission['set_view_detail'] = 1;
+                $mission['set_view_detail'] = 1;
+            }
         }
 
         if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
          ($mission['application_deadline'] < $today)) {
             $mission['set_view_detail'] = 1;
         }
-        
+
         if ((!isset($mission['application_deadline'])) && ((isset($mission['application_start_date']) &&
         ($mission['application_start_date'] !== null))
         && (isset($mission['application_end_date']) && ($mission['application_end_date'] !== null)) &&
@@ -147,10 +158,10 @@ trait MissionTransformable
          ($mission['application_end_time'] < $todayTime || $mission['application_start_time'] > $todayTime)) {
             $mission['set_view_detail'] = 1;
         }
-        
+
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?
         ceil($mission['mission_rating_count']) : 0;
-              
+
         if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
             $returnData = [];
             foreach ($mission['missionSkill'] as $key => $value) {
@@ -182,7 +193,7 @@ trait MissionTransformable
                 }
             }
         }
-        
+
         $mission['city_name'] = $mission['city']['name'];
         //Get city name from translation
         $cityTranslation = $mission['city']->languages->toArray();
@@ -199,7 +210,7 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-      
+        unset($mission['volunteeringAttribute']);
         return $mission;
     }
 }
