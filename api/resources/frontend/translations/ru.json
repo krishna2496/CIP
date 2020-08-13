@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Все права защищены",
 		"add": "Добавить",
 		"already_volunteered": "Отработано волонтёром",
-		"on_going_opportunities": "Текущие возможности",
 		"view_detail": "Просмотреть детали",
 		"no_record_found": "Записей не найдено",
 		"oldest": "Самые старые",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Удаленный пользователь",
 		"virtual_mission" : "виртуальный",
 		"virtual_missions" : "Виртуальное волонтерство",
-		"home" : "дом"
+		"home" : "дом",
+		"ongoing" : "постоянный",
+		"more" : "еще",
+		"and" : "и"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",

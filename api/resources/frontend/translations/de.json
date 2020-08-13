@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Alle Rechte vorbehalten",
 		"add": "Hinzufügen",
 		"already_volunteered": "Bereits freiwillig gemeldet",
-		"on_going_opportunities": "Vorhandene Möglichkeiten",
 		"view_detail": "Einzelheiten anzeigen",
 		"no_record_found": "Keine Aufzeichnungen gefunden",
 		"oldest": "Älteste",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Gelöschter Benutzer",
 		"virtual_mission" : "Virtuell",
 		"virtual_missions" : "Virtuelle Freiwilligenarbeit",
-		"home" : "Zuhause"
+		"home" : "Zuhause",
+		"ongoing" : "Laufend",
+		"more" : "weitere",
+		"and" : "und"
 	},
 	"placeholder": {
 		"email_address": "E-Mail-Adresse eingeben",

@@ -36,7 +36,6 @@
 		"all_rights_reserved": "保留所有权利",
 		"add": "添加",
 		"already_volunteered": "已提供志愿服务",
-		"on_going_opportunities": "持续机会",
 		"view_detail": "查看详情",
 		"no_record_found": "未找到记录",
 		"oldest": "最老",
@@ -295,7 +294,10 @@
 		"deleted_user" : "已删除的用户",
 		"virtual_mission" : "虚拟",
 		"virtual_missions" : "虚拟志愿服务",
-		"home" : "家"
+		"home" : "家",
+		"ongoing" : "Ongoing",
+		"more" : "more",
+		"and" : "&"
 	},
 	"placeholder": {
 		"email_address": "输入电子邮件地址",

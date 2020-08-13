@@ -86,8 +86,7 @@
                                         {{ mission.end_date | formatDate }}</span>
                                 </div>
                                 <div class="text-wrap" v-else>
-                                    <span class="title-text">{{ languageData.label.ongoing}}</span>
-                                    <span class="title-text gray-text"><em>{{ languageData.label.opportunities}}</em></span>
+                                    <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
                                 </div>
                             </div>
                             <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">

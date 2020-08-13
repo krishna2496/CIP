@@ -20,7 +20,7 @@
                 </b-button>
                 <ul v-if="this.$store.state.isLoggedIn">
                     <li v-if="this.$store.state.logoRedirectUrl !== 'home'" class="has-menu no-dropdown home-link">
-                        <router-link :to="{ path: '/home'}" @click.native="homePage()" :title="languageData.label.home" class="home-icon">
+                        <router-link :to="{ path: '/home'}" :title="languageData.label.home" class="home-icon">
                             <img class="home-icon" :src="$store.state.imagePath+'/assets/images/home-ic.svg'" />
                         </router-link>
                     </li>
@@ -272,7 +272,7 @@
 </div>
 </template>
 
-    
+
 <script>
 import store from '../../store';
 import {
@@ -612,9 +612,6 @@ export default {
             if (this.submitNewMissionUrl != '') {
                 window.open(this.submitNewMissionUrl, '_blank');
             }
-        },
-        homePage() {
-            location.reload();
         }
     },
     created() {
