@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto" v-bind:class="{
-                                        disabled : enableSubmitTimeTimeSheet    
+                                        disabled : enableSubmitTimeTimeSheet
                                     }" @click="submitVolunteerTimeSheet('time')">{{languageData.label.submit}}
                                     </b-button>
                                 </div>
@@ -163,7 +163,7 @@
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto"
                                               @click="submitVolunteerTimeSheet('goal')" v-bind:class="{
-                                            disabled : enableSubmitGoalTimeSheet    
+                                            disabled : enableSubmitGoalTimeSheet
                                         }">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
@@ -1095,7 +1095,7 @@
               }
 
             } else {
-              if (this.volunteeringHoursYears.includes(currentArrayYear)) {
+              if (this.volunteeringGoalYears.includes(currentArrayYear)) {
                 if (this.volunteeringGoalMonths.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
@@ -1175,13 +1175,25 @@
               timeSheetArray.filter((timeSheet) => {
                 let currentArrayYear = timeSheet.year
                 let currentArrayMonth = timeSheet.month
-                if (this.volunteeringHoursYears.includes(currentArrayYear)) {
-                  if (this.volunteeringHoursMonths.includes(currentArrayMonth)) {
-                    if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
-                      timeSheetId.timesheet_entries.push({
-                        'timesheet_id': timeSheet.timesheet_id
-                      })
-                    }
+                if (timeSheetType == "time") {
+                  if (this.volunteeringHoursYears.includes(currentArrayYear) &&
+                      this.volunteeringHoursMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  ) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
+                  }
+                } else {
+                  if (this.volunteeringGoalYears.includes(currentArrayYear) &&
+                      this.volunteeringGoalMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  ) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
                   }
                 }
               });
@@ -1239,7 +1251,7 @@
                 ['mission']: item.title,
                 ['time']: item.time,
                 ['hours']: item.hours,
-                ['organisation']: item.organisation_name,
+                ['organisation']: item.organization_name,
                 ['mission_id']: item.mission_id
               })
               this.timesheetRequestItems = currentData;
@@ -1294,7 +1306,7 @@
               currentData.push({
                 ['mission']: item.title,
                 ['action']: item.action,
-                ['organisation']: item.organisation_name,
+                ['organisation']: item.organization_name,
                 ['mission_id']: item.mission_id
               })
               this.goalRequestItems = currentData
