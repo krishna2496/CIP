@@ -845,3 +845,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
             );
         }
     );
+
+    /* Organizations Management */
+    $router->group(
+        ['prefix' => 'organizations', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+             'uses' => 'Admin\Organization\OrganizationController@index']);
+            $router->get('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@show']);
+            $router->post('/', ['uses' => 'Admin\Organization\OrganizationController@store']);
+            $router->patch('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@update']);
+            $router->delete('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@destroy']);
+        }
+    );

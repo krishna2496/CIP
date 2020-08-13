@@ -227,7 +227,7 @@
 								['mission']: item.title,
 								['time']: item.time,
 								['hours']: item.hours,
-								['organisation']: item.organisation_name,
+								['organisation']: item.organization_name,
 								['mission_id']: item.mission_id
 							})
 						})
@@ -254,7 +254,7 @@
 							this.goalMissionTimesheetItems.push({
 								['mission']: item.title,
 								['action']: item.action,
-								['organisation']: item.organisation_name,
+								['organisation']: item.organization_name,
 								['mission_id']: item.mission_id
 							})
 						})
