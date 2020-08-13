@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../../../bootstrap/app.php');
+require_once(__DIR__.'/../../../../bootstrap/app.php');
 
 $db = app()->make('db');
 
@@ -55,7 +55,7 @@ foreach ($tenants as $tenant) {
     ));
     // Create connection for the tenant database
     $pdo = $db->connection('tenant')->getPdo();
-    
+
     // Set default database
     \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
 
@@ -102,10 +102,10 @@ function setAdminDatabaseConnection($db)
         'username' => env('DB_USERNAME'),
         'password' => env('DB_PASSWORD'),
     ));
-    
+
     // Create connection for the admin database
     $pdo = $db->connection('mysql')->getPdo();
-    
+
     // Set default database
     \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 
