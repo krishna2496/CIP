@@ -26,8 +26,8 @@
                                         </star-rating>
                                     </div>
                                     <div class="btn-outer">
-                                        <b-button v-bind:class="{ 
-											'btn-borderprimary': true, 
+                                        <b-button v-bind:class="{
+											'btn-borderprimary': true,
 											'icon-btn': true,
 											'added-fav' : missionAddedToFavoriteByUser
 										}" @click="favoriteMission(missionId)">
@@ -67,7 +67,7 @@
                                             </span>
 
                                         </b-button>
-                                        <!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
+                                        <!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry"
 									@click="addEntry">
 									Add entry
 								</b-button> -->
@@ -144,7 +144,7 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            
+
                                             <template>
                                                 <div class="detail-column info-block" v-if="(missionDetail.application_deadline != '' && missionDetail.application_deadline != null) || (missionDetail.application_start_date != null && missionDetail.application_end_date != null )">
                                                     <i class="icon-wrap">
@@ -199,7 +199,7 @@
                                                     </div>
                                                 </template>
                                             </div>
-                                            <div 
+                                            <div
                                               v-bind:class="{
                                                 'progress-bar-block': (missionDetail.total_seats == 0 || missionDetail.total_seats === null),
                                                 'detail-column' : true,
@@ -215,7 +215,7 @@
                                                         :max="missionDetail.goal_objective" class="mb-2"></b-progress>
                                                         <span class="subtitle-text">
                                                         {{missionDetail.achieved_goal}}
-                                                        <span 
+                                                        <span
                                                             v-if="missionDetail.label_goal_achieved != ''">
                                                             {{ missionDetail.label_goal_achieved }}
                                                         </span>
@@ -272,7 +272,7 @@
                                                      alt="" />
                                             </i>
                                             <span class="label">{{ languageData.label.organisation}}</span>
-                                            <p class="text-wrap">{{missionDetail.organisation_name}}</p>
+                                            <p class="text-wrap">{{missionDetail.organization ? missionDetail.organization.name : ''}}</p>
                                         </div>
                                     </b-list-group-item>
                                 </b-list-group>
@@ -348,7 +348,7 @@
                                                  v-if="!checkMissionTypeTime(missionDetail.mission_type)">
                                                 <div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
                                                     <div class="mission-tab-inner">
-                                                        <p v-if="missionDetail.goal_objective">  
+                                                        <p v-if="missionDetail.goal_objective">
                                                             {{missionDetail.goal_objective}}
                                                             <span v-if="missionDetail.label_goal_objective != ''">
                                                                 {{missionDetail.label_goal_objective}}
@@ -369,7 +369,7 @@
                                                     <div class="mission-tab-inner">
                                                         <p v-if="missionDetail.achieved_goal">
                                                             {{missionDetail.achieved_goal}}
-                                                            <span 
+                                                            <span
                                                                 v-if="missionDetail.label_goal_achieved != ''">
                                                                 {{ missionDetail.label_goal_achieved }}
                                                             </span>
@@ -377,7 +377,7 @@
                                                         </p>
                                                         <p v-else>
                                                             0
-                                                            <span 
+                                                            <span
                                                                 v-if="missionDetail.label_goal_achieved != ''">
                                                                 {{ missionDetail.label_goal_achieved }}
                                                             </span>
@@ -593,7 +593,7 @@
                         <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
                                         @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
                                         :input-props="{
-								id:'autosuggest__input', 
+								id:'autosuggest__input',
 								placeholder:autoSuggestPlaceholder,
 								ref:'inputAutoSuggest'
 	                        }">
