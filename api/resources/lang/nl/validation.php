@@ -110,8 +110,10 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "Selecteer een geldig urenstaatdocument",
-            'max' => "Bestandsgrootte van document moet zijn "
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Bestandsgrootte van document moet zijn "
+                . (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "Je kunt geen tijdsregistratie voor toekomstige datums invoeren",
@@ -124,8 +126,10 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "Selecteer een geldig afbeeldingstype",
-            'max' => "Afbeeldingsformaat moet zijn "
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "Afbeeldingsformaat moet zijn "
+                . (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "Voer een geldige video-URL in",
@@ -162,14 +166,14 @@ return [
         'media_videos.*.media_path' => "mediapad",
         'documents.*.document_name' => "documentnaam",
         'documents.*.document_type' => "documenttype",
-        'documents.*.document_path' => "documentpad",        
+        'documents.*.document_path' => "documentpad",
         'slider_detail.translations.*.lang' => "taalcode",
-        'skills.*.skill_id' => "vaardigheid ID",  
-        'location.city' => "stad", 
-        'location.country' => "land",   
-        'password_confirmation' => "bevestig wachtwoord",         
-        'translations.*.lang' => "taalcode",         
-        'is_mandatory' => "verplicht",       
+        'skills.*.skill_id' => "vaardigheid ID",
+        'location.city' => "stad",
+        'location.country' => "land",
+        'password_confirmation' => "bevestig wachtwoord",
+        'translations.*.lang' => "taalcode",
+        'is_mandatory' => "verplicht",
 		'page_details.translations.*.sections.*.title' => "titel",
 		'page_details.translations.*.sections.*.description' => "beschrijving",
 		'location.city_id' => "stad",
@@ -200,10 +204,10 @@ return [
         'cities.*.translations' => "vertalingen",
         'media_images.*.sort_order' => "sorteervolgorde",
         'media_videos.*.sort_order' => "sorteervolgorde",
-        'documents.*.sort_order' => "sorteervolgorde", 
+        'documents.*.sort_order' => "sorteervolgorde",
         'countries.*.translations.*.lang' => "taalcode",
         'countries.*.translations.*.name' => "naam",
-        'countries.*.translations' => "vertalingen",   
+        'countries.*.translations' => "vertalingen",
         'countries.*.iso' => "ISO",
         'translations.*.lang' => "taalcode",
         'translations.*.name' => "naam",
