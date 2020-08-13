@@ -79,7 +79,7 @@
         created() {
             document.body.classList.add("loader-enable");
             let defaultLang = store.state.defaultLanguage.toLowerCase();
-            if (store.state.siteTitle.translations != "") {
+            if (store.state.siteTitle && store.state.siteTitle.translations != "") {
                 let siteTranslationArray = store.state.siteTitle.translations;
                 let data = siteTranslationArray.filter((item) => {
                     if (item.lang == defaultLang) {
