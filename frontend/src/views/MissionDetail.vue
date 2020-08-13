@@ -330,9 +330,8 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-if="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
-
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
@@ -440,7 +439,7 @@
                                             </div>
                                         </b-collapse>
                                     </div>
-                                    <div class="tabs">
+                                    <div class="tabs" v-if="isOrganizationDisplay">
                                         <div class="tab-title">
                                             <h3 v-b-toggle.organization>{{ languageData.label.organisation }}</h3>
                                         </div>
@@ -725,6 +724,7 @@
         isStarDisplay: false,
         isThemeDisplay: false,
         isInviteCollegueDisplay: false,
+        isOrganizationDisplay: false,
         isCommentDisplay: false,
         isRecentVolunteerDispaly: false,
         isMissionGoalDisplay: false,
@@ -755,10 +755,11 @@
       };
     },
     mounted() {
-      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-      tabItem.forEach(function (tabItemEvent) {
-        tabItemEvent.addEventListener("click", tabsHandle);
-      });
+      setTimeout(() => {
+         let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+          tabItem.forEach(function (tabItemEvent) {
+            tabItemEvent.addEventListener("click", tabsHandle);
+          });
 
       function tabsHandle(tabsEvent) {
 
@@ -776,6 +777,8 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
+      }, 1000);
+
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
@@ -1070,6 +1073,13 @@
             }
 
             this.searchUsers();
+
+            /*
+             * If this.missionDetail.organisation_detail is a string it means that the details are not empty
+             * so we can display the organization tab.
+             * Otherwise this.missionDetail.organisation_detail is an array if the details are empty.
+             */
+            this.isOrganizationDisplay = typeof this.missionDetail.organisation_detail === 'string';
           })
         } else {
           this.$router.push('/404');
