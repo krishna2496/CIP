@@ -288,7 +288,8 @@
 		"send_message": "Envoyer un message",
 		"receive_email_notification": "Nampa kabar kanthi email",
 		"fill_up_mandatory_fields_to_access_platform": "Kanggo ngrampungake profil sampeyan, bukakake informasi sing dibutuhake",
-		"state" : "Negara"
+		"state" : "Negara",
+		"login_with_sso": "Mlebu karo SSO"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",

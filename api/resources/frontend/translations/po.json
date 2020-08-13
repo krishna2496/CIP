@@ -288,7 +288,8 @@
 		"send_message": "Wyślij wiadomość",
 		"receive_email_notification": "Receber notificação por email",
 		"fill_up_mandatory_fields_to_access_platform": "Para concluir seu perfil, forneça as informações necessárias",
-		"state" : "Estado"
+		"state" : "Estado",
+		"login_with_sso": "Zaloguj się za pomocą SSO"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",

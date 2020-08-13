@@ -288,7 +288,8 @@
 		"send_message" : "Send message",
         "receive_email_notification":"Receive notification by email",
         "fill_up_mandatory_fields_to_access_platform" : "In order to complete your profile, please provide us with the required information",
-        "state" : "State"
+        "state" : "State",
+        "login_with_sso": "Logi sisse SSO-ga"
     },
 
     "placeholder": {
