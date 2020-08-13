@@ -8334,7 +8334,7 @@
       },
       "get": {
         "operationId": "POST_cip-api-get-organizations",
-        "summary": "Admin - Get a organization detail",
+        "summary": "Admin - Get an organization detail",
         "tags": [
           "Organizations"
         ],
