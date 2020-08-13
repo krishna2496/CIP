@@ -9,6 +9,7 @@
         setTimeout
     } from "timers";
     import customCss from './services/CustomCss';
+    import store from './store';
     export default {
         data() {
             return {
@@ -77,6 +78,18 @@
         },
         created() {
             document.body.classList.add("loader-enable");
+            let defaultLang = store.state.defaultLanguage.toLowerCase();
+            if (store.state.siteTitle.translations != "") {
+                let siteTranslationArray = store.state.siteTitle.translations;
+                let data = siteTranslationArray.filter((item) => {
+                    if (item.lang == defaultLang) {
+                        return item;
+                    }
+                });
+                if (data[0] && data[0].title) {
+                    document.title = data[0].title;
+                }
+            }
             customCss()
               .catch(() => {
                 import(/* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');

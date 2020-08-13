@@ -167,10 +167,8 @@ export default async (langList, defautLang) => {
                 store.commit('submitNewMissionUrl', '');
             }
             //Site title
-
-            // Saml Settings
-            if (data.site_title) {
-                store.commit('siteTitle', JSON.stringify(data.site_title));
+            if (response.data.data.site_title) {
+                store.commit('siteTitle', JSON.stringify(response.data.data.site_title));
             } else {
                 store.commit('siteTitle', JSON.stringify(false));
             }
