@@ -185,27 +185,20 @@ export default {
         },
 
         setSiteTitle() {
-          //Set site title
-                let defaultLang = store.state.defaultLanguage.toLowerCase();
-                let siteTitle = '';
-                if (store.state.siteTitle && store.state.siteTitle.translations != "") {
-                    let siteTranslationArray = store.state.siteTitle.translations;
-                    let data = siteTranslationArray.filter((item) => {
-                        if (item.lang == defaultLang) {
-                            return item;
-                        }
-                    });
-                    if (data[0] && data[0].title) {
-                        siteTitle = data[0].title;
-                    } else {
-                        siteTitle = 'Optimy'
-                    }
-                } else {
-                    siteTitle = 'Optimy'
+            const defaultLang = store.state.defaultLanguage.toLowerCase();
+            let siteTitle = constants.DEFAULT_SITE_TITLE;
+            if (store.state.siteTitle
+                && store.state.siteTitle.translations
+                && store.state.siteTitle.translations.length
+            ) {
+                const siteTranslationArray = store.state.siteTitle.translations;
+                const data = siteTranslationArray.find((item) => item.lang === defaultLang);
+                if (data && data.title) {
+                    siteTitle = data.title;
                 }
-                document.title = siteTitle;
+            }
+            document.title = siteTitle;
         }
-
     },
     mounted() {
 
