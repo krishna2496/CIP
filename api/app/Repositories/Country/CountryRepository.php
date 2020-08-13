@@ -273,4 +273,28 @@ class CountryRepository implements CountryInterface
 
         return $country;
     }
+
+    /**
+      * Search country by name
+      *
+      * @param  string $isoCode
+      * @return Object|Boolean
+      */
+    public function searchCountry(
+      $countryName,
+      $languageId = null
+    ) {
+        $country = $this->country
+            ->join('country_language', 'country_language.country_id', '=', 'country.country_id')
+            ->where('country_language.name', 'LIKE', '%'.$countryName.'%')
+            ->whereNull('country.deleted_at');
+
+        if ($languageId) {
+            $country->where('country_language.language_id', $languageId);
+        }
+
+        $result = $country->first();
+
+        return $result ?? false;
+    }
 }

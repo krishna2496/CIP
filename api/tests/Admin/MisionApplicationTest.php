@@ -3,6 +3,7 @@ use Carbon\Carbon;
 use App\Models\Mission;
 use App\Models\CityLanguage;
 use App\Models\CountryLanguage;
+use App\Helpers\Helpers;
 
 class MissionApplicationTest extends TestCase
 {
@@ -33,14 +34,16 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = $motivation;
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save(); 
+        $missionApplication->save();
         
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC',
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(
+            '/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC',
+            ['Authorization' => Helpers::getBasicAuth()]
+        )
         ->seeStatusCode(200);
-        $missionApplication->delete(); 
-        $user->delete(); 
-        $mission->delete(); 
+        $missionApplication->delete();
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -70,13 +73,13 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save(); 
+        $missionApplication->save();
 
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         $missionApplication->delete();
-        $user->delete(); 
-        $mission->delete();  
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -93,9 +96,9 @@ class MissionApplicationTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get('/missions/'.$mission->mission_id.'/applications/'.rand(10000000, 200000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/'.$mission->mission_id.'/applications/'.rand(10000000, 200000000), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
-        $mission->delete(); 
+        $mission->delete();
     }
 
     /**
@@ -125,13 +128,13 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save(); 
+        $missionApplication->save();
 
-        $this->get('/missions/'.rand(10000000, 200000000).'/applications/'.$missionApplication->mission_application_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/'.rand(10000000, 200000000).'/applications/'.$missionApplication->mission_application_id, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
-        $missionApplication->delete(); 
-        $mission->delete(); 
-        $user->delete(); 
+        $missionApplication->delete();
+        $mission->delete();
+        $user->delete();
     }
 
     /**
@@ -165,9 +168,9 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save(); 
+        $missionApplication->save();
         
-        $this->patch('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -209,9 +212,9 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save();  
+        $missionApplication->save();
 
-        $this->patch('/missions/'.rand(1000000, 2000000).'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.rand(1000000, 2000000).'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -222,9 +225,9 @@ class MissionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $missionApplication->delete();
-        $user->delete(); 
+        $user->delete();
         $mission->delete();
     }
 
@@ -255,10 +258,12 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = $motivation;
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save(); 
+        $missionApplication->save();
         
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=test',
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(
+            '/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=test',
+            ['Authorization' => Helpers::getBasicAuth()]
+        )
         ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
@@ -270,9 +275,9 @@ class MissionApplicationTest extends TestCase
                 ]
             ]
         ]);
-        $missionApplication->delete(); 
-        $user->delete(); 
-        $mission->delete(); 
+        $missionApplication->delete();
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -306,9 +311,9 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save();  
+        $missionApplication->save();
 
-        $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.$mission->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -319,7 +324,7 @@ class MissionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $missionApplication->delete();
     }
 
@@ -347,7 +352,7 @@ class MissionApplicationTest extends TestCase
 
         $missionApplication = new App\Models\MissionApplication();
 
-        $this->patch('/missions/'.$mission->mission_id.'/applications/'.rand(1000000, 2000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch('/missions/'.$mission->mission_id.'/applications/'.rand(1000000, 2000000), $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -358,8 +363,8 @@ class MissionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
-        $user->delete(); 
+        ]);
+        $user->delete();
         $mission->delete();
     }
 
@@ -391,14 +396,16 @@ class MissionApplicationTest extends TestCase
         $missionApplication->motivation = $motivation;
         $missionApplication->approval_status = $status;
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save(); 
+        $missionApplication->save();
         
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC&status='.$status.'&user_id='.$user->user_id.'&type='.config("constants.mission_type.GOAL"),
-        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(
+            '/missions/'.$missionApplication->mission_id.'/applications?search='.$motivation.'&order=ASC&status='.$status.'&user_id='.$user->user_id.'&type='.config("constants.mission_type.GOAL"),
+            ['Authorization' => Helpers::getBasicAuth()]
+        )
         ->seeStatusCode(200);
-        $missionApplication->delete(); 
-        $user->delete(); 
-        $mission->delete(); 
+        $missionApplication->delete();
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -412,7 +419,7 @@ class MissionApplicationTest extends TestCase
     {
         $records = $this->createMissionApplicationData(null);
 
-        $both = array_filter($records['response']->data, function($item) use ($records) {
+        $both = array_filter($records['response']->data, function ($item) use ($records) {
             return in_array($item->mission_id, [
                 $records['mission_zero']->mission_id,
                 $records['mission_one']->mission_id
@@ -433,7 +440,7 @@ class MissionApplicationTest extends TestCase
     {
         $records = $this->createMissionApplicationData('?filter[isVirtual]=1');
 
-        $both = array_filter($records['response']->data, function($item) use ($records) {
+        $both = array_filter($records['response']->data, function ($item) use ($records) {
             return in_array($item->mission_id, [
                 $records['mission_one']->mission_id
             ]);
@@ -453,7 +460,7 @@ class MissionApplicationTest extends TestCase
     {
         $records = $this->createMissionApplicationData('?filter[isVirtual]=0');
 
-        $both = array_filter($records['response']->data, function($item) use ($records) {
+        $both = array_filter($records['response']->data, function ($item) use ($records) {
             return in_array($item->mission_id, [
                 $records['mission_zero']->mission_id
             ]);
@@ -465,7 +472,7 @@ class MissionApplicationTest extends TestCase
     private function createMissionApplicationData($params = null)
     {
         $authentication = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         $approvalStatus = config('constants.application_status.PENDING');
@@ -521,7 +528,7 @@ class MissionApplicationTest extends TestCase
             1
         ]);
 
-        if (empty($checkCountry)) {       
+        if (empty($checkCountry)) {
             // Create country language for missions
             $countryLang = factory(CountryLanguage::class)->make([
                 'country_id' => $mission->country_id
@@ -588,7 +595,5 @@ class MissionApplicationTest extends TestCase
             'mission_zero' => $mission,
             'mission_one' => $mission1
         ];
-
     }
-
 }

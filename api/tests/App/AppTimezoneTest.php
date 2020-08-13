@@ -32,7 +32,7 @@ class AppTimezoneTest extends TestCase
     /**
      * @test
      *
-     * No data found for timezone 
+     * No data found for timezone
      *
      * @return void
      */
@@ -54,7 +54,7 @@ class AppTimezoneTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void

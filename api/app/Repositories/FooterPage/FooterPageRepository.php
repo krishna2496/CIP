@@ -10,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class FooterPageRepository implements FooterPageInterface
 {
@@ -17,7 +18,7 @@ class FooterPageRepository implements FooterPageInterface
      * @var App\Models\FooterPage
      */
     private $page;
-    
+
     /**
      * @var App\Models\FooterPagesLanguage
      */
@@ -27,7 +28,7 @@ class FooterPageRepository implements FooterPageInterface
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
-    
+
     /**
      * Create a new repository instance.
      *
@@ -45,7 +46,7 @@ class FooterPageRepository implements FooterPageInterface
         $this->footerPageLanguage = $footerPageLanguage;
         $this->languageHelper = $languageHelper;
     }
-    
+
     /**
      * Store a newly created resource in storage
      *
@@ -61,24 +62,24 @@ class FooterPageRepository implements FooterPageInterface
         $page['slug'] = $postData['slug'];
         // Create new cms page
         $footerPage = $this->page->create($page);
-        
+
         $languages = $this->languageHelper->getLanguages();
         foreach ($postData['translations'] as $value) {
             // Get language_id from language code - It will fetch data from `ci_admin` database
             $language = $languages->where('code', $value['lang'])->first();
-            
+
             $footerPageLanguageData = array('page_id' => $footerPage['page_id'],
                                       'language_id' => $language->language_id,
                                       'title' => $value['title'],
                                       'description' => $value['sections']);
-                                      
+
             $this->footerPageLanguage->create($footerPageLanguageData);
-            
+
             unset($footerPageLanguageData);
         }
         return $footerPage;
     }
-    
+
     /**
     * Update the specified resource in storage.
     *
@@ -89,7 +90,7 @@ class FooterPageRepository implements FooterPageInterface
     public function update(Request $request, int $id): FooterPage
     {
         $postData = $request->page_details;
-        
+
         // Set data for update record
         $page = array();
         if (isset($postData['status'])) {
@@ -98,13 +99,13 @@ class FooterPageRepository implements FooterPageInterface
         if (isset($postData['slug'])) {
             $page['slug'] = $postData['slug'];
         }
-        
+
         // Update footer page
         $footerPage = $this->page->findOrFail($id);
         $footerPage->update($page);
-        
+
         $languages = $this->languageHelper->getLanguages();
-                 
+
         if (isset($postData['translations'])) {
             foreach ($postData['translations'] as $value) {
                 $language = $languages->where('code', $value['lang'])->first();
@@ -122,7 +123,7 @@ class FooterPageRepository implements FooterPageInterface
         }
         return $footerPage;
     }
-    
+
     /**
     * Display a listing of footer pages.
     *
@@ -132,7 +133,7 @@ class FooterPageRepository implements FooterPageInterface
     public function footerPageList(Request $request): LengthAwarePaginator
     {
         $pageQuery = $this->page->with('pageTranslations');
-        
+
         if ($request->has('search')) {
             $pageQuery->wherehas('pageTranslations', function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->input('search') . '%');
@@ -146,7 +147,7 @@ class FooterPageRepository implements FooterPageInterface
 
         return $pageQuery->paginate($request->perPage);
     }
-    
+
     /**
      * Find the specified resource from database
      *
@@ -157,7 +158,7 @@ class FooterPageRepository implements FooterPageInterface
     {
         return $this->page->with('pages')->findOrFail($id);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -192,7 +193,7 @@ class FooterPageRepository implements FooterPageInterface
             $key = array_search($languageId, array_column($list['pages']->toArray(), 'language_id'));
             $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
             $pages[] = $list['pages']->where('language_id', $language)->first();
-            
+
             unset($list['pages']);
             $list['pages'] = $pages;
             unset($pages);
@@ -225,13 +226,14 @@ class FooterPageRepository implements FooterPageInterface
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
 
         $footerPage = $this->page->with(['pages:page_id,language_id,title,description as sections'])
-        ->whereSlug($slug)->firstorfail();
+            ->whereSlug($slug)->firstorfail();
 
         $key = array_search($languageId, array_column($footerPage['pages']->toArray(), 'language_id'));
         $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
         $pages[] = $footerPage['pages']->where('language_id', $language)->first();
         unset($footerPage['pages']);
         $footerPage['pages'] = $pages;
+
         return $footerPage;
     }
 }

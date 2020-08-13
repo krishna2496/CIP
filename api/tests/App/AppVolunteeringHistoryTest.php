@@ -24,7 +24,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get country and city id for mission create
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id; 
+        $cityId = $countryDetail->city->first()->city_id;
         
         // Create request for mission create
         $params = [
@@ -70,7 +70,7 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -81,7 +81,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 'availability_id' => 1
             ];
 
-        DB::setDefaultConnection('mysql');        
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
         // Creating mission application for created mission
@@ -101,7 +101,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -114,7 +114,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -124,7 +124,7 @@ class AppVolunteeringHistoryTest extends TestCase
             ]
         );
         DB::setDefaultConnection('mysql');
-        // Get history of total hours spent on specific theme        
+        // Get history of total hours spent on specific theme
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
         ->seeStatusCode(200)
@@ -164,7 +164,7 @@ class AppVolunteeringHistoryTest extends TestCase
         
         DB::setDefaultConnection('mysql');
         // For specific year
-        $response = $this->get('/app/volunteer/history/theme?year='.Carbon::now()->format('Y'), ['token' => $token])
+        $response = $this->get('/app/volunteer/history/theme?year=' . Carbon::now()->format('Y'), ['token' => $token])
         ->seeStatusCode(200);
 
         $user->delete();
@@ -188,7 +188,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \DB::setDefaultConnection('tenant');
 
-        // Get history of total hours spent on specific theme        
+        // Get history of total hours spent on specific theme
         \DB::setDefaultConnection('mysql');
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -215,7 +215,7 @@ class AppVolunteeringHistoryTest extends TestCase
         );
 
         \DB::setDefaultConnection('mysql');
-        // Assert export report 
+        // Assert export report
         $response = $this->get(route('app.volunteer.history.time-mission.export'), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -226,9 +226,6 @@ class AppVolunteeringHistoryTest extends TestCase
         );
 
         $user->delete();
-
-
-        
     }
 
     /**
@@ -249,8 +246,8 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \DB::setDefaultConnection('tenant');
         
-        // Get history of total hours spent on specific theme        
-        $token = Helpers::getJwtToken($user->user_id, str_random('5'));  
+        // Get history of total hours spent on specific theme
+        $token = Helpers::getJwtToken($user->user_id, str_random('5'));
         \DB::setDefaultConnection('mysql');
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
         ->seeStatusCode(401);
@@ -277,7 +274,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get country and city id for mission create
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id; 
+        $cityId = $countryDetail->city->first()->city_id;
         
         // Create request for mission create
         $params = [
@@ -323,7 +320,7 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -355,7 +352,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -369,7 +366,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -381,7 +378,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \DB::setDefaultConnection('mysql');
 
-        // Get history of total hours spent on specific theme        
+        // Get history of total hours spent on specific theme
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.time-mission.export'), ['token' => $token])
         ->seeStatusCode(200);
@@ -408,7 +405,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get country and city id for mission create
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id; 
+        $cityId = $countryDetail->city->first()->city_id;
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -463,7 +460,7 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -495,7 +492,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -509,7 +506,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -521,7 +518,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         DB::setDefaultConnection('mysql');
 
-        // Get history of total hours spent on specific theme        
+        // Get history of total hours spent on specific theme
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.skill'), ['token' => $token])
         ->seeStatusCode(200)
@@ -540,7 +537,7 @@ class AppVolunteeringHistoryTest extends TestCase
         );
         DB::setDefaultConnection('mysql');
         // For specific year
-        $response = $this->get('/app/volunteer/history/skill?year='.Carbon::now()->format('Y'), ['token' => $token])
+        $response = $this->get('/app/volunteer/history/skill?year=' . Carbon::now()->format('Y'), ['token' => $token])
         ->seeStatusCode(200);
 
         $user->delete();
@@ -564,7 +561,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \DB::setDefaultConnection('tenant');
 
-        // Get history of total hours spent on specific skill        
+        // Get history of total hours spent on specific skill
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         \DB::setDefaultConnection('mysql');
         $response = $this->get(route('app.volunteer.history.skill'), ['token' => $token])
@@ -596,8 +593,8 @@ class AppVolunteeringHistoryTest extends TestCase
 
         \DB::setDefaultConnection('tenant');
         
-        // Get history of total hours spent on specific skill        
-        $token = Helpers::getJwtToken($user->user_id, str_random('5'));   
+        // Get history of total hours spent on specific skill
+        $token = Helpers::getJwtToken($user->user_id, str_random('5'));
 
         \DB::setDefaultConnection('mysql');
 
@@ -627,7 +624,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get country and city id for mission create
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id; 
+        $cityId = $countryDetail->city->first()->city_id;
         
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
@@ -682,7 +679,7 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -714,7 +711,7 @@ class AppVolunteeringHistoryTest extends TestCase
             'notes' => str_random(10),
             'hours' => rand(1, 5),
             'minutes' => rand(1, 59),
-            'documents[]' =>[]
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -728,7 +725,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -739,10 +736,10 @@ class AppVolunteeringHistoryTest extends TestCase
         );
 
         \DB::setDefaultConnection('mysql');
-        // Get history of total hours spent on specific theme        
+        // Get history of total hours spent on specific theme
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $response = $this->get(route('app.volunteer.history.theme'), ['token' => $token])
-        ->seeStatusCode(200);        
+        ->seeStatusCode(200);
         $user->delete();
     }
 
@@ -766,7 +763,7 @@ class AppVolunteeringHistoryTest extends TestCase
 
         // Get country and city id for mission create
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-        $cityId = $countryDetail->city->first()->city_id; 
+        $cityId = $countryDetail->city->first()->city_id;
         
         // Create request for mission create
         $params = [
@@ -812,7 +809,7 @@ class AppVolunteeringHistoryTest extends TestCase
         \DB::setDefaultConnection('mysql');
 
         // Creating mission
-        $response = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $response = $this->post("missions", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(201);
         
         $missionId = json_decode($response->response->getContent())->data->mission_id;
@@ -842,8 +839,8 @@ class AppVolunteeringHistoryTest extends TestCase
             'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
-            'action' => rand(1, 5),            
-            'documents[]' =>[]
+            'action' => rand(1, 5),
+            'documents[]' => []
         ];
 
         DB::setDefaultConnection('mysql');
@@ -857,7 +854,7 @@ class AppVolunteeringHistoryTest extends TestCase
                 "timesheet_id"
             ],
             'message',
-        ]);
+          ]);
 
         $timeSheetId = json_decode($timesheet->response->getContent())->data->timesheet_id;
 
@@ -894,7 +891,7 @@ class AppVolunteeringHistoryTest extends TestCase
         $response = $this->get(route('app.volunteer.history.goal-mission.export'), ['token' => $token])
         ->seeStatusCode(200);
         
-        $user->delete();        
+        $user->delete();
     }
 
     /**
@@ -931,7 +928,6 @@ class AppVolunteeringHistoryTest extends TestCase
         $response = $this->get(route('app.volunteer.history.goal-mission.export'), ['token' => $token])
         ->seeStatusCode(200);
         
-        $user->delete();        
+        $user->delete();
     }
-
 }

@@ -6,6 +6,7 @@ use App\Models\Mission;
 use App\Models\MissionApplication;
 use App\Models\Timesheet;
 use App\Models\MissionLanguage;
+use App\Helpers\Helpers;
 
 class UserTest extends TestCase
 {
@@ -27,7 +28,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => $name,
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -45,7 +46,7 @@ class UserTest extends TestCase
         $this->post(
             'users/',
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(201)
         ->seeJsonStructure([
@@ -93,7 +94,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => $name,
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -111,7 +112,7 @@ class UserTest extends TestCase
         $this->post(
             'users/',
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(201);
 
@@ -140,7 +141,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => $name,
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -157,7 +158,7 @@ class UserTest extends TestCase
         $this->post(
             'users/',
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(201);
 
@@ -204,7 +205,7 @@ class UserTest extends TestCase
         $this->post(
             'users/',
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -237,7 +238,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => $name,
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -255,7 +256,7 @@ class UserTest extends TestCase
         $this->post(
             'users/',
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(201);
 
@@ -302,7 +303,7 @@ class UserTest extends TestCase
         $this->post(
             'users/',
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -333,9 +334,9 @@ class UserTest extends TestCase
         $search = substr($user->first_name, 1, 3);
 
         $this->get(
-                'users?search='.$search,
-                ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
-            )
+            'users?search=' . $search,
+            ['Authorization' => Helpers::getBasicAuth()]
+        )
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'status',
@@ -377,7 +378,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_no_user_found()
     {
-        $this->get(route("users"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get(route("users"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -400,9 +401,9 @@ class UserTest extends TestCase
         $user->save();
 
         $this->get(
-                'users/'.$user->user_id,
-                ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
-            )
+            'users/' . $user->user_id,
+            ['Authorization' => Helpers::getBasicAuth()]
+        )
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'status',
@@ -443,7 +444,7 @@ class UserTest extends TestCase
     public function it_should_return_no_user_found_by_id()
     {
         $userId = rand(1000000, 50000000);
-        $this->get("users/".$userId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("users/" . $userId, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
@@ -474,7 +475,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -496,9 +497,9 @@ class UserTest extends TestCase
         $user->save();
 
         $this->patch(
-            'users/'.$user->user_id,
+            'users/' . $user->user_id,
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -547,9 +548,9 @@ class UserTest extends TestCase
         $user->save();
 
         $this->patch(
-            'users/'.$user->user_id,
+            'users/' . $user->user_id,
             ['expiry' => null],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -581,7 +582,7 @@ class UserTest extends TestCase
         $this->patch(
             'users/1',
             ['expiry' => 'foo'],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -610,7 +611,7 @@ class UserTest extends TestCase
         $this->patch(
             'users/1',
             ['status' => 'foo'],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -641,7 +642,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -656,9 +657,9 @@ class UserTest extends TestCase
         ];
 
         $this->patch(
-            "users/".rand(1000000, 50000000),
+            "users/" . rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -671,7 +672,6 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
-
     }
 
     /**
@@ -689,9 +689,9 @@ class UserTest extends TestCase
         $user->save();
 
         $this->delete(
-            "users/".$user->user_id,
+            "users/" . $user->user_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(204);
     }
@@ -705,9 +705,9 @@ class UserTest extends TestCase
     public function it_should_return_user_not_found_on_delete()
     {
         $this->delete(
-            "users/".rand(1000000, 50000000),
+            "users/" . rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+            ['Authorization' => Helpers::getBasicAuth()]
         )
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -731,7 +731,6 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_data_is_empty_for_create_user()
     {
-
         $params = [
                 'first_name' => '',
                 'last_name' => '',
@@ -749,7 +748,7 @@ class UserTest extends TestCase
                 'linked_in_url' => ''
             ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("users/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -795,7 +794,7 @@ class UserTest extends TestCase
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("users/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -807,7 +806,6 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
-
     }
 
     /**
@@ -823,7 +821,7 @@ class UserTest extends TestCase
                 'first_name' => str_random(255)
             ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("users/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -846,7 +844,6 @@ class UserTest extends TestCase
      */
     public function it_should_update_user_without_email_update()
     {
-
         \DB::setDefaultConnection('tenant');
         $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
         $cityId = $countryDetail->city->first()->city_id;
@@ -872,7 +869,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("users/" . $user->user_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -882,7 +879,6 @@ class UserTest extends TestCase
             'status',
             ]);
         $user->delete();
-
     }
 
     /**
@@ -899,12 +895,12 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->get('users/'.$user->user_id.'/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/' . $user->user_id . '/skills/', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -917,8 +913,8 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_if_user_is_not_exist()
     {
-        $this->get('users/'.rand(100000, 500000).'/skills/', ['Authorization' => 'Basic '
-        .base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/' . rand(100000, 500000) . '/skills/', ['Authorization' => 'Basic '
+        . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -946,12 +942,12 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->get('users/'.$user->user_id.'/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/' . $user->user_id . '/skills/', ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
     }
 
@@ -981,12 +977,12 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->post('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('users/' . $user->user_id . '/skills/', $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(201)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $skill->delete();
     }
@@ -1013,7 +1009,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->post('users/'.rand(100000, 5000000).'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('users/' . rand(100000, 5000000) . '/skills/', $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -1052,12 +1048,12 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->delete('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('users/' . $user->user_id . '/skills/', $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
-        ]);
+          ]);
         $user->delete();
         $skill->delete();
     }
@@ -1084,7 +1080,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->delete('users/'.rand(100000, 5000000).'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('users/' . rand(100000, 5000000) . '/skills/', $params, ['Authorization' => Helpers::getBasicAuth()])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -1134,7 +1130,7 @@ class UserTest extends TestCase
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("users/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1147,7 +1143,6 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
-
     }
 
     /**
@@ -1159,7 +1154,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_invalid_argument_error_for_get_users()
     {
-        $this->get("users?order=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("users?order=test", ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             'errors' => [
@@ -1191,7 +1186,7 @@ class UserTest extends TestCase
         $params = [
                 'first_name' => $name,
                 'last_name' => str_random(10),
-                'email' => str_random(10).'@email.com',
+                'email' => str_random(10) . '@email.com',
                 'password' => str_random(10),
                 'timezone_id' => 1,
                 'language_id' => rand(1000000, 5000000),
@@ -1205,7 +1200,7 @@ class UserTest extends TestCase
                 'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("users/", $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1217,7 +1212,6 @@ class UserTest extends TestCase
                 ]
             ]
         ]);
-
     }
 
     /**
@@ -1237,7 +1231,7 @@ class UserTest extends TestCase
         $params = [
             'first_name' => '',
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
@@ -1256,7 +1250,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("users/" . $user->user_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1269,10 +1263,9 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
-
     }
 
-        /**
+    /**
      * @test
      *
      * Return invalid language id error for update user api
@@ -1288,7 +1281,7 @@ class UserTest extends TestCase
 
         $params = [
             'last_name' => str_random(10),
-            'email' => str_random(10).'@email.com',
+            'email' => str_random(10) . '@email.com',
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => rand(100000, 500000),
@@ -1307,7 +1300,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("users/" . $user->user_id, $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1320,7 +1313,6 @@ class UserTest extends TestCase
             ]
         ]);
         $user->delete();
-
     }
 
     /**
@@ -1340,7 +1332,7 @@ class UserTest extends TestCase
 
         $params = [];
 
-        $this->post('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('users/' . $user->user_id . '/skills/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1372,7 +1364,7 @@ class UserTest extends TestCase
 
         $params = [];
 
-        $this->delete('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('users/' . $user->user_id . '/skills/', $params, ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -1409,27 +1401,27 @@ class UserTest extends TestCase
      */
     public function it_should_return_activity_logs()
     {
-        $this->get("logs?from_date=".date('Y-m-d')."&to_date=".date('Y-m-d'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("logs?from_date=" . date('Y-m-d') . "&to_date=" . date('Y-m-d'), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         DB::setDefaultConnection('mysql');
 
-        $this->get("logs?type=".config("constants.activity_log_types.AUTH"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("logs?type=" . config("constants.activity_log_types.AUTH"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         DB::setDefaultConnection('mysql');
 
-        $this->get("logs?action=".config("constants.activity_log_actions.CREATED"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("logs?action=" . config("constants.activity_log_actions.CREATED"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         DB::setDefaultConnection('mysql');
 
-        $this->get("logs?user_type=".config("constants.activity_log_user_types.API"), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("logs?user_type=" . config("constants.activity_log_user_types.API"), ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         DB::setDefaultConnection('mysql');
 
-        $this->get("logs?users=1", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("logs?users=1", ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(200);
         DB::setDefaultConnection('mysql');
 
-        $this->get("logs?type=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("logs?type=test", ['Authorization' => Helpers::getBasicAuth()])
         ->seeStatusCode(422);
     }
 
@@ -1446,7 +1438,7 @@ class UserTest extends TestCase
         $connection = 'tenant';
 
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         // Create two skill record.
@@ -1465,7 +1457,7 @@ class UserTest extends TestCase
         // Get the first created user
         $userEmail = $userCollection[0]['email'];
 
-        $response = $this->get('users?email='.$userEmail, $authorization)
+        $response = $this->get('users?email=' . $userEmail, $authorization)
           ->seeStatusCode(200)
           ->seeJsonStructure([
             'status',
@@ -1493,7 +1485,7 @@ class UserTest extends TestCase
                 ]
             ],
             'message'
-        ]);
+          ]);
 
         $result = json_decode($response->response->getContent());
 
@@ -1508,7 +1500,6 @@ class UserTest extends TestCase
         DB::setDefaultConnection('tenant');
 
         \App\User::whereIn('user_id', $userIds)->forceDelete();
-
     }
 
     /**
@@ -1520,10 +1511,9 @@ class UserTest extends TestCase
      */
     public function it_should_return_correct_user_timesheet_summary()
     {
-
-      $timesheetCount = 3;
-      $response = $this->mockTimesheetCreation($timesheetCount)->seeJsonStructure(
-          [
+        $timesheetCount = 3;
+        $response = $this->mockTimesheetCreation($timesheetCount)->seeJsonStructure(
+            [
               'status',
               'data' => [
                   'total_timesheet_time',
@@ -1539,22 +1529,21 @@ class UserTest extends TestCase
               ],
               'message'
           ]
-      );
-      $result = json_decode($response->response->getContent());
+        );
+        $result = json_decode($response->response->getContent());
 
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data->total_timesheet_time, '03:03:03');
-      $this->assertSame($result->data->total_timesheet_action, null);
-      $this->assertSame($result->data->total_timesheet, $timesheetCount);
-      $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
-      $this->assertSame($result->data->total_time_seconds, 10983);
-      $this->assertSame($result->data->total_hours_goal, 500);
-      $this->assertSame($result->data->total_remaining_hours, 496.95);
-      $this->assertSame($result->data->total_completed_hours, 3.05);
-      $this->assertSame($result->data->volunteering_rank, 100);
-      $this->assertSame($result->data->average_volunteering_days, 0);
-      $this->assertSame($result->message, 'User timesheet summarized successfully');
-
+        $this->assertSame($result->status, 200);
+        $this->assertSame($result->data->total_timesheet_time, '03:03:03');
+        $this->assertSame($result->data->total_timesheet_action, null);
+        $this->assertSame($result->data->total_timesheet, $timesheetCount);
+        $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
+        $this->assertSame($result->data->total_time_seconds, 10983);
+        $this->assertSame($result->data->total_hours_goal, 500);
+        $this->assertSame($result->data->total_remaining_hours, 496.95);
+        $this->assertSame($result->data->total_completed_hours, 3.05);
+        $this->assertSame($result->data->volunteering_rank, 100);
+        $this->assertSame($result->data->average_volunteering_days, 0);
+        $this->assertSame($result->message, 'User timesheet summarized successfully');
     }
 
     /**
@@ -1566,10 +1555,9 @@ class UserTest extends TestCase
      */
     public function it_should_return_correct_user_timesheet_summary_with_specified_valid_status()
     {
-
-      $timesheetCount = 3;
-      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet-summary', 'WORKDAY')->seeJsonStructure(
-          [
+        $timesheetCount = 3;
+        $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet-summary', 'WORKDAY')->seeJsonStructure(
+            [
               'status',
               'data' => [
                   'total_timesheet_time',
@@ -1585,22 +1573,21 @@ class UserTest extends TestCase
               ],
               'message'
           ]
-      );
-      $result = json_decode($response->response->getContent());
+        );
+        $result = json_decode($response->response->getContent());
 
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data->total_timesheet_time, '03:03:03');
-      $this->assertSame($result->data->total_timesheet_action, null);
-      $this->assertSame($result->data->total_timesheet, $timesheetCount);
-      $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
-      $this->assertSame($result->data->total_time_seconds, 10983);
-      $this->assertSame($result->data->total_hours_goal, 500);
-      $this->assertSame($result->data->total_remaining_hours, 496.95);
-      $this->assertSame($result->data->total_completed_hours, 3.05);
-      $this->assertSame($result->data->volunteering_rank, 100);
-      $this->assertSame($result->data->average_volunteering_days, 0);
-      $this->assertSame($result->message, 'User timesheet summarized successfully');
-
+        $this->assertSame($result->status, 200);
+        $this->assertSame($result->data->total_timesheet_time, '03:03:03');
+        $this->assertSame($result->data->total_timesheet_action, null);
+        $this->assertSame($result->data->total_timesheet, $timesheetCount);
+        $this->assertSame($result->data->first_volunteered_date, '2020-06-06');
+        $this->assertSame($result->data->total_time_seconds, 10983);
+        $this->assertSame($result->data->total_hours_goal, 500);
+        $this->assertSame($result->data->total_remaining_hours, 496.95);
+        $this->assertSame($result->data->total_completed_hours, 3.05);
+        $this->assertSame($result->data->volunteering_rank, 100);
+        $this->assertSame($result->data->average_volunteering_days, 0);
+        $this->assertSame($result->message, 'User timesheet summarized successfully');
     }
 
     /**
@@ -1612,10 +1599,9 @@ class UserTest extends TestCase
      */
     public function it_should_return_correct_user_timesheets_per_mission()
     {
-
-      $timesheetCount = 3;
-      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet')->seeJsonStructure(
-          [
+        $timesheetCount = 3;
+        $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet')->seeJsonStructure(
+            [
               'status',
               'data' => [
                 '*' => [
@@ -1630,17 +1616,16 @@ class UserTest extends TestCase
               ],
               'message'
           ]
-      );
-      $result = json_decode($response->response->getContent());
+        );
+        $result = json_decode($response->response->getContent());
 
-      $this->assertSame($result->status, 200);
-      $this->assertSame($result->data[0]->mission_type, 'GOAL');
-      $this->assertSame($result->data[0]->mission_title, 'mission title');
-      $this->assertSame($result->data[0]->total_timesheet_time, null);
-      $this->assertSame($result->data[0]->total_timesheet_action, null);
-      $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
-      $this->assertSame($result->message, 'User timesheet listed successfully');
-
+        $this->assertSame($result->status, 200);
+        $this->assertSame($result->data[0]->mission_type, 'GOAL');
+        $this->assertSame($result->data[0]->mission_title, 'mission title');
+        $this->assertSame($result->data[0]->total_timesheet_time, '03:03:03');
+        $this->assertSame($result->data[0]->total_timesheet_action, null);
+        $this->assertSame($result->data[0]->total_timesheet, $timesheetCount);
+        $this->assertSame($result->message, 'User timesheet listed successfully');
     }
 
     /**
@@ -1652,26 +1637,24 @@ class UserTest extends TestCase
      */
     public function it_should_return_correct_user_timesheets_per_mission_with_specified_invalid_status()
     {
-
-      $timesheetCount = 3;
-      $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet', 'SAMPLE')->seeJsonStructure(
-          [
+        $timesheetCount = 3;
+        $response = $this->mockTimesheetCreation($timesheetCount, 'timesheet', 'SAMPLE')->seeJsonStructure(
+            [
               'status',
               'message'
-          ]
-      );
-      $result = json_decode($response->response->getContent());
+            ]
+        );
+        $result = json_decode($response->response->getContent());
 
-      $this->assertSame($result->status, 404);
-      $this->assertSame($result->message, 'User timesheets not found');
-
+        $this->assertSame($result->status, 404);
+        $this->assertSame($result->message, 'User timesheets not found');
     }
 
     private function mockTimesheetCreation($timesheetCount, $action = 'timesheet-summary', $status = null)
     {
         $connection = 'tenant';
         $authorization = [
-            'Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))
+            'Authorization' => Helpers::getBasicAuth()
         ];
 
         $user = factory(User::class)->make();
@@ -1696,11 +1679,11 @@ class UserTest extends TestCase
         // Create a mock mission language
 
         if ($action === 'timesheet') {
-          $missionLanguage = factory(MissionLanguage::class)->make([
+            $missionLanguage = factory(MissionLanguage::class)->make([
               'mission_id' => $mission->mission_id
-          ]);
-          $missionLanguage->setConnection($connection);
-          $missionLanguage->save();
+            ]);
+            $missionLanguage->setConnection($connection);
+            $missionLanguage->save();
         }
 
         // Create a mock timesheet
@@ -1728,13 +1711,11 @@ class UserTest extends TestCase
         MissionApplication::where('mission_application_id', $missionApplication->mission_application_id)->forceDelete();
         Timesheet::whereIn('timesheet_id', $timesheetId)->forceDelete();
         if ($action === 'timesheet') {
-          MissionLanguage::where('mission_language_id', $missionLanguage->mission_language_id)->forceDelete();
+            MissionLanguage::where('mission_language_id', $missionLanguage->mission_language_id)->forceDelete();
         }
 
         // Return $response
 
         return $response;
-
     }
-
 }

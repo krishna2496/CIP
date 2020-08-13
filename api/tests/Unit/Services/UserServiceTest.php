@@ -40,7 +40,6 @@ class UserServiceTest extends TestCase
         $response = $service->findById($user->user_id);
 
         $this->assertEquals($user, $response);
-
     }
 
     /**
@@ -84,7 +83,6 @@ class UserServiceTest extends TestCase
             'stories_invited_users_count' => 1,
             'organization_count' => 2
         ], $response);
-
     }
 
     /**
@@ -166,14 +164,14 @@ class UserServiceTest extends TestCase
 
         return new Collection([
             $mission
-        ]);  
+        ]);
     }
 
     /**
      * Create a new service instance.
      *
      * @param  App\Repositories\Timesheet\UserRepository $userRepository
-     * 
+     *
      * @return void
      */
     private function getService(
@@ -195,5 +193,4 @@ class UserServiceTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

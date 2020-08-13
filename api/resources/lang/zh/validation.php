@@ -110,8 +110,10 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => "请选择有效的时间表文件",
-            'max' => "文档文件大小必须为 "
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "文档文件大小必须为 "
+                . (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'date_volunteered' => [
             'before' => "您无法为未来的日期添加时间条目",
@@ -124,8 +126,10 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => "请选择有效的图像类型",
-            'max' => "图像大小必须为 "
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' =>
+                "图像大小必须为 "
+                . (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024)
+                . 'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => "请输入有效的视频 url",
@@ -162,14 +166,14 @@ return [
         'media_videos.*.media_path' => "媒体路径",
         'documents.*.document_name' => "文件名称",
         'documents.*.document_type' => "文件类型",
-        'documents.*.document_path' => "文件路径",        
+        'documents.*.document_path' => "文件路径",
         'slider_detail.translations.*.lang' => "语言代码",
-        'skills.*.skill_id' => "技能 id",  
-        'location.city' => "城市", 
-        'location.country' => "国家/地区",   
-        'password_confirmation' => "确认密码",         
-        'translations.*.lang' => "语言代码",         
-        'is_mandatory' => "必填",       
+        'skills.*.skill_id' => "技能 id",
+        'location.city' => "城市",
+        'location.country' => "国家/地区",
+        'password_confirmation' => "确认密码",
+        'translations.*.lang' => "语言代码",
+        'is_mandatory' => "必填",
 		'page_details.translations.*.sections.*.title' => "标题",
 		'page_details.translations.*.sections.*.description' => "说明",
 		'location.city_id' => "城市",
@@ -200,10 +204,10 @@ return [
         'cities.*.translations' => "翻译",
         'media_images.*.sort_order' => "排序",
         'media_videos.*.sort_order' => "排序",
-        'documents.*.sort_order' => "排序", 
+        'documents.*.sort_order' => "排序",
         'countries.*.translations.*.lang' => "语言代码",
         'countries.*.translations.*.name' => "名称",
-        'countries.*.translations' => "翻译",   
+        'countries.*.translations' => "翻译",
         'countries.*.iso' => "ISO",
         'translations.*.lang' => "语言代码",
         'translations.*.name' => "名称",

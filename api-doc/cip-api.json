@@ -78,10 +78,13 @@
       "name": "City"
     },
     {
-      "name": "Language File"
+      "name": "Timezone"
     },
     {
-      "name": "Timezone"
+      "name": "Organizations"
+    },
+    {
+      "name": "Translations"
     }
   ],
   "paths": {
@@ -1138,7 +1141,7 @@
             "type": "integer"
           },
           {
-            "name": "filters[applicationIds]",
+            "name": "filters[applicationIds][]",
             "in": "path",
             "description": "List of all application ids",
             "required": false,
@@ -1148,9 +1151,9 @@
             }
           },
           {
-            "name": "filters[applicantSkills]",
+            "name": "filters[applicantSkills][]",
             "in": "path",
-            "description": "List of all skills ids",
+            "description": "List of all skill ids",
             "required": false,
             "type": "array",
             "items": {
@@ -1158,9 +1161,9 @@
             }
           },
           {
-            "name": "filters[missionSkills]",
+            "name": "filters[missionSkills][]",
             "in": "path",
-            "description": "List of all mission skilld ids",
+            "description": "List of all mission skill ids",
             "required": false,
             "type": "array",
             "items": {
@@ -1168,7 +1171,7 @@
             }
           },
           {
-            "name": "filters[missionTypes]",
+            "name": "filters[missionTypes][]",
             "in": "path",
             "description": "List of all mission types: GOAL, TIME",
             "required": false,
@@ -1178,7 +1181,7 @@
             }
           },
           {
-            "name": "filters[missionThemes]",
+            "name": "filters[missionThemes][]",
             "in": "path",
             "description": "List of all themes ids",
             "required": false,
@@ -1188,7 +1191,7 @@
             }
           },
           {
-            "name": "filters[missionCountries]",
+            "name": "filters[missionCountries][]",
             "in": "path",
             "description": "List of all country ids",
             "required": false,
@@ -1198,7 +1201,7 @@
             }
           },
           {
-            "name": "filters[missionCities]",
+            "name": "filters[missionCities][]",
             "in": "path",
             "description": "List of all city ids",
             "required": false,
@@ -1210,7 +1213,7 @@
           {
             "name": "filters[language]",
             "in": "path",
-            "description": "Languages",
+            "description": "Language",
             "required": false,
             "type": "string"
           },
@@ -1990,6 +1993,13 @@
             "required": false,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "field",
+            "in": "path",
+            "required": false,
+            "type": "string",
+            "description": "For ordering of user. Can be (fullName, firstName, email, volunteerStatus, country, language, lastName, email, title, email, department)"
           }
         ],
         "responses": {
@@ -2439,7 +2449,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserCustomField"
+              "$ref": "#/definitions/UserCustomFieldPatch"
             }
           },
           {
@@ -4135,7 +4145,7 @@
         }
       }
     },
-    "/language/{lang}": {
+    "/language/{isoCode}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
         "summary": "App - Fetch language json(translations) data (Milestone - 1)",
@@ -4148,7 +4158,7 @@
         ],
         "parameters": [
           {
-            "name": "lang",
+            "name": "isoCode",
             "in": "path",
             "description": "Language code",
             "required": true,
@@ -7672,12 +7682,12 @@
         }
       }
     },
-    "/language-file?code={code}": {
+    "/translations/generic/{isoCode}": {
       "get": {
-        "operationId": "GET_team4-cip-api-get-language-file",
-        "summary": "Admin - Fetch language file",
+        "operationId": "GET_team4-cip-api-get-translations-generic",
+        "summary": "Admin - Fetch generic translations",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
           "multipart/form-data"
@@ -7691,11 +7701,11 @@
             "default": ""
           },
           {
-            "name": "code",
+            "name": "isoCode",
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "Language code. Example: To fetch english language file use en, for French fr"
+            "description": "Language ISO code. Example: To fetch English translations, use en; for French translations, use fr."
           }
         ],
         "responses": {
@@ -7708,12 +7718,12 @@
         }
       }
     },
-    "/language-file": {
-      "post": {
-        "operationId": "GET_team4-cip-api-post-language-file-changes",
-        "summary": "Admin - Update language file",
+    "/translations/custom/{isoCode}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-language-file",
+        "summary": "Admin - Fetch custom translations",
         "tags": [
-          "Language File"
+          "Translations"
         ],
         "consumes": [
           "multipart/form-data"
@@ -7727,18 +7737,108 @@
             "default": ""
           },
           {
-            "name": "file_path",
-            "in": "formData",
-            "required": true,
-            "type": "file",
-            "description": "Upload json file that you have modified."
-          },
-          {
-            "name": "file_name",
-            "in": "formData",
+            "name": "isoCode",
+            "in": "path",
             "required": true,
             "type": "string",
-            "description": "This is file name of uploaded file or language code. If you want to modify English language file then enter 'en', for French language file enter 'fr'"
+            "description": "Language ISO code. Example: To fetch English translations, use en; for French translations, use fr."
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Not found - Tenant language file not found"
+          }
+        }
+      },
+      "post": {
+        "operationId": "GET_team4-cip-api-post-language-file-changes",
+        "summary": "Admin - Update language file",
+        "tags": [
+          "Translations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "isoCode",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Language ISO code. Example: To customize English translations, use en; to customize French translations, use fr."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "JSON encoded string containing all custom translations for the specified language. Translations not included in this structure will be inherited from original translations.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "placeholder": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                },
+                "export_timesheet_file_names": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "text",
+                      "example": "Translation text"
+                    },
+                    "code2": {
+                      "type": "text",
+                      "example": "Another translation"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -8012,11 +8112,263 @@
             "required": true,
             "type": "string",
             "default": ""
-          },
+          }
         ],
         "responses": {
           "401":{
             "description":"Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
+    "/organizations": {
+      "get": {
+        "operationId": "GET_cip-api-get-organizations",
+        "summary": "Admin - List of Organizations",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      },
+      "post": {
+        "operationId": "POST_cip-api-post-organizations",
+        "summary": "Admin - Create Organization",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "legal_number": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "address_line_1": {
+                  "type": "string"
+                },
+                "address_line_2": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type": "integer"
+                },
+                "country_id": {
+                  "type": "integer"
+                },
+                "postal_code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/organizations/{organizationId}": {
+      "patch": {
+        "operationId": "POST_cip-api-patch-organizations",
+        "summary": "Admin - Update Organization",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "legal_number": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "address_line_1": {
+                  "type": "string"
+                },
+                "address_line_2": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type": "integer"
+                },
+                "country_id": {
+                  "type": "integer"
+                },
+                "postal_code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "POST_cip-api-delete-organizations",
+        "summary": "Admin - Delete Organization",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Organization not found in the system"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      },
+      "get": {
+        "operationId": "POST_cip-api-get-organizations",
+        "summary": "Admin - Get an organization detail",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Organization not found in the system"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
           }
         }
       }
@@ -8026,36 +8378,6 @@
     "Mission": {
       "type": "object",
       "properties": {
-        "organisation": {
-          "type": "object",
-          "properties": {
-            "organisation_id": {
-              "type": "string",
-              "description": "Currently this id is kept as static"
-            },
-            "organisation_name": {
-              "type": "string",
-              "description": "Name of organisation"
-            },
-            "organisation_detail": {
-              "type": "array",
-              "description": "Organisation detail.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "lang": {
-                    "type": "string",
-                    "description": "Language code e.g. en, fr, de etc."
-                  },
-                  "detail": {
-                    "type": "string",
-                    "description": "Organisation detail"
-                  }
-                }
-              }
-            }
-          }
-        },
         "location": {
           "type": "object",
           "properties": {
@@ -8066,11 +8388,6 @@
             "country_code": {
               "type": "string",
               "description": "ISO code of country from `country` table"
-            },
-            "state_id": {
-              "type": "integer",
-              "description": "state id from `state` table",
-              "format": "int32"
             }
           }
         },
@@ -8136,6 +8453,23 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        },
+        "organisation_detail": {
+          "type": "array",
+          "description": "Organisation detail.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code e.g. en, fr, de etc."
+              },
+              "detail": {
+                "type": "string",
+                "description": "Organisation detail"
               }
             }
           }
@@ -8317,7 +8651,48 @@
             "0",
             "1"
           ]
-        }
+        },
+        "organization": {
+          "type": "object",
+          "properties": {
+            "organization_id": {
+              "type": "string",
+              "description": "This id is reference to organization table"
+            },
+            "name": {
+              "type": "string",
+              "description": "Organization name"
+            },
+            "legal_number": {
+              "type": "string",
+              "description": "Organization legal number"
+            },
+            "phone_number": {
+              "type": "integer",
+              "description": "Organization phone number"
+            },
+            "address_line_1": {
+              "type": "string",
+              "description": "Organization address line 1"
+            },
+            "address_line_2": {
+              "type": "string",
+              "description": "Organization address line 2"
+            },
+            "city_id": {
+              "type": "integer",
+              "description": "Organization city"
+            },
+            "country_id": {
+              "type": "integer",
+              "description": "Organization country"
+            },
+            "postal_code": {
+              "type": "string",
+              "description": "Organization postal code"
+            }
+          }
+        },
       }
     },
     "FooterPage": {
@@ -8469,6 +8844,9 @@
           "type":  "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+        },
+        "position": {
+          "type": "string"
         }
       }
     },
@@ -8548,6 +8926,55 @@
               }
             }
           }
+        }
+      }
+    },
+    "UserCustomFieldPatch": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "email",
+            "drop-down",
+            "radio",
+            "checkbox",
+            "multiselect",
+            "textarea"
+          ]
+        },
+        "order": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Field order"
+        },
+        "translations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code"
+              },
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "is_mandatory": {
+          "type": "boolean"
+        },
+        "internal_note": {
+          "type": "string"
         }
       }
     },
