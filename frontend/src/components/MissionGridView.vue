@@ -75,7 +75,7 @@
                                                     {{ mission.end_date | formatDate }}
                                                 </template>
                                                 <template v-else>
-                                                    {{ languageData.label.on_going_opportunities }}
+                                                    {{ languageData.label.ongoing }}
                                                 </template>
                                             </template>
                                             <!-- Mission type goal -->
