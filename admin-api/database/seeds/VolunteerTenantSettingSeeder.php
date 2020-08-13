@@ -12,18 +12,14 @@ class VolunteerTenantSettingSeeder extends Seeder
      */
     public function run()
     {
-        $items = [            
-            [
-                'title' => 'volunteering',
-                'description' => 'Volunteering is enabled/disabled',
-                'key' => 'volunteering',
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ]
+        $volunteeringSetting = [
+            'title' => 'Volunteering',
+            'description' => 'Enable/disable volunteering on the platform',
+            'key' => 'volunteering',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ];
 
-        foreach ($items as $item) {            
-            \DB::table('tenant_setting')->insert($item);
-        }
+        DB::table('tenant_setting')->insert($volunteeringSetting);
     }
 }
