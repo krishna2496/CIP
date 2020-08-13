@@ -147,7 +147,7 @@ export default new Vuex.Store({
             state.slider = slider;
         },
         // Set language list in state and local storage
-        setLanguageList(state, languageList,) {
+        setLanguageList(state, languageList) {
             localStorage.removeItem('listOfLanguage');
             localStorage.setItem('listOfLanguage', languageList);
             state.listOfLanguage = languageList;
