@@ -107,24 +107,10 @@ export default {
         async createConnection() {
             await databaseConnection(this.langList).then(() => {
                 this.isShowComponent = true
-
-                //Set site title
-                let defaultLang = store.state.defaultLanguage.toLowerCase();
-                if (store.state.siteTitle && store.state.siteTitle.translations != "") {
-                    let siteTranslationArray = store.state.siteTitle.translations;
-                    let data = siteTranslationArray.filter((item) => {
-                        if (item.lang == defaultLang) {
-                            return item;
-                        }
-                    });
-                    if (data[0] && data[0].title) {
-                        document.title = data[0].title;
-
-                    }
-                }
                 //Get langauage list from Local Storage
                 this.langList = JSON.parse(store.state.listOfLanguage)
                 this.defautLang = store.state.defaultLanguage
+                this.setSiteTitle();
                 this.hasSSO = Boolean(store.state.samlSettings);
                 // Get tenant setting
                 tenantSetting();
@@ -152,6 +138,7 @@ export default {
             this.$forceUpdate();
             this.$refs.ThePrimaryFooter.$forceUpdate()
             this.componentKey += 1;
+            this.setSiteTitle();
         },
 
         handleSubmit() {
@@ -196,6 +183,28 @@ export default {
         handleSSO() {
             window.location = store.state.samlSettings.sso_url;
         },
+
+        setSiteTitle() {
+          //Set site title
+                let defaultLang = store.state.defaultLanguage.toLowerCase();
+                let siteTitle = '';
+                if (store.state.siteTitle && store.state.siteTitle.translations != "") {
+                    let siteTranslationArray = store.state.siteTitle.translations;
+                    let data = siteTranslationArray.filter((item) => {
+                        if (item.lang == defaultLang) {
+                            return item;
+                        }
+                    });
+                    if (data[0] && data[0].title) {
+                        siteTitle = data[0].title;
+                    } else {
+                        siteTitle = 'Optimy'
+                    }
+                } else {
+                    siteTitle = 'Optimy'
+                }
+                document.title = siteTitle;
+        }
 
     },
     mounted() {

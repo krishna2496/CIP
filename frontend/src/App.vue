@@ -80,6 +80,7 @@ export default {
         document.body.classList.add("loader-enable");
         if (store.state.defaultLanguage) {
             let defaultLang = store.state.defaultLanguage.toLowerCase();
+            let siteTitle = '';
             if (store.state.siteTitle && store.state.siteTitle.translations != "") {
                 let siteTranslationArray = store.state.siteTitle.translations;
                 let data = siteTranslationArray.filter((item) => {
@@ -88,10 +89,14 @@ export default {
                     }
                 });
                 if (data[0] && data[0].title) {
-                    document.title = data[0].title;
-
+                    siteTitle = data[0].title;
+                } else {
+                    siteTitle = 'Optimy'
                 }
+            } else {
+                siteTitle = 'Optimy'
             }
+            document.title = siteTitle;
         }
         customCss()
             .catch(() => {
