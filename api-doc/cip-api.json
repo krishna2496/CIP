@@ -2601,100 +2601,6 @@
         }
       }
     },
-    "/app/invite-user": {
-      "post": {
-        "operationId": "POST_team4-cip-api-invite-user",
-        "summary": "App - User invite (Request create password link) (Milestone - 1)",
-        "tags": [
-          "User"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string"
-                },
-                "subject": {
-                  "type": "string"
-                },
-                "body": {
-                  "type": "string"
-                },
-                "language": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden - Email address does not exist in the system"
-          },
-          "422": {
-            "description": "Invalid input"
-          },
-          "502": {
-            "description": "Bad Gateway - Database operational error"
-          }
-        }
-      }
-    },
-    "/app/create-password": {
-      "post": {
-        "operationId": "POST_team4-cip-api-create-password",
-        "summary": "App - Creates User Password (Milestone - 1)",
-        "tags": [
-          "User"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden - Email address does not exist in the system"
-          },
-          "422": {
-            "description": "Invalid input"
-          },
-          "502": {
-            "description": "Bad Gateway - Database operational error"
-          }
-        }
-      }
-    },
     "/app/password-reset": {
       "put": {
         "operationId": "PUT_team4-cip-api-password-reset",
@@ -3127,6 +3033,100 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/users/invite": {
+      "post": {
+        "operationId": "POST_team4-cip-api-invite-user",
+        "summary": "App - User invite (Request create password link) (Milestone - 1)",
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden - Email address does not exist in the system"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/users/password": {
+      "patch": {
+        "operationId": "POST_team4-cip-api-create-password",
+        "summary": "App - Creates User Password (Milestone - 1)",
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden - Email address does not exist in the system"
+          },
+          "422": {
+            "description": "Invalid input"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"

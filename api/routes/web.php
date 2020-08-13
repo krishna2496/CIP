@@ -108,12 +108,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
         'uses' => 'App\User\UserController@index']);
 
-    $router->post('/app/invite-user', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
-        'uses' => 'App\User\UserController@inviteUser']);
-
-    $router->patch('/app/create-password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
-        'uses' => 'App\User\UserController@createPassword']);
-
     /* Fetch dashboard data for users */
     $router->get('/app/dashboard', ['as' => 'app.user',
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
@@ -177,6 +171,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Forgot password routing for API */
     $router->post('/users/request-password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
+
+    $router->post('/users/invite', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@inviteUser']);
+
+    $router->patch('/users/password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@createPassword']);
+
 });
 
 /* SAML */
