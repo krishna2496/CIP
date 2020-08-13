@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class DonationTenantSettingSeeder extends Seeder
 {
@@ -12,18 +12,14 @@ class DonationTenantSettingSeeder extends Seeder
      */
     public function run()
     {
-        $items = [            
-            [
-                'title' => 'Donation mission',
-                'description' => 'Enable/disable donation on platform',
-                'key' => 'donation',
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ]
+        $donationSetting = [
+            'title' => 'Donation',
+            'description' => 'Enable/disable donation on the platform',
+            'key' => 'donation',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ];
 
-        foreach ($items as $item) {            
-            \DB::table('tenant_setting')->insert($item);
-        }
+        DB::table('tenant_setting')->insert($donationSetting);
     }
 }
