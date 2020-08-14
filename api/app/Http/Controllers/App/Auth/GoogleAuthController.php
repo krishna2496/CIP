@@ -136,6 +136,8 @@ class GoogleAuthController extends Controller
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
 
+        $this->helpers->syncUserData($request, $userDetail);
+
         $tenantName = $this->helpers->getTenantDomainByTenantId($tenantId);
 
         $token = $this->helpers->getJwtToken(
