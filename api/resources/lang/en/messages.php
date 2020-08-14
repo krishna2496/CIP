@@ -22,6 +22,7 @@ return [
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
         'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
+        'MESSAGE_USER_INVITE_LINK_SEND_SUCCESS' => 'Invite link is sent to the email account.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -227,7 +228,9 @@ return [
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         'ERROR_USER_EXPIRED' => 'Your account has expired. Please contact your administrator.',
         'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
+        'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
+        'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -276,6 +279,7 @@ return [
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Something went wrong while sending reset password link',
+        'ERROR_SEND_USER_INVITE_LINK' => 'Something went wrong while sending the invite link',
         'ERROR_INVALID_DETAIL' => 'Invalid reset password token or email address',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Tenant domain not found',
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
@@ -361,6 +365,7 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_SAML_ACCESS_ONLY_ACTIVE' => 'Saml Access Only is currently active.',
         'ERROR_STATE_UNABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',

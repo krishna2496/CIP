@@ -3043,6 +3043,53 @@
         }
       }
     },
+    "/users/invite": {
+      "post": {
+        "operationId": "POST_team4-cip-api-invite-user",
+        "summary": "App - User invite (Request create password link) (Milestone - 1)",
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden - Email address does not exist in the system"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
     "/entities/themes": {
       "post": {
         "operationId": "GET_team4-cip-api-add-theme",
@@ -8852,6 +8899,11 @@
         },
         "position": {
           "type": "string"
+        },
+        "invitation_sent_at": {
+          "type":  "string",
+          "format": "date-time",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         }
       }
     },
