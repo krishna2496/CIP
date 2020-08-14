@@ -10,6 +10,7 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
+use Bschmitt\Amqp\Amqp;
 
 class Helpers
 {
@@ -21,13 +22,21 @@ class Helpers
     private $db;
 
     /**
+     * Amqp
+     *
+     * @var Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new helper instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Amqp $amqp)
     {
         $this->db = app()->make('db');
+        $this->amqp = $amqp;
     }
 
     /**
@@ -424,6 +433,42 @@ class Helpers
     }
 
     /**
+     * Sync volunteer to Optimyapp
+     *
+     * @param Request $request
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function syncUserData($request, $user)
+    {
+        if ($user->pseudonymize_at  && $user->pseudonymize_at !== '0000-00-00 00:00:00') {
+            return false;
+        }
+
+        $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
+
+        $params = [
+            'activity_type' => 'user',
+            'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+            'ci_user_id' => $user->user_id,
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id
+        ];
+
+        $payload = json_encode($params);
+
+        $this->amqp->publish(
+            'ciSynchronizer',
+            $payload,
+            [
+                'queue' => 'ciSynchronizer'
+            ]
+        );
+
+        return true;
+    }
+
+    /**
      * Retrieve tenant's name
      *
      * @param Request
@@ -475,5 +520,20 @@ class Helpers
         $this->switchDatabaseConnection($connection);
 
         return (bool)$adminUser;
+    }
+
+    public function getSupportedFieldsToPseudonymize()
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email',
+            'employee_id',
+            'linked_in_url',
+            'position',
+            'department',
+            'profile_text',
+            'why_i_volunteer'
+        ];
     }
 }
