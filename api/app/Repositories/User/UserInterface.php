@@ -12,20 +12,20 @@ interface UserInterface
     /**
      * Store a newly created resource in storage.
      *
-     * @param array $request
+     * @param Array $request
      * @return App\User
      */
-    public function store(array $request): User;
-    
+    public function store(Array $request): User;
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  array  $request
+     * @param Array $request
      * @param  int  $id
      * @return App\User
      */
-    public function update(array $request, int $id): User;
-    
+    public function update(Array $request, int $id): User;
+
     /**
      * Get listing of users
      *
@@ -41,7 +41,7 @@ interface UserInterface
      * @return App\User
      */
     public function find(int $id): User;
-    
+
     /**
      * Remove specified resource in storage.
      *
@@ -108,7 +108,7 @@ interface UserInterface
      * @return bool
      */
     public function deleteSkills(int $userId): bool;
-    
+
     /**
      * Change user password
      *
@@ -118,7 +118,7 @@ interface UserInterface
      * @return boolw
      */
     public function changePassword(int $id, string $password): bool;
-    
+
     /**
      * Get user's detail by email
      *
@@ -142,7 +142,7 @@ interface UserInterface
      * @return bool
      */
     public function updateCookieAgreement(int $userId): bool;
-    
+
     /**
      * Get timezone from user id
      *
