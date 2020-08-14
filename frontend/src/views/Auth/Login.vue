@@ -118,7 +118,8 @@
           this.isShowComponent = true
           //Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage)
-          this.defautLang = store.state.defaultLanguage
+          const defaultLanguage = store.state.defaultLanguage;
+          this.defautLang = defaultLanguage.toUpperCase();
           this.hasSSO = Boolean(store.state.samlSettings);
           // Get tenant setting
           tenantSetting();
