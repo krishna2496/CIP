@@ -53,7 +53,7 @@
             'DISABLED' => 'DISABLED'
         ],
         'EMAIL_TESTING_TEMPLATE' => 'test-email',
-        'ADMIN_EMAIL_ADDRESS' => 'vfauvarque@optimy.com',
+        'ADMIN_EMAIL_ADDRESS' => env('ADMIN_EMAIL_ADDRESS'),
         'language_status' => [
             'ACTIVE' => '1',
             'INACTIVE' => '0'

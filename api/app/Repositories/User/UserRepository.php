@@ -95,12 +95,13 @@ class UserRepository implements UserInterface
     /**
      * Store a newly created resource in storage.
      *
-     * @param array $request
+     * @param Array $request
      * @return App\User
      */
-    public function store(array $request): User
+    public function store(Array $request): User
     {
-        return $this->user->create($request);
+        $user = $this->user->create($request);
+        return $user;
     }
 
     /**
@@ -113,9 +114,16 @@ class UserRepository implements UserInterface
     {
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
+        $activityLogAction = config('constants.activity_log_actions.LOGIN');
+        $activityLogType = config('constants.activity_log_types.AUTH');
 
-        $userQuery = $this->user->selectRaw("
-            user_id,
+        /**
+        * TODO: optimize query instead of getting first login|last_login column
+        * in activity_log, add new column to user first login|last_login
+        */
+        $user = $this->user;
+        $userQuery = $user->selectRaw("
+            user.user_id,
             first_name,
             last_name,
             email,
@@ -128,6 +136,7 @@ class UserRepository implements UserInterface
             why_i_volunteer,
             employee_id,
             department,
+            position,
             city_id,
             country_id,
             profile_text,
@@ -135,13 +144,23 @@ class UserRepository implements UserInterface
             status,
             language_id,
             title,
-            expiry
-        ")->with('city', 'country', 'timezone');
+            expiry,
+            invitation_sent_at,
+            pseudonymize_at,
+            MIN(activity_log.date) as first_login,
+            MAX(activity_log.date) as last_login
+        ")->with('city', 'country', 'timezone')
+        ->leftJoin('activity_log', function ($join) use ($user, $activityLogAction, $activityLogType) {
+            $join->on('user.user_id', '=', 'activity_log.user_id')
+                ->where('activity_log.action', $activityLogAction)
+                ->where('activity_log.type', $activityLogType);
+        });
 
         if ($request->has('search')) {
             $userQuery->where(function ($query) use ($request) {
                 $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
                 $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('email', 'like', '%' . $request->input('search') . '%');
             });
         }
 
@@ -151,8 +170,41 @@ class UserRepository implements UserInterface
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
-            $userQuery->orderBy('user_id', $orderDirection);
+            $sortBy = 'user_id';
+
+            switch ($request->get('field')) {
+                case 'fullName':
+                case 'firstName':
+                    $sortBy = 'first_name';
+                    break;
+                case 'email':
+                    $sortBy = 'email';
+                    break;
+                case 'volunteerStatus':
+                    $sortBy = 'status';
+                    break;
+                case 'country':
+                    $sortBy = 'country_id';
+                    break;
+                case 'language':
+                    $sortBy = 'language_id';
+                    break;
+                case 'lastName':
+                    $sortBy = 'last_name';
+                    break;
+                case 'title':
+                    $sortBy = 'title';
+                    break;
+                case 'department':
+                    $sortBy = 'department';
+                    break;
+
+            }
+            $userQuery->orderBy($sortBy, $orderDirection);
         }
+
+        // Needed as we use MIN/MAX(activity_log.date)
+        $userQuery->groupBy('user.user_id');
 
         return $userQuery->paginate($request->perPage);
     }
@@ -160,11 +212,11 @@ class UserRepository implements UserInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param  array  $request
+     * @param Array $request
      * @param  int  $id
      * @return App\User
      */
-    public function update(array $request, int $id): User
+    public function update(Array $request, int $id): User
     {
         $user = $this->user->findOrFail($id);
         $user->update($request);
@@ -671,6 +723,25 @@ class UserRepository implements UserInterface
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
             ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
             ->get();
+    }
+
+    private function getUserArrayDataFromRequest(Request $request)
+    {
+        $requestData = $request->toArray();
+
+        if (array_key_exists('backend_internal_notes', $requestData)) {
+            unset($requestData['backend_internal_notes']);
+        }
+
+        $requestData['expiry'] = (isset($request->expiry)) && $request->expiry
+            ? $request->expiry : null;
+        if (isset($request->status)) {
+            $requestData['status'] = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
+        return $requestData;
     }
 
 }

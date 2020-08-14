@@ -77,60 +77,90 @@ let routes = [
     {
         path: '/news',
         name: 'News',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/News.vue')
     },
     {
         path: '/stories',
         name: 'Stories',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/Stories.vue')
     },
     {
         path: '/news-detail/:newsId',
         name: 'NewsDetail',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/NewsDetail.vue')
     },
     {
         path: '/story-detail/:storyId',
         name: 'StoryDetail',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/StoryDetail.vue')
     },
     {
         path: '/story-preview/:storyId',
         name: 'StoryPreview',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/StoryDetail.vue')
     },
     {
         path: '/share-story',
         name: 'ShareStory',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/ShareStory.vue')
     },
     {
         path: '/edit-story/:storyId',
         name: 'EditStory',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/ShareStory.vue')
     },
     {
         path: '/messages',
         name: 'DashboardMessage',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/DashboardMessage.vue')
     },
     {
         path: '/comment-history',
         name: 'DashboardComments',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/DashboardComments.vue')
     },
     {
         path: '/my-stories',
         name: 'DashboardStories',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/DashboardStories.vue')
     },
@@ -182,6 +212,9 @@ let routes = [
     {
         path: '/mission-detail/:misisonId',
         name: 'missionDetail',
+        meta: {
+            requiresAuth: true
+        },
         component: () =>
           import ('./views/MissionDetail.vue')
     },
