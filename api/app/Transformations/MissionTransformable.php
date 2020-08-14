@@ -202,20 +202,6 @@ trait MissionTransformable
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
 
-        if (!empty($mission['donationAttribute']) && (isset($mission['donationAttribute']))
-        ) {
-            if ($mission['donationAttribute']['show_donation_percentage'] == '0') {
-                unset($mission['donationAttribute']['goal_amount']);
-            }
-            unset($mission['donationAttribute']['show_goal_amount']);
-            unset($mission['donationAttribute']['show_donation_percentage']);
-            unset($mission['donationAttribute']['show_donation_meter']);
-            unset($mission['donationAttribute']['show_donation_count']);
-            unset($mission['donationAttribute']['show_donors_count']);
-            unset($mission['donationAttribute']['show_donors_count']);
-            unset($mission['donationAttribute']['is_disabled']);
-        }
-
         // Mission tab details
         if (!empty($mission['missionTab']) && (isset($mission['missionTab']))
         ) {
