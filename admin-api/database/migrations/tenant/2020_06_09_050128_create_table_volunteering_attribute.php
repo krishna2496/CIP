@@ -18,7 +18,7 @@ class CreateTableVolunteeringAttribute extends Migration
             $table->unsignedBigInteger('mission_id');
             $table->unsignedBigInteger('availability_id');
             $table->integer('total_seats')->nullable();
-            $table->enum('is_virtual', ['0', '1'])->default('0');
+            $table->boolean('is_virtual')->default(0);
             $table->timestamps();
             $table->softDeletes();
 
