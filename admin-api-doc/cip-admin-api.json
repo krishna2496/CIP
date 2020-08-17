@@ -730,7 +730,7 @@
                     {  
                         "name":"TenantId",
                         "in":"path",
-                        "description":"Tenant id to update",
+                        "description":"Tenant id to create tenant currency",
                         "required":true,
                         "type":"integer",
                         "format":"int64"
@@ -799,7 +799,7 @@
                     {  
                         "name":"TenantId",
                         "in":"path",
-                        "description":"Tenant id to update",
+                        "description":"Tenant id to update tenant currency",
                         "required":true,
                         "type":"integer",
                         "format":"int64"
