@@ -21,7 +21,6 @@
             'ERROR_NOT_VALID_EXTENSION' => '200107',
             'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => '200108',
             'ERROR_LANGUAGE_UNABLE_TO_DELETE' => '200109',
-            'ERROR_TENANT_DONATION_SETTINGS_NOT_ENABLE' => '200110'
         ],
         'background_process_status' => [
             'PENDING' => '0',
@@ -63,8 +62,4 @@
             'seeder' => 'seeder'
         ],
         'EMAIL_TEMPLATE_MIGRATION_NOTIFICATION' => 'migration-notification',
-        'DONATION_RELATED_SETTINGS' => [
-            'donation_mission_comments',
-            'donation_mission_ratings'
-        ],
     ];
