@@ -9,8 +9,7 @@ import {
     setTimeout
 } from "timers";
 import customCss from './services/CustomCss';
-import store from './store';
-import constants from './constant';
+import { setSiteTitle } from './utils';
 
 export default {
     data() {
@@ -80,22 +79,7 @@ export default {
     },
     created() {
         document.body.classList.add("loader-enable");
-
-        if (store.state.defaultLanguage) {
-            const defaultLang = store.state.defaultLanguage.toLowerCase();
-            let siteTitle = constants.DEFAULT_SITE_TITLE;
-            if (store.state.siteTitle
-                && store.state.siteTitle.translations
-                && store.state.siteTitle.translations.length
-            ) {
-                const siteTranslationArray = store.state.siteTitle.translations;
-                const data = siteTranslationArray.find((item) => item.lang === defaultLang);
-                if (data && data.title) {
-                    siteTitle = data.title;
-                }
-            }
-            document.title = siteTitle;
-        }
+        setSiteTitle();
 
         customCss()
             .catch(() => {

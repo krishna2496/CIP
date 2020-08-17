@@ -166,7 +166,7 @@ export default async (langList, defautLang) => {
             } else {
                 store.commit('submitNewMissionUrl', '');
             }
-            //Site title
+            // Site title
             if (response.data.data.site_title) {
                 store.commit('siteTitle', JSON.stringify(response.data.data.site_title));
             } else {
