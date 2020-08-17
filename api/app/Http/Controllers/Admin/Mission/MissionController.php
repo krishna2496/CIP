@@ -589,13 +589,13 @@ class MissionController extends Controller
      */
     public function removeMissionTab($missionTabId): JsonResponse
     {
-        $deleteByMissionId = 0;
+        $deleteByMissionId = false;
         try {
             if (preg_match('/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/i', $missionTabId)) {
                 $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
             } else {
                 $missionId = $missionTabId;
-                $deleteByMissionId = 1;
+                $deleteByMissionId = true;
                 $this->missionRepository->find($missionId);
                 $this->missionRepository->deleteMissionTabByMissionId($missionId);
             }
@@ -618,7 +618,7 @@ class MissionController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage);
 
         } catch (ModelNotFoundException $e) {
-            if($deleteByMissionId == 1) {
+            if($deleteByMissionId) {
                 return $this->modelNotFound(
                     config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                     trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
