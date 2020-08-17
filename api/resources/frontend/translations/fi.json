@@ -295,7 +295,8 @@
 		"deleted_user" : "Poistettu käyttäjä",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
-		"home" : "Koti"
+		"home" : "Koti",
+		"login_with_sso": "Kirjaudu sisään SSO: lla"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",
