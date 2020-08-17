@@ -613,6 +613,9 @@
             }
             if(this.userData.city_id != 0 && this.userData.city_id != null) {
               this.profile.city = this.userData.city_id
+            } else {
+              this.profile.city = null;
+              this.changeCityData(this.profile.country);
             }
             if(this.userData.availability_id != 0 && this.userData.availability_id != null) {
               this.profile.availability = this.userData.availability_id
@@ -805,15 +808,19 @@
         this.saveProfileData.title = this.profile.title;
         this.saveProfileData.timezone_id = this.profile.time;
         this.saveProfileData.language_id = this.profile.language;
-          if (this.profile.availability != 0) {
-              this.saveProfileData.availability_id = this.profile.availability
-          } else {
-              delete this.saveProfileData['availability_id'];
-          }
+        if (this.profile.availability != 0) {
+            this.saveProfileData.availability_id = this.profile.availability
+        } else {
+            delete this.saveProfileData['availability_id'];
+        }
         this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
         this.saveProfileData.employee_id = this.profile.employeeId;
         this.saveProfileData.department = this.profile.department;
-        this.saveProfileData.city_id = this.profile.city;
+        if (this.profile.city != 0) {
+          this.saveProfileData.city_id = this.profile.city
+        } else {
+          delete this.saveProfileData['city_id'];
+        }
         this.saveProfileData.country_id = this.profile.country;
         this.saveProfileData.profile_text = this.profile.profileText;
         this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
