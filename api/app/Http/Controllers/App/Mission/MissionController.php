@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\App\Mission;
 
 use Illuminate\Http\Request;
@@ -15,7 +16,6 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -85,24 +85,25 @@ class MissionController extends Controller
     private $userRepository;
 
     /**
-     *@var App\Repositories\State\StateRepository $stateRepository
+     *@var App\Repositories\State\StateRepository
      */
     private $stateRepository;
 
     /**
-     * Create a new Mission controller instance
+     * Create a new Mission controller instance.
      *
-     * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param Illuminate\Helpers\ResponseHelper $responseHelper
-     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param Illuminate\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\Helpers $helpers
+     * @param App\Repositories\Mission\MissionRepository           $missionRepository
+     * @param Illuminate\Helpers\ResponseHelper                    $responseHelper
+     * @param Illuminate\Http\UserFilterRepository                 $userFilterRepository
+     * @param Illuminate\Helpers\LanguageHelper                    $languageHelper
+     * @param App\Helpers\Helpers                                  $helpers
      * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
-     * @param App\Repositories\Skill\SkillRepository $skillRepository
-     * @param App\Repositories\Country\CountryRepository $countryRepository
-     * @param App\Repositories\City\CityRepository $cityRepository
-     * @param App\Repositories\User\UserRepository $userRepository
-     * @param App\Repositories\State\StateRepository $stateRepository
+     * @param App\Repositories\Skill\SkillRepository               $skillRepository
+     * @param App\Repositories\Country\CountryRepository           $countryRepository
+     * @param App\Repositories\City\CityRepository                 $cityRepository
+     * @param App\Repositories\User\UserRepository                 $userRepository
+     * @param App\Repositories\State\StateRepository               $stateRepository
+     *
      * @return void
      */
     public function __construct(
@@ -132,9 +133,10 @@ class MissionController extends Controller
     }
 
     /**
-     * Get missions listing
+     * Get missions listing.
      *
      * @param Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function getMissionList(Request $request): JsonResponse
@@ -150,7 +152,7 @@ class MissionController extends Controller
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
         if ($userFilters !== null) {
-            $userFilterData = $userFilters->toArray()["filters"];
+            $userFilterData = $userFilters->toArray()['filters'];
         }
 
         // Checking explore mission type is out of list or not
@@ -163,7 +165,7 @@ class MissionController extends Controller
             if (!in_array($exploreMissionType, $authorizedMissionTypes)
             ) {
                 $metaData['filters'] = $userFilterData;
-                $metaData['filters']["tags"] = $filterTagArray;
+                $metaData['filters']['tags'] = $filterTagArray;
                 $missionsTransformed = [];
                 $apiData = new \Illuminate\Pagination\LengthAwarePaginator(
                     $missionsTransformed,
@@ -193,7 +195,7 @@ class MissionController extends Controller
                 return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
             })->toArray();
 
-        $requestString = $request->except(['page','perPage']);
+        $requestString = $request->except(['page', 'perPage']);
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $missionsTransformed,
             $missionList->total(),
@@ -202,16 +204,17 @@ class MissionController extends Controller
             [
                 'path' => $request->url().'?'.http_build_query($requestString),
                 'query' => [
-                    'page' => $missionList->currentPage()
-                ]
+                    'page' => $missionList->currentPage(),
+                ],
             ]
         );
 
         $metaData['filters'] = $userFilterData;
-        $metaData['filters']["tags"] = $filterTagArray;
+        $metaData['filters']['tags'] = $filterTagArray;
         $apiData = $missionsPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
@@ -221,9 +224,10 @@ class MissionController extends Controller
     }
 
     /**
-     * Get explore mission data
+     * Get explore mission data.
      *
      * @param Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function exploreMission(Request $request): JsonResponse
@@ -250,7 +254,7 @@ class MissionController extends Controller
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
                     $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
-                    if ($arrayKey  !== '') {
+                    if ($arrayKey !== '') {
                         $returnData[config('constants.TOP_THEME')][$key]['title'] =
                         $value->missionTheme->translations[$arrayKey]['title'];
                         $returnData[config('constants.TOP_THEME')][$key]['id'] =
@@ -288,9 +292,9 @@ class MissionController extends Controller
         // Return data by top organisation
         if (!empty($topOrganisation->toArray())) {
             foreach ($topOrganisation as $key => $value) {
-                if ($value->organisation_name !== '') {
+                if ($value->organization->name !== '') {
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
-                    $value->organisation_name;
+                    $value->organization->name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
                     $value->organisation_id;
                 }
@@ -299,6 +303,7 @@ class MissionController extends Controller
         }
 
         $apiStatus = Response::HTTP_OK;
+
         return $this->responseHelper->success(
             $apiStatus,
             '',
@@ -307,9 +312,10 @@ class MissionController extends Controller
     }
 
     /**
-     * Get filter mission data
+     * Get filter mission data.
      *
      * @param Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function filters(Request $request): JsonResponse
@@ -385,7 +391,7 @@ class MissionController extends Controller
             foreach ($missionTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
                     $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
-                    if ($arrayKey  !== '') {
+                    if ($arrayKey !== '') {
                         $returnData[config('constants.THEME')][$key]['title'] =
                         $value->missionTheme->translations[$arrayKey]['title'];
                         $returnData[config('constants.THEME')][$key]['id'] =
@@ -404,7 +410,7 @@ class MissionController extends Controller
             foreach ($missionSkill as $key => $value) {
                 if ($value->skill) {
                     $arrayKey = array_search($languageCode, array_column($value->skill->translations, 'lang'));
-                    if ($arrayKey  !== '') {
+                    if ($arrayKey !== '') {
                         $returnData[config('constants.SKILL')][$key]['title'] =
                         $value->skill->translations[$arrayKey]['title'];
                         $returnData[config('constants.SKILL')][$key]['id'] =
@@ -422,9 +428,7 @@ class MissionController extends Controller
         if (!empty($missionState->toArray())) {
             $stateIdArray = [];
             foreach ($missionState as $key => $value) {
-
                 if (isset($value->city->state)) {
-
                     $translation = $value->city->state->languages->toArray();
                     $translationkey = '';
 
@@ -444,7 +448,7 @@ class MissionController extends Controller
                 if (isset($returnData[config('constants.STATE')])) {
                     $apiData[config('constants.STATE')] = isset($apiData[config('constants.STATE')]) ?
                     $apiData[config('constants.STATE')] : [];
-                    if(in_array($value->city->state_id, $stateIdArray)) {
+                    if (in_array($value->city->state_id, $stateIdArray)) {
                         $statekey = array_search($value->city->state_id, array_column($apiData[config('constants.STATE')], 'id'));
                         $apiData[config('constants.STATE')][$statekey]['mission_count'] =
                         $apiData[config('constants.STATE')][$statekey]['mission_count'] + $value->mission_count;
@@ -457,6 +461,7 @@ class MissionController extends Controller
         }
 
         $apiStatus = Response::HTTP_OK;
+
         return $this->responseHelper->success(
             $apiStatus,
             '',
@@ -465,9 +470,10 @@ class MissionController extends Controller
     }
 
     /**
-     * Add/remove mission to favourite
+     * Add/remove mission to favourite.
      *
      * @param Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function missionFavourite(Request $request): JsonResponse
@@ -476,7 +482,7 @@ class MissionController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "mission_id" => "numeric",
+                    'mission_id' => 'numeric',
                 ]
             );
 
@@ -503,7 +509,7 @@ class MissionController extends Controller
 
             // Make activity log
             $favouriteStatus = ($missionFavourite != null) ?
-            config('constants.activity_log_actions.ADD_TO_FAVOURITE'):
+            config('constants.activity_log_actions.ADD_TO_FAVOURITE') :
             config('constants.activity_log_actions.REMOVE_FROM_FAVOURITE');
 
             event(new UserActivityLogEvent(
@@ -516,6 +522,7 @@ class MissionController extends Controller
                 $request->auth->user_id,
                 $request->mission_id
             ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -526,11 +533,12 @@ class MissionController extends Controller
     }
 
     /**
-     * Get Mission Filter Tags
+     * Get Mission Filter Tags.
      *
      * @param Illuminate\Http\Request $request
-     * @param object $language
-     * @param App\Models\UserFilter $userFilters
+     * @param object                  $language
+     * @param App\Models\UserFilter   $userFilters
+     *
      * @return Array
      */
     public function missionFiltersTag(Request $request, object $language, UserFilter $userFilters): array
@@ -540,51 +548,51 @@ class MissionController extends Controller
 
         // Get data of user's filter
         $filterTagArray = [];
-        $filterData= $userFilters->toArray();
+        $filterData = $userFilters->toArray();
 
-        if (!empty($filterData["filters"])) {
-            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
+        if (!empty($filterData['filters'])) {
+            if ($filterData['filters']['country_id'] && $filterData['filters']['country_id'] !== '') {
                 $countryTag = $this->countryRepository->getCountry(
-                    $filterData["filters"]["country_id"],
+                    $filterData['filters']['country_id'],
                     $languageId
                 );
-                if ($countryTag["name"]) {
-                    $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
+                if ($countryTag['name']) {
+                    $filterTagArray['country'][$countryTag['country_id']] = $countryTag['name'];
                 }
             }
 
-            if ($filterData["filters"]["state_id"] && $filterData["filters"]["state_id"] !== "") {
+            if ($filterData['filters']['state_id'] && $filterData['filters']['state_id'] !== '') {
                 $stateTag = $this->stateRepository->getState(
-                    $filterData["filters"]["state_id"],
+                    $filterData['filters']['state_id'],
                     $languageId
                 );
                 if ($stateTag) {
                     foreach ($stateTag as $key => $value) {
-                        $filterTagArray["state"][$key] = $value;
+                        $filterTagArray['state'][$key] = $value;
                     }
                 }
             }
 
-            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
+            if ($filterData['filters']['city_id'] && $filterData['filters']['city_id'] !== '') {
                 $cityTag = $this->cityRepository->getCity(
-                    $filterData["filters"]["city_id"],
+                    $filterData['filters']['city_id'],
                     $languageId
                 );
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
-                        $filterTagArray["city"][$key] = $value;
+                        $filterTagArray['city'][$key] = $value;
                     }
                 }
             }
 
-            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
-                $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
+            if ($filterData['filters']['theme_id'] && $filterData['filters']['theme_id'] !== '') {
+                $themeTag = $this->themeRepository->missionThemeList($request, $filterData['filters']['theme_id']);
                 if ($themeTag) {
                     foreach ($themeTag as $value) {
                         if ($value->translations) {
                             $arrayKey = array_search($language->code, array_column($value->translations, 'lang'));
-                            if ($arrayKey  !== '') {
-                                $filterTagArray["theme"][$value->mission_theme_id] =
+                            if ($arrayKey !== '') {
+                                $filterTagArray['theme'][$value->mission_theme_id] =
                                 $value->translations[$arrayKey]['title'];
                             }
                         }
@@ -592,14 +600,14 @@ class MissionController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] !== "") {
-                $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
+            if ($filterData['filters']['skill_id'] && $filterData['filters']['skill_id'] !== '') {
+                $skillTag = $this->skillRepository->skillList($request, $filterData['filters']['skill_id']);
                 if ($skillTag) {
                     foreach ($skillTag as $value) {
                         if ($value->translations) {
                             $arrayKey = array_search($language->code, array_column($value->translations, 'lang'));
-                            if ($arrayKey  !== '') {
-                                $filterTagArray["skill"][$value->skill_id] =
+                            if ($arrayKey !== '') {
+                                $filterTagArray['skill'][$value->skill_id] =
                                 $value->translations[$arrayKey]['title'];
                             }
                         }
@@ -612,10 +620,11 @@ class MissionController extends Controller
     }
 
     /**
-     * Get related missions listing
+     * Get related missions listing.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $missionId
+     * @param int                     $missionId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function getRelatedMissions(Request $request, int $missionId): JsonResponse
@@ -641,6 +650,7 @@ class MissionController extends Controller
             $apiMessage = (!empty($mission)) ?
             trans('messages.success.MESSAGE_MISSION_LISTING') :
             trans('messages.success.MESSAGE_NO_RELATED_MISSION_FOUND');
+
             return $this->responseHelper->success(
                 $apiStatus,
                 $apiMessage,
@@ -655,10 +665,11 @@ class MissionController extends Controller
     }
 
     /**
-     * Get missions detail
+     * Get missions detail.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $missionId
+     * @param int                     $missionId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function getMissionDetail(Request $request, int $missionId): JsonResponse
@@ -691,6 +702,7 @@ class MissionController extends Controller
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;
             $apiMessage = (empty($mission)) ? trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND') :
              trans('messages.success.MESSAGE_MISSION_FOUND');
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -701,9 +713,10 @@ class MissionController extends Controller
     }
 
     /**
-     * Get user mission lists
+     * Get user mission lists.
      *
      * @param Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function getUserMissions(Request $request): JsonResponse

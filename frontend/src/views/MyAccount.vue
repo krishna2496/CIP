@@ -342,7 +342,8 @@
     loadLocaleMessages,
     country,
     skill,
-    timezone
+    timezone,
+    policy
   } from "../services/service";
   import {
     required,
@@ -854,6 +855,7 @@
             store.commit('changeProfileSetFlag',response.data.is_profile_complete);
             store.commit('setDefaultLanguageCode', this.languageCode)
             this.showPage = false;
+            this.setPolicyPage();
             this.getUserProfileDetail().then(() => {
               this.showPage = true;
               loadLocaleMessages(this.profile.languageCode).then(() => {
@@ -866,6 +868,17 @@
 
             });
           }
+        });
+      },
+      setPolicyPage() {
+        policy().then(response => {
+          if (response.error == false) {
+            if(response.data.length > 0) {
+              store.commit('policyPage', response.data);
+              return;
+            }
+          }
+          store.commit('policyPage', null);
         });
       },
       // changePassword
