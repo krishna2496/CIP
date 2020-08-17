@@ -258,7 +258,62 @@ class MissionControllerTest extends TestCase
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
 
+    /**
+    * @testdox Test remove mission tab by mission_id error for non numeric mission id does not found
+    *
+    * @return void
+    */
+    public function testRemoveMissionTabByNonNumericMissionIdError()
+    {
+        $missionId = rand(50000, 70000).str_random(5);
+        $methodResponse = [
+            "errors"=> [
+                [
+                    "status"=> Response::HTTP_NOT_FOUND,
+                    "type"=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                    "code"=> config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                    "message"=> trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+                ]
+            ]
+        ];
 
+        $JsonResponse = new JsonResponse(
+            $methodResponse
+        );
+
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = new Request();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+
+        $responseHelper->shouldReceive('error')
+        ->once()
+        ->with(
+            Response::HTTP_NOT_FOUND,
+            Response::$statusTexts[Response::HTTP_NOT_FOUND],
+            config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+            trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+        )
+       ->andReturn($JsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository
+        );
+
+        $response = $callController->removeMissionTab($missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
 
     /**
      * Create a new service instance.

@@ -595,9 +595,16 @@ class MissionController extends Controller
                 $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
             } else {
                 $missionId = $missionTabId;
-                $deleteByMissionId = true;
-                $this->missionRepository->find($missionId);
-                $this->missionRepository->deleteMissionTabByMissionId($missionId);
+                if(preg_match('/^(0|[1-9][0-9]*)$/', $missionId)){
+                    $deleteByMissionId = true;
+                    $this->missionRepository->find($missionId);
+                    $this->missionRepository->deleteMissionTabByMissionId($missionId);
+                } else {
+                    return $this->modelNotFound(
+                        config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                        trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+                    );
+                }
             }
 
             $apiStatus = Response::HTTP_NO_CONTENT;
