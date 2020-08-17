@@ -182,12 +182,10 @@
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group>
-                                        <label>{{languageData.label.city}}*</label>
+                                        <label>{{languageData.label.city}}</label>
                                         <CustomFieldDropdown v-model="profile.city"
-                                                             :errorClass="submitted && $v.profile.city.$error" :defaultText="cityDefault"
+                                                             :defaultText="cityDefault"
                                                              :optionList="cityList" @updateCall="updateCity" translationEnable="false" />
-                                        <div v-if="submitted && !$v.profile.city.required" class="invalid-feedback">
-                                            {{ languageData.errors.city_required }}</div>
                                     </b-form-group>
 
                                 </b-col>
@@ -484,9 +482,6 @@
         country: {
           required
         },
-        city: {
-          required
-        },
         language: {
           required
         },
@@ -616,7 +611,7 @@
             if(this.userData.country_id != 0) {
               this.profile.country = this.userData.country_id
             }
-            if(this.userData.city_id != 0) {
+            if(this.userData.city_id != 0 && this.userData.city_id != null) {
               this.profile.city = this.userData.city_id
             }
             if(this.userData.availability_id != 0 && this.userData.availability_id != null) {
