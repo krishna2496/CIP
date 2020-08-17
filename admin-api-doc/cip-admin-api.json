@@ -707,7 +707,7 @@
                 }
             }
         },
-        "/tenants/tenant-currency/{TenantId}": {
+        "/tenants/tenant-currency/{TenantId}/": {
             "post": {
                 "operationId": "POST_team4-cip-admin-api-add-currency",
                 "summary": "Add currency for a tenant",
@@ -726,6 +726,14 @@
                         "schema": {
                         "$ref":"#/definitions/Currency"
                         }
+                    },
+                    {  
+                        "name":"TenantId",
+                        "in":"path",
+                        "description":"Tenant id to update",
+                        "required":true,
+                        "type":"integer",
+                        "format":"int64"
                     }
                 ],
                 "responses": {
@@ -752,7 +760,7 @@
                 ],
                 "parameters": [
                     {  
-                        "name":"tenantId",
+                        "name":"TenantId",
                         "in":"path",
                         "description":"Tenant Id",
                         "required":true,
@@ -787,6 +795,14 @@
                         "schema": {
                         "$ref":"#/definitions/Currency"
                         }
+                    },
+                    {  
+                        "name":"TenantId",
+                        "in":"path",
+                        "description":"Tenant id to update",
+                        "required":true,
+                        "type":"integer",
+                        "format":"int64"
                     }
                 ],
                 "responses": {
