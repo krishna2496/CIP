@@ -248,7 +248,7 @@ class UserController extends Controller
             "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
             "language_id" => "sometimes|required|int",
-            "city_id" => "|sometimes|integer|exists:city,city_id,deleted_at,NULL",
+            "city_id" => "sometimes|integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
             "profile_text" => "sometimes|required",
             "employee_id" => "max:16|
