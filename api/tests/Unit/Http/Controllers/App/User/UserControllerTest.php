@@ -66,7 +66,8 @@ class UserControllerTest extends TestCase
 
         $tenantOptionRepository = $this->mock(TenantOptionRepository::class);
         $tenantOptionRepository->shouldReceive('getOptionValueFromOptionName')
-            ->andReturn($tenantOption);
+            ->andReturn($tenantOption)
+            ->shouldReceive('getOptionValue');
 
         $authController = new UserController(
             $userRepository,
