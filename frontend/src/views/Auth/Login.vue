@@ -110,12 +110,12 @@ export default {
                 //Get langauage list from Local Storage
                 this.langList = JSON.parse(store.state.listOfLanguage)
                 this.defautLang = store.state.defaultLanguage
-                this.setSiteTitle();
                 this.hasSSO = Boolean(store.state.samlSettings);
                 // Get tenant setting
                 tenantSetting();
                 loadLocaleMessages(store.state.defaultLanguage).then(() => {
                     this.languageData = JSON.parse(store.state.languageLabel);
+                    this.setSiteTitle();
                     this.isPageShown = true
                     setTimeout(() => {
                         if (store.state.samlSettings &&
@@ -126,6 +126,7 @@ export default {
                         this.$refs.email.focus();
                     }, 500)
                 });
+                
             })
         },
 
@@ -185,25 +186,39 @@ export default {
         },
 
         setSiteTitle() {
-          //Set site title
-                let defaultLang = store.state.defaultLanguage.toLowerCase();
-                let siteTitle = '';
-                if (store.state.siteTitle && store.state.siteTitle.translations != "") {
-                    let siteTranslationArray = store.state.siteTitle.translations;
+            //Set site title
+            let defaultLang = store.state.defaultLanguage.toLowerCase();
+            let siteTitle = '';
+            if (store.state.siteTitle && store.state.siteTitle.translations != "") {
+                let siteTranslationArray = store.state.siteTitle.translations;
+                let data = siteTranslationArray.filter((item) => {
+                    if (item.lang == defaultLang) {
+                        return item;
+                    }
+                });
+                if (data[0] && data[0].title) {
+                    siteTitle = data[0].title;
+                } else {
                     let data = siteTranslationArray.filter((item) => {
-                        if (item.lang == defaultLang) {
+                        if (item.lang == store.state.defaultTenantLanguage.toLowerCase()) {
                             return item;
                         }
                     });
+
                     if (data[0] && data[0].title) {
                         siteTitle = data[0].title;
                     } else {
-                        siteTitle = 'Optimy'
+                        if (typeof(this.languageData.label.site_title) != "undefined") {
+                            siteTitle = this.languageData.label.site_title;
+                        }
                     }
-                } else {
-                    siteTitle = 'Optimy'
                 }
-                document.title = siteTitle;
+            } else {
+                if (typeof(this.languageData.label.site_title) != "undefined") {
+                    siteTitle = this.languageData.label.site_title;
+                }
+            }
+            document.title = siteTitle;
         }
 
     },

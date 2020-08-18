@@ -803,6 +803,7 @@ export default {
                             let defaultLang = store.state.defaultLanguage.toLowerCase();
                             this.languageData = JSON.parse(store.state.languageLabel);
                             this.makeToast("success", response.message);
+                            let siteTitle = '';
                             if (store.state.siteTitle && store.state.siteTitle.translations != "") {
                                 let siteTranslationArray = store.state.siteTitle.translations;
                                 let data = siteTranslationArray.filter((item) => {
@@ -811,11 +812,28 @@ export default {
                                     }
                                 });
                                 if (data[0] && data[0].title) {
-                                    document.title = data[0].title;
+                                    siteTitle = data[0].title;
                                 } else {
-                                    document.title = 'Optimy'
+                                    let data = siteTranslationArray.filter((item) => {
+                                        if (item.lang == store.state.defaultTenantLanguage.toLowerCase()) {
+                                            return item;
+                                        }
+                                    });
+
+                                    if (data[0] && data[0].title) {
+                                        siteTitle = data[0].title;
+                                    } else {
+                                        if (typeof(this.languageData.label.site_title) != "undefined") {
+                                            siteTitle = this.languageData.label.site_title;
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (typeof(this.languageData.label.site_title) != "undefined") {
+                                    siteTitle = this.languageData.label.site_title;
                                 }
                             }
+                            document.title = siteTitle; 
                             this.isShownComponent = true;
                         });
 

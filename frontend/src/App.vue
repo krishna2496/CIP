@@ -13,7 +13,8 @@ import store from './store';
 export default {
     data() {
         return {
-            stylesLoaded: false
+            stylesLoaded: false,
+            languageData : []
         };
     },
     mounted() {
@@ -78,7 +79,8 @@ export default {
     },
     created() {
         document.body.classList.add("loader-enable");
-        if (store.state.defaultLanguage) {
+        this.languageData = JSON.parse(store.state.languageLabel);
+        if (store.state.defaultLanguage && this.languageData) {
             let defaultLang = store.state.defaultLanguage.toLowerCase();
             let siteTitle = '';
             if (store.state.siteTitle && store.state.siteTitle.translations != "") {
@@ -91,10 +93,24 @@ export default {
                 if (data[0] && data[0].title) {
                     siteTitle = data[0].title;
                 } else {
-                    siteTitle = 'Optimy'
+                    let data = siteTranslationArray.filter((item) => {
+                        if (item.lang == store.state.defaultTenantLanguage.toLowerCase()) {
+                            return item;
+                        }
+                    });
+
+                    if (data[0] && data[0].title) {
+                        siteTitle = data[0].title;
+                    } else {
+                        if (typeof(this.languageData.label.site_title) != "undefined") {
+                            siteTitle = this.languageData.label.site_title;
+                        }
+                    }
                 }
             } else {
-                siteTitle = 'Optimy'
+                if (typeof(this.languageData.label.site_title) != "undefined") {
+                    siteTitle = this.languageData.label.site_title;
+                }
             }
             document.title = siteTitle;
         }
