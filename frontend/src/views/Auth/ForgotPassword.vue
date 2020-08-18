@@ -107,7 +107,7 @@
           this.isShowComponent = true;
           //Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage);
-          this.defautLang = store.state.defaultLanguage;
+          this.defautLang = store.state.defaultLanguage.toUpperCase();
 
           // Get tenant setting
           tenantSetting();
