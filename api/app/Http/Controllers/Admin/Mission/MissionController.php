@@ -20,6 +20,7 @@ use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\Notification\NotificationRepository;
+use App\Services\Mission\ModelsService;
 
 //!  Mission controller
 /*!
@@ -64,6 +65,11 @@ class MissionController extends Controller
     private $notificationRepository;
 
     /**
+     * @var App\Services\Mission\ModelsService
+     */
+    private $modelsService;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -73,6 +79,7 @@ class MissionController extends Controller
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param  App\Services\Mission\ModelsService $modelsService
      * @return void
      */
     public function __construct(
@@ -82,7 +89,8 @@ class MissionController extends Controller
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        ModelsService $modelsService
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -91,6 +99,7 @@ class MissionController extends Controller
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->modelsService = $modelsService;
     }
 
     /**
@@ -597,7 +606,7 @@ class MissionController extends Controller
                 $missionId = $missionTabId;
                 if(preg_match('/^(0|[1-9][0-9]*)$/', $missionId)){
                     $deleteByMissionId = true;
-                    $this->missionRepository->find($missionId);
+                    $mission = $this->modelsService->mission->findOrFail($missionId);
                     $this->missionRepository->deleteMissionTabByMissionId($missionId);
                 } else {
                     return $this->modelNotFound(

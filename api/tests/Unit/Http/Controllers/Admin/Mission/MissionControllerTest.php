@@ -16,6 +16,18 @@ use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use TestCase;
 use Mockery;
+use App\Services\Mission\ModelsService;
+use App\Models\Mission;
+use App\Models\TimeMission;
+use App\Models\MissionLanguage;
+use App\Models\MissionDocument;
+use App\Models\FavouriteMission;
+use App\Models\MissionSkill;
+use App\Models\MissionRating;
+use App\Models\MissionApplication;
+use App\Models\City;
+use App\Models\MissionTab;
+use App\Models\MissionTabLanguage;
 
 class MissionControllerTest extends TestCase
 {
@@ -44,6 +56,7 @@ class MissionControllerTest extends TestCase
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
 
         $this->expectsEvents(UserActivityLogEvent::class);
 
@@ -66,7 +79,8 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $modelService
         );
 
         $response = $callController->removeMissionTab($missionTabId);
@@ -106,6 +120,7 @@ class MissionControllerTest extends TestCase
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $notificationRepository = $this->mock(NotificationRepository::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
 
         $missionRepository->shouldReceive('deleteMissionTabByMissionTabId')
         ->once()
@@ -129,7 +144,8 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $modelService
         );
 
         $response = $callController->removeMissionTab($missionTabId);
@@ -161,10 +177,37 @@ class MissionControllerTest extends TestCase
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        
+        $mission = $this->mock(Mission::class);
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
 
         $this->expectsEvents(UserActivityLogEvent::class);
 
-        $missionRepository->shouldReceive('find')
+        $modelService = $this->getServices(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionTab,
+            $missionTabLanguage
+        );
+
+        $modelService->mission->shouldReceive('findOrFail')
         ->once()
         ->with($missionId)
         ->andReturn();
@@ -188,7 +231,8 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $modelService
         );
 
         $response = $callController->removeMissionTab($missionId);
@@ -227,8 +271,35 @@ class MissionControllerTest extends TestCase
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $notificationRepository = $this->mock(NotificationRepository::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
 
-        $missionRepository->shouldReceive('find')
+        $mission = $this->mock(Mission::class);
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+
+        $modelService = $this->getServices(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionTab,
+            $missionTabLanguage
+        );
+
+        $modelService->mission->shouldReceive('findOrFail')
         ->once()
         ->with($missionId)
         ->andThrow($modelNotFoundException);
@@ -250,7 +321,8 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $modelService
         );
 
         $response = $callController->removeMissionTab($missionId);
@@ -289,6 +361,7 @@ class MissionControllerTest extends TestCase
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $notificationRepository = $this->mock(NotificationRepository::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
 
         $responseHelper->shouldReceive('error')
         ->once()
@@ -307,7 +380,8 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $modelService
         );
 
         $response = $callController->removeMissionTab($missionId);
@@ -325,6 +399,7 @@ class MissionControllerTest extends TestCase
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param  App\Services\Mission\ModelsService $modelService
      * @return void
      */
     private function getController(
@@ -334,7 +409,8 @@ class MissionControllerTest extends TestCase
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        ModelsService $modelService
     ) {
         return new MissionController(
             $missionRepository,
@@ -343,7 +419,8 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $modelService
         );
     }
 
@@ -358,4 +435,49 @@ class MissionControllerTest extends TestCase
     {
         return Mockery::mock($class);
     }
+
+    /**
+     * Create a new service instance.
+     *
+     * @param  App\Models\Mission $mission
+     * @param  App\Models\TimeMission $timeMission
+     * @param  App\Models\MissionLanguage $missionLanguage
+     * @param  App\Models\MissionDocument $missionDocument
+     * @param  App\Models\FavouriteMission $favouriteMission
+     * @param  App\Models\MissionSkill $missionSkill
+     * @param  App\Models\MissionRating $missionRating
+     * @param  App\Models\MissionApplication $missionApplication
+     * @param  App\Models\City $city
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
+     * @return void
+     */
+    private function getServices(
+        Mission $mission,
+        TimeMission $timeMission,
+        MissionLanguage $missionLanguage,
+        MissionDocument $missionDocument,
+        FavouriteMission $favouriteMission,
+        MissionSkill $missionSkill,
+        MissionRating $missionRating,
+        MissionApplication $missionApplication,
+        City $city,
+        MissionTab $missionTab,
+        MissionTabLanguage $missionTabLanguage
+    ) {
+        return new ModelsService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionTab,
+            $missionTabLanguage
+        );
+    }
+
 }
