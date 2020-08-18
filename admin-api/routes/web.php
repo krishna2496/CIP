@@ -24,15 +24,15 @@ $router->group(
         $router->get('/', ['as' => 'tenants', 'middleware' => 'PaginationMiddleware',
         'uses'=>'TenantController@index']);
         // Get tenant details from id
-        $router->get('/{tenant_id:[0-9]+}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
+        $router->get('/{tenantId:[0-9]+}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
         // Create new tenant
         $router->post('/', ['as' => 'tenants.store', 'middleware' => 'JsonApiMiddleware',
         'uses'=>'TenantController@store']);
         // Update tenant details
-        $router->patch('/{tenant_id}', ['as' => 'tenants.update',
+        $router->patch('/{id}', ['as' => 'tenants.update',
         'middleware' => 'JsonApiMiddleware', 'uses'=>'TenantController@update']);
         // Delete tenant
-        $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
+        $router->delete('/{id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
         // Get tenant has setting detail
         $router->get('/{tenantId}/settings', ['as' => 'tenants.settings',
         'uses'=>'TenantHasSettingController@show']);
@@ -45,31 +45,31 @@ $router->group(
 
         // Get api user list
         $router->get(
-            '/{tenant_id}/api_users',
+            '/{tenantId}/api_users',
             ['as' => 'tenants.api-users',
             'uses' => 'ApiUserController@getAllApiUser']
         );
         // Get api user detail from id
         $router->get(
-            '/{tenant_id}/api_users/{api_user_id}',
+            '/{tenantId}/api_users/{apiUserId}',
             ['as' => 'tenants.get-api-user',
             'uses' => 'ApiUserController@getApiUserDetail']
         );
         // create api user
         $router->post(
-            '/{tenant_id}/api_users',
+            '/{tenantId}/api_users',
             ['as' => 'tenants.create-api-user',
             'uses' => 'ApiUserController@createApiUser']
         );
         // Regenarate api keys
         $router->patch(
-            '/{tenant_id}/api_users/{api_user_id}',
+            '/{tenantId}/api_users/{apiUserId}',
             ['as' => 'tenants.renew-api-user',
             'uses' => 'ApiUserController@renewApiUser']
         );
         // Delete api user
         $router->delete(
-            '/{tenant_id}/api_users/{api_user_id}',
+            '/{tenantId}/api_users/{apiUserId}',
             ['as' => 'tenants.delete-api-user',
             'uses' => 'ApiUserController@deleteApiUser']
         );

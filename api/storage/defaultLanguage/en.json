@@ -377,8 +377,7 @@
         "max_image_upload": "Maximum 20 images can be added",
         "max_video_upload": "Maximum 20 videos can be added",
         "duplicate_video_url": "Duplicate video url are not allowed",
-        "invalid_saml_setting": "The following mapping(s) are required:",
-        "login_with_sso": "Login with SSO",
+        "invalid_saml_setting": "The following mapping(s) are required:"
     },
 
     "export_timesheet_file_names": {

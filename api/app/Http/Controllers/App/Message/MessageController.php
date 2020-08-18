@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Transformations\MessageTransformable;
 use App\Repositories\User\UserRepository;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\Notification\NotificationRepository;
 
 //!  Message controller
 /*!
@@ -38,21 +39,29 @@ class MessageController extends Controller
     private $userRepository;
 
     /**
+     * @var App\Repositories\Notification\NotificationRepository
+     */
+    private $notificationRepository;
+
+    /**
      * Create a new message controller instance
      *
      * @param App\Repositories\Message\MessageRepository;
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param  App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
     public function __construct(
         MessageRepository $messageRepository,
         ResponseHelper $responseHelper,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        NotificationRepository $notificationRepository
     ) {
         $this->messageRepository = $messageRepository;
         $this->responseHelper = $responseHelper;
         $this->userRepository = $userRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -166,7 +175,7 @@ class MessageController extends Controller
                 config('constants.message.send_message_from.admin'),
                 $request->auth->user_id
             );
-           
+            $this->notificationRepository->deleteMessageNotifications($messageId);
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');

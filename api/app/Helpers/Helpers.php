@@ -10,6 +10,7 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
+use Bschmitt\Amqp\Amqp;
 
 class Helpers
 {
@@ -21,13 +22,21 @@ class Helpers
     private $db;
 
     /**
+     * Amqp
+     *
+     * @var Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new helper instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Amqp $amqp)
     {
         $this->db = app()->make('db');
+        $this->amqp = $amqp;
     }
 
     /**
@@ -39,9 +48,9 @@ class Helpers
     {
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
             return $this->getDomainFromUserAPIKeys($request);
-        } else if (!empty($request->query('tenant'))) {
+        } elseif (!empty($request->query('tenant'))) {
             return $this->getTenantDomainByTenantId($request->query('tenant'));
-        } else if (in_array(env('APP_ENV'), ['local', 'testing'])) {
+        } elseif (in_array(env('APP_ENV'), ['local', 'testing'])) {
             return env('DEFAULT_TENANT');
         } else {
             return parse_url($request->headers->all()['referer'][0])['host'];
@@ -398,7 +407,7 @@ class Helpers
         return $language;
     }
 
-	/**
+    /**
      * Remove unwanted characters from json
      * @param string $filePath
      * @return string
@@ -407,20 +416,56 @@ class Helpers
     {
         $jsonFileContent = file_get_contents($filePath);
 
-		// This will remove unwanted characters.
-		for ($i = 0; $i <= 31; ++$i) {
-			$jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
-		}
-		$jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
+        // This will remove unwanted characters.
+        for ($i = 0; $i <= 31; ++$i) {
+            $jsonFileContent = str_replace(chr($i), "", $jsonFileContent);
+        }
+        $jsonFileContent = str_replace(chr(127), "", $jsonFileContent);
 
-		// This is the most common part
-		// Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
-		// here we detect it and we remove it, basically it's the first 3 characters
-		if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
-		   $jsonFileContent = substr($jsonFileContent, 3);
-		}
+        // This is the most common part
+        // Some file begins with 'efbbbf' to mark the beginning of the file. (binary level)
+        // here we detect it and we remove it, basically it's the first 3 characters
+        if (0 === strpos(bin2hex($jsonFileContent), 'efbbbf')) {
+            $jsonFileContent = substr($jsonFileContent, 3);
+        }
 
-		return $jsonFileContent;
+        return $jsonFileContent;
+    }
+
+    /**
+     * Sync volunteer to Optimyapp
+     *
+     * @param Request $request
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function syncUserData($request, $user)
+    {
+        if ($user->pseudonymize_at  && $user->pseudonymize_at !== '0000-00-00 00:00:00') {
+            return false;
+        }
+
+        $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
+
+        $params = [
+            'activity_type' => 'user',
+            'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+            'ci_user_id' => $user->user_id,
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id
+        ];
+
+        $payload = json_encode($params);
+
+        $this->amqp->publish(
+            'ciSynchronizer',
+            $payload,
+            [
+                'queue' => 'ciSynchronizer'
+            ]
+        );
+
+        return true;
     }
 
     /**
@@ -446,7 +491,16 @@ class Helpers
     }
 
     /**
-     * Check if email address is an admin user.
+     * Retrieve tenant's basic auth
+     *
+     * @return String
+     */
+    public static function getBasicAuth()
+    {
+        return 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'));
+    }
+
+    /** Check if email address is an admin user.
      *
      * @param String
      * @return Boolean
@@ -466,5 +520,20 @@ class Helpers
         $this->switchDatabaseConnection($connection);
 
         return (bool)$adminUser;
+    }
+
+    public function getSupportedFieldsToPseudonymize()
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email',
+            'employee_id',
+            'linked_in_url',
+            'position',
+            'department',
+            'profile_text',
+            'why_i_volunteer'
+        ];
     }
 }
