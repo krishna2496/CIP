@@ -110,6 +110,7 @@ import constants from '../constant';
 import {
     setTimeout
 } from 'timers';
+import { set } from 'vue/types/umd';
 
 export default {
     components: {
@@ -175,7 +176,8 @@ export default {
             totalPages: 0,
             defaultCountry: 0,
             isAjaxCall: true,
-            hideEllipsis: true
+            hideEllipsis: true,
+            isExploreMission : false
         };
     },
     methods: {
@@ -200,7 +202,7 @@ export default {
         },
         //Mission listing
         async getMissions(parmas = "") {
-            if (store.state.clearFilterSet == "") {
+            if (store.state.clearFilterSet == "" && !this.isAjaxCall) {
                 this.isAjaxCall = true
             }
             let filter = {};
@@ -237,8 +239,9 @@ export default {
                 }
 
                 this.isShownComponent = true;
-
-                this.isAjaxCall = false
+                if(!this.isExploreMission) {
+                    this.isAjaxCall = false
+                }
                 if (store.state.search != null) {
                     this.search = store.state.search;
                 }
@@ -337,7 +340,8 @@ export default {
             if (filters.parmas) {
                 filteExplore.exploreMissionParams = filters.parmas;
             }
-
+            this.isExploreMission = true;
+            this.isAjaxCall = true;
             store.commit('userFilter', this.filterData)
             store.commit('exploreFilter', filteExplore);
             this.$refs.secondaryHeader.changeSearch();
@@ -358,6 +362,10 @@ export default {
             this.$refs.secondaryHeader.clearAllFilter();
             document.body.classList.remove("loader-enable");
             store.commit('clearFilterClick', '');
+        },
+        removeLoader() {
+            this.isAjaxCall = false;
+            this.isExploreMission = false
         }
     },
     created() {

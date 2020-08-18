@@ -425,6 +425,7 @@
                     this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
                     this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
                     this.$parent.searchMissions(this.search, this.selectedfilterParams);
+                    this.$parent.removeLoader();
                 }
             },
 
