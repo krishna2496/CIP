@@ -57,8 +57,8 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual', 'organisation_name'];
+    'publication_status', 'organization_id', 'mission_type',
+    'organisation_detail', 'availability_id', 'is_virtual'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -67,7 +67,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_detail', 'mission_type',
+    'publication_status', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
@@ -80,7 +80,7 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -397,6 +397,6 @@ class Mission extends Model
      */
     public function organization(): HasOne
     {
-        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
+        return $this->hasOne(Organization::class, 'organization_id', 'organization_id');
     }
 }

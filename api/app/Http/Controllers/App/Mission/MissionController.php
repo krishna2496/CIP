@@ -296,7 +296,7 @@ class MissionController extends Controller
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
                     $value->organization->name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
-                    $value->organisation_id;
+                    $value->organization->organization_id;
                 }
             }
             $apiData[config('constants.TOP_ORGANISATION')] = $returnData[config('constants.TOP_ORGANISATION')];
