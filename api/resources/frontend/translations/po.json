@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Wszelkie prawa zastrzeżone",
 		"add": "Dodaj",
 		"already_volunteered": "Już zgłoszony na ochotnika",
-		"on_going_opportunities": "Bieżące możliwości",
 		"view_detail": "Zobacz szczegóły",
 		"no_record_found": "Nie znaleziono żadnych danych",
 		"oldest": "Najstarszy",
@@ -288,7 +287,10 @@
 		"send_message": "Wyślij wiadomość",
 		"receive_email_notification": "Receber notificação por email",
 		"fill_up_mandatory_fields_to_access_platform": "Para concluir seu perfil, forneça as informações necessárias",
-		"state" : "Estado"
+		"state" : "Estado",
+		"ongoing" : "Ongoing",
+		"more" : "more",
+		"and" : "&"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",

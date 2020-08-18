@@ -54,7 +54,7 @@
                                     </b-card-text>
                                 </div>
                                 <div class="event-block has-progress">
-                                    <p class="event-name">{{ languageData.label.for }} <span>{{mission.organisation_name}}</span></p>
+                                    <p class="event-name">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
 
                                     <b-button class="like-btn">
                                         <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="Heart Icon" />

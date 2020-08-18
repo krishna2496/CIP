@@ -36,7 +36,6 @@
         "all_rights_reserved": "All rights reserved",
         "add": "Add",
         "already_volunteered": "Already volunteered",
-        "on_going_opportunities": "Ongoing opportunities",
         "view_detail": "View details",
         "no_record_found": "No records found",
         "oldest": "Oldest",
@@ -288,7 +287,10 @@
 		"send_message" : "Send message",
         "receive_email_notification":"Receive notification by email",
         "fill_up_mandatory_fields_to_access_platform" : "In order to complete your profile, please provide us with the required information",
-        "state" : "State"
+        "state" : "State",
+        "ongoing" : "Ongoing",
+        "more" : "more",
+        "and" : "&"
     },
 
     "placeholder": {

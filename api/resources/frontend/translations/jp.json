@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Tous droits réservés",
 		"add": "Ajouter",
 		"already_volunteered": "Demande déjà envoyée",
-		"on_going_opportunities": "Opportunités en cours",
 		"view_detail": "Afficher les détails",
 		"no_record_found": "Aucun document trouvé",
 		"oldest": "Le plus ancien",
@@ -288,7 +287,10 @@
 		"send_message": "Envoyer un message",
 		"receive_email_notification": "Nampa kabar kanthi email",
 		"fill_up_mandatory_fields_to_access_platform": "Kanggo ngrampungake profil sampeyan, bukakake informasi sing dibutuhake",
-		"state" : "Negara"
+		"state" : "Negara",
+		"ongoing" : "Ongoing",
+		"more" : "more",
+		"and" : "&"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",

@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Wszelkie prawa zastrzeżone",
 		"add": "Dodaj",
 		"already_volunteered": "Już zgłoszony na ochotnika",
-		"on_going_opportunities": "Bieżące możliwości",
 		"view_detail": "Zobacz szczegóły",
 		"no_record_found": "Nie znaleziono żadnych danych",
 		"oldest": "Najstarszy",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Usunięty użytkownikr",
 		"virtual_mission" : "Wirtualna",
 		"virtual_missions" : "Wirtualny wolontariat",
-		"home" : "Dom"
+		"home" : "Dom",
+		"ongoing" : "Ongoing",
+		"more" : "jeszcze",
+		"and" : "i"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",

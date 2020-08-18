@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Todos los derechos reservados",
 		"add": "Añadir",
 		"already_volunteered": "Ya prestó voluntariado",
-		"on_going_opportunities": "Oportunidades en curso",
 		"view_detail": "Ver detalles",
 		"no_record_found": "No se encontraron registros",
 		"oldest": "Más antiguo",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Usuario eliminado",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Voluntariado virtual",
-		"home" : "Hogar"
+		"home" : "Hogar",
+		"ongoing" : "En curso",
+		"more" : "mas",
+		"and" : "y"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",

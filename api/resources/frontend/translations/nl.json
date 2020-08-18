@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Alle rechten voorbehouden",
 		"add": "Toevoegen",
 		"already_volunteered": "Reeds gewerkt als vrijwilliger",
-		"on_going_opportunities": "Lopende opportuniteiten",
 		"view_detail": "Bekijk details",
 		"no_record_found": "Geen verslagen gevonden",
 		"oldest": "Oudste",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Verwijderde gebruike",
 		"virtual_mission" : "Virtueel",
 		"virtual_missions" : "Virtueel vrijwilligerswerk",
-		"home" : "Thuis"
+		"home" : "Thuis",
+		"ongoing" : "Lopend",
+		"more" : "meer",
+		"and" : "en"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",

@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Kaikki oikeudet pidätetään",
 		"add": "Lisää",
 		"already_volunteered": "Tarjouduttu jo vapaaehtoiseksi",
-		"on_going_opportunities": "Tämänhetkiset mahdollisuudet",
 		"view_detail": "Katso tiedot",
 		"no_record_found": "Tietoja ei löytynyt",
 		"oldest": "Vanhin",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Poistettu käyttäjä",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
-		"home" : "Koti"
+		"home" : "Koti",
+		"ongoing" : "Ongoing",
+		"more" : "muuta",
+		"and" : "ja"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",

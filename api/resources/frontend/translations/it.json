@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Tutti i diritti riservati",
 		"add": "Aggiungi",
 		"already_volunteered": "Ho già fatto volontariato",
-		"on_going_opportunities": "Opportunità",
 		"view_detail": "Maggiori informazioni",
 		"no_record_found": "Nessun risultato",
 		"oldest": "Le meno recenti",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Utente cancellato",
 		"virtual_mission" : "Virtuale",
 		"virtual_missions" : "Volontariato virtuale",
-		"home" : "Pulsante Home"
+		"home" : "Pulsante Home",
+		"ongoing" : "In corso",
+		"more" : "altri",
+		"and" : "e"
 	},
 	"placeholder": {
 		"email_address": "Inserisci un indirizzo di posta elettronica",

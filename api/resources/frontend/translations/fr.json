@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Tous droits réservés",
 		"add": "Ajouter",
 		"already_volunteered": "Demande déjà envoyée",
-		"on_going_opportunities": "Opportunités en cours",
 		"view_detail": "Afficher les détails",
 		"no_record_found": "Aucun document trouvé",
 		"oldest": "Le plus ancien",
@@ -295,7 +294,10 @@
 		"deleted_user" : "Utilisateur supprimé",
 		"virtual_mission" : "En ligne",
 		"virtual_missions" : "Mécénat en ligne",
-		"home" : "Bouton d'accueil"
+		"home" : "Bouton d'accueil",
+		"ongoing" : "En cours",
+		"more" : "de plus",
+		"and" : "et"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",
