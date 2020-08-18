@@ -295,7 +295,8 @@
 		"deleted_user" : "Удаленный пользователь",
 		"virtual_mission" : "виртуальный",
 		"virtual_missions" : "Виртуальное волонтерство",
-		"home" : "дом"
+		"home" : "дом",
+		"login_with_sso": "Войти с помощью SSO"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",

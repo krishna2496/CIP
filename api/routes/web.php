@@ -26,7 +26,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
-    
+
     /* Password reset routing */
     $router->post('/reset-password/{token}', ['as' => 'password.reset',
         'uses' => 'App\Auth\AuthController@reset_password']);
@@ -172,6 +172,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/user/missions', [
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@getUserMissions']);
+
+    /* Forgot password routing for API */
+    $router->post('/users/request-password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\Auth\AuthController@requestPasswordReset']);
+
+    $router->post('/users/invite', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@inviteUser']);
 });
 
 /* SAML */
@@ -846,5 +853,18 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 '/',
                 ['uses' => 'App\Timezone\TimezoneController@index']
             );
+        }
+    );
+
+    /* Organizations Management */
+    $router->group(
+        ['prefix' => 'organizations', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+             'uses' => 'Admin\Organization\OrganizationController@index']);
+            $router->get('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@show']);
+            $router->post('/', ['uses' => 'Admin\Organization\OrganizationController@store']);
+            $router->patch('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@update']);
+            $router->delete('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@destroy']);
         }
     );
