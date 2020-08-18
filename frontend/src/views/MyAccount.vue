@@ -352,6 +352,7 @@
     minLength
   } from 'vuelidate/lib/validators';
   import constants from '../constant';
+  import { setSiteTitle } from '../utils';
 
   export default {
     components: {
@@ -853,7 +854,8 @@
           } else {
             this.isUserProfileComplete = response.data.is_profile_complete;
             store.commit('changeProfileSetFlag',response.data.is_profile_complete);
-            store.commit('setDefaultLanguageCode', this.languageCode)
+            store.commit('setDefaultLanguageCode', this.languageCode);
+            setSiteTitle();
             this.showPage = false;
             this.setPolicyPage();
             this.getUserProfileDetail().then(() => {
@@ -863,9 +865,7 @@
                 this.makeToast("success", response.message);
                 this.isShownComponent = true;
               });
-
               store.commit("changeUserDetail", this.profile)
-
             });
           }
         });
