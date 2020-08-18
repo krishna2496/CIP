@@ -305,13 +305,6 @@ export default {
             this.invitedUserId = '';
             this.query = '';
             this.selected = '';
-            const cardList = document.querySelectorAll(".card-grid .card-inner .card");
-            cardList.forEach((card) => {
-                card.style.height = "";
-                setTimeout(() => {
-                    this.cardHeightAdj();
-                },100);
-            });
         },
         getAppliedStatus(missionDetail) {
             const currentDate = moment().format('YYYY-MM-DD');
@@ -536,9 +529,11 @@ export default {
                     });
 
                     cardBody.parentNode.addEventListener('mouseleave', function () {
-                        this.children[1].style.transform = 'translateY(0)';
-                        this.children[2].style.transform = 'translateY(0)';
-                        this.parentNode.classList.remove('active');
+                        if (!document.body.classList.contains("modal-open")) {
+                            this.children[1].style.transform = 'translateY(0)';
+                            this.children[2].style.transform = 'translateY(0)';
+                            this.parentNode.classList.remove('active');
+                        }
                     });
                 });
 

@@ -74,6 +74,7 @@
   transition: $transition;
   -o-transition: $transition;
   -ms-transition: $transition;
+  -moz-transition: $transition;
   -webkit-transition: $transition;
   transition: $transition;
 }
@@ -112,6 +113,12 @@
 
 @mixin xs-max {
   @media (max-width: 575px) {
+    @content;
+  }
+}
+
+@mixin xs-min {
+  @media (max-width: 576px) {
     @content;
   }
 }
