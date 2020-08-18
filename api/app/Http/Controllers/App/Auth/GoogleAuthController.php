@@ -41,6 +41,7 @@ class GoogleAuthController extends Controller
             $decodedToken = $this->helpers->decodeJwtToken($state);
             $frontendFqdn = $decodedToken->domain;
             $tenantId = $decodedToken->tenant;
+            $request->merge(['tenant' => $tenantId]);
         }
 
         $this->helpers->createConnection($tenantId);
