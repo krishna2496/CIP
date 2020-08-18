@@ -294,3 +294,11 @@ $factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $f
         'name' => $faker->name,
     ];
 });
+
+$factory->define(App\Models\DonationIpWhitelist::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->uuid, 
+        'pattern' => $faker->ipv4,
+        'description' => $faker->text(60)
+    ];
+});

@@ -2,6 +2,7 @@
 namespace App\Rules;
 
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\IPValidationHelper;
 use App\Models\Skill;
 
 class CustomValidationRules
@@ -93,6 +94,27 @@ class CustomValidationRules
                 return false;
             }
             return true;
+        });
+
+        Validator::extend('whitelist_pattern', function ($attribute, $value) {
+            $ipHelper = new IPValidationHelper();
+            // Check for valid range pattern
+            if ($ipHelper->validRangePattern($value)) {
+                return true;
+            }
+            // Check for valid wildcard pattern
+            if ($ipHelper->validWildcardPattern($value)) {
+                return true;
+            }
+            // Check for valid cidr pattern
+            if ($ipHelper->validCidrPattern($value)) {
+                return true;
+            }
+            // Check for valid valid ip
+            if ($ipHelper->validIp($value)) {
+                return true;
+            }
+            return false;
         });
     }
 }

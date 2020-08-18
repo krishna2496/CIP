@@ -75,6 +75,7 @@ return [
     'present'              => 'The :attribute field is required',
     'distinct'             => 'The :attribute field has a duplicate value.',
     'uuid'                 => 'Please use valid UUID string for :attribute',
+    'whitelist_pattern'    => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
 
     /*
     |--------------------------------------------------------------------------
