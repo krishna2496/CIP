@@ -176,7 +176,7 @@ export default {
             defaultCountry: 0,
             isAjaxCall: true,
             hideEllipsis: true,
-            isExploreMission : false
+            isExploreMission: false
         };
     },
     methods: {
@@ -238,7 +238,7 @@ export default {
                 }
 
                 this.isShownComponent = true;
-                if(!this.isExploreMission) {
+                if (!this.isExploreMission) {
                     this.isAjaxCall = false
                 }
                 if (store.state.search != null) {
@@ -261,7 +261,10 @@ export default {
                         bodyTag.classList.remove("has-favourite");
                     }
                 }, 200);
-
+                if (parmas) {
+                    this.isAjaxCall = false
+                    this.isExploreMission = false
+                }
             });
         },
 
@@ -288,7 +291,6 @@ export default {
             this.getMissions();
         },
         searchMissions(searchParams, filterParmas) {
-
             this.filterData.search = searchParams;
             // if (store.state.exploreMissionType == '') {
             this.filterData.countryId = filterParmas.countryId;
@@ -311,7 +313,11 @@ export default {
                 this.filterData.sortBy = store.state.sortBy;
             }
             store.commit('userFilter', this.filterData)
-            this.getMissions();
+            let isLoaderRemove = false;
+            if (filterParmas.isSkillSet) {
+                isLoaderRemove = true
+            }
+            this.getMissions(isLoaderRemove);
         },
 
         changeView(currentView) {
