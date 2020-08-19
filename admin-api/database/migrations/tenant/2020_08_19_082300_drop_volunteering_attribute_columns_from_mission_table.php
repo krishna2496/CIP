@@ -29,7 +29,7 @@ class DropVolunteeringAttributeColumnsFromMissionTable extends Migration
             $table->unsignedBigInteger('availability_id');
             $table->integer('total_seats')->nullable();
             $table->enum('is_virtual', ['0', '1'])->default('0');
-            $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
+            // $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 }
