@@ -223,7 +223,7 @@
                     </b-button>
                 </div>
             </b-modal>
-            <b-modal ref="editPaymentModal" :modal-class="'payment-modal md-popup'" centered hide-footer>
+            <b-modal ref="editPaymentModal" :modal-class="'payment-modal'" centered hide-footer>
                 <template slot="modal-header" slot-scope="{ close }">
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">
@@ -262,13 +262,13 @@
                         </b-col>
                     </b-row>
                     <b-row class="row-form">
-                        <b-col col="6">
+                        <b-col sm="6">
                             <b-form-group>
                                 <label>{{languageData.label.name}}*</label>
                                 <b-form-input type="text" :placeholder="languageData.placeholder.name"></b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col col="6">
+                        <b-col sm="6">
                             <b-form-group>
                                 <label>{{languageData.label.family_name}}*</label>
                                 <b-form-input type="text" :placeholder="languageData.placeholder.enter_your_family_name"></b-form-input>
@@ -284,19 +284,19 @@
                         </b-col>
                     </b-row>
                     <b-row class="row-form">
-                        <b-col col="4">
+                        <b-col cols="12" md="4" sm="6">
                             <b-form-group>
                                 <label>{{languageData.label.town}}*</label>
                                 <b-form-input type="text" :placeholder="languageData.placeholder.enter_your_town"></b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col col="4">
+                        <b-col cols="12" md="4" sm="6">
                             <b-form-group>
                                 <label>{{languageData.label.zip_postal_code}}*</label>
                                 <b-form-input type="text" :placeholder="languageData.placeholder.enter_your_zip_postal_code"></b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col col="4">
+                        <b-col cols="12" md="4" sm="6">
                             <b-form-group>
                                 <label>{{languageData.label.country}}*</label>
                                 <model-select class="search-dropdown" :options="timeList" v-model="selectTimeZone" :placeholder="'USA - US Dollars'" @input="updateTime">
@@ -305,8 +305,8 @@
                         </b-col>
                     </b-row>
                     <div class="btn-row">
-                        <b-button class="gray-btn" :title="languageData.label.cancel">{{languageData.label.cancel}}</b-button>
-                        <b-button class="btn-fillsecondary" :title="languageData.label.save">{{languageData.label.save}}</b-button>
+                        <b-button class="gray-btn cancel-btn" :title="languageData.label.cancel">{{languageData.label.cancel}}</b-button>
+                        <b-button class="btn-fillsecondary save-btn" :title="languageData.label.save">{{languageData.label.save}}</b-button>
                     </div>
                 </form>
             </b-modal>
