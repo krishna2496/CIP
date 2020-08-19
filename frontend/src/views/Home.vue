@@ -204,6 +204,7 @@ export default {
             if (store.state.clearFilterSet == "" && !this.isAjaxCall) {
                 this.isAjaxCall = true
             }
+            
             let filter = {};
             filter.page = this.currentPage
             filter.search = store.state.search
@@ -264,6 +265,15 @@ export default {
                 if (parmas) {
                     this.isAjaxCall = false
                     this.isExploreMission = false
+                }
+
+                const ua = window.navigator.userAgent;
+                const isIE = /MSIE|Trident/.test(ua);
+
+                if (isIE) {
+                    setTimeout(() => {
+                        this.isAjaxCall = false
+                    }, 10000);
                 }
             });
         },

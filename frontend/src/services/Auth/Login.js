@@ -1,5 +1,6 @@
 import store from '../../store'
 import axios from 'axios'
+import {policy} from '../../services/service';
 
 export default async(data) => {
   // login api call with params email address and password
@@ -21,7 +22,17 @@ export default async(data) => {
 
     //Store login data in local storage
     store.commit('loginUser', response.data.data)
-
+    policy().then(response => {
+      if (response.error == false) {
+        if(response.data.length > 0) {
+          store.commit('policyPage',response.data)
+        } else {
+          store.commit('policyPage',null)
+        }
+      } else {
+        store.commit('policyPage',null)
+      }
+    });
     setTimeout(() => {
       document.body.classList.remove("loader-enable");
     }, 700)
