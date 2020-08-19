@@ -610,6 +610,7 @@
                         this.selectedCity = []
                         this.selectedSkill = []
                         this.selectedTheme = []
+                        this.$parent.removeLoader();
                     }
                 });
             },
