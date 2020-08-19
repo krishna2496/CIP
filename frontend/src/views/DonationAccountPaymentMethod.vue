@@ -235,23 +235,26 @@
                 </h4>
                 <form action class="form-wrap">
                     <b-row class="row-form">
-                        <b-col col="6">
-                            <b-form-group>
+                        <b-col md="6">
+                            <b-form-group class="has-img">
                                 <label>{{languageData.label.card_details}}</label>
                                 <b-form-input type="text" :placeholder="languageData.placeholder.enter_card_details"></b-form-input>
+                                <i class="card-img">
+                                    <img :src="$store.state.imagePath+'/assets/images/visa.png'" alt="visa">
+                                </i>
                             </b-form-group>
                         </b-col>
-                        <b-col col="6">
+                        <b-col md="6">
                             <b-row>
-                                <b-col col="6">
+                                <b-col sm="6">
                                     <b-form-group>
                                         <label>{{languageData.label.expiration}}</label>
                                         <b-form-input type="text" placeholder="MM/YY"></b-form-input>
                                     </b-form-group>
                                 </b-col>
-                                <b-col col="6">
+                                <b-col sm="6">
                                     <b-form-group>
-                                        <label>{{languageData.label.cvv}}<span class="info-icon">(<span>?</span>)</span></label>
+                                        <label>{{languageData.label.cvv}}<span class="info-icon">(<b-button v-b-tooltip.hover title="CVV Details" class="cvv-tooltip">?</b-button>)</span></label>
                                         <b-form-input type="text" :placeholder="languageData.placeholder.enter_cvv"></b-form-input>
                                     </b-form-group>
                                 </b-col>

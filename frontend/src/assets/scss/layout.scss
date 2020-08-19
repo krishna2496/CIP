@@ -1565,6 +1565,9 @@ main {
   }
 
   .tab-content-wrap {
+    @include sm-max {
+      margin-bottom: 30px;
+    }
     .tab-title {
       display: none;
 
@@ -1580,6 +1583,9 @@ main {
           line-height: 26px;
           position: relative;
 
+          &:focus {
+            outline: none;
+          }
           &:after {
             position: absolute;
             content: "";
@@ -1610,6 +1616,90 @@ main {
       &:first-child {
         @include sm-max {
           border-top: 1px solid $primary-border-color;
+        }
+      }
+    }
+
+    .impact-listing {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .impact-item {
+        width: calc(50% - 15px);
+        max-width: calc(50% - 15px);
+        flex: 0 0 calc(50% - 15px);
+        display: flex;
+        @include border-radius(10px);
+        overflow: hidden;
+        border: 1px solid $primary-border-color;
+        margin-bottom: 30px;
+        @include lg-max {
+          width: calc(50% - 8px);
+          max-width: calc(50% - 8px);
+          flex: 0 0 calc(50% - 8px);
+          margin-bottom: 16px;
+        }
+        @include xs-max {
+          width: 100%;
+          max-width: 100%;
+          flex: 0 0 100%;
+        }
+        .img-wrap {
+          width: 110px;
+          flex: 0 0 110px;
+          max-width: 110px;
+          background: $light-gray;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          @include lg-max {
+            width: 80px;
+            max-width: 80px;
+            flex: 0 0 80px;
+          }
+          i {
+            width: 55px;
+            height: 50px;
+            line-height: 0;
+            display: flex;
+            align-items: center;
+            @include lg-max {
+              width: 50px;
+              height: 45px;
+            }
+            img {
+              width: 100%;
+              height: auto;
+            }
+          }
+        }
+        .text-wrap {
+          width: calc(100% - 110px);
+          max-width: calc(100% - 110px);
+          flex: 0 0 calc(100% - 110px);
+          min-height: 110px;
+          align-items: center;
+          display: flex;
+          padding: 10px 15px;
+          @include lg-max {
+            width: calc(100% - 80px);
+            max-width: calc(100% - 80px);
+            flex: 0 0 calc(100% - 80px);
+            min-height: 80px;
+          }
+          p {
+            font-size: 18px;
+            line-height: 22px;
+            font-family: $general-font;
+            font-weight: 400;
+            color: $black-primary;
+            @include lg-max {
+              font-size: 15px;
+            }
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
         }
       }
     }
@@ -3116,7 +3206,7 @@ main {
   }
   .payment-card {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     @include border-radius(3px);
     background: $white;
     box-shadow: 0 0 7.5px rgba($black, 0.08);
@@ -3137,7 +3227,6 @@ main {
       margin-right: 30px;
       max-width: 71px;
       flex: 0 0 71px;
-      margin-top: 13px;
       @include lg-max {
         margin-right: 20px;
       }
@@ -3191,7 +3280,7 @@ main {
           width: 140px;
         }
         li {
-          padding: 14px;
+          padding: 11px 14px;
           display: flex;
           align-items: center;
           border-bottom: 1px solid $control-border;
@@ -3214,31 +3303,19 @@ main {
           i {
             line-height: 0;
             margin-right: 15px;
-            flex: 0 0 23px;
-            max-width: 23px;
-            width: 23px;
-            @include lg-max {
-              flex: 0 0 20px;
-              max-width: 20px;
-              width: 20px;
-              margin-right: 10px;
-            }
+            flex: 0 0 18px;
+            max-width: 18px;
+            width: 18px;
             img {
               height: 100%;
               width: 100%;
             }
           }
           .edit-icon {
-            height: 23px;
-            @include lg-max {
-              height: 20px;
-            }
+            height: 18px;
           }
           .delete-icon {
-            height: 24px;
-            @include lg-max {
-              height: 21px;
-            }
+            height: 18px;
           }
         }
       }
@@ -5384,6 +5461,23 @@ main {
             min-height: 45px;
           }
         }
+        &.two-col {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          .donate-btn {
+            width: calc(50% - 12px);
+            flex: 0 0 calc(50% - 12px);
+            max-width: calc(50% - 12px);
+            margin: 0 0 20px;
+            @include xs-max {
+              width: 100%;
+              flex: 0 0 100%;
+              max-width: 100%;
+            }
+          }
+        }
       }
       .info-box {
         margin: 0 -10px 15px;
@@ -5615,58 +5709,60 @@ main {
       }
     }
   }
-  .recent-volunteer-block {
-    border: 1px solid $primary-border-color;
-    border-radius: 10px;
-    padding: 12px 29px 58px;
-    position: relative;
-    overflow: hidden;
-    @include sm-max {
-      padding: 12px 20px 58px;
-    }
-    .custom-pagination {
-      span {
-        @include xxxs-max {
-          font-size: 13px;
-        }
-      }
-    }
-    .volunteers-list {
-      padding-top: 28px;
+  .platform-details-left {
+    .recent-volunteer-block {
+      border: 1px solid $primary-border-color;
+      border-radius: 10px;
+      padding: 12px 29px 58px;
+      position: relative;
+      overflow: hidden;
       @include sm-max {
-        padding-top: 18px;
+        padding: 12px 20px 58px;
       }
-      .list-group-item {
-        width: 16.66%;
-        flex: 0 0 16.66%;
-        @include lg-max {
-          width: 25%;
-          flex: 0 0 25%;
-          @include sm-max {
-            width: 33.33%;
-            flex: 0 0 33.33%;
-          }
+      .custom-pagination {
+        span {
           @include xxxs-max {
-            width: 50%;
-            flex: 0 0 50%;
+            font-size: 13px;
           }
         }
-        .list-item {
-          align-items: flex-start;
+      }
+      .volunteers-list {
+        padding-top: 28px;
+        @include sm-max {
+          padding-top: 18px;
         }
-        .user-profile-icon {
-          margin: 0 auto 8px;
-        }
-        p {
-          font-size: 13px;
-          line-height: 19px;
-          margin-bottom: 0;
-          text-align: center;
-          span {
-            display: block;
-            em {
-              color: $black-primary;
-              font-weight: 700;
+        .list-group-item {
+          width: 16.66%;
+          flex: 0 0 16.66%;
+          @include lg-max {
+            width: 25%;
+            flex: 0 0 25%;
+            @include sm-max {
+              width: 33.33%;
+              flex: 0 0 33.33%;
+            }
+            @include xxxs-max {
+              width: 50%;
+              flex: 0 0 50%;
+            }
+          }
+          .list-item {
+            align-items: flex-start;
+          }
+          .user-profile-icon {
+            margin: 0 auto 8px;
+          }
+          p {
+            font-size: 13px;
+            line-height: 19px;
+            margin-bottom: 0;
+            text-align: center;
+            span {
+              display: block;
+              em {
+                color: $black-primary;
+                font-weight: 700;
+              }
             }
           }
         }
@@ -5836,10 +5932,16 @@ main {
     .un-block {
       .un-list {
         display: flex;
-        justify-content: space-between;
         margin-top: 28px;
+        flex-wrap: wrap;
+        margin: 28px -15px 0;
         @include xxxs-max {
           margin-top: 20px;
+        }
+        .un-column {
+          max-width: 33.33%;
+          flex: 0 0 33.33%;
+          padding: 0 15px 30px;
         }
         .img-wrap {
           @include xxxs-max {
