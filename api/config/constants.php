@@ -507,7 +507,10 @@ return [
         'ERROR_STATE_UNABLE_TO_DELETE' => '800039',
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
-        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042'
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
+        'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
+        'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045'
     ],
 
     /**
@@ -604,7 +607,8 @@ return [
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
-        'STATE' => 'STATE'
+        'STATE' => 'STATE',
+        'ORGANIZATION'=>'ORGANIZATION'
     ],
 
     'activity_log_actions' => [
@@ -649,7 +653,6 @@ return [
         'first_name',
         'last_name',
         'email',
-        'city_id',
         'country_id',
         'timezone_id',
         'language_id'

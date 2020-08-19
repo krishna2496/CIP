@@ -149,9 +149,9 @@ return [
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted successfully',
-		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
         'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages sent successfully',
-    	'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted successfully',
         'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
@@ -197,6 +197,11 @@ return [
         'MESSAGE_STATE_LISTING' => 'States listed successfully',
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
+        'MESSAGE_ORGANIZATION_CREATED' => "Organization created successfully",
+        'MESSAGE_ORGANIZATION_UPDATED' => "Organization updated successfully",
+        'MESSAGE_ORGANIZATION_DELETED' => "Organization deleted successfully",
+        'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
+        'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
     ],
@@ -365,6 +370,9 @@ return [
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
+        'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
+        'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.'
        ]
 ];
