@@ -30,7 +30,7 @@
                                 <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
                             </span>
                         <b-button class="clear-btn"
-                                  v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
+                                  v-if="isCountrySelectionSet || isStateSelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
                                   @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
                     </div>
                 </div>

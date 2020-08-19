@@ -625,6 +625,7 @@
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
                 this.selectedfilterParams.skillId = '';
+                this.stateList = [];
                 this.cityList = [];
                 this.themeList = [];
                 this.skillList = [];
