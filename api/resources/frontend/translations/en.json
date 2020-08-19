@@ -363,7 +363,8 @@
 		"personal_donation_goal" : "Personal Donation Goal",
 		"help" : "help",
 		"donations" : "Donations",
-		"donars" : "Donars"
+		"donars" : "Donars",
+		"cvv_details" : "CVV Details"
  	},
 	"placeholder": {
 		"email_address": "Enter email address",
