@@ -295,7 +295,8 @@
 		"deleted_user" : "Utilisateur supprimé",
 		"virtual_mission" : "En ligne",
 		"virtual_missions" : "Mécénat en ligne",
-		"home" : "Bouton d'accueil"
+		"home" : "Bouton d'accueil",
+		"login_with_sso": "Connectez-vous avec SSO"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",

@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\Organization;
 
 class Mission extends Model
 {
@@ -56,8 +57,8 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual'];
+    'publication_status', 'organisation_id', 'mission_type',
+    'organisation_detail', 'availability_id', 'is_virtual', 'organisation_name'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -66,7 +67,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
+    'publication_status', 'organisation_id', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
@@ -79,7 +80,7 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -88,7 +89,7 @@ class Mission extends Model
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
         'goalMission','timeMission','comment','timesheet'
     ];
-    
+
     /**
      * Get the document record associated with the mission.
      *
@@ -148,7 +149,6 @@ class Mission extends Model
     public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
-        //  ->select('country_id', 'name', 'ISO');
     }
 
     /**
@@ -339,7 +339,7 @@ class Mission extends Model
     }
 
     /**
-     * Set organisation detail in serialize form
+     * Set organisation detail in json_encode form
      *
      * @param array|null $value
      * @return void
@@ -347,22 +347,21 @@ class Mission extends Model
     public function setOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && !empty($value)) {
-            $this->attributes['organisation_detail'] = serialize($value);
+            $this->attributes['organisation_detail'] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
     }
 
     /**
-     * Get organisation detail in unserialize form
-     *
-     * @param string|null $value
-     * @return null|array
+     * @param $value
+     * @return mixed|null
      */
     public function getOrganisationDetailAttribute($value)
     {
         if (!is_null($value) && ($value !== '')) {
-            $data = @unserialize($value);
-            if ($data !== false) {
-                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
+            $data = @json_decode($value);
+
+            if ($data !== null) {
+                return json_decode($value, true);
             }
         }
         return null;
@@ -391,4 +390,13 @@ class Mission extends Model
         }
     }
 
+    /**
+     * Get Organization associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function organization(): HasOne
+    {
+        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
+    }
 }
