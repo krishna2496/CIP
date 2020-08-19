@@ -133,17 +133,33 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
-                trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
-            );
+        $isAvailableCurrencyResponse = $this->currencyRepository->isAvailableCurrency($request['code']);
+        if(!$isAvailableCurrencyResponse[0]){
+            if($isAvailableCurrencyResponse['systemCurrencyInvalid']){
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SYSTEM_CURRENCY_CODE_WRONG'),
+                    trans('Currency code '. $isAvailableCurrencyResponse["systemCurrency"].' is invalid.')
+                );
+            } else if(!$isAvailableCurrencyResponse['systemCurrencyInvalid']){
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
+                    trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
+                );        
+            }
         }
 
+        $currencyData = [
+            'code' => $request['code'],
+            'default' => $request['default'],
+            'is_active' => $request['is_active']
+        ];
+
         // Store tenant currency details
-        $this->tenantAvailableCurrencyRepository->store($request, $tenantId);
+        $this->tenantAvailableCurrencyRepository->store($currencyData, $tenantId);
 
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED');
@@ -202,8 +218,14 @@ class TenantCurrencyController extends Controller
             );
         }
 
+        $currencyData = [
+            'code' => $request['code'],
+            'default' => $request['default'],
+            'is_active' => $request['is_active']
+        ];
+
         try {
-            $this->tenantAvailableCurrencyRepository->update($request, $tenantId);
+            $this->tenantAvailableCurrencyRepository->update($currencyData, $tenantId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.CURRENCY_CODE_NOT_FOUND'),

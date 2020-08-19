@@ -42,7 +42,7 @@ class TenantAvailableCurrencyRepository
      * @param int $tenantId
      * @return void
      */
-    public function store(Request $request, int $tenantId)
+    public function store(array $request, int $tenantId)
     {
         $tenant = $this->tenant->findOrFail($tenantId);
 
@@ -65,11 +65,11 @@ class TenantAvailableCurrencyRepository
     /**
      * Update currency
      *
-     * @param Request $request
+     * @param array $request
      * @param int $tenantId
      * @return void
      */
-    public function update(Request $request, int $tenantId)
+    public function update(array $request, int $tenantId)
     {
         $tenantCurrencyData = $this->tenantAvailableCurrency
             ->where(['tenant_id' => $tenantId, 'code' => $request['code']])

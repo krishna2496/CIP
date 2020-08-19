@@ -126,22 +126,21 @@ $router->group(
                 'uses' => 'ActivityLogController@index']);
 
         // Currency routes
-        Route::group(['prefix' => 'tenant-currency'], function($router) {
-            $router->post(
-                '/{tenantId}',
-                ['as' => 'tenants.store-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
-                'uses' => 'TenantCurrencyController@store']
-            );
-            $router->get(
-                '/{tenantId}',
-                ['as' => 'tenants.get-tenantcurrency', 'middleware' => ['PaginationMiddleware'],
-                'uses' => 'TenantCurrencyController@index']
-            );
-            $router->patch(
-                '/{tenantId}',
-                ['as' => 'tenants.update-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
-                'uses' => 'TenantCurrencyController@update']
-            );
-        });
+        $router->post(
+            '/{tenantId}/tenant-currencies',
+            ['as' => 'tenants.store-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
+            'uses' => 'TenantCurrencyController@store']
+        );
+        $router->get(
+
+            '/{tenantId}/tenant-currencies',
+            ['as' => 'tenants.get-tenantcurrency', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'TenantCurrencyController@index']
+        );
+        $router->patch(
+            '/{tenantId}/tenant-currencies',
+            ['as' => 'tenants.update-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
+            'uses' => 'TenantCurrencyController@update']
+        );
     }
 );

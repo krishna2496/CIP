@@ -49,10 +49,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof InvalidCurrencyArgumentException) {
-            return $this->invalidArgument('', $exception->getMessage());
-        }
-
         return $this->internalServerError();
     }
 }
