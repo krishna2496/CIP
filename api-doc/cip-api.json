@@ -719,7 +719,7 @@
         }
       }
     },
-    "/missions/mission-tab/{missionTabId}": {
+    "/missions/mission-tab/{missionTabId}/": {
       "delete": {
         "operationId": "delete_team4-cip-api-delete-mission-tab",
         "summary": "Admin - Delete mission tab",
