@@ -53,7 +53,7 @@ class TenantCurrencyController extends Controller
      * @param App\Repositories\Currency\TenantAvailableCurrencyRepository $tenantAvailableCurrencyRepository
      * @param App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
-     * @return void
+     * @return App\Http\Controllers\TenantCurrencyController
      */
     public function __construct(
         ResponseHelper $responseHelper,
