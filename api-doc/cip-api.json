@@ -5,8 +5,8 @@
 		"title": "CI Platform",
 		"description": ""
 	},
-	"host": "ci-api-doc-service",
-	"basePath": "/team4/cip-api",
+	"host": "localhost",
+	"basePath": "/cip/api",
 	"tags": [
 		{
 			"name": "Mission"
@@ -747,7 +747,9 @@
           {
             "name": "missionTabId",
             "in": "path",
-            "description": "mission_tab_id or mission_id to delete",
+			"description": "mission_tab_id or mission_id to delete",
+			"type": "string",
+            "default": "",
             "required": true
           }
         ],
