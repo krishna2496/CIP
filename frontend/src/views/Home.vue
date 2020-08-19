@@ -110,7 +110,6 @@ import constants from '../constant';
 import {
     setTimeout
 } from 'timers';
-import { set } from 'vue/types/umd';
 
 export default {
     components: {
