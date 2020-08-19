@@ -14,7 +14,11 @@ class DropVolunteeringAttributeColumnsFromMissionTable extends Migration
     public function up()
     {
         Schema::table('mission', function (Blueprint $table) {
-            \DB::statement("ALTER TABLE `mission` DROP `availability_id`, `total_seats`, `is_virtual` ");
+            // $table->dropForeign('mission_availability_id_foreign');
+            // $table->dropIndex('mission_availability_id_foreign');
+            $table->dropColumn('availability_id');
+            $table->dropColumn('total_seats');
+            $table->dropColumn('is_virtual');
         });
     }
 
@@ -26,9 +30,9 @@ class DropVolunteeringAttributeColumnsFromMissionTable extends Migration
     public function down()
     {
         Schema::table('mission', function (Blueprint $table) {
-            $table->unsignedBigInteger('availability_id');
-            $table->integer('total_seats')->nullable();
-            $table->enum('is_virtual', ['0', '1'])->default('0');
+            $table->unsignedBigInteger('availability_id')->after('publication_status');
+            $table->integer('total_seats')->nullable()->after('availability_id');
+            $table->enum('is_virtual', ['0', '1'])->default('0')->after('total_seats');
             // $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
