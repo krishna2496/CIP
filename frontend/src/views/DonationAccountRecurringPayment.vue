@@ -66,11 +66,14 @@
                     <MyAccountDashboardBreadcrumb></MyAccountDashboardBreadcrumb>
                 </b-col>
                 <b-col xl="9" lg="8" md="12" class="recurring-payment-content">
+                    <h2 class="title-with-border">
+                        <span>{{languageData.label.recurring_payments}}</span>
+                    </h2>
                     <b-list-group class="status-bar">
                         <b-list-group-item>
                             <div class="list-item">
                                 <i class="currency-icon">
-                                    <img :src="`${$store.state.imagePath}/assets/images/currency-ic.svg`" alt="currency-ic" />
+                                    <img :src="`${$store.state.imagePath}/assets/images/recurring-payments.svg`" alt="currency-ic" />
                                 </i>
                                 <p><span>€ 50</span>{{languageData.label.average_recurring_amount}}</p>
                             </div>
@@ -103,6 +106,7 @@
                                         <date-picker v-model="rangeVal" :placeholder="'Date Range'" range :lang="'English'"></date-picker>
                                     </div>
                                 </div>
+
                                 <b-table-simple responsive sortable>
                                     <b-thead>
                                         <b-tr>
@@ -122,41 +126,73 @@
                                                     <img :src="`${$store.state.imagePath}/assets/images/sortable-ic.svg`" alt="sortable-ic.svg" />
                                                 </i>
                                             </b-th>
-                                            <b-th class="amount-column">{{languageData.label.amount}}</b-th>
-                                            <b-th class="method-column">{{languageData.label.method}}</b-th>
+                                            <b-th class="amount-column" sortable>{{languageData.label.amount}}
+                                                <i class="sorting-arrows">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/sortable-ic.svg`" alt="sortable-ic.svg" />
+                                                </i>
+                                            </b-th>
+                                            <b-th class="method-column" sortable>{{languageData.label.method}}
+                                                <i class="sorting-arrows">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/sortable-ic.svg`" alt="sortable-ic.svg" />
+                                                </i>
+                                            </b-th>
+                                            <b-th class="end-date-column" sortable>{{languageData.label.end_date}}
+                                                <i class="sorting-arrows">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/sortable-ic.svg`" alt="sortable-ic.svg" />
+                                                </i>
+                                            </b-th>
+                                            <b-th class="action-column"></b-th>
                                         </b-tr>
                                     </b-thead>
                                     <b-tbody>
                                         <b-tr>
                                             <b-td class="status-column">
-                                                <span class="status-label success">{{languageData.label.active}}</span>
+                                                <span class="status-label success">Active</span>
                                             </b-td>
                                             <b-td class="date-column">22/05/2020</b-td>
                                             <b-td class="name-column">CSR initiative stands for Coffe &amp; Farmer
                                                 Equity</b-td>
+                                            <b-td class="frequency-column">Quarterly</b-td>
+                                            <b-td class="amount-column">€10,000</b-td>
+                                            <b-td class="method-column">Payroll</b-td>
+                                            <b-td class="end-date-column">22/09/2020</b-td>
+                                            <b-td class="action-column">
+                                                <b-button class="icon-btn edit-btn">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/edit-ic-gray.svg`" alt="edit icon">
+                                                </b-button>
+                                            </b-td>
+                                        </b-tr>
+                                        <b-tr>
+                                            <b-td class="status-column">
+                                                <span class="status-label success">{{languageData.label.active}}</span>
+                                            </b-td>
+                                            <b-td class="date-column">22/05/2020</b-td>
+                                            <b-td class="name-column">Volunteer Fundraising </b-td>
                                             <b-td class="frequency-column">{{languageData.label.quarterly}}</b-td>
                                             <b-td class="amount-column">€10,000</b-td>
-                                            <b-td class="method-column">{{languageData.label.payroll}}</b-td>
+                                            <b-td class="method-column">Payroll</b-td>
+                                            <b-td class="end-date-column">22/05/2021</b-td>
+                                            <b-td class="action-column">
+                                                <b-button class="icon-btn edit-btn">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/edit-ic-gray.svg`" alt="edit icon">
+                                                </b-button>
+                                            </b-td>
                                         </b-tr>
                                         <b-tr>
                                             <b-td class="status-column">
-                                                <span class="status-label success">{{languageData.label.active}}</span>
+                                                <span class="status-label success">Active</span>
                                             </b-td>
                                             <b-td class="date-column">22/05/2020</b-td>
                                             <b-td class="name-column">Volunteer Fundraising </b-td>
-                                            <b-td class="frequency-column">{{languageData.label.monthly}}</b-td>
+                                            <b-td class="frequency-column">{{languageData.label.quarterly}}</b-td>
                                             <b-td class="amount-column">€10,000</b-td>
-                                            <b-td class="method-column">{{languageData.label.payroll}}</b-td>
-                                        </b-tr>
-                                        <b-tr>
-                                            <b-td class="status-column">
-                                                <span class="status-label success">{{languageData.label.active}}</span>
+                                            <b-td class="method-column">Payroll</b-td>
+                                            <b-td class="end-date-column">31/12/2020</b-td>
+                                            <b-td class="action-column">
+                                                <b-button class="icon-btn edit-btn">
+                                                    <img :src="`${$store.state.imagePath}/assets/images/edit-ic-gray.svg`" alt="edit icon">
+                                                </b-button>
                                             </b-td>
-                                            <b-td class="date-column">22/05/2020</b-td>
-                                            <b-td class="name-column">Volunteer Fundraising </b-td>
-                                            <b-td class="frequency-column">{{languageData.label.monthly}}</b-td>
-                                            <b-td class="amount-column">€10,000</b-td>
-                                            <b-td class="method-column">{{languageData.label.payroll}}</b-td>
                                         </b-tr>
                                     </b-tbody>
                                 </b-table-simple>

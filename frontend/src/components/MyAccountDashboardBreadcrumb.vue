@@ -177,6 +177,7 @@ export default {
             }
         },
         settingModalShow() {
+            return false;
             this.$refs.settingsModal.show();
             const settingPath = `${this.$route.path}#setting`;
             this.$router.push(settingPath)
