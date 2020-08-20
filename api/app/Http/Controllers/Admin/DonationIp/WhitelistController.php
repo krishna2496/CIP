@@ -229,7 +229,7 @@ class WhitelistController extends Controller
             get_class($this),
             $payload['request'] ?? [],
             null,
-            $payload['id'] ?? null,
+            $payload['id'] ?? null
         ));
     }
 
