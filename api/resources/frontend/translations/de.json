@@ -295,7 +295,8 @@
 		"deleted_user" : "Gelöschter Benutzer",
 		"virtual_mission" : "Virtuell",
 		"virtual_missions" : "Virtuelle Freiwilligenarbeit",
-		"home" : "Zuhause"
+		"home" : "Zuhause",
+		"login_with_sso": "Anmeldung mit SSO"
 	},
 	"placeholder": {
 		"email_address": "E-Mail-Adresse eingeben",
