@@ -872,9 +872,6 @@
       min-height: 100%;
       .content-inner-block {
         min-height: 90px;
-        @include xs-max {
-          min-height: auto;
-        }
       }
     }
     .location {

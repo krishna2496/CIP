@@ -672,7 +672,7 @@ main {
         border: none;
         position: absolute;
         right: 0;
-        bottom: calc(100% + 25px);
+        bottom: calc(100% + 19px);
 
         @include md-max {
           display: none;
