@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\ApplyMigration::class,
         Commands\ApplySeeder::class,
         Commands\MigrationRollack::class,
-        Commands\CopyNonExistingIconFromS3bucketToTenant::class,
+        Commands\CopyNonExistingAssetsFromDefaultThemeBucketToTenants::class,
     ];
 
     /**
