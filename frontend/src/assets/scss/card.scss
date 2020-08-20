@@ -883,6 +883,8 @@
     &.active{
       .card{
         .init-hidden {
+          position: relative;
+          z-index: 1;
           opacity: 1;
         }
         .group-ratings {
