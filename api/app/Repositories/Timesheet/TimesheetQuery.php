@@ -200,8 +200,7 @@ class TimesheetQuery implements QueryableInterface
                         })
                         ->orwhereHas('user', function ($query) use ($search) {
                             $query
-                                ->where('first_name', 'like', "%${search}%")
-                                ->orWhere('last_name', 'like', "%${search}%")
+                                ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}%"])
                                 ->orWhere('email', 'like', "%${search}%");
                         })
                         ->orwhere('mission_language.title', 'like', "%${search}%")
