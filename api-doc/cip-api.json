@@ -746,10 +746,10 @@
           },
           {
             "name": "missionTabId",
-            "in": "path",
+			"in": "path",
 			"description": "mission_tab_id or mission_id to delete",
 			"type": "string",
-            "default": "",
+			"default": "",
             "required": true
           }
         ],
