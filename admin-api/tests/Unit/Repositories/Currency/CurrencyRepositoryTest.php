@@ -4,13 +4,13 @@ namespace Tests\Unit\Repositories\Currency;
 
 use App\Models\TenantCurrency;
 use App\Models\Tenant;
-use App\Repositories\Currency\Currency;
 use App\Repositories\Currency\CurrencyRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use TestCase;
 use Mockery;
+use App\Models\Currency;
 
 class CurrencyRepositoryTest extends TestCase
 {
@@ -49,14 +49,20 @@ class CurrencyRepositoryTest extends TestCase
 
         $tenantId = 1;
         $data = [
-            'code'=> 'FAK',
+            'code'=> 'ABCD',
             'default'=> '1',
             'is_active'=> '1'
         ];
-        $request = new Request($data);
 
+        $responseData = [
+            false,
+            'systemCurrencyInvalid' => false,
+            'systemCurrency' => $data['code'],
+        ];
+
+        $request = new Request($data);
         $isValid = $repository->isAvailableCurrency($request['code']);
-        $this->assertEquals(false, $isValid);
+        $this->assertEquals($responseData, $isValid);
     }
 
     /**
@@ -83,8 +89,13 @@ class CurrencyRepositoryTest extends TestCase
         ];
         $request = new Request($data);
 
-        $isValid = $repository->isAvailableCurrency($request['code']);
-        $this->assertEquals(true, $isValid);
+        $responseData = [
+            true,
+            $data['code']
+        ];
+
+        $isValid = $repository->isAvailableCurrency($request['code']);        
+        $this->assertEquals($responseData, $isValid);
     }
 
     /**

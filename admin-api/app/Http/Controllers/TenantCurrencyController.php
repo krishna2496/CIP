@@ -209,13 +209,23 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
-                trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
-            );
+        $isAvailableCurrencyResponse = $this->currencyRepository->isAvailableCurrency($request['code']);
+        if(!$isAvailableCurrencyResponse[0]){
+            if($isAvailableCurrencyResponse['systemCurrencyInvalid']){
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SYSTEM_CURRENCY_CODE_WRONG'),
+                    trans('Currency code '. $isAvailableCurrencyResponse["systemCurrency"].' is invalid.')
+                );
+            } else if(!$isAvailableCurrencyResponse['systemCurrencyInvalid']){
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
+                    trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
+                );        
+            }
         }
 
         $currencyData = [

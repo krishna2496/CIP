@@ -21,7 +21,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
      *
      * @return void
      */
-    public function testStoreSuccess()
+    public function testStoreRepositorySuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $currencyRepository = $this->mock(CurrencyRepository::class);
@@ -37,7 +37,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             'default'=> '1',
             'is_active'=> '1'
         ];
-        $request = new Request($data);
+        $request = $data;
 
         $currencyData = [
             'tenant_id' => $tenantId,
@@ -72,7 +72,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateSuccess()
+    public function testUpdateRepositorySuccess()
     {
         $tenant = $this->mock(Tenant::class);
         $currencyRepository = $this->mock(CurrencyRepository::class);
@@ -89,7 +89,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             'default'=> '1',
             'is_active'=> '1'
         ];
-        $request = new Request($data);
+        $request = $data;
 
         $currencyData = [
             'tenant_id' => $tenantId,
