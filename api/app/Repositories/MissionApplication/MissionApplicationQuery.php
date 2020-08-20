@@ -169,7 +169,7 @@ class MissionApplicationQuery implements QueryableInterface
                 $searchCallback = function ($query) use ($search, $filters, $languageId) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
-                            ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}%"])
+                            ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}"])
                             ->orWhere('email', 'like', "%${search}%");
                     })
                         ->orWhere('mission_language.title', 'like', "%${search}%")
