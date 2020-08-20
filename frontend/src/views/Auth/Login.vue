@@ -11,45 +11,48 @@
                 <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
                     <img :src="this.$store.state.logo">
                 </router-link>
-                <!-- success or error msg -->
-                <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
-                <!-- login form start -->
-                <b-form class="signin-form">
-                    <b-form-group>
-                        <label for="">{{ languageData.label.email_address }}</label>
-                        <b-form-input id="" type="email"
-                                      v-model="login.email"
-                                      v-bind:placeholder='languageData.placeholder.email_address'
-                                      :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus
-                                      maxlength="120"
-                                      @keypress.enter.prevent="handleSubmit"
-                                      @keydown.space.prevent></b-form-input>
-                        <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
-                            {{ languageData.errors.email_required }}</div>
-                        <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
-                            {{ languageData.errors.invalid_email }}</div>
-                    </b-form-group>
-                    <b-form-group>
-                        <label for="">{{ languageData.label.password }}</label>
-                        <b-form-input id="" type="password" v-model="login.password" required
-                                      v-bind:placeholder='languageData.placeholder.password'
-                                      :class="{ 'is-invalid': $v.login.password.$error }"
-                                      maxlength="120"
-                                      @keypress.enter.prevent="handleSubmit"
-                                      @keydown.space.prevent autocomplete="password"></b-form-input>
-                        <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
-                            {{ languageData.errors.password_required }}</div>
-                    </b-form-group>
-                    <b-button
-                      type="button"
-                      @click="handleSubmit"
-                      class=" btn-bordersecondary">
-                      {{ languageData.label.login }}
-                    </b-button>
-                </b-form>
-                <!-- link to forgot-password -->
-                <div class="form-link">
-                    <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
+                <b-alert v-if="this.$store.state.samlSettings && this.$store.state.samlSettings.saml_access_only" />
+                <div v-else>
+                  <!-- success or error msg -->
+                  <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                  <!-- login form start -->
+                  <b-form class="signin-form">
+                      <b-form-group>
+                          <label for="">{{ languageData.label.email_address }}</label>
+                          <b-form-input id="" type="email"
+                                        v-model="login.email"
+                                        v-bind:placeholder='languageData.placeholder.email_address'
+                                        :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus
+                                        maxlength="120"
+                                        @keypress.enter.prevent="handleSubmit"
+                                        @keydown.space.prevent></b-form-input>
+                          <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
+                              {{ languageData.errors.email_required }}</div>
+                          <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
+                              {{ languageData.errors.invalid_email }}</div>
+                      </b-form-group>
+                      <b-form-group>
+                          <label for="">{{ languageData.label.password }}</label>
+                          <b-form-input id="" type="password" v-model="login.password" required
+                                        v-bind:placeholder='languageData.placeholder.password'
+                                        :class="{ 'is-invalid': $v.login.password.$error }"
+                                        maxlength="120"
+                                        @keypress.enter.prevent="handleSubmit"
+                                        @keydown.space.prevent autocomplete="password"></b-form-input>
+                          <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
+                              {{ languageData.errors.password_required }}</div>
+                      </b-form-group>
+                      <b-button
+                        type="button"
+                        @click="handleSubmit"
+                        class=" btn-bordersecondary">
+                        {{ languageData.label.login }}
+                      </b-button>
+                  </b-form>
+                  <!-- link to forgot-password -->
+                  <div class="form-link">
+                      <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
+                  </div>
                 </div>
 
                 <b-button
@@ -73,7 +76,7 @@
   import { required, email } from 'vuelidate/lib/validators';
   import store from '../../store';
   import {loadLocaleMessages,login,databaseConnection,tenantSetting,policy} from '../../services/service';
-  import constants from '../../constant';
+  import { setSiteTitle } from '../../utils';
 
   export default {
     components: {
@@ -110,12 +113,14 @@
       }
     },
     methods: {
-      async createConnection(){
+      async createConnection() {
         await databaseConnection(this.langList).then(() => {
           this.isShowComponent = true
-          //Get langauage list from Local Storage
+          // Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage)
-          this.defautLang = store.state.defaultLanguage
+          const defaultLanguage = store.state.defaultLanguage;
+          this.defautLang = defaultLanguage.toUpperCase();
+          setSiteTitle();
           this.hasSSO = Boolean(store.state.samlSettings);
           // Get tenant setting
           tenantSetting();
@@ -123,12 +128,9 @@
             this.languageData = JSON.parse(store.state.languageLabel);
             this.isPageShown = true
             setTimeout(() => {
-              if (store.state.samlSettings
-                && store.state.samlSettings.saml_access_only
-              ) {
-                window.location.href = store.state.samlSettings.sso_url;
+              if(this.$refs.email) {
+                this.$refs.email.focus();
               }
-              this.$refs.email.focus();
             },500)
           });
         })
@@ -142,7 +144,8 @@
         this.languageData = JSON.parse(store.state.languageLabel);
         this.$forceUpdate();
         this.$refs.ThePrimaryFooter.$forceUpdate()
-      this.componentKey += 1;
+        this.componentKey += 1;
+        setSiteTitle();
       },
 
       handleSubmit() {
@@ -176,14 +179,10 @@
 
       handleSSO() {
         window.location = store.state.samlSettings.sso_url;
-      },
-
-    },
-    mounted() {
-
+      }
     },
     created() {
-      //Database connection and fetching tenant options api
+      // Database connection and fetching tenant options api
       this.createConnection();
     },
     beforeCreate() {

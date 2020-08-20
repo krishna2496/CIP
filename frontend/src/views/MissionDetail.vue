@@ -433,6 +433,14 @@
                                                                                class="has-img no-close" :url="bgImage[2]" />
                                                             </b-link>
                                                         </template>
+                                                        <!-- txt -->
+                                                        <template v-if="document.document_type === 'txt'">
+                                                            <b-link :href="document.document_path" target="_blank"
+                                                                    :title="document.document_name">
+                                                                <AppCustomChip :textVal="document.document_name"
+                                                                               class="has-img no-close" :url="bgImage[3]" />
+                                                            </b-link>
+                                                        </template>
                                                     </div>
 
                                                 </div>
@@ -700,6 +708,7 @@
           require("@/assets/images/pdf.svg"),
           require("@/assets/images/doc.svg"),
           require("@/assets/images/xlsx.svg"),
+          require("@/assets/images/txt.svg"),
         ],
         orgLogo: require("@/assets/images/ces-logo.png"),
         currentPage: 1,

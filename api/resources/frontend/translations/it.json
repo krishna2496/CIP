@@ -295,6 +295,7 @@
 		"virtual_mission" : "Virtuale",
 		"virtual_missions" : "Volontariato virtuale",
 		"home" : "Pulsante Home",
+		"login_with_sso": "Accedi con SSO",
 		"ongoing" : "In corso",
 		"more" : "altri",
 		"and" : "e"
