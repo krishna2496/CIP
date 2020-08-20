@@ -69,7 +69,7 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
 
             // Check filepath is exist or not
             if (Storage::disk('s3')->exists($defaultThemePath.$filePath)) {
-                $encodedFileContent = Storage::disk('s3')->get($filePath);
+                $encodedFileContent = Storage::disk('s3')->get($defaultThemePath.$filePath);
                 $fileContent = json_decode($encodedFileContent);
                 $tenants = $this->tenantRepository->getAllTenants();
 
@@ -96,7 +96,6 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
      */
     private function copyNonExistingIconPerTenant($tenants, array $files)
     {
-        dd($tenants);
         if ($tenants->count() > 0) {
             $bar = $this->output->createProgressBar($tenants->count());
             $tenantsList = $tenants->toArray();
