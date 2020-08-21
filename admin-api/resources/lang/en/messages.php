@@ -60,7 +60,9 @@ return [
         'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => 'Currency code is not available in system.',
         'ERROR_TENANT_CURRENCY_NOT_FOUND' => 'Tenant currency not found in the system',
         'ERROR_CURRENCY_CODE_NOT_FOUND' => 'Currency not found in system',
-        'ERROR_TENANT_CURRENCY_EMPTY_LIST' => 'Tenant has no any currency.'
+        'ERROR_TENANT_CURRENCY_EMPTY_LIST' => 'Tenant has no any currency.',
+        'CURRENCY_CODE' => 'Currency Code ',
+        'CURRENCY_IS_NOT_VALID_ONLY' => ' is not valid'
     ],
     'email_text' => [
         'ERROR' => 'Error',

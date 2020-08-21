@@ -142,7 +142,7 @@ class TenantCurrencyController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SYSTEM_CURRENCY_CODE_WRONG'),
-                    trans('Currency code '. $isAvailableCurrencyResponse["systemCurrency"].' is invalid.')
+                    trans('messages.custom_error_message.CURRENCY_CODE') . $isAvailableCurrencyResponse["systemCurrency"] . trans('messages.custom_error_message.CURRENCY_IS_NOT_VALID_ONLY')
                 );
             } else if(!$isAvailableCurrencyResponse['systemCurrencyInvalid']){
                 return $this->responseHelper->error(
@@ -218,7 +218,7 @@ class TenantCurrencyController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SYSTEM_CURRENCY_CODE_WRONG'),
-                    trans('Currency code '. $isAvailableCurrencyResponse["systemCurrency"].' is invalid.')
+                    trans('messages.custom_error_message.CURRENCY_CODE') . $isAvailableCurrencyResponse["systemCurrency"]. trans('messages.custom_error_message.CURRENCY_IS_NOT_VALID_ONLY')
                 );
             } else if(!$isAvailableCurrencyResponse['systemCurrencyInvalid']){
                 return $this->responseHelper->error(
