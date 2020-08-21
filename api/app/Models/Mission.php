@@ -55,9 +55,9 @@ class Mission extends Model
      * @var array
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
-    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
+    'country_id', 'start_date', 'end_date', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual'];
+    'organisation_detail'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -65,7 +65,7 @@ class Mission extends Model
      * @var array
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
-    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
+    'country_id', 'start_date', 'end_date', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
@@ -76,9 +76,8 @@ class Mission extends Model
     'goal_objective', 'achieved_goal', 'mission_count', 'mission_rating_count',
     'already_volunteered','total_available_seat', 'available_seat','deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
-    'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
-    'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
-    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
+    'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
+    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name',
     'volunteeringAttribute'
     ];
