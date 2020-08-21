@@ -881,19 +881,11 @@
                 },
                 "default": {
                     "type":"boolean",
-                    "description":"Set default currency of the platform",
-                    "enum":[  
-                        "1",
-                        "0"
-                    ]
+                    "description":"Set default currency of the platform"
                 },
                 "is_active": {
                     "type":"boolean",
-                    "description":"Set currency active or in-active of the platform",
-                    "enum":[
-                        "1",
-                        "0"
-                    ]
+                    "description":"Set currency active or in-active of the platform"
                 }
             }
         }
