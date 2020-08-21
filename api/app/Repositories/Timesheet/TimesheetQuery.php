@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Timesheet;
 
+use App\Helpers\LanguageHelper;
 use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -10,16 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class TimesheetQuery implements QueryableInterface
 {
-    const FILTER_MISSION_THEMES = 'missionThemes';
-    const FILTER_APPLICATION_DATE = 'applicationDate';
-    const FILTER_MISSION_STATUSES = 'customMissionStatus';
-    const FILTER_APPROVAL_STATUS = 'timesheetStatus';
-    const FILTER_MISSION_COUNTRIES = 'missionCountries';
-    const FILTER_MISSION_CITIES = 'missionCities';
-    const FILTER_TIMESHEET_IDS = 'timesheetIds';
-    const FILTER_TYPE = 'type';
+    private const FILTER_MISSION_THEMES = 'missionThemes';
+    private const FILTER_APPLICATION_DATE = 'applicationDate';
+    private const FILTER_MISSION_STATUSES = 'customMissionStatus';
+    private const FILTER_APPROVAL_STATUS = 'timesheetStatus';
+    private const FILTER_MISSION_COUNTRIES = 'missionCountries';
+    private const FILTER_MISSION_CITIES = 'missionCities';
+    private const FILTER_TIMESHEET_IDS = 'timesheetIds';
+    private const FILTER_TYPE = 'type';
 
-    const ALLOWED_SORTABLE_FIELDS = [
+    private const ALLOWED_SORTABLE_FIELDS = [
         'appliedDate' => 'date_volunteered',
         'applicant' => 'user.last_name',
         'reviewedHours' => 'time',
@@ -36,12 +37,22 @@ class TimesheetQuery implements QueryableInterface
         'applicantLastName' => 'user.last_name',
     ];
 
-    const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+    private const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
 
     /**
      * @var string
      */
     private $missionType;
+
+    /**
+     * @var LanguageHelper
+     */
+    private $languageHelper;
+
+    public function __construct(LanguageHelper $languageHelper)
+    {
+        $this->languageHelper = $languageHelper;
+    }
 
     /**
      * @param array $parameters
@@ -156,7 +167,6 @@ class TimesheetQuery implements QueryableInterface
                         $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
                     });
                     // Filter by mission Status
-                    $countFilterMissionStatus = 0;
                     $query->when(isset($filters[self::FILTER_MISSION_STATUSES]), function ($query) use ($filters) {
                         collect($filters[self::FILTER_MISSION_STATUSES])
                             ->map(function ($val) use ($query, &$countFilterMissionStatus) {
@@ -231,11 +241,6 @@ class TimesheetQuery implements QueryableInterface
                             $query
                                 ->whereNull('country_language.name')
                                 ->where('country_language_fallback.name', 'like', "%${search}%");
-                        })
-                        ->orwhereHas('mission.missionTheme', function ($query) use ($search, $filters) {
-                            $codeLanguage = $filters['language'];
-                            $query->where('translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$codeLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$search.'[^"]*";}')
-                                ->orWhere('theme_name', 'like', "%${search}%");
                         });
                 };
 
@@ -257,7 +262,7 @@ class TimesheetQuery implements QueryableInterface
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
 
-        $this->addCityCountryLanguageCode($timesheets, $tenantLanguages, $defaultLanguage);
+        $this->addCityCountryLanguageCode($timesheets);
 
         return $timesheets;
     }
@@ -265,37 +270,24 @@ class TimesheetQuery implements QueryableInterface
     /**
      * Add the property 'language_code' in the 'translations' property of the mission city and country.
      *
-     * Iterates over all the objects contained in 'translations' and set the relevant language code.
-     * If no language is matched when trying to add the property, set the language code to tenant's default language.
-     * If the tenant's default language cannot be found, set it to english.
-     *
      * @param LengthAwarePaginator $timesheets
-     * @param Collection $tenantLanguages
-     * @param $defaultLanguage
-     */
-    private function addCityCountryLanguageCode($timesheets, $tenantLanguages, $defaultLanguage)
-    {
-        // Getting default language code
-        $defaultLanguageCode = $defaultLanguage !== null
-            ? $defaultLanguage->code
-            : 'en'; // Fallback to english if nothing is found
 
+     */
+    private function addCityCountryLanguageCode(LengthAwarePaginator $timesheets)
+    {
+        $ciLanguages = $this->languageHelper->getLanguages();
         // Setting the language_code property
         foreach ($timesheets as $timesheet) {
             // Adding property for country
             foreach ($timesheet->mission->country->languages as $countryLanguage) {
-                $matchedCountryLanguage = $tenantLanguages->where('language_id', $countryLanguage->language_id)->first();
-                $countryLanguage->language_code = $matchedCountryLanguage !== null
-                    ? $matchedCountryLanguage->code
-                    : $defaultLanguageCode;
+                $ciLanguage = $ciLanguages->where('language_id', $countryLanguage->language_id)->first();
+                $countryLanguage->language_code = $ciLanguage->code;
             }
 
             // Adding property for city
             foreach ($timesheet->mission->city->languages as $cityLanguage) {
-                $matchedCityLanguage = $tenantLanguages->where('language_id', $cityLanguage->language_id)->first();
-                $cityLanguage->language_code = $matchedCityLanguage !== null
-                    ? $matchedCityLanguage->code
-                    : $defaultLanguageCode;
+                $ciLanguage = $ciLanguages->where('language_id', $cityLanguage->language_id)->first();
+                $cityLanguage->language_code = $ciLanguage->code;
             }
         }
     }
