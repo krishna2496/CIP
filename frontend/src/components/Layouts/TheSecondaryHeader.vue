@@ -171,9 +171,10 @@
                 b_header.classList.add("active");
             },
 
-            removeItems(data) {
+            removeItems(data, defaultCountryId = "") {
                 if (data.selectedType == "country") {
-                    data.selectedId = "";
+                    data.selectedId = defaultCountryId;
+                    data.selectedVal = this.defaultCountry;
                     this.changeCountry(data)
                 }
                 if (data.selectedType == "state") {
@@ -284,10 +285,11 @@
                 this.isCountryChange = true;
                 this.selectedfilterParams.countryId = country.selectedId;
                 if (country.selectedId != '') {
+                    this.selectedfilterParams.countryId = country.selectedId;
                     this.defaultCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
                     this.defaultCountry = this.defaultCountry.replace(/[^a-zA-Z\s]+/g, '');
                 } else {
-                    this.defaultCountry = this.languageData.label.country;
+                  this.defaultCountry = this.languageData.label.country;
                 }
                 this.selectedfilterParams.stateId = '';
                 this.selectedfilterParams.cityId = '';
@@ -619,8 +621,8 @@
                 }, 200)
 
             },
-            clearAllFilter() {
-                this.selectedfilterParams.countryId = '';
+            clearAllFilter(defaultCountryId) {
+                this.selectedfilterParams.countryId = defaultCountryId;
                 this.selectedfilterParams.stateId = '';
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
@@ -652,8 +654,7 @@
                 }
                 this.$parent.getMissions("removeLoader");
                 setTimeout(() => {
-                    this.selectedfilterParams.countryId = store.state.countryId;
-                    this.selectedfilterParams.cityId = store.state.cityId;
+                    //this.selectedfilterParams.countryId = store.state.countryId;
                     filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.country) {

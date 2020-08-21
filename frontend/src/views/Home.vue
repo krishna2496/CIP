@@ -14,7 +14,7 @@
             <b-container class="home-content-wrapper">
                 <div v-if="missionList.length > 0 && isQuickAccessDisplay">
                     <div class="chip-container" v-if="tags != ''">
-                            <span v-for="(item , i) in tags.country" v-if="isCountrySelectionSet" :key=i>
+                            <span v-for="(item , i) in tags.country" :key=i>
                                 <AppCustomChip :textVal="item" :tagId="i" type="country" @updateCall="changeTag" />
                             </span>
                             <span v-for="(item , i) in tags.state" v-if="isStateSelectionSet" :key=i>
@@ -350,18 +350,22 @@
             this.getMissions();
         },
         changeTag(data) {
-            if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
-                return
+          let defaultCountryId = "";
+          if (data.selectedType == "country") {
+            defaultCountryId = store.state.defaultCountryId;
+            if(data.selectedId == store.state.defaultCountryId) {
+              return;
             }
-            this.$refs.secondaryHeader.removeItems(data);
+          }
+          this.$refs.secondaryHeader.removeItems(data, defaultCountryId);
         },
         clearMissionFilter() {
-            this.$refs.secondaryHeader.clearAllFilter();
+            this.$refs.secondaryHeader.clearAllFilter(store.state.defaultCountryId);
         },
         clearMissionFilterData() {
             document.body.classList.add("loader-enable");
             store.commit('clearFilterClick', 'true');
-            this.$refs.secondaryHeader.clearAllFilter();
+            this.$refs.secondaryHeader.clearAllFilter(store.state.defaultCountryId);
             document.body.classList.remove("loader-enable");
             store.commit('clearFilterClick', '');
         }
