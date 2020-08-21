@@ -295,6 +295,7 @@
 		"virtual_mission" : "Wirtualna",
 		"virtual_missions" : "Wirtualny wolontariat",
 		"home" : "Dom",
+		"login_with_sso": "Entrar com SSO",
 		"ongoing" : "Ongoing",
 		"more" : "jeszcze",
 		"and" : "i"

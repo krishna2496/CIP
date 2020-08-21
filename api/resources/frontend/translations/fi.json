@@ -295,6 +295,7 @@
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
 		"home" : "Koti",
+		"login_with_sso": "Kirjaudu sisään SSO: lla",
 		"ongoing" : "Ongoing",
 		"more" : "muuta",
 		"and" : "ja"

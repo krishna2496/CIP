@@ -295,6 +295,7 @@
 		"virtual_mission" : "Virtueel",
 		"virtual_missions" : "Virtueel vrijwilligerswerk",
 		"home" : "Thuis",
+		"login_with_sso": "Log in met SSO",
 		"ongoing" : "Lopend",
 		"more" : "meer",
 		"and" : "en"
