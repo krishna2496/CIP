@@ -44,16 +44,18 @@ class TenantHasSettings
                 $setting,
                 $request
             );
-            if (!$result) {
-                return $this->responseHelper->error(
-                    Response::HTTP_FORBIDDEN,
-                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    '',
-                    trans('messages.custom_error_message.ERROR_UNAUTHORIZED')
-                );
+
+            if ($result) {
+                $response = $next($request);
+                return $response;
             }
         }
-        $response = $next($request);
-        return $response;
+
+        return $this->responseHelper->error(
+            Response::HTTP_FORBIDDEN,
+            Response::$statusTexts[Response::HTTP_FORBIDDEN],
+            '',
+            trans('messages.custom_error_message.ERROR_UNAUTHORIZED')
+        );
     }
 }

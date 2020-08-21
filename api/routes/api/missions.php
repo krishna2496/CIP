@@ -9,7 +9,7 @@ $router->get(
     '',
     [
         'as' => 'missions',
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionController@index'
     ]
 );
@@ -27,6 +27,7 @@ $router->get(
     '/{missionId}',
     [
         'as' => 'missions.show',
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionController@show'
     ]
 );
@@ -44,6 +45,7 @@ $router->delete(
     '/{missionId}',
     [
         'as' => 'missions.delete',
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionController@destroy'
     ]
 );
@@ -51,7 +53,7 @@ $router->delete(
 $router->get(
     '/{missionId}/applications',
     [
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@missionApplications'
     ]
 );
@@ -59,6 +61,7 @@ $router->get(
 $router->get(
     '/{missionId}/applications/{applicationId}',
     [
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@missionApplication'
     ]
 );
@@ -66,7 +69,7 @@ $router->get(
 $router->get(
     '/applications/details',
     [
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@getMissionApplicationDetails'
     ]
 );
@@ -74,6 +77,7 @@ $router->get(
 $router->patch(
     '/{missionId}/applications/{applicationId}',
     [
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@updateApplication'
     ]
 );
@@ -81,7 +85,7 @@ $router->patch(
 $router->get(
     '/{missionId}/comments',
     [
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'as' => 'missions.comments',
         'uses' => 'Admin\Mission\MissionCommentController@index',
     ]
@@ -90,7 +94,7 @@ $router->get(
 $router->get(
     '/{missionId}/comments/{commentId}',
     [
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'as' => 'missions.comments.detail',
         'uses' => 'Admin\Mission\MissionCommentController@show',
     ]
@@ -100,6 +104,7 @@ $router->patch(
     '/{missionId}/comments/{commentId}',
     [
         'as' => 'missions.comments.update',
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionCommentController@update',
     ]
 );
@@ -108,6 +113,7 @@ $router->delete(
     '/{missionId}/comments/{commentId}',
     [
         'as' => 'missions.comments.delete',
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionCommentController@destroy',
     ]
 );
