@@ -351,7 +351,7 @@
         },
         changeTag(data) {
           if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
-              return;
+            return
           }
           this.$refs.secondaryHeader.removeItems(data);
         },

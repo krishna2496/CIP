@@ -175,7 +175,7 @@
                 if (data.selectedType == "country") {
                     data.selectedId = store.state.defaultCountryId;
                     let selectedCountryData = this.countryList.filter((country) => {
-                      return( data.selectedId == country[1].id);
+                      return (data.selectedId == country[1].id);
                     });
                     data.selectedVal = selectedCountryData[0][1].title;
                     this.changeCountry(data)
