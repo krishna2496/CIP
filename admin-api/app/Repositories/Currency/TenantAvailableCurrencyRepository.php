@@ -92,11 +92,11 @@ class TenantAvailableCurrencyRepository
     /**
      * List of all tenant currency
      *
-     * @param array $request
+     * @param int $perPage
      * @param int $tenantId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getTenantCurrencyList(Request $request, int $tenantId) : LengthAwarePaginator
+    public function getTenantCurrencyList(int $perPage, int $tenantId) : LengthAwarePaginator
     {
         // Check tenant is present in the system
         $tenantData = $this->tenant->findOrFail($tenantId);
@@ -104,7 +104,7 @@ class TenantAvailableCurrencyRepository
         $currencyTenantDetails = $this->tenantAvailableCurrency
             ->where(['tenant_id' => $tenantId])
             ->orderBy('code', 'ASC')
-            ->paginate($request->perPage);
+            ->paginate($perPage);
         return $currencyTenantDetails;
     }
 }

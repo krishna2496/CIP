@@ -77,15 +77,17 @@ class TenantCurrencyController extends Controller
     public function index(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $tenantCurrencyList = $this->tenantAvailableCurrencyRepository->getTenantCurrencyList($request, $tenantId);
+            $perPage = $request->perPage;
+            $tenantCurrencyList = $this->tenantAvailableCurrencyRepository->getTenantCurrencyList($perPage, $tenantId);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiData = $tenantCurrencyList;
+
             $apiMessage = (count($apiData) > 0)  ?
                 trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING') :
                 trans('messages.custom_error_message.ERROR_TENANT_CURRENCY_EMPTY_LIST');
-                        
+
             return $this->responseHelper->successWithPagination($apiData, $apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

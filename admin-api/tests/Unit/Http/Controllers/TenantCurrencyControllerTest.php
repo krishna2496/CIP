@@ -39,7 +39,7 @@ class TenantCurrencyControllerTest extends TestCase
                 ]
             ]
         ];
-        $data = ['perPage' => '10'];
+        $data = ['perPage' => 10];
         $request = new Request($data);
         
         $id = rand(5000, 10000);
@@ -49,7 +49,7 @@ class TenantCurrencyControllerTest extends TestCase
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
         $tenantAvailableCurrencyRepository->shouldReceive('getTenantCurrencyList')
             ->once()
-            ->with($request, $id)
+            ->with($data['perPage'], $id)
             ->andThrow($modelNotFoundException);
 
         $jsonResponse = $this->getJson($methodResponse);
@@ -108,7 +108,7 @@ class TenantCurrencyControllerTest extends TestCase
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $tenantAvailableCurrencyRepository->shouldReceive('getTenantCurrencyList')
             ->once()
-            ->with($request, 1)
+            ->with($data['perPage'], 1)
             ->andReturn($mockResponse);
 
         $responseHelper = $this->mock(ResponseHelper::class);
