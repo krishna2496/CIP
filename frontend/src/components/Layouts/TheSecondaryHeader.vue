@@ -171,10 +171,13 @@
                 b_header.classList.add("active");
             },
 
-            removeItems(data, defaultCountryId = "") {
+            removeItems(data) {
                 if (data.selectedType == "country") {
-                    data.selectedId = defaultCountryId;
-                    data.selectedVal = this.defaultCountry;
+                    data.selectedId = store.state.defaultCountryId;
+                    let selectedCountryData = this.countryList.filter((country) => {
+                      return( data.selectedId == country[1].id);
+                    });
+                    data.selectedVal = selectedCountryData[0][1].title;
                     this.changeCountry(data)
                 }
                 if (data.selectedType == "state") {
@@ -620,8 +623,8 @@
                 }, 200)
 
             },
-            clearAllFilter(defaultCountryId) {
-                this.selectedfilterParams.countryId = defaultCountryId;
+            clearAllFilter() {
+                this.selectedfilterParams.countryId = store.state.defaultCountryId;
                 this.selectedfilterParams.stateId = '';
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
@@ -653,7 +656,6 @@
                 }
                 this.$parent.getMissions("removeLoader");
                 setTimeout(() => {
-                    //this.selectedfilterParams.countryId = store.state.countryId;
                     filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.country) {

@@ -350,22 +350,18 @@
             this.getMissions();
         },
         changeTag(data) {
-          let defaultCountryId = "";
-          if (data.selectedType == "country") {
-            defaultCountryId = store.state.defaultCountryId;
-            if(data.selectedId == store.state.defaultCountryId) {
+          if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
               return;
-            }
           }
-          this.$refs.secondaryHeader.removeItems(data, defaultCountryId);
+          this.$refs.secondaryHeader.removeItems(data);
         },
         clearMissionFilter() {
-            this.$refs.secondaryHeader.clearAllFilter(store.state.defaultCountryId);
+            this.$refs.secondaryHeader.clearAllFilter();
         },
         clearMissionFilterData() {
             document.body.classList.add("loader-enable");
             store.commit('clearFilterClick', 'true');
-            this.$refs.secondaryHeader.clearAllFilter(store.state.defaultCountryId);
+            this.$refs.secondaryHeader.clearAllFilter();
             document.body.classList.remove("loader-enable");
             store.commit('clearFilterClick', '');
         }
