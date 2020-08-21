@@ -288,7 +288,7 @@
                     this.defaultCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
                     this.defaultCountry = this.defaultCountry.replace(/[^a-zA-Z\s]+/g, '');
                 } else {
-                  this.defaultCountry = this.languageData.label.country;
+                    this.defaultCountry = this.languageData.label.country;
                 }
                 this.selectedfilterParams.stateId = '';
                 this.selectedfilterParams.cityId = '';
