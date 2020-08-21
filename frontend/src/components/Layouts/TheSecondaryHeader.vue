@@ -285,7 +285,6 @@
                 this.isCountryChange = true;
                 this.selectedfilterParams.countryId = country.selectedId;
                 if (country.selectedId != '') {
-                    this.selectedfilterParams.countryId = country.selectedId;
                     this.defaultCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
                     this.defaultCountry = this.defaultCountry.replace(/[^a-zA-Z\s]+/g, '');
                 } else {
