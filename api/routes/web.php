@@ -87,7 +87,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Apply to a mission */
     $router->post(
         'app/mission/application',
-        ['middleware' => 
+        ['middleware' =>
         'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware|TenantHasSettings:volunteering',
             'uses' => 'App\Mission\MissionApplicationController@missionApplication']
     );
@@ -121,7 +121,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch recent volunteers */
     $router->get('/app/mission/{missionId}/volunteers', [
-        'middleware' => 
+        'middleware' =>
         'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
         'uses' => 'App\Mission\MissionApplicationController@getVolunteers']);
 
@@ -225,7 +225,7 @@ $router->patch('/app/change-password', ['as' => 'password.change',
 
 /* Create user skill */
 $router->post('/app/user/skills', ['as' => 'user.skills',
-    'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettings:skills_enabled',
+    'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettings:volunteering,skills_enabled',
     'uses' => 'App\User\UserController@linkSkill']);
 
 /* Fetch Language json file */
@@ -239,7 +239,7 @@ $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image'
 
 /* Fetch pending goal requests */
 $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
-    'middleware' => 
+    'middleware' =>
     'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
@@ -251,19 +251,19 @@ $router->get('/app/timesheet/goal-requests/export', ['as' => 'app.timesheet.goal
 
 /* Store timesheet data */
 $router->post('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 
+    'middleware' =>
     'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
 /* Submit timesheet data */
 $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
-    'middleware' => 
+    'middleware' =>
     'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
 
 /* Fetch pending time requests */
 $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
-    'middleware' => 
+    'middleware' =>
     'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
@@ -274,7 +274,7 @@ $router->get('/app/timesheet/time-requests/export', ['as' => 'app.timesheet.time
 
 /* Get timesheet data */
 $router->get('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 
+    'middleware' =>
     'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@index']);
 
@@ -302,7 +302,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 
+        'middleware' =>
         'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
@@ -313,7 +313,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 
+        'middleware' =>
         'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
@@ -630,7 +630,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set skills data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/skills', 'middleware' => 
+        ['prefix' => '/entities/skills', 'middleware' =>
         'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering,skills_enabled'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
@@ -673,7 +673,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Timesheet management */
     $router->group(
-        ['prefix' => 'timesheet', 'middleware' => 
+        ['prefix' => 'timesheet', 'middleware' =>
         'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
         function ($router) {
             $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);

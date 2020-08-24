@@ -30,8 +30,8 @@ class TenantHasSettingsTest extends TestCase
         };
 
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
-        ->once()
-        ->andReturn(false);
+            ->once()
+            ->andReturn(false);
 
         $responseHelper->shouldReceive('error')
             ->once()
@@ -39,7 +39,7 @@ class TenantHasSettingsTest extends TestCase
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
                 '',
-                trans('messages.custom_error_message.ERROR_UNAUTHORIZED')
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
 
         $middleware = new TenantHasSettings(
@@ -57,18 +57,19 @@ class TenantHasSettingsTest extends TestCase
         $settings = 'volunteering';
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper->shouldNotReceive('error');
 
         $callbackMock = $this->getMockBuilder(\stdClass::class)
-        ->setMethods(['__invoke'])
-        ->getMock();
+            ->setMethods(['__invoke'])
+            ->getMock();
 
         $closure = function (...$args) use ($callbackMock) {
             return $callbackMock(...$args);
         };
 
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
-        ->once()
-        ->andReturn(true);
+            ->once()
+            ->andReturn(true);
 
         $middleware = new TenantHasSettings(
             $tenantActivatedSettingRepository,
