@@ -8399,27 +8399,27 @@
           "description": "mission_theme_id from `mission_theme` table"
         },
         "volunteering_attribute": {
-			"type": "object",
-			"properties": {
-			  "availability_id": {
-				"type": "integer",
-				"format": "int64",
-				"description": "availability_id from `availability` table"
-			  },
-			  "is_virtual": {
-				"type": "string",
-				"enum": [
-				  "0",
-				  "1"
-				]
-			  },
-			  "total_seats": {
-				"type": "integer",
-				"format": "int64",
-				"description": "Total seats for this mission"
-			  }
-			}
-		}
+          "type": "object",
+          "properties": {
+            "availability_id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "availability_id from `availability` table"
+            },
+            "is_virtual": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1"
+              ]
+            },
+            "total_seats": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Total seats for this mission"
+            }
+          }
+        }
       }
     },
     "FooterPage": {

@@ -183,7 +183,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         $mission = $this->missionRepository->store($request);
 
         // Set response data
@@ -299,7 +299,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
             ]
         );
-       
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -309,7 +309,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
- 
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
@@ -404,7 +404,7 @@ class MissionController extends Controller
                 }
             }
         }
-    
+
         $this->missionRepository->update($request, $missionId);
 
         // Set response data

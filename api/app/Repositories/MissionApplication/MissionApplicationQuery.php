@@ -144,7 +144,9 @@ class MissionApplicationQuery implements QueryableInterface
                         if ($isVirtual === null) {
                             $value = $isVirtual;
                         }
-                        $query->where('mission.is_virtual', $value);
+                        $query->whereHas('volunteeringAttribute', function ($query) use ($value) {
+                            $query->where('is_virtual', $value);
+                        });
                     });
                 });
             })
