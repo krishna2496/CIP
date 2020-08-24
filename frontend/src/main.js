@@ -17,7 +17,9 @@ import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import 'moment-timezone';
-import 'vue-search-select/dist/VueSearchSelect.css';
+import customCss from './services/CustomCss'
+import 'vue-search-select/dist/VueSearchSelect.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = process.env.NODE_ENV !== 'production';
@@ -66,8 +68,12 @@ router.beforeEach(async(to, from, next) => {
         }
 
         entryUrl = to.path;
+        const redirect = `${window.location.origin}${entryUrl}`;
         next({
-            name: "login"
+            name: "login",
+            query: {
+                'returnUrl': redirect
+            }
         });
         return;
     }
@@ -140,7 +146,7 @@ Vue.filter('substring', (value, data) => {
 });
 
 window.addEventListener('storage', function (e) {
-    if (event.key === 'logout-event') { 
+    if (event.key === 'logout-event') {
         location.reload();
     }
 },false);
