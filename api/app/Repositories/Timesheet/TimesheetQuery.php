@@ -111,7 +111,7 @@ class TimesheetQuery implements QueryableInterface
                 $join->on('city_language_fallback.city_id', '=', 'mission.city_id')
                     ->where('city_language_fallback.language_id', '=', $defaultLanguageId);
             })
-            ->whereNotIn('timesheet.status', ['pending'])
+            ->whereNotIn('timesheet.status', [config('constants.timesheet_status.PENDING')])
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
                     'publication_status',
