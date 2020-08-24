@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Timesheet;
 
+use App\Helpers\LanguageHelper;
 use App\Models\Timesheet;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -10,16 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class TimesheetQuery implements QueryableInterface
 {
-    const FILTER_MISSION_THEMES = 'missionThemes';
-    const FILTER_APPLICATION_DATE = 'applicationDate';
-    const FILTER_MISSION_STATUSES = 'customMissionStatus';
-    const FILTER_APPROVAL_STATUS = 'timesheetStatus';
-    const FILTER_MISSION_COUNTRIES = 'missionCountries';
-    const FILTER_MISSION_CITIES = 'missionCities';
-    const FILTER_TIMESHEET_IDS = 'timesheetIds';
-    const FILTER_TYPE = 'type';
+    private const FILTER_MISSION_THEMES = 'missionThemes';
+    private const FILTER_APPLICATION_DATE = 'applicationDate';
+    private const FILTER_MISSION_STATUSES = 'customMissionStatus';
+    private const FILTER_APPROVAL_STATUS = 'timesheetStatus';
+    private const FILTER_MISSION_COUNTRIES = 'missionCountries';
+    private const FILTER_MISSION_CITIES = 'missionCities';
+    private const FILTER_TIMESHEET_IDS = 'timesheetIds';
+    private const FILTER_TYPE = 'type';
 
-    const ALLOWED_SORTABLE_FIELDS = [
+    private const ALLOWED_SORTABLE_FIELDS = [
         'appliedDate' => 'date_volunteered',
         'applicant' => 'user.last_name',
         'reviewedHours' => 'time',
@@ -36,12 +37,22 @@ class TimesheetQuery implements QueryableInterface
         'applicantLastName' => 'user.last_name',
     ];
 
-    const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+    private const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
 
     /**
      * @var string
      */
     private $missionType;
+
+    /**
+     * @var LanguageHelper
+     */
+    private $languageHelper;
+
+    public function __construct(LanguageHelper $languageHelper)
+    {
+        $this->languageHelper = $languageHelper;
+    }
 
     /**
      * @param array $parameters
@@ -100,7 +111,7 @@ class TimesheetQuery implements QueryableInterface
                 $join->on('city_language_fallback.city_id', '=', 'mission.city_id')
                     ->where('city_language_fallback.language_id', '=', $defaultLanguageId);
             })
-            ->whereNotIn('timesheet.status', [config('constants.timesheet_status.PENDING')])
+            ->whereNotIn('timesheet.status', ['pending'])
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
                     'publication_status',
@@ -156,7 +167,6 @@ class TimesheetQuery implements QueryableInterface
                         $query->whereIn('city_id', $filters[self::FILTER_MISSION_CITIES]);
                     });
                     // Filter by mission Status
-                    $countFilterMissionStatus = 0;
                     $query->when(isset($filters[self::FILTER_MISSION_STATUSES]), function ($query) use ($filters) {
                         collect($filters[self::FILTER_MISSION_STATUSES])
                             ->map(function ($val) use ($query, &$countFilterMissionStatus) {
