@@ -312,7 +312,7 @@ class UserController extends Controller
             "linked_in_url" => "url|valid_linkedin_url",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-            "city_id" => "required|integer|exists:city,city_id,deleted_at,NULL",
+            "city_id" => "sometimes|integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
             'skills' => 'array',
