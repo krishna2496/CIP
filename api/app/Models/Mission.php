@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\Organization;
 
 class Mission extends Model
 {
@@ -61,8 +62,8 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual'];
+    'publication_status', 'organisation_id', 'mission_type',
+    'organisation_detail', 'availability_id', 'is_virtual', 'organisation_name'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -71,7 +72,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
+    'publication_status', 'organisation_id', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
@@ -84,7 +85,7 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'missionTab'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -395,12 +396,22 @@ class Mission extends Model
     }
 
     /**
+     * Get Organization associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function organization(): HasOne
+    {
+        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
+    }
+
+    /**
      * Get mission-tab associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionTab(): HasMany
-    {        
+    {
         return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
     }
 }

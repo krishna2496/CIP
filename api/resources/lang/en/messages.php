@@ -22,6 +22,7 @@ return [
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
         'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
+        'MESSAGE_USER_INVITE_LINK_SEND_SUCCESS' => 'Invite link is sent to the email account.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -148,9 +149,9 @@ return [
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted successfully',
-		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
         'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages sent successfully',
-    	'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted successfully',
         'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
@@ -196,6 +197,11 @@ return [
         'MESSAGE_STATE_LISTING' => 'States listed successfully',
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
+        'MESSAGE_ORGANIZATION_CREATED' => "Organization created successfully",
+        'MESSAGE_ORGANIZATION_UPDATED' => "Organization updated successfully",
+        'MESSAGE_ORGANIZATION_DELETED' => "Organization deleted successfully",
+        'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
+        'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
 
@@ -224,7 +230,9 @@ return [
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         'ERROR_USER_EXPIRED' => 'Your account has expired. Please contact your administrator.',
         'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
+        'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
+        'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -273,6 +281,7 @@ return [
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Something went wrong while sending reset password link',
+        'ERROR_SEND_USER_INVITE_LINK' => 'Something went wrong while sending the invite link',
         'ERROR_INVALID_DETAIL' => 'Invalid reset password token or email address',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Tenant domain not found',
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
@@ -358,14 +367,17 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_SAML_ACCESS_ONLY_ACTIVE' => 'Saml Access Only is currently active.',
         'ERROR_STATE_UNABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
-
-        //mission tab module
-        'MISSION_TAB_NOT_FOUND' => 'Mission tab id not found in the system.',
-        
+        'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
-       ]
+        'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
+
+        // mission tab module
+        'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
+    ]
 ];

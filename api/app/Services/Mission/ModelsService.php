@@ -10,8 +10,10 @@ use App\Models\TimeMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
+use App\Models\Organization;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
+
 
 class ModelsService
 {
@@ -44,7 +46,7 @@ class ModelsService
      * @var App\models\MissionDocument
      */
     public $missionDocument;
-        
+
     /**
     * @var App\Models\MissionRating
     */
@@ -60,12 +62,17 @@ class ModelsService
      */
     public $city;
 
+    /*
+     * @var App\Models\Organization
+     */
+    public $organization;
+
     /**
      * @var App\Models\MissionTab
      */
     public $missionTab;
 
-        /**
+    /**
      * @var App\Models\MissionTabLanguage
      */
     public $missionTabLanguage;
@@ -82,8 +89,9 @@ class ModelsService
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
-     * @param App\Models\MissionTab $missionTab
-     * @param App\Models\MissionTabLanguage $missionTabLanguage
+     * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
      */
     public function __construct(
@@ -96,6 +104,7 @@ class ModelsService
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        Organization $organization,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage
     ) {
@@ -108,6 +117,7 @@ class ModelsService
         $this->missionRating = $missionRating;
         $this->missionApplication = $missionApplication;
         $this->city = $city;
+        $this->organization = $organization;
         $this->missionTab = $missionTab;
         $this->missionTabLanguage = $missionTabLanguage;
     }
