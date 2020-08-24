@@ -657,6 +657,8 @@
                 }
                 this.$parent.getMissions("removeLoader");
                 setTimeout(() => {
+                    this.selectedfilterParams.countryId = store.state.countryId;
+                    this.selectedfilterParams.cityId = store.state.cityId;
                     filterList(this.selectedfilterParams).then(response => {
                         if (response) {
                             if (response.country) {
