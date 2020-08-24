@@ -295,7 +295,8 @@
 		"deleted_user" : "已删除的用户",
 		"virtual_mission" : "虚拟",
 		"virtual_missions" : "虚拟志愿服务",
-		"home" : "家"
+		"home" : "家",
+		"login_with_sso": "用SSO登录"
 	},
 	"placeholder": {
 		"email_address": "输入电子邮件地址",

@@ -543,7 +543,7 @@ class TimesheetController extends Controller
             foreach ($timeRequestList as $mission) {
                 $excel->appendRow([
                     strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
-                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organization_name)),
                     $mission->time,
                     $mission->hours
                 ]);
@@ -599,7 +599,7 @@ class TimesheetController extends Controller
             foreach ($goalRequestList as $mission) {
                 $excel->appendRow([
                     strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
-                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organization_name)),
                     $mission->action
                 ]);
             }

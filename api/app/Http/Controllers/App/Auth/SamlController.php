@@ -101,7 +101,8 @@ class SamlController extends Controller
             'department' => 'department',
             'linkedin' => 'linked_in_url',
             'volunteer' => 'why_i_volunteer',
-            'position' => 'title'
+            'position' => 'position',
+            'title' => 'title'
         ];
 
         $validProperties = [
@@ -118,7 +119,8 @@ class SamlController extends Controller
             'department',
             'linked_in_url',
             'why_i_volunteer',
-            'title'
+            'title',
+            'position'
         ];
 
         foreach ($auth->getAttributes() as $key => $attribute) {
@@ -257,7 +259,7 @@ class SamlController extends Controller
             $this->userRepository->store($userData) :
             $this->userRepository->update($userData, $userDetail->user_id);
 
-        $this->syncContact($userDetail, $settings);
+        $this->helpers->syncUserData($request, $userDetail);
 
         if (!$isNewUser && $userDetail->status !== config('constants.user_statuses.ACTIVE')) {
             return $this->responseHelper->error(
@@ -363,54 +365,5 @@ class SamlController extends Controller
         return $optionSetting->getOptionValueAttribute(
             $optionSetting->option_value
         );
-    }
-
-    private function syncContact($userDetail, $settings)
-    {
-        $country = [];
-        if ($userDetail->country_id) {
-            $country = $this->countryRepository->getCountryData(
-                $userDetail->country_id
-            );
-        }
-
-        $language = $this->languageHelper->getLanguage($userDetail->language_id);
-        $postalCity = null;
-
-        if ($userDetail->city_id) {
-            $city = $this->cityRepository->getCityData($userDetail->city_id);
-            $cityLanguages = collect($city['languages']);
-            if ($cityLanguages->count()) {
-                $postalCity = $cityLanguages
-                    ->where('language_id', $userDetail->language_id)
-                    ->first();
-                if ($postalCity) {
-                    $postalCity = $postalCity['name'];
-                } else {
-                    $postalCity = $cityLanguages->first()['name'];
-                }
-            }
-        }
-
-        $payload = json_encode([
-            'ci_platform_instance_id' => $settings['ci_platform_instance_id'],
-            'contact_info' => [
-                'email' => $userDetail->email,
-                'position' => $userDetail->title,
-                'first_name' => $userDetail->first_name,
-                'last_name' => $userDetail->last_name,
-                'postal_city' => $postalCity ?? '',
-                'postal_country' => $country['ISO'] ?? '',
-                'preferred_language' => $language->code,
-                'department' => $userDetail->department
-            ]
-        ]);
-
-        // Temporarily disabling contact synchronizer.
-        // (new Amqp)->publish(
-        //     'ciContacts',
-        //     $payload,
-        //     ['queue' => 'ciContacts']
-        // );
     }
 }
