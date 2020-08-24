@@ -81,7 +81,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'hours_goal',
         'is_profile_complete',
         'receive_email_notification',
-        'expiry'
+        'expiry',
+        'invitation_sent_at',
+        'pseudonymize_at'
     ];
 
     /**
@@ -90,7 +92,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $visible = [
-        'user_id', 
+        'user_id',
         'first_name',
         'last_name',
         'email',
@@ -123,13 +125,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'stories_count',
         'stories_views_count',
         'stories_invited_users_count',
+        'first_login',
         'last_login',
         'last_volunteer',
         'open_volunteer_request',
         'mission',
         'favourite_mission',
         'hours_goal',
-        'expiry'
+        'expiry',
+        'invitation_sent_at',
+        'pseudonymize_at'
     ];
 
      /*
@@ -231,7 +236,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUser(int $id)
     {
-        return static::with('city', 'country', 'timezone', 'userCustomFieldValue.userCustomField')->findOrFail($id);
+        return static::with('city', 'country', 'timezone', 'userCustomFieldValue.userCustomField', 'skills.skill')->findOrFail($id);
     }
 
     /**
@@ -277,7 +282,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUserDetail(int $userId): User
     {
-        return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
+        return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue', 'skills.skill')->findOrFail($userId);
     }
 
     /**
