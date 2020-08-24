@@ -292,7 +292,12 @@ class MissionController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
+            return $this->responseHelper->success(
+                $apiStatus,
+                $apiMessage,
+                $mission->toArray(),
+                false
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
