@@ -137,6 +137,27 @@
                                 </b-col>
                                 <b-col md="6">
                                     <b-form-group>
+                                        <label>{{languageData.label.country}}*</label>
+                                        <CustomFieldDropdown v-model="profile.country"
+                                                             :errorClass="submitted && $v.profile.country.$error"
+                                                             :defaultText="countryDefault" :optionList="countryList"
+                                                             @updateCall="updateCountry" translationEnable="false" />
+                                        <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
+                                            {{ languageData.errors.country_required }}
+                                        </div>
+                                    </b-form-group>
+
+                                </b-col>
+<!--                                <b-col md="6">-->
+<!--                                    <b-form-group>-->
+<!--                                        <label>{{languageData.label.city}}</label>-->
+<!--                                        <CustomFieldDropdown v-model="profile.city"-->
+<!--                                                             :defaultText="cityDefault"-->
+<!--                                                             :optionList="cityList" @updateCall="updateCity" translationEnable="false" />-->
+<!--                                    </b-form-group>-->
+<!--                                </b-col>-->
+                                <b-col md="6">
+                                    <b-form-group>
                                         <label for>{{languageData.label.department}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.department" maxlength="16"
                                                       :placeholder="languageData.placeholder.department"></b-form-input>
@@ -159,37 +180,6 @@
                                                          :placeholder="languageData.placeholder.why_i_volunteer" size="lg" no-resize
                                                          rows="5"></b-form-textarea>
                                     </b-form-group>
-                                </b-col>
-                            </b-row>
-                            <b-row class="row-form">
-                                <b-col cols="12">
-                                    <h2 class="title-with-border">
-                                        <span>{{languageData.label.address_information}}</span>
-                                    </h2>
-                                </b-col>
-                                <b-col md="6">
-                                    <b-form-group>
-                                        <label>{{languageData.label.country}}*</label>
-                                        <CustomFieldDropdown v-model="profile.country"
-                                                             :errorClass="submitted && $v.profile.country.$error"
-                                                             :defaultText="countryDefault" :optionList="countryList"
-                                                             @updateCall="updateCountry" translationEnable="false" />
-                                        <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
-                                            {{ languageData.errors.country_required }}
-                                        </div>
-                                    </b-form-group>
-
-                                </b-col>
-                                <b-col md="6">
-                                    <b-form-group>
-                                        <label>{{languageData.label.city}}*</label>
-                                        <CustomFieldDropdown v-model="profile.city"
-                                                             :errorClass="submitted && $v.profile.city.$error" :defaultText="cityDefault"
-                                                             :optionList="cityList" @updateCall="updateCity" translationEnable="false" />
-                                        <div v-if="submitted && !$v.profile.city.required" class="invalid-feedback">
-                                            {{ languageData.errors.city_required }}</div>
-                                    </b-form-group>
-
                                 </b-col>
                             </b-row>
                             <b-row class="row-form">
@@ -342,7 +332,8 @@
     loadLocaleMessages,
     country,
     skill,
-    timezone
+    timezone,
+    policy
   } from "../services/service";
   import {
     required,
@@ -351,6 +342,7 @@
     minLength
   } from 'vuelidate/lib/validators';
   import constants from '../constant';
+  import { setSiteTitle } from '../utils';
 
   export default {
     components: {
@@ -483,9 +475,6 @@
         country: {
           required
         },
-        city: {
-          required
-        },
         language: {
           required
         },
@@ -615,8 +604,11 @@
             if(this.userData.country_id != 0) {
               this.profile.country = this.userData.country_id
             }
-            if(this.userData.city_id != 0) {
+            if(this.userData.city_id != 0 && this.userData.city_id != null) {
               this.profile.city = this.userData.city_id
+            } else {
+              this.profile.city = null;
+              this.changeCityData(this.profile.country);
             }
             if(this.userData.availability_id != 0 && this.userData.availability_id != null) {
               this.profile.availability = this.userData.availability_id
@@ -809,15 +801,19 @@
         this.saveProfileData.title = this.profile.title;
         this.saveProfileData.timezone_id = this.profile.time;
         this.saveProfileData.language_id = this.profile.language;
-          if (this.profile.availability != 0) {
-              this.saveProfileData.availability_id = this.profile.availability
-          } else {
-              delete this.saveProfileData['availability_id'];
-          }
+        if (this.profile.availability != 0) {
+            this.saveProfileData.availability_id = this.profile.availability
+        } else {
+            delete this.saveProfileData['availability_id'];
+        }
         this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
         this.saveProfileData.employee_id = this.profile.employeeId;
         this.saveProfileData.department = this.profile.department;
-        this.saveProfileData.city_id = this.profile.city;
+        if (this.profile.city != 0) {
+          this.saveProfileData.city_id = this.profile.city
+        } else {
+          delete this.saveProfileData['city_id'];
+        }
         this.saveProfileData.country_id = this.profile.country;
         this.saveProfileData.profile_text = this.profile.profileText;
         this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
@@ -852,8 +848,10 @@
           } else {
             this.isUserProfileComplete = response.data.is_profile_complete;
             store.commit('changeProfileSetFlag',response.data.is_profile_complete);
-            store.commit('setDefaultLanguageCode', this.languageCode)
+            store.commit('setDefaultLanguageCode', this.languageCode);
+            setSiteTitle();
             this.showPage = false;
+            this.setPolicyPage();
             this.getUserProfileDetail().then(() => {
               this.showPage = true;
               loadLocaleMessages(this.profile.languageCode).then(() => {
@@ -861,11 +859,20 @@
                 this.makeToast("success", response.message);
                 this.isShownComponent = true;
               });
-
               store.commit("changeUserDetail", this.profile)
-
             });
           }
+        });
+      },
+      setPolicyPage() {
+        policy().then(response => {
+          if (response.error == false) {
+            if(response.data.length > 0) {
+              store.commit('policyPage', response.data);
+              return;
+            }
+          }
+          store.commit('policyPage', null);
         });
       },
       // changePassword
