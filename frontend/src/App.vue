@@ -14,8 +14,7 @@ import { setSiteTitle } from './utils';
 export default {
     data() {
         return {
-            stylesLoaded: false,
-            languageData : []
+            stylesLoaded: false
         };
     },
     mounted() {

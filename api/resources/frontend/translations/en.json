@@ -296,8 +296,8 @@
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtual volunteering",
 		"home" : "Home",
-		"site_title" : "Optimy",
-		"login_with_sso": "Login with SSO"
+		"login_with_sso": "Login with SSO",
+		"site_title" : "Optimy"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",

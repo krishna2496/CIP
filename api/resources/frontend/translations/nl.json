@@ -296,7 +296,8 @@
 		"virtual_mission" : "Virtueel",
 		"virtual_missions" : "Virtueel vrijwilligerswerk",
 		"home" : "Thuis",
-		"login_with_sso": "Log in met SSO"
+		"login_with_sso": "Log in met SSO",
+		"site_title" : "Optimy"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",

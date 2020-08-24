@@ -296,8 +296,8 @@
 		"virtual_mission" : "En ligne",
 		"virtual_missions" : "Mécénat en ligne",
 		"home" : "Bouton d'accueil",
-		"site_title" : "Optimy",
-		"login_with_sso": "Connectez-vous avec SSO"
+		"login_with_sso": "Connectez-vous avec SSO",
+		"site_title" : "Optimy"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",
