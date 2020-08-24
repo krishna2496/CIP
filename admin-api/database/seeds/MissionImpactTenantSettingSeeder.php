@@ -14,13 +14,11 @@ class MissionImpactTenantSettingSeeder extends Seeder
     {
         $item = [
             'title' => 'Mission impact',
-            'description' => 'Mission impact is enabled/disabled',
+            'description' => 'Enable/disable mission impact on the platform',
             'key' => 'mission_impact',
-            "created_at" => Carbon::now(),
-            "updated_at" => Carbon::now()
+            'created_at' => Carbon::now()
         ];
 
-        \DB::table('tenant_setting')->insert($item);
-        
+        DB::table('tenant_setting')->insert($item);
     }
 }
