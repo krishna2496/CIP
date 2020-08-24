@@ -3,7 +3,7 @@ import store from './store';
 export function setSiteTitle() {
   const defaultLang = store.state.defaultLanguage.toLowerCase();
   const translations = JSON.parse(store.state.languageLabel);
-  let siteTitle = translations.label.site_title || 'Optimy';
+  let siteTitle = translations.label.site_title || 'Home';
   if (store.state.siteTitle
     && store.state.siteTitle.translations
     && store.state.siteTitle.translations.length

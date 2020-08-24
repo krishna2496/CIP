@@ -297,7 +297,7 @@
 		"virtual_missions" : "Виртуальное волонтерство",
 		"home" : "дом",
 		"login_with_sso": "Войти с помощью SSO",
-		"site_title" : "Optimy"
+		"site_title" : "Главная"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",
