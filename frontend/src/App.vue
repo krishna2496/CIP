@@ -79,8 +79,6 @@ export default {
     },
     created() {
         document.body.classList.add("loader-enable");
-        setSiteTitle();
-
         customCss()
             .catch(() => {
                 import( /* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
@@ -108,6 +106,7 @@ export default {
         window.addEventListener("resize", this.signinAdj);
         window.addEventListener("scroll", this.handleScroll);
         window.scrollTo(0, 0);
+        setSiteTitle();
     },
     updated() {
         window.scrollTo(0, 0);
