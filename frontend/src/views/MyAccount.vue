@@ -860,7 +860,9 @@
                 this.makeToast("success", response.message);
                 this.isShownComponent = true;
                 store.commit("changeUserDetail", this.profile)
-                if (redirect) this.$router.push('/home');
+                if (redirect) {
+                  this.$router.push('/home');
+                }
               });
             });
           }
