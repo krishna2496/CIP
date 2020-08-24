@@ -86,7 +86,7 @@
 									{{mission.short_description | substring(105)}}
 								</b-card-text>
 								<div class="group-ratings">
-									<span class="group-name">{{mission.organisation_name}}</span>
+									<span class="group-name">{{mission.organization.name}}</span>
 									<star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5"
 												 inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
 												 :rating="mission.mission_rating_count" :read-only="true">
@@ -147,7 +147,7 @@
 												</div>
 											</div>
 										</template> -->
-										
+
 										<template v-if="mission.application_deadline != null">
 											<div class="detail-column info-block">
 												<i class="icon-wrap">
@@ -178,7 +178,7 @@
 												</div>
 											</template>
 										</div>
-										<div 
+										<div
 										v-bind:class="{
 											'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
 											'detail-column' : true,
@@ -194,7 +194,7 @@
 													class="mb-2"></b-progress>
 												<span class="subtitle-text">
                                                     {{mission.achieved_goal}}
-                                                <span 
+                                                <span
                                                     v-if="mission.label_goal_achieved != ''">
                                                     {{ mission.label_goal_achieved }}
                                                 </span>

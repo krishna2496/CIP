@@ -73,11 +73,11 @@ class MigrationRollack extends Command
                         // Run migration command to apply migration change
                         Artisan::call('migrate:rollback --path=database/migrations/tenant');
                     } catch (\Exception $e) {
-                        // Failed then send mail to admin
-                        $this->sendFailerMail($tenant, config('constants.migration_file_type.migration'));
                         $this->warn("\n \n Migration rollback change have some error for tenant :
                         $tenant->name (tenant id : $tenant->tenant_id)");
                         $this->error("\n\n".$e->getMessage());
+                        // Failed then send mail to admin
+                        $this->sendFailerMail($tenant, config('constants.migration_file_type.migration'));
                         continue;
                     }
                     $bar->advance();
