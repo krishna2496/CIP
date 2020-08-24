@@ -90,6 +90,7 @@
                 searchPlaceHolder: '',
                 defaultCountry: "Country",
                 defaultCity: "",
+                defaultState: "",
                 defaultTheme: "",
                 defaultSkill: "",
                 stateList : [],
