@@ -212,7 +212,48 @@ class MissionApplicationQuery implements QueryableInterface
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
 
+        $this->addCityCountryLanguageCode($applications, $tenantLanguages, $defaultLanguageId);
+
         return $applications;
+    }
+
+    /**
+     * Add the property 'language_code' in the 'translations' property of the mission city and country.
+     *
+     * Iterates over all the objects contained in 'translations' and set the relevant language code.
+     * If no language is matched when trying to add the property, set the language code to tenant's default language.
+     * If the tenant's default language cannot be found, set it to english.
+     *
+     * @param LengthAwarePaginator $applications
+     * @param Collection $tenantLanguages
+     * @param int $defaultLanguageId
+     */
+    private function addCityCountryLanguageCode($applications, $tenantLanguages, $defaultLanguageId)
+    {
+        // Getting default language code
+        $matchedDefaultLanguage = $tenantLanguages->where('language_id', $defaultLanguageId)->first();
+        $defaultLanguageCode = $matchedDefaultLanguage !== null
+            ? $matchedDefaultLanguage->code
+            : 'en'; // Fallback to english if nothing is found
+
+        // Setting the language_code property
+        foreach ($applications as $application) {
+            // Adding property for country
+            foreach ($application->mission->country->languages as $countryLanguage) {
+                $matchedCountryLanguage = $tenantLanguages->where('language_id', $countryLanguage->language_id)->first();
+                $countryLanguage->language_code = $matchedCountryLanguage !== null
+                    ? $matchedCountryLanguage->code
+                    : $defaultLanguageCode;
+            }
+
+            // Adding property for city
+            foreach ($application->mission->city->languages as $cityLanguage) {
+                $matchedCityLanguage = $tenantLanguages->where('language_id', $cityLanguage->language_id)->first();
+                $cityLanguage->language_code = $matchedCityLanguage !== null
+                    ? $matchedCityLanguage->code
+                    : $defaultLanguageCode;
+            }
+        }
     }
 
     /**

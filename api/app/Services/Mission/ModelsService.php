@@ -10,8 +10,7 @@ use App\Models\TimeMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
-use App\Models\MissionTab;
-use App\Models\MissionTabLanguage;
+use App\Models\Organization;
 use App\Models\DonationAttribute;
 
 class ModelsService
@@ -62,14 +61,9 @@ class ModelsService
     public $city;
 
     /**
-     * @var App\Models\MissionTab
+     * @var App\Models\Organization
      */
-    public $missionTab;
-
-        /**
-     * @var App\Models\MissionTabLanguage
-     */
-    public $missionTabLanguage;
+    public $organization;
 
     /**
      * @var App\Models\DonationAttribute
@@ -88,8 +82,7 @@ class ModelsService
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
-     * @param App\Models\MissionTab $missionTab
-     * @param App\Models\MissionTabLanguage $missionTabLanguage
+     * @param  App\Models\Organization $organization
      * @param App\Models\DonationAttribute $donationAttribute
      * @return void
      */
@@ -103,8 +96,7 @@ class ModelsService
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-        MissionTab $missionTab,
-        MissionTabLanguage $missionTabLanguage,
+        Organization $organization,
         DonationAttribute $donationAttribute
     ) {
         $this->mission = $mission;
@@ -116,8 +108,7 @@ class ModelsService
         $this->missionRating = $missionRating;
         $this->missionApplication = $missionApplication;
         $this->city = $city;
-        $this->missionTab = $missionTab;
-        $this->missionTabLanguage = $missionTabLanguage;
+        $this->organization = $organization;
         $this->donationAttribute = $donationAttribute;
     }
 }

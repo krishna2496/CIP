@@ -35,11 +35,19 @@
             </b-form-group>
             <b-form-group v-if="item.type == 'multiselect'">
                 <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
-                <AppCustomCheckboxDropdown :filterTitle="defaultText" v-model="customFeildData[item.field_id]"
-                                           :selectedItem="getSelectedItem(item.field_id)"
-                                           :checkList="getRadioArrayValue(item.translations.values)" :errorClass="getErrorClass(item.field_id)"
-                                           :validstate="getErrorState(item.field_id)" :fieldId="item.field_id"
-                                           @updateCall="changeMultiSelect" />
+                <multiselect
+                  v-model="multiSelectModel[item.field_id]"
+                  :options="multiSelectOptions(item.field_id, item.translations.values)"
+                  class="optimy-multiselect"
+                  :multiple="true"
+                  track-by="value"
+                  :custom-label="customLabel"
+                  :placeholder="defaultText"
+                  :allow-empty="item.is_mandatory !== 1"
+                  :close-on-select="false"
+                  @select="addMultiSelect"
+                  @remove="removeMultiSelect"
+                ></multiselect>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
@@ -47,9 +55,9 @@
             <b-form-group v-if="item.type == 'textarea'">
                 <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
                 <b-form-textarea v-model.trim="customFeildData[item.field_id]" :id='`textarea-${item.field_id}`'
-                                 :placeholder='`Enter ${item.translations.name}`' rows="3"
+                                 :placeholder='`Enter ${item.translations.name}`' no-resize rows="3"
                                  :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
-                                 @change="updateChanges" max-rows="6">
+                                 @change="updateChanges">
                 </b-form-textarea>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -92,10 +100,13 @@
     required,
     email
   } from 'vuelidate/lib/validators';
+  import Multiselect from 'vue-multiselect';
+
   export default {
     components: {
       AppCustomFieldDropdown,
-      AppCustomCheckboxDropdown
+      AppCustomCheckboxDropdown,
+      Multiselect
     },
     name: "CustomField",
     props: {
@@ -113,7 +124,24 @@
         customFeildData: {},
         submit: false,
         defaultValue: {},
-        languageData: []
+        languageData: [],
+        multiSelectModel: this.getSelectedItems(),
+        multiSelectOptions: function(fieldId, data) {
+          let optionData = [];
+          if (data) {
+            Object.keys(data).map(function (key) {
+              let newData = data[key]
+              Object.keys(newData).map(function (key) {
+                optionData.push({
+                  text: newData[key],
+                  value: key,
+                  fieldId: fieldId
+                });
+              });
+            });
+          }
+          return optionData;
+        }
       };
     },
     validations() {
@@ -204,6 +232,37 @@
     },
     mounted() {},
     methods: {
+      customLabel(item){
+        return `${item.text}`
+      },
+      getSelectedItems(){
+        let options = [];
+        let selectedItems = [];
+        _.map(this.optionList, (item) => {
+          if(item.type == 'multiselect') {
+            let arr = [];
+            _.map(item.translations.values, (a) => {
+              _.each(Object.keys(a), function(k){
+                arr[k] = a[k];
+              })
+            })
+            options[item.field_id] = arr;
+
+            if(item.user_custom_field_value != ''){
+              let obj = [];
+              _.each(item.user_custom_field_value.split(","), function(val){
+                obj.push({
+                  text: options[item.field_id][val],
+                  value: val,
+                  fieldId: item.field_id
+                });
+              });
+              selectedItems[item.field_id] = obj;
+            }
+          }
+        });
+        return selectedItems;
+      },
       getColumn(type) {
         if (type == "radio" || type == "checkbox") {
           return 6
@@ -214,6 +273,33 @@
       updateCustomDropDown(value) {
         this.customFeildData[value.fieldId] = value.selectedId
         this.defaultValue[value.fieldId] = value.selectedVal
+        this.updateChanges();
+      },
+      addMultiSelect(data) {
+        if(this.customFeildData[data.fieldId] == null || this.customFeildData[data.fieldId] == ''){
+          this.customFeildData[data.fieldId] = data.value
+        } else {
+          let arr = this.customFeildData[data.fieldId].split(',')
+          const index = arr.indexOf(data.value);
+          if(index === -1){
+            arr.push(data.value)
+          }
+          this.customFeildData[data.fieldId] = arr.join()
+        }
+        this.updateChanges();
+      },
+      removeMultiSelect(data) {
+        let arr = this.customFeildData[data.fieldId].split(',')
+        const index = arr.indexOf(data.value);
+        if (index > -1) {
+          arr.splice(index, 1);
+        }
+
+        if(arr.length == 0) {
+          this.customFeildData[data.fieldId] = null
+        } else {
+          this.customFeildData[data.fieldId] = arr.join()
+        }
         this.updateChanges();
       },
       changeMultiSelect(value) {

@@ -657,8 +657,19 @@
                 },
                 submitNewMission() {
                     if (this.submitNewMissionUrl != '') {
-                        window.open(this.submitNewMissionUrl, '_self');
+                        window.open(this.submitNewMissionUrl, '_blank');
                     }
+                },
+                setPolicyPage() {
+                    policy().then(response => {
+                      if (response.error == false) {
+                        if(response.data.length > 0) {
+                          this.policyPage = response.data;
+                          return store.commit('policyPage',response.data);
+                        }
+                      }
+                      store.commit('policyPage',null);
+                    });
                 }
             },
             created() {
@@ -673,9 +684,13 @@
                 if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
                 }
-                if (JSON.parse(store.state.policyPage) != null) {
-                    this.policyPage = JSON.parse(store.state.policyPage)
+                
+                if (JSON.parse(store.state.policyPage) === null && store.state.isLoggedIn === true) {
+                    this.setPolicyPage();
+                } else {
+                    this.policyPage = JSON.parse(store.state.policyPage);
                 }
+
                 setTimeout(function () {
                     let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {

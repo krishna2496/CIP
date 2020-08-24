@@ -92,17 +92,17 @@ class MissionController extends Controller
     /**
      * Create a new Mission controller instance.
      *
-     * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param Illuminate\Helpers\ResponseHelper $responseHelper
-     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param Illuminate\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\Helpers $helpers
+     * @param App\Repositories\Mission\MissionRepository           $missionRepository
+     * @param Illuminate\Helpers\ResponseHelper                    $responseHelper
+     * @param Illuminate\Http\UserFilterRepository                 $userFilterRepository
+     * @param Illuminate\Helpers\LanguageHelper                    $languageHelper
+     * @param App\Helpers\Helpers                                  $helpers
      * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
-     * @param App\Repositories\Skill\SkillRepository $skillRepository
-     * @param App\Repositories\Country\CountryRepository $countryRepository
-     * @param App\Repositories\City\CityRepository $cityRepository
-     * @param App\Repositories\User\UserRepository $userRepository
-     * @param App\Repositories\State\StateRepository $stateRepository
+     * @param App\Repositories\Skill\SkillRepository               $skillRepository
+     * @param App\Repositories\Country\CountryRepository           $countryRepository
+     * @param App\Repositories\City\CityRepository                 $cityRepository
+     * @param App\Repositories\User\UserRepository                 $userRepository
+     * @param App\Repositories\State\StateRepository               $stateRepository
      *
      * @return void
      */
@@ -292,9 +292,9 @@ class MissionController extends Controller
         // Return data by top organisation
         if (!empty($topOrganisation->toArray())) {
             foreach ($topOrganisation as $key => $value) {
-                if ($value->organisation_name !== '') {
+                if ($value->organization->name !== '') {
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
-                    $value->organisation_name;
+                    $value->organization->name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
                     $value->organisation_id;
                 }
@@ -703,7 +703,7 @@ class MissionController extends Controller
             $apiMessage = (empty($mission)) ? trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND') :
              trans('messages.success.MESSAGE_MISSION_FOUND');
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData, false);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

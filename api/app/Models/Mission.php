@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\Organization;
 
 class Mission extends Model
 {
@@ -47,8 +48,8 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual'];
+    'publication_status', 'organisation_id', 'mission_type',
+    'organisation_detail', 'availability_id', 'is_virtual', 'organisation_name'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -57,7 +58,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
+    'publication_status', 'organisation_id', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type', 'default_media_path', 'default_media_name', 'title', 'short_description',
     'description', 'objective', 'set_view_detail', 'city_name',
@@ -380,13 +381,13 @@ class Mission extends Model
     }
 
     /**
-     * Get mission-tab associated with the mission.
+     * Get Organization associated with the mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function missionTab(): HasMany
+    public function organization(): HasOne
     {
-        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
+        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
     }
 
     /** Get donation attribute associated with the mission.

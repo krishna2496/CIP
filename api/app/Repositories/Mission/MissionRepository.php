@@ -53,11 +53,6 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
-     * @var App\Repositories\MissionTab\MissionTabRepository
-     */
-    private $missionTabRepository;
-
-    /**
      * Create a new Mission repository instance.
      *
      * @param App\Helpers\LanguageHelper                           $languageHelper
@@ -66,7 +61,6 @@ class MissionRepository implements MissionInterface
      * @param App\Repositories\Country\CountryRepository           $countryRepository
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Services\Mission\ModelsService                   $modelsService
-     * @param App\Repositories\MissionMedia\MissionTabRepository   $missionTabRepository
      *
      * @return void
      */
@@ -97,8 +91,33 @@ class MissionRepository implements MissionInterface
      */
     public function store(Request $request): Mission
     {
+        // Create or update organization
+        if (isset($request->organization)) {
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organization['organization_id']],
+                $request->organization
+            );
+        }
+
+        if (isset($request->organisation)) {
+            $organisation = $request->organisation;
+            $organisation['name'] = $organisation['organisation_name'];
+            $request->request->add(['organisation' => $organisation]);
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id' => $request->organisation['organisation_id']],
+                $request->organisation
+            );
+        }
+
         $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
+
+        $organizationDetail = (isset($request->organisation_detail)) ?
+                $request->organisation_detail : null;
+        if ($organizationDetail === null && isset($request->organisation['organisation_detail'])) {
+            $organizationDetail = $request->organisation['organisation_detail'];
+        }
+
         $missionData = array(
                 'theme_id' => $request->theme_id != '' ? $request->theme_id : null,
                 'city_id' => $request->location['city_id'],
@@ -108,14 +127,17 @@ class MissionRepository implements MissionInterface
                 'total_seats' => (isset($request->total_seats) && ($request->total_seats !== '')) ?
                  $request->total_seats : null,
                 'publication_status' => $request->publication_status,
-                'organisation_id' => $request->organisation['organisation_id'],
-                'organisation_name' => $request->organisation['organisation_name'],
-                'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
-                $request->organisation['organisation_detail'] : null,
+                'organisation_id' => (!empty($organization->organization_id)) ? $organization->organization_id
+                 : $request->organisation['organisation_id'],
+                'organisation_detail' => $organizationDetail,
                 'availability_id' => $request->availability_id,
                 'mission_type' => $request->mission_type,
                 'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
             );
+
+        $missionData['organisation_name'] = (!empty($organization)) ? $organization->name :
+            $request->organisation['organisation_name'];
+
 
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
@@ -171,10 +193,10 @@ class MissionRepository implements MissionInterface
             $this->modelsService->missionLanguage->create($missionLanguage);
             unset($missionLanguage);
         }
-        // Add mission tab detail
-        if (isset($request->mission_tab_details) && count($request->mission_tab_details) > 0) {
-            foreach ($request->mission_tab_details as $missionTabValue) {
-                $this->missionTabRepository->store($missionTabValue, $mission->mission_id);
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->modelsService->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
         }
         //Add donation attribute
@@ -196,12 +218,6 @@ class MissionRepository implements MissionInterface
                     'is_disabled' => (string) $request->donation_attribute['is_disabled'] ?? '0',
                 );
                 $this->modelsService->donationAttribute->create($donationData);
-            }
-        }
-        // For skills
-        if (isset($request->skills) && count($request->skills) > 0) {
-            foreach ($request->skills as $value) {
-                $this->modelsService->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
         }
 
@@ -258,11 +274,8 @@ class MissionRepository implements MissionInterface
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
 
-        if (isset($request->organisation['organisation_id'])) {
+        if (empty($request->organization) && isset($request->organisation['organisation_id'])) {
             $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
-        }
-        if (isset($request->organisation['organisation_name'])) {
-            $request->request->add(['organisation_name' => $request->organisation['organisation_name']]);
         }
         if (isset($request->organisation['organisation_detail'])) {
             $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
@@ -280,6 +293,31 @@ class MissionRepository implements MissionInterface
 
         if (isset($request->theme_id) && ($request->theme_id === '')) {
             $request->request->set('theme_id', null);
+        }
+
+        // Create or update organization
+        if (isset($request->organization)) {
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organization['organization_id']],
+                $request->organization
+            );
+        }
+
+        if (isset($request->organisation)) {
+            $organisation = $request->organisation;
+            if (!empty($organisation['organisation_name'])) {
+                $organisation['name'] = $organisation['organisation_name'];
+                $request->request->add(['organisation' => $organisation]);
+            }
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organisation['organisation_id']],
+                $request->organisation
+            );
+        }
+
+        if (!empty($organization)) {
+            $request->request->add(['organisation_id' => $organization->organization_id]);
+            $request->request->add(['organisation_name' => $organization->name]);
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -453,19 +491,6 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        // Add/Update mission tab details
-
-        if (isset($request->mission_tab_details) && count($request->mission_tab_details)) {
-            foreach ($request->mission_tab_details as $missionTabValue) {
-                if (isset($missionTabValue['mission_tab_id'])) {
-                    $this->missionTabRepository->update($missionTabValue, $id);
-                } else {
-                    //Mission tab id is not available and create the mission tab and details
-                    $this->missionTabRepository->store($missionTabValue, $id);
-                }
-            }
-        }
-
         return $mission;
     }
 
@@ -488,7 +513,8 @@ class MissionRepository implements MissionInterface
             'missionLanguage',
             'timeMission',
             'goalMission',
-            'donationAttribute'
+            'donationAttribute',
+            'organization'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
@@ -510,10 +536,6 @@ class MissionRepository implements MissionInterface
                 )->first()->code;
             }
         }
-
-        //mission tab array modification
-
-        $this->missionTabTransformArray($mission, $languages);
 
         return $mission;
     }
@@ -555,10 +577,9 @@ class MissionRepository implements MissionInterface
             'mission.is_virtual'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission', 'donationAttribute']);
-        
-        $missionQuery->withCount('missionApplication');
-        $missionQuery->with(['missionSkill' => function ($query) {
+        'missionLanguage', 'goalMission', 'timeMission', 'donationAttribute' ])
+        ->withCount('missionApplication')
+        ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])
         ->with(['missionMedia' => function ($query) {
@@ -572,7 +593,7 @@ class MissionRepository implements MissionInterface
         }, 'missionTab.getMissionTabDetail' => function ($query) {
             $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
-        
+
         if ($request->has('search') && $request->has('search') !== '') {
             $searchString = $request->search;
             $missionQuery->where(function ($query) use ($searchString) {
@@ -628,8 +649,9 @@ class MissionRepository implements MissionInterface
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organisation_id');
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability', 'missionTab.getMissionTabDetail'
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability', 'organization',
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
@@ -720,7 +742,7 @@ class MissionRepository implements MissionInterface
                     $missionLanguageQuery->orWhere('short_description', 'like', '%'.$userFilterData['search'].'%');
                 });
                 $query->orWhere(function ($organizationQuery) use ($userFilterData) {
-                    $organizationQuery->orWhere('organisation_name', 'like', '%'.$userFilterData['search'].'%');
+                    $organizationQuery->orWhere('organization.name', 'like', '%'.$userFilterData['search'].'%');
                 });
             });
         }
@@ -852,6 +874,7 @@ class MissionRepository implements MissionInterface
                 break;
             case config('constants.TOP_ORGANISATION'):
                 $missionQuery->selectRaw('COUNT(mission.organisation_id) as mission_organisation_count')
+                ->with('organization')
                 ->groupBy('mission.organisation_id')
                 ->orderBY('mission_organisation_count', 'desc');
                 break;
@@ -878,7 +901,6 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config('constants.publication_status')['APPROVED']
                 );
-
                 if ($request->has('search') && $request->input('search') !== '') {
                     $missionQuery->where(function ($query) use ($request) {
                         $query->with('missionLanguage');
@@ -887,9 +909,8 @@ class MissionRepository implements MissionInterface
                             $missionLanguageQuery
                             ->orWhere('short_description', 'like', '%'.$request->input('search').'%');
                         });
-                        $query->orWhere(function ($organizationQuery) use ($request) {
-                            $organizationQuery
-                            ->orWhere('organisation_name', 'like', '%'.$request->input('search').'%');
+                        $query->wherehas('organization', function ($organizationQuery) use ($request) {
+                            $organizationQuery->orWhere('organization.name', 'like', '%'.$request->input('search').'%');
                         });
                     });
                 }
@@ -910,9 +931,8 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
-                            'organisation_name',
-                            'like',
-                            '%'.$request->input('explore_mission_params').'%'
+                            'organisation_id',
+                            $request->input('explore_mission_params')
                         );
                     }
                 }
@@ -930,6 +950,7 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config('constants.publication_status')['APPROVED']
                 );
+                $missionQuery->with('organization');
                 if ($request->has('search') && $request->input('search') !== '') {
                     $missionQuery->where(function ($query) use ($request) {
                         $query->with('missionLanguage');
@@ -938,9 +959,8 @@ class MissionRepository implements MissionInterface
                             $missionLanguageQuery
                             ->orWhere('short_description', 'like', '%'.$request->input('search').'%');
                         });
-                        $query->orWhere(function ($organizationQuery) use ($request) {
-                            $organizationQuery
-                            ->orWhere('organisation_name', 'like', '%'.$request->input('search').'%');
+                        $query->wherehas('organization', function ($organizationQuery) use ($request) {
+                            $organizationQuery->orWhere('organization.name', 'like', '%'.$request->input('search').'%');
                         });
                     });
                 }
@@ -960,9 +980,8 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
-                            'organisation_name',
-                            'like',
-                            '%'.$request->input('explore_mission_params').'%'
+                            'organisation_id',
+                            $request->input('explore_mission_params')
                         );
                     }
                 }
@@ -988,6 +1007,7 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config('constants.publication_status')['APPROVED']
                 );
+                $missionQuery->with('organization');
                 if ($request->has('search') && $request->input('search') !== '') {
                     $missionQuery->where(function ($query) use ($request) {
                         $query->with('missionLanguage');
@@ -996,9 +1016,8 @@ class MissionRepository implements MissionInterface
                             $missionLanguageQuery
                             ->orWhere('short_description', 'like', '%'.$request->input('search').'%');
                         });
-                        $query->orWhere(function ($organizationQuery) use ($request) {
-                            $organizationQuery
-                            ->orWhere('organisation_name', 'like', '%'.$request->input('search').'%');
+                        $query->wherehas('organization', function ($organizationQuery) use ($request) {
+                            $organizationQuery->orWhere('organization.name', 'like', '%'.$request->input('search').'%');
                         });
                     });
                 }
@@ -1015,9 +1034,8 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
-                            'organisation_name',
-                            'like',
-                            '%'.$request->input('explore_mission_params').'%'
+                            'organisation_id',
+                            $request->input('explore_mission_params')
                         );
                     }
                     if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
@@ -1053,9 +1071,9 @@ class MissionRepository implements MissionInterface
                                 $missionLanguageQuery
                                 ->orWhere('short_description', 'like', '%'.$request->input('search').'%');
                             });
-                            $searchQuery->orWhere(function ($organizationQuery) use ($request) {
+                            $searchQuery->wherehas('organization', function ($organizationQuery) use ($request) {
                                 $organizationQuery
-                                ->orWhere('organisation_name', 'like', '%'.$request->input('search').'%');
+                                ->orWhere('organization.name', 'like', '%'.$request->input('search').'%');
                             });
                         });
                     }
@@ -1096,9 +1114,8 @@ class MissionRepository implements MissionInterface
                         }
                         if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                             $query->where(
-                                'organisation_name',
-                                'like',
-                                '%'.$request->input('explore_mission_params').'%'
+                                'organisation_id',
+                                $request->input('explore_mission_params')
                             );
                         }
 
@@ -1131,9 +1148,8 @@ class MissionRepository implements MissionInterface
                             $missionLanguageQuery
                             ->orWhere('short_description', 'like', '%'.$request->input('search').'%');
                         });
-                        $query->orWhere(function ($organizationQuery) use ($request) {
-                            $organizationQuery
-                            ->orWhere('organisation_name', 'like', '%'.$request->input('search').'%');
+                        $query->wherehas('organization', function ($organizationQuery) use ($request) {
+                            $organizationQuery->orWhere('organization.name', 'like', '%'.$request->input('search').'%');
                         });
                     });
                 }
@@ -1152,11 +1168,13 @@ class MissionRepository implements MissionInterface
                         $missionQuery->where('mission.is_virtual', '1');
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
-                        $missionQuery->where(
-                            'organisation_name',
-                            'like',
-                            '%'.$request->input('explore_mission_params').'%'
-                        );
+                        $missionQuery->wherehas('organization', function ($query) use ($request) {
+                            $query->where(
+                                'organization.name',
+                                'like',
+                                '%'.$request->input('explore_mission_params').'%'
+                            );
+                        });
                     }
                 }
                 if ($request->has('country_id') && $request->input('country_id') !== '') {
@@ -1231,10 +1249,10 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config('constants.RELATED_MISSION_LIMIT'));
 
-        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
-        : ((($relatedCityCount === 0) && ($relatedCountryCount > 0))
+        $missionQuery = (($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount === 0) && ($relatedCountryCount > 0)))
         ? $missionQuery->where('country_id', $mission->country_id)
-        : $missionQuery->where('theme_id', $mission->theme_id));
+        : $missionQuery->where('theme_id', $mission->theme_id);
 
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
         ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission',
