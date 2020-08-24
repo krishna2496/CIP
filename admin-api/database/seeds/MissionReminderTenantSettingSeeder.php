@@ -12,15 +12,13 @@ class MissionReminderTenantSettingSeeder extends Seeder
      */
     public function run()
     {
-        $item = [            
+        $item = [
             'title' => 'Mission reminder',
-            'description' => 'Enable/disable mission reminder on platform',
+            'description' => 'Enable/disable mission reminder on the platform',
             'key' => 'mission_reminder',
-            "created_at" => Carbon::now(),
-            "updated_at" => Carbon::now()
+            'created_at' => Carbon::now()
         ];
-     
-        \DB::table('tenant_setting')->insert($item);
-        
+
+        DB::table('tenant_setting')->insert($item);
     }
 }
