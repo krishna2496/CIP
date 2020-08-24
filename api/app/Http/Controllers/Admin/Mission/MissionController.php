@@ -193,13 +193,13 @@ class MissionController extends Controller
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
-                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1'
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
 
@@ -373,13 +373,13 @@ class MissionController extends Controller
                 'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
-                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1',
-                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|in:0,1'
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
 
