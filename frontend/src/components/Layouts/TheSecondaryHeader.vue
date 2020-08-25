@@ -400,7 +400,6 @@
             async changeTheme(theme) {
                 this.isThemeChange = true;
                 if (!this.isCountryChange && !this.isCityChange) {
-                    console.log("in");
                     this.selectedfilterParams.themeId = theme;
                     this.selectedfilterParams.skillId = '';
                     this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
@@ -424,9 +423,10 @@
 
             async changeSkill(skill) {
                 if (!this.isCountryChange && !this.isCityChange) {
-                    this.selectedfilterParams.isSkillSet = true;
+                    // this.selectedfilterParams.isSkillSet = true;
                 }
                 if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange) {
+                     this.selectedfilterParams.isSkillSet = true;
                     this.selectedfilterParams.skillId = skill;
                     this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
                     this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
