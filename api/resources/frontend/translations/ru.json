@@ -296,9 +296,10 @@
 		"virtual_missions" : "Виртуальное волонтерство",
 		"home" : "дом",
 		"login_with_sso": "Войти с помощью SSO",
-		"ongoing" : "постоянный",
-		"more" : "еще",
-		"and" : "и"
+		"site_title": "Главная",
+		"ongoing": "постоянный",
+		"more": "еще",
+		"and": "и"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",

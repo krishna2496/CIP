@@ -296,9 +296,10 @@
 		"virtual_missions" : "Mécénat en ligne",
 		"home" : "Bouton d'accueil",
 		"login_with_sso": "Connectez-vous avec SSO",
-		"ongoing" : "En cours",
-		"more" : "de plus",
-		"and" : "et"
+		"site_title": "Accueil",
+		"ongoing": "En cours",
+		"more": "de plus",
+		"and": "et",
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",

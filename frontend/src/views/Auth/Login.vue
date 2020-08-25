@@ -120,12 +120,12 @@
           this.langList = JSON.parse(store.state.listOfLanguage)
           const defaultLanguage = store.state.defaultLanguage;
           this.defautLang = defaultLanguage.toUpperCase();
-          setSiteTitle();
           this.hasSSO = Boolean(store.state.samlSettings);
           // Get tenant setting
           tenantSetting();
           loadLocaleMessages(store.state.defaultLanguage).then(() =>{
             this.languageData = JSON.parse(store.state.languageLabel);
+            setSiteTitle();
             this.isPageShown = true
             setTimeout(() => {
               if(this.$refs.email) {
