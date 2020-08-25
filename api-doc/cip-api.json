@@ -4376,11 +4376,11 @@
         }
       }
     },
-    "/app/tenant-currency": {
+    "/app/tenant-currencies": {
       "get": {
-        "operationId": "GET_team4-cip-api-get-tenant-currency",
-        "summary": "App - Get tenant currency",
-        "description": "In front end - It will fetch tenant currency set by tenant super admin.",
+        "operationId": "GET-cip-api-get-tenant-currency",
+        "summary": "App - Get tenant currencies",
+        "description": "In front end - It will fetch tenant currencies set by tenant super admin.",
         "tags": [
           "Tenant - App"
         ],

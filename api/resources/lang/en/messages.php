@@ -204,7 +204,7 @@ return [
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
-        'MESSAGE_TENANT_CURRENCY_LISTING' => 'currency listed successfully'
+        'MESSAGE_TENANT_CURRENCY_LISTING' => 'Currencies listed successfully'
     ],
 
 

@@ -529,14 +529,14 @@ class Helpers
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Support\Collection
      */
-    public function getTenantCurrency(Request $request) : Collection
+    public function getTenantCurrencies(Request $request) : Collection
     {
         $tenant = $this->getTenantDetail($request);
 
         // Connect master database to get tenant currency
         $this->switchDatabaseConnection('mysql');
 
-        $tenantSetting = $this->db->table('tenant_currency')
+        $tenantCurrencies = $this->db->table('tenant_currency')
             ->select(
                 'tenant_currency.code',
                 'tenant_currency.default',

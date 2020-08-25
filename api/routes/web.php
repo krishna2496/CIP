@@ -85,7 +85,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Tenant\TenantActivatedSettingController@index']);
 
     /* Fetch tenant currency */
-    $router->get('/app/tenant-currency', ['as' => 'app.tenant-currency',
+    $router->get('/app/tenant-currencies', ['as' => 'app.tenant-currency',
         'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantCurrencyController@index']);
 
