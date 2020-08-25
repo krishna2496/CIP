@@ -97,14 +97,14 @@ class MissionRepository implements MissionInterface
                 'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
                                 ($request->volunteering_attribute['total_seats'] !== '')) ? $request->volunteering_attribute['total_seats'] : null,
                 'availability_id' => $request->volunteering_attribute['availability_id'],
-                'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : '0',
+                'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : 0,
             );
         } else {
             $volunteeringAttributeArray = array(
                 'total_seats' =>  (isset($request->total_seats) && ($request->total_seats !== '')) ?
                                 $request->total_seats : null,
                 'availability_id' => $request->availability_id,
-                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0'
+                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : 0
             );
         }
 
@@ -287,9 +287,9 @@ class MissionRepository implements MissionInterface
         }
 
         if (isset($request->volunteering_attribute['is_virtual'])) {
-            $volunteeringAttributeArray['is_virtual'] = (string)$request->volunteering_attribute['is_virtual'];
+            $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
         } elseif (isset($request->is_virtual)) {
-            $volunteeringAttributeArray['is_virtual'] = (string)$request->is_virtual;
+            $volunteeringAttributeArray['is_virtual'] = $request->is_virtual;
         }
 
         if ($volunteeringAttributeArray) {
