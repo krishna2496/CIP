@@ -58,6 +58,7 @@ class WhitelistRepository
                 $query->where('pattern', 'like', "%$keyword%")
                     ->orWhere('description', 'like', "%$keyword%");
             })
+            ->orderBy('created_at', 'DESC')
             ->paginate($paginate['perPage']);
     }
 

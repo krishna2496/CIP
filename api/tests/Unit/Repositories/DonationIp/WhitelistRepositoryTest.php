@@ -86,6 +86,10 @@ class WhitelistRepositoryTest extends TestCase
             ->andReturn($model)
             ->shouldReceive('when')
             ->once()
+            ->andReturn($model)
+            ->shouldReceive('orderBy')
+            ->with('created_at', 'DESC')
+            ->once()
             ->andReturn($model);
 
         $model->shouldReceive('paginate')
