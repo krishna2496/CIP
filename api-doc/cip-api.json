@@ -380,7 +380,7 @@
       "delete": {
         "operationId": "delete_cip-api-delete-mission-tab",
         "summary": "Admin - Delete mission tab",
-        "description": "Delete mission tab by either missionTabId or missionId",
+        "description": "Delete mission tab by missionTabId",
         "tags": [
           "Mission"
         ],
@@ -398,7 +398,7 @@
           {
             "name": "missionTabId",
             "in": "path",
-            "description": "mission_tab_id or mission_id to delete",
+            "description": "mission_tab_id to delete",
             "type": "string",
             "default": "",
             "required": true

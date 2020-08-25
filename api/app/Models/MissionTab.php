@@ -74,15 +74,4 @@ class MissionTab extends Model
     {
         return static::findOrFail($missionTabId)->delete();
     }
-
-    /**
-     * Soft delete the mission tab by mission_id from the database.
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function deleteMissionTabByMissionId(int $missionId): bool
-    {
-        return static::where(['mission_id' => $missionId])->delete();
-    }
 }

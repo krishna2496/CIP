@@ -1723,15 +1723,4 @@ class MissionRepository implements MissionInterface
     {
         return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
     }
-
-    /**
-     * Remove mission tab by mission_id
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function deleteMissionTabBymissionId(int $missionId): bool
-    {
-        return $this->modelsService->missionTab->deleteMissionTabByMissionId($missionId);
-    }
 }

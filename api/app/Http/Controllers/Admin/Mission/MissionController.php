@@ -704,23 +704,8 @@ class MissionController extends Controller
      */
     public function removeMissionTab($missionTabId): JsonResponse
     {
-        $deleteByMissionId = false;
         try {
-            if (preg_match('/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/i', $missionTabId)) {
-                $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
-            } else {
-                $missionId = $missionTabId;
-                if(preg_match('/^(0|[1-9][0-9]*)$/', $missionId)){
-                    $deleteByMissionId = true;
-                    $mission = $this->modelsService->mission->findOrFail($missionId);
-                    $this->missionRepository->deleteMissionTabByMissionId($missionId);
-                } else {
-                    return $this->modelNotFound(
-                        config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                        trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-                    );
-                }
-            }
+            $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
 
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_TAB_DELETED');
@@ -736,21 +721,12 @@ class MissionController extends Controller
                 null,
                 $missionTabId
             ));
-
             return $this->responseHelper->success($apiStatus, $apiMessage);
-
         } catch (ModelNotFoundException $e) {
-            if($deleteByMissionId) {
-                return $this->modelNotFound(
-                    config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                    trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-                );
-            } else {
-                return $this->modelNotFound(
-                    config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-                    trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
-                );
-            }
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
         }
     }
 }

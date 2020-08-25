@@ -28,6 +28,7 @@ use App\Models\MissionApplication;
 use App\Models\City;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
+use App\Repositories\Organization\OrganizationRepository;
 
 class MissionControllerTest extends TestCase
 {
@@ -57,6 +58,7 @@ class MissionControllerTest extends TestCase
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $notificationRepository = $this->mock(NotificationRepository::class);
         $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $this->expectsEvents(UserActivityLogEvent::class);
 
@@ -80,6 +82,7 @@ class MissionControllerTest extends TestCase
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
             $notificationRepository,
+            $organizationRepository,
             $modelService
         );
 
@@ -121,6 +124,7 @@ class MissionControllerTest extends TestCase
         $notificationRepository = $this->mock(NotificationRepository::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
         $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $missionRepository->shouldReceive('deleteMissionTabByMissionTabId')
         ->once()
@@ -145,246 +149,11 @@ class MissionControllerTest extends TestCase
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
             $notificationRepository,
+            $organizationRepository,
             $modelService
         );
 
         $response = $callController->removeMissionTab($missionTabId);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
-    }
-
-    /**
-    * @testdox Test remove mission tab by mission_id successfully
-    *
-    * @return void
-    */
-    public function testRemoveMissionTabByMissionIdSuccess()
-    {
-        $missionId = rand(50000, 70000);
-        $methodResponse = [
-            "status"=> Response::HTTP_NO_CONTENT,
-            "message"=> trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
-        ];
-
-        $JsonResponse = new JsonResponse(
-            $methodResponse
-        );
-
-        $missionRepository = $this->mock(MissionRepository::class);
-        $responseHelper = $this->mock(ResponseHelper::class);
-        $request = new Request();
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $notificationRepository = $this->mock(NotificationRepository::class);
-        $modelService = $this->mock(ModelsService::class);
-        
-        $mission = $this->mock(Mission::class);
-        $timeMission = $this->mock(TimeMission::class);
-        $missionLanguage = $this->mock(MissionLanguage::class);
-        $missionDocument = $this->mock(MissionDocument::class);
-        $favouriteMission = $this->mock(FavouriteMission::class);
-        $missionSkill = $this->mock(MissionSkill::class);
-        $missionRating = $this->mock(MissionRating::class);
-        $missionApplication = $this->mock(MissionApplication::class);
-        $city = $this->mock(City::class);
-        $missionTab = $this->mock(MissionTab::class);
-        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
-
-        $this->expectsEvents(UserActivityLogEvent::class);
-
-        $modelService = $this->getServices(
-            $mission,
-            $timeMission,
-            $missionLanguage,
-            $missionDocument,
-            $favouriteMission,
-            $missionSkill,
-            $missionRating,
-            $missionApplication,
-            $city,
-            $missionTab,
-            $missionTabLanguage
-        );
-
-        $modelService->mission->shouldReceive('findOrFail')
-        ->once()
-        ->with($missionId)
-        ->andReturn();
-
-        $missionRepository->shouldReceive('deleteMissionTabBymissionId')
-        ->once()
-        ->andReturn(true);
-
-        $responseHelper->shouldReceive('success')
-        ->once()
-        ->with(
-            Response::HTTP_NO_CONTENT,
-            trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
-        )
-       ->andReturn($JsonResponse);
-
-        $callController = $this->getController(
-            $missionRepository,
-            $responseHelper,
-            $request,
-            $languageHelper,
-            $missionMediaRepository,
-            $tenantActivatedSettingRepository,
-            $notificationRepository,
-            $modelService
-        );
-
-        $response = $callController->removeMissionTab($missionId);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
-    }
-
-    /**
-    * @testdox Test remove mission tab by 0mission_id error for mission_id does not found
-    *
-    * @return void
-    */
-    public function testRemoveMissionTabByMissionIdError()
-    {
-        $missionId = rand(50000, 70000);
-        $methodResponse = [
-            "errors"=> [
-                [
-                    "status"=> Response::HTTP_NOT_FOUND,
-                    "type"=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
-                    "code"=> config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-                    "message"=> trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
-                ]
-            ]
-        ];
-
-        $JsonResponse = new JsonResponse(
-            $methodResponse
-        );
-
-        $missionRepository = $this->mock(MissionRepository::class);
-        $responseHelper = $this->mock(ResponseHelper::class);
-        $request = new Request();
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $notificationRepository = $this->mock(NotificationRepository::class);
-        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
-        $modelService = $this->mock(ModelsService::class);
-
-        $mission = $this->mock(Mission::class);
-        $timeMission = $this->mock(TimeMission::class);
-        $missionLanguage = $this->mock(MissionLanguage::class);
-        $missionDocument = $this->mock(MissionDocument::class);
-        $favouriteMission = $this->mock(FavouriteMission::class);
-        $missionSkill = $this->mock(MissionSkill::class);
-        $missionRating = $this->mock(MissionRating::class);
-        $missionApplication = $this->mock(MissionApplication::class);
-        $city = $this->mock(City::class);
-        $missionTab = $this->mock(MissionTab::class);
-        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
-
-        $modelService = $this->getServices(
-            $mission,
-            $timeMission,
-            $missionLanguage,
-            $missionDocument,
-            $favouriteMission,
-            $missionSkill,
-            $missionRating,
-            $missionApplication,
-            $city,
-            $missionTab,
-            $missionTabLanguage
-        );
-
-        $modelService->mission->shouldReceive('findOrFail')
-        ->once()
-        ->with($missionId)
-        ->andThrow($modelNotFoundException);
-
-        $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-            trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-        )
-       ->andReturn($JsonResponse);
-
-        $callController = $this->getController(
-            $missionRepository,
-            $responseHelper,
-            $request,
-            $languageHelper,
-            $missionMediaRepository,
-            $tenantActivatedSettingRepository,
-            $notificationRepository,
-            $modelService
-        );
-
-        $response = $callController->removeMissionTab($missionId);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
-    }
-
-    /**
-    * @testdox Test remove mission tab by mission_id error for non numeric mission id does not found
-    *
-    * @return void
-    */
-    public function testRemoveMissionTabByNonNumericMissionIdError()
-    {
-        $missionId = rand(50000, 70000).str_random(5);
-        $methodResponse = [
-            "errors"=> [
-                [
-                    "status"=> Response::HTTP_NOT_FOUND,
-                    "type"=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
-                    "code"=> config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-                    "message"=> trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
-                ]
-            ]
-        ];
-
-        $JsonResponse = new JsonResponse(
-            $methodResponse
-        );
-
-        $missionRepository = $this->mock(MissionRepository::class);
-        $responseHelper = $this->mock(ResponseHelper::class);
-        $request = new Request();
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $notificationRepository = $this->mock(NotificationRepository::class);
-        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
-        $modelService = $this->mock(ModelsService::class);
-
-        $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-            trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-        )
-       ->andReturn($JsonResponse);
-
-        $callController = $this->getController(
-            $missionRepository,
-            $responseHelper,
-            $request,
-            $languageHelper,
-            $missionMediaRepository,
-            $tenantActivatedSettingRepository,
-            $notificationRepository,
-            $modelService
-        );
-
-        $response = $callController->removeMissionTab($missionId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
@@ -399,6 +168,7 @@ class MissionControllerTest extends TestCase
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
      * @param  App\Services\Mission\ModelsService $modelService
      * @return void
      */
@@ -410,6 +180,7 @@ class MissionControllerTest extends TestCase
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         NotificationRepository $notificationRepository,
+        OrganizationRepository $organizationRepository,
         ModelsService $modelService
     ) {
         return new MissionController(
@@ -420,6 +191,7 @@ class MissionControllerTest extends TestCase
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
             $notificationRepository,
+            $organizationRepository,
             $modelService
         );
     }
