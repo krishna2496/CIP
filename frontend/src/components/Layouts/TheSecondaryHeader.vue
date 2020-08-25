@@ -625,7 +625,7 @@
 
             },
             clearAllFilter() {
-                this.selectedfilterParams.countryId = store.state.defaultCountryId;
+                this.selectedfilterParams.countryId = '';
                 this.selectedfilterParams.stateId = '';
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
@@ -651,57 +651,17 @@
                 store.commit("userFilter", userFilter);
                 const currentPath = this.$route.name;
                 if (currentPath !== 'home') {
-                    this.$router.push({
-                        name: 'home'
-                    });
+                 this.$router.push({
+                   name: 'home'
+                  });
                 }
-                this.$parent.getMissions("removeLoader");
-                setTimeout(() => {
-                    this.selectedfilterParams.countryId = store.state.countryId;
-                    this.selectedfilterParams.cityId = store.state.cityId;
-                    filterList(this.selectedfilterParams).then(response => {
-                        if (response) {
-                            if (response.country) {
-                                this.countryList = Object.entries(response.country);
-                            }
-
-                            if (response.state) {
-                                this.stateList = Object.entries(response.state);
-                            }
-
-                            if (response.city) {
-                                this.cityList = Object.entries(response.city);
-                            }
-                            if (response.themes) {
-                                this.themeList = Object.entries(response.themes);
-                            }
-
-                            if (response.skill) {
-                                this.skillList = Object.entries(response.skill);
-                            }
-                            if (store.state.countryId != '') {
-                                if (this.countryList) {
-                                    let selectedCountryData = this.countryList.filter((
-                                        country) => {
-                                        if (store.state.countryId == country[1].id) {
-                                            return country;
-                                        }
-                                    });
-                                    this.defaultCountry = selectedCountryData[0][1].title;
-                                }
-                            } else {
-                                this.defaultCountry = this.languageData.label.country;
-                            }
-                            if (store.state.stateId != '') {
-                                this.selectedState = store.state.stateId.toString().split(',')
-                            }
-
-                            if (store.state.cityId != '') {
-                                this.selectedCity = store.state.cityId.toString().split(',')
-                            }
-                        }
-                    });
-                }, 500);
+                let country = {};
+                country.selectedId = store.state.defaultCountryId;
+                let selectedCountryData = this.countryList.filter((countryData) => {
+                  return (country.selectedId == countryData[1].id);
+                });
+                country.selectedVal = selectedCountryData[0][1].title;
+                this.changeCountry(country);
             },
             clearMissionFilters() {
                 this.$parent.clearMissionFilter();

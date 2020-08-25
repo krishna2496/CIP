@@ -14,7 +14,7 @@
             <b-container class="home-content-wrapper">
                 <div v-if="missionList.length > 0 && isQuickAccessDisplay">
                     <div class="chip-container" v-if="tags != ''">
-                            <span v-for="(item , i) in tags.country" :key=i>
+                            <span v-for="(item , i) in tags.country" v-if="isCountrySelectionSet" :key=i>
                                 <AppCustomChip :textVal="item" :tagId="i" type="country" @updateCall="changeTag" />
                             </span>
                             <span v-for="(item , i) in tags.state" v-if="isStateSelectionSet" :key=i>
