@@ -653,7 +653,6 @@ return [
         'first_name',
         'last_name',
         'email',
-        'city_id',
         'country_id',
         'timezone_id',
         'language_id'
