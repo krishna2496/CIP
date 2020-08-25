@@ -83,19 +83,6 @@ class VolunteeringAttribute extends Model
     }
 
     /**
-     * Set is virtual attribute on the model.
-     *
-     * @param $value
-     * @return void
-     */
-    public function setIsVirtualAttribute($value): void
-    {
-        if (!is_null($value)) {
-            $this->attributes['is_virtual'] = (string)$value;
-        }
-    }
-
-    /**
      * Get users associated with the volunteering availability.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
