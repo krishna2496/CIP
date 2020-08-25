@@ -352,7 +352,7 @@ class MissionRepository implements MissionInterface
             $missionData['availability_id'] = $volunteeringAttributeArray['availability_id'];
         }
         if (isset($volunteeringAttributeArray['is_virtual'])) {
-            $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'];
+            $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'] ? '1' : '0';
         }
 
         $mission->update($missionData);
