@@ -76,7 +76,7 @@
   import { required, email } from 'vuelidate/lib/validators';
   import store from '../../store';
   import {loadLocaleMessages,login,databaseConnection,tenantSetting,policy} from '../../services/service';
-  import constants from '../../constant';
+  import { setSiteTitle } from '../../utils';
 
   export default {
     components: {
@@ -113,10 +113,10 @@
       }
     },
     methods: {
-      async createConnection(){
+      async createConnection() {
         await databaseConnection(this.langList).then(() => {
           this.isShowComponent = true
-          //Get langauage list from Local Storage
+          // Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage)
           const defaultLanguage = store.state.defaultLanguage;
           this.defautLang = defaultLanguage.toUpperCase();
@@ -125,6 +125,7 @@
           tenantSetting();
           loadLocaleMessages(store.state.defaultLanguage).then(() =>{
             this.languageData = JSON.parse(store.state.languageLabel);
+            setSiteTitle();
             this.isPageShown = true
             setTimeout(() => {
               if(this.$refs.email) {
@@ -143,7 +144,8 @@
         this.languageData = JSON.parse(store.state.languageLabel);
         this.$forceUpdate();
         this.$refs.ThePrimaryFooter.$forceUpdate()
-      this.componentKey += 1;
+        this.componentKey += 1;
+        setSiteTitle();
       },
 
       handleSubmit() {
@@ -187,14 +189,10 @@
 
       handleSSO() {
         window.location = store.state.samlSettings.sso_url;
-      },
-
-    },
-    mounted() {
-
+      }
     },
     created() {
-      //Database connection and fetching tenant options api
+      // Database connection and fetching tenant options api
       this.createConnection();
     },
     beforeCreate() {
