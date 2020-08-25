@@ -208,6 +208,10 @@ trait MissionTransformable
                 $mission['city_name'] = $cityTranslation[$cityTranslationkey]['name'];
             }
         }
+        //set organization name
+        if (!empty($mission['organization']) && (isset($mission['organization']))) {
+            $mission['organisation_name'] = $mission['organization']['name'];
+        }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
         unset($mission['volunteeringAttribute']);

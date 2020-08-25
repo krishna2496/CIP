@@ -81,6 +81,9 @@
       "name": "Timezone"
     },
     {
+      "name": "Organizations"
+    },
+    {
       "name": "Translations"
     }
   ],
@@ -3033,6 +3036,53 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/users/invite": {
+      "post": {
+        "operationId": "POST_team4-cip-api-invite-user",
+        "summary": "App - User invite (Request create password link) (Milestone - 1)",
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden - Email address does not exist in the system"
+          },
+          "422": {
+            "description": "Invalid input"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -8117,42 +8167,264 @@
           }
         }
       }
+    },
+    "/organizations": {
+      "get": {
+        "operationId": "GET_cip-api-get-organizations",
+        "summary": "Admin - List of Organizations",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      },
+      "post": {
+        "operationId": "POST_cip-api-post-organizations",
+        "summary": "Admin - Create Organization",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "legal_number": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "address_line_1": {
+                  "type": "string"
+                },
+                "address_line_2": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type": "integer"
+                },
+                "country_id": {
+                  "type": "integer"
+                },
+                "postal_code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/organizations/{organizationId}": {
+      "patch": {
+        "operationId": "POST_cip-api-patch-organizations",
+        "summary": "Admin - Update Organization",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "legal_number": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "address_line_1": {
+                  "type": "string"
+                },
+                "address_line_2": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type": "integer"
+                },
+                "country_id": {
+                  "type": "integer"
+                },
+                "postal_code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "POST_cip-api-delete-organizations",
+        "summary": "Admin - Delete Organization",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Organization not found in the system"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      },
+      "get": {
+        "operationId": "POST_cip-api-get-organizations",
+        "summary": "Admin - Get an organization detail",
+        "tags": [
+          "Organizations"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Organization not found in the system"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
     }
   },
   "definitions": {
     "Mission": {
       "type": "object",
       "properties": {
-        "organisation": {
-          "type": "object",
-          "properties": {
-            "organisation_id": {
-              "type": "string",
-              "description": "Currently this id is kept as static"
-            },
-            "organisation_name": {
-              "type": "string",
-              "description": "Name of organisation"
-            },
-            "organisation_detail": {
-              "type": "array",
-              "description": "Organisation detail.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "lang": {
-                    "type": "string",
-                    "description": "Language code e.g. en, fr, de etc."
-                  },
-                  "detail": {
-                    "type": "string",
-                    "description": "Organisation detail"
-                  }
-                }
-              }
-            }
-          }
-        },
         "location": {
           "type": "object",
           "properties": {
@@ -8163,11 +8435,6 @@
             "country_code": {
               "type": "string",
               "description": "ISO code of country from `country` table"
-            },
-            "state_id": {
-              "type": "integer",
-              "description": "state id from `state` table",
-              "format": "int32"
             }
           }
         },
@@ -8233,6 +8500,23 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        },
+        "organisation_detail": {
+          "type": "array",
+          "description": "Organisation detail.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code e.g. en, fr, de etc."
+              },
+              "detail": {
+                "type": "string",
+                "description": "Organisation detail"
               }
             }
           }
@@ -8419,7 +8703,48 @@
               "description": "Total seats for this mission"
             }
           }
-        }
+        },
+        "organization": {
+          "type": "object",
+          "properties": {
+            "organization_id": {
+              "type": "string",
+              "description": "This id is reference to organization table"
+            },
+            "name": {
+              "type": "string",
+              "description": "Organization name"
+            },
+            "legal_number": {
+              "type": "string",
+              "description": "Organization legal number"
+            },
+            "phone_number": {
+              "type": "integer",
+              "description": "Organization phone number"
+            },
+            "address_line_1": {
+              "type": "string",
+              "description": "Organization address line 1"
+            },
+            "address_line_2": {
+              "type": "string",
+              "description": "Organization address line 2"
+            },
+            "city_id": {
+              "type": "integer",
+              "description": "Organization city"
+            },
+            "country_id": {
+              "type": "integer",
+              "description": "Organization country"
+            },
+            "postal_code": {
+              "type": "string",
+              "description": "Organization postal code"
+            }
+          }
+        },
       }
     },
     "FooterPage": {
@@ -8574,6 +8899,11 @@
         },
         "position": {
           "type": "string"
+        },
+        "invitation_sent_at": {
+          "type":  "string",
+          "format": "date-time",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         }
       }
     },
