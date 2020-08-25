@@ -182,7 +182,7 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
                 "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "integer|required_with:volunteering_attribute|
                 exists:availability,availability_id,deleted_at,NULL",
@@ -323,7 +323,7 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "volunteering_attribute.is_virtual" => "sometimes|required|in:0,1",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
                 "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required_with:volunteering_attribute|integer|
                 exists:availability,availability_id,deleted_at,NULL",
