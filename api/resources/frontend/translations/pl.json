@@ -295,7 +295,9 @@
 		"deleted_user" : "Usunięty użytkownikr",
 		"virtual_mission" : "Wirtualna",
 		"virtual_missions" : "Wirtualny wolontariat",
-		"home" : "Dom"
+		"home" : "Dom",
+		"login_with_sso": "Entrar com SSO",
+		"site_title" : "Strona główna"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",

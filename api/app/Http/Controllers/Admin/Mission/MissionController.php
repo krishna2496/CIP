@@ -20,6 +20,7 @@ use App\Events\User\UserActivityLogEvent;
 use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\Organization\OrganizationRepository;
 
 //!  Mission controller
 /*!
@@ -64,6 +65,11 @@ class MissionController extends Controller
     private $notificationRepository;
 
     /**
+     * @var App\Repositories\Organization\OrganizationRepository
+     */
+    private $organizationRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -73,6 +79,7 @@ class MissionController extends Controller
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
      * @return void
      */
     public function __construct(
@@ -82,7 +89,8 @@ class MissionController extends Controller
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        OrganizationRepository $organizationRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -91,6 +99,7 @@ class MissionController extends Controller
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->organizationRepository = $organizationRepository;
     }
 
     /**
@@ -144,9 +153,19 @@ class MissionController extends Controller
                 "mission_detail.*.section.*.title" => "required_with:mission_detail.*.section",
                 "mission_detail.*.section.*.description" =>
                 "required_with:mission_detail.*.section",
-                "organisation" => "required",
-                "organisation.organisation_id" => "required",
-                "organisation.organisation_name" => "required",
+                "organization" => "required_without:organisation",
+                "organization.organization_id" => "required_without:organisation|uuid",
+                "organization.name" => "max:255",
+                "organization.legal_number" => "max:255",
+                "organization.phone_number" => "max:120",
+                "organization.address_line_1" => "max:255",
+                "organization.address_line_2" => "max:255",
+                "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
+                "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
+                "organization.postal_code" => "max:120",
+                "organisation" => "required_without:organization",
+                "organisation.organisation_id" => "required_without:organization|uuid",
+                "organisation.organisation_name" => "required_without:organization",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
@@ -184,6 +203,40 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 $validator->errors()->first()
+            );
+        }
+        
+        // Update organization city,state & country id to null if it's blank
+        if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['city_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+        if (isset($request->get('organization')['country_id']) && $request->get('organization')['country_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['country_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+
+        // check organization exist in database
+        $organizationId = (!empty($request->get('organization'))) ? $request->get('organization')['organization_id']
+        : $request->get('organisation')['organisation_id'];
+
+        if ((!empty($request->get('organization')) && !empty($request->get('organization')['name']))) {
+            $organizationName = $request->get('organization')['name'];
+        }
+        if ((!empty($request->get('organisation')) && !empty($request->get('organisation')['organisation_name']))) {
+            $organizationName = $request->get('organisation')['organisation_name'];
+        }
+
+        $organization = $this->organizationRepository->find($organizationId);
+        // if organization id not exist then check for organization name is required
+        if (!$organization && empty($organizationName)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
             );
         }
 
@@ -233,7 +286,12 @@ class MissionController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
+            return $this->responseHelper->success(
+                $apiStatus,
+                $apiMessage,
+                $mission->toArray(),
+                false
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
@@ -287,8 +345,6 @@ class MissionController extends Controller
                 "media_videos.*.media_name" => "sometimes|required",
                 "media_videos.*.media_path" => "sometimes|required|valid_video_url",
                 "documents.*.document_path" => "sometimes|required|valid_document_path",
-                "organisation.organisation_id" => "sometimes|required",
-                "organisation.organisation_name" => "sometimes|required",
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
@@ -305,6 +361,17 @@ class MissionController extends Controller
                 "required_with:impact_donation.*.translations|max:2",
                 "impact_donation.*.translations.*.content" =>
                 "required_with:impact_donation.*.translations",
+                "organization.organization_id" => "required_with:organization|uuid",
+                "organization.name" => "max:255",
+                "organization.legal_number" => "max:255",
+                "organization.phone_number" => "max:120",
+                "organization.address_line_1" => "max:255",
+                "organization.address_line_2" => "max:255",
+                "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
+                "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
+                "organization.postal_code" => "max:120",
+                "organisation.organisation_name" => "sometimes|required_without:organization",
+                "organisation.organisation_id" => "required_with:organisation|uuid",
             ]
         );
 
@@ -316,6 +383,34 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
+        }
+
+        // check organization exist in database
+        if ((!empty($request->get('organization')) && !empty($request->get('organization')['organization_id']))) {
+            $organisationId = $request->get('organization')['organization_id'];
+        }
+        if ((!empty($request->get('organisation')) && !empty($request->get('organisation')['organisation_id']))) {
+            $organisationId = $request->get('organisation')['organisation_id'];
+        }
+        if ((!empty($request->get('organization')) && !empty($request->get('organization')['name']))) {
+            $organizationName = $request->get('organization')['name'];
+        }
+        if ((!empty($request->get('organisation')) && !empty($request->get('organisation')['organisation_name']))) {
+            $organizationName = $request->get('organisation')['organisation_name'];
+        }
+
+        if (!empty($organisationId)) {
+            $organization = $this->organizationRepository->find($organisationId);
+
+            // if organization id not exist then check for organization name is required
+            if (!$organization && empty($organizationName)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
+                );
+            }
         }
  
         try {
@@ -427,6 +522,18 @@ class MissionController extends Controller
                 config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
             );
+        }
+        
+        // Update organization city,state & country id to null if it's blank
+        if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['city_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+        if (isset($request->get('organization')['country_id']) && $request->get('organization')['country_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['country_id'] = null;
+            $request->merge(['organization' => $organization]);
         }
 
         $this->missionRepository->update($request, $missionId);
