@@ -73,7 +73,8 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
     'present'              => 'The :attribute field is required',
-	'distinct'             => 'The :attribute field has a duplicate value.',
+    'distinct'             => 'The :attribute field has a duplicate value.',
+    'uuid'                 => 'Please use valid UUID string for :attribute',
 
     /*
     |--------------------------------------------------------------------------
@@ -223,7 +224,17 @@ return [
         'impact.*.translations' => 'translations',
         'impact.*.translations.*.language_code' => 'language code',
         'impact.*.translations.*.content' => 'content',
-        'impact.*.mission_impact_id' => 'mission impact id'
+        'impact.*.mission_impact_id' => 'mission impact id',
+        'organization.name' => 'organization name',
+        'organization.organization_id' => 'organization id',
+        'organization.legal_number' => 'organization legal number',
+        'organization.phone_number' => 'organization phone number',
+        'organization.address_line_1' => 'organization address line 1',
+        'organization.address_line_2' => 'organization address line 2',
+        'organization.city_id' => 'organization city id',
+        'organization.state_id' => 'organization state id',
+        'organization.country_id' => 'organization country id',
+        'organization.postal_code' => 'organization postal code',
 		],
 
 ];
