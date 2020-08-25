@@ -255,7 +255,7 @@ class IPValidationHelper
             return $this->validMask($cidr);
         }
         
-        return ($cidr >= self::MIN_CIDR && $cidr <= self::MAX_CIDR);
+        return (is_numeric($cidr) && $cidr >= self::MIN_CIDR && $cidr <= self::MAX_CIDR);
     }
 
     /**
