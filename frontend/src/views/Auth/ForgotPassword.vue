@@ -39,26 +39,27 @@
                     <b-link to="/">{{ languageData.label.login }}</b-link>
                 </div>
             </div>
-            <ThePrimaryFooter ref="ThePrimaryFooter" />
+            <ThePrimaryFooter ref="ThePrimaryFooter" :key="footerKey" />
         </div>
     </div>
 </template>
 
 <script>
-  import TheSlider from "../../components/TheSlider";
-  import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
-  import AppCustomDropdown from "../../components/AppCustomDropdown";
+  import TheSlider from '../../components/TheSlider';
+  import ThePrimaryFooter from '../../components/Layouts/ThePrimaryFooter';
+  import AppCustomDropdown from '../../components/AppCustomDropdown';
   import {
     required,
     email
-  } from "vuelidate/lib/validators";
+  } from 'vuelidate/lib/validators';
   import {
     loadLocaleMessages,
     forgotPassword,
     databaseConnection,
     tenantSetting
-  } from "../../services/service";
-  import store from "../../store";
+  } from '../../services/service';
+  import store from '../../store';
+  import { setSiteTitle } from '../../utils';
 
   export default {
     components: {
@@ -69,17 +70,18 @@
     data() {
       return {
         isShowSlider: false,
-        myValue: "",
-        defautLang: "",
+        myValue: '',
+        defautLang: '',
         langList: [],
         forgotPassword: {
-          email: ""
+          email: ''
         },
         submitted: false,
-        classVariant: "danger",
+        classVariant: 'danger',
         message: null,
         showDismissibleAlert: false,
-        languageData: []
+        languageData: [],
+        footerKey: 0
       };
     },
 
@@ -95,19 +97,20 @@
     methods: {
       async setLanguage(language) {
         this.defautLang = language.selectedVal;
-        store.commit("setDefaultLanguage", language);
+        store.commit('setDefaultLanguage', language);
         this.$i18n.locale = language.selectedVal.toLowerCase();
         await loadLocaleMessages(this.$i18n.locale);
         this.languageData = JSON.parse(store.state.languageLabel);
+        setSiteTitle();
         this.$forceUpdate();
-        this.$refs.ThePrimaryFooter.$forceUpdate();
+        this.footerKey++;
       },
       async createConnection() {
         await databaseConnection(this.langList).then(() => {
           this.isShowComponent = true;
           //Get langauage list from Local Storage
           this.langList = JSON.parse(store.state.listOfLanguage);
-          this.defautLang = store.state.defaultLanguage;
+          this.defautLang = store.state.defaultLanguage.toUpperCase();
 
           // Get tenant setting
           tenantSetting();
@@ -130,18 +133,18 @@
           if (response.error === true) {
             this.message = null;
             this.showDismissibleAlert = true;
-            this.classVariant = "danger";
+            this.classVariant = 'danger';
             // Set error message
             this.message = response.message;
           } else {
             this.message = null;
             this.showDismissibleAlert = true;
-            this.classVariant = "success";
+            this.classVariant = 'success';
             // Set success message
             this.message = response.message;
             //Reset to blank
             this.submitted = false;
-            this.forgotPassword.email = "";
+            this.forgotPassword.email = '';
             this.$v.$reset();
           }
         });
@@ -156,10 +159,10 @@
       this.languageData = JSON.parse(store.state.languageLabel);
       // Set language list and default language fetch from Local Storage
       this.langList =
-        localStorage.getItem("listOfLanguage") !== null ?
-          JSON.parse(localStorage.getItem("listOfLanguage")) :
+        localStorage.getItem('listOfLanguage') !== null ?
+          JSON.parse(localStorage.getItem('listOfLanguage')) :
           [];
-      this.defautLang = localStorage.getItem("defaultLanguage");
+      this.defautLang = localStorage.getItem('defaultLanguage').toUpperCase();
     }
   };
 </script>
