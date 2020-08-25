@@ -651,9 +651,9 @@
                 store.commit("userFilter", userFilter);
                 const currentPath = this.$route.name;
                 if (currentPath !== 'home') {
-                 this.$router.push({
-                   name: 'home'
-                  });
+                   this.$router.push({
+                     name: 'home'
+                    });
                 }
                 let country = {};
                 country.selectedId = store.state.defaultCountryId;

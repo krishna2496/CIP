@@ -350,10 +350,10 @@
             this.getMissions();
         },
         changeTag(data) {
-          if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
-            return
-          }
-          this.$refs.secondaryHeader.removeItems(data);
+            if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
+              return
+            }
+            this.$refs.secondaryHeader.removeItems(data);
         },
         clearMissionFilter() {
             this.$refs.secondaryHeader.clearAllFilter();
