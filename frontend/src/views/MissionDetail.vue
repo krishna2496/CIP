@@ -500,7 +500,7 @@
                                                                 </i>
                                                                 <div class="comment-title">
                                                                     <h5 v-if="comments.user.user_id != null">
-                                                                      {{comments.user.first_name}}{{comments.user.last_name}}</h5>
+                                                                      {{comments.user.first_name}} {{comments.user.last_name}}</h5>
                                                                     <h5 v-else>{{ languageData.label.deleted_user }}</h5>
                                                                     <p>{{ getCommentDate(comments.created_at) }}</p>
                                                                 </div>
