@@ -120,7 +120,6 @@
           this.langList = JSON.parse(store.state.listOfLanguage)
           const defaultLanguage = store.state.defaultLanguage;
           this.defautLang = defaultLanguage.toUpperCase();
-          setSiteTitle();
           this.hasSSO = Boolean(store.state.samlSettings);
           // Get tenant setting
           tenantSetting();

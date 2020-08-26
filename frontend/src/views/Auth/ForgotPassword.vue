@@ -1,5 +1,5 @@
 <template>
-    <div class="signin-page-wrapper">
+    <div class="signin-page-wrapper" v-if="isReady">
         <TheSlider v-if="isShowSlider" />
         <div class="signin-form-wrapper">
             <div class="lang-drodown-wrap">
@@ -81,7 +81,8 @@
         message: null,
         showDismissibleAlert: false,
         languageData: [],
-        footerKey: 0
+        footerKey: 0,
+        isReady: false
       };
     },
 
@@ -118,6 +119,12 @@
           this.isShowSlider = true;
           loadLocaleMessages(store.state.defaultLanguage).then(() => {
             this.languageData = JSON.parse(store.state.languageLabel);
+            this.isReady = true;
+            setSiteTitle();
+
+            setTimeout(() => {
+              this.$refs.email.focus()
+            }, 500);
           });
         });
       },
@@ -150,19 +157,8 @@
         });
       }
     },
-    mounted() {
-      //Autofocus
-      this.$refs.email.focus();
-    },
     created() {
       this.createConnection();
-      this.languageData = JSON.parse(store.state.languageLabel);
-      // Set language list and default language fetch from Local Storage
-      this.langList =
-        localStorage.getItem('listOfLanguage') !== null ?
-          JSON.parse(localStorage.getItem('listOfLanguage')) :
-          [];
-      this.defautLang = localStorage.getItem('defaultLanguage').toUpperCase();
     }
   };
 </script>
