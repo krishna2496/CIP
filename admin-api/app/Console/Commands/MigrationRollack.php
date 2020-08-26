@@ -132,7 +132,7 @@ class MigrationRollack extends Command
     public function createConnection(int $tenantId): int
     {
         DB::purge('tenant');
-        
+
         // Set configuration options for the newly create tenant
         Config::set(
             'database.connections.tenant',

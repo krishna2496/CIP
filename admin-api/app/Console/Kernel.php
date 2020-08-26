@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\ApplyMigration::class,
         Commands\ApplySeeder::class,
-        Commands\MigrationRollack::class
+        Commands\MigrationRollack::class,
+        Commands\TenantSettingsDedupe::class,
     ];
 
     /**
