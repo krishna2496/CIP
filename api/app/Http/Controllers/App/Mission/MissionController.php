@@ -705,15 +705,6 @@ class MissionController extends Controller
                     );
                 }
             )->all();
-            
-            // Get the associated UN SDG
-            if (!empty($mission[0]->missionUnSdg) && count($mission[0]->missionUnSdg) > 0) {
-                $sdgData = [];
-                foreach ($mission[0]->missionUnSdg as $key => $unSdg) {
-                    $sdgData[] = $this->unitedNationSDGRepository->getUnSdg($unSdg->un_sdg_number);
-                }
-                $mission[0]->un_sdg = $sdgData;
-            }
 
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;

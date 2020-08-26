@@ -30,7 +30,7 @@ class MissionUnSdg extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_id', 'un_sdg_number'];
+    protected $visible = ['un_sdg_number'];
 
     /**
      * The attributes that are mass assignable.
