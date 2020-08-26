@@ -756,6 +756,9 @@
       @include lg-max {
         padding: 20px 15px;
       }
+      @include sm-max {
+        padding: 20px 10px;
+      }
       .icon-btn {
         span {
           @media screen and (-ms-high-contrast: active),

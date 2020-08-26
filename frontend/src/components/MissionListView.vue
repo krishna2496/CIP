@@ -4,7 +4,7 @@
         <div class="card-outer" :id="`listview-${index}`" v-for="(mission, index) in items" :key=index>
             <b-card no-body>
                 <b-card-header>
-                    <div class="header-img-block">
+                    <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
                         <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
                             {{languageData.label.applied}}</b-alert>
                         <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
