@@ -100,7 +100,7 @@ class TimesheetQuery implements QueryableInterface
                 $join->on('city_language_fallback.city_id', '=', 'mission.city_id')
                     ->where('city_language_fallback.language_id', '=', $defaultLanguageId);
             })
-            ->whereNotIn('timesheet.status', ['pending'])
+            ->whereNotIn('timesheet.status', [config('constants.timesheet_status.PENDING')])
             ->whereHas('mission', function ($query) {
                 $query->whereIn(
                     'publication_status',
@@ -184,66 +184,68 @@ class TimesheetQuery implements QueryableInterface
                 });
             })
             // Search
-            ->when(!empty($search), function ($query) use ($search, $filters, $languageId) {
-                $searchCallback = function ($query) use ($search, $filters, $languageId) {
-
+            ->when(!empty($search), function ($query) use ($search, $filters) {
+                $searchCallback = function ($query) use ($search, $filters) {
                     $query
-                        ->where('timesheet.status', 'like', "%${search}%")
-                        ->orWhere('timesheet.time', 'like', "%${search}%")
-                        ->orWhere('timesheet.action', 'like', "%${search}%")
-                        ->orWhere('timesheet.notes', 'like', "%${search}%")
-                        ->orWhere('timesheet.day_volunteered', 'like', "%${search}%")
-                        ->orWhere('timesheet.date_volunteered', 'like', "%${search}%")
-                        ->orwhereHas('timesheetDocument', function ($query) use ($search) {
-                            $query
-                                ->where('document_name', 'like', "%${search}%");
-                        })
-                        ->orwhereHas('user', function ($query) use ($search) {
-                            $query
-                                ->where('first_name', 'like', "%${search}%")
-                                ->orWhere('last_name', 'like', "%${search}%")
-                                ->orWhere('email', 'like', "%${search}%");
-                        })
-                        ->orwhere('mission_language.title', 'like', "%${search}%")
-                        ->orwhere('mission_language.objective', 'like', "%${search}%")
-                        ->orwhere(function ($query) use ($search) {
-                            $query
-                                ->whereNull('mission_language.title')
-                                ->whereNull('mission_language.objective')
-                                ->where(function ($query) use ($search) {
+                        ->whereNotIn('timesheet.status', [config('constants.timesheet_status.PENDING')])
+                        ->where(function ($query) use ($search, $filters) {
+                            $query->where('timesheet.status', 'like', "%${search}%")
+                                ->orWhere('timesheet.time', 'like', "%${search}%")
+                                ->orWhere('timesheet.action', 'like', "%${search}%")
+                                ->orWhere('timesheet.notes', 'like', "%${search}%")
+                                ->orWhere('timesheet.day_volunteered', 'like', "%${search}%")
+                                ->orWhere('timesheet.date_volunteered', 'like', "%${search}%")
+                                ->orwhereHas('timesheetDocument', function ($query) use ($search) {
                                     $query
-                                        ->where('mission_language_fallback.title', 'like', "%${search}%")
-                                        ->orWhere('mission_language_fallback.objective', 'like', "%${search}%");
+                                        ->where('document_name', 'like', "%${search}%");
+                                })
+                                ->orwhereHas('user', function ($query) use ($search) {
+                                    $query
+                                        ->where('first_name', 'like', "%${search}%")
+                                        ->orWhere('last_name', 'like', "%${search}%")
+                                        ->orWhere('email', 'like', "%${search}%");
+                                })
+                                ->orwhere('mission_language.title', 'like', "%${search}%")
+                                ->orwhere('mission_language.objective', 'like', "%${search}%")
+                                ->orwhere(function ($query) use ($search) {
+                                    $query
+                                        ->whereNull('mission_language.title')
+                                        ->whereNull('mission_language.objective')
+                                        ->where(function ($query) use ($search) {
+                                            $query
+                                                ->where('mission_language_fallback.title', 'like', "%${search}%")
+                                                ->orWhere('mission_language_fallback.objective', 'like', "%${search}%");
+                                        });
+                                })
+                                ->orwhereHas('mission.goalMission', function ($query) use ($search) {
+                                    $query
+                                        ->where('goal_objective', 'like', "%${search}%");
+                                })
+                                ->orwhere('city_language.name', 'like', "%${search}%")
+                                ->orwhere(function ($query) use ($search) {
+                                    $query
+                                        ->whereNull('city_language.name')
+                                        ->where('city_language_fallback.name', 'like', "%${search}%");
+                                })
+                                ->orwhere('country_language.name', 'like', "%${search}%")
+                                ->orwhere(function ($query) use ($search) {
+                                    $query
+                                        ->whereNull('country_language.name')
+                                        ->where('country_language_fallback.name', 'like', "%${search}%");
+                                })
+                                ->orwhereHas('mission.missionTheme', function ($query) use ($search, $filters) {
+                                    $codeLanguage = $filters['language'];
+                                    $query->where('translations', 'regexp', '{s:4:"lang";s:[1-3]:"' . $codeLanguage . '";s:5:"title";s:[1-9]{1,6}:"[^"]*' . $search . '[^"]*";}')
+                                        ->orWhere('theme_name', 'like', "%${search}%");
                                 });
-                        })
-                        ->orwhereHas('mission.goalMission', function ($query) use ($search) {
-                            $query
-                                ->where('goal_objective', 'like', "%${search}%");
-                        })
-                        ->orwhere('city_language.name', 'like', "%${search}%")
-                        ->orwhere(function ($query) use ($search) {
-                            $query
-                                ->whereNull('city_language.name')
-                                ->where('city_language_fallback.name', 'like', "%${search}%");
-                        })
-                        ->orwhere('country_language.name', 'like', "%${search}%")
-                        ->orwhere(function ($query) use ($search) {
-                            $query
-                                ->whereNull('country_language.name')
-                                ->where('country_language_fallback.name', 'like', "%${search}%");
-                        })
-                        ->orwhereHas('mission.missionTheme', function ($query) use ($search, $filters) {
-                            $codeLanguage = $filters['language'];
-                            $query->where('translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$codeLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$search.'[^"]*";}')
-                                ->orWhere('theme_name', 'like', "%${search}%");
                         });
                 };
 
-            if (isset($filters[self::FILTER_TIMESHEET_IDS])) {
-                $query->orWhere($searchCallback);
-            } else {
-                $query->where($searchCallback);
-            }
+                if (isset($filters[self::FILTER_TIMESHEET_IDS])) {
+                    $query->orWhere($searchCallback);
+                } else {
+                    $query->where($searchCallback);
+                }
             })
             ->whereHas('mission', function ($query) use ($filters) {
                 $query->when(isset($filters[self::FILTER_TYPE]), function ($query) {

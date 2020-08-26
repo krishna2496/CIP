@@ -296,9 +296,10 @@
 		"virtual_missions" : "Virtual volunteering",
 		"home" : "Home",
 		"login_with_sso": "Login with SSO",
-		"ongoing" : "Ongoing",
-		"more" : "more",
-		"and" : "&"
+		"site_title": "Home",
+		"ongoing": "Ongoing",
+		"more": "more",
+		"and": "&"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",

@@ -296,9 +296,10 @@
 		"virtual_missions" : "Wirtualny wolontariat",
 		"home" : "Dom",
 		"login_with_sso": "Entrar com SSO",
-		"ongoing" : "Ongoing",
-		"more" : "jeszcze",
-		"and" : "i"
+		"site_title": "Strona główna",
+		"ongoing": "Ongoing",
+		"more": "jeszcze",
+		"and": "i"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",

@@ -296,9 +296,10 @@
 		"virtual_missions" : "Virtueel vrijwilligerswerk",
 		"home" : "Thuis",
 		"login_with_sso": "Log in met SSO",
-		"ongoing" : "Lopend",
-		"more" : "meer",
-		"and" : "en"
+		"site_title": "Home",
+		"ongoing": "Lopend",
+		"more": "meer",
+		"and": "en",
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",

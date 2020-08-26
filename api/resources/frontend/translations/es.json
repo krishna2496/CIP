@@ -296,9 +296,10 @@
 		"virtual_missions" : "Voluntariado virtual",
 		"home" : "Hogar",
 		"login_with_sso": "Iniciar sesión con SSO",
-		"ongoing" : "En curso",
-		"more" : "mas",
-		"and" : "y"
+		"site_title": "Inicio",
+		"ongoing": "En curso",
+		"more": "mas",
+		"and": "y"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",

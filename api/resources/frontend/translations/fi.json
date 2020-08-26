@@ -296,9 +296,10 @@
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
 		"home" : "Koti",
 		"login_with_sso": "Kirjaudu sisään SSO: lla",
-		"ongoing" : "Ongoing",
-		"more" : "muuta",
-		"and" : "ja"
+		"site_title": "Koti",
+		"ongoing": "Ongoing",
+		"more": "muuta",
+		"and": "ja"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",
