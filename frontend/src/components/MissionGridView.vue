@@ -14,7 +14,7 @@
                             {{mission.city_name}}
                         </div>
                         <b-card-header>
-                            <div class="header-img-block">
+                            <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
                                 <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
                                     {{languageData.label.applied}}</b-alert>
                                 <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
@@ -305,6 +305,19 @@ export default {
             this.invitedUserId = '';
             this.query = '';
             this.selected = '';
+            // setTimeout(() => {
+            const cardHeader = document.querySelectorAll(
+                ".card-grid .card .card-header"
+            );
+            const cardBody = document.querySelectorAll(".card-grid .card .card-body");
+            cardBody.forEach(function (cardBodyElem) {
+                cardBodyElem.style.transform = "translateY(0)";
+            });
+            cardHeader.forEach(function (cardHeaderElem) {
+                cardHeaderElem.style.transform = "translateY(0)";
+            });
+            // },500)
+           
         },
         getAppliedStatus(missionDetail) {
             const currentDate = moment().format('YYYY-MM-DD');
