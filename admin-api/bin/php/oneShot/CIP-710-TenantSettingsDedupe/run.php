@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../../../../bootstrap/app.php');
+require_once(__DIR__.'/../OneShot.php');
 
 
 use App\Models\Tenant;
@@ -9,12 +9,11 @@ use App\Models\TenantSetting;
 use App\Repositories\Tenant\TenantRepository;
 use App\Repositories\TenantHasSetting\TenantHasSettingRepository;
 use App\Repositories\TenantSetting\TenantSettingRepository;
-use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use optimy\console\OneShot;
 
 
-class TenantSettingsDedupe extends Command
+class TenantSettingsDedupe extends OneShot
 {
     /**
      * @var App\Repositories\Tenant\TenantRepository
@@ -43,7 +42,6 @@ class TenantSettingsDedupe extends Command
         TenantHasSettingRepository $tenantHasSettingRepository
     ) {
         parent::__construct();
-        $this->output = new ConsoleOutput;
         $this->tenantRepository = $tenantRepository;
         $this->tenantSettingRepository = $tenantSettingRepository;
         $this->tenantHasSetting = $tenantHasSetting;
@@ -51,21 +49,11 @@ class TenantSettingsDedupe extends Command
     }
 
     /**
-     * Poorman's progress indicator. :(
-     *
-     * @return void
-     */
-    public function progress($char = null)
-    {
-        print($char ?: '·');
-    }
-
-    /**
-     * Execute the console command.
+     * OneShot script entry point method.
      *
      * @return mixed
      */
-    public function handle()
+    public function start($input = null, $output = null)
     {
         $redundantSettings = $this->getRedundantSettings($this->tenantSettingRepository->getAllSettings());
         if (!$redundantSettings->count()) {
@@ -81,7 +69,7 @@ class TenantSettingsDedupe extends Command
 
         $firstIdPerKey = [];
         foreach ($redundantSettings as $settingKey => $settings) {
-            // get the extraneousused per tenant setting key.
+            // get the extraneous IDs used per tenant setting key.
             $firstIdPerKey[$settingKey] = min($settings->keys()->all());
         }
 
@@ -138,7 +126,7 @@ class TenantSettingsDedupe extends Command
      *
      * @return Collection
      */
-    public function getRedundantSettings(Collection $settings): Collection
+    private function getRedundantSettings(Collection $settings): Collection
     {
         // get all keys with duplicates.
         $settingKeys = array_keys(array_filter(array_count_values(
@@ -162,10 +150,9 @@ class TenantSettingsDedupe extends Command
     }
 }
 
-// boot the Application to initialize the IoC/DI container,
-// have it instantiate our TenantSettingsDedupe class
-// automagically injecting all the required depency to its
-// constructor and then make a call to our entry point method.
-$app->boot();
+// instantiate TenantSettingsDedupe class with the application
+// container which should automagically inject all the required
+// dependency to its constructor and finally make a call to our
+// starting entry point method.
 $cli = $app->make(TenantSettingsDedupe::class);
-$cli->handle();
+$cli->start();
