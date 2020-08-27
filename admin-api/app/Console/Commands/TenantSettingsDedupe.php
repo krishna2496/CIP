@@ -93,39 +93,34 @@ class TenantSettingsDedupe extends Command
 
 		foreach ($tenants as $tenant) {
 			try {
-				if ($this->createTenantConnection($tenant->tenant_id)) {
-					$dupeTenantSettings = $this->getRedundantSettings(
-						$this->tenantHasSettingRepository->getSettingsList($tenant->tenant_id)
-					);
-					foreach ($dupeTenantSettings as $settingKey => $tenantSettings) {
-						$enabledSettings = $tenantSettings->count();
-						$disableSettings = $tenantSettings->whereNotNull('deleted_at')->count();
-						if ($enabledSettings == $disableSettings || $disableSettings == 0) {
-							// either
-							// tenant has no active setting for this duplicate key
-							// or
-							// tenant has all settings active for this duplicate key
-							// then
-							// retain the first, delete the rest
-						}
-						if (($enabledSettings - $disableSettings) > 0) {
-							// if
-							// tenant has at least 1 active setting for this key
-							// then
-							// check if first is active, activate if it is not, delete the rest
-							$initialSetting = $tenantSettings->get($firstIdPerKey[$settingKey]);
-							if (!$initialSetting->is_active) {
-								$this->tenantHasSetting->enableSetting($tenant->tenant_id, $firstIdPerKey[$settingKey]);
-							}
-						}
-						$excessSettings = $tenantSettings->where('tenant_setting_id', '!=', $firstIdPerKey[$settingKey]);
-						foreach ($excessSettings as $setting) {
-							$this->tenantHasSetting->disableSetting($tenant->tenant_id, $setting->tenant_setting_id);
+				$dupeTenantSettings = $this->getRedundantSettings(
+					$this->tenantHasSettingRepository->getSettingsList($tenant->tenant_id)
+				);
+				foreach ($dupeTenantSettings as $settingKey => $tenantSettings) {
+					$enabledSettings = $tenantSettings->count();
+					$disableSettings = $tenantSettings->whereNotNull('deleted_at')->count();
+					if ($enabledSettings == $disableSettings || $disableSettings == 0) {
+						// either
+						// tenant has no active setting for this duplicate key
+						// or
+						// tenant has all settings active for this duplicate key
+						// then
+						// retain the first, delete the rest
+					}
+					if (($enabledSettings - $disableSettings) > 0) {
+						// if
+						// tenant has at least 1 active setting for this key
+						// then
+						// check if first is active, activate if it is not, delete the rest
+						$initialSetting = $tenantSettings->get($firstIdPerKey[$settingKey]);
+						if (!$initialSetting->is_active) {
+							$this->tenantHasSetting->enableSetting($tenant->tenant_id, $firstIdPerKey[$settingKey]);
 						}
 					}
-					sleep(1);
-				} else {
-					throw new Exception("Unable to connect to database of tenant {$tenant->tenant_id}.");
+					$excessSettings = $tenantSettings->where('tenant_setting_id', '!=', $firstIdPerKey[$settingKey]);
+					foreach ($excessSettings as $setting) {
+						$this->tenantHasSetting->disableSetting($tenant->tenant_id, $setting->tenant_setting_id);
+					}
 				}
 			} catch (Exception $e) {
 				print(PHP_EOL);
@@ -174,41 +169,5 @@ class TenantSettingsDedupe extends Command
 			$redundantSettings->put($settingKey, $settingsPerKey);
 		}
 		return $redundantSettings;
-	}
-
-	/**
-	 * Create connection with tenant's database
-	 * @codeCoverageIgnore
-	 *
-	 * @param int $tenantId
-	 * @return boolean
-	 */
-	public function createTenantConnection(int $tenantId): int
-	{
-		return true;
-
-		DB::purge('tenant');
-
-		// Set configuration options for the newly create tenant
-		Config::set(
-			'database.connections.tenant',
-			array(
-				'driver'    => 'mysql',
-				'host'      => env('DB_HOST'),
-				'database'  => 'ci_tenant_'.$tenantId,
-				'username'  => env('DB_USERNAME'),
-				'password'  => env('DB_PASSWORD'),
-			)
-		);
-
-		// Set default connection with newly created database
-		DB::setDefaultConnection('tenant');
-
-		try {
-			DB::connection('tenant')->getPdo();
-			return true;
-		} catch (Exception $exception) {
-			return false;
-		}
 	}
 }

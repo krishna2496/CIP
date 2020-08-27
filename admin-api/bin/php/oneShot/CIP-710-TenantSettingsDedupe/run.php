@@ -1,7 +1,7 @@
 <?php
 
-require_once(__DIR__.'/../app.php');
-
+// require_once(__DIR__.'/../app.php');
+require_once(__DIR__.'/../../../../bootstrap/app.php');
 
 use App\Models\Tenant;
 use App\Models\TenantHasSetting;
@@ -10,6 +10,7 @@ use App\Repositories\Tenant\TenantRepository;
 use App\Repositories\TenantHasSetting\TenantHasSettingRepository;
 use App\Repositories\TenantSetting\TenantSettingRepository;
 use Illuminate\Console\Command;
+use Illuminate\Console\Application;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -44,10 +45,21 @@ class TenantSettingsDedupe extends Command
 		TenantHasSettingRepository $tenantHasSettingRepository
 	) {
 		parent::__construct();
+		$this->output = new ConsoleOutput;
 		$this->tenantRepository = $tenantRepository;
 		$this->tenantSettingRepository = $tenantSettingRepository;
 		$this->tenantHasSetting = $tenantHasSetting;
 		$this->tenantHasSettingRepository = $tenantHasSettingRepository;
+	}
+
+	/**
+	 * Poorman's progress bar.
+	 *
+	 * @return void
+	 */
+	public function progress()
+	{
+		print('·');
 	}
 
 	/**
@@ -58,8 +70,8 @@ class TenantSettingsDedupe extends Command
 	public function handle()
 	{
 		$redundantSettings = $this->getRedundantSettings($this->tenantSettingRepository->getAllSettings());
-		if ($redundantSettings->count()) {
-			return $extraneouso('There are no duplicate settings to process.');
+		if (!$redundantSettings->count()) {
+			return $this->info('There are no duplicate settings to process.');
 		}
 
 		$tenants = $this->tenantRepository->getAllTenants();
@@ -68,8 +80,6 @@ class TenantSettingsDedupe extends Command
 		}
 
 		$this->info('Removing duplicate tenant settings for all existing tenants.');
-		$progress = $this->output->createProgressBar($tenants->count());
-		$progress->start();
 
 		$firstIdPerKey = [];
 		foreach ($redundantSettings as $settingKey => $settings) {
@@ -78,58 +88,57 @@ class TenantSettingsDedupe extends Command
 		}
 
 		foreach ($tenants as $tenant) {
+			// $this->info("Tenant {$tenant->tenant_id}");
+			$this->progress();
 			try {
-				if ($this->createTenantConnection($tenant->tenant_id)) {
-					$dupeTenantSettings = $this->getRedundantSettings(
-						$this->tenantHasSettingRepository->getSettingsList($tenant->tenant_id)
-					);
-					foreach ($dupeTenantSettings as $settingKey => $tenantSettings) {
-						$enabledSettings = $tenantSettings->count();
-						$disableSettings = $tenantSettings->whereNotNull('deleted_at')->count();
-						if ($enabledSettings == $disableSettings || $disableSettings == 0) {
-							// either
-							// tenant has no active setting for this duplicate key
-							// or
-							// tenant has all settings active for this duplicate key
-							// then
-							// retain the first, delete the rest
-						}
-						if (($enabledSettings - $disableSettings) > 0) {
-							// if
-							// tenant has at least 1 active setting for this key
-							// then
-							// check if first is active, activate if it is not, delete the rest
-							$initialSetting = $tenantSettings->get($firstIdPerKey[$settingKey]);
-							if (!$initialSetting->is_active) {
-								$this->tenantHasSetting->enableSetting($tenant->tenant_id, $firstIdPerKey[$settingKey]);
-							}
-						}
-						$excessSettings = $tenantSettings->where('tenant_setting_id', '!=', $firstIdPerKey[$settingKey]);
-						foreach ($excessSettings as $setting) {
-							$this->tenantHasSetting->disableSetting($tenant->tenant_id, $setting->tenant_setting_id);
+				$dupeTenantSettings = $this->getRedundantSettings(
+					$this->tenantHasSettingRepository->getSettingsList($tenant->tenant_id)
+				);
+				foreach ($dupeTenantSettings as $settingKey => $tenantSettings) {
+					$this->progress();
+					$enabledSettings = $tenantSettings->count();
+					$disableSettings = $tenantSettings->whereNotNull('deleted_at')->count();
+					if ($enabledSettings == $disableSettings || $disableSettings == 0) {
+						// either
+						// tenant has no active setting for this duplicate key
+						// or
+						// tenant has all settings active for this duplicate key
+						// then
+						// retain the first, delete the rest
+					}
+					if (($enabledSettings - $disableSettings) > 0) {
+						// if
+						// tenant has at least 1 active setting for this key
+						// then
+						// check if first is active, activate if it is not, delete the rest
+						$initialSetting = $tenantSettings->get($firstIdPerKey[$settingKey]);
+						if (!$initialSetting->is_active) {
+							$this->tenantHasSetting->enableSetting($tenant->tenant_id, $firstIdPerKey[$settingKey]);
 						}
 					}
-					sleep(1);
-				} else {
-					throw new Exception("Unable to connect to database of tenant {$tenant->tenant_id}.");
+					$excessSettings = $tenantSettings->where('tenant_setting_id', '!=', $firstIdPerKey[$settingKey]);
+					foreach ($excessSettings as $setting) {
+						$this->progress();
+						$this->tenantHasSetting->disableSetting($tenant->tenant_id, $setting->tenant_setting_id);
+					}
 				}
 			} catch (Exception $e) {
 				print(PHP_EOL);
 				$this->warn($e->getTraceAsString());
 				throw $e;
 			}
-			$progress->advance();
+
 		}
 
 		// Remove the redundant settings
 		foreach ($redundantSettings as $settingKey => $settings) {
 			$excessSettings = $settings->where('tenant_setting_id', '!=', $firstIdPerKey[$settingKey]);
 			foreach ($excessSettings as $redundantSetting) {
+				$this->progress();
 				$redundantSetting->delete();
 			}
 		}
 
-		$progress->finish();
 		print(PHP_EOL);
 		$this->info('Processing all tenants finished successfully!');
 	}
@@ -163,18 +172,7 @@ class TenantSettingsDedupe extends Command
 	}
 }
 
-// $kernel = $app->make('App\Console\Kernel');
-// $app->run();
 
-DB::setDefaultConnection('mysql');
-
-$cli = new TenantSettingsDedupe(
-	App(TenantRepository::class),
-	App(TenantSettingRepository::class),
-	App(TenantHasSetting::class),
-	App(TenantHasSettingRepository::class)
-);
-$cli->handle();
-
+$app->boot();
 $cli = $app->make(TenantSettingsDedupe::class);
 $cli->handle();
