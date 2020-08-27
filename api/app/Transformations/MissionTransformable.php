@@ -80,12 +80,12 @@ trait MissionTransformable
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
 
-        if (isset($mission['availability'])) {
-            $arrayKey = array_search($languageCode, array_column($mission['availability']['translations'], 'lang'));
+        if (isset($mission['volunteeringAttribute']['availability'])) {
+            $arrayKey = array_search($languageCode, array_column($mission['volunteeringAttribute']['availability']['translations'], 'lang'));
             if ($arrayKey  !== '') {
-                $mission['availability_type'] = $mission['availability']['translations'][$arrayKey]['title'];
+                $mission['availability_type'] = $mission['volunteeringAttribute']['availability']['translations'][$arrayKey]['title'];
             }
-            unset($mission['availability']);
+            unset($mission['volunteeringAttribute']['availability']);
         }
 
         if (isset($mission['volunteeringAttribute'])) {
