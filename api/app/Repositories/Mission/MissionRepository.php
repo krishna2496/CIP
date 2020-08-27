@@ -209,13 +209,13 @@ class MissionRepository implements MissionInterface
                     'mission_id' => $mission->mission_id,
                     'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'],
                     'goal_amount' => $request->donation_attribute['goal_amount'] != '' ? $request->donation_attribute['goal_amount'] : null,
-                    'show_goal_amount' => (string) $request->donation_attribute['show_goal_amount'] ?? '0',
-                    'show_donation_percentage' => (string) $request->donation_attribute['show_donation_percentage'] ?? '0',
-                    'show_donation_meter' => (string) $request->donation_attribute['show_donation_meter'] ?? '0',
-                    'show_donation_count' => (string) $request->donation_attribute['show_donation_count'] ?? '0',
-                    'show_donors_count' => (string) $request->donation_attribute['show_donors_count'] ?? '0',
-                    'disable_when_funded' => (string) $request->donation_attribute['disable_when_funded'] ?? '0',
-                    'is_disabled' => (string) $request->donation_attribute['is_disabled'] ?? '0',
+                    'show_goal_amount' => $request->donation_attribute['show_goal_amount'] ?? '0',
+                    'show_donation_percentage' => $request->donation_attribute['show_donation_percentage'] ?? '0',
+                    'show_donation_meter' => $request->donation_attribute['show_donation_meter'] ?? '0',
+                    'show_donation_count' => $request->donation_attribute['show_donation_count'] ?? '0',
+                    'show_donors_count' => $request->donation_attribute['show_donors_count'] ?? '0',
+                    'disable_when_funded' => $request->donation_attribute['disable_when_funded'] ?? '0',
+                    'is_disabled' => $request->donation_attribute['is_disabled'] ?? '0',
                 );
                 $this->modelsService->donationAttribute->create($donationData);
             }
@@ -347,30 +347,30 @@ class MissionRepository implements MissionInterface
                     }
                     if (isset($request->donation_attribute['show_goal_amount'])) {
                         $donationAttributes->show_goal_amount =
-                        (string) $request->donation_attribute['show_goal_amount'];
+                        $request->donation_attribute['show_goal_amount'];
                     }
                     if (isset($request->donation_attribute['show_donation_percentage'])) {
                         $donationAttributes->show_donation_percentage =
-                        (string) $request->donation_attribute['show_donation_percentage'];
+                        $request->donation_attribute['show_donation_percentage'];
                     }
                     if (isset($request->donation_attribute['show_donation_meter'])) {
                         $donationAttributes->show_donation_meter =
-                        (string) $request->donation_attribute['show_donation_meter'];
+                        $request->donation_attribute['show_donation_meter'];
                     }
                     if (isset($request->donation_attribute['show_donation_count'])) {
                         $donationAttributes->show_donation_count =
-                        (string) $request->donation_attribute['show_donation_count'];
+                        $request->donation_attribute['show_donation_count'];
                     }
                     if (isset($request->donation_attribute['show_donors_count'])) {
                         $donationAttributes->show_donors_count =
-                        (string) $request->donation_attribute['show_donors_count'];
+                        $request->donation_attribute['show_donors_count'];
                     }
                     if (isset($request->donation_attribute['disable_when_funded'])) {
                         $donationAttributes->disable_when_funded =
-                        (string) $request->donation_attribute['disable_when_funded'];
+                        $request->donation_attribute['disable_when_funded'];
                     }
                     if (isset($request->donation_attribute['is_disabled'])) {
-                        $donationAttributes->is_disabled = (string) $request->donation_attribute['is_disabled'];
+                        $donationAttributes->is_disabled = $request->donation_attribute['is_disabled'];
                     }
                     $donationAttributes->save();
                 }
