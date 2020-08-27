@@ -16,8 +16,7 @@ class DonationIpWhitelistTenantSettingSeeder extends Seeder
             'title' => 'Donation IP whitelisting',
             'description' => 'Enable/disable donation IP whitelisting',
             'key' => 'donation_ip_whitelist',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'created_at' => Carbon::now()
         ];
 
         DB::table('tenant_setting')->insert($item);
