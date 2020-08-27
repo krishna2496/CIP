@@ -109,8 +109,8 @@
 
                                 <div class="text-wrap dropdown-outer" :id="`skillWrap_${mission.mission_id}`">
                                     <span class="title-text">{{getSkills(mission.skill)}}
-                                        <span v-if="getSkillsCount(mission.skill) > 0"> {{ languageData.label.and }} {{getSkillsCount(mission.skill)}} </span>
-                                        <u><b-button v-if="getSkillsCount(mission.skill) > 0" :id="`skillPopover_${mission.mission_id}`" class="more-btn">{{ languageData.label.more }}</b-button></u>
+                                        <span v-if="getSkillsCount(mission.skill) > 0"> {{ languageData.label.and }} </span> <u><span v-if="getSkillsCount(mission.skill) > 0"> {{getSkillsCount(mission.skill)}} </span>
+                                        <b-button v-if="getSkillsCount(mission.skill) > 0" :id="`skillPopover_${mission.mission_id}`" class="more-btn">{{ languageData.label.more }}</b-button></u>
                                         <b-popover :target="`skillPopover_${mission.mission_id}`" triggers="hover focus" placement="top" custom-class="skill-popover" :container="`skillWrap_${mission.mission_id}`">
                                             <b-list-group v-if="skill" v-for="(skill ,key) in getRemainingSkill(mission.skill)" :key=key>
                                                 <b-list-group-item>{{skill.title}}</b-list-group-item>
