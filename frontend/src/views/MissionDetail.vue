@@ -330,7 +330,7 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li v-if="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-show="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
@@ -447,7 +447,7 @@
                                             </div>
                                         </b-collapse>
                                     </div>
-                                    <div class="tabs" v-if="isOrganizationDisplay">
+                                    <div class="tabs" v-show="isOrganizationDisplay">
                                         <div class="tab-title">
                                             <h3 v-b-toggle.organization>{{ languageData.label.organisation }}</h3>
                                         </div>
@@ -500,7 +500,7 @@
                                                                 </i>
                                                                 <div class="comment-title">
                                                                     <h5 v-if="comments.user.user_id != null">
-                                                                      {{comments.user.first_name}}{{comments.user.last_name}}</h5>
+                                                                      {{comments.user.first_name}} {{comments.user.last_name}}</h5>
                                                                     <h5 v-else>{{ languageData.label.deleted_user }}</h5>
                                                                     <p>{{ getCommentDate(comments.created_at) }}</p>
                                                                 </div>
