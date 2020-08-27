@@ -32,8 +32,11 @@ class VolunteeringAttribute extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_id,', 'availability_id',
-            'total_seats', 'is_virtual'
+    protected $visible = [
+        'mission_id,',
+        'availability_id',
+        'total_seats',
+        'is_virtual'
     ];
 
     /**
@@ -41,8 +44,15 @@ class VolunteeringAttribute extends Model
      *
      * @var array
      */
-    protected $fillable = ['volunteering_attribute_id', 'mission_id,', 'availability_id',
-        'total_seats', 'is_virtual'
+    protected $fillable = [
+        'mission_id,',
+        'availability_id',
+        'total_seats',
+        'is_virtual'
+    ];
+
+    protected $casts = [
+        'is_virtual' => 'boolean',
     ];
 
     /**
@@ -80,19 +90,6 @@ class VolunteeringAttribute extends Model
     public function setVolunteeringAttributeIdAttribute(): void
     {
         $this->attributes['volunteering_attribute_id'] = (String) Str::uuid();
-    }
-
-    /**
-     * Set is virtual attribute on the model.
-     *
-     * @param $value
-     * @return void
-     */
-    public function setIsVirtualAttribute($value): void
-    {
-        if (!is_null($value)) {
-            $this->attributes['is_virtual'] = (string)$value;
-        }
     }
 
     /**

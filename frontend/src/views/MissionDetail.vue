@@ -330,7 +330,7 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li v-if="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-show="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
@@ -433,13 +433,21 @@
                                                                                class="has-img no-close" :url="bgImage[2]" />
                                                             </b-link>
                                                         </template>
+                                                        <!-- txt -->
+                                                        <template v-if="document.document_type === 'txt'">
+                                                            <b-link :href="document.document_path" target="_blank"
+                                                                    :title="document.document_name">
+                                                                <AppCustomChip :textVal="document.document_name"
+                                                                               class="has-img no-close" :url="bgImage[3]" />
+                                                            </b-link>
+                                                        </template>
                                                     </div>
 
                                                 </div>
                                             </div>
                                         </b-collapse>
                                     </div>
-                                    <div class="tabs" v-if="isOrganizationDisplay">
+                                    <div class="tabs" v-show="isOrganizationDisplay">
                                         <div class="tab-title">
                                             <h3 v-b-toggle.organization>{{ languageData.label.organisation }}</h3>
                                         </div>
@@ -492,7 +500,7 @@
                                                                 </i>
                                                                 <div class="comment-title">
                                                                     <h5 v-if="comments.user.user_id != null">
-                                                                      {{comments.user.first_name}}{{comments.user.last_name}}</h5>
+                                                                      {{comments.user.first_name}} {{comments.user.last_name}}</h5>
                                                                     <h5 v-else>{{ languageData.label.deleted_user }}</h5>
                                                                     <p>{{ getCommentDate(comments.created_at) }}</p>
                                                                 </div>
@@ -700,6 +708,7 @@
           require("@/assets/images/pdf.svg"),
           require("@/assets/images/doc.svg"),
           require("@/assets/images/xlsx.svg"),
+          require("@/assets/images/txt.svg"),
         ],
         orgLogo: require("@/assets/images/ces-logo.png"),
         currentPage: 1,
