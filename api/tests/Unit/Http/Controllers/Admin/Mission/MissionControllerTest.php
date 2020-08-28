@@ -42,8 +42,8 @@ class MissionControllerTest extends TestCase
         $missionTabId = Uuid::uuid4()->toString();
 
         $methodResponse = [
-            "status"=> Response::HTTP_NO_CONTENT,
-            "message"=> trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
+            'status'=> Response::HTTP_NO_CONTENT,
+            'message'=> trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
         ];
 
         $JsonResponse = new JsonResponse(

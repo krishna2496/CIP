@@ -15,6 +15,7 @@ use App\Models\MissionDocument;
 use App\Helpers\LanguageHelper;
 use App\Models\MissionRating;
 use App\Models\MissionSkill;
+use App\Models\Organization;
 use App\Models\TimeMission;
 use App\Models\MissionTab;
 use App\Helpers\S3Helper;
@@ -54,6 +55,7 @@ class MissionRepositoryTest extends TestCase
         $modelService = $this->mock(ModelsService::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $collection = $this->mock(Collection::class);
+        $organization = $this->mock(Organization::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -65,6 +67,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
             $missionTab,
             $missionTabLanguage
         );
@@ -85,67 +88,6 @@ class MissionRepositoryTest extends TestCase
         );
 
         $response = $repository->deleteMissionTabByMissionTabId($missionTabId);
-    }
-
-    /**
-    * @testdox Test mission tab deleted by mission_id success
-    *
-    * @return void
-    */
-    public function testDeleteMissionTabByMissionIdSuccess()
-    {
-        $missionId = rand(50000,70000);
-
-        $mission = $this->mock(Mission::class);
-        $timeMission = $this->mock(TimeMission::class);
-        $missionLanguage = $this->mock(MissionLanguage::class);
-        $missionDocument = $this->mock(MissionDocument::class);
-        $favouriteMission = $this->mock(FavouriteMission::class);
-        $missionSkill = $this->mock(MissionSkill::class);
-        $missionRating = $this->mock(MissionRating::class);
-        $missionApplication = $this->mock(MissionApplication::class);
-        $city = $this->mock(City::class);
-        $missionTab = $this->mock(MissionTab::class);
-        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $helpers = $this->mock(Helpers::class);
-        $s3Helper = $this->mock(S3Helper::class);
-        $countryRepository = $this->mock(CountryRepository::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $modelService = $this->mock(ModelsService::class);
-        $missionTabRepository = $this->mock(MissionTabRepository::class);
-        $collection = $this->mock(Collection::class);
-
-        $modelService = $this->modelService(
-            $mission,
-            $timeMission,
-            $missionLanguage,
-            $missionDocument,
-            $favouriteMission,
-            $missionSkill,
-            $missionRating,
-            $missionApplication,
-            $city,
-            $missionTab,
-            $missionTabLanguage
-        );
-
-        $modelService->missionTab
-        ->shouldReceive('deleteMissionTabByMissionId')
-        ->with($missionId)
-        ->andReturn(true);
-
-        $repository = $this->getRepository(
-            $languageHelper,
-            $helpers,
-            $s3Helper,
-            $countryRepository,
-            $missionMediaRepository,
-            $modelService,
-            $missionTabRepository
-        );
-
-        $response = $repository->deleteMissionTabByMissionId($missionId);
     }
 
     /**
@@ -204,6 +146,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
@@ -218,6 +161,7 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        Organization $organization,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage
     ) {
@@ -231,6 +175,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
             $missionTab,
             $missionTabLanguage
         );
