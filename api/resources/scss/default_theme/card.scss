@@ -81,7 +81,7 @@
         display: inline-block;
         text-transform: uppercase;
         color: $white;
-
+        z-index :1;
         &.alert-success {
           background: $success;
         }
@@ -97,6 +97,11 @@
         height: 100%;
         overflow: hidden;
         background: $primary-border-color;
+        &.grayed-out {
+          .group-img {
+            filter: grayscale(1);
+          }
+        }
       }
 
       .group-img {
@@ -751,6 +756,9 @@
       @include lg-max {
         padding: 20px 15px;
       }
+      @include sm-max {
+        padding: 20px 10px;
+      }
       .icon-btn {
         span {
           @media screen and (-ms-high-contrast: active),
@@ -772,8 +780,9 @@
           color: $primary;
           max-width: 195px;
           flex: 0 0 195px;
-          font-size: 15px;
-          justify-content: space-between;
+          // font-size: 15px;
+          // justify-content: space-between;
+          justify-content: center;
           @include sm-max {
             min-width: 156px;
             max-width: 156px;
@@ -804,7 +813,7 @@
       }
       .social-btn {
         display: inline-flex;
-        margin: -4px 11px 0 0;
+        margin: -4px 0 0 0;
         .icon-btn {
           background: transparent;
           border: none;
@@ -1172,6 +1181,10 @@
                   &.title-text {
                     display: block;
                   }
+                  u {
+                    text-decoration: none;
+                    border-bottom: 1px dashed rgba($black, 0.4);
+                  }
                 }
               }
             }
@@ -1209,10 +1222,13 @@
               min-width: 172px;
               max-width: 172px;
               flex: 0 0 172px;
-              font-size: 15px;
+              font-size: 18px;
               display: flex !important;
               align-items: center;
-              justify-content: space-between;
+              justify-content: center;
+              i {
+                margin-left: 8px;
+              }
               &.gray-btn {
                 &:focus .icon-wrap {
                   svg {
