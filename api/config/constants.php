@@ -34,7 +34,7 @@ return [
     'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
-    'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
+    'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_custom-variables.scss',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
@@ -55,7 +55,10 @@ return [
         'TEXT' => 'text',
         'EMAIL' => 'email',
         'DROP-DOWN' => 'drop-down',
-        'RADIO' => 'radio'
+        'RADIO' => 'radio',
+        'CHECKBOX' => 'checkbox',
+        'MULTISELECT' => 'multiselect',
+        'TEXTAREA' => 'textarea',
      ],
 
      /*
@@ -392,6 +395,10 @@ return [
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => '210013',
         'ERROR_USER_EXPIRED' => '210014',
         'ERROR_USER_BLOCKED' => '210015',
+        'ERROR_USER_ACTIVE' => '210016',
+        'ERROR_USER_INVITE_INVALID_DATA' => '210017',
+        'ERROR_ACCOUNT_EXPIRED' => '210018',
+
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
         'ERROR_MISSION_NOT_FOUND' => '400003',
@@ -434,6 +441,7 @@ return [
         'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
         'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => '400050',
+        'ERROR_SEND_USER_INVITE_LINK' => '400051',
 
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
@@ -496,11 +504,15 @@ return [
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
+        'ERROR_SAML_ACCESS_ONLY_ACTIVE' => '800106',
 
         'ERROR_STATE_UNABLE_TO_DELETE' => '800039',
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
-        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042'
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
+        'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
+        'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045'
     ],
 
     /**
@@ -597,7 +609,8 @@ return [
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
-        'STATE' => 'STATE'
+        'STATE' => 'STATE',
+        'ORGANIZATION'=>'ORGANIZATION'
     ],
 
     'activity_log_actions' => [
@@ -642,7 +655,6 @@ return [
         'first_name',
         'last_name',
         'email',
-        'city_id',
         'country_id',
         'timezone_id',
         'language_id'
