@@ -255,11 +255,12 @@ class MissionRepository implements MissionInterface
         }
 
         // Create or update organization
-        
-        $organization = $this->modelsService->organization->updateOrCreate(
-            ['organization_id'=>$request->organization['organization_id']],
-            $request->organization
-        );
+        if (!empty($request->organization)) {
+            $organization = $this->modelsService->organization->updateOrCreate(
+                ['organization_id'=>$request->organization['organization_id']],
+                $request->organization
+            );
+        }
         
 
         if (!empty($organization)) {
