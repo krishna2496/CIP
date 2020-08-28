@@ -49,10 +49,10 @@ class MissionUnitedNationSDGRepository implements MissionUnitedNationSDGInterfac
      */
     public function updateUnSdg(int $missionId, array $request)
     {
-        // delete all mission associated UN SDG
+        // Delete UN SDG which is not associated with mission.
         $this->missionUnSdg->where('mission_id', $missionId)
         ->whereNotIn('un_sdg_number', $request['un_sdg'])->delete();
-        // update new UN SDG for mission
+        // Update new UN SDG for mission
         foreach ($request['un_sdg'] as $key => $value) {
             $this->missionUnSdg->updateOrCreate(
             [
