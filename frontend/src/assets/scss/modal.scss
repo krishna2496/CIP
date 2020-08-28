@@ -54,7 +54,7 @@
 
     .close {
       font-size: 0;
-      background: url($assetUrl+"/cross-ic.svg") no-repeat;
+      background: url($assetUrl + "/cross-ic.svg") no-repeat;
       padding: 0;
       margin: 0;
       width: 30px;
@@ -172,161 +172,6 @@
   }
 }
 
-/*Settings-modal*/
-
-.settings-modal {
-  .modal-dialog {
-    @include sm-min {
-      max-width: 830px;
-    }
-    .title-with-border {
-      font-size: 18px;
-      line-height: 24px;
-      margin-bottom: 19px;
-      span {
-        padding-bottom: 9px;
-        &:after {
-          width: 211px;
-          @include sm-max {
-            width: 100px;
-          }
-        }
-      }
-    }
-    .checkbox-group-wrap {
-      padding-bottom: 22px;
-      margin-bottom: 25px;
-      border-bottom: 1px solid $primary-border-color;
-      .site-checkbox {
-        margin-bottom: 7px;
-        .custom-checkbox {
-          line-height: 0;
-        }
-      }
-    }
-    .preference-block {
-      label {
-        font-weight: 300;
-        margin-bottom: 5px;
-      }
-      .dropdown {
-        max-width: 400px;
-        width: 100%;
-      }
-    }
-    .form-wrap {
-      > .btn-row {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 70px;
-        align-items: flex-start;
-        @include sm-max {
-          margin-top: 40px;
-        }
-        .btn {
-          margin-right: 10px;
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-        .cancel-btn {
-          min-width: 119px;
-        }
-        .save-btn {
-          min-width: 108px;
-          margin: 0;
-        }
-      }
-    }
-  }
-}
-
-/*
-*/
-
-.payment-modal {
-  .modal-dialog {
-    @include sm-min {
-      max-width: 950px;
-    }
-    .title-with-border {
-      font-size: 18px;
-      line-height: 24px;
-      margin-bottom: 25px;
-      span {
-        padding-bottom: 9px;
-        &:after {
-          width: 230px;
-          @include sm-max {
-            width: 100%;
-          }
-        }
-      }
-    }
-    .form-wrap {
-      label {
-        margin-bottom: 4px;
-      }
-      .info-icon {
-        cursor: pointer;
-        span {
-          color: $primary;
-        }
-        .cvv-tooltip {
-          background: transparent;
-          border: none;
-          padding: 0;
-          color: $black-primary;
-          display: inline-block !important;
-          margin: 0;
-          font-size: 15px;
-          min-width: auto;
-          color: $primary;
-        }
-      }
-      .form-group {
-        margin-bottom: 24px;
-        &.has-img {
-          position: relative;
-          input.form-control {
-            padding-left: 64px;
-          }
-          .card-img {
-            position: absolute;
-            left: 0.75rem;
-            top: 40px;
-            width: 38px;
-            line-height: 0;
-            img {
-              max-width: 100%;
-              height: auto;
-            }
-          }
-        }
-      }
-      > .btn-row {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 8px;
-        align-items: flex-start;
-        .btn {
-          margin-right: 10px;
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-        .cancel-btn {
-          min-width: 119px;
-        }
-        .save-btn {
-          min-width: 108px;
-          margin: 0;
-        }
-      }
-    }
-  }
-}
-
 /** send message modal style **/
 .send-message-modal {
   .modal-dialog {
@@ -337,16 +182,16 @@
 
     .form-group {
       &.d-flex {
-        > div {
+        >div {
           display: flex;
           margin-bottom: 8px;
 
-          > label {
+          >label {
             margin: 0 10px 0 0;
             min-width: 50px;
           }
 
-          > p {
+          >p {
             margin: 0;
             word-break: break-all;
           }
@@ -403,7 +248,7 @@
   }
 
   .custom-dropdown {
-    > span {
+    >span {
       padding-top: 9px;
       padding-bottom: 9px;
     }
@@ -440,6 +285,8 @@ body {
   }
 }
 
+
+
 .badge {
   &.status-label {
     background: transparent;
@@ -456,202 +303,5 @@ body {
     vertical-align: middle;
     font-size: 15px;
     font-weight: 400;
-  }
-}
-
-.modal-border-radius {
-  .modal-content {
-    border-radius: 10px;
-    border: 1px solid $primary-border-color;
-  }
-}
-.donation-modal {
-  &.faild-popup {
-    .modal-dialog {
-      .modal-body {
-        .top-icon {
-          width: 70px;
-          @include sm-max {
-            width: 55px;
-          }
-        }
-      }
-    }
-  }
-  .modal-dialog {
-    max-width: 654px;
-    .modal-header {
-      padding-top: 45px;
-      .close {
-        background: url($assetUrl + "/popup-cancel.svg");
-        height: 16px;
-        width: 16px;
-        right: 28px;
-        margin-top: 15px;
-      }
-    }
-    .modal-body {
-      text-align: center;
-      max-width: 460px;
-      margin: 0 auto;
-      padding-bottom: 50px;
-      width: 100%;
-      @include sm-max {
-        padding-bottom: 30px;
-      }
-      .top-icon {
-        width: 64px;
-        height: 64px;
-        margin-bottom: 8px;
-        @include sm-max {
-          width: 45px;
-          height: 45px;
-        }
-        img {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      h3 {
-        font-size: 38px;
-        line-height: 42px;
-        font-weight: 600;
-        color: #db0303;
-        margin-bottom: 18px;
-        &.green-text {
-          color: #15cb28;
-        }
-        @include md-max {
-          font-size: 30px;
-          line-height: 36px;
-        }
-        @include sm-max {
-          font-size: 25px;
-          line-height: 34px;
-        }
-      }
-      p {
-        font-size: 20px;
-        line-height: 30px;
-        margin-bottom: 26px;
-        @include sm-max {
-          font-size: 18px;
-          line-height: 26px;
-          margin-bottom: 18px;
-        }
-        em {
-          font-weight: 600;
-        }
-        span {
-          display: block;
-        }
-        .quote-text {
-          font-weight: 600;
-          max-width: 245px;
-          margin: 0 auto;
-          letter-spacing: 0.39px;
-        }
-      }
-      .btn-wrap {
-        display: block;
-        .btn {
-          min-width: 317px;
-          margin: 0 0 18px;
-          font-size: 26px;
-          font-weight: 600;
-          min-height: 41px;
-          line-height: 32px;
-          @include sm-max{
-            min-width: 200px;
-            font-size: 20px;
-            min-height: 36px;
-            line-height: 30px;
-          }
-           &.btn-fillsecondary{
-            padding: 5px 22px 9px;
-          }
-          &.btn-borderprimary{
-          border-color: $gray-secondary;
-          color: $middle-gray;
-          font-size: 17px;
-          font-weight: 400;
-          min-height: 40px;
-          line-height: 24px;
-          min-width: 146px;
-          }
-        }
-      }
-      .social-block {
-        display: block;
-        margin-bottom: 50px;
-        @include sm-max {
-          margin-bottom: 35px;
-        }
-        label {
-          font-size: 20px;
-          line-height: 36px;
-          margin-bottom: 1px;
-          @include sm-max {
-            font-size: 18px;
-            line-height: 26px;
-          }
-        }
-        .social-list {
-          display: flex;
-          justify-content: center;
-        }
-        .social-item {
-          display: inline-block;
-          width: 50px;
-          height: 50px;
-          overflow: hidden;
-          border-radius: 100%;
-          margin: 0 8px;
-          @include sm-max {
-            width: 40px;
-            height: 40px;
-            margin: 0 5px;
-          }
-          img {
-            height: 100%;
-            width: 100%;
-          }
-          &:hover {
-            opacity: 0.7;
-          }
-        }
-      }
-    }
-    .modal-footer {
-      background: #e1e1e1;
-      padding: 5px 20px;
-      text-align: center;
-      display: block;
-      p {
-        margin: 0;
-        font-size: 14px;
-        line-height: 20px;
-        a {
-          position: relative;
-          font-weight: 600;
-          &:hover {
-            color: $primary;
-            &:after {
-              background: $primary;
-            }
-          }
-          &:after {
-            position: absolute;
-            content: "";
-            left: 0;
-            bottom: 0;
-            background: $black-primary;
-            height: 1px;
-            width: 100%;
-            @include transition(all 0.3s);
-          }
-        }
-      }
-    }
   }
 }

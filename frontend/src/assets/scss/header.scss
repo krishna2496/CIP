@@ -161,25 +161,19 @@ header {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                z-index: 1;
+                z-index: -1;
                 @include md-min {
                     top: 50%;
                     @include transformY(-50%);
                     width: 11px;
                     height: 9px;
                     right: 7px;
-                    display: inline-block;
-                    background: url($assetUrl + "/down-arrow.svg") no-repeat;
-                    background-size: cover;
                 }
                 @include md-max {
                     height: 52px;
                     width: 26px;
-                    background: none;
-                    z-index: -1;
                 }
                 &:after {
-                    display: none;
                     position: absolute;
                     content: "";
                     background: url($assetUrl + "/down-arrow.svg") no-repeat;
@@ -195,7 +189,6 @@ header {
                         top: 50%;
                         left: 50%;
                         @include translate(-50%, -50%);
-                        display: block;
                     }
                 }
             }
@@ -1320,7 +1313,7 @@ header {
             }
             .custom-select {
                 height: 100%;
-                padding: 6px 33px 6px 15px;
+                padding: 6px 35px 6px 15px;
                 color: $black-primary;
                 font-size: 16px;
                 font-weight: 300;
@@ -1351,10 +1344,6 @@ header {
             max-width: 100%;
             overflow: hidden;
             line-height: 66px;
-             @include xl-max{
-                font-size: 14px;
-                padding: 6px 35px 6px 15px;  
-            }
             @include md-max {
                 height: auto;
                 position: relative;
