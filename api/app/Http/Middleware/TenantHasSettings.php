@@ -14,13 +14,13 @@ class TenantHasSettings
      */
     private $tenantActivatedSettingRepository;
 
-     /**
-     * Create a new Tenant has setting instance
-     *
-     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
-     * @param App\Helpers\ResponseHelper $responseHelper
-     * @return void
-     */
+    /**
+    * Create a new Tenant has setting instance
+    *
+    * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+    * @param App\Helpers\ResponseHelper $responseHelper
+    * @return void
+    */
     public function __construct(
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         ResponseHelper $responseHelper
@@ -34,23 +34,23 @@ class TenantHasSettings
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  array $settings 
+     * @param  array $settings
      * @return mixed
      */
     public function handle($request, Closure $next, ...$settings)
     {
-        // Pre-Middleware Action
         foreach ($settings as $key => $setting) {
             $result = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
                 $setting,
                 $request
             );
-            if(!$result){
+            if (!$result) {
                 return $this->responseHelper->error(
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
                     '',
-                    trans('messages.custom_error_message.ERROR_UNAUTHORIZED'));
+                    trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+                );
             }
         }
         $response = $next($request);
