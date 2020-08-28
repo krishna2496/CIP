@@ -32,6 +32,7 @@ use App\Models\MissionApplication;
 use App\Models\City;
 use DB;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+use App\Models\Organization;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -49,9 +50,9 @@ class MissionRepositoryTest extends TestCase
                 'country_id' => 233,
                 'country_code' => 'US'
             ],
-            'organisation' => [
-                'organisation_id' => 1,
-                'organisation_name' => str_random(10)
+            'organization' => [
+                'organization_id' => 1,
+                'name' => str_random(10)
             ],
             'mission_detail' => [
                 [
@@ -121,6 +122,9 @@ class MissionRepositoryTest extends TestCase
         $unitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionModel = new Mission();
         $missionModel->mission_id = rand(10, 100);
+        $organization = $this->mock(Organization::class);
+        $organizationModel = new Organization();
+        $organizationModel->organization_id = rand(10, 100);
 
         $modelService = $this->modelService(
             $mission,
@@ -131,7 +135,8 @@ class MissionRepositoryTest extends TestCase
             $missionSkill,
             $missionRating,
             $missionApplication,
-            $city
+            $city,
+            $organization
         );
 
         $languages = [
@@ -155,6 +160,11 @@ class MissionRepositoryTest extends TestCase
             ]
         ];
         $collectionLanguages = collect($languages);
+
+        $modelService->organization->shouldReceive('updateOrCreate')
+        ->once()
+        ->andReturn($organizationModel);
+
         $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collectionLanguages);
@@ -194,7 +204,7 @@ class MissionRepositoryTest extends TestCase
             $unitedNationSDGRepository
         );
 
-        $response = $repository->store(rand(10,100), $requestData);
+        $response = $repository->store($requestData);
         $this->assertInstanceOf(Mission::class, $response);
     }
 
@@ -224,6 +234,7 @@ class MissionRepositoryTest extends TestCase
         $unitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionModel = new Mission();
         $missionModel->mission_id = rand(10, 100);
+        $organization = $this->mock(Organization::class);
 
         $data = [
             'un_sdg' => [3,6,8,15]
@@ -239,7 +250,8 @@ class MissionRepositoryTest extends TestCase
             $missionSkill,
             $missionRating,
             $missionApplication,
-            $city
+            $city,
+            $organization
         );
 
         $languages = [
@@ -378,7 +390,8 @@ class MissionRepositoryTest extends TestCase
         MissionSkill $missionSkill,
         MissionRating $missionRating,
         MissionApplication $missionApplication,
-        City $city
+        City $city,
+        Organization $organization
     ) {
         return new ModelsService(
             $mission,
@@ -389,7 +402,8 @@ class MissionRepositoryTest extends TestCase
             $missionSkill,
             $missionRating,
             $missionApplication,
-            $city
+            $city,
+            $organization
         );
     }
 }
