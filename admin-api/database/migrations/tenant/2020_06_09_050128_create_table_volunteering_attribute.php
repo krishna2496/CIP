@@ -15,7 +15,7 @@ class CreateTableVolunteeringAttribute extends Migration
     {
         Schema::create('volunteering_attribute', function (Blueprint $table) {
             $table->uuid('volunteering_attribute_id')->primary();
-            $table->unsignedBigInteger('mission_id')->unique();
+            $table->unsignedBigInteger('mission_id');
             $table->unsignedBigInteger('availability_id');
             $table->integer('total_seats')->nullable();
             $table->boolean('is_virtual')->default(0);
