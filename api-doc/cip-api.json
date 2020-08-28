@@ -8504,7 +8504,7 @@
             }
           }
         },
-        "mission_tab_details": {
+        "mission_tabs": {
           "type": "array",
           "items": {
             "type": "object",
