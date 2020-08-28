@@ -42,25 +42,6 @@
                                 </b-link>
                             </b-list-group-item>
                         </b-list-group>
-                        <!-- <div class="link-wrap">
-                            <b-button class="btn-link-border" @click="handleModel">
-                                {{languageData.label.change_password}}</b-button>
-                        </div>
-                        <b-form-group>
-                            <label>{{languageData.label.language}}*</label>
-                            <CustomFieldDropdown v-model="language" :errorClass="submitted && $v.language.$error" :defaultText="languageDefault" :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
-                            <div v-if="submitted && !$v.language.required" class="invalid-feedback">
-                                {{ languageData.errors.language_required }}
-                            </div>
-                        </b-form-group>
-                        <b-form-group>
-                            <label>{{languageData.label.timezone}}*</label>
-                            <model-select class="search-dropdown" v-bind:class="{'is-invalid' :submitted && $v.time.$error}" :options="timeList" v-model="time" :placeholder="timeDefault" @input="updateTime">
-                            </model-select>
-                            <div v-if="submitted && !$v.time.required" class="invalid-feedback">
-                                {{ languageData.errors.timezone_required }}
-                            </div>
-                        </b-form-group> -->
                     </div>
                     <!-- my account breadcrumb -->
                     <MyAccountDashboardBreadcrumb></MyAccountDashboardBreadcrumb>
@@ -98,7 +79,7 @@
                             </b-alert>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label for>Current Pasword*</label>
+                                    <label for>{{languageData.label.current_pasword}}*</label>
                                     <b-form-input id type="password" ref="oldPassword" v-model.trim="oldPassword" :class="{ 'is-invalid': $v.oldPassword.$error }" :placeholder="languageData.placeholder.old_password"></b-form-input>
                                     <div v-if="!$v.oldPassword.required" class="invalid-feedback">
                                         {{ languageData.errors.field_is_required }}</div>
@@ -282,10 +263,11 @@ export default {
             is_profile_visible: false,
             public_avatar_and_linkedin: false,
             currency: "",
+            time: '',
             submitted: false,
             language: '',
             languageCode: null,
-            time: '',
+
             CustomFieldList: [],
             CustomFieldValue: [],
             returnCustomFeildData: [],
@@ -295,13 +277,14 @@ export default {
             changePhoto: "",
             showPage: true,
             saveProfileData: {
-                "password": "string",
-                "confirm_password": "string",
-                "is_profile_visible": true,
-                "public_avatar_and_linkedin": true,
-                "language_id": 0,
-                "timezone_id": 0,
-                "currency": "string"
+                password: '',
+                confirm_password: '',
+                is_profile_visible: true,
+                public_avatar_and_linkedin: true,
+                language_id: 0,
+                timezone_id: 0,
+                currency: 0,
+                old_password: ''
             },
             currencyList: [{
                     value: "0",
@@ -358,7 +341,7 @@ export default {
             this.languageCode = this.userData.language_code_list[value.selectedId];
         },
         updateCurrency(value) {
-
+            this.currency = value
         },
         updateTime(value) {
             this.time = value;
@@ -602,15 +585,15 @@ export default {
                     this.errorPage = true
                     this.errorPageMessage = response.message
                 } else {
-                     this.time = response.data.preference.timezone_id
-                     this.language = response.data.preference.language_id 
-                     this.currency = response.data.preference.currency 
+                    this.time = response.data.preference.timezone_id
+                    this.language = response.data.preference.language_id
+                    this.currency = response.data.preference.currency
                     if (response.data.timezone) {
                         var timezoneArray = [];
                         let timeZone = Object.entries(response.data.timezone);
-                       
+
                         timeZone.filter((data, index) => {
-                            if (data[0] == response.data.preference.timezone_id) {                         
+                            if (data[0] == response.data.preference.timezone_id) {
                                 this.timeDefault = data[1]
                             }
                             // this.time = this.userData.timezone_id
@@ -626,7 +609,7 @@ export default {
                         var languagesArray = [];
                         let languages = response.data.languages;
                         this.languageList = Object.keys(languages).map((key) => {
-                            console.log(response.data.preference.language_id,languages[key]['language_id'])
+                            console.log(response.data.preference.language_id, languages[key]['language_id'])
                             if (response.data.preference.language_id == languages[key]['language_id']) {
                                 this.languageDefault = languages[key]['name']
                             }
@@ -640,7 +623,7 @@ export default {
                         currencies.filter((data, index) => {
                             currenciesArray.push({
                                 'text': data[1].code,
-                                'value': data[0].code
+                                'value': data[1].code
                             })
                         })
                         this.currencyList = currenciesArray
@@ -683,32 +666,45 @@ export default {
             });
 
         },
-        resetPreviousData() {
-            let currentSkill = JSON.parse(localStorage.getItem('currentSkill'));
-            this.userSkillList = currentSkill
-
-            let currentFromSkill = JSON.parse(localStorage.getItem('currentFromSkill'));
-            this.skillListing = currentFromSkill
-        },
-        detectChangeInCustomFeild(data) {
-            this.returnCustomFeildData = data;
-        },
         //submit form
         handleSubmit() {
 
             this.submitted = true;
             this.$v.$touch();
-            
+            if (this.$v.$invalid) {
+                return;
+            }
+            //  password: 0,
+            //     confirm_password: 0,
+            //     is_profile_visible: true,
+            //     public_avatar_and_linkedin: true,
+            //     language_id: 0,
+            //     timezone_id: 0,
+            //     currency: 0
+
+            if (this.oldPassword) {
+                this.saveProfileData.password = this.oldPassword;
+            }
+            if (this.newPassword) {
+                this.saveProfileData.confirm_password = this.newPassword;
+            }
+            if (this.oldPassword) {
+                this.saveProfileData.old_password = this.oldPassword;
+            }
+            this.saveProfileData.is_profile_visible = this.is_profile_visible;
+            this.saveProfileData.public_avatar_and_linkedin = this.public_avatar_and_linkedin;
+            this.saveProfileData.language_id = this.language;
+            this.saveProfileData.timezone_id = this.time;
+            this.saveProfileData.currency = this.currency;
 
             // Call to save profile service
-            saveUserProfile(this.saveProfileData).then(response => {
+            submitSetting(this.saveProfileData).then(response => {
                 if (response.error == true) {
                     this.makeToast("danger", response.message);
                 } else {
-                    this.isUserProfileComplete = response.data.is_profile_complete;
                     store.commit('setDefaultLanguageCode', this.languageCode)
                     this.showPage = false;
-                    this.getUserProfileDetail().then(() => {
+                    this.getSettingListing().then(() => {
                         this.showPage = true;
                         loadLocaleMessages(this.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
@@ -722,71 +718,7 @@ export default {
                 }
             });
         },
-        // changePassword
-        changePassword() {
 
-            this.passwordSubmit = true;
-            this.$v.$touch();
-            // stop here if form is invalid
-            if (this.$v.resetPassword.$invalid) {
-                return;
-            }
-            let resetPasswordData = {}
-
-            resetPasswordData.old_password = this.resetPassword.oldPassword
-            resetPasswordData.password = this.resetPassword.newPassword
-            resetPasswordData.confirm_password = this.resetPassword.confirmPassword
-            // Call to save profile service
-            changeUserPassword(resetPasswordData).then(response => {
-                if (response.error === true) {
-                    this.message = null;
-                    this.showErrorDiv = true
-                    this.classletiant = 'danger'
-                    //set error msg
-                    this.message = response.message
-                } else {
-                    this.message = null;
-                    this.showErrorDiv = true
-                    this.classletiant = 'success'
-                    //set success msg
-                    this.message = response.message
-                    //Reset to blank
-                    this.passwordSubmit = false;
-                    this.resetPassword.oldPassword = ''
-                    this.resetPassword.newPassword = ''
-                    this.resetPassword.confirmPassword = ''
-                    this.$v.$reset();
-                    store.commit("changeToken", response.data.token)
-                    setTimeout(() => {
-                        this.$refs.changePasswordModal.hide();
-                        this.showErrorDiv = false
-                    }, 1000)
-                }
-            });
-
-        },
-        changeCityData(countryId) {
-            if (countryId) {
-                changeCity(countryId).then(response => {
-                    if (response.error === true) {
-                        this.cityList = []
-                    } else {
-                        this.cityList = response.data
-                        this.cityList.sort((a, b) => {
-                            let cityOne = a[1].toLowerCase(),
-                                cityTwo = b[1].toLowerCase();
-                            if (cityOne < cityTwo) //sort string ascending
-                                return -1;
-                            if (cityOne > cityTwo)
-                                return 1;
-                            return 0; //default return value (no sorting)
-                        });
-                    }
-                    this.cityDefault = this.languageData.placeholder.city
-                    this.city = '';
-                });
-            }
-        },
         makeToast(variant = null, message) {
             this.$bvToast.toast(message, {
                 variant: variant,
@@ -803,13 +735,6 @@ export default {
                 keyCode != 8 && keyCode != 32) {
                 evt.preventDefault();
             }
-        },
-        handleModel() {
-            this.$refs.changePasswordModal.show()
-
-            setTimeout(() => {
-                this.$refs.oldPassword.focus();
-            }, 100)
         }
     },
     created() {
@@ -830,6 +755,9 @@ export default {
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
         }
+        this.newUrl = store.state.avatar
+        this.isPrefilLoaded = false
+        this.imageLoader = false;
     }
 };
 </script>
