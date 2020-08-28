@@ -79,7 +79,7 @@
                             </b-alert>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label for>{{languageData.label.current_pasword}}*</label>
+                                    <label for>{{languageData.label.current_password}}*</label>
                                     <b-form-input id type="password" ref="oldPassword" v-model.trim="oldPassword" :class="{ 'is-invalid': $v.oldPassword.$error }" :placeholder="languageData.placeholder.old_password"></b-form-input>
                                     <div v-if="!$v.oldPassword.required" class="invalid-feedback">
                                         {{ languageData.errors.field_is_required }}</div>
