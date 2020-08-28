@@ -238,7 +238,7 @@ class MissionRepository implements MissionInterface
 
         // Add UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
-            $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request);
+            $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request->toArray());
         }
 
         return $mission;
@@ -434,10 +434,10 @@ class MissionRepository implements MissionInterface
                 unset($missionDocument);
             }
         }
-
+        
         // Update UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
-            $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request);
+            $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
         }
 
         return $mission;

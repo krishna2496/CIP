@@ -29,7 +29,7 @@ class MissionUnitedNationSDGRepositoryTest extends TestCase
         $missionUnSdg->shouldReceive('create')
         ->andReturn(false);
 
-        $response = $repository->addUnSdg(rand(10,100), $requestData);
+        $response = $repository->addUnSdg(rand(10,100), $requestData->toArray());
         $this->assertTrue(true);
     }
 
@@ -52,13 +52,16 @@ class MissionUnitedNationSDGRepositoryTest extends TestCase
         $missionUnSdg->shouldReceive('where')
         ->andReturn($missionUnSdg);
 
+        $missionUnSdg->shouldReceive('whereNotIn')
+        ->andReturn($missionUnSdg);
+        
         $missionUnSdg->shouldReceive('delete')
         ->andReturn(false);
 
-        $missionUnSdg->shouldReceive('create')
+        $missionUnSdg->shouldReceive('updateOrCreate')
         ->andReturn(false);
 
-        $response = $repository->updateUnSdg(rand(10,100), $requestData);
+        $response = $repository->updateUnSdg(rand(10,100), $requestData->toArray());
         $this->assertTrue(true);
     }
 

@@ -190,7 +190,7 @@ class MissionRepositoryTest extends TestCase
 
         $unitedNationSDGRepository->shouldReceive('addUnSdg')
         ->once()
-        ->with($missionModel->mission_id, $requestData)
+        ->with($missionModel->mission_id, $requestData->toArray())
         ->andReturn(false);
 
 
@@ -292,7 +292,7 @@ class MissionRepositoryTest extends TestCase
 
         $unitedNationSDGRepository->shouldReceive('updateUnSdg')
         ->once()
-        ->with($missionModel->mission_id, $requestData)
+        ->with($missionModel->mission_id, $requestData->toArray())
         ->andReturn(false);
 
         

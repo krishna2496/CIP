@@ -19,7 +19,6 @@ class CreateMissionUnSdgTable extends Migration
             $table->integer('un_sdg_number');
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(['mission_id', 'un_sdg_number']);
             $table->foreign('mission_id')->references('mission_id')->on('mission');
         });
     }

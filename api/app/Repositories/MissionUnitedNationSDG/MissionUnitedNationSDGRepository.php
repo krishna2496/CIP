@@ -29,11 +29,11 @@ class MissionUnitedNationSDGRepository implements MissionUnitedNationSDGInterfac
      * Add UN SDG to mission.
      *
      * @param int $missionId
-     * @param Illuminate\Http\Request $request
+     * @param array $request
      */
-    public function addUnSdg(int $missionId, Request $request)
+    public function addUnSdg(int $missionId, array $request)
     {
-        foreach ($request->un_sdg as $key => $value) {
+        foreach ($request['un_sdg'] as $key => $value) {
             $this->missionUnSdg->create([
                 "mission_id" => $missionId,
                 "un_sdg_number" => $value
@@ -45,15 +45,21 @@ class MissionUnitedNationSDGRepository implements MissionUnitedNationSDGInterfac
      * Update UN SDG to mission.
      *
      * @param int $missionId
-     * @param Illuminate\Http\Request $request
+     * @param array $request
      */
-    public function updateUnSdg(int $missionId, Request $request)
+    public function updateUnSdg(int $missionId, array $request)
     {
         // delete all mission associated UN SDG
-        $this->missionUnSdg->where('mission_id', $missionId)->delete();
+        $this->missionUnSdg->where('mission_id', $missionId)
+        ->whereNotIn('un_sdg_number', $request['un_sdg'])->delete();
         // update new UN SDG for mission
-        foreach ($request->un_sdg as $key => $value) {
-            $this->missionUnSdg->create([
+        foreach ($request['un_sdg'] as $key => $value) {
+            $this->missionUnSdg->updateOrCreate(
+            [
+                "mission_id" => $missionId,
+                "un_sdg_number" => $value
+            ],
+            [
                 "mission_id" => $missionId,
                 "un_sdg_number" => $value
             ]);
