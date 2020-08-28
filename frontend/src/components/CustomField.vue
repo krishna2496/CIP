@@ -22,6 +22,9 @@
                                     :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                                     @change="updateChanges" :name="item.translations.name">
                 </b-form-radio-group>
+                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
+                </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'checkbox'">
                 <label>{{item.translations.name}}
@@ -32,6 +35,9 @@
                                        :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                                        @input="updateChanges">
                 </b-form-checkbox-group>
+                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
+                </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'multiselect'">
                 <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
@@ -83,8 +89,7 @@
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     <span v-if="!$v.customFeildData[item.field_id].required">{{item.translations.name}}
                         {{ languageData.errors.field_required }}</span>
-                    <span
-                            v-if="!$v.customFeildData[item.field_id].email">{{ languageData.errors.invalid_email }}</span>
+                    <span v-if="!$v.customFeildData[item.field_id].email">{{ languageData.errors.invalid_email }}</span>
                 </div>
             </b-form-group>
         </b-col>
