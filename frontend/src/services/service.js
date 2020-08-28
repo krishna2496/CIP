@@ -66,6 +66,8 @@ import readMessage from "./Message/ReadMessage"
 import clearNotification from "./Notification/ClearNotification"
 import readNotification from "./Notification/ReadNotification"
 import notificationListing from "./Notification/NotificationListing"
+import settingListing from "./Setting/SettingListing"
+import submitSetting from "./Setting/SubmitSetting"
 
 export {
     loadLocaleMessages,
@@ -136,4 +138,6 @@ export {
     clearNotification,
     readNotification,
     notificationListing,
+    settingListing,
+    submitSetting
 }

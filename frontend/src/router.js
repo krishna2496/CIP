@@ -48,6 +48,15 @@ let routes = [
           import ('./views/Home.vue')
     },
     {
+        path: '/setting',
+        name: 'setting',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+          import ('./views/Setting.vue')
+    },
+    {
         path: '/volunteering-timesheet',
         name: 'Volunteering timesheet ',
         meta: {
@@ -220,7 +229,7 @@ let routes = [
         },
         component: () =>
           import ('./views/Policy.vue')
-    } 
+    }
 ];
 export default new Router({
     mode: 'history',

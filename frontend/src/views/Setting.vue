@@ -37,32 +37,32 @@
 
                             <b-list-group-item v-if="userData.linked_in_url != null && userData.linked_in_url != ''  ">
                                 <b-link :href="userData.linked_in_url" target="_blank" :title="languageData.label.linked_in" class="linkedin-link">
-                                    <img :src="$store.state.imagePath+'/assets/images/linkedin-ic-blue.svg'" class="normal-img" alt="linkedin img" />
-                                    <img :src="$store.state.imagePath+'/assets/images/linkedin-ic.svg'" class="hover-img" alt="linkedin img" />
+                                    <img :src="`${$store.state.imagePath}/assets/images/linkedin-ic-blue.svg`" class="normal-img" alt="linkedin img" />
+                                    <img :src="`${$store.state.imagePath}/assets/images/linkedin-ic.svg`" class="hover-img" alt="linkedin hover img" />
                                 </b-link>
                             </b-list-group-item>
                         </b-list-group>
-                        <div class="link-wrap">
+                        <!-- <div class="link-wrap">
                             <b-button class="btn-link-border" @click="handleModel">
                                 {{languageData.label.change_password}}</b-button>
                         </div>
                         <b-form-group>
                             <label>{{languageData.label.language}}*</label>
-                            <CustomFieldDropdown v-model="profile.language" :errorClass="submitted && $v.profile.language.$error" :defaultText="languageDefault" :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
-                            <div v-if="submitted && !$v.profile.language.required" class="invalid-feedback">
+                            <CustomFieldDropdown v-model="language" :errorClass="submitted && $v.language.$error" :defaultText="languageDefault" :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
+                            <div v-if="submitted && !$v.language.required" class="invalid-feedback">
                                 {{ languageData.errors.language_required }}
                             </div>
                         </b-form-group>
                         <b-form-group>
                             <label>{{languageData.label.timezone}}*</label>
-                            <model-select class="search-dropdown" v-bind:class="{'is-invalid' :submitted && $v.profile.time.$error}" :options="timeList" v-model="profile.time" :placeholder="timeDefault" @input="updateTime">
+                            <model-select class="search-dropdown" v-bind:class="{'is-invalid' :submitted && $v.time.$error}" :options="timeList" v-model="time" :placeholder="timeDefault" @input="updateTime">
                             </model-select>
-                            <div v-if="submitted && !$v.profile.time.required" class="invalid-feedback">
+                            <div v-if="submitted && !$v.time.required" class="invalid-feedback">
                                 {{ languageData.errors.timezone_required }}
                             </div>
-                        </b-form-group>
+                        </b-form-group> -->
                     </div>
-                    <!-- dashboard breadcrum -->
+                    <!-- my account breadcrumb -->
                     <MyAccountDashboardBreadcrumb></MyAccountDashboardBreadcrumb>
                 </b-col>
                 <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
@@ -70,179 +70,111 @@
                         <b-row class="row-form">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
-                                    <span>{{languageData.label.basic_information}}</span>
+                                    <span>{{languageData.label.privacy}}</span>
                                 </h2>
                             </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label for>{{languageData.label.first_name}}*</label>
-                                    <b-form-input id type="text" v-model.trim="profile.firstName" :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" @keypress="alphaNumeric($event)" :placeholder="languageData.placeholder.name" maxlength="16"></b-form-input>
-                                    <div v-if="submitted && !$v.profile.firstName.required" class="invalid-feedback">
-                                        {{ languageData.errors.name_required }}
+                            <b-col cols="12">
+                                <b-form-group class="checkbox-group-wrap">
+                                    <div class="site-checkbox">
+                                        <b-form-checkbox class="custom-control-input" v-model="is_profile_visible">{{languageData.label.allow_all_my}} <strong>{{languageData.label.co_workers}} </strong>{{languageData.label.to_see_my_profile}}
+                                        </b-form-checkbox>
+                                    </div>
+                                    <div class="site-checkbox">
+                                        <b-form-checkbox class="custom-control-input" v-model="public_avatar_and_linkedin">{{languageData.label.allow}} <strong>{{languageData.label.public}} </strong>
+                                            {{languageData.label.fundraisers_and_funds_to_view_avatar_and_my_linkedin}}
+                                        </b-form-checkbox>
                                     </div>
                                 </b-form-group>
                             </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label for>{{languageData.label.surname}}*</label>
-                                    <b-form-input id type="text" v-model.trim="profile.lastName" :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }" @keypress="alphaNumeric($event)" :placeholder="languageData.placeholder.surname" maxlength="16">
-                                    </b-form-input>
-                                    <div v-if="submitted && !$v.profile.lastName.required" class="invalid-feedback">
-                                        {{ languageData.errors.last_name_required }}</div>
-                                </b-form-group>
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label for>{{languageData.label.employee_id}}</label>
-                                    <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="16" :placeholder="languageData.placeholder.employee_id">
-                                    </b-form-input>
-                                </b-form-group>
-                            </b-col>
-                            <!-- <b-col md="6">
-                                    <b-form-group>
-                                        <label for>{{languageData.label.manager}}</label>
-                                        <b-form-input id type="text" v-model.trim="profile.managerName"
-                                            :placeholder="languageData.placeholder.manager" maxlength="16">
-                                        </b-form-input>
-                                    </b-form-group>
-                                </b-col> -->
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label for>{{languageData.label.title}}</label>
-                                    <b-form-input id type="text" v-model.trim="profile.title" :placeholder="languageData.placeholder.title" maxlength="25">
-                                    </b-form-input>
-                                </b-form-group>
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label for>{{languageData.label.department}}</label>
-                                    <b-form-input id type="text" v-model.trim="profile.department" maxlength="16" :placeholder="languageData.placeholder.department"></b-form-input>
-
-                                </b-form-group>
-                            </b-col>
-                            <b-col md="12">
-                                <b-form-group>
-                                    <label>{{languageData.label.my_profile}}</label>
-                                    <b-form-textarea id :placeholder="languageData.placeholder.my_profile" size="lg" no-resize v-model.trim="profile.profileText" rows="5"></b-form-textarea>
-
-                                </b-form-group>
-                            </b-col>
-                            <b-col md="12">
-                                <b-form-group>
-                                    <label>{{languageData.label.why_i_volunteer}}</label>
-                                    <b-form-textarea id v-model.trim="profile.whyiVolunteer" :placeholder="languageData.placeholder.why_i_volunteer" size="lg" no-resize rows="5"></b-form-textarea>
-                                </b-form-group>
-                            </b-col>
                         </b-row>
                         <b-row class="row-form">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
-                                    <span>{{languageData.label.address_information}}</span>
+                                    <span>{{languageData.label.change_password}}</span>
                                 </h2>
                             </b-col>
+                            <b-alert show :variant="classletiant" dismissible v-model="showErrorDiv">
+                                {{ message }}
+                            </b-alert>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label>{{languageData.label.country}}*</label>
-                                    <CustomFieldDropdown v-model="profile.country" :errorClass="submitted && $v.profile.country.$error" :defaultText="countryDefault" :optionList="countryList" @updateCall="updateCountry" translationEnable="false" />
-                                    <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
-                                        {{ languageData.errors.country_required }}
-                                    </div>
+                                    <label for>Current Pasword*</label>
+                                    <b-form-input id type="password" ref="oldPassword" v-model.trim="oldPassword" :class="{ 'is-invalid': $v.oldPassword.$error }" :placeholder="languageData.placeholder.old_password"></b-form-input>
+                                    <div v-if="!$v.oldPassword.required" class="invalid-feedback">
+                                        {{ languageData.errors.field_is_required }}</div>
                                 </b-form-group>
-
                             </b-col>
+                            <b-col md="6"></b-col>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label>{{languageData.label.city}}*</label>
-                                    <CustomFieldDropdown v-model="profile.city" :errorClass="submitted && $v.profile.city.$error" :defaultText="cityDefault" :optionList="cityList" @updateCall="updateCity" translationEnable="false" />
-                                    <div v-if="submitted && !$v.profile.city.required" class="invalid-feedback">
-                                        {{ languageData.errors.city_required }}</div>
-                                </b-form-group>
-
-                            </b-col>
-                        </b-row>
-                        <b-row class="row-form">
-                            <b-col cols="12">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.professional_information}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label>{{languageData.label.availability}}</label>
-                                    <CustomFieldDropdown v-model="profile.availability" :defaultText="availabilityDefault" :optionList="availabilityList" @updateCall="updateAvailability" translationEnable="false" />
-                                </b-form-group>
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group class="linked-in-url">
-                                    <label>{{languageData.label.linked_in}}</label>
-                                    <b-form-input id v-model.trim="profile.linkedInUrl" :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }" :placeholder="languageData.placeholder.linked_in"></b-form-input>
-                                    <div v-if="submitted && !$v.profile.linkedInUrl.validLinkedInUrl" class="invalid-feedback">
-                                        {{ languageData.errors.valid_linked_in_url }}</div>
-                                </b-form-group>
-
-                            </b-col>
-                        </b-row>
-
-                        <b-row class="row-form">
-                            <b-col cols="12" v-if="isSkillDisplay">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.my_skills}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col cols="12" v-if="isSkillDisplay">
-                                <ul class="skill-list-wrapper" v-if="resetUserSkillList != null && resetUserSkillList.length > 0">
-                                    <li v-for="(toitem, index) in resetUserSkillList" :key=index>{{toitem.name}}
-                                    </li>
-                                </ul>
-                                <ul v-else class="skill-list-wrapper">
-                                    <li>{{languageData.label.no_skill_found}}</li>
-                                </ul>
-                                <MultiSelect v-if="isShownComponent" :fromList="skillListing" :toList="userSkillList" @resetData="resetSkillListingData" @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
-
-                            </b-col>
-                        </b-row>
-                        <b-row class="row-form" v-if="isShownComponent && CustomFieldList.length > 0">
-                            <b-col cols="12">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.custom_field}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col cols="12">
-                                <CustomField :optionList="CustomFieldList" :optionListValue="CustomFieldValue" :isSubmit="isCustomFieldSubmit" @detectChangeInCustomFeild="detectChangeInCustomFeild" />
-                            </b-col>
-
-                        </b-row>
-
-                        <b-row class="row-form">
-                            <b-col cols="12">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.donations}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label for class="has-help-text">{{languageData.label.personal_donation_goal}}
-                                        <b-button class="help-text" v-b-modal.helpModal>{{languageData.label.help}}</b-button>
+                                    <label for>{{languageData.placeholder.new_password}}*
                                     </label>
-                                    <b-form-input type="text" :placeholder="languageData.label.amount"></b-form-input>
-                                    <div class="invalid-feedback">
-                                        Error message !
-                                    </div>
+                                    <b-form-input id type="password" v-model.trim="newPassword" :class="{ 'is-invalid': $v.newPassword.$error }" :placeholder="languageData.placeholder.new_password"></b-form-input>
+                                    <div v-if="!$v.newPassword.required" class="invalid-feedback">
+                                        {{ languageData.errors.field_is_required }}</div>
+                                    <div v-if="!$v.newPassword.minLength" class="invalid-feedback">
+                                        {{ languageData.errors.invalid_password }}</div>
                                 </b-form-group>
+                            </b-col>
+                            <b-col md="6"></b-col>
+                            <b-col md="6">
+                                <b-form-group>
+                                    <label for>
+                                        {{languageData.placeholder.confirm_password}}*
+                                    </label>
+                                    <b-form-input id v-model.trim="confirmPassword" :class="{ 'is-invalid': $v.confirmPassword.$error }" :placeholder="languageData.placeholder.confirm_password" @keypress.enter.prevent="changePassword" type="password">
+                                    </b-form-input>
+                                    <div v-if="!$v.confirmPassword.required" class="invalid-feedback">
+                                        {{ languageData.errors.field_is_required }}</div>
+                                    <div v-if="$v.confirmPassword.required && !$v.confirmPassword.sameAsPassword" class="invalid-feedback">
+                                        {{ languageData.errors.identical_password }}</div>
+                                </b-form-group>
+                            </b-col>
+                            <b-col md="6"></b-col>
+                        </b-row>
+                        <b-row class="row-form">
+                            <b-col cols="12">
+                                <h2 class="title-with-border">
+                                    <span>{{languageData.label.preferences}}</span>
+                                </h2>
                             </b-col>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label for>{{languageData.label.year}}</label>
-                                    <CustomFieldDropdown :defaultText="yearDefault" :optionList="yearList" @updateCall="updateYear" translationEnable="false" />
-                                    <div class="invalid-feedback">
-                                        Error message !
+                                    <label>{{languageData.label.language}}*</label>
+                                    <CustomFieldDropdown v-model="language" :errorClass="submitted && $v.language.$error" :defaultText="languageDefault" :optionList="languageList" @updateCall="updateLang" translationEnable="false" />
+                                    <div v-if="submitted && !$v.language.required" class="invalid-feedback">
+                                        {{ languageData.errors.language_required }}
                                     </div>
                                 </b-form-group>
                             </b-col>
+                            <b-col md="6"></b-col>
+                            <b-col md="6">
+                                <b-form-group>
+                                    <label>{{languageData.label.timezone}}*</label>
+                                    <model-select class="search-dropdown" v-bind:class="{'is-invalid' :submitted && $v.time.$error}" :options="timeList" v-model="time" :placeholder="timeDefault" @input="updateTime">
+                                    </model-select>
+                                    <div v-if="submitted && !$v.time.required" class="invalid-feedback">
+                                        {{ languageData.errors.timezone_required }}
+                                    </div>
+                                </b-form-group>
+                            </b-col>
+                            <b-col md="6"></b-col>
+                            <b-col md="6">
+                                <b-form-group>
+                                    <label>{{languageData.label.currency}}*</label>
+                                    <model-select class="search-dropdown" v-bind:class="{'is-invalid' :submitted && $v.currency.$error}" :options="currencyList" v-model="currency" :placeholder="currencyDefault" @input="updateCurrency">
+                                    </model-select>
+                                    <div v-if="submitted && !$v.currency.required" class="invalid-feedback">
+                                        {{ languageData.errors.currency_required }}
+                                    </div>
+                                </b-form-group>
+                            </b-col>
+                            <b-col md="6"></b-col>
+                        </b-row>
+                        <b-row class="row-form">
                             <b-col cols="12">
                                 <div class="btn-wrapper">
-                                    <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
-                                        {{languageData.label.save}}
+                                    <b-button class="btn-bordersecondary btn-save" :title="languageData.label.save" @click="handleSubmit()">{{ languageData.label.save }}
                                     </b-button>
                                 </div>
                             </b-col>
@@ -250,59 +182,6 @@
                     </b-form>
                 </b-col>
             </b-row>
-
-            <b-modal ref="changePasswordModal" :modal-class="'password-modal sm-popup'" centered hide-footer>
-                <template slot="modal-header" slot-scope="{ close }">
-                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                    <h5 class="modal-title">{{languageData.label.change_password}}</h5>
-                </template>
-                <b-alert show :variant="classletiant" dismissible v-model="showErrorDiv">
-                    {{ message }}
-                </b-alert>
-                <form action class="form-wrap">
-                    <b-form-group>
-                        <b-form-input id type="password" ref="oldPassword" v-model.trim="resetPassword.oldPassword" :class="{ 'is-invalid':  $v.resetPassword.oldPassword.$error }" :placeholder="languageData.placeholder.old_password"></b-form-input>
-                        <div v-if="!$v.resetPassword.oldPassword.required" class="invalid-feedback">
-                            {{ languageData.errors.field_is_required }}</div>
-                    </b-form-group>
-
-                    <b-form-group>
-                        <b-form-input id type="password" v-model.trim="resetPassword.newPassword" :class="{ 'is-invalid': $v.resetPassword.newPassword.$error }" :placeholder="languageData.placeholder.new_password"></b-form-input>
-                        <div v-if="!$v.resetPassword.newPassword.required" class="invalid-feedback">
-                            {{ languageData.errors.field_is_required }}</div>
-                        <div v-if="!$v.resetPassword.newPassword.minLength" class="invalid-feedback">
-                            {{ languageData.errors.invalid_password }}</div>
-                    </b-form-group>
-
-                    <b-form-group>
-                        <b-form-input id v-model.trim="resetPassword.confirmPassword" :class="{ 'is-invalid':  $v.resetPassword.confirmPassword.$error }" :placeholder="languageData.placeholder.confirm_password" @keypress.enter.prevent="changePassword" type="password">
-                        </b-form-input>
-                        <div v-if="!$v.resetPassword.confirmPassword.required" class="invalid-feedback">
-                            {{ languageData.errors.field_is_required }}</div>
-                        <div v-if="$v.resetPassword.confirmPassword.required && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
-                            {{ languageData.errors.identical_password }}</div>
-                    </b-form-group>
-                </form>
-                <div class="btn-wrap">
-                    <b-button class="btn-borderprimary" @click="$refs.changePasswordModal.hide()">
-                        {{languageData.label.cancel}}</b-button>
-                    <b-button class="btn-bordersecondary" @click="changePassword()">
-                        {{languageData.label.change_password}}
-                    </b-button>
-                </div>
-            </b-modal>
-            <b-modal id="helpModal" hide-footer>
-                <template slot="modal-header" slot-scope="{ close }">
-                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                    <h5 class="modal-title">{{languageData.label.personal_donation_goal}}</h5>
-                </template>
-                <template v-slot:modal-title>
-                    {{languageData.label.personal_donation_goal}}
-                </template>
-                <div class="d-block">
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                </div>
-            </b-modal>
         </b-container>
     </main>
     <footer>
@@ -329,7 +208,9 @@ import {
     loadLocaleMessages,
     country,
     skill,
-    timezone
+    timezone,
+    settingListing,
+    submitSetting
 } from "../services/service";
 import {
     required,
@@ -391,23 +272,16 @@ export default {
             showErrorDiv: false,
             message: null,
             classletiant: "success",
-            profile: {
-                firstName: "",
-                lastName: "",
-                employeeId: "",
-                profileText: "",
-                title: "",
-                whyiVolunteer: "",
-                linkedInUrl: "",
-                department: "",
-                country: "",
-                city: "",
-                availability: 0,
-                userSkills: [],
-                language: "",
-                time: "",
-                languageCode: ""
-            },
+            language: "",
+            time: "",
+            languageCode: "",
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+            currency: "",
+            is_profile_visible: false,
+            public_avatar_and_linkedin: false,
+            currency: "",
             submitted: false,
             language: '',
             languageCode: null,
@@ -421,74 +295,56 @@ export default {
             changePhoto: "",
             showPage: true,
             saveProfileData: {
-                first_name: "",
-                last_name: "",
-                timezone_id: "",
-                language_id: "",
-                availability_id: "",
-                why_i_volunteer: "",
-                employee_id: "",
-                department: "",
-                manager_name: "",
-                city_id: "",
-                country_id: "",
-                profile_text: "",
-                linked_in_url: "",
-                custom_fields: []
+                "password": "string",
+                "confirm_password": "string",
+                "is_profile_visible": true,
+                "public_avatar_and_linkedin": true,
+                "language_id": 0,
+                "timezone_id": 0,
+                "currency": "string"
             },
-            yearDefault: "2020",
-            yearList: [
-                ["0", "2020"],
-                ["01", "2021"],
-                ["02", "2022"],
-                ["03", "2023"],
-                ["04", "2024"],
-            ]
+            currencyList: [{
+                    value: "0",
+                    text: "GMT-4"
+                },
+                {
+                    value: "01",
+                    text: "UTC-5"
+                },
+                {
+                    value: "02",
+                    text: "UTC-6"
+                },
+                {
+                    value: "03",
+                    text: "UTC-7"
+                },
+            ],
+            currencyDefault: ""
+
         };
     },
     validations: {
-        resetPassword: {
-            oldPassword: {
-                required
-            },
-            newPassword: {
-                required,
-                minLength: minLength(constants.PASSWORD_MIN_LENGTH)
-            },
-            confirmPassword: {
-                required,
-                sameAsPassword: sameAs('newPassword')
-            }
-        },
-        profile: {
-            firstName: {
-                required
-            },
-            lastName: {
-                required
-            },
-            linkedInUrl: {
-                validLinkedInUrl(linkedInUrl) {
-                    if (linkedInUrl == '') {
-                        return true
-                    }
-                    const regexp = /^http(s)?:\/\/([\w]+\.)?linkedin\.com\/[//A-z0-9_-]+\/?$/;
-                    return (regexp.test(linkedInUrl));
-                }
-            },
-            country: {
-                required
-            },
-            city: {
-                required
-            },
-            language: {
-                required
-            },
-            time: {
-                required
-            },
 
+        oldPassword: {
+            required
+        },
+        newPassword: {
+            required,
+            minLength: minLength(constants.PASSWORD_MIN_LENGTH)
+        },
+        confirmPassword: {
+            required,
+            sameAsPassword: sameAs('newPassword')
+        },
+        language: {
+            required
+        },
+        time: {
+            required
+        },
+        currency: {
+            required
         }
     },
     updated() {
@@ -497,30 +353,30 @@ export default {
     methods: {
         updateLang(value) {
             this.languageDefault = value.selectedVal;
-            this.profile.languageCode = value.selectedVal;
-            this.profile.language = value.selectedId;
+            this.languageCode = value.selectedVal;
+            this.language = value.selectedId;
             this.languageCode = this.userData.language_code_list[value.selectedId];
         },
+        updateCurrency(value) {
+
+        },
         updateTime(value) {
-            this.profile.time = value;
+            this.time = value;
         },
         updateCity(value) {
             this.cityDefault = value.selectedVal;
-            this.profile.city = value.selectedId;
+            this.city = value.selectedId;
 
-        },
-        updateYear(value) {
-            this.yearDefault = value.selectedVal;
         },
         updateCountry(value) {
             this.countryDefault = value.selectedVal;
-            this.profile.country = value.selectedId;
+            this.country = value.selectedId;
 
             this.changeCityData(value.selectedId);
         },
         updateAvailability(value) {
             this.availabilityDefault = value.selectedVal;
-            this.profile.availability = value.selectedId;
+            this.availability = value.selectedId;
         },
         changeImage(image) {
             this.imageLoader = true;
@@ -598,35 +454,35 @@ export default {
                         });
                     }
 
-                    this.profile.firstName = this.userData.first_name,
-                        this.profile.lastName = this.userData.last_name,
-                        this.profile.employeeId = this.userData.employee_id,
-                        this.profile.profileText = this.userData.profile_text,
-                        this.profile.title = this.userData.title,
-                        this.profile.whyiVolunteer = this.userData.why_i_volunteer
+                    this.firstName = this.userData.first_name,
+                        this.lastName = this.userData.last_name,
+                        this.employeeId = this.userData.employee_id,
+                        this.profileText = this.userData.profile_text,
+                        this.title = this.userData.title,
+                        this.whyiVolunteer = this.userData.why_i_volunteer
                     if (this.userData.linked_in_url != null) {
-                        this.profile.linkedInUrl = this.userData.linked_in_url
+                        this.linkedInUrl = this.userData.linked_in_url
                     }
-                    this.profile.department = this.userData.department,
-                        // this.profile.availability = this.userData.availability_id,
-                        this.profile.userSkills = this.userData.user_skills
+                    this.department = this.userData.department,
+                        // this.availability = this.userData.availability_id,
+                        this.userSkills = this.userData.user_skills
                     if (this.userData.country_id != 0) {
-                        this.profile.country = this.userData.country_id
+                        this.country = this.userData.country_id
                     }
                     if (this.userData.city_id != 0) {
-                        this.profile.city = this.userData.city_id
+                        this.city = this.userData.city_id
                     }
                     if (this.userData.availability_id != 0 && this.userData.availability_id != null) {
-                        this.profile.availability = this.userData.availability_id
+                        this.availability = this.userData.availability_id
                     }
 
                     if (this.userData.language_id != 0) {
-                        this.profile.language = this.userData.language_id
+                        this.language = this.userData.language_id
                     }
                     if (this.userData.timezone_id != 0) {
-                        this.profile.time = this.userData.timezone_id
+                        this.time = this.userData.timezone_id
                     }
-                    this.profile.languageCode = this.userData.language_code
+                    this.languageCode = this.userData.language_code
 
                     if (this.userData.city_list != '' && this.userData.city_list != null) {
                         this.cityDefault = this.userData.city_list[this.userData.city_id]
@@ -737,6 +593,64 @@ export default {
 
             })
         },
+
+        async getSettingListing() {
+            await settingListing().then(response => {
+                this.pageLoaded = true;
+                if (response.error == true) {
+                    this.isShownComponent = true
+                    this.errorPage = true
+                    this.errorPageMessage = response.message
+                } else {
+                     this.time = response.data.preference.timezone_id
+                     this.language = response.data.preference.language_id 
+                     this.currency = response.data.preference.currency 
+                    if (response.data.timezone) {
+                        var timezoneArray = [];
+                        let timeZone = Object.entries(response.data.timezone);
+                       
+                        timeZone.filter((data, index) => {
+                            if (data[0] == response.data.preference.timezone_id) {                         
+                                this.timeDefault = data[1]
+                            }
+                            // this.time = this.userData.timezone_id
+                            timezoneArray.push({
+                                'text': data[1],
+                                'value': data[0]
+                            })
+                        })
+                        this.timeList = timezoneArray
+                    }
+
+                    if (response.data.languages) {
+                        var languagesArray = [];
+                        let languages = response.data.languages;
+                        this.languageList = Object.keys(languages).map((key) => {
+                            console.log(response.data.preference.language_id,languages[key]['language_id'])
+                            if (response.data.preference.language_id == languages[key]['language_id']) {
+                                this.languageDefault = languages[key]['name']
+                            }
+                            return [languages[key]['language_id'], languages[key]['name']];
+                        });
+                    }
+
+                    if (response.data.currencies) {
+                        var currenciesArray = [];
+                        let currencies = Object.entries(response.data.currencies);
+                        currencies.filter((data, index) => {
+                            currenciesArray.push({
+                                'text': data[1].code,
+                                'value': data[0].code
+                            })
+                        })
+                        this.currencyList = currenciesArray
+                    }
+
+                    this.isShownComponent = true;
+
+                }
+            })
+        },
         resetSkillListingData() {
             this.skillListing = [];
             this.userSkillList = [];
@@ -784,63 +698,7 @@ export default {
 
             this.submitted = true;
             this.$v.$touch();
-            let isCustomFieldInvalid = false;
-            let isNormalFieldInvalid = false;
-            let validationData = document.querySelectorAll('[validstate="true"]');
-            this.isCustomFieldSubmit = true;
-            validationData.forEach((validateData) => {
-                validateData.classList.add("is-invalid");
-                isCustomFieldInvalid = true;
-            });
-
-            if (this.$v.profile.$invalid) {
-                isNormalFieldInvalid = true;
-            }
-
-            if (isNormalFieldInvalid == true || isCustomFieldInvalid == true) {
-                return
-            }
-
-            this.saveProfileData.first_name = this.profile.firstName;
-            this.saveProfileData.last_name = this.profile.lastName;
-            this.saveProfileData.title = this.profile.title;
-            this.saveProfileData.timezone_id = this.profile.time;
-            this.saveProfileData.language_id = this.profile.language;
-            if (this.profile.availability != 0) {
-                this.saveProfileData.availability_id = this.profile.availability
-            } else {
-                delete this.saveProfileData['availability_id'];
-            }
-            this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
-            this.saveProfileData.employee_id = this.profile.employeeId;
-            this.saveProfileData.department = this.profile.department;
-            this.saveProfileData.city_id = this.profile.city;
-            this.saveProfileData.country_id = this.profile.country;
-            this.saveProfileData.profile_text = this.profile.profileText;
-            this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
-            this.saveProfileData.custom_fields = [];
-            this.saveProfileData.skills = [];
-
-            Object.keys(this.returnCustomFeildData).map((key) => {
-                let customValue = this.returnCustomFeildData[key];
-
-                if (Array.isArray(customValue)) {
-                    customValue = customValue.join();
-                }
-
-                this.saveProfileData.custom_fields.push({
-                    field_id: key,
-                    value: customValue
-                });
-            });
-
-            if (this.userSkillList.length > 0 && this.isSkillDisplay) {
-                Object.keys(this.userSkillList).map((key) => {
-                    this.saveProfileData['skills'].push({
-                        skill_id: this.userSkillList[key].id,
-                    });
-                });
-            }
+            
 
             // Call to save profile service
             saveUserProfile(this.saveProfileData).then(response => {
@@ -848,18 +706,17 @@ export default {
                     this.makeToast("danger", response.message);
                 } else {
                     this.isUserProfileComplete = response.data.is_profile_complete;
-                    store.commit('changeProfileSetFlag', response.data.is_profile_complete);
                     store.commit('setDefaultLanguageCode', this.languageCode)
                     this.showPage = false;
                     this.getUserProfileDetail().then(() => {
                         this.showPage = true;
-                        loadLocaleMessages(this.profile.languageCode).then(() => {
+                        loadLocaleMessages(this.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
                             this.makeToast("success", response.message);
                             this.isShownComponent = true;
                         });
 
-                        store.commit("changeUserDetail", this.profile)
+                        // store.commit("changeUserDetail", this.profile)
 
                     });
                 }
@@ -926,7 +783,7 @@ export default {
                         });
                     }
                     this.cityDefault = this.languageData.placeholder.city
-                    this.profile.city = '';
+                    this.city = '';
                 });
             }
         },
@@ -964,13 +821,15 @@ export default {
         this.timeDefault = this.languageData.placeholder.timezone
         this.changePhoto = this.languageData.label.edit
         this.languageCode = store.state.defaultLanguage
+        this.currencyDefault = this.languageData.placeholder.currency
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-        this.getUserProfileDetail();
+        this.getSettingListing();
+        // this.isShownComponent = true;
+        // this.pageLoaded = true
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
         }
     }
-
 };
 </script>
