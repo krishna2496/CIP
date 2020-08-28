@@ -27,7 +27,7 @@
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <b-form-checkbox-group id="checkbox-1" v-model="customFeildData[item.field_id]"
+                <b-form-checkbox-group :id='`checkbox-id-${item.field_id}`' v-model="customFeildData[item.field_id]"
                                        :options="getRadioArrayValue(item.translations.values)" name="checkbox-custom"
                                        :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                                        @input="updateChanges">
