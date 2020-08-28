@@ -144,6 +144,7 @@ class MissionController extends Controller
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         $languageCode = $language->code;
+        $tenantLanguages = $this->languageHelper->getLanguages();
         $userFilterData = [];
 
         //Save User search data
@@ -185,14 +186,17 @@ class MissionController extends Controller
         }
 
         $missionList = $this->missionRepository->getMissions($request, $userFilterData);
+        $userSelectedCurrency = $this->missionRepository->getUserCurrencyDetails($request);
 
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone) {
-                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, 
+                $tenantLanguages, $userSelectedCurrency) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, 
+                $tenantLanguages, $userSelectedCurrency);
             })->toArray();
 
         $requestString = $request->except(['page', 'perPage']);
@@ -678,22 +682,27 @@ class MissionController extends Controller
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
             $languageCode = $language->code;
+            $tenantLanguages = $this->languageHelper->getLanguages();
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
+            $userSelectedCurrency = $this->missionRepository->getUserCurrencyDetails($request);
 
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
 
             $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone,
+                 $tenantLanguages, $userSelectedCurrency
                 ) {
                     return $this->transformMission(
                         $mission,
                         $languageCode,
                         $languageId,
                         $defaultTenantLanguageId,
-                        $timezone
+                        $timezone,
+                        $tenantLanguages,
+                        $userSelectedCurrency
                     );
                 }
             )->all();

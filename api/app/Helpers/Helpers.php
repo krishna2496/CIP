@@ -550,7 +550,7 @@ class Helpers
         // Connect tenant database
         $this->switchDatabaseConnection('tenant');
 
-        return $tenantSetting;
+        return $tenantCurrencies;
     }
 
     public function getSupportedFieldsToPseudonymize()

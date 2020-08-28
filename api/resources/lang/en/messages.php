@@ -374,6 +374,10 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
-        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.'
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
+
+        'ERROR_IMPACT_DONATION_MISSION_NOT_FOUND' => 'Impact donation mission not found.',
+        
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Impact mission not found for a mission.'
        ]
 ];

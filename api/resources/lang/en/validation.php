@@ -229,6 +229,17 @@ return [
         'organization.state_id' => 'organization state id',
         'organization.country_id' => 'organization country id',
         'organization.postal_code' => 'organization postal code',
+        'impact_donation.*.amount' => 'impact donation amount',
+        'impact_donation.*.translations' => 'impact donation translations',
+        'impact_donation.*.translations.*.language_code' => 'impact donation language code',
+        'impact_donation.*.translations.*.content' => 'impact donation content',
+        'impact_donation.*.impact_donation_id' => 'impact donation id',
+        'impact.*.icon_path' => 'icon path',
+        'impact.*.sort_key' => 'sort key',
+        'impact.*.translations' => 'translations',
+        'impact.*.translations.*.language_code' => 'language code',
+        'impact.*.translations.*.content' => 'content',
+        'impact.*.mission_impact_id' => 'mission impact id'
 		],
 
 ];

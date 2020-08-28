@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Repositories\Currency\CurrencyRepository;
+use App\Models\Currency;
 
 class TenantCurrencyController extends Controller
 {
@@ -22,18 +24,26 @@ class TenantCurrencyController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Repositories\Currency\CurrencyRepository
+     */
+    private $currencyRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     public function __construct(
         Helpers $helpers,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        CurrencyRepository $currencyRepository
     ) {
         $this->helpers = $helpers;
         $this->responseHelper = $responseHelper;
+        $this->currencyRepository = $currencyRepository;
     }
 
     /**
@@ -46,7 +56,22 @@ class TenantCurrencyController extends Controller
     {
         // Fetch tenant all currency details
         $getTenantCurrency = $this->helpers->getTenantCurrencies($request);
+        $currencyList = $this->currencyRepository->findAll();
+        $allCurrencies = array();
 
+        foreach ($currencyList as $key => $value) {
+            $code = $value->code();
+            $symbol = $value->symbol();
+            $allCurrencies[$code] = $symbol;
+        }
+
+        $tenantCurrencies = $getTenantCurrency->toArray();
+        foreach ($tenantCurrencies as $key => $val) {
+            if (array_key_exists($val->code, $allCurrencies)) {
+                $val->symbol = $allCurrencies[$val->code];
+            }
+        }
+        
         // Set response data
         $apiData = $getTenantCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
