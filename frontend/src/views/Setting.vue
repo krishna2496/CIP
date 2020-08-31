@@ -401,6 +401,69 @@ export default {
                 keyCode != 8 && keyCode != 32) {
                 evt.preventDefault();
             }
+        },
+        async getSettingListing() {
+            await settingListing().then(response => {
+                this.pageLoaded = true;
+                if (response.error == true) {
+                    this.isShownComponent = true
+                    this.errorPage = true
+                    this.errorPageMessage = response.message
+                } else {
+                    this.time = response.data.preference.timezone_id
+                    this.language = response.data.preference.language_id
+                    this.currency = response.data.preference.currency
+                    if (response.data.timezone) {
+                        var timezoneArray = [];
+                        let timeZone = Object.entries(response.data.timezone);
+
+                        timeZone.filter((data, index) => {
+                            if (data[0] == response.data.preference.timezone_id) {
+                                this.timeDefault = data[1]
+                            }
+                            
+                            timezoneArray.push({
+                                'text': data[1],
+                                'value': data[0]
+                            })
+                        })
+                        this.timeList = timezoneArray
+                    }
+
+                    if (response.data.languages) {
+                        var languagesArray = [];
+                        let languages = response.data.languages;
+                        this.languageList = Object.keys(languages).map((key) => {
+                            console.log(response.data.preference.language_id, languages[key]['language_id'])
+                            if (response.data.preference.language_id == languages[key]['language_id']) {
+                                this.languageDefault = languages[key]['name']
+                            }
+                            return [languages[key]['language_id'], languages[key]['name']];
+                        });
+                    }
+
+                    if (response.data.currencies) {
+                        var currenciesArray = [];
+                        let currencies = Object.entries(response.data.currencies);
+                        currencies.filter((data, index) => {
+                            currenciesArray.push({
+                                'text': data[1].code,
+                                'value': data[1].code
+                            })
+                        })
+                        this.currencyList = currenciesArray
+                    }
+                    if (response.data.user_privacy.is_profile_visible == 1) {
+                        this.is_profile_visible = true
+                    }
+                    if (response.data.user_privacy.public_avatar_and_linkedin == 1) {
+                        this.public_avatar_and_linkedin = true
+                    }
+
+                    this.isShownComponent = true;
+
+                }
+            })
         }
     },
     created() {
