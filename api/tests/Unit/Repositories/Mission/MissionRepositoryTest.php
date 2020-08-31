@@ -34,6 +34,10 @@ use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Services\Mission\AdminMissionTransformService;
 use App\Models\MissionImpact;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Models\Organization;
+use App\Models\MissionImpactDonation;
+use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
+use App\Repositories\Currency\CurrencyRepository;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -132,6 +136,10 @@ class MissionRepositoryTest extends TestCase
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $organization = $this->mock(Organization::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $currencyRepository = $this->mock(CurrencyRepository::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -143,6 +151,8 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
+            $missionImpactDonation,
             $missionImpact
         );
 
@@ -175,6 +185,11 @@ class MissionRepositoryTest extends TestCase
         ];
 
         $collectionLanguages = collect($languages);
+
+        $modelService->organization->shouldReceive('updateOrCreate')
+        ->once()
+        ->with(['organization_id'=>$data['organisation']['organisation_id']], $requestData->organisation)
+        ->andReturn();
 
         $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -230,9 +245,11 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $currencyRepository
         );
 
         $response = $repository->store($requestData);
@@ -296,6 +313,10 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $organization = $this->mock(Organization::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $currencyRepository = $this->mock(CurrencyRepository::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -307,6 +328,8 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
+            $missionImpactDonation,
             $missionImpact
         );
 
@@ -385,9 +408,11 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $currencyRepository
         );
 
         $response = $repository->update($requestData, $missionId);
@@ -421,6 +446,10 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $organization = $this->mock(Organization::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $currencyRepository = $this->mock(CurrencyRepository::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -432,6 +461,8 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
+            $missionImpactDonation,
             $missionImpact
         );
 
@@ -442,9 +473,11 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $currencyRepository
         );
 
         $missionId = rand(50000, 70000);
@@ -472,9 +505,11 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionMedia\ImpactDonationMissionRepository $impactDonationMissionRepository
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
      * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
+     * @param  App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     private function getRepository(
@@ -484,9 +519,11 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        ImpactDonationMissionRepository $impactDonationMissionRepository,
         MissionImpactRepository $missionImpactRepository,
         AdminMissionTransformService $adminMissionTransformService,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        CurrencyRepository $currencyRepository
     ) {
         return new MissionRepository(
             $languageHelper,
@@ -495,9 +532,11 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $currencyRepository
         );
     }
 
@@ -537,6 +576,8 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @param  App\Models\MissionImpact $missionImpact
      * @return void
      */
@@ -550,6 +591,8 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        Organization $organization,
+        MissionImpactDonation $missionImpactDonation,
         MissionImpact $missionImpact
     ) {
         return new ModelsService(
@@ -562,6 +605,8 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
+            $missionImpactDonation,
             $missionImpact
         );
     }

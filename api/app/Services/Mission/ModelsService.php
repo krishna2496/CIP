@@ -88,12 +88,9 @@ class ModelsService
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
-<<<<<<< HEAD
      * @param  App\Models\Organization $organization
-=======
      * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @param  App\Models\MissionImpact $missionImpact
->>>>>>> 2997651aed39882c05a9f28fefb078591eeea51c
      * @return void
      */
     public function __construct(
@@ -106,12 +103,9 @@ class ModelsService
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-<<<<<<< HEAD
-        Organization $organization
-=======
+        Organization $organization,
         MissionImpactDonation $missionImpactDonation,
         MissionImpact $missionImpact
->>>>>>> 2997651aed39882c05a9f28fefb078591eeea51c
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -122,11 +116,8 @@ class ModelsService
         $this->missionRating = $missionRating;
         $this->missionApplication = $missionApplication;
         $this->city = $city;
-<<<<<<< HEAD
         $this->organization = $organization;
-=======
         $this->missionImpactDonation = $missionImpactDonation;
         $this->missionImpact = $missionImpact;
->>>>>>> 2997651aed39882c05a9f28fefb078591eeea51c
     }
 }

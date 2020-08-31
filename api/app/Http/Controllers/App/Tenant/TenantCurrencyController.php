@@ -56,7 +56,7 @@ class TenantCurrencyController extends Controller
     {
         // Fetch tenant all currency details
         $getTenantCurrency = $this->helpers->getTenantCurrencies($request);
-        $currencyList = $this->currencyRepository->findAll();
+        $currencyList = $this->currencyRepository->findAll();        
         $allCurrencies = array();
 
         foreach ($currencyList as $key => $value) {

@@ -12,10 +12,11 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Controllers\App\Tenant\TenantCurrencyController;
+use App\Repositories\Currency\CurrencyRepository;
+use App\Models\Currency;
 
 class TenantCurrencyControllerTest extends TestCase
 {
-
     /**
      * @testdox get tenant currency list success
      */
@@ -25,21 +26,28 @@ class TenantCurrencyControllerTest extends TestCase
         $helpers = $this->mock(Helpers::class);
         $responseHelper = $this->mock(ResponseHelper::class);
         $collection = $this->mock(Collection::class);
+        $currencyRepository = $this->mock(CurrencyRepository::class);
+        $currencyData = new Currency('USD', '$');
+        $currencyDataArray = [$currencyData];
 
         $currencies = [
-            [
-                "code"=>1,
-                "default"=> "English",
-                "is_active"=> "en"
+            (object) [
+                'code'=> 'USD',
+                'default' => 1,
+                'is_active' => 1
             ]
         ];
 
         $collectionCurrency = collect($currencies);
 
-        $helpers->shouldReceive('getTenantCurrency')
+        $helpers->shouldReceive('getTenantCurrencies')
         ->times()
         ->with($request)
         ->andReturn($collectionCurrency);
+
+        $currencyRepository->shouldReceive('findAll')
+        ->once()
+        ->andReturn($currencyDataArray);
 
         $apiData = $collectionCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
@@ -60,12 +68,12 @@ class TenantCurrencyControllerTest extends TestCase
 
         $callController = $this->getController(
             $helpers,
-            $responseHelper
+            $responseHelper,
+            $currencyRepository
         );
 
         $response = $callController->index($request);
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
 
     /**
@@ -77,15 +85,22 @@ class TenantCurrencyControllerTest extends TestCase
         $helpers = $this->mock(Helpers::class);
         $responseHelper = $this->mock(ResponseHelper::class);
         $collection = $this->mock(Collection::class);
+        $currencyRepository = $this->mock(CurrencyRepository::class);
+        $currencyData = new Currency('USD', '$');
+        $currencyDataArray = [$currencyData];
 
         $currencies = [];
 
         $collectionCurrency = collect($currencies);
 
-        $helpers->shouldReceive('getTenantCurrency')
+        $helpers->shouldReceive('getTenantCurrencies')
         ->times()
         ->with($request)
         ->andReturn($collectionCurrency);
+
+        $currencyRepository->shouldReceive('findAll')
+        ->once()
+        ->andReturn($currencyDataArray);
 
         $apiData = $collectionCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
@@ -105,7 +120,8 @@ class TenantCurrencyControllerTest extends TestCase
 
         $callController = $this->getController(
             $helpers,
-            $responseHelper
+            $responseHelper,
+            $currencyRepository
         );
 
         $response = $callController->index($request);
@@ -118,15 +134,18 @@ class TenantCurrencyControllerTest extends TestCase
      *
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Repositories\Currency\CurrencyRepository $currencyRepository
      * @return void
      */
     private function getController(
         Helpers $helpers,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        CurrencyRepository $currencyRepository
     ) {
         return new TenantCurrencyController(
             $helpers,
-            $responseHelper
+            $responseHelper,
+            $currencyRepository
         );
     }
 
