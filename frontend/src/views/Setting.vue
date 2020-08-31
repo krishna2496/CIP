@@ -267,7 +267,8 @@ export default {
                 old_password: ''
             },
             currencyList: [],
-            currencyDefault: ""
+            currencyDefault: "",
+            languageListing : []
 
         };
     },
@@ -302,8 +303,7 @@ export default {
         updateLang(value) {
             this.languageDefault = value.selectedVal;
             this.languageCode = value.selectedId;
-            this.language = value.selectedId;
-            console.log(this.languageCode);
+            this.language = this.languageListing[value.selectedId];
         },
         updateCurrency(value) {
             this.currency = value
@@ -429,10 +429,11 @@ export default {
                         var languagesArray = [];
                         let languages = response.data.languages;
                         this.languageList = Object.keys(languages).map((key) => {
-                            console.log(response.data.preference.language_id, languages[key]['language_id'])
                             if (response.data.preference.language_id == languages[key]['language_id']) {
                                 this.languageDefault = languages[key]['name']
                             }
+                            let languageCode = languages[key]['code']
+                            this.languageListing[languageCode] = languages[key]['language_id']
                             return [languages[key]['code'], languages[key]['name']];
                         });
                     }
