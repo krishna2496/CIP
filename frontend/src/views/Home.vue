@@ -201,7 +201,7 @@ export default {
         },
         //Mission listing
         async getMissions(parmas = "") {
-            if (store.state.clearFilterSet == "" && !this.isAjaxCall) {
+            if (store.state.clearFilterSet == "" && !this.isExploreMission) {
                 this.isAjaxCall = true
             }
             
@@ -239,7 +239,7 @@ export default {
                 }
 
                 this.isShownComponent = true;
-                if (!this.isExploreMission) {
+                if (this.isExploreMission) {
                     this.isAjaxCall = false
                 }
                 if (store.state.search != null) {
@@ -266,14 +266,14 @@ export default {
                      this.isAjaxCall = false
                  }
 
-                const ua = window.navigator.userAgent;
-                const isIE = /MSIE|Trident/.test(ua);
+                // const ua = window.navigator.userAgent;
+                // const isIE = /MSIE|Trident/.test(ua);
 
-                if (isIE) {
-                    setTimeout(() => {
-                        this.isAjaxCall = false
-                    }, 10000);
-                }
+                // if (isIE) {
+                //     setTimeout(() => {
+                //         this.isAjaxCall = false
+                //     }, 10000);
+                // }
             });
         },
 
