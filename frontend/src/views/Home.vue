@@ -204,7 +204,7 @@ export default {
             if (store.state.clearFilterSet == "" && !this.isExploreMission) {
                 this.isAjaxCall = true
             }
-            
+
             let filter = {};
             filter.page = this.currentPage
             filter.search = store.state.search
@@ -263,17 +263,8 @@ export default {
                     }
                 }, 200);
                 if (!this.isExploreMission) {
-                     this.isAjaxCall = false
-                 }
-
-                // const ua = window.navigator.userAgent;
-                // const isIE = /MSIE|Trident/.test(ua);
-
-                // if (isIE) {
-                //     setTimeout(() => {
-                //         this.isAjaxCall = false
-                //     }, 10000);
-                // }
+                    this.isAjaxCall = false
+                }
             });
         },
 
@@ -359,7 +350,7 @@ export default {
         },
         changeTag(data) {
             if (data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
-              return
+                return
             }
             this.$refs.secondaryHeader.removeItems(data);
         },
@@ -373,9 +364,8 @@ export default {
             document.body.classList.remove("loader-enable");
             store.commit('clearFilterClick', '');
         },
-        removeLoader() {
-            this.isAjaxCall = false;
-            this.isExploreMission = false
+        addLoader() {
+            this.isAjaxCall = true
         }
     },
     created() {
