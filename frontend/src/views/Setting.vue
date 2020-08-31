@@ -279,8 +279,8 @@ export default {
             saveProfileData: {
                 password: '',
                 confirm_password: '',
-                is_profile_visible: true,
-                public_avatar_and_linkedin: true,
+                is_profile_visible: 0,
+                public_avatar_and_linkedin: 0,
                 language_id: 0,
                 timezone_id: 0,
                 currency: 0,
