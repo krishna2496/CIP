@@ -262,10 +262,9 @@ export default {
                         bodyTag.classList.remove("has-favourite");
                     }
                 }, 200);
-                if (parmas) {
-                    this.isAjaxCall = false
-                    this.isExploreMission = false
-                }
+                if (!this.isExploreMission) {
+                     this.isAjaxCall = false
+                 }
 
                 const ua = window.navigator.userAgent;
                 const isIE = /MSIE|Trident/.test(ua);
@@ -323,11 +322,7 @@ export default {
                 this.filterData.sortBy = store.state.sortBy;
             }
             store.commit('userFilter', this.filterData)
-            let isLoaderRemove = false;
-            if (filterParmas.isSkillSet) {
-                isLoaderRemove = true
-            }
-            this.getMissions(isLoaderRemove);
+            this.getMissions();
         },
 
         changeView(currentView) {

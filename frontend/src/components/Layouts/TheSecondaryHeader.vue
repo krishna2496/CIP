@@ -116,8 +116,7 @@
                     sortBy: "",
                     search: "",
                     exploreMissionType : '',
-                    exploreMissionParams :'',
-                    isSkillSet : false
+                    exploreMissionParams :''
                 },
                 show: false,
                 isComponentVisible: false,
@@ -423,15 +422,10 @@
                     });
                     this.isThemeChange = false;
                 }
-                this.selectedfilterParams.isSkillSet = false;
             },
 
             async changeSkill(skill) {
-                if (!this.isCountryChange && !this.isCityChange) {
-                    // this.selectedfilterParams.isSkillSet = true;
-                }
                 if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange) {
-                     this.selectedfilterParams.isSkillSet = true;
                     this.selectedfilterParams.skillId = skill;
                     this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
                     this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
