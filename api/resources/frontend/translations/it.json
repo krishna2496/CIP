@@ -295,7 +295,9 @@
 		"deleted_user" : "Utente cancellato",
 		"virtual_mission" : "Virtuale",
 		"virtual_missions" : "Volontariato virtuale",
-		"home" : "Pulsante Home"
+		"home" : "Pulsante Home",
+		"login_with_sso": "Accedi con SSO",
+		"site_title" : "Home"
 	},
 	"placeholder": {
 		"email_address": "Inserisci un indirizzo di posta elettronica",

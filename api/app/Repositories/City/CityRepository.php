@@ -309,7 +309,7 @@ class CityRepository implements CityInterface
         return $cities;
     }
 
-    
+
     /**
      * Search city with language and country restriction
      * @param  string $search
@@ -319,14 +319,22 @@ class CityRepository implements CityInterface
      */
     public function searchCity(
         string $cityName,
-        int $languageId,
-        int $countryId
+        int $languageId = null,
+        int $countryId = null
     ) {
-        return $this->city
+        $city = $this->city
             ->join('city_language', 'city_language.city_id', '=', 'city.city_id')
-            ->where('city.country_id', $countryId)
-            ->where('city_language.language_id', $languageId)
-            ->take(1)
+            ->where('city_language.name', 'LIKE', '%'.$cityName.'%');
+
+        if ($languageId) {
+            $city->where('city_language.language_id', $languageId);
+        }
+
+        if ($countryId) {
+            $city->where('city.country_id', $countryId);
+        }
+
+        return $city->take(1)
             ->first();
     }
 }

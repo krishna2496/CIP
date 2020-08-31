@@ -57,4 +57,4 @@ export default Object.freeze({
     MAX_FILE_NUMBER: 20,
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer",
     STATE_ENABLED : "state_selection"
-})
+});

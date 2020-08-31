@@ -1,7 +1,5 @@
 <?php
 
-use App\Helpers\Helpers;
-
 class UserCustomFieldTest extends TestCase
 {
     /**
@@ -33,16 +31,16 @@ class UserCustomFieldTest extends TestCase
         $this->post(
             'metadata/users/custom_fields/',
             $params,
-            ['Authorization' => Helpers::getBasicAuth()]
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-        ->seeStatusCode(201)
-        ->seeJsonStructure([
-            'data' => [
-                'field_id',
-            ],
-            'message',
-            'status',
-        ]);
+            ->seeStatusCode(201)
+            ->seeJsonStructure([
+                'data' => [
+                    'field_id'
+                ],
+                'message',
+                'status'
+            ]);
         $customField = App\Models\UserCustomField::where('name', $name)
             ->orderBy('field_id', 'DESC')
             ->first();
@@ -71,23 +69,24 @@ class UserCustomFieldTest extends TestCase
 
         $this->get(
             'metadata/users/custom_fields?search=' . $userCustomField->name,
-            ['Authorization' => Helpers::getBasicAuth()]
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            'status',
-            'data' => [
-                [
-                    'field_id',
-                    'name',
-                    'type',
-                    'translations',
-                    'is_mandatory',
-                    'internal_note'
-                ]
-            ],
-            'message'
-        ]);
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                'status',
+                'data' => [
+                    [
+                        'field_id',
+                        'order',
+                        'name',
+                        'type',
+                        'translations',
+                        'is_mandatory',
+                        'internal_note'
+                    ]
+                ],
+                'message'
+            ]);
 
         $userCustomField->delete();
     }
@@ -101,12 +100,16 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_no_user_custom_field_found()
     {
-        $this->get(route("metadata.users.custom_fields"), ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
+        $this->get(
+            route("metadata.users.custom_fields"), [
+                'Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))
+            ]
+        )
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                "status",
+                "message"
+            ]);
     }
 
     /**
@@ -123,6 +126,7 @@ class UserCustomFieldTest extends TestCase
         $name = str_random(20);
         $params = [
             'name' => $name,
+            'order' => 1,
             'type' => $typeArray[$randomTypes],
             'is_mandatory' => 1,
             'translations' => [
@@ -136,7 +140,9 @@ class UserCustomFieldTest extends TestCase
         ];
 
         $connection = 'tenant';
-        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make([
+            'order' => 1
+        ]);
         $userCustomField->setConnection($connection);
         $userCustomField->save();
         $fieldId = $userCustomField->field_id;
@@ -144,16 +150,16 @@ class UserCustomFieldTest extends TestCase
         $this->patch(
             'metadata/users/custom_fields/' . $fieldId,
             $params,
-            ['Authorization' => Helpers::getBasicAuth()]
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            'data' => [
-                'field_id',
-            ],
-            'message',
-            'status',
-        ]);
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                'data' => [
+                    'field_id'
+                ],
+                'message',
+                'status'
+            ]);
 
         $updatedCustomField = App\Models\UserCustomField::where('field_id', $fieldId)
             ->orderBy('field_id', 'DESC')
@@ -184,9 +190,34 @@ class UserCustomFieldTest extends TestCase
         $this->delete(
             "metadata/users/custom_fields/" . $userCustomField->field_id,
             [],
-            ['Authorization' => Helpers::getBasicAuth()]
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-        ->seeStatusCode(204);
+            ->seeStatusCode(204);
+    }
+
+    /**
+     * @test
+     *
+     * Delete multiple user custom field
+     *
+     * @return void
+     */
+    public function it_should_delete_multiple_user_custom_field()
+    {
+        $connection = 'tenant';
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+
+        $userCustomField2 = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField2->setConnection($connection);
+        $userCustomField2->save();
+
+        $this->delete(
+            "metadata/users/custom_fields/" . $userCustomField->field_id,
+            ['id' => [$userCustomField2->field_id]],
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
+        )->seeStatusCode(204);
     }
 
     /**
@@ -200,19 +231,19 @@ class UserCustomFieldTest extends TestCase
         $this->delete(
             "metadata/users/custom_fields/" . rand(1000000, 50000000),
             [],
-            ['Authorization' => Helpers::getBasicAuth()]
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-        ->seeStatusCode(404)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
+            ->seeStatusCode(404)
+            ->seeJsonStructure([
+                "errors" => [
+                    [
+                        "status",
+                        "type",
+                        "message",
+                        "code"
+                    ]
                 ]
-            ]
-        ]);
+            ]);
     }
 
     /**
@@ -225,37 +256,37 @@ class UserCustomFieldTest extends TestCase
     {
         $params = [
             'page_details' =>
-                [
+            [
                 'slug' => str_random(20),
-                'translations' =>  [
+                'translations' => [
                     [
                         'lang' => 'en',
                         'title' => str_random(20),
-                        'sections' =>  [
+                        'sections' => [
                             'title' => str_random(20),
-                            'description' => str_random(255),
-                        ],
+                            'description' => str_random(255)
+                        ]
                     ]
-                ],
-                ],
+                ]
+            ]
         ];
 
         $this->patch(
             "metadata/users/custom_fields/" . rand(1000000, 50000000),
             $params,
-            ['Authorization' => Helpers::getBasicAuth()]
+            ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))]
         )
-        ->seeStatusCode(404)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
+            ->seeStatusCode(404)
+            ->seeJsonStructure([
+                "errors" => [
+                    [
+                        "status",
+                        "type",
+                        "message",
+                        "code"
+                    ]
                 ]
-            ]
-        ]);
+            ]);
     }
 
     /**
@@ -272,17 +303,17 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(400)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message"
+        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+            ->seeStatusCode(400)
+            ->seeJsonStructure([
+                "errors" => [
+                    [
+                        "status",
+                        "type",
+                        "message"
+                    ]
                 ]
-            ]
-        ]);
+            ]);
         $userCustomField->delete();
     }
 
@@ -311,17 +342,17 @@ class UserCustomFieldTest extends TestCase
             ]
         ];
 
-        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message"
+        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+            ->seeStatusCode(422)
+            ->seeJsonStructure([
+                "errors" => [
+                    [
+                        "status",
+                        "type",
+                        "message"
+                    ]
                 ]
-            ]
-        ]);
+            ]);
     }
 
     /**
@@ -368,17 +399,17 @@ class UserCustomFieldTest extends TestCase
             ]
         ];
 
-        $this->patch("metadata/users/custom_fields/" . $field_id, $params, ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message"
+        $this->patch("metadata/users/custom_fields/" . $field_id, $params, ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+            ->seeStatusCode(422)
+            ->seeJsonStructure([
+                "errors" => [
+                    [
+                        "status",
+                        "type",
+                        "message"
+                    ]
                 ]
-            ]
-        ]);
+            ]);
         $userCustomField->delete();
     }
 
@@ -396,17 +427,17 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(400)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message"
+        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+            ->seeStatusCode(400)
+            ->seeJsonStructure([
+                "errors" => [
+                    [
+                        "status",
+                        "type",
+                        "message"
+                    ]
                 ]
-            ]
-        ]);
+            ]);
         $userCustomField->delete();
     }
 
@@ -424,18 +455,19 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata/users/custom_fields/' . $userCustomField->field_id, ['Authorization' => Helpers::getBasicAuth()])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                "field_id",
-                "name",
-                "type",
-                "translations"
-            ],
-            "message"
-          ]);
+        $this->get('metadata/users/custom_fields/' . $userCustomField->field_id, ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                "status",
+                "data" => [
+                    "field_id",
+                    "order",
+                    "name",
+                    "type",
+                    "translations"
+                ],
+                "message"
+            ]);
         $userCustomField->delete();
     }
 
@@ -448,17 +480,17 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_error_if_custom_fields_id_is_wrong()
     {
-        $this->get('metadata/users/custom_fields/' . rand(1000000, 2000000), ['Authorization' => Helpers::getBasicAuth()])
-        ->seeStatusCode(404)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'code',
-                    'message'
+        $this->get('metadata/users/custom_fields/' . rand(1000000, 2000000), ['Authorization' => 'Basic ' . base64_encode(env('API_KEY') . ':' . env('API_SECRET'))])
+            ->seeStatusCode(404)
+            ->seeJsonStructure([
+                'errors' => [
+                    [
+                        'status',
+                        'type',
+                        'code',
+                        'message'
+                    ]
                 ]
-            ]
-        ]);
+            ]);
     }
 }

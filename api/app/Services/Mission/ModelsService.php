@@ -11,6 +11,7 @@ use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
 use App\Models\MissionImpactDonation;
+use App\Models\Organization;
 
 class ModelsService
 {
@@ -65,6 +66,11 @@ class ModelsService
     public $missionImpactDonation;
 
     /**
+     * @var App\Models\Organization
+     */
+    public $organization;
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -77,6 +83,7 @@ class ModelsService
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
      * @param  App\Models\MissionImpactDonation $missionImpactDonation
+     * @param  App\Models\Organization $organization
      * @return void
      */
     public function __construct(
@@ -89,7 +96,8 @@ class ModelsService
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-        MissionImpactDonation $missionImpactDonation
+        MissionImpactDonation $missionImpactDonation,
+        Organization $organization
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -101,5 +109,6 @@ class ModelsService
         $this->missionApplication = $missionApplication;
         $this->city = $city;
         $this->missionImpactDonation = $missionImpactDonation;
+        $this->organization = $organization;
     }
 }
