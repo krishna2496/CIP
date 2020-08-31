@@ -79,16 +79,14 @@
                             </b-alert>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label for>{{languageData.label.current_password}}*</label>
-                                    <b-form-input id type="password" ref="oldPassword" v-model.trim="oldPassword" :class="{ 'is-invalid': $v.oldPassword.$error }" :placeholder="languageData.placeholder.old_password"></b-form-input>
-                                    <div v-if="!$v.oldPassword.required" class="invalid-feedback">
-                                        {{ languageData.errors.field_is_required }}</div>
+                                    <label for>{{languageData.label.current_password}}</label>
+                                    <b-form-input id type="password" ref="oldPassword" v-model.trim="oldPassword"  :placeholder="languageData.placeholder.old_password"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col md="6"></b-col>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label for>{{languageData.placeholder.new_password}}*
+                                    <label for>{{languageData.placeholder.new_password}}
                                     </label>
                                     <b-form-input id type="password" v-model.trim="newPassword" :class="{ 'is-invalid': $v.newPassword.$error }" :placeholder="languageData.placeholder.new_password"></b-form-input>
                                     <div v-if="!$v.newPassword.required" class="invalid-feedback">
@@ -101,13 +99,11 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>
-                                        {{languageData.placeholder.confirm_password}}*
+                                        {{languageData.placeholder.confirm_password}}
                                     </label>
                                     <b-form-input id v-model.trim="confirmPassword" :class="{ 'is-invalid': $v.confirmPassword.$error }" :placeholder="languageData.placeholder.confirm_password" @keypress.enter.prevent="changePassword" type="password">
                                     </b-form-input>
-                                    <div v-if="!$v.confirmPassword.required" class="invalid-feedback">
-                                        {{ languageData.errors.field_is_required }}</div>
-                                    <div v-if="$v.confirmPassword.required && !$v.confirmPassword.sameAsPassword" class="invalid-feedback">
+                                    <div v-if="!$v.confirmPassword.sameAsPassword" class="invalid-feedback">
                                         {{ languageData.errors.identical_password }}</div>
                                 </b-form-group>
                             </b-col>
@@ -197,7 +193,8 @@ import {
     required,
     maxLength,
     sameAs,
-    minLength
+    minLength,
+    requiredIf
 } from 'vuelidate/lib/validators';
 import constants from '../constant';
 
@@ -275,16 +272,17 @@ export default {
         };
     },
     validations: {
-
-        oldPassword: {
-            required
-        },
         newPassword: {
-            required,
+            required : requiredIf(function(model) {
+                if(model.oldPassword != '') {
+                    return true
+                } else {
+                    return false
+                }
+            }),
             minLength: minLength(constants.PASSWORD_MIN_LENGTH)
         },
         confirmPassword: {
-            required,
             sameAsPassword: sameAs('newPassword')
         },
         language: {
@@ -303,9 +301,9 @@ export default {
     methods: {
         updateLang(value) {
             this.languageDefault = value.selectedVal;
-            this.languageCode = value.selectedVal;
+            this.languageCode = value.selectedId;
             this.language = value.selectedId;
-            this.languageCode = this.userData.language_code_list[value.selectedId];
+            console.log(this.languageCode);
         },
         updateCurrency(value) {
             this.currency = value
@@ -351,15 +349,12 @@ export default {
                 return;
             }
 
-            if (this.oldPassword) {
+            if (this.oldPassword && this.newPassword && this.oldPassword) {
                 this.saveProfileData.password = this.oldPassword;
-            }
-            if (this.newPassword) {
                 this.saveProfileData.confirm_password = this.newPassword;
-            }
-            if (this.oldPassword) {
                 this.saveProfileData.old_password = this.oldPassword;
             }
+
             this.saveProfileData.is_profile_visible = this.is_profile_visible;
             this.saveProfileData.public_avatar_and_linkedin = this.public_avatar_and_linkedin;
             this.saveProfileData.language_id = this.language;
@@ -438,7 +433,7 @@ export default {
                             if (response.data.preference.language_id == languages[key]['language_id']) {
                                 this.languageDefault = languages[key]['name']
                             }
-                            return [languages[key]['language_id'], languages[key]['name']];
+                            return [languages[key]['code'], languages[key]['name']];
                         });
                     }
 

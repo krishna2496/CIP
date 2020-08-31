@@ -15,13 +15,11 @@ export default async(data) => {
         data,
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
-            'Content-Type': 'multipart/form-data'
+            'token': store.state.token
         }
     })
       .then((response) => {
           responseData.error = false;
-          responseData.data = response.data.data.story_id
           responseData.message = response.data.message;
           document.body.classList.remove("loader-enable");
       })
