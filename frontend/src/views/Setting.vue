@@ -223,19 +223,13 @@ export default {
             isQuickAccessFilterDisplay: true,
             isSkillDisplay: true,
             languageDefault: "",
-            userIcon: require("@/assets/images/user-img-large.png"),
             timeList: [],
             timeDefault: "",
             countryList: [],
             countryDefault: '',
-            availabilityList: [],
-            passwordSubmit: false,
             isCustomFieldSubmit: false,
-            availabilityDefault: "",
             file: "null",
             languageData: [],
-            skillListing: [],
-            resetSkillList: [],
             newUrl: "",
             isPrefilLoaded: true,
             prefilImageType: {
@@ -245,11 +239,6 @@ export default {
             isShownComponent: false,
             cityList: [],
             cityDefault: "",
-            resetPassword: {
-                oldPassword: "",
-                newPassword: "",
-                confirmPassword: ""
-            },
             showErrorDiv: false,
             message: null,
             classletiant: "success",
@@ -267,12 +256,6 @@ export default {
             submitted: false,
             language: '',
             languageCode: null,
-
-            CustomFieldList: [],
-            CustomFieldValue: [],
-            returnCustomFeildData: [],
-            userSkillList: [],
-            resetUserSkillList: [],
             imageLoader: true,
             changePhoto: "",
             showPage: true,
@@ -286,23 +269,7 @@ export default {
                 currency: 0,
                 old_password: ''
             },
-            currencyList: [{
-                    value: "0",
-                    text: "GMT-4"
-                },
-                {
-                    value: "01",
-                    text: "UTC-5"
-                },
-                {
-                    value: "02",
-                    text: "UTC-6"
-                },
-                {
-                    value: "03",
-                    text: "UTC-7"
-                },
-            ],
+            currencyList: [],
             currencyDefault: ""
 
         };
@@ -357,10 +324,7 @@ export default {
 
             this.changeCityData(value.selectedId);
         },
-        updateAvailability(value) {
-            this.availabilityDefault = value.selectedVal;
-            this.availability = value.selectedId;
-        },
+        
         changeImage(image) {
             this.imageLoader = true;
             let imageData = {}
@@ -377,295 +341,7 @@ export default {
 
             })
         },
-        saveSkillData() {
-            let data = JSON.parse(localStorage.getItem('currentSkill'));
-            this.resetUserSkillList = data
-        },
-        // Get user detail
-        async getUserProfileDetail() {
-            await getUserDetail().then(response => {
-                this.pageLoaded = true;
-                if (response.error == true) {
-                    this.isShownComponent = true
-                    this.errorPage = true
-                    this.errorPageMessage = response.message
-                } else {
-                    this.errorPage = false
-
-                    this.userData = response.data;
-                    this.newUrl = this.userData.avatar;
-                    const img = new Image();
-                    if (this.newUrl != '' && this.newUrl != null) {
-                        img.src = this.newUrl;
-                        img.onload = () => {
-                            this.isPrefilLoaded = false
-                        }
-                    } else {
-                        this.isPrefilLoaded = false
-                    }
-                    store.commit("changeAvatar", this.userData)
-
-                    this.cityList = Object.keys(this.userData.city_list).map((key) => {
-                        return [Number(key), this.userData.city_list[key]];
-                    });
-                    this.cityList.sort((a, b) => {
-                        let cityOne = a[1].toLowerCase(),
-                            cityTwo = b[1].toLowerCase();
-                        if (cityOne < cityTwo) //sort string ascending
-                            return -1;
-                        if (cityOne > cityTwo)
-                            return 1;
-                        return 0; //default return value (no sorting)
-                    });
-                    this.availabilityList = Object.keys(this.userData.availability_list).map((key) => {
-                        return [Number(key), this.userData.availability_list[key]];
-                    });
-                    this.languageList = Object.keys(this.userData.language_list).map((key) => {
-                        return [Number(key), this.userData.language_list[key]];
-                    });
-
-                    this.CustomFieldList = this.userData.custom_fields
-
-                    if (this.userData.user_custom_field_value) {
-                        this.CustomFieldValue = Object.keys(this.userData.user_custom_field_value).map((
-                            key) => {
-                            return [
-                                Number(this.userData.user_custom_field_value[key]
-                                    .field_id),
-                                this.userData.user_custom_field_value[key].value
-                            ];
-                        });
-                    }
-
-                    this.firstName = this.userData.first_name,
-                        this.lastName = this.userData.last_name,
-                        this.employeeId = this.userData.employee_id,
-                        this.profileText = this.userData.profile_text,
-                        this.title = this.userData.title,
-                        this.whyiVolunteer = this.userData.why_i_volunteer
-                    if (this.userData.linked_in_url != null) {
-                        this.linkedInUrl = this.userData.linked_in_url
-                    }
-                    this.department = this.userData.department,
-                        // this.availability = this.userData.availability_id,
-                        this.userSkills = this.userData.user_skills
-                    if (this.userData.country_id != 0) {
-                        this.country = this.userData.country_id
-                    }
-                    if (this.userData.city_id != 0) {
-                        this.city = this.userData.city_id
-                    }
-                    if (this.userData.availability_id != 0 && this.userData.availability_id != null) {
-                        this.availability = this.userData.availability_id
-                    }
-
-                    if (this.userData.language_id != 0) {
-                        this.language = this.userData.language_id
-                    }
-                    if (this.userData.timezone_id != 0) {
-                        this.time = this.userData.timezone_id
-                    }
-                    this.languageCode = this.userData.language_code
-
-                    if (this.userData.city_list != '' && this.userData.city_list != null) {
-                        this.cityDefault = this.userData.city_list[this.userData.city_id]
-                    }
-                    if (this.userData.availability && this.userData.availability.type != '' && this.userData.availability.type !=
-                        null) {
-                        const translatedAvailability = this.userData.availability.translations
-                            .find(translation => translation.lang === this.languageCode.toLowerCase());
-                        this.availabilityDefault = translatedAvailability ?
-                            translatedAvailability.title : this.userData.availability.type;
-                    } else {
-                        this.availabilityDefault = this.languageData.placeholder.availability;
-                    }
-                    if (this.userData.language_id != '' && this.userData.language_id != null) {
-                        Object.keys(this.userData.language_list).map((key) => {
-                            if (key == this.userData.language_id) {
-                                this.languageDefault = this.userData.language_list[key]
-                            }
-                        });
-                    }
-                    if (this.userData.timezone && this.userData.timezone.timezone != '' && this.userData.timezone.timezone !=
-                        null) {
-                        this.timeDefault = this.userData.timezone.timezone
-                    }
-                    this.skillListing = [];
-                    this.userSkillList = [];
-                    this.resetUserSkillList = [];
-                    store.commit("saveCurrentSkill", null)
-                    store.commit("saveCurrentFromSkill", null)
-                    country().then(responseData => {
-                        if (responseData.error == false) {
-                            this.countryList = responseData.data
-                            if (this.countryList) {
-                                this.countryList.filter((data, index) => {
-                                    if (this.userData.country_id == data[0]) {
-                                        this.countryDefault = data[1]
-                                    }
-                                })
-                            }
-                            this.countryList.sort((countryA, countryB) => {
-                                let countryOne = countryA[1].toLowerCase(),
-                                    countryTwo = countryB[1].toLowerCase();
-                                if (countryOne < countryTwo) //sort string ascending
-                                    return -1;
-                                if (countryOne > countryTwo)
-                                    return 1;
-                                return 0; //default return value (no sorting)
-                            });
-                        }
-
-                        timezone().then(responseData => {
-                            if (responseData.error == false) {
-                                var array = [];
-
-                                responseData.data.filter((data, index) => {
-                                    array.push({
-                                        'text': data[1],
-                                        'value': data[0]
-                                    })
-                                })
-                                this.timeList = array
-                            }
-
-                            skill().then(responseData => {
-                                if (responseData.error == false) {
-                                    this.userData.skill_list = responseData.data
-                                    Object.keys(this.userData.skill_list).map(
-                                        (key) => {
-                                            if (this.userData.skill_list[
-                                                    key]) {
-                                                this.skillListing.push({
-                                                    name: this
-                                                        .userData
-                                                        .skill_list[
-                                                            key],
-                                                    id: key
-                                                });
-
-                                                this.skillListing.sort(function (first, next) {
-                                                    first = first.name;
-                                                    next = next.name;
-                                                    return first < next ? -1 : (first > next ? 1 : 0);
-                                                });
-                                            }
-                                        });
-                                }
-                                this.isShownComponent = true;
-                            })
-                        })
-                    })
-
-                    if (this.userData.user_skills) {
-                        Object.keys(this.userData.user_skills).map((key) => {
-                            if (this.userData.user_skills[key].translations) {
-                                this.userSkillList.push({
-                                    name: this.userData.user_skills[key].translations,
-                                    id: this.userData.user_skills[key].skill_id
-                                });
-                                this.resetUserSkillList.push({
-                                    name: this.userData.user_skills[key].translations,
-                                    id: this.userData.user_skills[key].skill_id
-                                });
-                            }
-                        });
-                    }
-                }
-                this.imageLoader = false;
-
-            })
-        },
-
-        async getSettingListing() {
-            await settingListing().then(response => {
-                this.pageLoaded = true;
-                if (response.error == true) {
-                    this.isShownComponent = true
-                    this.errorPage = true
-                    this.errorPageMessage = response.message
-                } else {
-                    this.time = response.data.preference.timezone_id
-                    this.language = response.data.preference.language_id
-                    this.currency = response.data.preference.currency
-                    if (response.data.timezone) {
-                        var timezoneArray = [];
-                        let timeZone = Object.entries(response.data.timezone);
-
-                        timeZone.filter((data, index) => {
-                            if (data[0] == response.data.preference.timezone_id) {
-                                this.timeDefault = data[1]
-                            }
-                            // this.time = this.userData.timezone_id
-                            timezoneArray.push({
-                                'text': data[1],
-                                'value': data[0]
-                            })
-                        })
-                        this.timeList = timezoneArray
-                    }
-
-                    if (response.data.languages) {
-                        var languagesArray = [];
-                        let languages = response.data.languages;
-                        this.languageList = Object.keys(languages).map((key) => {
-                            console.log(response.data.preference.language_id, languages[key]['language_id'])
-                            if (response.data.preference.language_id == languages[key]['language_id']) {
-                                this.languageDefault = languages[key]['name']
-                            }
-                            return [languages[key]['language_id'], languages[key]['name']];
-                        });
-                    }
-
-                    if (response.data.currencies) {
-                        var currenciesArray = [];
-                        let currencies = Object.entries(response.data.currencies);
-                        currencies.filter((data, index) => {
-                            currenciesArray.push({
-                                'text': data[1].code,
-                                'value': data[1].code
-                            })
-                        })
-                        this.currencyList = currenciesArray
-                    }
-
-                    this.isShownComponent = true;
-
-                }
-            })
-        },
-        resetSkillListingData() {
-            this.skillListing = [];
-            this.userSkillList = [];
-            if (this.userData.skill_list) {
-                Object.keys(this.userData.skill_list).map((key) => {
-                    if (this.userData.skill_list[key]) {
-                        this.skillListing.push({
-                            name: this.userData.skill_list[key],
-                            id: key
-                        });
-                    }
-                });
-            }
-            if (this.userData.user_skills) {
-                Object.keys(this.userData.user_skills).map((key) => {
-                    if (this.userData.user_skills[key].translations) {
-                        this.userSkillList.push({
-                            name: this.userData.user_skills[key].translations,
-                            id: this.userData.user_skills[key].skill_id
-                        });
-                    }
-                });
-            }
-            this.userSkillList.filter((toItem) => {
-                this.skillListing.filter((fromItem, fromIndex) => {
-                    if (toItem.id == fromItem.id) {
-                        this.skillListing.splice(fromIndex, 1);
-                    }
-                });
-            });
-
-        },
+       
         //submit form
         handleSubmit() {
 
@@ -674,13 +350,6 @@ export default {
             if (this.$v.$invalid) {
                 return;
             }
-            //  password: 0,
-            //     confirm_password: 0,
-            //     is_profile_visible: true,
-            //     public_avatar_and_linkedin: true,
-            //     language_id: 0,
-            //     timezone_id: 0,
-            //     currency: 0
 
             if (this.oldPassword) {
                 this.saveProfileData.password = this.oldPassword;
@@ -711,9 +380,6 @@ export default {
                             this.makeToast("success", response.message);
                             this.isShownComponent = true;
                         });
-
-                        // store.commit("changeUserDetail", this.profile)
-
                     });
                 }
             });
@@ -741,23 +407,25 @@ export default {
         this.languageData = JSON.parse(store.state.languageLabel);
         this.countryDefault = this.languageData.placeholder.country
         this.cityDefault = this.languageData.placeholder.city
-        this.availabilityDefault = this.languageData.placeholder.availablity
         this.languageDefault = this.languageData.placeholder.language
         this.timeDefault = this.languageData.placeholder.timezone
         this.changePhoto = this.languageData.label.edit
         this.languageCode = store.state.defaultLanguage
         this.currencyDefault = this.languageData.placeholder.currency
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
-        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-        this.getSettingListing();
-        // this.isShownComponent = true;
-        // this.pageLoaded = true
-        if (store.state.isProfileComplete != 1) {
-            this.isUserProfileComplete = 0;
-        }
-        this.newUrl = store.state.avatar
-        this.isPrefilLoaded = false
         this.imageLoader = false;
+        const img = new Image();
+        if (store.state.avatar != '' && store.state.avatar != null) {
+            img.src = store.state.avatar;
+            img.onload = () => {
+                this.isPrefilLoaded = false
+                this.newUrl = store.state.avatar
+            }
+        } else {
+            this.isPrefilLoaded = false
+            this.newUrl = store.state.avatar
+        }
+        this.getSettingListing();
     }
 };
 </script>

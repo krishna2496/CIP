@@ -159,15 +159,6 @@ let routes = [
           import ('./views/Auth/ResetPassword.vue')
     },
     {
-        path: '/donation-my-account',
-        name: 'DonationMyAccount',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-          import ('./views/DonationAccountProfile.vue')
-    },
-    {
         path: '/payment',
         name: 'donationAccountPaymentMethod',
         meta: {
