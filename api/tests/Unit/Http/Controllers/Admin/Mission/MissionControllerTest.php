@@ -101,12 +101,12 @@ class MissionControllerTest extends TestCase
         $missionTabId = Uuid::uuid4()->toString();
 
         $methodResponse = [
-            "errors"=> [
+            'errors'=> [
                 [
-                    "status"=> Response::HTTP_NOT_FOUND,
-                    "type"=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
-                    "code"=> config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-                    "message"=> trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+                    'status'=> Response::HTTP_NOT_FOUND,
+                    'type'=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                    'code'=> config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                    'message'=> trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
                 ]
             ]
         ];
