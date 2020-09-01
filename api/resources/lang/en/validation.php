@@ -73,7 +73,8 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
     'present'              => 'The :attribute field is required',
-	'distinct'             => 'The :attribute field has a duplicate value.',
+    'distinct'             => 'The :attribute field has a duplicate value.',
+    'uuid'                 => 'Please use valid UUID string for :attribute',
 
     /*
     |--------------------------------------------------------------------------
@@ -220,7 +221,17 @@ return [
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
         'volunteering_attribute.availability_id' => 'availability id',
         'volunteering_attribute.is_virtual' => 'is virtual',
-        'volunteering_attribute.total_seats' => 'total seats'
+        'volunteering_attribute.total_seats' => 'total seats',
+        'organization.name' => 'organization name',
+        'organization.organization_id' => 'organization id',
+        'organization.legal_number' => 'organization legal number',
+        'organization.phone_number' => 'organization phone number',
+        'organization.address_line_1' => 'organization address line 1',
+        'organization.address_line_2' => 'organization address line 2',
+        'organization.city_id' => 'organization city id',
+        'organization.state_id' => 'organization state id',
+        'organization.country_id' => 'organization country id',
+        'organization.postal_code' => 'organization postal code',
 		],
 
 ];

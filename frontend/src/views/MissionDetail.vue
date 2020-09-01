@@ -26,8 +26,8 @@
                                         </star-rating>
                                     </div>
                                     <div class="btn-outer">
-                                        <b-button v-bind:class="{ 
-											'btn-borderprimary': true, 
+                                        <b-button v-bind:class="{
+											'btn-borderprimary': true,
 											'icon-btn': true,
 											'added-fav' : missionAddedToFavoriteByUser
 										}" @click="favoriteMission(missionId)">
@@ -67,7 +67,7 @@
                                             </span>
 
                                         </b-button>
-                                        <!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
+                                        <!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry"
 									@click="addEntry">
 									Add entry
 								</b-button> -->
@@ -144,7 +144,7 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            
+
                                             <template>
                                                 <div class="detail-column info-block" v-if="(missionDetail.application_deadline != '' && missionDetail.application_deadline != null) || (missionDetail.application_start_date != null && missionDetail.application_end_date != null )">
                                                     <i class="icon-wrap">
@@ -199,7 +199,7 @@
                                                     </div>
                                                 </template>
                                             </div>
-                                            <div 
+                                            <div
                                               v-bind:class="{
                                                 'progress-bar-block': (missionDetail.total_seats == 0 || missionDetail.total_seats === null),
                                                 'detail-column' : true,
@@ -215,7 +215,7 @@
                                                         :max="missionDetail.goal_objective" class="mb-2"></b-progress>
                                                         <span class="subtitle-text">
                                                         {{missionDetail.achieved_goal}}
-                                                        <span 
+                                                        <span
                                                             v-if="missionDetail.label_goal_achieved != ''">
                                                             {{ missionDetail.label_goal_achieved }}
                                                         </span>
@@ -272,7 +272,7 @@
                                                      alt="" />
                                             </i>
                                             <span class="label">{{ languageData.label.organisation}}</span>
-                                            <p class="text-wrap">{{missionDetail.organisation_name}}</p>
+                                            <p class="text-wrap">{{missionDetail.organization ? missionDetail.organization.name : ''}}</p>
                                         </div>
                                     </b-list-group-item>
                                 </b-list-group>
@@ -330,9 +330,8 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-show="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
-
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
@@ -349,7 +348,7 @@
                                                  v-if="!checkMissionTypeTime(missionDetail.mission_type)">
                                                 <div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
                                                     <div class="mission-tab-inner">
-                                                        <p v-if="missionDetail.goal_objective">  
+                                                        <p v-if="missionDetail.goal_objective">
                                                             {{missionDetail.goal_objective}}
                                                             <span v-if="missionDetail.label_goal_objective != ''">
                                                                 {{missionDetail.label_goal_objective}}
@@ -370,7 +369,7 @@
                                                     <div class="mission-tab-inner">
                                                         <p v-if="missionDetail.achieved_goal">
                                                             {{missionDetail.achieved_goal}}
-                                                            <span 
+                                                            <span
                                                                 v-if="missionDetail.label_goal_achieved != ''">
                                                                 {{ missionDetail.label_goal_achieved }}
                                                             </span>
@@ -378,7 +377,7 @@
                                                         </p>
                                                         <p v-else>
                                                             0
-                                                            <span 
+                                                            <span
                                                                 v-if="missionDetail.label_goal_achieved != ''">
                                                                 {{ missionDetail.label_goal_achieved }}
                                                             </span>
@@ -434,13 +433,21 @@
                                                                                class="has-img no-close" :url="bgImage[2]" />
                                                             </b-link>
                                                         </template>
+                                                        <!-- txt -->
+                                                        <template v-if="document.document_type === 'txt'">
+                                                            <b-link :href="document.document_path" target="_blank"
+                                                                    :title="document.document_name">
+                                                                <AppCustomChip :textVal="document.document_name"
+                                                                               class="has-img no-close" :url="bgImage[3]" />
+                                                            </b-link>
+                                                        </template>
                                                     </div>
 
                                                 </div>
                                             </div>
                                         </b-collapse>
                                     </div>
-                                    <div class="tabs">
+                                    <div class="tabs" v-show="isOrganizationDisplay">
                                         <div class="tab-title">
                                             <h3 v-b-toggle.organization>{{ languageData.label.organisation }}</h3>
                                         </div>
@@ -493,7 +500,7 @@
                                                                 </i>
                                                                 <div class="comment-title">
                                                                     <h5 v-if="comments.user.user_id != null">
-                                                                      {{comments.user.first_name}}{{comments.user.last_name}}</h5>
+                                                                      {{comments.user.first_name}} {{comments.user.last_name}}</h5>
                                                                     <h5 v-else>{{ languageData.label.deleted_user }}</h5>
                                                                     <p>{{ getCommentDate(comments.created_at) }}</p>
                                                                 </div>
@@ -594,7 +601,7 @@
                         <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
                                         @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
                                         :input-props="{
-								id:'autosuggest__input', 
+								id:'autosuggest__input',
 								placeholder:autoSuggestPlaceholder,
 								ref:'inputAutoSuggest'
 	                        }">
@@ -701,6 +708,7 @@
           require("@/assets/images/pdf.svg"),
           require("@/assets/images/doc.svg"),
           require("@/assets/images/xlsx.svg"),
+          require("@/assets/images/txt.svg"),
         ],
         orgLogo: require("@/assets/images/ces-logo.png"),
         currentPage: 1,
@@ -725,6 +733,7 @@
         isStarDisplay: false,
         isThemeDisplay: false,
         isInviteCollegueDisplay: false,
+        isOrganizationDisplay: false,
         isCommentDisplay: false,
         isRecentVolunteerDispaly: false,
         isMissionGoalDisplay: false,
@@ -755,10 +764,11 @@
       };
     },
     mounted() {
-      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-      tabItem.forEach(function (tabItemEvent) {
-        tabItemEvent.addEventListener("click", tabsHandle);
-      });
+      setTimeout(() => {
+         let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+          tabItem.forEach(function (tabItemEvent) {
+            tabItemEvent.addEventListener("click", tabsHandle);
+          });
 
       function tabsHandle(tabsEvent) {
 
@@ -776,6 +786,8 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
+      }, 1000);
+
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
@@ -957,8 +969,7 @@
       applyForMission(missionId) {
         let missionData = {};
         missionData.mission_id = missionId;
-        // TODO change that hardcoded value
-        missionData.availability_id = 1;
+        missionData.availability_id = this.missionDetail.availability_id;
 
         applyMission(missionData).then(response => {
           if (response.error == true) {
@@ -1071,6 +1082,13 @@
             }
 
             this.searchUsers();
+
+            /*
+             * If this.missionDetail.organisation_detail is a string it means that the details are not empty
+             * so we can display the organization tab.
+             * Otherwise this.missionDetail.organisation_detail is an array if the details are empty.
+             */
+            this.isOrganizationDisplay = typeof this.missionDetail.organisation_detail === 'string';
           })
         } else {
           this.$router.push('/404');

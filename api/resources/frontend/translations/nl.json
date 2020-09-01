@@ -295,7 +295,9 @@
 		"deleted_user" : "Verwijderde gebruike",
 		"virtual_mission" : "Virtueel",
 		"virtual_missions" : "Virtueel vrijwilligerswerk",
-		"home" : "Thuis"
+		"home" : "Thuis",
+		"login_with_sso": "Log in met SSO",
+		"site_title" : "Home"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",

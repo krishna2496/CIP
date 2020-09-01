@@ -97,7 +97,7 @@ class VolunteerHistoryController extends Controller
         trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
         trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
         $apiData = $themeTimeHistory->toArray();
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -139,7 +139,7 @@ class VolunteerHistoryController extends Controller
         $apiMessage = (count($timeMissionList) > 0) ?
         trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
         trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
-        
+
         return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $timeMissionList);
     }
 
@@ -161,7 +161,7 @@ class VolunteerHistoryController extends Controller
         $apiMessage = (count($goalMissionList) > 0) ?
         trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
         trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
-        
+
         return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalMissionList);
     }
 
@@ -182,7 +182,7 @@ class VolunteerHistoryController extends Controller
 
         if ($goalMissionList->count()) {
             $fileName = config('constants.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX');
-    
+
             $excel = new ExportCSV($fileName);
 
             $headings = [
@@ -196,13 +196,13 @@ class VolunteerHistoryController extends Controller
             foreach ($goalMissionList as $mission) {
                 $excel->appendRow([
                     strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
-                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organization_name)),
                     $mission->action
                 ]);
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-               
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.GOAL_MISSION_TIMESHEET'),
@@ -218,7 +218,7 @@ class VolunteerHistoryController extends Controller
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
-    
+
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
         return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -241,7 +241,7 @@ class VolunteerHistoryController extends Controller
 
         if ($timeRequestList->count()) {
             $fileName = config('constants.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX');
-        
+
             $excel = new ExportCSV($fileName);
 
             $headings = [
@@ -256,14 +256,14 @@ class VolunteerHistoryController extends Controller
             foreach ($timeRequestList as $mission) {
                 $excel->appendRow([
                     strip_tags(preg_replace('~[\r\n]+~', '', $mission->title)),
-                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organisation_name)),
+                    strip_tags(preg_replace('~[\r\n]+~', '', $mission->organization_name)),
                     $mission->time,
                     $mission->hours
                 ]);
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-           
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.TIME_MISSION_TIMESHEET'),
