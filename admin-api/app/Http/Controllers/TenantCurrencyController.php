@@ -118,10 +118,10 @@ class TenantCurrencyController extends Controller
         $validator = Validator::make($request->toArray(), [
             'code' => [
                 'required',
-                'regex:/^[A-Z]{3}$/', 
+                'regex:/^[A-Z]{3}$/',
                 Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
-                $query->where(['tenant_id' => $tenantId]);
-            })],
+                    $query->where(['tenant_id' => $tenantId]);
+                })],
             'default' => 'required|boolean',
             'is_active' => 'required|boolean',
         ]);
@@ -136,21 +136,14 @@ class TenantCurrencyController extends Controller
         }
 
         $isAvailableCurrencyResponse = $this->currencyRepository->isAvailableCurrency($request['code']);
-        if(!$isAvailableCurrencyResponse[0]){
-            if($isAvailableCurrencyResponse['systemCurrencyInvalid']){
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SYSTEM_CURRENCY_CODE_WRONG'),
-                    trans('messages.custom_error_message.CURRENCY_CODE') . $isAvailableCurrencyResponse["systemCurrency"] . trans('messages.custom_error_message.CURRENCY_IS_NOT_VALID_ONLY')
-                );
-            } else if(!$isAvailableCurrencyResponse['systemCurrencyInvalid']){
+        if (!$isAvailableCurrencyResponse[0]) {
+            if (!$isAvailableCurrencyResponse['systemCurrencyInvalid']) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
                     trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
-                );        
+                );
             }
         }
 
@@ -212,21 +205,14 @@ class TenantCurrencyController extends Controller
         }
 
         $isAvailableCurrencyResponse = $this->currencyRepository->isAvailableCurrency($request['code']);
-        if(!$isAvailableCurrencyResponse[0]){
-            if($isAvailableCurrencyResponse['systemCurrencyInvalid']){
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SYSTEM_CURRENCY_CODE_WRONG'),
-                    trans('messages.custom_error_message.CURRENCY_CODE') . $isAvailableCurrencyResponse["systemCurrency"]. trans('messages.custom_error_message.CURRENCY_IS_NOT_VALID_ONLY')
-                );
-            } else if(!$isAvailableCurrencyResponse['systemCurrencyInvalid']){
+        if (!$isAvailableCurrencyResponse[0]) {
+            if (!$isAvailableCurrencyResponse['systemCurrencyInvalid']) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
                     trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
-                );        
+                );
             }
         }
 

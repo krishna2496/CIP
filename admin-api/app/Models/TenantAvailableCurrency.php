@@ -40,6 +40,16 @@ class TenantAvailableCurrency extends Model
     protected $visible = ['code', 'default', 'is_active'];
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'default' => 'boolean',
+        'is_active' => 'boolean'
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array

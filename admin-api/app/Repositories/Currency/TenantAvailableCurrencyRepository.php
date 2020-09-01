@@ -53,7 +53,7 @@ class TenantAvailableCurrencyRepository
             'is_active' => $currency['is_active']
         ];
 
-        if ($currency['is_active'] === '1' && $currency['default'] === '1') {
+        if ($currency['is_active'] == true && $currency['default'] == true) {
             $this->tenantAvailableCurrency
             ->where('tenant_id', $tenantId)
             ->update(['default' => '0']);
@@ -82,7 +82,7 @@ class TenantAvailableCurrencyRepository
             'is_active' => $currency['is_active']
         ];
 
-        if ($currency['is_active'] === '1' && $currency['default'] === '1') {
+        if ($currency['is_active'] == true && $currency['default'] == true) {
             $this->tenantAvailableCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
         }
         $this->tenantAvailableCurrency->where(['tenant_id' => $tenantId, 'code' => $currency['code']])

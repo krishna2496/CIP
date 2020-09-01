@@ -885,7 +885,7 @@
                 },
                 "is_active": {
                     "type":"boolean",
-                    "description":"Set currency active or in-active of the platform"
+                    "description":"Set if currency is active/inactive on the platform"
                 }
             }
         }

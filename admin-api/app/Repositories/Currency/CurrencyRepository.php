@@ -179,17 +179,7 @@ class CurrencyRepository
 
         foreach ($allCurrencyList as $key => $value) {
             $getAvailableCurrencyCode = $value->code();
-            //check code is in proper format ISO-4217 or not
-            $pattern = '/^[A-Z]{3}$/m';
-            $result = preg_match_all($pattern, $getAvailableCurrencyCode, $matches);
-            if (empty($matches[0])) {
-                return [
-                    false,
-                    'systemCurrencyInvalid' => true,
-                    'systemCurrency' => $getAvailableCurrencyCode
-                ];
-            }
-
+            
             //check system code and request code are same
             if ($getAvailableCurrencyCode === $currencyCode) {                
                 return [

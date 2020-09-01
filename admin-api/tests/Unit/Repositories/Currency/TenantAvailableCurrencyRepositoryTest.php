@@ -141,6 +141,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             $currencyRepository,
         );
         $data = ['perPage' => '10'];
+        $perPage = 10;
         $request = new Request($data);
         $tenantId = 1;
 
@@ -170,7 +171,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             ->with($data['perPage'])
             ->andReturn($mockTenantCurrencies);
 
-        $tenantCurrencies = $repository->getTenantCurrencyList($request, $tenantId);
+        $tenantCurrencies = $repository->getTenantCurrencyList(10, $tenantId);
         $this->assertInstanceOf(LengthAwarePaginator::class, $tenantCurrencies);
         $this->assertSame($mockTenantCurrencies, $tenantCurrencies);
     }
