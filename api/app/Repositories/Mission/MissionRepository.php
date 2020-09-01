@@ -345,13 +345,13 @@ class MissionRepository implements MissionInterface
         }
 
         $missionData = $request->toArray();
-        if (isset($volunteeringAttributeArray['total_seats'])) {
+        if (array_key_exists('total_seats', $volunteeringAttributeArray)) {
             $missionData['total_seats'] = $volunteeringAttributeArray['total_seats'];
         }
-        if (isset($volunteeringAttributeArray['availability_id'])) {
+        if (array_key_exists('availability_id', $volunteeringAttributeArray)) {
             $missionData['availability_id'] = $volunteeringAttributeArray['availability_id'];
         }
-        if (isset($volunteeringAttributeArray['is_virtual'])) {
+        if (array_key_exists('is_virtual', $volunteeringAttributeArray)) {
             $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'] ? '1' : '0';
         }
 
