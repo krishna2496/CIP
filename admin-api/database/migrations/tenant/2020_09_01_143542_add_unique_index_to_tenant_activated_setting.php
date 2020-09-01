@@ -12,7 +12,6 @@ class AddUniqueIndexToTenantActivatedSetting extends Migration
 
     public function up()
     {
-        // WARNIG! will hard delete soft deleted entries to ensure uniqueness.
         DB::table(self::TENANT_ACTIVATED_SETTING_TABLE)
             ->whereNotNull('deleted_at')
             ->delete();
@@ -47,12 +46,12 @@ class AddUniqueIndexToTenantActivatedSetting extends Migration
         $table->dropForeign($this->getForeignKeyName(self::TENANT_UNIQUE_COLUMN));
     }
 
-    private function getForeignKeyName($columnName)
+    private function getForeignKeyName(string $columnName): string
     {
         return sprintf('%s_%s_foreign', self::TENANT_ACTIVATED_SETTING_TABLE, $columnName);
     }
 
-    private function getUniqueIndexName($columnName)
+    private function getUniqueIndexName(string $columnName): string
     {
         return sprintf('%s_%s_unique', self::TENANT_ACTIVATED_SETTING_TABLE, $columnName);
     }

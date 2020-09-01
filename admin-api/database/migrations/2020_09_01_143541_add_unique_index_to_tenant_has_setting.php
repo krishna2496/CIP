@@ -7,17 +7,16 @@ use Illuminate\Support\Facades\Schema;
 class AddUniqueIndexToTenantHasSetting extends Migration
 {
     const TENANT_HAS_SETTING_TABLE = 'tenant_has_setting';
-    const TABLE_UNIQUE_COLUMNS = ['tenant_id', 'tenant_setting_id'];
+    const TENANT_UNIQUE_COLUMNS = ['tenant_id', 'tenant_setting_id'];
 
     public function up()
     {
-        // WARNIG! will hard delete soft deleted entries to ensure uniqueness.
         DB::table(self::TENANT_HAS_SETTING_TABLE)
             ->whereNotNull('deleted_at')
             ->delete();
         Schema::table(self::TENANT_HAS_SETTING_TABLE,
             function (Blueprint $table) {
-                $table->unique(self::TABLE_UNIQUE_COLUMNS);
+                $table->unique(self::TENANT_UNIQUE_COLUMNS);
             });
     }
 
@@ -26,7 +25,7 @@ class AddUniqueIndexToTenantHasSetting extends Migration
         Schema::table(self::TENANT_HAS_SETTING_TABLE,
             function (Blueprint $table) {
                 $this->undoForeignKeys($table);
-                $table->dropUnique(self::TABLE_UNIQUE_COLUMNS);
+                $table->dropUnique(self::TENANT_UNIQUE_COLUMNS);
                 $this->redoForeignKeys($table);
             });
     }
@@ -53,7 +52,7 @@ class AddUniqueIndexToTenantHasSetting extends Migration
         $table->dropForeign($this->getForeignKeyName('tenant_setting_id'));
     }
 
-    private function getForeignKeyName($columnName)
+    private function getForeignKeyName(string $columnName): string
     {
         return sprintf('%s_%s_foreign', self::TENANT_HAS_SETTING_TABLE, $columnName);
     }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class AddUniqueIndexToTenantSetting extends Migration
 {
     const TENANT_SETTING_TABLE = 'tenant_setting';
-    const TENANT_UNIQUE_COLUMN = 'setting_id';
+    const TENANT_UNIQUE_COLUMN = 'key';
 
     public function up()
     {
