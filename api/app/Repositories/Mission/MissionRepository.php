@@ -17,7 +17,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
+use App\Repositories\MissionTab\MissionTabRepository;
 use App\Services\Mission\ModelsService;
+use App\Models\MissionTab;
 use Illuminate\Support\Str;
 use Validator;
 
@@ -54,15 +56,20 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
+     * @var App\Repositories\MissionTab\MissionTabRepository
+     */
+    private $missionTabRepository;
+
+    /**
      * Create a new Mission repository instance.
      *
-     * @param App\Helpers\LanguageHelper                           $languageHelper
-     * @param App\Helpers\Helpers                                  $helpers
-     * @param App\Helpers\S3Helper                                 $s3helper
-     * @param App\Repositories\Country\CountryRepository           $countryRepository
-     * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
-     * @param App\Services\Mission\ModelsService                   $modelsService
-     *
+     * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Helpers\Helpers $helpers
+     * @param  App\Helpers\S3Helper $s3helper
+     * @param  App\Repositories\Country\CountryRepository $countryRepository
+     * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
+     * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
     public function __construct(
@@ -71,7 +78,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        MissionTabRepository $missionTabRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -79,6 +87,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->missionTabRepository = $missionTabRepository;
     }
 
     /**
@@ -206,6 +215,13 @@ class MissionRepository implements MissionInterface
 
             $this->modelsService->missionLanguage->create($missionLanguage);
             unset($missionLanguage);
+        }
+
+        // Add mission tab detail
+        if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
+            foreach ($request->mission_tabs as $missionTabValue) {
+                $this->missionTabRepository->store($missionTabValue, $mission->mission_id);
+            }
         }
 
         // For skills
@@ -479,6 +495,18 @@ class MissionRepository implements MissionInterface
             }
         }
 
+        // Add/Update mission tab details
+        if (isset($request->mission_tabs) && count($request->mission_tabs)) {
+            foreach ($request->mission_tabs as $missionTabValue) {
+                if (isset($missionTabValue['mission_tab_id'])) {
+                    $this->missionTabRepository->update($missionTabValue, $id);
+                } else {
+                    //Mission tab id is not available and create the mission tab and details
+                    $this->missionTabRepository->store($missionTabValue, $id);
+                }
+            }
+        }
+
         return $mission;
     }
 
@@ -510,6 +538,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['missionTab' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionTab.getMissionTabDetail' => function ($query) {
         }])->findOrFail($id);
 
         if (isset($mission->missionLanguage)) {
@@ -521,6 +552,9 @@ class MissionRepository implements MissionInterface
                 )->first()->code;
             }
         }
+
+        // mission tab array modification
+        $this->missionTabTransformArray($mission, $languages);
 
         return $mission;
     }
@@ -570,6 +604,10 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
+        }])->with(['missionTab' => function ($query) {
+            $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
+        }, 'missionTab.getMissionTabDetail' => function ($query) {
+            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
         if ($request->has('search') && $request->has('search') !== '') {
@@ -604,6 +642,9 @@ class MissionRepository implements MissionInterface
                     $value->default_media_path = $mediaValue->media_path;
                 }
             }
+
+            // mission tab array modification
+            $this->missionTabTransformArray($value, $languages);
         }
 
         return $mission;
@@ -1701,5 +1742,56 @@ class MissionRepository implements MissionInterface
         ->whereIn('approval_status', $statusArray)->get();
 
         return $applicationStatusData->isEmpty() ? true : false;
+    }
+
+    /**
+     * Get mission tab details
+     *
+     * @param int $missionId
+     * @param string $missionTabId
+     * @return App\Repositories\Mission\MissionTab
+     */
+    public function isMissionTabLinkedToMission(int $missionId, string $missionTabId)
+    {
+        return $this->modelsService->missionTab->where([['mission_id', '=', $missionId], ['mission_tab_id', '=', $missionTabId]])->firstOrFail();
+    }
+
+    /**
+     * Transfrom mission tab array for response
+     *
+     * @param $value
+     * @param $languages
+     */
+    public function missionTabTransformArray($value, $languages)
+    {
+        $missionTabInfo =  $value['missionTab']->toArray();
+        if ($missionTabInfo != null) {
+            $missionTranslationsArray = [];
+            foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
+                $missionTranslationsArray['mission_tab_id'] = $missionTabValue['mission_tab_id'];
+                $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionTranslationsArray["translations"] = [];
+                foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
+                    $languageCode = $languages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
+                    $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
+                    $missionTabTranslations['language_code'] = $languageCode;
+                    $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
+                    $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
+                    array_push($missionTranslationsArray["translations"], $missionTabTranslations);
+                }
+                $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
+            }
+        }
+    }
+
+    /**
+     * Remove mission tab by mission_tab_id
+     *
+     * @param string $missionTabId
+     * @return bool
+     */
+    public function deleteMissionTabByMissionTabId(string $missionTabId): bool
+    {
+        return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
     }
 }

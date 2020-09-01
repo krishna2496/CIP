@@ -232,5 +232,15 @@ return [
         'volunteering_attribute.availability_id' => 'availability id',
         'volunteering_attribute.is_virtual' => 'is virtual',
         'volunteering_attribute.total_seats' => 'total seats',
+        'mission_tabs.*.translations' => 'mission tab translation',
+        'mission_tabs.*.sort_key' => 'sort key',
+        'mission_tabs.*.languages.*.language_id' => 'language id',
+        'mission_tabs.*.languages.*.name' => 'name',
+        'mission_tabs.*.translations.*.lang' => 'language code',
+        'mission_tabs.*.translations.*.name' => 'name',
+        'mission_tabs.*.translations.*.sections' => 'section details',
+        'mission_tabs.*.translations.*.sections.*.title' => 'section title',
+        'mission_tabs.*.translations.*.sections.*.content' => 'section content',
+        'mission_tabs.*.mission_tab_id' => 'mission tab id',
 	]
 ];
