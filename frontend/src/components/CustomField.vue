@@ -13,6 +13,7 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'radio'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
@@ -26,6 +27,7 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'checkbox'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
@@ -39,6 +41,7 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'multiselect'">
                 <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
                 <multiselect
@@ -58,6 +61,7 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'textarea'">
                 <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
                 <b-form-textarea v-model.trim="customFeildData[item.field_id]" :id='`textarea-${item.field_id}`'
@@ -69,9 +73,9 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'text'">
                 <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
-
                 <b-form-input v-model.trim="customFeildData[item.field_id]" @input="updateChanges"
                               :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                               :placeholder='`Enter ${item.translations.name}`'></b-form-input>
@@ -82,7 +86,6 @@
 
             <b-form-group v-if="item.type == 'email'">
                 <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
-
                 <b-form-input type="email" v-model.trim="customFeildData[item.field_id]" @input="updateChanges"
                               :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                               :placeholder='`Enter ${item.translations.name}`'></b-form-input>
