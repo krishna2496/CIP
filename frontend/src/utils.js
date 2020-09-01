@@ -1,6 +1,10 @@
 import store from './store';
 
 export function setSiteTitle() {
+  if (!store.state.defaultLanguage) {
+    return;
+  }
+
   const defaultLang = store.state.defaultLanguage.toLowerCase();
   const translations = JSON.parse(store.state.languageLabel);
   let siteTitle = translations.label.site_title || 'Home';
