@@ -500,12 +500,9 @@ class MissionRepository implements MissionInterface
             }
         }
 
-<<<<<<< HEAD
         // Impact donation mission array modification
         $this->impactMissionDonationTransformArray($mission, $languages);
 
-=======
->>>>>>> 2e2e25005646dc3ce4a57ef62564a62b3e3360cc
         return $mission;
     }
 
@@ -1700,7 +1697,6 @@ class MissionRepository implements MissionInterface
     {
         $impactDonationMissionInfo =  $value['impactDonation']->toArray();
         if ($impactDonationMissionInfo != null) {
-            // $missionLanguageArray = [];
             $impactDonationLanguageArray = [];
             foreach ($impactDonationMissionInfo as $impactDonationKey => $impactDonationValue) {
                 $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
