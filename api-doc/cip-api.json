@@ -376,6 +376,44 @@
         }
       }
     },
+    "/missions/mission-tabs/{missionTabId}/": {
+      "delete": {
+        "operationId": "delete_cip-api-delete-mission-tab",
+        "summary": "Admin - Delete mission tab",
+        "description": "Delete mission tab by missionTabId",
+        "tags": [
+          "Mission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "missionTabId",
+            "in": "path",
+            "description": "mission_tab_id to delete",
+            "type": "string",
+            "default": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden - mission tab deletion failed"
+          },
+          "404": {
+            "description": "Not Found - Requested mission tab id does not exist"
+          }
+        }
+      }
+    },
     "/app/missions?country_id={country_id}&city_id={city_id}&theme_id={theme_id}&skill_id={skill_id}&sort_by={sort_by}": {
       "get": {
         "operationId": "GET_team4-cip-api-app-missions-listing",
@@ -8699,6 +8737,54 @@
                     "description": {
                       "type": "string",
                       "description": "Description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "mission_tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_tab_id": {
+                "type": "string",
+                "description": "Its “Required“ if you are updating existing mission tab"
+              },
+              "sort_key": {
+                "type": "integer",
+                "description": "Sort Order for mission tabs. It must be numeric value. Example: 0,1,2,3…"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lang": {
+                      "type": "string",
+                      "description": "Language code. Example: en, fr, es etc."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Tab heading name"
+                    },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Title of section"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "Description of section"
+                          }
+                        }
+                      }
                     }
                   }
                 }
