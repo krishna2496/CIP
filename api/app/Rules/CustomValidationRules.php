@@ -4,6 +4,7 @@ namespace App\Rules;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\IPValidationHelper;
 use App\Models\Skill;
+use DB;
 
 class CustomValidationRules
 {
@@ -30,7 +31,7 @@ class CustomValidationRules
                 return false;
             }
         });
-        
+
         Validator::extend('valid_video_url', function ($attribute, $value) {
             return (preg_match(
                 '~^(?:https?://)?(?:www[.])?(?:youtube[.]com/watch[?]v=|youtu[.]be/)([^&]{11}) ~x',
@@ -38,7 +39,7 @@ class CustomValidationRules
             ))
             ? true : false;
         });
-        
+
         Validator::extend('valid_profile_image', function ($attribute, $value, $params, $validator) {
             $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $value));
             $f = finfo_open();
@@ -71,7 +72,7 @@ class CustomValidationRules
             $imageUrlExtension = strtolower($urlExtension);
             return (!in_array($imageUrlExtension, config('constants.story_image_types'))) ? false : true;
         });
-        
+
         Validator::extend('valid_story_video_url', function ($attribute, $value) {
             $storyVideos = explode(",", $value);
             $val = true;
@@ -116,5 +117,18 @@ class CustomValidationRules
             }
             return false;
         });
+
+        Validator::extend('max_item', function ($attribute, $value, $params) {
+            $itemCount = DB::table($params[0])
+                ->whereNull('deleted_at')
+                ->count();
+
+            return $itemCount + 1 <= $params[1];
+        });
+
+        Validator::replacer('max_item', function($message, $attribute, $rule, $parameters) {
+            return str_replace(':max_item', $parameters[1], $message);
+        });
+
     }
 }

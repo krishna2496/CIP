@@ -880,7 +880,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Routes for whitelisted Ips */
     $router->group(
-        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation,donation_ip_whitelist'],
+        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\DonationIp\WhitelistController@getList']);
             $router->post('/', ['uses' => 'Admin\DonationIp\WhitelistController@create']);
