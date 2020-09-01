@@ -4,7 +4,6 @@ require_once(__DIR__.'/../OneShot.php');
 
 
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use optimy\console\OneShot;
 
@@ -123,11 +122,32 @@ class TenantSettingsDedupe extends OneShot
                         $this->disableTenantActivatedSettings($tenantActivatedSettingsIds);
                     }
 
-                    // reinsert entry if tenant setting was available for tenant, and if it was activated.
-                    if ($tenantAvailableSettings->count()) {
-                        $newTenantSettingId = $this->addTenantAvailableSetting($masterSettingsFirstId);
-                        if ($tenantActivatedSettings->count()) {
-                            $newTenantActivatedSettingId = $this->addTenantActivatedSetting($newTenantSettingId);
+                    // reinstate the entry if tenant setting was made available to tenant, and if it was activated.
+                    if ($tenantAvailableSettings->whereNull('deleted_at')->count()) {
+
+                        // check if the master tenant setting's first used ID was made available to tenant.
+                        $availableSettingsFirstIds = $tenantAvailableSettings->where('setting_id', $masterSettingsFirstId);
+                        if ($availableSettingsFirstIds->count()) {
+                            // find and enable the first ID of an existing available entry.
+                            $newTenantSettingId = $availableSettingsFirstIds->min('tenant_setting_id');
+                            $this->enableTenantAvailableSetting($newTenantSettingId);
+                        } else {
+                            // a different ID was made available, create a new one with correct first ID.
+                            $newTenantSettingId = $this->addTenantAvailableSetting($masterSettingsFirstId);
+                        }
+
+                        // check if at least one available setting was activated and is enabled.
+                        if ($tenantActivatedSettings->whereNull('deleted_at')->count()) {
+
+                            $tenantActivatedSettingIds = $tenantActivatedSettings->where('tenant_setting_id', $newTenantSettingId);
+                            if ($tenantActivatedSettingIds->count()) {
+                                // find and enable the first ID of an existing activated entry.
+                                $activatedTenantSettingId = $tenantActivatedSettingIds->min('tenant_activated_setting_id');
+                                $this->enableTenantActivatedSetting($activatedTenantSettingId);
+                            } else {
+                                // a different ID was activated, create a new one with correct first ID.
+                                $this->addTenantActivatedSetting($newTenantSettingId);
+                            }
                         }
                     }
                 }
@@ -137,12 +157,6 @@ class TenantSettingsDedupe extends OneShot
                 $this->errorsFound[] = $this->formatError($exception);
             }
         }
-    }
-
-    private function getDbTable(string $tableName): Builder
-    {
-        $this->progress();
-        return DB::table($tableName);
     }
 
     private function getTenants(): Collection
@@ -212,18 +226,18 @@ class TenantSettingsDedupe extends OneShot
             ->update(['deleted_at' => Carbon::now()]);
     }
 
-    private function addTenantHasSettings(int $tenantId, int $tenantSettingId)
+    private function addTenantHasSettings(int $tenantId, int $tenantSettingId): int
     {
-        $this->getDbTable(self::TENANT_HAS_SETTING_TABLE)
+        return $this->getDbTable(self::TENANT_HAS_SETTING_TABLE)
             ->insert([
                 'tenant_id' => $tenantId,
                 'tenant_setting_id' => $tenantSettingId,
             ]);
     }
 
-    private function enableTenantHasSettings(int $tenantId, int $tenantSettingId)
+    private function enableTenantHasSettings(int $tenantId, int $tenantSettingId): int
     {
-        $this->getDbTable(self::TENANT_HAS_SETTING_TABLE)
+        return $this->getDbTable(self::TENANT_HAS_SETTING_TABLE)
             ->whereNotNull('deleted_at')
             ->where('tenant_id', $tenantId)
             ->where('tenant_setting_id', $tenantSettingId)
@@ -231,7 +245,7 @@ class TenantSettingsDedupe extends OneShot
             ->update(['deleted_at' => null]);
     }
 
-    private function disableTenantHasSettings(int $tenantId, array $tenantSettingIds)
+    private function disableTenantHasSettings(int $tenantId, array $tenantSettingIds): int
     {
         return $this->getDbTable(self::TENANT_HAS_SETTING_TABLE)
             ->whereNull('deleted_at')
@@ -246,8 +260,8 @@ class TenantSettingsDedupe extends OneShot
             ->select([
                 'setting_id',
                 'tenant_setting_id',
+                'deleted_at',
             ])
-            ->whereNull('deleted_at')
             ->whereIn(
                 'setting_id',
                 $settingIds
@@ -264,7 +278,18 @@ class TenantSettingsDedupe extends OneShot
             ->insertGetId(['setting_id' => $settingId]);
     }
 
-    private function disableTenantAvailableSettings(array $tenantSettingIds)
+    private function enableTenantAvailableSetting(int $tenantSettingId): int
+    {
+        return $this->getDbTable(self::TENANT_SETTING_TABLE)
+            ->whereNotNull('deleted_at')
+            ->where(
+                'tenant_setting_id',
+                $tenantSettingId
+            )
+            ->update(['deleted_at' => null]);
+    }
+
+    private function disableTenantAvailableSettings(array $tenantSettingIds): int
     {
         return $this->getDbTable(self::TENANT_SETTING_TABLE)
             ->whereNull('deleted_at')
@@ -281,8 +306,8 @@ class TenantSettingsDedupe extends OneShot
             ->select([
                 'tenant_activated_setting_id',
                 'tenant_setting_id',
+                'deleted_at',
             ])
-            ->whereNull('deleted_at')
             ->whereIn(
                 'tenant_setting_id',
                 $tenantSettingIds
@@ -297,7 +322,18 @@ class TenantSettingsDedupe extends OneShot
             ->insertGetId(['tenant_setting_id' => $tenantSettingId]);
     }
 
-    private function disableTenantActivatedSettings(array $tenantActivatedSettingIds)
+    private function enableTenantActivatedSetting(int $tenantActivatedSettingId): int
+    {
+        return $this->getDbTable(self::TENANT_ACTIVATED_SETTING_TABLE)
+            ->whereNotNull('deleted_at')
+            ->where(
+                'tenant_activated_setting_id',
+                $tenantActivatedSettingId
+            )
+            ->update(['deleted_at' => null]);
+    }
+
+    private function disableTenantActivatedSettings(array $tenantActivatedSettingIds): int
     {
         return $this->getDbTable(self::TENANT_ACTIVATED_SETTING_TABLE)
             ->whereNull('deleted_at')

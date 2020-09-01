@@ -8,6 +8,7 @@ require_once(__DIR__.'/../../../bootstrap/app.php');
 use DB;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -132,7 +133,7 @@ class OneShot extends Command
      *
      * @return string
      */
-    private function getDbTable(string $tableName): Builder
+    protected function getDbTable(string $tableName): Builder
     {
         $this->progress();
         return DB::table($tableName);
