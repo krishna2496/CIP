@@ -608,8 +608,8 @@ return [
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
         'STATE' => 'STATE',
-        'ORGANIZATION'=>'ORGANIZATION',
-        'MISSION_TAB'=>'MISSION_TAB'
+        'ORGANIZATION' => 'ORGANIZATION',
+        'MISSION_TAB' => 'MISSION_TAB'
     ],
 
     'activity_log_actions' => [

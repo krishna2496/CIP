@@ -196,6 +196,7 @@ class MissionController extends Controller
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.translations"=> 'required',
                 "mission_tabs.*.translations.*.lang" =>
@@ -377,6 +378,7 @@ class MissionController extends Controller
                 "organization.postal_code" => "max:120",
                 "organisation.organisation_name" => "sometimes|required_without:organization",
                 "organisation.organisation_id" => "required_with:organisation|uuid",
+                "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
