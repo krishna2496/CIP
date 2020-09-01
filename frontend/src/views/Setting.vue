@@ -35,8 +35,8 @@
                         <h4>{{userData.first_name}} {{userData.last_name}}</h4>
                         <b-list-group class="social-nav">
 
-                            <b-list-group-item v-if="userData.linked_in_url != null && userData.linked_in_url != ''  ">
-                                <b-link :href="userData.linked_in_url" target="_blank" :title="languageData.label.linked_in" class="linkedin-link">
+                            <b-list-group-item v-if="linkedInUrl != null && linkedInUrl != ''  ">
+                                <b-link :href="linkedInUrl" target="_blank" :title="languageData.label.linked_in" class="linkedin-link">
                                     <img :src="`${$store.state.imagePath}/assets/images/linkedin-ic-blue.svg`" class="normal-img" alt="linkedin img" />
                                     <img :src="`${$store.state.imagePath}/assets/images/linkedin-ic.svg`" class="hover-img" alt="linkedin hover img" />
                                 </b-link>
@@ -269,7 +269,8 @@ export default {
             currencyList: [],
             currencyDefault: "",
             languageListing : [],
-            componentKey : 0
+            componentKey : 0,
+            linkedInUrl : ''
         };
     },
     validations: {
@@ -411,6 +412,7 @@ export default {
                     this.time = response.data.preference.timezone_id
                     this.language = response.data.preference.language_id
                     this.currency = response.data.preference.currency
+                    this.linkedInUrl = response.data.linked_in_url
                     if (response.data.timezone) {
                         var timezoneArray = [];
                         let timeZone = Object.entries(response.data.timezone);
