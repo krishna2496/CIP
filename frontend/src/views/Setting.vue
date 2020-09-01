@@ -1,7 +1,7 @@
 <template>
 <div class="profile-page inner-pages donation-profile">
     <header>
-        <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
+        <ThePrimaryHeader v-if="isShownComponent" :key="componentKey"></ThePrimaryHeader>
     </header>
     <main>
         <b-container>
@@ -44,7 +44,7 @@
                         </b-list-group>
                     </div>
                     <!-- my account breadcrumb -->
-                    <MyAccountDashboardBreadcrumb></MyAccountDashboardBreadcrumb>
+                    <MyAccountDashboardBreadcrumb :key="componentKey"></MyAccountDashboardBreadcrumb>
                 </b-col>
                 <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
                     <b-form class="profile-form">
@@ -268,8 +268,8 @@ export default {
             },
             currencyList: [],
             currencyDefault: "",
-            languageListing : []
-
+            languageListing : [],
+            componentKey : 0
         };
     },
     validations: {
@@ -370,9 +370,12 @@ export default {
                     this.showPage = false;
                     this.getSettingListing().then(() => {
                         this.showPage = true;
+                       
                         loadLocaleMessages(this.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
                             this.makeToast("success", response.message);
+                             this.componentKey += 1;
+                            // location.reload();
                             this.isShownComponent = true;
                         });
                     });
