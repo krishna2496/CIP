@@ -20,6 +20,10 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Models\MissionImpactDonation;
+use App\Models\MissionTab;
+use Illuminate\Support\Str;
+use Validator;
+use App\Repositories\MissionTab\MissionTabRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -59,6 +63,11 @@ class MissionRepository implements MissionInterface
     private $impactDonationMissionRepository;
     
     /**
+    * @var App\Repositories\MissionTab\MissionTabRepository
+    */
+    private $missionTabRepository;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -68,6 +77,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionMedia\ImpactDonationMissionRepository $impactDonationMissionRepository
+     * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
     public function __construct(
@@ -77,7 +87,8 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        ImpactDonationMissionRepository $impactDonationMissionRepository
+        ImpactDonationMissionRepository $impactDonationMissionRepository,
+        MissionTabRepository $missionTabRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -86,6 +97,7 @@ class MissionRepository implements MissionInterface
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
         $this->impactDonationMissionRepository = $impactDonationMissionRepository;
+        $this->missionTabRepository = $missionTabRepository;
     }
 
     /**
@@ -202,6 +214,13 @@ class MissionRepository implements MissionInterface
             unset($missionLanguage);
         }
 
+        // Add mission tab detail
+        if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
+            foreach ($request->mission_tabs as $missionTabValue) {
+                $this->missionTabRepository->store($missionTabValue, $mission->mission_id);
+            }
+        }
+
         // For skills
         if (isset($request->skills) && count($request->skills) > 0) {
             foreach ($request->skills as $value) {
@@ -215,6 +234,7 @@ class MissionRepository implements MissionInterface
         if (isset($request->media_images) && count($request->media_images) > 0) {
             $this->missionMediaRepository->saveMediaImages($request->media_images, $tenantName, $mission->mission_id);
         }
+
         // Add mission media videos
         if (isset($request->media_videos) && count($request->media_videos) > 0) {
             if (!empty($request->media_videos)) {
@@ -454,6 +474,18 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
+        
+        // Add/Update mission tab details
+        if (isset($request->mission_tabs) && count($request->mission_tabs)) {
+            foreach ($request->mission_tabs as $missionTabValue) {
+                if (isset($missionTabValue['mission_tab_id'])) {
+                    $this->missionTabRepository->update($missionTabValue, $id);
+                } else {
+                    //Mission tab id is not available and create the mission tab and details
+                    $this->missionTabRepository->store($missionTabValue, $id);
+                }
+            }
+        }
 
         return $mission;
     }
@@ -488,6 +520,9 @@ class MissionRepository implements MissionInterface
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
         }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }])->with(['missionTab' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionTab.getMissionTabDetail' => function ($query) {
         }])->findOrFail($id);
 
         if (isset($mission->missionLanguage)) {
@@ -502,6 +537,9 @@ class MissionRepository implements MissionInterface
 
         // Impact donation mission array modification
         $this->impactMissionDonationTransformArray($mission, $languages);
+        
+        // mission tab array modification
+        $this->missionTabTransformArray($mission, $languages);
 
         return $mission;
     }
@@ -556,6 +594,10 @@ class MissionRepository implements MissionInterface
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
         }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }])->with(['missionTab' => function ($query) {
+            $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
+        }, 'missionTab.getMissionTabDetail' => function ($query) {
+            $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
         if ($request->has('search') && $request->has('search') !== '') {
@@ -575,6 +617,7 @@ class MissionRepository implements MissionInterface
             $orderDirection = $request->input('order', 'asc');
             $missionQuery->orderBy('mission_id', $orderDirection);
         }
+
         $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
@@ -592,6 +635,9 @@ class MissionRepository implements MissionInterface
 
             // Impact donation mission array modification
             $this->impactMissionDonationTransformArray($value, $languages);
+
+            //mission tab array modification
+            $this->missionTabTransformArray($value, $languages);
         }
 
         return $mission;
@@ -1688,7 +1734,19 @@ class MissionRepository implements MissionInterface
 
     
     /**
-     * Transfrom impact donation array for response
+     * Get mission tab details
+     *
+     * @param int $missionId
+     * @param string $missionTabId
+     * @return App\Repositories\Mission\MissionTab
+     */
+    public function isMissionTabLinkedToMission(int $missionId, string $missionTabId)
+    {
+        return $this->modelsService->missionTab->where([['mission_id', '=', $missionId], ['mission_tab_id', '=', $missionTabId]])->firstOrFail();
+    }
+
+    /**
+     * Transfrom mission impact donation array for response
      *
      * @param $value
      * @param $languages
@@ -1712,5 +1770,44 @@ class MissionRepository implements MissionInterface
                 $value['impactDonation'][$impactDonationKey] = $impactDonationLanguageArray;
             }
         }
+    }
+    
+    /**
+     * Transfrom mission tab array for response
+     * *
+     * @param $value
+     * @param $languages
+     */
+    public function missionTabTransformArray($value, $languages)
+    {
+        $missionTabInfo =  $value['missionTab']->toArray();
+        if ($missionTabInfo != null) {
+            $missionTranslationsArray = [];
+            foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
+                $missionTranslationsArray['mission_tab_id'] = $missionTabValue['mission_tab_id'];
+                $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionTranslationsArray["translations"] = [];
+                foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
+                    $languageCode = $languages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
+                    $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
+                    $missionTabTranslations['language_code'] = $languageCode;
+                    $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
+                    $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
+                    array_push($missionTranslationsArray["translations"], $missionTabTranslations);
+                }
+                $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
+            }
+        }
+    }
+
+    /**
+     * Remove mission tab by mission_tab_id
+     *
+     * @param string $missionTabId
+     * @return bool
+     */
+    public function deleteMissionTabByMissionTabId(string $missionTabId): bool
+    {
+        return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
     }
 }
