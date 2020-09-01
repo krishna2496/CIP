@@ -203,7 +203,9 @@ return [
         'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
-        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+
+        'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully'
     ],
 
 
@@ -376,6 +378,6 @@ return [
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
 
         // mission tab module
-        'MISSION_TAB_NOT_FOUND' => 'Mission tab id not found in the system.',
+        'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
     ]
 ];

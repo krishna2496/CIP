@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\MissionTabLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,11 +56,22 @@ class MissionTab extends Model
 
     /**
      * Find the specified resource.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function getMissionTabDetail()
     {
         return $this->hasMany(MissionTabLanguage::class, 'mission_tab_id', 'mission_tab_id');
+    }
+
+    /**
+     * Soft delete the mission tab by mission_tab_id from the database.
+     *
+     * @param string $missionTabId
+     * @return bool
+     */
+    public function deleteMissionTabByMissionTabId(string $missionTabId): bool
+    {
+        return static::findOrFail($missionTabId)->delete();
     }
 }

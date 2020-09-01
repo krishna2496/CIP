@@ -204,7 +204,7 @@ class MissionRepository implements MissionInterface
 
         // Add mission tab detail
         if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
-            foreach($request->mission_tabs as $missionTabValue){
+            foreach ($request->mission_tabs as $missionTabValue) {
                 $this->missionTabRepository->store($missionTabValue, $mission->mission_id);
             }
         }
@@ -1711,5 +1711,16 @@ class MissionRepository implements MissionInterface
                 $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
             }
         }
+    }
+
+    /**
+     * Remove mission tab by mission_tab_id
+     *
+     * @param string $missionTabId
+     * @return bool
+     */
+    public function deleteMissionTabByMissionTabId(string $missionTabId): bool
+    {
+        return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
     }
 }
