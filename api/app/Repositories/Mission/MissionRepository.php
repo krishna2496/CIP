@@ -111,7 +111,6 @@ class MissionRepository implements MissionInterface
         $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
 
-<<<<<<< HEAD
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = array(
                 'total_seats' => (isset($request->volunteering_attribute['total_seats']) &&
@@ -121,23 +120,6 @@ class MissionRepository implements MissionInterface
             );
         }
 
-        $missionData = [
-            'theme_id' => $request->theme_id != '' ? $request->theme_id : null,
-            'city_id' => $request->location['city_id'],
-            'country_id' => $countryId,
-            'start_date' => (isset($request->start_date)) ? $request->start_date : null,
-            'end_date' => (isset($request->end_date)) ? $request->end_date : null,
-            'publication_status' => $request->publication_status,
-            'organisation_id' => $request->organisation['organisation_id'],
-            'organisation_name' => $request->organisation['organisation_name'],
-            'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
-            $request->organisation['organisation_detail'] : null,
-            'mission_type' => $request->mission_type,
-            'availability_id' => $volunteeringAttributeArray['availability_id'],
-            'total_seats' => $volunteeringAttributeArray['total_seats'],
-            'is_virtual' => $volunteeringAttributeArray['is_virtual'] ? '1' : '0'
-        ];
-=======
         $organizationDetail = (isset($request->organisation_detail)) ?
                 $request->organisation_detail : null;
         if ($organizationDetail === null && isset($request->organisation['organisation_detail'])) {
@@ -150,21 +132,16 @@ class MissionRepository implements MissionInterface
                 'country_id' => $countryId,
                 'start_date' => (isset($request->start_date)) ? $request->start_date : null,
                 'end_date' => (isset($request->end_date)) ? $request->end_date : null,
-                'total_seats' => (isset($request->total_seats) && ($request->total_seats !== '')) ?
-                 $request->total_seats : null,
                 'publication_status' => $request->publication_status,
                 'organisation_id' => (!empty($organization->organization_id)) ? $organization->organization_id
                  : $request->organisation['organisation_id'],
                 'organisation_detail' => $organizationDetail,
-                'availability_id' => $request->availability_id,
                 'mission_type' => $request->mission_type,
-                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : '0',
             );
 
         $missionData['organisation_name'] = (!empty($organization)) ? $organization->name :
             $request->organisation['organisation_name'];
 
->>>>>>> 2e2e25005646dc3ce4a57ef62564a62b3e3360cc
 
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
