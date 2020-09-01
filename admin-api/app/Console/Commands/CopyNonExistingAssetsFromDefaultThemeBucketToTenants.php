@@ -13,7 +13,7 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
      *
      * @var string
      */
-    protected $signature = 'assets:copy {--folder=} {--file=}';
+    protected $signature = 'assets:copy {--folder=} {--file=*}';
 
     /**
      * The console command description.
