@@ -16,8 +16,7 @@ class DonationOneHundredPercentTenantSettingSeeder extends Seeder
             'title' => '100% Donation',
             'description' => 'Enable/disable 100% donation',
             'key' => '100_percent_donation',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'created_at' => Carbon::now()
         ];
 
         DB::table('tenant_setting')->insert($item);
