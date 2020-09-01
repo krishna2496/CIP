@@ -22,6 +22,7 @@ use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use DB;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Repositories\Organization\OrganizationRepository;
 
 class AdminMissionControllerTest extends Testcase
 {
@@ -69,6 +70,7 @@ class AdminMissionControllerTest extends Testcase
         $responseHelper = $this->mock(ResponseHelper::class);
         $request = $this->mock(Request::class);
         $mission = $this->mock(Mission::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $defaultLanguage = (object)[
             'language_id' => 1,
@@ -135,7 +137,8 @@ class AdminMissionControllerTest extends Testcase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $organizationRepository
         );
 
         $response = $callController->update($requestData, $missionId);
@@ -179,6 +182,7 @@ class AdminMissionControllerTest extends Testcase
         $request = $this->mock(Request::class);
         $mission = $this->mock(Mission::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $defaultLanguage = (object)[
             'language_id' => 1,
@@ -249,7 +253,8 @@ class AdminMissionControllerTest extends Testcase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $organizationRepository
         );
 
         $response = $callController->update($requestData, $missionId);
@@ -271,7 +276,8 @@ class AdminMissionControllerTest extends Testcase
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        OrganizationRepository $organizationRepository
     ) {
         return new MissionController(
             $missionRepository,
@@ -280,7 +286,8 @@ class AdminMissionControllerTest extends Testcase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $organizationRepository
         );
     }
 

@@ -96,7 +96,7 @@ class ModelsService
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-        MissionImpact $missionImpact
+        MissionImpact $missionImpact,
         Organization $organization
     ) {
         $this->mission = $mission;

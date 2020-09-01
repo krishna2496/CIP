@@ -1700,7 +1700,6 @@ class MissionRepository implements MissionInterface
      * @param int $missionId
      * @param string $missionImpactId
      */
-
     public function isMissionImpactLinkedToMission(int $missionId, string $missionImpactId)
     {
         return $this->modelsService->missionImpact
