@@ -55,7 +55,7 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
 
         if (!empty($folderPath) && empty($filePath)) {
 
-            // Check --path option directory is exist or not
+            // Check folder option directory is exist or not
             if (Storage::disk('s3')->exists($defaultThemePath.$folderPath)) {
                 $files = Storage::disk('s3')->allFiles($folderPath);
                 $tenants = $this->tenantRepository->getAllTenants();
