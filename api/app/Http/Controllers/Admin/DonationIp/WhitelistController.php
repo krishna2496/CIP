@@ -41,7 +41,7 @@ class WhitelistController extends Controller
      * @return void
      */
     public function __construct(
-        WhitelistService $whitelistService, 
+        WhitelistService $whitelistService,
         ResponseHelper $responseHelper,
         Request $request
     ) {
@@ -67,11 +67,11 @@ class WhitelistController extends Controller
         ];
         $patterns = $this->whitelistService->getList($paginate, $filters);
 
-        $message = $patterns->isEmpty() ? 
-            trans('messages.success.MESSAGE_NO_DONATION_IP_WHITELIST_FOUND') : 
+        $message = $patterns->isEmpty() ?
+            trans('messages.success.MESSAGE_NO_DONATION_IP_WHITELIST_FOUND') :
             trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_LISTING');
         return $this->responseHelper->successWithPagination(
-            Response::HTTP_OK, 
+            Response::HTTP_OK,
             $message,
             $patterns
         );
@@ -89,11 +89,11 @@ class WhitelistController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'pattern' => 'required|max:35|whitelist_pattern|unique:donation_ip_whitelist,pattern,NULL,id,deleted_at,NULL',
+                'pattern' => 'required|max_item:donation_ip_whitelist,200|max:35|ip_whitelist_pattern|unique:donation_ip_whitelist,pattern,NULL,id,deleted_at,NULL',
                 'description' => 'max:60'
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -139,11 +139,11 @@ class WhitelistController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'pattern' => "required|max:35|whitelist_pattern|unique:donation_ip_whitelist,pattern,$id,id,deleted_at,NULL",
+                    'pattern' => "required|max:35|ip_whitelist_pattern|unique:donation_ip_whitelist,pattern,$id,id,deleted_at,NULL",
                     'description' => 'max:60'
                 ]
             );
-            
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -197,7 +197,7 @@ class WhitelistController extends Controller
                 'actions' => config('constants.activity_log_actions.DELETED')
             ]);
             return $this->responseHelper->success(
-                Response::HTTP_OK, 
+                Response::HTTP_OK,
                 trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_DELETED')
             );
         } catch (ModelNotFoundException $e) {
