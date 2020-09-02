@@ -103,7 +103,7 @@ class AvailabilityRepository implements AvailabilityInterface
      */
     public function hasMission(int $id): bool
     {
-        return $this->availability->whereHas('mission')->whereAvailabilityId($id)->count() ? true : false;
+        return $this->availability->whereHas('volunteeringAttribute')->whereAvailabilityId($id)->count() ? true : false;
     }
 
     /**
