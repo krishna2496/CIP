@@ -61,7 +61,8 @@ return [
         'ERROR_CURRENCY_CODE_NOT_FOUND' => 'Currency not found in system',
         'ERROR_TENANT_CURRENCY_EMPTY_LIST' => 'Tenant has no currency.',
         'CURRENCY_CODE' => 'Currency Code ',
-        'CURRENCY_IS_NOT_VALID_ONLY' => ' is not valid'
+        'CURRENCY_IS_NOT_VALID_ONLY' => ' is not valid',
+        'ERROR_DEFAULT_FIELD_MUST_BE_TRUE' => 'Currency should be active to set it as default.'
     ],
     'email_text' => [
         'ERROR' => 'Error',

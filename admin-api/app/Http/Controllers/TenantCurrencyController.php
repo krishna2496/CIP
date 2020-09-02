@@ -126,6 +126,15 @@ class TenantCurrencyController extends Controller
             'is_active' => 'required|boolean',
         ]);
 
+        if($request['is_active'] == false && $request['default'] == true) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
+                trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+            );
+        }
+
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -201,6 +210,15 @@ class TenantCurrencyController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
                 $validator->errors()->first()
+            );
+        }
+
+        if($request['is_active'] == false && $request['default'] == true) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
+                trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
             );
         }
 

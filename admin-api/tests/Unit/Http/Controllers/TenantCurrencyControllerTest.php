@@ -203,7 +203,7 @@ class TenantCurrencyControllerTest extends TestCase
     public function testStoreValidationFailure()
     {
         $data = [
-            'code'=> 'ZWD',
+            'code'=> 'PHP',
             'default'=> '100',
             'is_active'=> '1'
         ];
@@ -221,13 +221,26 @@ class TenantCurrencyControllerTest extends TestCase
         $repository = $this->mock(CurrencyRepository::class);
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
 
+        $errors = new Collection([
+            'The default field must be true or false.'
+        ]);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+        ->andReturn(true)
+        ->shouldReceive('errors')
+        ->andReturn($errors);
+    
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
         $methodResponse = [
             'errors'=> [
                 [
                     'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
                     'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     'code'=> config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
-                    'message'=> 'The default field must be true or false.'
+                    'message'=> $errors->first()
                 ]
             ]
         ];
@@ -241,7 +254,7 @@ class TenantCurrencyControllerTest extends TestCase
             Response::HTTP_UNPROCESSABLE_ENTITY,
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
             config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
-            'The default field must be true or false.'
+            $errors->first() 
         )->andReturn($jsonResponse);
 
         $controller = $this->getController(
@@ -312,6 +325,66 @@ class TenantCurrencyControllerTest extends TestCase
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
             config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
+        )->andReturn($jsonResponse);
+        
+        $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
+        $controller = $this->getController(
+            $responseHelper,
+            $tenantAvailableCurrencyRepository,
+            $tenantRepository,
+            $repository
+        );
+
+        $response = $controller->store($request, $tenantId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+    * @testdox Test validation error if default is active while is_active field is false
+    *
+    * @return void
+    */
+    public function testStoreCheckIsActiveAndDefaultFieldValue()
+    {
+        $data = [
+            'code'=> 'FAK',
+            'default'=> true,
+            'is_active'=> false
+        ];
+        $request = new Request($data);
+        $tenantId = rand(50000, 70000);
+        $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
+        $tenantRepository->shouldReceive('find')
+            ->once()
+            ->with($tenantId)
+            ->andThrow($tenant);
+
+        $repository = $this->mock(CurrencyRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=> config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+        
+        $responseHelper
+        ->shouldReceive('error')
+        ->once()
+        ->with(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
+            trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
         )->andReturn($jsonResponse);
         
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
@@ -484,13 +557,26 @@ class TenantCurrencyControllerTest extends TestCase
             
         $responseHelper = $this->mock(ResponseHelper::class);
 
+        $errors = new Collection([
+            'The default field must be true or false.'
+        ]);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+        ->andReturn(true)
+        ->shouldReceive('errors')
+        ->andReturn($errors);
+    
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
         $methodResponse = [
             'errors'=> [
                 [
                     'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
                     'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     'code'=> config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
-                    'message'=> 'The default field must be true or false.'
+                    'message'=> $errors->first()
                 ]
             ]
         ];
@@ -504,7 +590,7 @@ class TenantCurrencyControllerTest extends TestCase
             Response::HTTP_UNPROCESSABLE_ENTITY,
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
             config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
-            'The default field must be true or false.'
+            $errors->first()
         )->andReturn($jsonResponse);
         
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
@@ -657,6 +743,66 @@ class TenantCurrencyControllerTest extends TestCase
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_FOUND')
         )->andReturn($jsonResponse);
         
+        $controller = $this->getController(
+            $responseHelper,
+            $tenantAvailableCurrencyRepository,
+            $tenantRepository,
+            $repository
+        );
+
+        $response = $controller->update($request, $tenantId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+    * @testdox Test validation error if default is active while is_active field is false for update method
+    *
+    * @return void
+    */
+    public function testUpdateCheckIsActiveAndDefaultFieldValue()
+    {
+        $data = [
+            'code'=> 'FAK',
+            'default'=> true,
+            'is_active'=> false
+        ];
+        $request = new Request($data);
+        $tenantId = rand(50000, 70000);
+        $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
+        $tenantRepository->shouldReceive('find')
+            ->once()
+            ->with($tenantId)
+            ->andThrow($tenant);
+
+        $repository = $this->mock(CurrencyRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=> config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+        
+        $responseHelper
+        ->shouldReceive('error')
+        ->once()
+        ->with(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
+            trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+        )->andReturn($jsonResponse);
+        
+        $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $controller = $this->getController(
             $responseHelper,
             $tenantAvailableCurrencyRepository,
