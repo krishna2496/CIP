@@ -2,17 +2,15 @@
 
 namespace Tests\Unit\Repositories\Currency;
 
-use App\Models\TenantCurrency;
 use App\Models\Tenant;
+use App\Models\TenantAvailableCurrency;
+use App\Models\TenantCurrency;
 use App\Repositories\Currency\Currency;
 use App\Repositories\Currency\CurrencyRepository;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
-use TestCase;
-use Mockery;
 use App\Repositories\Currency\TenantAvailableCurrencyRepository;
-use App\Models\TenantAvailableCurrency;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Mockery;
+use TestCase;
 
 class TenantAvailableCurrencyRepositoryTest extends TestCase
 {
@@ -37,13 +35,12 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             'default'=> '1',
             'is_active'=> '1'
         ];
-        $request = $data;
 
         $currencyData = [
             'tenant_id' => $tenantId,
-            'code' => $request['code'],
-            'default' => $request['default'],
-            'is_active' => $request['is_active']
+            'code' => $data['code'],
+            'default' => $data['default'],
+            'is_active' => $data['is_active']
         ];
 
         $tenant->shouldReceive('findOrFail')
@@ -64,7 +61,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             ->once()
             ->with($currencyData);
 
-        $repository->store($request, $tenantId);
+        $repository->store($data, $tenantId);
     }
 
     /**
@@ -89,18 +86,17 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             'default'=> '1',
             'is_active'=> '1'
         ];
-        $request = $data;
 
         $currencyData = [
             'tenant_id' => $tenantId,
-            'code' => $request['code'],
-            'default' => $request['default'],
-            'is_active' => $request['is_active']
+            'code' => $data['code'],
+            'default' => $data['default'],
+            'is_active' => $data['is_active']
         ];
 
         $tenantAvailableCurrency->shouldReceive('where')
             ->twice()
-            ->with(['tenant_id' => $tenantId, 'code' => $request['code']])
+            ->with(['tenant_id' => $tenantId, 'code' => $data['code']])
             ->andReturn($tenantAvailableCurrency);
 
         $tenantAvailableCurrency->shouldReceive('firstOrFail')
@@ -122,7 +118,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
             ->with($currencyData)
             ->andReturn($tenantAvailableCurrency);
 
-        $repository->update($request, $tenantId);
+        $repository->update($data, $tenantId);
     }
 
     /**
@@ -142,7 +138,6 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
         );
         $data = ['perPage' => '10'];
         $perPage = 10;
-        $request = new Request($data);
         $tenantId = 1;
 
         $tenant->shouldReceive('findOrFail')
