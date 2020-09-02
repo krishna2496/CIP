@@ -8727,11 +8727,6 @@
           "type": "integer",
           "format": "int64"
         },
-        "total_seats": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Total seats for this mission"
-        },
         "application_deadline": {
           "type": "string",
           "format": "date-time",
@@ -8773,17 +8768,23 @@
           "format": "int64",
           "description": "mission_theme_id from `mission_theme` table"
         },
-        "availability_id": {
-          "type": "integer",
-          "format": "int64",
-          "description": "availability_id from `availability` table"
-        },
-        "is_virtual": {
-          "type": "string",
-          "enum": [
-            "0",
-            "1"
-          ]
+        "volunteering_attribute": {
+          "type": "object",
+          "properties": {
+            "availability_id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "availability_id from `availability` table"
+            },
+            "is_virtual": {
+              "type": "boolean"
+            },
+            "total_seats": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Total seats for this mission"
+            }
+          }
         },
         "organization": {
           "type": "object",
