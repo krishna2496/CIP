@@ -27,7 +27,7 @@
                     <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay" :key=i>
                         <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
                     </span>
-                    <b-button class="clear-btn" v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)" @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
+                    <b-button class="clear-btn" v-if="isCountrySelectionSet || isStateSelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)" @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
                 </div>
             </div>
             <div v-bind:class="{ 'heading-section': true,

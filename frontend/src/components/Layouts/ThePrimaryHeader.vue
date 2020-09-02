@@ -7,7 +7,7 @@
                     <img :src="$store.state.imagePath+'/assets/images/menu-ic.svg'" alt />
                 </b-link>
             </div>
-            <b-navbar-brand :href="hostUrl+'home'" :style="{backgrocundImage: 'url('+this.$store.state.logo+')'}" v-if="this.$store.state.isLoggedIn && this.$store.state.logoRedirectUrl === 'home'">
+            <b-navbar-brand :href="hostUrl+'home'" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" v-if="this.$store.state.isLoggedIn && this.$store.state.logoRedirectUrl === 'home'">
             </b-navbar-brand>
             <b-navbar-brand target="_blank" :href="this.$store.state.logoRedirectUrl" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" v-if="this.$store.state.isLoggedIn && this.$store.state.logoRedirectUrl !== 'home'">
             </b-navbar-brand>
