@@ -12,6 +12,9 @@ use App\Models\MissionApplication;
 use App\Models\City;
 use App\Models\MissionImpact;
 use App\Models\Organization;
+use App\Models\MissionTab;
+use App\Models\MissionTabLanguage;
+
 
 class ModelsService
 {
@@ -44,7 +47,7 @@ class ModelsService
      * @var App\models\MissionDocument
      */
     public $missionDocument;
-        
+
     /**
     * @var App\Models\MissionRating
     */
@@ -71,6 +74,16 @@ class ModelsService
     public $organization;
 
     /**
+     * @var App\Models\MissionTab
+     */
+    public $missionTab;
+
+    /**
+     * @var App\Models\MissionTabLanguage
+     */
+    public $missionTabLanguage;
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -84,6 +97,8 @@ class ModelsService
      * @param  App\Models\City $city
      * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
      */
     public function __construct(
@@ -97,7 +112,9 @@ class ModelsService
         MissionApplication $missionApplication,
         City $city,
         MissionImpact $missionImpact,
-        Organization $organization
+        Organization $organization,
+        MissionTab $missionTab,
+        MissionTabLanguage $missionTabLanguage
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -110,5 +127,7 @@ class ModelsService
         $this->city = $city;
         $this->missionImpact = $missionImpact;
         $this->organization = $organization;
+        $this->missionTab = $missionTab;
+        $this->missionTabLanguage = $missionTabLanguage;
     }
 }

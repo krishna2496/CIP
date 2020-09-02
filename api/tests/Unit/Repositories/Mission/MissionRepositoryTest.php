@@ -34,6 +34,9 @@ use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Services\Mission\AdminMissionTransformService;
 use App\Models\MissionImpact;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Models\MissionTabLanguage;
+use App\Models\Organization;
+use App\Models\MissionTab;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -54,9 +57,9 @@ class MissionRepositoryTest extends TestCase
             'mission_type' => 'DONATION',
             'publication_status' => 'APPROVED',
             'availability_id' => 1,
-            'organisation' => [
-                'organisation_id' => 1,
-                'organisation_name' => str_random(10)
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10)
             ],
             'location' => [
                 'city_id' => 1,
@@ -132,6 +135,10 @@ class MissionRepositoryTest extends TestCase
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $organization = $this->mock(Organization::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -143,7 +150,10 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $missionImpact
+            $missionImpact,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
 
         $languages = [
@@ -175,6 +185,11 @@ class MissionRepositoryTest extends TestCase
         ];
 
         $collectionLanguages = collect($languages);
+
+        $organization->shouldReceive('updateOrCreate')
+        ->once()
+        ->with(['organization_id' => $requestData->organisation['organisation_id']], $requestData->organisation)
+        ->andReturn();
 
         $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -232,7 +247,8 @@ class MissionRepositoryTest extends TestCase
             $modelService,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $missionTabRepository
         );
 
         $response = $repository->store($requestData);
@@ -275,7 +291,8 @@ class MissionRepositoryTest extends TestCase
         $missionId = rand(50000, 70000);
 
         $requestData = new Request($data);
-
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $s3Helper = $this->mock(S3Helper::class);
@@ -296,6 +313,9 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $collection = $this->mock(Collection::class);
+        $organization = $this->mock(Organization::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -307,7 +327,10 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $missionImpact
+            $missionImpact,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
 
         $languages = [
@@ -387,7 +410,8 @@ class MissionRepositoryTest extends TestCase
             $modelService,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $missionTabRepository
         );
 
         $response = $repository->update($requestData, $missionId);
@@ -421,6 +445,10 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $organization = $this->mock(Organization::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -432,7 +460,10 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $missionImpact
+            $missionImpact,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
 
         $repository = $this->getRepository(
@@ -444,7 +475,8 @@ class MissionRepositoryTest extends TestCase
             $modelService,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $missionTabRepository
         );
 
         $missionId = rand(50000, 70000);
@@ -464,6 +496,81 @@ class MissionRepositoryTest extends TestCase
     }
 
     /**
+    * @testdox Test mission tab deleted by mission_tab_id success
+    *
+    * @return void
+    */
+    public function testDeleteMissionTabByMissionTabIdSuccess()
+    {
+        $missionTabId = str_random(8).'-'.str_random(4).'-'.str_random(4).'-'.str_random(4).'-'.str_random(12);
+
+        $mission = $this->mock(Mission::class);
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $s3Helper = $this->mock(S3Helper::class);
+        $countryRepository = $this->mock(CountryRepository::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $collection = $this->mock(Collection::class);
+        $organization = $this->mock(Organization::class);
+        $adminMissionTransformService = $this->mock(AdminMissionTransformService::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $organization = $this->mock(Organization::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionImpact,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
+        );
+
+        $modelService->missionTab
+        ->shouldReceive('deleteMissionTabByMissionTabId')
+        ->with($missionTabId)
+        ->andReturn();
+
+        $repository = $this->getRepository(
+            $languageHelper,
+            $helpers,
+            $s3Helper,
+            $countryRepository,
+            $missionMediaRepository,
+            $modelService,
+            $missionImpactRepository,
+            $adminMissionTransformService,
+            $tenantActivatedSettingRepository,
+            $missionTabRepository
+        );
+
+        $response = $repository->deleteMissionTabByMissionTabId($missionTabId);
+    }
+
+    /**
      * Create a new respository instance.
      *
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -475,6 +582,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
      * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
+     * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
     private function getRepository(
@@ -486,7 +594,8 @@ class MissionRepositoryTest extends TestCase
         ModelsService $modelsService,
         MissionImpactRepository $missionImpactRepository,
         AdminMissionTransformService $adminMissionTransformService,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        MissionTabRepository $missionTabRepository
     ) {
         return new MissionRepository(
             $languageHelper,
@@ -497,7 +606,8 @@ class MissionRepositoryTest extends TestCase
             $modelsService,
             $missionImpactRepository,
             $adminMissionTransformService,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $missionTabRepository
         );
     }
 
@@ -517,7 +627,6 @@ class MissionRepositoryTest extends TestCase
     * get json reponse
     *
     * @param class name
-    *
     * @return JsonResponse
     */
     private function getJson($class)
@@ -538,6 +647,9 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
      * @param  App\Models\MissionImpact $missionImpact
+     * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
      */
     public function modelService(
@@ -550,7 +662,10 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-        MissionImpact $missionImpact
+        MissionImpact $missionImpact,
+        Organization $organization,
+        MissionTab $missionTab,
+        MissionTabLanguage $missionTabLanguage
     ) {
         return new ModelsService(
             $mission,
@@ -562,7 +677,10 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $missionImpact
+            $missionImpact,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
     }
 }
