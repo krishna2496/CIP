@@ -290,17 +290,11 @@ class TenantCurrencyControllerTest extends TestCase
             ->with($tenantId)
             ->andThrow($tenant);
 
-        $isAvailableCurrencyResponse = [            
-            false,
-            'systemCurrencyInvalid' => false,
-            'systemCurrency' => $data['code'],
-        ];
-
         $repository = $this->mock(CurrencyRepository::class);
-        $repository->shouldReceive('isAvailableCurrency')
+        $repository->shouldReceive('isSupported')
             ->once()
             ->with($request['code'])
-            ->andReturn($isAvailableCurrencyResponse);
+            ->andReturn(false);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -425,16 +419,11 @@ class TenantCurrencyControllerTest extends TestCase
         ->once()
         ->andReturn(Mockery::mock(['fails' => false]));
 
-        $isAvailableCurrencyResponse = [            
-            true,
-            $data['code']
-        ];
-
         $repository = $this->mock(CurrencyRepository::class);
-        $repository->shouldReceive('isAvailableCurrency')
+        $repository->shouldReceive('isSupported')
             ->once()
             ->with($request['code'])
-            ->andReturn($isAvailableCurrencyResponse);
+            ->andReturn(true);
 
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $tenantAvailableCurrencyRepository->shouldReceive('store')
@@ -627,18 +616,12 @@ class TenantCurrencyControllerTest extends TestCase
             ->once()
             ->with($tenantId)
             ->andThrow($tenant);
-        
-        $isAvailableCurrencyResponse = [            
-            false,
-            'systemCurrencyInvalid' => false,
-            'systemCurrency' => $data['code'],
-        ];
 
         $repository = $this->mock(CurrencyRepository::class);
-        $repository->shouldReceive('isAvailableCurrency')
+        $repository->shouldReceive('isSupported')
             ->once()
             ->with($request['code'])
-            ->andReturn($isAvailableCurrencyResponse);
+            ->andReturn(false);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -701,16 +684,11 @@ class TenantCurrencyControllerTest extends TestCase
             ->with($tenantId)
             ->andReturn($tenant);
 
-        $isAvailableCurrencyResponse = [            
-            true,
-            $data['code']
-        ];
-
         $repository = $this->mock(CurrencyRepository::class);
-        $repository->shouldReceive('isAvailableCurrency')
+        $repository->shouldReceive('isSupported')
             ->once()
             ->with($request['code'])
-            ->andReturn($isAvailableCurrencyResponse);
+            ->andReturn(true);
 
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $tenantAvailableCurrencyRepository->shouldReceive('update')
@@ -837,16 +815,11 @@ class TenantCurrencyControllerTest extends TestCase
             ->with($tenantId)
             ->andReturn($tenant);
 
-        $isAvailableCurrencyResponse = [            
-            true,
-            $data['code']
-        ];
-
         $repository = $this->mock(CurrencyRepository::class);
-        $repository->shouldReceive('isAvailableCurrency')
+        $repository->shouldReceive('isSupported')
             ->once()
             ->with($request['code'])
-            ->andReturn($isAvailableCurrencyResponse);
+            ->andReturn(true);
 
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $tenantAvailableCurrencyRepository->shouldReceive('update')

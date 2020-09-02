@@ -1,6 +1,6 @@
 <?php
 return [
-    
+
     /**
     * Success messages
     */
@@ -11,7 +11,7 @@ return [
         'MESSAGE_TENANT_LISTING' => 'Tenants listed successfully',
         'MESSAGE_NO_RECORD_FOUND' => 'No records found',
         'MESSAGE_TENANT_FOUND' => 'Tenant found successfully',
-        'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant\'s API users listed successfully',        
+        'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant\'s API users listed successfully',
         'MESSAGE_API_USER_FOUND' => 'API user found successfully',
         'MESSAGE_API_USER_CREATED_SUCCESSFULLY' => 'API user created successfully',
         'MESSAGE_API_USER_DELETED' => 'API user deleted successfully',
@@ -37,7 +37,7 @@ return [
         'MESSAGE_TENANT_CURRENCY_LISTING' => 'Tenant currency listed successfully',
         'MESSAGE_TENANT_CURRENCY_UPDATED' => 'Tenant currency updated successfully'
     ],
-    
+
     /**
     * API Error Codes and Message
     */
@@ -83,5 +83,5 @@ return [
         'MESSAGE' => 'Message',
         'BACKGROUND_JOB_EXCEPTION_MESSAGE' => 'Background job exception message'
     ]
-    
+
 ];

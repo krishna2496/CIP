@@ -145,18 +145,11 @@ class CurrencyRepository
     ];
 
     /**
-     * Create available currency instance
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Get list of all currency
      *
      * @return array
      */
-    public function findAll()
+    public function findAll() : array
     {
         $currencyArray = [];
         foreach(self::SUPPORTED_CURRENCIES as $code => $symbol) {
@@ -171,28 +164,16 @@ class CurrencyRepository
      * @param string $currencyCode
      * @return array
      */
-    public function isAvailableCurrency(string $currencyCode) : array
+    public function isSupported(string $currencyCode) : bool
     {
         $allCurrencyList = $this->findAll();
-        $allCurrencyArray = [];
-        $currencyMatch = 0;
 
-        foreach ($allCurrencyList as $key => $value) {
-            $getAvailableCurrencyCode = $value->code();
-            
-            //check system code and request code are same
-            if ($getAvailableCurrencyCode === $currencyCode) {                
-                return [
-                    true,
-                    $getAvailableCurrencyCode
-                ];
+        foreach ($allCurrencyList as $currency) {
+            // check system code and request code are same
+            if ($currencyCode === $currency->code()) {
+                return true;
             }
         }
-        
-        return [
-            false,
-            'systemCurrencyInvalid' => false,
-            'systemCurrency' => $currencyCode
-        ];
+        return false;
     }
 }
