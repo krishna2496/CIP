@@ -32,7 +32,7 @@
                                     }">
                             </picture-input>
                         </div>
-                        <h4>{{userData.first_name}} {{userData.last_name}}</h4>
+                        <h4>{{$store.state.firstName}} {{$store.state.lastName}}</h4>
                         <b-list-group class="social-nav">
 
                             <b-list-group-item v-if="linkedInUrl != null && linkedInUrl != ''  ">
@@ -86,7 +86,7 @@
                             <b-col md="6"></b-col>
                             <b-col md="6">
                                 <b-form-group>
-                                    <label for>{{languageData.placeholder.new_password}}
+                                    <label for>{{languageData.label.new_password}}
                                     </label>
                                     <b-form-input id type="password" v-model.trim="newPassword" :class="{ 'is-invalid': $v.newPassword.$error }" :placeholder="languageData.placeholder.new_password"></b-form-input>
                                     <div v-if="!$v.newPassword.required" class="invalid-feedback">
@@ -99,7 +99,7 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>
-                                        {{languageData.placeholder.confirm_password}}
+                                        {{languageData.label.confirm_password}}
                                     </label>
                                     <b-form-input id v-model.trim="confirmPassword" :class="{ 'is-invalid': $v.confirmPassword.$error }" :placeholder="languageData.placeholder.confirm_password" @keypress.enter.prevent="changePassword" type="password">
                                     </b-form-input>
@@ -151,7 +151,7 @@
                         <b-row class="row-form">
                             <b-col cols="12">
                                 <div class="btn-wrapper">
-                                    <b-button class="btn-bordersecondary btn-save" :title="languageData.label.save" @click="handleSubmit()">{{ languageData.label.save }}
+                                    <b-button class="btn-bordersecondary btn-save" :disabled="isSubmitBtnClick" :title="languageData.label.save" @click="handleSubmit()">{{ languageData.label.save }}
                                     </b-button>
                                 </div>
                             </b-col>
@@ -218,7 +218,6 @@ export default {
             pageLoaded: false,
             errorPageMessage: false,
             isQuickAccessFilterDisplay: true,
-            isSkillDisplay: true,
             languageDefault: "",
             timeList: [],
             timeDefault: "",
@@ -270,7 +269,8 @@ export default {
             currencyDefault: "",
             languageListing : [],
             componentKey : 0,
-            linkedInUrl : ''
+            linkedInUrl : '',
+            isSubmitBtnClick : false
         };
     },
     validations: {
@@ -349,10 +349,10 @@ export default {
             if (this.$v.$invalid) {
                 return;
             }
-
+            this.isSubmitBtnClick = true;
             if (this.oldPassword && this.newPassword && this.oldPassword) {
-                this.saveProfileData.password = this.oldPassword;
-                this.saveProfileData.confirm_password = this.newPassword;
+                this.saveProfileData.password = this.newPassword;
+                this.saveProfileData.confirm_password = this.confirmPassword;
                 this.saveProfileData.old_password = this.oldPassword;
             }
 
@@ -381,6 +381,7 @@ export default {
                         });
                     });
                 }
+                this.isSubmitBtnClick = false
             });
         },
 
