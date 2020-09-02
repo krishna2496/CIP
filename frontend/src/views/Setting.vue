@@ -375,8 +375,7 @@ export default {
                         loadLocaleMessages(this.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
                             this.makeToast("success", response.message);
-                             this.componentKey += 1;
-                            // location.reload();
+                            this.componentKey += 1;
                             this.isShownComponent = true;
                         });
                     });
