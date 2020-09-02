@@ -200,14 +200,14 @@ class TenantCurrencyControllerTest extends TestCase
     *
     * @return void
     */
-    public function testStoreValidationFalure()
+    public function testStoreValidationFailure()
     {
         $data = [
             'code'=> 'ZWD',
             'default'=> '100',
             'is_active'=> '1'
         ];
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
 
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
@@ -218,6 +218,8 @@ class TenantCurrencyControllerTest extends TestCase
             ->andReturn($tenant);
             
         $responseHelper = $this->mock(ResponseHelper::class);
+        $repository = $this->mock(CurrencyRepository::class);
+        $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
 
         $methodResponse = [
             'errors'=> [
@@ -242,8 +244,6 @@ class TenantCurrencyControllerTest extends TestCase
             'The default field must be true or false.'
         )->andReturn($jsonResponse);
 
-        $repository = $this->mock(CurrencyRepository::class);
-        $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $controller = $this->getController(
             $responseHelper,
             $tenantAvailableCurrencyRepository,
@@ -269,7 +269,7 @@ class TenantCurrencyControllerTest extends TestCase
             'is_active'=> '1'
         ];
         $request = new Request($data);
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
         $tenantRepository = $this->mock(TenantRepository::class);
         $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
@@ -334,7 +334,7 @@ class TenantCurrencyControllerTest extends TestCase
     */
     public function testStoreSuccess()
     {
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
         $data = [
             'code'=> 'USD',
             'default'=> '1',
@@ -466,14 +466,14 @@ class TenantCurrencyControllerTest extends TestCase
     *
     * @return void
     */
-    public function testUpdateValidationFalure()
+    public function testUpdateValidationFailure()
     {
         $data = [
             'code'=> 'ZWD',
             'default'=> '100',
             'is_active'=> '1'
         ];
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
         $tenant = $this->mock(Tenant::class);
@@ -534,7 +534,7 @@ class TenantCurrencyControllerTest extends TestCase
             'is_active'=> '1'
         ];
         $request = new Request($data);
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
         $tenantRepository = $this->mock(TenantRepository::class);
         $tenant = $this->mock(Tenant::class);
         $tenantRepository->shouldReceive('find')
@@ -599,7 +599,7 @@ class TenantCurrencyControllerTest extends TestCase
     */
     public function testUpdateCurrencyNotFound()
     {
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
 
         $data = [
             'code'=> 'USD',
@@ -676,7 +676,7 @@ class TenantCurrencyControllerTest extends TestCase
     */
     public function testUpdateSuccess()
     {
-        $tenantId = 1;
+        $tenantId = rand(50000, 70000);
 
         $data = [
             'code'=> 'USD',
