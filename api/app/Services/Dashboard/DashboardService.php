@@ -30,6 +30,6 @@ class DashboardService
         }
         
         return $volunteeringRank;
+
     }
-    
 }
