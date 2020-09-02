@@ -305,7 +305,6 @@ export default {
             this.invitedUserId = '';
             this.query = '';
             this.selected = '';
-            // setTimeout(() => {
             const cardHeader = document.querySelectorAll(
                 ".card-grid .card .card-header"
             );
@@ -315,8 +314,12 @@ export default {
             });
             cardHeader.forEach(function (cardHeaderElem) {
                 cardHeaderElem.style.transform = "translateY(0)";
-            });
-            // },500)
+			});
+			
+			const cardInner = document.querySelectorAll(".card-grid .card-inner");
+			cardInner.forEach(function (cardInnerElem) {
+				cardInnerElem.classList.remove("active");
+			});
            
         },
         getAppliedStatus(missionDetail) {
