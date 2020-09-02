@@ -86,12 +86,17 @@ class WhitelistRepository
      */
     public function update(DonationIpWhitelist $whitelistIp)
     {
+        $payload = [
+            'description' => $whitelistIp->description
+        ];
+
+        if ($whitelistIp->pattern) {
+            $payload['pattern'] = $whitelistIp->pattern;
+        }
+
         return $this->donationIpWhitelist
             ->find($whitelistIp->id)
-            ->update([
-                'pattern' => $whitelistIp->pattern,
-                'description' => $whitelistIp->description
-            ]);
+            ->update($payload);
     }
 
     /**

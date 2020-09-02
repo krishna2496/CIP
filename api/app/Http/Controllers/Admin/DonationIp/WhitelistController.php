@@ -60,7 +60,7 @@ class WhitelistController extends Controller
     public function getList(Request $request): JsonResponse
     {
         $paginate = [
-            'perPage' => $request->get('perPage')
+            'perPage' => $request->perPage
         ];
         $filters = [
             'search' => $request->get('search', null)
@@ -139,7 +139,7 @@ class WhitelistController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'pattern' => "required|max:35|ip_whitelist_pattern|unique:donation_ip_whitelist,pattern,$id,id,deleted_at,NULL",
+                    'pattern' => "sometimes|required|max:35|ip_whitelist_pattern|unique:donation_ip_whitelist,pattern,$id,id,deleted_at,NULL",
                     'description' => 'max:60'
                 ]
             );
