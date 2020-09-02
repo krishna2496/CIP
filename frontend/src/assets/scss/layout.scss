@@ -363,7 +363,8 @@ tspan {
 			&.active {
 				.page-link {
 					color: $white;
-					border-color: $primary !important;
+					background-color: $primary;
+					border-color: $primary;
 				}
 			}
 

@@ -233,28 +233,28 @@ a {
       border: 2px solid $gray-secondary;
       background: transparent;
       border-radius: 25px;
-  
+
       &:active,
       &:hover {
         color: $white !important;
         background: $gray-primary !important;
         border-color: $gray-primary !important;
       }
-  
+
       &:focus,
       &:disabled,
       &.disabled {
         color: $gray-secondary !important;
         border: 2px solid $gray-secondary !important;
         background: transparent !important;
-  
+
         &:hover {
           color: $white !important;
           background: $gray-secondary !important;
           border-color: $gray-secondary !important;
         }
       }
-  
+
       &.icon-btn {
         i {
           svg {
@@ -263,7 +263,7 @@ a {
             fill: $middle-gray;
           }
         }
-  
+
         &:hover {
           i {
             svg {
@@ -271,14 +271,14 @@ a {
             }
           }
         }
-  
+
         &:focus {
           i {
             svg {
               fill: $white;
             }
           }
-  
+
           &:hover {
             i {
               svg {
@@ -290,7 +290,7 @@ a {
       }
     }
   }
-  
+
 
 .btn-borderwhite {
     min-width: 132px;
@@ -1496,8 +1496,8 @@ span {
     }
 }
 .cke_inner{
-		z-index: 9999!important;
-	}
+        z-index: 9999!important;
+    }
 .ckeditor {
     textarea {
         resize: none;
@@ -1523,7 +1523,7 @@ span {
         -webkit-border-radius: 3px;
         -ms-border-radius: 3px;
         -moz-border-radius: 3px;
-	}
+    }
     .cke_bottom {
         border-radius: 0 0 3px 3px;
         -webkit-border-radius: 0 0 3px 3px;
