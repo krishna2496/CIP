@@ -97,7 +97,7 @@ class CustomValidationRules
             return true;
         });
 
-        Validator::extend('whitelist_pattern', function ($attribute, $value) {
+        Validator::extend('ip_whitelist_pattern', function ($attribute, $value) {
             $ipHelper = new IPValidationHelper();
             // Check for valid range pattern
             if ($ipHelper->validRangePattern($value)) {

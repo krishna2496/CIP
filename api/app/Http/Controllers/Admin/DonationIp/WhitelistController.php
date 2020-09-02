@@ -89,7 +89,7 @@ class WhitelistController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'pattern' => 'required|max_item:donation_ip_whitelist,200|max:35|whitelist_pattern|unique:donation_ip_whitelist,pattern,NULL,id,deleted_at,NULL',
+                'pattern' => 'required|max_item:donation_ip_whitelist,200|max:35|ip_whitelist_pattern|unique:donation_ip_whitelist,pattern,NULL,id,deleted_at,NULL',
                 'description' => 'max:60'
             ]
         );
@@ -139,7 +139,7 @@ class WhitelistController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'pattern' => "required|max:35|whitelist_pattern|unique:donation_ip_whitelist,pattern,$id,id,deleted_at,NULL",
+                    'pattern' => "required|max:35|ip_whitelist_pattern|unique:donation_ip_whitelist,pattern,$id,id,deleted_at,NULL",
                     'description' => 'max:60'
                 ]
             );
