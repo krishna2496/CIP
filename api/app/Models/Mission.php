@@ -9,13 +9,16 @@ use App\Models\Timesheet;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
 use App\Models\Availability;
-use App\Models\MissionMedia;
-use App\Models\MissionInvite;
-use App\Models\MissionRating;
-use App\Models\MissionDocument;
-use App\Models\MissionLanguage;
-use App\Models\FavouriteMission;
 use App\Models\MissionApplication;
+use App\Models\MissionDocument;
+use App\Models\MissionInvite;
+use App\Models\MissionLanguage;
+use App\Models\MissionMedia;
+use App\Models\MissionRating;
+use App\Models\MissionTab;
+use App\Models\Organization;
+use App\Models\FavouriteMission;
+use App\Models\VolunteeringAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,7 +26,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
-use App\Models\Organization;
 
 class Mission extends Model
 {
@@ -49,6 +51,10 @@ class Mission extends Model
 
     private $helpers;
 
+    /**
+     * @var App\Models\MissionTab
+     */
+    public $missionTab;
 
     /**
      * The attributes that are mass assignable.
@@ -80,14 +86,14 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab', 'volunteeringAttribute'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet'
+        'goalMission','timeMission','comment','timesheet', 'missionTab', 'volunteeringAttribute'
     ];
 
     /**
@@ -231,15 +237,6 @@ class Mission extends Model
         return $this->hasMany(Comment::class, 'mission_id', 'mission_id');
     }
 
-    /**
-     * Get availability associated with the mission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function availability(): BelongsTo
-    {
-        return $this->belongsTo(Availability::class, 'availability_id', 'availability_id');
-    }
 
     /**
      * Get timesheet associated with the mission.
@@ -331,6 +328,7 @@ class Mission extends Model
     public function checkAvailableSeats(int $missionId): Mission
     {
         return $this->select('*')
+        ->with(['volunteeringAttribute'])
         ->where('mission.mission_id', $missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
             $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]
@@ -368,29 +366,6 @@ class Mission extends Model
     }
 
     /**
-     * Get users associated with the mission availability.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function availableUsers(): HasMany
-    {
-        return $this->hasMany('App\User', 'availability_id', 'availability_id');
-    }
-
-    /**
-     * Set is virtual attribute on the model.
-     *
-     * @param $value
-     * @return void
-     */
-    public function setIsVirtualAttribute($value): void
-    {
-        if (!is_null($value)) {
-            $this->attributes['is_virtual'] = (string)$value;
-        }
-    }
-
-    /**
      * Get Organization associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -398,5 +373,25 @@ class Mission extends Model
     public function organization(): HasOne
     {
         return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
+    }
+
+    /**
+    * Get volunteering attribute associated with the mission.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function volunteeringAttribute(): HasOne
+    {
+        return $this->hasOne(VolunteeringAttribute::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get mission-tab associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionTab(): HasMany
+    {
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
     }
 }
