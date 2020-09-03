@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
+
 class S3Helper
 {
     use RestExceptionHandlerTrait;
@@ -19,38 +20,24 @@ class S3Helper
      *
      * @return string
      */
-    public function uploadFileOnS3Bucket(string $url, string $tenantName, string $customPath = null): string
-    {
-
-        $headers = get_headers($url, 1);
-
-        // Get name from Content Disposition
-        if (isset($headers['Content-Disposition'])) {
-            $fileName = substr($headers['Content-Disposition'], strpos($headers['Content-Disposition'], "=")+1);
-        } else { // Get name from base name
-            $fileName = basename($url);
-        }
-
-        set_time_limit(0);
-        $context = stream_context_create(array('http'=> array(
-            'timeout' => 1200
-        )));
-
-        $disk = Storage::disk('s3');
+    public function uploadFileOnS3Bucket(
+        string $url,
+        string $tenantName,
+        string $customPath = null
+    ): string {
+        $fileName = $this->generateFilename($url);
 
         $path = env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME');
         if ($customPath) {
             $path .= "/$customPath";
         }
+        $path .= "/$fileName";
 
-        $disk->put(
-            $tenantName
-            .'/'.$path
-            .'/'.$fileName,
-            file_get_contents($url, false, $context)
+        return $this->uploadFile(
+            $url,
+            $tenantName,
+            $path
         );
-
-        return self::makeTenantS3BaseUrl($tenantName).$path.'/'.$fileName;
     }
 
     /**
@@ -157,38 +144,28 @@ class S3Helper
      *
      * @param string $url
      * @param string $tenantName
+     * @param string|null $customPath
      *
      * @return string
      */
-    public function uploadMissionDocumentOnS3Bucket(string $url, string $tenantName): string
-    {
-        $headers = get_headers($url, 1);
+    public function uploadMissionDocumentOnS3Bucket(
+        string $url,
+        string $tenantName,
+        string $customPath = null
+    ): string {
+        $fileName = $this->generateFilename($url);
 
-        // Get name from Content Disposition
-        if (isset($headers['Content-Disposition'])) {
-            $fileName = substr($headers['Content-Disposition'], strpos($headers['Content-Disposition'], "=")+1);
-        } else { // Get name from base name
-            $fileName = basename($url);
+        $path = env('AWS_S3_ASSETS_FOLDER_NAME').'/'.config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME');
+        if ($customPath) {
+            $path .= "/$customPath";
         }
+        $path .= "/$fileName";
 
-        set_time_limit(0);
-        $context = stream_context_create(array('http'=> array(
-            'timeout' => 1200
-        )));
-        $disk = Storage::disk('s3');
-        $disk->put(
-            $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'
-            .config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME')
-            .'/'.$fileName,
-            file_get_contents($url, false, $context)
+        return $this->uploadFile(
+            $url,
+            $tenantName,
+            $path
         );
-
-        return S3Helper::makeTenantS3BaseUrl($tenantName)
-            . env('AWS_S3_ASSETS_FOLDER_NAME')
-            . '/'
-            . config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME')
-            . '/'
-            . $fileName;
     }
 
     /**
@@ -253,5 +230,52 @@ class S3Helper
             . '.amazonaws.com/'
             . $tenantName
             .'/';
+    }
+
+    /**
+     * Upload file to the Storage disk
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    private function uploadFile(
+        string $url,
+        string $tenantName,
+        string $path
+    ): string {
+        set_time_limit(0);
+        $context = stream_context_create(array('http'=> array(
+            'timeout' => 1200
+        )));
+
+        $disk = Storage::disk('s3');
+        $disk->put(
+            "$tenantName/$path",
+            file_get_contents($url, false, $context)
+        );
+
+        return self::makeTenantS3BaseUrl($tenantName).$path;
+    }
+
+    /**
+     * Generate upload filename
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    private function generateFilename(string $url)
+    {
+        $headers = get_headers($url, 1);
+        if (isset($headers['Content-Disposition'])) {
+            // Get name from Content Disposition
+            $name = substr($headers['Content-Disposition'], strpos($headers['Content-Disposition'], "=")+1);
+        } else {
+            // Get name from base name
+            $name = basename($url);
+        }
+
+        return uniqid().'-'.$name;
     }
 }

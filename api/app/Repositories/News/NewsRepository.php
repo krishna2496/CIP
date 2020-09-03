@@ -71,7 +71,7 @@ class NewsRepository implements NewsInterface
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
     }
-   
+
     /**
      * Display news lists.
      *
@@ -91,7 +91,6 @@ class NewsRepository implements NewsInterface
             }]);
         }]);
 
-       
         // Search filters for admin side
         if ($request->has('search')) {
             $newsData
@@ -114,7 +113,7 @@ class NewsRepository implements NewsInterface
             $orderDirection = $request->input('order', 'asc');
             $newsData->orderBy('created_at', $orderDirection);
         }
-        
+
         if ($newsStatus) {
             $newsData->where('status', $newsStatus);
         }
@@ -136,14 +135,22 @@ class NewsRepository implements NewsInterface
             'user_thumbnail' => $request->user_thumbnail,
             'status' => $request->status
         );
-        
-        if ($request->has('news_image')) {
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $newsImage = $this->s3helper->uploadFileOnS3Bucket($request->news_image, $tenantName);
-            $newsArray['news_image'] = $newsImage;
-        }
+
         // Store news details
         $news = $this->news->create($newsArray);
+
+        if ($request->has('news_image')) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $newsId = $news->news_id;
+            $newsImage = $this->s3helper->uploadFileOnS3Bucket(
+                $request->news_image,
+                $tenantName,
+                "news/$newsId"
+            );
+            $news->update([
+                'news_image' => $newsImage
+            ]);
+        }
 
         // Insert into news_to_category
         $newsToCategoryArray = array(
@@ -151,7 +158,7 @@ class NewsRepository implements NewsInterface
             'news_category_id' => $request->news_category_id
         );
         $this->newsToCategory->create($newsToCategoryArray);
-        
+
         // Insert into news_language
         if ($request->has('news_content')) {
             $languages = $this->languageHelper->getLanguages();
@@ -159,12 +166,12 @@ class NewsRepository implements NewsInterface
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
                 $language = $languages->where('code', $value['lang'])->first();
-                
+
                 $newsLanguageData = array('news_id' => $news->news_id,
                                         'language_id' => $language->language_id,
                                         'title' => $value['title'],
                                         'description' => $value['description']);
-                                        
+
                 $this->newsLanguage->create($newsLanguageData);
             }
         }
@@ -181,15 +188,19 @@ class NewsRepository implements NewsInterface
     public function update(Request $request, int $newsId): News
     {
         $newsDetails = $this->news->findOrFail($newsId);
-        
+
         // Update news details
         if ($request->has('news_image')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $newsImage = $this->s3helper->uploadFileOnS3Bucket($request->news_image, $tenantName);
+            $newsImage = $this->s3helper->uploadFileOnS3Bucket(
+                $request->news_image,
+                $tenantName,
+                "news/$newsId"
+            );
             $request->request->add(['news_image' => $newsImage]);
         }
         $newsData = $newsDetails->update($request->toArray());
- 
+
         // Update news_to_category
         if ($request->news_category_id) {
             $newsToCategoryArray = array(
@@ -197,7 +208,7 @@ class NewsRepository implements NewsInterface
                 );
             $this->newsToCategory->where('news_id', $newsId)->update($newsToCategoryArray);
         }
-        
+
         // Update into news_language
         if ($request->has('news_content')) {
             $languages = $this->languageHelper->getLanguages();
@@ -205,7 +216,7 @@ class NewsRepository implements NewsInterface
             foreach ($newsContent['translations'] as $value) {
                 // Get language_id from language code - It will fetch data from `ci_admin` database
                 $language = $languages->where('code', $value['lang'])->first();
-                
+
                 $newsLanguageData = array('language_id' => $language->language_id,
                                         'title' => $value['title'],
                                         'description' => $value['description']
@@ -218,7 +229,7 @@ class NewsRepository implements NewsInterface
 
         return $newsDetails;
     }
-    
+
     /**
      * Get news details.
      *
@@ -232,7 +243,7 @@ class NewsRepository implements NewsInterface
         ->with(['newsToCategory' => function ($query) {
             $query->with('newsCategory');
         }]);
-    
+
         $newsQuery->with('newsLanguage');
 
         if ($newsStatus) {
@@ -266,7 +277,7 @@ class NewsRepository implements NewsInterface
         $languageData = $this->newsLanguage->withTrashed()->select('title', 'language_id')
         ->where(['news_id' => $newsId])
         ->get();
-     
+
         $title = '';
 
         if ($languageData->count() > 0) {
@@ -275,7 +286,7 @@ class NewsRepository implements NewsInterface
             $newsLanguage = $languageData->where('language_id', $language)->first();
             $title =  $newsLanguage->title;
         }
-        
+
         return $title;
     }
 }
