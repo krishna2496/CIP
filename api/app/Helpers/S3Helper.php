@@ -268,14 +268,12 @@ class S3Helper
     private function generateFilename(string $url)
     {
         $headers = get_headers($url, 1);
+        // Get name from Content Disposition
         if (isset($headers['Content-Disposition'])) {
-            // Get name from Content Disposition
-            $name = substr($headers['Content-Disposition'], strpos($headers['Content-Disposition'], "=")+1);
-        } else {
-            // Get name from base name
-            $name = basename($url);
+            return substr($headers['Content-Disposition'], strpos($headers['Content-Disposition'], "=")+1);
         }
 
-        return uniqid().'-'.$name;
+        // Get name from base name
+        return basename($url);
     }
 }
