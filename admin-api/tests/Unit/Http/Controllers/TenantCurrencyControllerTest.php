@@ -1,24 +1,25 @@
 <?php
-    
+
 namespace Tests\Unit\Http\Controllers;
 
 use TestCase;
 use Mockery;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Collection;
-use App\Repositories\Currency\CurrencyRepository;
+use Validator;
+use App\Events\ActivityLogEvent;
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\TenantCurrencyController;
 use App\Models\Tenant;
 use App\Models\TenantCurrency;
-use App\Http\Controllers\TenantCurrencyController;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
+use App\Repositories\Currency\CurrencyRepository;
+use App\Repositories\Currency\TenantAvailableCurrencyRepository;
 use App\Repositories\Tenant\TenantRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use App\Repositories\Currency\TenantAvailableCurrencyRepository;
-use Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class TenantCurrencyControllerTest extends TestCase
 {
@@ -41,9 +42,9 @@ class TenantCurrencyControllerTest extends TestCase
         ];
         $data = ['perPage' => 10];
         $request = new Request($data);
-        
+
         $id = rand(5000, 10000);
-        
+
         $repository = $this->mock(CurrencyRepository::class);
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
@@ -216,7 +217,7 @@ class TenantCurrencyControllerTest extends TestCase
             ->once()
             ->with($tenantId)
             ->andReturn($tenant);
-            
+
         $responseHelper = $this->mock(ResponseHelper::class);
         $repository = $this->mock(CurrencyRepository::class);
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
@@ -230,7 +231,7 @@ class TenantCurrencyControllerTest extends TestCase
         ->andReturn(true)
         ->shouldReceive('errors')
         ->andReturn($errors);
-    
+
         Validator::shouldReceive('make')
             ->andReturn($validator);
 
@@ -246,7 +247,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -254,7 +255,7 @@ class TenantCurrencyControllerTest extends TestCase
             Response::HTTP_UNPROCESSABLE_ENTITY,
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
             config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
-            $errors->first() 
+            $errors->first()
         )->andReturn($jsonResponse);
 
         $controller = $this->getController(
@@ -274,7 +275,7 @@ class TenantCurrencyControllerTest extends TestCase
     *
     * @return void
     */
-    public function testStoreIsValidCurrency()
+    public function testStoreUnsupportedCurrency()
     {
         $data = [
             'code'=> 'FAK',
@@ -296,6 +297,13 @@ class TenantCurrencyControllerTest extends TestCase
             ->with($request['code'])
             ->andReturn(false);
 
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
         $responseHelper = $this->mock(ResponseHelper::class);
 
         $methodResponse = [
@@ -310,7 +318,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -320,7 +328,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
         )->andReturn($jsonResponse);
-        
+
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $controller = $this->getController(
             $responseHelper,
@@ -370,7 +378,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -380,7 +388,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
             trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
         )->andReturn($jsonResponse);
-        
+
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $controller = $this->getController(
             $responseHelper,
@@ -401,6 +409,8 @@ class TenantCurrencyControllerTest extends TestCase
     */
     public function testStoreSuccess()
     {
+        $this->expectsEvents(ActivityLogEvent::class);
+
         $tenantId = rand(50000, 70000);
         $data = [
             'code'=> 'USD',
@@ -415,9 +425,12 @@ class TenantCurrencyControllerTest extends TestCase
             ->with($tenantId)
             ->andReturn($tenant);
 
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
         Validator::shouldReceive('make')
-        ->once()
-        ->andReturn(Mockery::mock(['fails' => false]));
+            ->andReturn($validator);
 
         $repository = $this->mock(CurrencyRepository::class);
         $repository->shouldReceive('isSupported')
@@ -442,15 +455,15 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
-        ->shouldReceive('success')
-        ->once()
-        ->with(
-            Response::HTTP_CREATED,
-            trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED')
-        )->andReturn($jsonResponse);
-        
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_CREATED,
+                trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED')
+            )->andReturn($jsonResponse);
+
         $controller = $this->getController(
             $responseHelper,
             $tenantAvailableCurrencyRepository,
@@ -508,7 +521,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
             trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
         )->andReturn($jsonResponse);
-        
+
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $repository = $this->mock(CurrencyRepository::class);
         $controller = $this->getController(
@@ -543,7 +556,7 @@ class TenantCurrencyControllerTest extends TestCase
             ->once()
             ->with($tenantId)
             ->andReturn($tenant);
-            
+
         $responseHelper = $this->mock(ResponseHelper::class);
 
         $errors = new Collection([
@@ -555,7 +568,7 @@ class TenantCurrencyControllerTest extends TestCase
         ->andReturn(true)
         ->shouldReceive('errors')
         ->andReturn($errors);
-    
+
         Validator::shouldReceive('make')
             ->andReturn($validator);
 
@@ -571,7 +584,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -581,7 +594,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.ERROR_TENANT_CURRENCY_FIELD_REQUIRED'),
             $errors->first()
         )->andReturn($jsonResponse);
-        
+
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $repository = $this->mock(CurrencyRepository::class);
         $controller = $this->getController(
@@ -601,7 +614,7 @@ class TenantCurrencyControllerTest extends TestCase
     *
     * @return void
     */
-    public function testUpdateIsValidCurrency()
+    public function testUpdateUnSupportedCurrency()
     {
         $data = [
             'code'=> 'FAK',
@@ -635,9 +648,9 @@ class TenantCurrencyControllerTest extends TestCase
                 ]
             ]
         ];
-        
+
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -647,7 +660,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.ERROR_CURRENCY_CODE_NOT_AVAILABLE'),
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_AVAILABLE')
         )->andReturn($jsonResponse);
-        
+
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $controller = $this->getController(
             $responseHelper,
@@ -710,7 +723,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -720,7 +733,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.CURRENCY_CODE_NOT_FOUND'),
             trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_FOUND')
         )->andReturn($jsonResponse);
-        
+
         $controller = $this->getController(
             $responseHelper,
             $tenantAvailableCurrencyRepository,
@@ -769,7 +782,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('error')
         ->once()
@@ -779,7 +792,7 @@ class TenantCurrencyControllerTest extends TestCase
             config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
             trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
         )->andReturn($jsonResponse);
-        
+
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
         $controller = $this->getController(
             $responseHelper,
@@ -800,6 +813,8 @@ class TenantCurrencyControllerTest extends TestCase
     */
     public function testUpdateSuccess()
     {
+        $this->expectsEvents(ActivityLogEvent::class);
+
         $tenantId = rand(50000, 70000);
 
         $data = [
@@ -839,7 +854,7 @@ class TenantCurrencyControllerTest extends TestCase
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
-        
+
         $responseHelper
         ->shouldReceive('success')
         ->once()
@@ -847,7 +862,7 @@ class TenantCurrencyControllerTest extends TestCase
             Response::HTTP_OK,
             trans('messages.success.MESSAGE_TENANT_CURRENCY_UPDATED')
         )->andReturn($jsonResponse);
-        
+
         $controller = $this->getController(
             $responseHelper,
             $tenantAvailableCurrencyRepository,
