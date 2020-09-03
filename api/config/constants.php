@@ -510,7 +510,11 @@ return [
         'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
-        'MISSION_TAB_NOT_FOUND' => '80046'
+        'MISSION_TAB_NOT_FOUND' => '80046',
+
+        // Donation error codes: 900100 - 900199
+        'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
     ],
 
     /**
@@ -609,7 +613,8 @@ return [
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
         'STATE' => 'STATE',
         'ORGANIZATION' => 'ORGANIZATION',
-        'MISSION_TAB' => 'MISSION_TAB'
+        'MISSION_TAB' => 'MISSION_TAB',
+        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST'
     ],
 
     'activity_log_actions' => [
