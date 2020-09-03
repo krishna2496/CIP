@@ -2,7 +2,7 @@
 
 namespace App\Repositories\MissionApplication;
 
-use App\Models\DataObjects\VolunteerApplication;
+use App\Helpers\LanguageHelper;
 use App\Models\MissionApplication;
 use App\Repositories\Core\QueryableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Log;
 
 class MissionApplicationQuery implements QueryableInterface
 {
-    const FILTER_APPLICATION_IDS    = 'applicationIds';
-    const FILTER_APPLICATION_DATE   = 'applicationDate';
-    const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
-    const FILTER_MISSION_SKILLS     = 'missionSkills';
-    const FILTER_MISSION_THEMES     = 'missionThemes';
-    const FILTER_MISSION_COUNTRIES  = 'missionCountries';
-    const FILTER_MISSION_CITIES     = 'missionCities';
-    const FILTER_MISSION_TYPES      = 'missionTypes';
-    const FILTER_MISSION_VIRTUAL    = 'isVirtual';
+    private const FILTER_APPLICATION_IDS    = 'applicationIds';
+    private const FILTER_APPLICATION_DATE   = 'applicationDate';
+    private const FILTER_APPLICANT_SKILLS   = 'applicantSkills';
+    private const FILTER_MISSION_SKILLS     = 'missionSkills';
+    private const FILTER_MISSION_THEMES     = 'missionThemes';
+    private const FILTER_MISSION_COUNTRIES  = 'missionCountries';
+    private const FILTER_MISSION_CITIES     = 'missionCities';
+    private const FILTER_MISSION_TYPES      = 'missionTypes';
+    private const FILTER_MISSION_VIRTUAL    = 'isVirtual';
 
-    const ALLOWED_SORTABLE_FIELDS = [
+    private const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
         'applicantLastName' => 'user.last_name',
         'applicantFirstName' => 'user.first_name',
@@ -36,7 +36,17 @@ class MissionApplicationQuery implements QueryableInterface
         'missionName' => 'mission_language_title',
     ];
 
-    const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+    private const ALLOWED_SORTING_DIR = ['ASC', 'DESC'];
+
+    /**
+     * @var LanguageHelper
+     */
+    private $languageHelper;
+
+    public function __construct(LanguageHelper $languageHelper)
+    {
+        $this->languageHelper = $languageHelper;
+    }
 
     /**
      * @param array $parameters
@@ -49,6 +59,7 @@ class MissionApplicationQuery implements QueryableInterface
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
+
         $defaultLanguageId = $tenantLanguages->filter(function ($language) {
             return $language->default === '1';
         })->first()->language_id;
@@ -144,7 +155,9 @@ class MissionApplicationQuery implements QueryableInterface
                         if ($isVirtual === null) {
                             $value = $isVirtual;
                         }
-                        $query->where('mission.is_virtual', $value);
+                        $query->whereHas('volunteeringAttribute', function ($query) use ($value) {
+                            $query->where('is_virtual', $value);
+                        });
                     });
                 });
             })
@@ -191,11 +204,6 @@ class MissionApplicationQuery implements QueryableInterface
                             $query
                                 ->whereNull('country_language.name')
                                 ->where('country_language_fallback.name', 'like', "%${search}%");
-                        })
-                        ->orwhereHas('mission.missionTheme', function ($query) use ($search, $filters) {
-                            $codeLanguage = $filters['language'];
-                            $query->where('translations', 'regexp', '{s:4:"lang";s:[1-3]:"' . $codeLanguage . '";s:5:"title";s:[1-9]{1,6}:"[^"]*' . $search . '[^"]*";}')
-                                ->orWhere('theme_name', 'like', "%${search}%");
                         });
                 };
 
@@ -212,7 +220,7 @@ class MissionApplicationQuery implements QueryableInterface
             // Pagination
             ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
 
-        $this->addCityCountryLanguageCode($applications, $tenantLanguages, $defaultLanguageId);
+        $this->addCityCountryLanguageCode($applications);
 
         return $applications;
     }
@@ -220,38 +228,23 @@ class MissionApplicationQuery implements QueryableInterface
     /**
      * Add the property 'language_code' in the 'translations' property of the mission city and country.
      *
-     * Iterates over all the objects contained in 'translations' and set the relevant language code.
-     * If no language is matched when trying to add the property, set the language code to tenant's default language.
-     * If the tenant's default language cannot be found, set it to english.
-     *
      * @param LengthAwarePaginator $applications
-     * @param Collection $tenantLanguages
-     * @param int $defaultLanguageId
      */
-    private function addCityCountryLanguageCode($applications, $tenantLanguages, $defaultLanguageId)
+    private function addCityCountryLanguageCode($applications)
     {
-        // Getting default language code
-        $matchedDefaultLanguage = $tenantLanguages->where('language_id', $defaultLanguageId)->first();
-        $defaultLanguageCode = $matchedDefaultLanguage !== null
-            ? $matchedDefaultLanguage->code
-            : 'en'; // Fallback to english if nothing is found
-
+        $ciLanguages = $this->languageHelper->getLanguages();
         // Setting the language_code property
         foreach ($applications as $application) {
             // Adding property for country
             foreach ($application->mission->country->languages as $countryLanguage) {
-                $matchedCountryLanguage = $tenantLanguages->where('language_id', $countryLanguage->language_id)->first();
-                $countryLanguage->language_code = $matchedCountryLanguage !== null
-                    ? $matchedCountryLanguage->code
-                    : $defaultLanguageCode;
+                $ciLanguage = $ciLanguages->where('language_id', $countryLanguage->language_id)->first();
+                $countryLanguage->language_code = $ciLanguage->code;
             }
 
             // Adding property for city
             foreach ($application->mission->city->languages as $cityLanguage) {
-                $matchedCityLanguage = $tenantLanguages->where('language_id', $cityLanguage->language_id)->first();
-                $cityLanguage->language_code = $matchedCityLanguage !== null
-                    ? $matchedCityLanguage->code
-                    : $defaultLanguageCode;
+                $ciLanguage = $ciLanguages->where('language_id', $cityLanguage->language_id)->first();
+                $cityLanguage->language_code = $ciLanguage->code;
             }
         }
     }
@@ -280,10 +273,10 @@ class MissionApplicationQuery implements QueryableInterface
     }
 
     /**
-     * @param $order
-     * @return mixed
+     * @param array $order
+     * @return array
      */
-    private function getOrder($order)
+    private function getOrder(array $order): array
     {
         if (array_key_exists('orderBy', $order)) {
             if (array_key_exists($order['orderBy'], self::ALLOWED_SORTABLE_FIELDS)) {
