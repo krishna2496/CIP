@@ -154,7 +154,6 @@ class MissionController extends Controller
                 "location" => "required",
                 "location.city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
                 "location.country_code" => "required|exists:country,ISO,deleted_at,NULL",
-                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
@@ -182,7 +181,6 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required|valid_document_path",
                 "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "mission_detail.*.short_description" => "max:1000",
@@ -193,9 +191,15 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
+                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.availability_id" => "integer|required_with:volunteering_attribute|
+                exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
+                "total_seats" => "integer|min:1",
+                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.translations"=> 'required',
@@ -209,9 +213,9 @@ class MissionController extends Controller
                 "required_with:mission_tabs.*.translations.*.sections",
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
+
             ]
         );
-
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -347,9 +351,14 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
+                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.availability_id" => "sometimes|required_with:volunteering_attribute|integer|
+                exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "is_virtual" => "sometimes|required|in:0,1",
+				"total_seats" => "integer|min:1",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
@@ -364,7 +373,6 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "organization.organization_id" => "required_with:organization|uuid",

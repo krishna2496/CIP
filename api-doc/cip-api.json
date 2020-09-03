@@ -4215,7 +4215,17 @@
             "required": true,
             "type": "string",
             "default": ""
-          }
+          },
+          {
+            "name": "keys[]",
+            "in": "path",
+            "description": "List of all tenant setting keys",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
         ],
         "responses": {
           "200": {
@@ -8457,6 +8467,208 @@
           }
         }
       }
+    },
+    "/entities/donation-ip-whitelist": {
+      "post": {
+        "operationId": "POST_cip-api-admin-add-donation-ip-whitelist",
+        "summary": "Admin - Add Donation IP Whitelist",
+        "description": "Admin can add Donation IP Whitelist for their platform using this endpoint.",
+        "tags": [
+          "Donation IP Whitelist"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "pattern"
+              ],
+              "properties": {
+                "pattern": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "422": {
+            "description": "Unprocessable entity - Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      },
+      "get": {
+        "operationId": "GET_cip-api-get-donation-ip-whitelists",
+        "summary": "Admin - Get Donation IP Whitelists",
+        "tags": [
+          "Donation IP Whitelist"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "description": "Result set page",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "perPage",
+            "in": "path",
+            "description": "Limit result set",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "search",
+            "in": "path",
+            "description": "Search donation IP whitelist on pattern or description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
+    "/entities/donation-ip-whitelist/{whitelistId}": {
+      "patch": {
+        "operationId": "PATCH_cip-api-admin-donation-ip-whitelist",
+        "summary": "Admin - Update donation IP whitelist",
+        "description": "Admin can update an donation IP whitelist details.",
+        "tags": [
+          "Donation IP Whitelist"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "whitelistId",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "pattern"
+              ],
+              "properties": {
+                "pattern": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "State not found in the system"
+          },
+          "422": {
+            "description": "Unprocessable entity - Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "DELETE_cip-api-admin-delete-donation-ip-whitelist",
+        "summary": "Admin - Delete donation IP whitelist",
+        "description": "Admin can delete donation IP whitelist from the platform.",
+        "tags": [
+          "Donation IP Whitelist"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "whitelistId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "City not found in the system"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -8727,11 +8939,6 @@
           "type": "integer",
           "format": "int64"
         },
-        "total_seats": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Total seats for this mission"
-        },
         "application_deadline": {
           "type": "string",
           "format": "date-time",
@@ -8773,17 +8980,23 @@
           "format": "int64",
           "description": "mission_theme_id from `mission_theme` table"
         },
-        "availability_id": {
-          "type": "integer",
-          "format": "int64",
-          "description": "availability_id from `availability` table"
-        },
-        "is_virtual": {
-          "type": "string",
-          "enum": [
-            "0",
-            "1"
-          ]
+        "volunteering_attribute": {
+          "type": "object",
+          "properties": {
+            "availability_id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "availability_id from `availability` table"
+            },
+            "is_virtual": {
+              "type": "boolean"
+            },
+            "total_seats": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Total seats for this mission"
+            }
+          }
         },
         "organization": {
           "type": "object",
