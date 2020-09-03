@@ -2,113 +2,40 @@
 
 namespace Tests\Unit\Http\Repositories\Mission;
 
-use App\Helpers\Helpers;
-use App\Helpers\LanguageHelper;
-use App\Helpers\S3Helper;
-use App\Repositories\Country\CountryRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Services\Mission\ModelsService;
 use App\Repositories\MissionTab\MissionTabRepository;
-use App\Helpers\ResponseHelper;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repositories\Country\CountryRepository;
 use App\Repositories\Mission\MissionRepository;
-use App\Models\Mission;
-use App\Models\MissionLanguage;
-use App\User;
-use Mockery;
-use TestCase;
-use Validator;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\TimeMission;
-use App\Models\MissionDocument;
-use App\Models\FavouriteMission;
-use App\Models\MissionSkill;
-use App\Models\MissionRating;
+use App\Services\Mission\ModelsService;
 use App\Models\MissionApplication;
-use App\Models\City;
-use DB;
-use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+use App\Models\MissionTabLanguage;
+use App\Models\FavouriteMission;
+use App\Models\MissionLanguage;
+use App\Models\MissionDocument;
+use App\Helpers\LanguageHelper;
+use App\Models\MissionRating;
+use App\Models\MissionSkill;
 use App\Models\Organization;
+use App\Models\TimeMission;
+use App\Models\MissionTab;
+use App\Helpers\S3Helper;
+use App\Helpers\Helpers;
+use App\Models\Mission;
+use App\Models\City;
+use TestCase;
+use Mockery;
 
 class MissionRepositoryTest extends TestCase
 {
-    
     /**
-    * @testdox Test store add UN sdg with store method
+    * @testdox Test mission tab deleted by mission_tab_id success
     *
     * @return void
     */
-    public function testAddUnSDGMissionRepositorySuccess()
+    public function testDeleteMissionTabByMissionTabIdSuccess()
     {
-        $data = [
-            'location' => [
-                'city_id' => 1,
-                'country_id' => 233,
-                'country_code' => 'US'
-            ],
-            'organization' => [
-                'organization_id' => 1,
-                'name' => str_random(10)
-            ],
-            'mission_detail' => [
-                [
-                    'lang' => 'en',
-                    'title' => 'New Organization Mission created',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'Section title',
-                            'description' => 'Section description'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'Customer info',
-                            'description' => 'Description of customer info'
-                        ]
-                    ]
-                ]
-            ],
-            'un_sdg' => [3,6,8,15]
-        ];
-        $requestData = new Request($data);
-        $missionModel = new Mission();
+        $missionTabId = str_random(8).'-'.str_random(4).'-'.str_random(4).'-'.str_random(4).'-'.str_random(12);
 
-        $languages = collect([
-            [
-                'language_id' => 1,
-                'name' => 'English',
-                'code' => 'en',
-                'status' => '1',
-                'created_at' => null,
-                'updated_at' => null,
-                'deleted_at' => null,
-            ],
-            [
-                'language_id' => 2,
-                'name' => 'French',
-                'code' => 'fr',
-                'status' => '1',
-                'created_at' => null,
-                'updated_at' => null,
-                'deleted_at' => null,
-            ]
-        ]);
-        
-
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $helpers = $this->mock(Helpers::class);
-        $s3Helper = $this->mock(S3Helper::class);
-        $countryRepository = $this->mock(CountryRepository::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $modelService = $this->mock(ModelsService::class);
         $mission = $this->mock(Mission::class);
         $timeMission = $this->mock(TimeMission::class);
         $missionLanguage = $this->mock(MissionLanguage::class);
@@ -118,13 +45,17 @@ class MissionRepositoryTest extends TestCase
         $missionRating = $this->mock(MissionRating::class);
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $s3Helper = $this->mock(S3Helper::class);
+        $countryRepository = $this->mock(CountryRepository::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
         $collection = $this->mock(Collection::class);
-        $unitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
-        $missionModel = new Mission();
-        $missionModel->mission_id = rand(10, 100);
         $organization = $this->mock(Organization::class);
-        $organizationModel = new Organization();
-        $organizationModel->organization_id = rand(10, 100);
 
         $modelService = $this->modelService(
             $mission,
@@ -136,63 +67,15 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $organization
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
 
-        $languages = [
-            (object)[
-                'language_id' => 1,
-                'name' => 'English',
-                'code' => 'en',
-                'status' => '1',
-                'created_at' => null,
-                'updated_at' => null,
-                'deleted_at' => null,
-            ],
-            (object)[
-                'language_id' => 2,
-                'name' => 'French',
-                'code' => 'fr',
-                'status' => '1',
-                'created_at' => null,
-                'updated_at' => null,
-                'deleted_at' => null,
-            ]
-        ];
-        $collectionLanguages = collect($languages);
-
-        $modelService->organization->shouldReceive('updateOrCreate')
-        ->once()
-        ->andReturn($organizationModel);
-
-        $languageHelper->shouldReceive('getLanguages')
-        ->once()
-        ->andReturn($collectionLanguages);
-
-        $countryRepository->shouldReceive('getCountryId')
-        ->once()
-        ->with($requestData->location['country_code'])
-        ->andReturn(1);
-
-        $modelService->mission->shouldReceive('create')
-        ->once()
-        ->andReturn($missionModel);
-        
-        $modelService->missionLanguage->shouldReceive('create')
-        ->once()
-        ->andReturn(false);
-
-        $tenantName = str_random(10);
-        $helpers->shouldReceive('getSubDomainFromRequest')
-        ->once()
-        ->with($requestData)
-        ->andReturn($tenantName);
-
-        $unitedNationSDGRepository->shouldReceive('addUnSdg')
-        ->once()
-        ->with($missionModel->mission_id, $requestData->toArray())
-        ->andReturn(false);
-
+        $modelService->missionTab
+        ->shouldReceive('deleteMissionTabByMissionTabId')
+        ->with($missionTabId)
+        ->andReturn();
 
         $repository = $this->getRepository(
             $languageHelper,
@@ -201,113 +84,10 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
-            $unitedNationSDGRepository
+            $missionTabRepository
         );
 
-        $response = $repository->store($requestData);
-        $this->assertInstanceOf(Mission::class, $response);
-    }
-
-    /**
-    * @testdox Test update UN sdg with update method
-    *
-    * @return void
-    */
-    public function testUpdateUnSDGMissionRepositorySuccess()
-    {
-        $languageHelper = $this->mock(LanguageHelper::class);
-        $helpers = $this->mock(Helpers::class);
-        $s3Helper = $this->mock(S3Helper::class);
-        $countryRepository = $this->mock(CountryRepository::class);
-        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $modelService = $this->mock(ModelsService::class);
-        $mission = $this->mock(Mission::class);
-        $timeMission = $this->mock(TimeMission::class);
-        $missionLanguage = $this->mock(MissionLanguage::class);
-        $missionDocument = $this->mock(MissionDocument::class);
-        $favouriteMission = $this->mock(FavouriteMission::class);
-        $missionSkill = $this->mock(MissionSkill::class);
-        $missionRating = $this->mock(MissionRating::class);
-        $missionApplication = $this->mock(MissionApplication::class);
-        $city = $this->mock(City::class);
-        $collection = $this->mock(Collection::class);
-        $unitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
-        $missionModel = new Mission();
-        $missionModel->mission_id = rand(10, 100);
-        $organization = $this->mock(Organization::class);
-
-        $data = [
-            'un_sdg' => [3,6,8,15]
-        ];
-        $requestData = new Request($data);
-
-        $modelService = $this->modelService(
-            $mission,
-            $timeMission,
-            $missionLanguage,
-            $missionDocument,
-            $favouriteMission,
-            $missionSkill,
-            $missionRating,
-            $missionApplication,
-            $city,
-            $organization
-        );
-
-        $languages = [
-            (object)[
-                'language_id' => 1,
-                'name' => 'English',
-                'code' => 'en',
-                'status' => '1',
-                'created_at' => null,
-                'updated_at' => null,
-                'deleted_at' => null,
-            ],
-            (object)[
-                'language_id' => 2,
-                'name' => 'French',
-                'code' => 'fr',
-                'status' => '1',
-                'created_at' => null,
-                'updated_at' => null,
-                'deleted_at' => null,
-            ]
-        ];
-        
-        $collectionLanguages = collect($languages);
-        $languageHelper->shouldReceive('getLanguages')
-        ->once()
-        ->andReturn($collectionLanguages);
-
-        $modelService->mission->shouldReceive('findOrFail')
-        ->once()
-        ->andReturn($missionModel);
-
-        $tenantName = str_random(10);
-        $helpers->shouldReceive('getSubDomainFromRequest')
-        ->once()
-        ->with($requestData)
-        ->andReturn($tenantName);
-
-        $unitedNationSDGRepository->shouldReceive('updateUnSdg')
-        ->once()
-        ->with($missionModel->mission_id, $requestData->toArray())
-        ->andReturn(false);
-
-        
-        $repository = $this->getRepository(
-            $languageHelper,
-            $helpers,
-            $s3Helper,
-            $countryRepository,
-            $missionMediaRepository,
-            $modelService,
-            $unitedNationSDGRepository
-        );
-
-        $response = $repository->update($requestData, rand(10, 100));
-        $this->assertInstanceOf(Mission::class, $response);
+        $response = $repository->deleteMissionTabByMissionTabId($missionTabId);
     }
 
     /**
@@ -319,7 +99,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
-     * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
+     * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
     private function getRepository(
@@ -329,7 +109,7 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
-        MissionUnitedNationSDGRepository $unitedNationSDGRepository
+        MissionTabRepository $missionTabRepository
     ) {
         return new MissionRepository(
             $languageHelper,
@@ -338,10 +118,9 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
-            $unitedNationSDGRepository
+            $missionTabRepository
         );
     }
-    
 
     /**
     * Mock an object
@@ -356,18 +135,6 @@ class MissionRepositoryTest extends TestCase
     }
 
     /**
-    * get json reponse
-    *
-    * @param class name
-    *
-    * @return JsonResponse
-    */
-    private function getJson($class)
-    {
-        return new JsonResponse($class);
-    }
-
-    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -379,6 +146,9 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
      */
     public function modelService(
@@ -391,7 +161,9 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-        Organization $organization
+        Organization $organization,
+        MissionTab $missionTab,
+        MissionTabLanguage $missionTabLanguage
     ) {
         return new ModelsService(
             $mission,
@@ -403,7 +175,9 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $organization
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
     }
 }

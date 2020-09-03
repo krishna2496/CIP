@@ -273,6 +273,7 @@ class Helpers
         // Connect master database to get tenant settings
         $this->switchDatabaseConnection('mysql');
 
+        $keys = $request->keys ?? [];
         $tenantSetting = $this->db->table('tenant_has_setting')
             ->select(
                 'tenant_has_setting.tenant_setting_id',
@@ -287,6 +288,9 @@ class Helpers
                 '=',
                 'tenant_has_setting.tenant_setting_id'
             )
+            ->when(!empty($keys), function ($query) use ($keys) {
+                return $query->whereIn('tenant_setting.key', $keys);
+            })
             ->whereNull('tenant_has_setting.deleted_at')
             ->whereNull('tenant_setting.deleted_at')
             ->where('tenant_id', $tenant->tenant_id)
