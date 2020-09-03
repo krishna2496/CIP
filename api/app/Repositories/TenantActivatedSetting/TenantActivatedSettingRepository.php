@@ -1,11 +1,12 @@
 <?php
 namespace App\Repositories\TenantActivatedSetting;
 
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingInterface;
-use App\Models\TenantActivatedSetting;
 use App\Helpers\Helpers;
-use Illuminate\Http\Request;
+use App\Models\TenantActivatedSetting;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class TenantActivatedSettingRepository implements TenantActivatedSettingInterface
 {
@@ -33,7 +34,28 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
         $this->tenantActivatedSetting = $tenantActivatedSetting;
         $this->helpers = $helpers;
     }
-    
+
+    /**
+     * Fetch tenant settings with specified keys
+     *
+     * @param $ids
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getList(array $ids = []): Collection
+    {
+        return $this->tenantActivatedSetting
+            ->select(
+                'ts.setting_id',
+                'ts.tenant_setting_id'
+            )
+            ->join('tenant_setting AS ts', 'ts.tenant_setting_id', '=', 'tenant_activated_setting.tenant_setting_id')
+            ->when(!empty($ids), function ($query) use ($ids) {
+                return $query->whereIn('ts.setting_id', $ids);
+            })
+            ->get();
+    }
+
     /**
      * Create new activated settings
      *
