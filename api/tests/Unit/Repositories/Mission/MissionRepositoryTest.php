@@ -47,6 +47,8 @@ class MissionRepositoryTest extends TestCase
     */
     public function testStoreImpactMissionSuccess()
     {
+        // \DB::setDefaultConnection('tenant');
+        
         $data = [
             'theme_id' => 1,
             'city_id' => 1,
@@ -54,6 +56,7 @@ class MissionRepositoryTest extends TestCase
             'start_date' => '2019-05-15 10:40:00',
             'end_date' => '2022-10-15 10:40:00',
             'total_seats' => rand(10, 1000),
+            'availability_id' => 1,
             'mission_type' => 'DONATION',
             'publication_status' => 'APPROVED',
             'availability_id' => 1,
@@ -211,6 +214,16 @@ class MissionRepositoryTest extends TestCase
         $missionModel->mission_id = 6587;
         $modelService->mission
         ->shouldReceive('create')
+        ->once()
+        ->andReturn($missionModel);
+
+        $hasOne = \Illuminate\Database\Eloquent\Relations\HasOne::class;
+        $mission->shouldReceive('volunteeringAttribute')
+        ->once()
+        ->andReturn($hasOne);
+
+        $hasOneMockObject = $this->mock(\Illuminate\Database\Eloquent\Relations\HasOne::class);
+        $hasOneMockObject->shouldReceive('create')
         ->once()
         ->andReturn($missionModel);
 
