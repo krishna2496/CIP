@@ -1,18 +1,19 @@
 <?php
 namespace App\Http\Controllers\Admin\Slider;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Repositories\Slider\SliderRepository;
+use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Helpers\S3Helper;
-use App\Helpers\Helpers;
+use App\Http\Controllers\Controller;
+use App\Repositories\Slider\SliderRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Exception;
 use Validator;
-use App\Events\User\UserActivityLogEvent;
 
 //!  Slider controller
 /*!
@@ -221,7 +222,7 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SLIDER_NOT_FOUND')
             );
-        } catch (\ErrorException $e) {
+        } catch (Exception $e) {
             // Response error unable to upload file on S3
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,

@@ -1,17 +1,17 @@
 <?php
 namespace App\Repositories\News;
 
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\S3Helper;
+use App\Models\News;
+use App\Models\NewsLanguage;
+use App\Models\NewsToCategory;
 use App\Repositories\News\NewsInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\News;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use \Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\NewsToCategory;
-use App\Models\NewsLanguage;
-use App\Helpers\LanguageHelper;
-use App\Helpers\S3Helper;
-use App\Helpers\Helpers;
 
 class NewsRepository implements NewsInterface
 {
