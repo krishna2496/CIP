@@ -24,6 +24,7 @@ use App\Models\Mission;
 use App\Models\City;
 use TestCase;
 use Mockery;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -56,6 +57,7 @@ class MissionRepositoryTest extends TestCase
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -84,6 +86,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
 
@@ -99,6 +102,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository;
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
@@ -109,6 +113,7 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
         return new MissionRepository(
@@ -118,6 +123,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
     }
