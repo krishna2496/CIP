@@ -108,14 +108,28 @@
                                 </i>
 
                                 <div class="text-wrap dropdown-outer" :id="`skillWrap_${mission.mission_id}`">
-                                    <span class="title-text">{{getSkills(mission.skill)}}
-                                        <span v-if="getSkillsCount(mission.skill) > 0"> {{ languageData.label.and }} </span> <u><span v-if="getSkillsCount(mission.skill) > 0"> {{getSkillsCount(mission.skill)}} </span>
-                                        <b-button v-if="getSkillsCount(mission.skill) > 0" :id="`skillPopover_${mission.mission_id}`" class="more-btn">{{ languageData.label.more }}</b-button></u>
-                                        <b-popover :target="`skillPopover_${mission.mission_id}`" triggers="hover focus" placement="top" custom-class="skill-popover" :container="`skillWrap_${mission.mission_id}`">
-                                            <b-list-group v-if="skill" v-for="(skill ,key) in getRemainingSkill(mission.skill)" :key=key>
-                                                <b-list-group-item>{{skill.title}}</b-list-group-item>
-                                            </b-list-group>
-                                        </b-popover>
+                                    <span class="title-text">
+                                        {{ getFirstSkill(mission.skill) }}
+                                        <template v-if="mission.skill.length > 1">
+                                            <span> {{ languageData.label.and }} </span>
+                                            <u>
+                                                <span> {{ mission.skill.length - 1 }} </span>
+                                                <b-button :id="`skillPopover_${mission.mission_id}`"
+                                                    class="more-btn">
+                                                    {{ languageData.label.more }}
+                                                </b-button>
+                                            </u>
+                                            <b-popover :target="`skillPopover_${mission.mission_id}`"
+                                                triggers="hover focus"
+                                                placement="top"
+                                                custom-class="skill-popover"
+                                                :container="`skillWrap_${mission.mission_id}`">
+                                                <b-list-group v-for="(skill, key) in getRemainingSkill(mission.skill)"
+                                                    :key=key>
+                                                    <b-list-group-item>{{ skill.title }}</b-list-group-item>
+                                                </b-list-group>
+                                            </b-popover>
+                                        </template>
                                     </span>
                                     <span class="subtitle-text skill-text-wrap">{{ languageData.label.skills }}</span>
                                 </div>
@@ -493,32 +507,13 @@ export default {
                 window.open(this.submitNewMissionUrl, "_self");
             }
         },
-        getSkills(skills) {
+        getFirstSkill(skills) {
             if (skills && skills[0]) {
                 return skills[0].title;
             }
         },
-        getSkillsCount(skills) {
-            let skillCount = -1;
-            if (skills) {
-                skills.filter((data, index) => {
-                    if (data) {
-                        skillCount++;
-                    }
-                });
-            }
-            return skillCount;
-        },
         getRemainingSkill(skills) {
-            if (skills) {
-                let skillData = skills.filter((data, index) => {
-                    if (data && index != 0) {
-
-                        return data;
-                    }
-                });
-                return skillData;
-            }
+            return skills.filter((skill, index) => index !== 0);
         }
     },
     created() {
