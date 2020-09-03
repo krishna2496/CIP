@@ -222,10 +222,7 @@ class MissionApplicationQuery implements QueryableInterface
                 $limit['limit'],
                 '*',
                 'page',
-                1 +
-                    is_null($limit['limit']) // If we retrieve all dataset, $limit['limit'] is null
-                    ? 0
-                    : ceil($limit['offset'] / $limit['limit']));
+                1 + ceil($limit['offset'] / $limit['limit']));
 
         $this->addCityCountryLanguageCode($applications);
 
@@ -314,7 +311,7 @@ class MissionApplicationQuery implements QueryableInterface
     private function getLimit(array $limit): array
     {
         if (!array_key_exists('limit', $limit)) {
-            $limit['limit'] = null; // we get all the results
+            $limit['limit'] = config('constants.PER_PAGE_ALL'); // we get all the results
         }
 
         if (!array_key_exists('offset', $limit)) {
