@@ -569,7 +569,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
                'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
             $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
-               'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+            'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+            $router->delete('/mission-tabs/{missionTabId}', ['as' => 'missions.missiontab.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
         }
     );
 
@@ -873,5 +875,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->post('/', ['uses' => 'Admin\Organization\OrganizationController@store']);
             $router->patch('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@update']);
             $router->delete('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@destroy']);
+        }
+    );
+
+    /* Routes for whitelisted Ips */
+    $router->group(
+        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\DonationIp\WhitelistController@getList']);
+            $router->post('/', ['uses' => 'Admin\DonationIp\WhitelistController@create']);
+            $router->patch('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@update']);
+            $router->delete('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@delete']);
         }
     );

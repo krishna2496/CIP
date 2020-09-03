@@ -203,7 +203,13 @@ return [
         'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
-        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+        'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
+        'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
+        'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully'
     ],
 
 
@@ -374,6 +380,12 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
-        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.'
-       ]
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
+
+        // mission tab module
+        'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
+
+        // For Donation IP Whitelist module
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system'
+    ]
 ];
