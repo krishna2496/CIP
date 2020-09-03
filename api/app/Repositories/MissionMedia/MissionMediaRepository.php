@@ -45,7 +45,7 @@ class MissionMediaRepository implements MissionMediaInterface
     {
         $isDefault = 0;
         foreach ($mediaImages as $value) {
-            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName, "mission/$missionId");
             // Check for default image in mission_media
             $default = (isset($value['default']) && ($value['default'] !== '')) ? $value['default'] : '0';
             if ($default === '1') {
@@ -121,7 +121,7 @@ class MissionMediaRepository implements MissionMediaInterface
         foreach ($mediaImages as $value) {
             $missionMedia = array();
             if (isset($value['media_path'])) {
-                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName, "mission/$missionId");
                 $missionMedia = array('media_name' => basename($filePath),
                                       'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
                                       'media_path' => $filePath);

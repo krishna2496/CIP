@@ -15,10 +15,11 @@ class S3Helper
      *
      * @param string $url
      * @param string $tenantName
+     * @param string|null $customPath
      *
      * @return string
      */
-    public function uploadFileOnS3Bucket(string $url, string $tenantName): string
+    public function uploadFileOnS3Bucket(string $url, string $tenantName, string $customPath = null): string
     {
 
         $headers = get_headers($url, 1);
@@ -37,19 +38,19 @@ class S3Helper
 
         $disk = Storage::disk('s3');
 
+        $path = env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME');
+        if ($customPath) {
+            $path .= "/$customPath";
+        }
+
         $disk->put(
-            $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'
-            .env('AWS_S3_IMAGES_FOLDER_NAME')
+            $tenantName
+            .'/'.$path
             .'/'.$fileName,
             file_get_contents($url, false, $context)
         );
 
-        return self::makeTenantS3BaseUrl($tenantName)
-            . env('AWS_S3_ASSETS_FOLDER_NAME')
-            . '/'
-            . env('AWS_S3_IMAGES_FOLDER_NAME')
-            . '/'
-            . $fileName;
+        return self::makeTenantS3BaseUrl($tenantName).$path.'/'.$fileName;
     }
 
     /**
