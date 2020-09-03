@@ -846,20 +846,24 @@
           if (response.error == true) {
             this.makeToast("danger", response.message);
           } else {
+            const redirect = !this.isUserProfileComplete && response.data.is_profile_complete;
             this.isUserProfileComplete = response.data.is_profile_complete;
             store.commit('changeProfileSetFlag',response.data.is_profile_complete);
             store.commit('setDefaultLanguageCode', this.languageCode);
-            setSiteTitle();
             this.showPage = false;
             this.setPolicyPage();
             this.getUserProfileDetail().then(() => {
               this.showPage = true;
               loadLocaleMessages(this.profile.languageCode).then(() => {
                 this.languageData = JSON.parse(store.state.languageLabel);
+                setSiteTitle();
                 this.makeToast("success", response.message);
                 this.isShownComponent = true;
+                store.commit("changeUserDetail", this.profile)
+                if (redirect) {
+                  this.$router.push('/home');
+                }
               });
-              store.commit("changeUserDetail", this.profile)
             });
           }
         });

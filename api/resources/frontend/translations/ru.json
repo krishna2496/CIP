@@ -296,7 +296,8 @@
 		"virtual_mission" : "виртуальный",
 		"virtual_missions" : "Виртуальное волонтерство",
 		"home" : "дом",
-		"login_with_sso": "Войти с помощью SSO"
+		"login_with_sso": "Войти с помощью SSO",
+		"site_title" : "Главная"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",
