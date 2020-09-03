@@ -180,11 +180,14 @@ class MissionApplicationQuery implements QueryableInterface
                  * previous filtering. We then need to use the OR condition for searchable fields.
                  */
                 $searchCallback = function ($query) use ($search, $filters, $languageId) {
-                    $query->whereHas('user', function($query) use ($search) {
-                        $query
-                            ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}"])
-                            ->orWhere('email', 'like', "%${search}%");
-                    })
+                    $query
+                        ->whereHas('user', function($query) use ($search) {
+                            $query
+                                ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}%"])
+                                ->orWhere('email', 'like', "%${search}%")
+                                ->orWhere('first_name', 'like', "${search}%")
+                                ->orWhere('last_name', 'like', "${search}%");
+                        })
                         ->orWhere('mission_language.title', 'like', "%${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
