@@ -69,7 +69,7 @@ class MissionMediaRepository implements MissionMediaInterface
             $filePath = $this->s3helper->uploadFileOnS3Bucket(
                 $value['media_path'],
                 $tenantName,
-                "mission/$missionId/$mediaId"
+                "missions/$missionId/media/$mediaId"
             );
             $mediaData->update([
                 'media_name' => basename($filePath),
@@ -157,7 +157,7 @@ class MissionMediaRepository implements MissionMediaInterface
                 $filePath = $this->s3helper->uploadFileOnS3Bucket(
                     $value['media_path'],
                     $tenantName,
-                    "mission/$missionId/$mediaId"
+                    "missions/$missionId/media/$mediaId"
                 );
                 $mediaData->update([
                     'media_name' => basename($filePath),

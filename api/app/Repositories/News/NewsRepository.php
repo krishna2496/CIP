@@ -145,7 +145,7 @@ class NewsRepository implements NewsInterface
             $newsImage = $this->s3helper->uploadFileOnS3Bucket(
                 $request->news_image,
                 $tenantName,
-                "news/$newsId"
+                "news/$newsId/images"
             );
             $news->update([
                 'news_image' => $newsImage
@@ -195,7 +195,7 @@ class NewsRepository implements NewsInterface
             $newsImage = $this->s3helper->uploadFileOnS3Bucket(
                 $request->news_image,
                 $tenantName,
-                "news/$newsId"
+                "news/$newsId/images"
             );
             $request->request->add(['news_image' => $newsImage]);
         }

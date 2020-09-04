@@ -27,11 +27,11 @@ class S3Helper
     ): string {
         $fileName = $this->generateFilename($url);
 
-        $path = env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME');
+        $path = '';
         if ($customPath) {
-            $path .= "/$customPath";
+            $path .= "$customPath/";
         }
-        $path .= "/$fileName";
+        $path .= "$fileName";
 
         return $this->uploadFile(
             $url,
@@ -137,35 +137,6 @@ class S3Helper
         $pathInS3 = S3Helper::makeTenantS3BaseUrl($tenantName) . $documentPath;
         $disk->put( $tenantName . '/' . $documentPath, @file_get_contents($file, false, $context));
         return $pathInS3;
-    }
-
-    /**
-     * Upload file on AWS s3 bucket
-     *
-     * @param string $url
-     * @param string $tenantName
-     * @param string|null $customPath
-     *
-     * @return string
-     */
-    public function uploadMissionDocumentOnS3Bucket(
-        string $url,
-        string $tenantName,
-        string $customPath = null
-    ): string {
-        $fileName = $this->generateFilename($url);
-
-        $path = env('AWS_S3_ASSETS_FOLDER_NAME').'/'.config('constants.AWS_S3_DOCUMENTS_FOLDER_NAME');
-        if ($customPath) {
-            $path .= "/$customPath";
-        }
-        $path .= "/$fileName";
-
-        return $this->uploadFile(
-            $url,
-            $tenantName,
-            $path
-        );
     }
 
     /**

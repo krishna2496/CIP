@@ -255,10 +255,10 @@ class MissionRepository implements MissionInterface
                     ];
                     $document = $this->modelsService->missionDocument->create($missionDocument);
                     $documentId = $document->mission_document_id;
-                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket(
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket(
                         $value['document_path'],
                         $tenantName,
-                        "mission/$mission->mission_id/$documentId"
+                        "missions/$mission->mission_id/documents/$documentId"
                     );
                     $document->update([
                         'document_name' => basename($filePath),
@@ -499,10 +499,10 @@ class MissionRepository implements MissionInterface
 
                 if (isset($value['document_path'])) {
                     $documentId = $document->mission_document_id;
-                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket(
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket(
                         $value['document_path'],
                         $tenantName,
-                        "mission/$id/$documentId"
+                        "missions/$id/documents/$documentId"
                     );
                     $document->update([
                         'document_path' => $filePath,
