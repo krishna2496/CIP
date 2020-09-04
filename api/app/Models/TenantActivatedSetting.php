@@ -43,7 +43,7 @@ class TenantActivatedSetting extends Model
      *
      * @var array
      */
-    protected $visible = ['tenant_setting_id', 'tenant_activated_setting_id','settings'];
+    protected $visible = ['tenant_setting_id', 'tenant_activated_setting_id', 'settings', 'setting_id'];
 
     /**
      * The rules that should validate request.
@@ -53,7 +53,7 @@ class TenantActivatedSetting extends Model
     public static $rules = [
         // Validation rules
     ];
-   
+
     /**
      * Store/update settings.
      *

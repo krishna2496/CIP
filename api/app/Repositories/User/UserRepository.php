@@ -112,8 +112,6 @@ class UserRepository implements UserInterface
      */
     public function userList(Request $request): LengthAwarePaginator
     {
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
         $activityLogAction = config('constants.activity_log_actions.LOGIN');
         $activityLogType = config('constants.activity_log_types.AUTH');
 
@@ -129,7 +127,7 @@ class UserRepository implements UserInterface
             email,
             password,
             case when(avatar = '' || avatar is null)
-                then '$defaultAvatarImage' else avatar
+                then '' else avatar
                 end as avatar,
             timezone_id,
             availability_id,

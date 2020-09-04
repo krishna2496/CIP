@@ -503,14 +503,18 @@ return [
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
         'ERROR_SAML_ACCESS_ONLY_ACTIVE' => '800106',
-
         'ERROR_STATE_UNABLE_TO_DELETE' => '800039',
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
         'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
-        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045'
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
+        'MISSION_TAB_NOT_FOUND' => '80046',
+
+        // Donation error codes: 900100 - 900199
+        'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
     ],
 
     /**
@@ -608,7 +612,9 @@ return [
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
         'STATE' => 'STATE',
-        'ORGANIZATION'=>'ORGANIZATION'
+        'ORGANIZATION' => 'ORGANIZATION',
+        'MISSION_TAB' => 'MISSION_TAB',
+        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST'
     ],
 
     'activity_log_actions' => [
@@ -653,7 +659,6 @@ return [
         'first_name',
         'last_name',
         'email',
-        'city_id',
         'country_id',
         'timezone_id',
         'language_id'
