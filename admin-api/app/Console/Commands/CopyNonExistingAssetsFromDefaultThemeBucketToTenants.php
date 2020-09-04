@@ -53,12 +53,12 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
         $files = $this->option('file');
 
         if (!empty($folderPath) && !empty($files)) {
-            $this->warn('Only single option is acceptable at a time');
+            $this->error('Only single option is acceptable at a time');
             return;
         }
 
         if (empty($folderPath) && empty($files)) {
-            $this->warn('Folder or file option is missing');
+            $this->error('Folder or file option is missing');
             return;
         }
 
@@ -67,7 +67,8 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
         if (!empty($folderPath)) {
             $completeFolderPath = $defaultThemePath.'/'.$folderPath;
             if (!Storage::disk('s3')->exists($completeFolderPath)) {
-                $this->warn('Given folder path is not found');
+                $this->error('Given folder path is not found');
+                return;
             }
             $filesToBeCopied = Storage::disk('s3')->allFiles($completeFolderPath);
         } else {
@@ -75,7 +76,7 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
             foreach ($files as $file) {
                 $filepath = $defaultThemePath.'/'.$file;
                 if (!Storage::disk('s3')->exists($filepath)) {
-                    $this->warn('Given filepath '.$file.' is not found');
+                    $this->error('Given filepath '.$file.' is not found');
                     return;
                 }
                 $filesToBeCopied[] = $filepath;
