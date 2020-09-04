@@ -87,12 +87,10 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "country_id" => $countryDetail->country_id,
         "start_date" => "2019-05-15 10:40:00",
         "end_date" => "2022-10-15 10:40:00",
-        "total_seats" => rand(10, 1000),        
         "mission_type" => config("constants.mission_type.GOAL"),
         "publication_status" => config("constants.publication_status.APPROVED"),
         "organisation_id" => 1,
-        "organisation_name" => str_random(10),
-        "availability_id" => 1
+        "organisation_name" => str_random(10)
     ];
 });
 
@@ -292,5 +290,13 @@ $factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $f
         'country_id' => 1, 
         'language_id' => 1,
         'name' => $faker->name,
+    ];
+});
+
+$factory->define(App\Models\DonationIpWhitelist::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->uuid, 
+        'pattern' => $faker->ipv4,
+        'description' => $faker->text(60)
     ];
 });

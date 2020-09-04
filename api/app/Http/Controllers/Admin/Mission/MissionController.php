@@ -21,6 +21,7 @@ use App\Helpers\LanguageHelper;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
+use App\Services\Mission\ModelsService;
 
 //!  Mission controller
 /*!
@@ -64,10 +65,15 @@ class MissionController extends Controller
      */
     private $notificationRepository;
 
-    /**
+    /*
      * @var App\Repositories\Organization\OrganizationRepository
      */
     private $organizationRepository;
+
+    /**
+     * @var App\Services\Mission\ModelsService
+     */
+    private $modelsService;
 
     /**
      * Create a new controller instance.
@@ -80,6 +86,7 @@ class MissionController extends Controller
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
+     * @param  App\Services\Mission\ModelsService $modelsService
      * @return void
      */
     public function __construct(
@@ -90,7 +97,8 @@ class MissionController extends Controller
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         NotificationRepository $notificationRepository,
-        OrganizationRepository $organizationRepository
+        OrganizationRepository $organizationRepository,
+        ModelsService $modelsService
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -100,6 +108,7 @@ class MissionController extends Controller
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->notificationRepository = $notificationRepository;
         $this->organizationRepository = $organizationRepository;
+        $this->modelsService = $modelsService;
     }
 
     /**
@@ -148,7 +157,6 @@ class MissionController extends Controller
                 "location" => "required",
                 "location.city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
                 "location.country_code" => "required|exists:country,ISO,deleted_at,NULL",
-                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
@@ -176,7 +184,6 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required|valid_document_path",
                 "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "mission_detail.*.short_description" => "max:1000",
@@ -187,9 +194,28 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
+                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.availability_id" => "integer|required_with:volunteering_attribute|
+                exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
+                "total_seats" => "integer|min:1",
+                "is_virtual" => "sometimes|required|in:0,1",
+                "mission_tabs" => "sometimes|required|array",
+                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.translations"=> 'required',
+                "mission_tabs.*.translations.*.lang" =>
+                "required_with:mission_tabs.*.translations|max:2",
+                "mission_tabs.*.translations.*.name" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections.*.title" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections.*.content" =>
+                "required_with:mission_tabs.*.translations.*.sections",
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
@@ -202,7 +228,6 @@ class MissionController extends Controller
                 'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
-
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -212,7 +237,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Update organization city,state & country id to null if it's blank
         if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
             $organization = $request->get('organization');
@@ -339,9 +364,14 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
+                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.availability_id" => "sometimes|required_with:volunteering_attribute|integer|
+                exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "is_virtual" => "sometimes|required|in:0,1",
+				"total_seats" => "integer|min:1",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
@@ -356,7 +386,6 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "organization.organization_id" => "required_with:organization|uuid",
@@ -370,6 +399,24 @@ class MissionController extends Controller
                 "organization.postal_code" => "max:120",
                 "organisation.organisation_name" => "sometimes|required_without:organization",
                 "organisation.organisation_id" => "required_with:organisation|uuid",
+                "mission_tabs" => "sometimes|required|array",
+                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.mission_tab_id" =>
+                'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
+                "mission_tabs.*.sort_key" =>
+                "required_without:mission_tabs.*.mission_tab_id|integer",
+                "mission_tabs.*.translations" =>
+                "required_without:mission_tabs.*.mission_tab_id",
+                "mission_tabs.*.translations.*.lang" =>
+                "required_with:mission_tabs.*.translations|max:2",
+                "mission_tabs.*.translations.*.name" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections.*.title" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections.*.content" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections" =>
+                "required_without:mission_tabs.*.mission_tab_id",
                 'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
                 'donation_attribute.goal_amount_currency' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
@@ -420,7 +467,7 @@ class MissionController extends Controller
                 );
             }
         }
- 
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
@@ -514,6 +561,22 @@ class MissionController extends Controller
                     }
                 }
             }
+        }
+
+        // Check for mission tab id is valid or not
+        try {
+            if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
+                foreach ($request->mission_tabs as $missionTabValue) {
+                    if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== "")) {
+                        $this->missionRepository->isMissionTabLinkedToMission($missionId, $missionTabValue['mission_tab_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
         }
 
         // Update organization city,state & country id to null if it's blank
@@ -665,6 +728,40 @@ class MissionController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_DOCUMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_DOCUMENT_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Remove mission tab
+     *
+     * @param int|string $missionTabId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionTab($missionTabId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_TAB_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_TAB'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionTabId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
             );
         }
     }

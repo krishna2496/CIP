@@ -82,16 +82,25 @@ trait MissionTransformable
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
 
-        if (isset($mission['availability'])) {
-            $arrayKey = array_search($languageCode, array_column($mission['availability']['translations'], 'lang'));
-            if ($arrayKey !== '') {
-                $mission['availability_type'] = $mission['availability']['translations'][$arrayKey]['title'];
+        if (isset($mission['volunteeringAttribute']['availability'])) {
+            $arrayKey = array_search($languageCode, array_column($mission['volunteeringAttribute']['availability']['translations'], 'lang'));
+            if ($arrayKey  !== '') {
+                $mission['availability_type'] = $mission['volunteeringAttribute']['availability']['translations'][$arrayKey]['title'];
             }
-            unset($mission['availability']);
+            unset($mission['volunteeringAttribute']['availability']);
         }
+
+        if (isset($mission['volunteeringAttribute'])) {
+            $mission['availability_id'] = $mission['volunteeringAttribute']['availability_id'];
+            $mission['is_virtual'] = $mission['volunteeringAttribute']['is_virtual'];
+            $mission['total_seats'] = $mission['volunteeringAttribute']['total_seats'];
+            unset($mission['volunteeringAttribute']);
+        }
+
         // Set seats_left or already_volunteered
         if ($mission['total_seats'] !== 0 && $mission['total_seats'] !== null) {
-            $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
+            $mission['seats_left'] = ($mission['total_seats']) -
+            ($mission['mission_application_count']);
         } else {
             $mission['already_volunteered'] = $mission['mission_application_count'];
         }
@@ -114,8 +123,8 @@ trait MissionTransformable
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
 
-        $mission['label_goal_achieved'] = $missionLanguage->label_goal_achieved ?? '';
-        $mission['label_goal_objective'] = $missionLanguage->label_goal_objective ?? '';
+        $mission['label_goal_achieved'] =  $missionLanguage->label_goal_achieved ?? '';
+        $mission['label_goal_objective'] =  $missionLanguage->label_goal_objective ?? '';
         $mission['custom_information'] = $missionLanguage->custom_information ?? null;
         unset($mission['missionLanguage']);
         // Check for apply in mission validity
@@ -123,13 +132,15 @@ trait MissionTransformable
 
         $todayDate = Carbon::parse(date(config('constants.DB_DATE_FORMAT')));
         $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
-        $todayTime = $this->helpers->getUserTimeZoneDate(date(config('constants.DB_DATE_TIME_FORMAT')));
+        $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
 
-        if (($mission['user_application_count'] > 0) ||
-            ($mission['total_seats'] !== 0 && $mission['total_seats'] === $mission['mission_application_count']) ||
+        if ($mission['volunteeringAttribute']) {
+            if (($mission['user_application_count'] > 0) ||
+            ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] === $mission['mission_application_count']) ||
             ($mission['end_date'] !== null && $mission['end_date'] <= $today)
             ) {
-            $mission['set_view_detail'] = 1;
+                $mission['set_view_detail'] = 1;
+            }
         }
 
         if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
@@ -205,18 +216,7 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-
-        // Mission tab details
-        if (!empty($mission['missionTab']) && (isset($mission['missionTab']))
-        ) {
-            $missionTab = $mission['missionTab']->toArray();
-            array_multisort(
-                array_column($missionTab, 'sort_key'),
-                SORT_ASC,
-                $missionTab
-            );
-        }
-
+        unset($mission['volunteeringAttribute']);
         return $mission;
     }
 }

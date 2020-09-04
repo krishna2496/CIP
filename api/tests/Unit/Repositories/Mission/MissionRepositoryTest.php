@@ -2,32 +2,28 @@
 
 namespace Tests\Unit\Http\Repositories\Mission;
 
-use App\Helpers\Helpers;
-use App\Helpers\LanguageHelper;
-use App\Helpers\S3Helper;
-use App\Repositories\Country\CountryRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Services\Mission\ModelsService;
 use App\Repositories\MissionTab\MissionTabRepository;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Repositories\Country\CountryRepository;
 use App\Repositories\Mission\MissionRepository;
-use App\Models\Mission;
-use App\Models\MissionLanguage;
-use App\User;
-use Mockery;
-use TestCase;
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\TimeMission;
-use App\Models\MissionDocument;
-use App\Models\FavouriteMission;
-use App\Models\MissionSkill;
-use App\Models\MissionRating;
+use App\Services\Mission\ModelsService;
 use App\Models\MissionApplication;
-use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
+use App\Models\FavouriteMission;
+use App\Models\MissionLanguage;
+use App\Models\MissionDocument;
+use App\Helpers\LanguageHelper;
+use App\Models\MissionRating;
+use App\Models\MissionSkill;
+use App\Models\Organization;
+use App\Models\TimeMission;
+use App\Models\MissionTab;
+use App\Helpers\S3Helper;
+use App\Helpers\Helpers;
+use App\Models\Mission;
 use App\Models\City;
+use TestCase;
+use Mockery;
 use App\Models\DonationAttribute;
 
 class MissionRepositoryTest extends TestCase
@@ -140,6 +136,7 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $countryRepository = $this->mock(CountryRepository::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
+        $organization = $this->mock(Organization::class);
 
         $modelsService = $this->modelService(
             $mission,
@@ -151,6 +148,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
             $missionTab,
             $missionTabLanguage,
             $donationAttribute
@@ -279,6 +277,8 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $countryRepository = $this->mock(CountryRepository::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
+        $organization = $this->mock(Organization::class);
+
         $modelsService = $this->modelService(
             $mission,
             $timeMission,
@@ -289,6 +289,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
             $missionTab,
             $missionTabLanguage,
             $donationAttribute
@@ -338,9 +339,80 @@ class MissionRepositoryTest extends TestCase
     }
 
     /**
+    * @testdox Test mission tab deleted by mission_tab_id success
+    *
+    * @return void
+    */
+    public function testDeleteMissionTabByMissionTabIdSuccess()
+    {
+        $missionTabId = str_random(8).'-'.str_random(4).'-'.str_random(4).'-'.str_random(4).'-'.str_random(12);
+
+        $mission = $this->mock(Mission::class);
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $s3Helper = $this->mock(S3Helper::class);
+        $countryRepository = $this->mock(CountryRepository::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $collection = $this->mock(Collection::class);
+        $organization = $this->mock(Organization::class);
+        $donationAttribute = $this->mock(DonationAttribute::class);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $organization,
+            $missionTab,
+            $missionTabLanguage,
+            $donationAttribute
+        );
+
+        $modelService->missionTab
+        ->shouldReceive('deleteMissionTabByMissionTabId')
+        ->with($missionTabId)
+        ->andReturn();
+
+        $repository = $this->getRepository(
+            $languageHelper,
+            $helpers,
+            $s3Helper,
+            $countryRepository,
+            $missionMediaRepository,
+            $modelService,
+            $missionTabRepository
+        );
+
+        $response = $repository->deleteMissionTabByMissionTabId($missionTabId);
+    }
+
+    /**
      * Create a new respository instance.
      *
-     * @param  App\Models\mission
+     * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Helpers\Helpers $helpers
+     * @param  App\Helpers\S3Helper $s3helper
+     * @param  App\Repositories\Country\CountryRepository $countryRepository
+     * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
+     * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
     private function getRepository(
@@ -376,18 +448,6 @@ class MissionRepositoryTest extends TestCase
     }
 
     /**
-    * get json reponse
-    *
-    * @param class name
-    *
-    * @return JsonResponse
-    */
-    private function getJson($class)
-    {
-        return new JsonResponse($class);
-    }
-
-    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -399,13 +459,13 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @param  App\Models\DonationAttribute $donationAttribute
      * @return void
      */
-
-    private function modelService(
+    public function modelService(
         Mission $mission,
         TimeMission $timeMission,
         MissionLanguage $missionLanguage,
@@ -415,6 +475,7 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        Organization $organization,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage,
         DonationAttribute $donationAttribute
@@ -429,6 +490,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $organization,
             $missionTab,
             $missionTabLanguage,
             $donationAttribute

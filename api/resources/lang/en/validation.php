@@ -75,6 +75,8 @@ return [
     'present'              => 'The :attribute field is required',
     'distinct'             => 'The :attribute field has a duplicate value.',
     'uuid'                 => 'Please use valid UUID string for :attribute',
+    'ip_whitelist_pattern' => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
+    'max_item'             => 'The record count may not be greater than :max_item.',
 
     /*
     |--------------------------------------------------------------------------
@@ -172,13 +174,13 @@ return [
         'password_confirmation' => 'confirm password',
         'translations.*.lang' => 'language code',
         'is_mandatory' => 'mandatory',
-        'page_details.translations.*.sections.*.title' => 'title',
-        'page_details.translations.*.sections.*.description' => 'description',
-        'location.city_id' => 'city',
+		'page_details.translations.*.sections.*.title' => 'title',
+		'page_details.translations.*.sections.*.description' => 'description',
+		'location.city_id' => 'city',
         'location.state_id' => 'state',
-        'location.country_code' => 'country code',
-        'organisation.organisation_id' => 'organisation id',
-        'mission_detail.*.lang' => 'language code',
+		'location.country_code' => 'country code',
+		'organisation.organisation_id' => 'organisation id',
+		'mission_detail.*.lang' => 'language code',
         'to_user_id' => 'user id',
         'custom_fields.*.field_id' => 'field id',
         'settings.*.tenant_setting_id' => 'tenant setting id',
@@ -229,6 +231,19 @@ return [
         'organization.state_id' => 'organization state id',
         'organization.country_id' => 'organization country id',
         'organization.postal_code' => 'organization postal code',
+        'volunteering_attribute.availability_id' => 'availability id',
+        'volunteering_attribute.is_virtual' => 'is virtual',
+        'volunteering_attribute.total_seats' => 'total seats',
+        'mission_tabs.*.translations' => 'mission tab translation',
+        'mission_tabs.*.sort_key' => 'sort key',
+        'mission_tabs.*.languages.*.language_id' => 'language id',
+        'mission_tabs.*.languages.*.name' => 'name',
+        'mission_tabs.*.translations.*.lang' => 'language code',
+        'mission_tabs.*.translations.*.name' => 'name',
+        'mission_tabs.*.translations.*.sections' => 'section details',
+        'mission_tabs.*.translations.*.sections.*.title' => 'section title',
+        'mission_tabs.*.translations.*.sections.*.content' => 'section content',
+        'mission_tabs.*.mission_tab_id' => 'mission tab id',
         'donation_attribute.goal_amount_currency' => 'goal amount currency',
         'donation_attribute.goal_amount' => 'goal amount',
         'donation_attribute.show_goal_amount' => 'show goal amount',
@@ -238,6 +253,5 @@ return [
         'donation_attribute.show_donors_count' => 'show donors count',
         'donation_attribute.disable_when_funded' => 'disable when funded',
         'donation_attribute.is_disabled' => 'is disabled'
-		],
-
+	]
 ];
