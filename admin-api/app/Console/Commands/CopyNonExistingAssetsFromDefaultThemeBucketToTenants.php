@@ -106,7 +106,7 @@ class CopyNonExistingAssetsFromDefaultThemeBucketToTenants extends Command
             foreach ($tenantsList as $tenant) {
 
                 // Check tenant directory is exist or not
-                if (Storage::disk('s3')->exists('optimydev')) {
+                if (Storage::disk('s3')->exists($tenant['name'])) {
                     foreach ($files as $file) {
                         
                         // Remove default_theme path from file URL
