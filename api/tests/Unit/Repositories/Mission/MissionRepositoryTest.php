@@ -134,6 +134,7 @@ class MissionRepositoryTest extends TestCase
             ], $request->organization)
             ->andReturn($organizationObject);
 
+
         $languages = new Collection([
             [
                 'code' => 'en'
@@ -168,12 +169,8 @@ class MissionRepositoryTest extends TestCase
             'organisation_name' => $organizationObject->name
         ];
 
-        $missionInfo = $missionData;
-        $missionInfo['mission_id'] = 1;
-
-        $missionObject = factory(Mission::class)->make(
-            $missionInfo
-        );
+        $missionObject = new Mission();
+        $missionObject->setAttribute('mission_id', 1);
 
         $hasOne = $this->mock(HasOne::class);
         $hasOne->shouldReceive('create')
@@ -298,9 +295,8 @@ class MissionRepositoryTest extends TestCase
             ->andReturn($languages);
 
         $missionId = 1;
-        $missionObject = factory(Mission::class)->make([
-            'mission_id' => $missionId
-        ]);
+        $missionObject = new Mission();
+        $missionObject->setAttribute('mission_id', $missionId);
 
         $mission = $this->mock(Mission::class);
         $mission->shouldReceive('findOrFail')
