@@ -10,30 +10,12 @@ use App\Models\NewsLanguage;
 use App\Models\NewsToCategory;
 use App\Repositories\News\NewsRepository;
 use Faker\Factory as FakerFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Mockery;
 use StdClass;
 use TestCase;
-
-// use App\Events\User\UserActivityLogEvent;
-// use App\Helpers\ResponseHelper;
-// use App\Http\Controllers\Admin\Slider\SliderController;
-// use App\Models\Slider;
-// use App\Repositories\News\NewsInterface;
-// use App\Repositories\Slider\SliderRepository;
-// use Exception;
-// use Illuminate\Database\Eloquent\Collection;
-// use Illuminate\Database\Eloquent\ModelNotFoundException;
-// use Illuminate\Http\Client\Request as ClientRequest;
-// use Illuminate\Http\JsonResponse;
-// use Illuminate\Http\Request;
-// use Illuminate\Http\Response;
-// use Illuminate\Pagination\LengthAwarePaginator;
-// use Illuminate\Support\Collection;
-// use Illuminate\Support\MessageBag;
-// use Illuminate\Validation\Validator as TrueValidator;
-// use InvalidArgumentException;
-// use Validator;
 
 class NewsRepositoryTest extends TestCase
 {
@@ -50,64 +32,45 @@ class NewsRepositoryTest extends TestCase
 		$languageId = 2;
 		$defaultTenantLanguageId = 3;
 
-		$anything = $this->mockAnything()
-			->setMethods([
-				'count',
-				'first',
-				'get',
-				'select',
-				'toArray',
-				'where',
-			])
-			->disableOriginalConstructor()
-			->getMock();
-
-		$anything
-			->expects($this->once())
-			->method('select')
+		$this->newsLanguage
+			->shouldReceive('select')
+			->once()
 			->with('title', 'language_id')
-			->willReturn($anything);
+			->andReturnSelf();
 
-		$anything
-			->expects($this->exactly(2))
-			->method('where')
-			->withConsecutive(
-				[['news_id' => $newsId]],
-				['language_id', $languageId],
-			)
-			->willReturn($anything);
+		$this->newsLanguage
+			->shouldReceive('where')
+			->twice()
+			->andReturnSelf();
 
-		$anything
-			->expects($this->once())
-			->method('get')
-			->willReturn($anything);
+		$this->newsLanguage
+			->shouldReceive('get')
+			->once()
+			->andReturnSelf();
 
-		$anything
-			->expects($this->once())
-			->method('count')
-			->willReturn(1);  // as long as greater than 0
+		$this->newsLanguage
+			->shouldReceive('count')
+			->once()
+			->andReturn(1);  // as long as its greater than 0
 
-		$anything
-			->expects($this->once())
-			->method('toArray')
-			->willReturn([
+		$this->newsLanguage
+			->shouldReceive('toArray')
+			->once()
+			->andReturn([
 				['language_id' => $languageId],
 			]);
 
-		$anything
-			->expects($this->once())
-			->method('first')
-			->willReturn($this->news);
-
-		$this->newsLanguage = $this->newsLanguage
-			->setMethods(['withTrashed'])
-			->disableOriginalConstructor()
-			->getMock();
+		$news = new News;
+		$news->title = 'news today';
+		$this->newsLanguage
+			->shouldReceive('first')
+			->once()
+			->andReturn($news);
 
 		$this->newsLanguage
-			->expects($this->once())
-			->method('withTrashed')
-			->willReturn($anything);
+			->shouldReceive('withTrashed')
+			->once()
+			->andReturnSelf();
 
 		$newsRepository = $this->getNewsRepositoryMock();
 		$result = $newsRepository->getNewsTitle($newsId, $languageId, $defaultTenantLanguageId);
@@ -121,62 +84,703 @@ class NewsRepositoryTest extends TestCase
 		$languageId = 2;
 		$defaultTenantLanguageId = 3;
 
-		$anything = $this->mockAnything()
-			->setMethods([
-				'count',
-				'first',
-				'get',
-				'select',
-				'toArray',
-				'where',
-			])
-			->disableOriginalConstructor()
-			->getMock();
-
-		$anything
-			->expects($this->once())
-			->method('select')
+		$this->newsLanguage
+			->shouldReceive('select')
+			->once()
 			->with('title', 'language_id')
-			->willReturn($anything);
-
-		$anything
-			->expects($this->once())
-			->method('where')
-			->with(['news_id' => $newsId])
-			->willReturn($anything);
-
-		$anything
-			->expects($this->once())
-			->method('get')
-			->willReturn($anything);
-
-		$anything
-			->expects($this->once())
-			->method('count')
-			->willReturn(0);  // no entry
-
-		$anything
-			->expects($this->never())
-			->method('toArray');
-
-		$anything
-			->expects($this->never())
-			->method('first');
-
-		$this->newsLanguage = $this->newsLanguage
-			->setMethods(['withTrashed'])
-			->disableOriginalConstructor()
-			->getMock();
+			->andReturnSelf();
 
 		$this->newsLanguage
-			->expects($this->once())
-			->method('withTrashed')
-			->willReturn($anything);
+			->shouldReceive('where')
+			->once()
+			->with(['news_id' => $newsId])
+			->andReturnSelf();
+
+		$this->newsLanguage
+			->shouldReceive('get')
+			->once()
+			->andReturnSelf();
+
+		$this->newsLanguage
+			->shouldReceive('count')
+			->once()
+			->andReturn(0);  // no entry
+
+		$this->newsLanguage
+			->shouldReceive('toArray')
+			->never();
+
+		$this->newsLanguage
+			->shouldReceive('first')
+			->never();
+
+		$this->newsLanguage
+			->shouldReceive('withTrashed')
+			->once()
+			->andReturnSelf();
 
 		$newsRepository = $this->getNewsRepositoryMock();
 		$result = $newsRepository->getNewsTitle($newsId, $languageId, $defaultTenantLanguageId);
 
-		$this->assertSame('', $result);
+		$this->assertEmpty($result);
+	}
+
+	public function testGetNewsDetails()
+	{
+		$newsId = 1;
+		$newsStatus = config('constants.news_status.PUBLISHED');
+
+		$this->news
+			->shouldReceive('with')
+			->twice()
+			->andReturnSelf();
+
+		$this->news
+			->shouldReceive('where')
+			->once()
+			->andReturnSelf();
+
+		$this->news
+			->shouldReceive('findOrFail')
+			->once()
+			->andReturn(new News);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->getNewsDetails($newsId, $newsStatus);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testGetNewsDetailsNoStatus()
+	{
+		$newsId = 1;
+		$newsStatus = null;
+
+		$this->news
+			->shouldReceive('with')
+			->twice(3)
+			->andReturnSelf();
+
+		$this->news
+			->shouldNotReceive('where');
+
+		$this->news
+			->shouldReceive('findOrFail')
+			->once()
+			->andReturn(new News);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->getNewsDetails($newsId, $newsStatus);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testGetNewsListWithSearchAndOrdering()
+	{
+		$this->request->query->add([
+			'search' => 'search',
+			'order' => true,
+		]);
+		$newsStatus = config('constants.news_status.PUBLISHED');
+
+		$this->news
+			->shouldReceive('with')
+			->twice()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive(
+				'whereHas',
+				'orderBy',
+				'where',
+			)
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldNotReceive('select'); // used in a callback
+		$this->news
+			->shouldReceive('paginate')
+			->once()
+			->andReturn($this->lengthAwarePaginator);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->getNewsList($this->request, $newsStatus);
+		$this->assertInstanceOf(LengthAwarePaginator::class, $result);
+	}
+
+	public function testGetNewsListWithSearchOnlyNoOrdering()
+	{
+		$this->request->query->add([
+			'search' => 'search',
+		]);
+		$newsStatus = config('constants.news_status.PUBLISHED');
+
+		$this->news
+			->shouldReceive('with')
+			->twice()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive(
+				'where',
+				'whereHas',
+			)
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldNotReceive(
+				'orderBy',
+				'select',  // used in a callback
+			);
+		$this->news
+			->shouldReceive('paginate')
+			->once()
+			->andReturn($this->lengthAwarePaginator);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->getNewsList($this->request, $newsStatus);
+		$this->assertInstanceOf(LengthAwarePaginator::class, $result);
+	}
+
+	public function testGetNewsListWithoutSearchNorOrdering()
+	{
+		$this->request->query->add([
+			'search' => 'search',
+			'order' => true,
+		]);
+		$newsStatus = config('constants.news_status.PUBLISHED');
+
+		$this->news
+			->shouldReceive('with')
+			->twice()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive(
+				'orderBy',
+				'where',
+				'whereHas',
+			)
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldNotReceive(
+				'select',  // used in a callback
+			);
+		$this->news
+			->shouldReceive('paginate')
+			->once()
+			->andReturn($this->lengthAwarePaginator);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->getNewsList($this->request, $newsStatus);
+		$this->assertInstanceOf(LengthAwarePaginator::class, $result);
+	}
+
+	public function testGetNewsListWithoutStatus()
+	{
+		$this->request->query->add([
+			'search' => 'search',
+			'order' => true,
+		]);
+		$newsStatus = null;
+
+		$this->news
+			->shouldReceive('with')
+			->twice()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive(
+				'orderBy',
+				'whereHas',
+			)
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldNotReceive(
+				'select',  // used in a callback
+				'where',
+			);
+		$this->news
+			->shouldReceive('paginate')
+			->once()
+			->andReturn($this->lengthAwarePaginator);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->getNewsList($this->request, $newsStatus);
+		$this->assertInstanceOf(LengthAwarePaginator::class, $result);
+	}
+
+	public function testDelete()
+	{
+		$newsId = 1;
+
+		$news = $this->createMock(News::class);
+
+		$this->news
+			->shouldReceive('delete')
+			->once()
+			->andReturn(true);
+		$this->news
+			->shouldReceive('findOrFail')
+			->once()
+			->with($newsId)
+			->andReturnSelf();
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->delete($newsId);
+		$this->assertIsBool($result);
+		$this->assertTrue($result);
+	}
+
+	public function testStore()
+	{
+		$newsId = 1;
+		$query = [
+			'user_name' => $this->faker->userName,
+			'user_title' => $this->faker->bs,
+			'user_thumbnail' => $this->faker->imageUrl,
+			'status' => config('constants.news_status.PUBLISHED'),
+		];
+		$this->request->query->add($query);
+		$this->request->merge([
+			'news_image' => $this->faker->imageUrl,
+			'news_content' => [
+				'translations' => [
+					[
+						'lang' => 'en',
+						'title' => $this->faker->bs,
+						'description' => $this->faker->text,
+					],
+				]
+			],
+		]);
+
+		$this->helpers
+			->expects($this->once())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->once())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldReceive('create')
+			->once();
+
+		$this->newsToCategory
+			->shouldReceive('create')
+			->once();
+
+		$this->news
+			->shouldReceive(
+				'create',
+				'update',
+			)
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive('getAttribute')
+			->times(3)
+			->with('news_id')  // for $news->news_id
+			->andReturn($newsId);
+
+		$collection = $this->mockAnything(Collection::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$language = new StdClass;
+		$language->language_id = 1;
+		$collection
+			->expects($this->once())
+			->method('where')
+			->willReturnSelf();
+		$collection
+			->expects($this->once())
+			->method('first')
+			->willReturn($language);
+		$this->languageHelper
+			->expects($this->once())
+			->method('getLanguages')
+			->willReturn($collection);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->store($this->request);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testStoreNoNewsImage()
+	{
+		$newsId = 1;
+		$query = [
+			'user_name' => $this->faker->userName,
+			'user_title' => $this->faker->bs,
+			'user_thumbnail' => $this->faker->imageUrl,
+			'status' => config('constants.news_status.PUBLISHED'),
+		];
+		$this->request->query->add($query);
+		$this->request->merge([
+			'news_content' => [
+				'translations' => [
+					[
+						'lang' => 'en',
+						'title' => $this->faker->bs,
+						'description' => $this->faker->text,
+					],
+				]
+			],
+		]);
+
+		$this->helpers
+			->expects($this->never())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->never())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldReceive('create')
+			->once();
+
+		$this->newsToCategory
+			->shouldReceive('create')
+			->once();
+
+		$this->news
+			->shouldReceive('update')
+			->never();
+		$this->news
+			->shouldReceive('create')
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive('getAttribute')
+			->twice()
+			->with('news_id')  // for $news->news_id
+			->andReturn($newsId);
+
+		$collection = $this->mockAnything(Collection::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$language = new StdClass;
+		$language->language_id = 1;
+		$collection
+			->expects($this->once())
+			->method('where')
+			->willReturnSelf();
+		$collection
+			->expects($this->once())
+			->method('first')
+			->willReturn($language);
+		$this->languageHelper
+			->expects($this->once())
+			->method('getLanguages')
+			->willReturn($collection);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->store($this->request);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testStoreNoNewsContent()
+	{
+		$newsId = 1;
+		$query = [
+			'user_name' => $this->faker->userName,
+			'user_title' => $this->faker->bs,
+			'user_thumbnail' => $this->faker->imageUrl,
+			'status' => config('constants.news_status.PUBLISHED'),
+		];
+		$this->request->query->add($query);
+		$this->request->merge([
+			'news_image' => $this->faker->imageUrl,
+		]);
+
+		$this->helpers
+			->expects($this->once())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->once())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldReceive('create')
+			->never();
+
+		$this->newsToCategory
+			->shouldReceive('create')
+			->once();
+
+		$this->news
+			->shouldReceive(
+				'create',
+				'update',
+			)
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive('getAttribute')
+			->twice()
+			->with('news_id')  // for $news->news_id
+			->andReturn($newsId);
+
+		$this->languageHelper
+			->expects($this->never())
+			->method('getLanguages');
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->store($this->request);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testStoreNoNewsAtAll()
+	{
+		$newsId = 1;
+		$query = [
+			'user_name' => $this->faker->userName,
+			'user_title' => $this->faker->bs,
+			'user_thumbnail' => $this->faker->imageUrl,
+			'status' => config('constants.news_status.PUBLISHED'),
+		];
+		$this->request->query->add($query);
+
+		$this->helpers
+			->expects($this->never())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->never())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldNotReceive('create');
+
+		$this->newsToCategory
+			->shouldReceive('create')
+			->once();
+
+		$this->news
+			->shouldNotReceive('update');
+
+		$this->news
+			->shouldReceive('create')
+			->once()
+			->andReturnSelf();
+		$this->news
+			->shouldReceive('getAttribute')
+			->once()
+			->with('news_id')  // for $news->news_id
+			->andReturn($newsId);
+
+		$collection = $this->mockAnything(Collection::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->languageHelper
+			->expects($this->never())
+			->method('getLanguages');
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->store($this->request);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testUpdate()
+	{
+		$newsId = 1;
+		$query = [
+			'news_category_id' => 1,
+			'news_image' => $this->faker->imageUrl,
+			'news_content' => [
+				'translations' => [
+					[
+						'lang' => 'en',
+						'title' => $this->faker->bs,
+						'description' => $this->faker->text,
+					],
+				]
+			],
+		];
+		$this->request->query->add($query);
+
+		$this->news
+			->shouldReceive('findOrFail')
+			->once()
+			->with($newsId)
+			->andReturnSelf();
+
+		$this->helpers
+			->expects($this->once())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->once())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldReceive('createOrUpdateNewsLanguage')
+			->once();
+
+		$this->newsToCategory
+			->shouldReceive(
+				'where',
+				'update',
+			)
+			->once()
+			->andReturnSelf();
+
+		$this->news
+			->shouldReceive('update')
+			->once()
+			->andReturnSelf();
+
+		$collection = $this->mockAnything(Collection::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$language = new StdClass;
+		$language->language_id = 1;
+		$collection
+			->expects($this->once())
+			->method('where')
+			->willReturnSelf();
+		$collection
+			->expects($this->once())
+			->method('first')
+			->willReturn($language);
+		$this->languageHelper
+			->expects($this->once())
+			->method('getLanguages')
+			->willReturn($collection);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->update($this->request, $newsId);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testUpdateNoNewsCategory()
+	{
+		$newsId = 1;
+		$query = [
+			'news_image' => $this->faker->imageUrl,
+			'news_content' => [
+				'translations' => [
+					[
+						'lang' => 'en',
+						'title' => $this->faker->bs,
+						'description' => $this->faker->text,
+					],
+				]
+			],
+		];
+		$this->request->query->add($query);
+
+		$this->news
+			->shouldReceive('findOrFail')
+			->once()
+			->with($newsId)
+			->andReturnSelf();
+
+		$this->helpers
+			->expects($this->once())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->once())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldReceive('createOrUpdateNewsLanguage')
+			->once();
+
+		$this->newsToCategory
+			->shouldNotReceive(
+				'where',
+				'update',
+			);
+
+		$this->news
+			->shouldReceive('update')
+			->once()
+			->andReturnSelf();
+
+		$collection = $this->mockAnything(Collection::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$language = new StdClass;
+		$language->language_id = 1;
+		$collection
+			->expects($this->once())
+			->method('where')
+			->willReturnSelf();
+		$collection
+			->expects($this->once())
+			->method('first')
+			->willReturn($language);
+		$this->languageHelper
+			->expects($this->once())
+			->method('getLanguages')
+			->willReturn($collection);
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->update($this->request, $newsId);
+
+		$this->assertInstanceOf(News::class, $result);
+	}
+
+	public function testUpdateNoNewsContent()
+	{
+		$newsId = 1;
+		$query = [
+			'news_category_id' => 1,
+			'news_image' => $this->faker->imageUrl,
+		];
+		$this->request->query->add($query);
+
+		$this->news
+			->shouldReceive('findOrFail')
+			->once()
+			->with($newsId)
+			->andReturnSelf();
+
+		$this->helpers
+			->expects($this->once())
+			->method('getSubDomainFromRequest');
+
+		$this->s3Helper
+			->expects($this->once())
+			->method('uploadFileOnS3Bucket');
+
+		$this->newsLanguage
+			->shouldNotReceive('createOrUpdateNewsLanguage');
+
+		$this->newsToCategory
+			->shouldReceive(
+				'where',
+				'update',
+			)
+			->once()
+			->andReturnSelf();
+
+		$this->news
+			->shouldReceive('update')
+			->once()
+			->andReturnSelf();
+
+		$this->languageHelper
+			->expects($this->never())
+			->method('getLanguages');
+
+		$newsRepository = $this->getNewsRepositoryMock();
+		$result = $newsRepository->update($this->request, $newsId);
+
+		$this->assertInstanceOf(News::class, $result);
 	}
 
 	private function getNewsRepositoryMock()
@@ -204,11 +808,11 @@ class NewsRepositoryTest extends TestCase
 	{
 		$this->helpers = $this->createMock(Helpers::class);
 		$this->languageHelper = $this->createMock(LanguageHelper::class);
-		// $this->news = $this->createMock(News::class);
-		$this->news = new News;
-		$this->news->title = 'news today';
-		$this->newsLanguage = $this->mockAnything(NewsLanguage::class);
-		$this->newsToCategory = $this->createMock(NewsToCategory::class);
+		$this->lengthAwarePaginator = $this->createMock(LengthAwarePaginator::class);
+		$this->news = Mockery::mock(News::class);  // because Mock has static methods
+		$this->newsLanguage = Mockery::mock(NewsLanguage::class);
+		$this->newsToCategory = Mockery::mock(NewsToCategory::class);
+		$this->request = new Request;
 		$this->s3Helper = $this->createMock(S3Helper::class);
 	}
 }
