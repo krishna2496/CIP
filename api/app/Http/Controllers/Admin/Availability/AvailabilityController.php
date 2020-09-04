@@ -68,6 +68,15 @@ class AvailabilityController extends Controller
 
             // Set response data
             $apiData = $availabilityLists;
+
+            // For each availability, convert translations if needed
+            foreach ($apiData as $availability => $value) {
+                // Test to know if translations are in json format
+                if (array_keys($apiData[$availability]['translations']) !== range(0, count($apiData[$availability]['translations']) - 1)) {
+                    // Convert translations to array format
+                    $apiData[$availability]['translations'] = $this->convertTranslationsJsonToArray($apiData[$availability]['translations']);
+                }
+            }
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($availabilityLists->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
                 : trans('messages.success.MESSAGE_AVAILABILITY_LISTING');
@@ -79,7 +88,7 @@ class AvailabilityController extends Controller
             );
         }
     }
-    
+
     /**
      * Store a newly created availability.
      *
@@ -108,15 +117,20 @@ class AvailabilityController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
+        $availabilityData = $request->all();
+
+        // Convert old translations array format to a json format
+        $availabilityData['translations'] = $this->convertTranslationsArrayToJson($availabilityData['translations']);
+
         // Create new availability
-        $availability = $this->availabilityRepository->store($request->all());
+        $availability = $this->availabilityRepository->store($availabilityData);
 
         // Set response data
         $apiData = ['availability_id' => $availability->availability_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_CREATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AVAILABILITY'),
@@ -167,15 +181,15 @@ class AvailabilityController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Update availability details
             $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
-       
+
             // Set response data
             $apiData = ['availability_id' => $availability->availability_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_UPDATED');
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.AVAILABILITY'),
@@ -207,11 +221,17 @@ class AvailabilityController extends Controller
     {
         try {
             $availability = $this->availabilityRepository->find($availabilityId);
-            
+
             $apiData = $availability->toArray();
+            // Test to know if translations are in json format
+            if (array_keys($apiData['translations']) !== range(0, count($apiData['translations']) - 1)) {
+                // Convert translations to array format
+                $apiData['translations'] = $this->convertTranslationsJsonToArray($apiData['translations']);
+            }
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -230,7 +250,7 @@ class AvailabilityController extends Controller
     public function destroy(int $availabilityId): JsonResponse
     {
         try {
-            
+
             if ($this->availabilityRepository->hasMission($availabilityId) || $this->availabilityRepository->hasUser($availabilityId)) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -241,7 +261,7 @@ class AvailabilityController extends Controller
             }
 
             $availability = $this->availabilityRepository->delete($availabilityId);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_DELETED');
@@ -257,7 +277,7 @@ class AvailabilityController extends Controller
                 null,
                 $availabilityId
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -265,5 +285,37 @@ class AvailabilityController extends Controller
                 trans('messages.custom_error_message.ERROR_AVAILABILITY_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * It will convert old translations array format to json format
+     *
+     * @param array $translations
+     * @return array
+     */
+    private function convertTranslationsArrayToJson(array $translations): array
+    {
+        $newTranslations = array();
+        foreach ($translations as $translation) {
+            $newTranslations[$translation['lang']] = $translation['title'];
+        }
+
+        return $newTranslations;
+    }
+
+    /**
+     * It will convert translations json format to old array format
+     *
+     * @param array $translations
+     * @return array
+     */
+    private function convertTranslationsJsonToArray(array $translations): array
+    {
+        $oldTranslations = array();
+        foreach ($translations as $translationLang => $translationTitle) {
+            $oldTranslations[] = array("lang"=>$translationLang, "title"=>$translationTitle);
+        }
+
+        return $oldTranslations;
     }
 }
