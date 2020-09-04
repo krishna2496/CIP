@@ -435,7 +435,7 @@ textarea {
   width: 100%;
   max-width: 100%;
   height: 38px;
-  color: $black-primary;
+  color: $gray-primary;
   font-size: 14px;
   font-weight: 400;
   line-height: normal;
@@ -446,7 +446,7 @@ textarea {
   outline: none;
   overflow: hidden;
   @include placeholder {
-    color: $black-primary;
+    color: $gray-primary;
     font-family: $general-font;
     font-size: 14px;
     font-weight: 400;
@@ -458,7 +458,7 @@ textarea {
   &:focus {
     box-shadow: none;
     border-color: $gray-primary;
-    color: $black-primary;
+    color: $gray-primary;
     outline: none;
   }
   &.is-invalid,
@@ -751,6 +751,7 @@ label {
     max-width: 100%;
     white-space: nowrap;
     cursor: pointer;
+    color: $gray-primary;
     &:after {
       position: absolute;
       content: "";
@@ -969,7 +970,7 @@ label {
     .multiselect__tag {
       padding: 0;
       padding: 0;
-      color: $black-primary;
+      color: $gray-primary;
       background: transparent;
       margin-right: 5px;
       margin-bottom: 0;
@@ -999,7 +1000,7 @@ label {
       line-height: 18px;
     }
     .multiselect__placeholder {
-      color: $black-primary;
+      color: $gray-primary;
       margin-bottom: 0;
       padding-top: 0;
     }
@@ -1204,6 +1205,14 @@ label {
       position: relative;
       border-radius: 100%;
       z-index: 1039;
+      @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+        max-width: 180px !important;
+        height: 180px !important;
+        @include sm-max {
+          max-width: 160px !important;
+          height: 160px !important;
+        }
+      }
     }
     .picture-preview {
       background: $primary-border-color;
@@ -1341,7 +1350,7 @@ label {
 .mx-input {
   height: 38px !important;
   @include placeholder {
-    color: $black-primary;
+    color: $gray-primary;
     opacity: 1;
   }
   &:focus {
@@ -1678,7 +1687,7 @@ input[type="search"]::-webkit-search-cancel-button {
     width: 100%;
     font-size: 14px;
     line-height: 18px;
-    color: $black-primary !important;
+    color: $gray-primary !important;
   }
   &.active {
     .dropdown.icon {
@@ -1716,7 +1725,7 @@ input[type="search"]::-webkit-search-cancel-button {
     width: auto !important;
     top: 100%;
     max-height: 250px;
-    padding: 4px 0;
+    padding: 0;
     border: 1px solid $control-border !important;
     @extend .control_shadow;
     border-radius: 0 0 3px 3px;

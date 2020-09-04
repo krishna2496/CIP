@@ -2938,6 +2938,12 @@ main {
 
     .title-with-border {
       margin-bottom: 18px;
+      span {
+        min-width: 185px;
+        @include lg-max {
+          min-width: 168px;
+        }
+      }
     }
 
     .form-group {

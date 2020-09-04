@@ -1344,6 +1344,7 @@ header {
             max-width: 100%;
             overflow: hidden;
             line-height: 66px;
+            color: $black-primary;
             @include md-max {
                 height: auto;
                 position: relative;
