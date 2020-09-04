@@ -49,7 +49,7 @@ $router->delete(
 $router->get(
     '/{missionId}/applications',
     [
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@missionApplications'
     ]
 );
@@ -57,6 +57,7 @@ $router->get(
 $router->get(
     '/{missionId}/applications/{applicationId}',
     [
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@missionApplication'
     ]
 );
@@ -64,7 +65,7 @@ $router->get(
 $router->get(
     '/applications/details',
     [
-        'middleware' => ['PaginationMiddleware'],
+        'middleware' => ['PaginationMiddleware','TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@getMissionApplicationDetails'
     ]
 );
@@ -72,6 +73,7 @@ $router->get(
 $router->patch(
     '/{missionId}/applications/{applicationId}',
     [
+        'middleware' => ['TenantHasSettings:volunteering'],
         'uses' => 'Admin\Mission\MissionApplicationController@updateApplication'
     ]
 );
