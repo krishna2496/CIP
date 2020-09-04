@@ -112,9 +112,6 @@ class MissionRepository implements MissionInterface
 
         $organizationDetail = (isset($request->organisation_detail)) ?
             $request->organisation_detail : null;
-        if ($organizationDetail === null && isset($request->organisation['organisation_detail'])) {
-            $organizationDetail = $request->organisation['organisation_detail'];
-        }
 
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = [
@@ -270,10 +267,6 @@ class MissionRepository implements MissionInterface
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
 
-        if (isset($request->organisation['organisation_detail'])) {
-            $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
-        }
-
         if (isset($request->theme_id) && ($request->theme_id === '')) {
             $request->request->set('theme_id', null);
         }
@@ -281,12 +274,10 @@ class MissionRepository implements MissionInterface
         // Create or update organization
         if (!empty($request->organization)) {
             $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id'=>$request->organization['organization_id']],
+                ['organization_id' => $request->organization['organization_id']],
                 $request->organization
             );
         }
-        
-
         if (!empty($organization)) {
             $request->request->add(['organization_id' => $organization->organization_id]);
         }
@@ -560,7 +551,7 @@ class MissionRepository implements MissionInterface
             'mission.start_date',
             'mission.end_date',
             'mission.mission_type',
-            'mission.publication_status', 
+            'mission.publication_status',
             'mission.organization_id'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
@@ -634,7 +625,7 @@ class MissionRepository implements MissionInterface
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
-        $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organisation_id');
+        $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organization_id');
         $missionQuery->leftjoin('volunteering_attribute', 'volunteering_attribute.mission_id', '=', 'mission.mission_id');
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization'])
@@ -854,11 +845,10 @@ class MissionRepository implements MissionInterface
                 ->orderBY('mission_country_count', 'desc');
                 break;
             case config('constants.TOP_ORGANISATION'):
-                $missionQuery->withCount(['organization as mission_organisation_count' => function ($query) use ($request) {
-                    $query->groupBy('organization_id');
-                    $query->orderBY('organization_id', 'desc');
-                }]);
-
+                $missionQuery->selectRaw('COUNT(mission.organization_id) as mission_organization_count')
+                ->with('organization')
+                ->groupBy('mission.organization_id')
+                ->orderBY('mission_organization_count', 'desc');
                 break;
         }
         $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();

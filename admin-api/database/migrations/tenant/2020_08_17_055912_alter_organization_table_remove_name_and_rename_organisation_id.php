@@ -28,7 +28,8 @@ class AlterOrganizationTableRemoveNameAndRenameOrganisationId extends Migration
     {
         Schema::table('mission', function (Blueprint $table) {
             $table->renameColumn('organization_id', 'organisation_id');
-            $table->string('organisation_name',255)->after('organization_id');
+            $table->string('organisation_name', 255)
+                ->after('organization_id');
         });
     }
 }
