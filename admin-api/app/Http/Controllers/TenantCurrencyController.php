@@ -120,7 +120,7 @@ class TenantCurrencyController extends Controller
                 Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
                     $query->where(['tenant_id' => $tenantId]);
                 })],
-            'default' => 'required|boolean',
+            'default' => 'boolean',
             'is_active' => 'required|boolean',
         ]);
 
@@ -154,7 +154,7 @@ class TenantCurrencyController extends Controller
 
         $currencyData = [
             'code' => $request['code'],
-            'default' => $request['default'],
+            'default' => isset($request->default) ? $request->default : 0,
             'is_active' => $request['is_active']
         ];
 
@@ -196,7 +196,7 @@ class TenantCurrencyController extends Controller
 
         $validator = Validator::make($request->toArray(), [
             'code' => 'required|regex:/^[A-Z]{3}$/',
-            'default' => 'required|boolean',
+            'default' => 'boolean',
             'is_active' => 'required|boolean',
         ]);
 
@@ -230,7 +230,7 @@ class TenantCurrencyController extends Controller
 
         $currencyData = [
             'code' => $request['code'],
-            'default' => $request['default'],
+            'default' => isset($request->default) ? $request->default : 0,
             'is_active' => $request['is_active']
         ];
 
