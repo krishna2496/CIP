@@ -65,8 +65,8 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual', 'organisation_name'];
+    'publication_status', 'organization_id', 'mission_type',
+    'organisation_detail', 'availability_id', 'is_virtual'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -75,7 +75,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_detail', 'mission_type',
+    'publication_status', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
@@ -374,7 +374,7 @@ class Mission extends Model
      */
     public function organization(): HasOne
     {
-        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
+        return $this->hasOne(Organization::class, 'organization_id', 'organization_id');
     }
 
     /**
