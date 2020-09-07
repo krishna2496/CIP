@@ -89,8 +89,7 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "end_date" => "2022-10-15 10:40:00",
         "mission_type" => config("constants.mission_type.GOAL"),
         "publication_status" => config("constants.publication_status.APPROVED"),
-        "organisation_id" => 1,
-        "organisation_name" => str_random(10)
+        "organization_id" => 1
     ];
 });
 
