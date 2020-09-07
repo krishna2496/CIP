@@ -102,7 +102,8 @@ class SamlController extends Controller
             'linkedin' => 'linked_in_url',
             'volunteer' => 'why_i_volunteer',
             'position' => 'position',
-            'title' => 'title'
+            'title' => 'title',
+            'expires' => 'expiry',
         ];
 
         $validProperties = [
@@ -120,7 +121,8 @@ class SamlController extends Controller
             'linked_in_url',
             'why_i_volunteer',
             'title',
-            'position'
+            'position',
+            'expiry',
         ];
 
         foreach ($auth->getAttributes() as $key => $attribute) {
