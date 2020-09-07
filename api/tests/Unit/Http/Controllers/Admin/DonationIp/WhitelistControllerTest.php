@@ -1,5 +1,5 @@
 <?php
-    
+
 namespace Tests\Unit\Http\Controllers\Admin\DoantionIp;
 
 use App\Events\User\UserActivityLogEvent;
@@ -30,7 +30,11 @@ class WhitelistControllerTest extends TestCase
             'perPage' => 10
         ];
         $filters = [
-            'search' => 'sample'
+            'search' => 'sample',
+            'order' => [
+                'pattern' => null,
+                'created_at' => 'desc'
+            ]
         ];
         $request = new Request();
         $request->query->add(array_merge($paginate, $filters));
@@ -53,7 +57,7 @@ class WhitelistControllerTest extends TestCase
             ->once()
             ->with(
                 Response::HTTP_OK,
-                trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_LISTING'), 
+                trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_LISTING'),
                 $paginator
             );
 
@@ -77,7 +81,11 @@ class WhitelistControllerTest extends TestCase
             'perPage' => 10
         ];
         $filters = [
-            'search' => 'sample'
+            'search' => 'sample',
+            'order' => [
+                'pattern' => null,
+                'created_at' => 'desc'
+            ]
         ];
         $request = new Request();
         $request->query->add(array_merge($paginate, $filters));
@@ -98,7 +106,7 @@ class WhitelistControllerTest extends TestCase
             ->once()
             ->with(
                 Response::HTTP_OK,
-                trans('messages.success.MESSAGE_NO_DONATION_IP_WHITELIST_FOUND'), 
+                trans('messages.success.MESSAGE_NO_DONATION_IP_WHITELIST_FOUND'),
                 $paginator
             );
 
@@ -146,7 +154,7 @@ class WhitelistControllerTest extends TestCase
         $responseHelper->shouldReceive('success')
             ->once()
             ->with(
-                Response::HTTP_CREATED, 
+                Response::HTTP_CREATED,
                 trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_CREATED'),
                 [
                     'id' => $whitelisted->id
@@ -240,7 +248,7 @@ class WhitelistControllerTest extends TestCase
         $responseHelper->shouldReceive('success')
             ->once()
             ->with(
-                Response::HTTP_OK, 
+                Response::HTTP_OK,
                 trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_UPDATED'),
                 [
                     'id' => $whitelisted->id
@@ -361,7 +369,7 @@ class WhitelistControllerTest extends TestCase
         $responseHelper->shouldReceive('success')
             ->once()
             ->with(
-                Response::HTTP_OK, 
+                Response::HTTP_OK,
                 trans('messages.success.MESSAGE_DONATION_IP_WHITELIST_DELETED')
             );
 

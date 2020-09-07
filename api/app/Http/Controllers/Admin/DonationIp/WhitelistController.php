@@ -63,8 +63,13 @@ class WhitelistController extends Controller
             'perPage' => $request->perPage
         ];
         $filters = [
-            'search' => $request->get('search', null)
+            'search' => $request->get('search', null),
+            'order' => [
+                'pattern' => $request->input('order.pattern', null),
+                'created_at' => $request->input('order.created_at', 'desc')
+            ]
         ];
+
         $patterns = $this->whitelistService->getList($paginate, $filters);
 
         $message = $patterns->isEmpty() ?

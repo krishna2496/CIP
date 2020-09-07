@@ -8553,6 +8553,28 @@
             "type": "string"
           },
           {
+            "name": "order[pattern]",
+            "in": "path",
+            "description": "Order list by pattern",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "desc",
+              "asc"
+            ]
+          },
+          {
+            "name": "order[created_at]",
+            "in": "path",
+            "description": "Order list by item created_at",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "desc",
+              "asc"
+            ]
+          },
+          {
             "name": "Authorization",
             "in": "header",
             "required": true,
