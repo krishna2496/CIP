@@ -1402,10 +1402,6 @@ class MissionRepository implements MissionInterface
             $todayDate = Carbon::parse(date(config('constants.DB_DATE_FORMAT')));
             $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
             $todayTime = $this->helpers->getUserTimeZoneDate(date(config('constants.DB_DATE_TIME_FORMAT')));
-<<<<<<< HEAD
-=======
-
->>>>>>> f4f29adb843970ca1876e1ad5913010485360e56
 
             if ((!isset($timeMissionDetails[0]['application_deadline'])) && ((isset($timeMissionDetails[0]['application_start_date']) && ($timeMissionDetails[0]['application_start_date'] !== null)) &&
             (isset($timeMissionDetails[0]['application_end_date']) && ($timeMissionDetails[0]['application_end_date'] !== null)) &&
