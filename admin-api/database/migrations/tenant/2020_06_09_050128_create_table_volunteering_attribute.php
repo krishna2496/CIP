@@ -18,13 +18,21 @@ class CreateTableVolunteeringAttribute extends Migration
             $table->unsignedBigInteger('mission_id');
             $table->unsignedBigInteger('availability_id');
             $table->integer('total_seats')->nullable();
-            $table->enum('is_virtual', ['0', '1'])->default('0');
+            $table->boolean('is_virtual')->default(0);
             $table->timestamps();
             $table->softDeletes();
 
             // Set references with mission table
-            $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')
+                ->references('mission_id')
+                ->on('mission')
+                ->onDelete('CASCADE')
+                ->onUpdate('CASCADE');
+            $table->foreign('availability_id')
+                ->references('availability_id')
+                ->on('availability')
+                ->onDelete('CASCADE')
+                ->onUpdate('CASCADE');
         });
     }
 

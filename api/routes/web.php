@@ -877,3 +877,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@destroy']);
         }
     );
+
+    /* Routes for whitelisted Ips */
+    $router->group(
+        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\DonationIp\WhitelistController@getList']);
+            $router->post('/', ['uses' => 'Admin\DonationIp\WhitelistController@create']);
+            $router->patch('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@update']);
+            $router->delete('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@delete']);
+        }
+    );

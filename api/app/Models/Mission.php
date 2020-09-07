@@ -9,13 +9,16 @@ use App\Models\Timesheet;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
 use App\Models\Availability;
-use App\Models\MissionMedia;
-use App\Models\MissionInvite;
-use App\Models\MissionRating;
-use App\Models\MissionDocument;
-use App\Models\MissionLanguage;
-use App\Models\FavouriteMission;
 use App\Models\MissionApplication;
+use App\Models\MissionDocument;
+use App\Models\MissionInvite;
+use App\Models\MissionLanguage;
+use App\Models\MissionMedia;
+use App\Models\MissionRating;
+use App\Models\MissionTab;
+use App\Models\Organization;
+use App\Models\FavouriteMission;
+use App\Models\VolunteeringAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,8 +26,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
-use App\Models\VolunteeringAttribute;
-use App\Models\Organization;
 
 class Mission extends Model
 {
@@ -51,13 +52,18 @@ class Mission extends Model
     private $helpers;
 
     /**
+     * @var App\Models\MissionTab
+     */
+    public $missionTab;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
+    'publication_status', 'organization_id', 'mission_type',
     'organisation_detail'];
 
     /**
@@ -67,7 +73,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
     'country_id', 'start_date', 'end_date', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_detail', 'mission_type',
+    'publication_status', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
@@ -87,7 +93,7 @@ class Mission extends Model
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'volunteeringAttribute'
+        'goalMission','timeMission','comment','timesheet', 'missionTab', 'volunteeringAttribute'
     ];
 
     /**
@@ -359,6 +365,15 @@ class Mission extends Model
         return null;
     }
 
+    /**
+     * Get Organization associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function organization(): HasOne
+    {
+        return $this->hasOne(Organization::class, 'organization_id', 'organization_id');
+    }
 
     /**
     * Get volunteering attribute associated with the mission.
@@ -368,16 +383,6 @@ class Mission extends Model
     public function volunteeringAttribute(): HasOne
     {
         return $this->hasOne(VolunteeringAttribute::class, 'mission_id', 'mission_id');
-    }
-
-    /**
-     * Get Organization associated with the mission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function organization(): HasOne
-    {
-        return $this->hasOne(Organization::class, 'organization_id', 'organisation_id');
     }
 
     /**
