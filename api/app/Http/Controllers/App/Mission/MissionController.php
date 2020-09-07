@@ -148,6 +148,7 @@ class MissionController extends Controller
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
+       
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
@@ -296,7 +297,7 @@ class MissionController extends Controller
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
                     $value->organization->name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
-                    $value->organisation_id;
+                    $value->organization->organization_id;
                 }
             }
             $apiData[config('constants.TOP_ORGANISATION')] = $returnData[config('constants.TOP_ORGANISATION')];

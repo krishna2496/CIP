@@ -56,6 +56,5 @@ export default Object.freeze({
     MESSAGE : "message_enabled",
     MAX_FILE_NUMBER: 20,
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer",
-    STATE_ENABLED : "state_selection",
-    DEFAULT_SITE_TITLE: 'Optimy'
-})
+    STATE_ENABLED : "state_selection"
+});
