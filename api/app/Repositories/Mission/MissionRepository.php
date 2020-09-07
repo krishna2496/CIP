@@ -232,13 +232,22 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             if (!empty($request->documents)) {
                 foreach ($request->documents as $value) {
-                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
-                    $missionDocument = array('mission_id' => $mission->mission_id,
-                                            'document_name' => basename($filePath),
-                                            'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                            'document_path' => $filePath,
-                                            'sort_order' => $value['sort_order'], );
-                    $this->modelsService->missionDocument->create($missionDocument);
+                    $missionDocument = [
+                        'mission_id' => $mission->mission_id,
+                        'sort_order' => $value['sort_order']
+                    ];
+                    $document = $this->modelsService->missionDocument->create($missionDocument);
+                    $documentId = $document->mission_document_id;
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket(
+                        $value['document_path'],
+                        $tenantName,
+                        "missions/$mission->mission_id/documents/$documentId"
+                    );
+                    $document->update([
+                        'document_name' => basename($filePath),
+                        'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
+                        'document_path' => $filePath,
+                    ]);
                     unset($missionDocument);
                 }
             }
@@ -441,18 +450,29 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             foreach ($request->documents as $value) {
                 $missionDocument = array('mission_id' => $id);
-                if (isset($value['document_path'])) {
-                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
-                    $missionDocument['document_path'] = $filePath;
-                    $missionDocument['document_name'] = basename($filePath);
-                    $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
-                }
                 if (isset($value['sort_order'])) {
                     $missionDocument['sort_order'] = $value['sort_order'];
                 }
 
-                $this->modelsService->missionDocument->createOrUpdateDocument(['mission_id' => $id,
-                 'mission_document_id' => $value['document_id'], ], $missionDocument);
+                $document = $this->modelsService->missionDocument->createOrUpdateDocument([
+                    'mission_id' => $id,
+                    'mission_document_id' => $value['document_id']
+                ], $missionDocument);
+
+                if (isset($value['document_path'])) {
+                    $documentId = $document->mission_document_id;
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket(
+                        $value['document_path'],
+                        $tenantName,
+                        "missions/$id/documents/$documentId"
+                    );
+                    $document->update([
+                        'document_path' => $filePath,
+                        'document_name' => basename($filePath),
+                        'document_type' => pathinfo($filePath, PATHINFO_EXTENSION)
+                    ]);
+                }
+
                 unset($missionDocument);
             }
         }
