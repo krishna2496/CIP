@@ -182,8 +182,13 @@ class AvailabilityController extends Controller
                 );
             }
 
+            $availabilityData = $request->toArray();
+
+            // Convert old translations array format to a json format
+            $availabilityData['translations'] = $this->convertTranslationsArrayToJson($availabilityData['translations']);
+
             // Update availability details
-            $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
+            $availability = $this->availabilityRepository->update($availabilityData, $availabilityId);
 
             // Set response data
             $apiData = ['availability_id' => $availability->availability_id];
