@@ -53,6 +53,8 @@
                   :custom-label="customLabel"
                   :placeholder="defaultText"
                   :allow-empty="item.is_mandatory !== 1"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id) }"
+                  :validstate="getErrorState(item.field_id)"
                   :close-on-select="false"
                   @select="addMultiSelect"
                   @remove="removeMultiSelect"
@@ -238,8 +240,59 @@
       });
       return validations;
     },
-    mounted() {},
+    mounted() {
+      this.validateCustomFieldValues();
+    },
     methods: {
+      validateCustomFieldValues() {
+        this.CustomFieldList.map(customField => {
+          let customFieldValue = `${customField.user_custom_field_value}`;
+          if (customFieldValue === '' || customFieldValue === null) {
+            return;
+          }
+          // Some custom field value are separated by comma, that is used in multiselect type
+          customFieldValue = customFieldValue.split(',');
+
+
+          if (!customField.translations.values) {
+            /**
+             * Remove the custom field value if the custom field is an open type 
+             *  and it has UUID as its value. This means that the custom field is 
+             *  previously a closed type, so we removed the value previously saved in it.
+             */
+            const values = customFieldValue.filter(value => {
+              return this.isUUID(value) === true;
+            });
+            if (customFieldValue.length === values.length) {
+              customField.user_custom_field_value = '';
+            }
+            return;
+          }
+
+          /**
+           * Remove the custom field value if the custom field is a closed type 
+           *  and the custom field value does not exists in the array of options. 
+           *  This means that the custom field is previously an open type, 
+           *  so we removed the value previously saved in it.
+           */
+          const customFieldKeys = customField.translations.values.map(data => {
+            return Object.keys(data)[0];
+          });
+
+          const result = customFieldValue.filter(value => {
+            return customFieldKeys.includes(value) === true;
+          });
+          
+          if (result.length === 0) {
+            customField.user_custom_field_value = '';
+            return;
+          }
+
+          if (customFieldValue.length > 1 && (customField.type === 'radio' || customField.type === 'drop-down')) {
+            customField.user_custom_field_value = customFieldValue[0];
+          }
+        });
+      },
       customLabel(item){
         return `${item.text}`
       },
@@ -259,11 +312,13 @@
             if(item.user_custom_field_value != ''){
               let obj = [];
               _.each(item.user_custom_field_value.split(","), function(val){
-                obj.push({
-                  text: options[item.field_id][val],
-                  value: val,
-                  fieldId: item.field_id
-                });
+                if (options[item.field_id][val]) {
+                  obj.push({
+                    text: options[item.field_id][val],
+                    value: val,
+                    fieldId: item.field_id
+                  });
+                }
               });
               selectedItems[item.field_id] = obj;
             }
@@ -369,6 +424,10 @@
       },
       updateChanges() {
         this.$emit("detectChangeInCustomFeild", this.customFeildData);
+      },
+      isUUID(value) {
+        const pattern = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
+        return pattern.test(value);
       }
     },
     updated() {},
