@@ -60,6 +60,7 @@ class GoogleAuthController extends Controller
                         "secret" => env('GOOGLE_AUTH_SECRET'),
                     ],
                     'authorize_url_parameters' => [
+                        'approval_prompt' => 'force',
                         'state' => $state,
                     ]
                 ]
