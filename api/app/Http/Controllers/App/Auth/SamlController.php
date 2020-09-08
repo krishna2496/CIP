@@ -262,8 +262,8 @@ class SamlController extends Controller
                 $this->userService->update($userData, $userDetail->user_id);
         } catch (MaximumUsersReachedException $e) {
             return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                Response::HTTP_BAD_REQUEST,
+                Response::$statusTexts[Response::HTTP_BAD_REQUEST],
                 config('constants.error_codes.ERROR_MAXIMUM_USERS_REACHED'),
                 trans('messages.custom_error_message.ERROR_MAXIMUM_USERS_REACHED')
             );
