@@ -531,7 +531,7 @@ class MissionRepository implements MissionInterface
             'missionLanguage',
             'timeMission',
             'goalMission',
-            'missionUnSdg',
+            'unSdg',
             'organization',
             'volunteeringAttribute'
         )->with(['missionSkill' => function ($query) {
@@ -1350,7 +1350,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute', 'missionUnSdg'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute', 'unSdg'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])
