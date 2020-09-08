@@ -21,7 +21,8 @@ class WhitelistController extends Controller
      * @var Array | All allowed order fields
      */
     const ORDER_FIELDS = [
-        'pattern'
+        'pattern',
+        'created_at'
     ];
 
     /**
