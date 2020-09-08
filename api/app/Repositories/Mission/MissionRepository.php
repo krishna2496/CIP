@@ -596,7 +596,7 @@ class MissionRepository implements MissionInterface
             'mission.organization_id'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute' ])
+        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute', 'unSdg' ])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -669,7 +669,7 @@ class MissionRepository implements MissionInterface
         $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organization_id');
         $missionQuery->leftjoin('volunteering_attribute', 'volunteering_attribute.mission_id', '=', 'mission.mission_id');
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization', 'unSdg'])
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
