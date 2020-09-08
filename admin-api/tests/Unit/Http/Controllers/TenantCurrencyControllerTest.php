@@ -5,6 +5,7 @@ namespace Tests\Unit\Http\Controllers;
 use TestCase;
 use Mockery;
 use Validator;
+use App\Exceptions\CannotDeactivateDefaultTenantCurrencyException;
 use App\Events\ActivityLogEvent;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\TenantCurrencyController;
@@ -24,10 +25,10 @@ use Illuminate\Support\Collection;
 class TenantCurrencyControllerTest extends TestCase
 {
     /**
-    * @testdox Test index with model not found
-    *
-    * @return void
-    */
+     * @testdox Test index with model not found
+     *
+     * @return void
+     */
     public function testIndexModelNotFound()
     {
         $methodResponse = [
@@ -80,18 +81,18 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test index with success status
-    *
-    * @return void
-    */
+     * @testdox Test index with success status
+     *
+     * @return void
+     */
     public function testIndexSuccess()
     {
         $data = ['perPage' => '10'];
         $request = new Request($data);
         $items = [
-            'code'=> 'INR',
-            'default'=> 1,
-            'is_active'=> 1
+            'code' => 'INR',
+            'default' => 1,
+            'is_active' => 1
         ];
 
         $mockResponse = new LengthAwarePaginator($items, 0, 10, 1);
@@ -137,16 +138,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test store tenant model not found
-    *
-    * @return void
-    */
+     * @testdox Test store tenant model not found
+     *
+     * @return void
+     */
     public function testStoreTenantModelNotFound()
     {
         $data = [
-            'code'=> 'ZWD',
-            'default'=> '0',
-            'is_active'=> '1'
+            'code' => 'ZWD',
+            'default' => false,
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenantId = rand(50000, 100000);
@@ -197,16 +198,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test store with validation failure
-    *
-    * @return void
-    */
+     * @testdox Test store with validation failure
+     *
+     * @return void
+     */
     public function testStoreValidationFailure()
     {
         $data = [
-            'code'=> 'PHP',
-            'default'=> '100',
-            'is_active'=> '1'
+            'code' => 'PHP',
+            'default' => '100',
+            'is_active' => true
         ];
         $tenantId = rand(50000, 70000);
 
@@ -271,16 +272,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test store for is valid currency
-    *
-    * @return void
-    */
+     * @testdox Test store for is valid currency
+     *
+     * @return void
+     */
     public function testStoreUnsupportedCurrency()
     {
         $data = [
-            'code'=> 'FAK',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'FAK',
+            'default' => '1',
+            'is_active' => '1'
         ];
         $request = new Request($data);
         $tenantId = rand(50000, 70000);
@@ -343,16 +344,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test validation error if default is active while is_active field is false
-    *
-    * @return void
-    */
+     * @testdox Test validation error if default is active while is_active field is false
+     *
+     * @return void
+     */
     public function testStoreCheckIsActiveAndDefaultFieldValue()
     {
         $data = [
-            'code'=> 'FAK',
-            'default'=> true,
-            'is_active'=> false
+            'code' => 'FAK',
+            'default' => true,
+            'is_active' => false
         ];
         $request = new Request($data);
         $tenantId = rand(50000, 70000);
@@ -371,8 +372,8 @@ class TenantCurrencyControllerTest extends TestCase
                 [
                     'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
                     'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    'code'=> config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
-                    'message'=> trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+                    'code'=> config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
                 ]
             ]
         ];
@@ -385,8 +386,8 @@ class TenantCurrencyControllerTest extends TestCase
         ->with(
             Response::HTTP_UNPROCESSABLE_ENTITY,
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
-            trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+            config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+            trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
         )->andReturn($jsonResponse);
 
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
@@ -403,19 +404,19 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test store with success
-    *
-    * @return void
-    */
+     * @testdox Test store with success
+     *
+     * @return void
+     */
     public function testStoreSuccess()
     {
         $this->expectsEvents(ActivityLogEvent::class);
 
         $tenantId = rand(50000, 70000);
         $data = [
-            'code'=> 'USD',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'USD',
+            'default' => true,
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenant = $this->mock(Tenant::class);
@@ -477,16 +478,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test update tenant model not found
-    *
-    * @return void
-    */
+     * @testdox Test update tenant model not found
+     *
+     * @return void
+     */
     public function testUpdateTenantModelNotFound()
     {
         $data = [
-            'code'=> 'ZWD',
-            'default'=> '0',
-            'is_active'=> '1'
+            'code' => 'ZWD',
+            'default' => false,
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenantId = rand(50000, 100000);
@@ -537,16 +538,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test update with validation failure
-    *
-    * @return void
-    */
+     * @testdox Test update with validation failure
+     *
+     * @return void
+     */
     public function testUpdateValidationFailure()
     {
         $data = [
-            'code'=> 'ZWD',
-            'default'=> '100',
-            'is_active'=> '1'
+            'code' => 'ZWD',
+            'default' => '100',
+            'is_active' => true
         ];
         $tenantId = rand(50000, 70000);
         $request = new Request($data);
@@ -610,16 +611,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test update for is valid currency
-    *
-    * @return void
-    */
-    public function testUpdateUnSupportedCurrency()
+     * @testdox Test update for is valid currency
+     *
+     * @return void
+     */
+    public function testUpdateUnsupportedCurrency()
     {
         $data = [
-            'code'=> 'FAK',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'FAK',
+            'default' => true,
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenantId = rand(50000, 70000);
@@ -675,18 +676,18 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test update currency not found
-    *
-    * @return void
-    */
+     * @testdox Test update currency not found
+     *
+     * @return void
+     */
     public function testUpdateCurrencyNotFound()
     {
         $tenantId = rand(50000, 70000);
 
         $data = [
-            'code'=> 'USD',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'USD',
+            'default' => true,
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
@@ -747,16 +748,16 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test validation error if default is active while is_active field is false for update method
-    *
-    * @return void
-    */
+     * @testdox Test validation error if default is active while is_active field is false for update method
+     *
+     * @return void
+     */
     public function testUpdateCheckIsActiveAndDefaultFieldValue()
     {
         $data = [
-            'code'=> 'FAK',
-            'default'=> true,
-            'is_active'=> false
+            'code' => 'FAK',
+            'default' => true,
+            'is_active' => false
         ];
         $request = new Request($data);
         $tenantId = rand(50000, 70000);
@@ -775,8 +776,8 @@ class TenantCurrencyControllerTest extends TestCase
                 [
                     'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
                     'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    'code'=> config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
-                    'message'=> trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+                    'code'=> config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
                 ]
             ]
         ];
@@ -789,8 +790,8 @@ class TenantCurrencyControllerTest extends TestCase
         ->with(
             Response::HTTP_UNPROCESSABLE_ENTITY,
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
-            trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+            config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+            trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
         )->andReturn($jsonResponse);
 
         $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
@@ -807,17 +808,84 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test update with error when default currency is set is_active false
-    *
-    * @return void
-    */
-    public function testUpdateErrorIfdefaultFieldTrueWhenIsActiveFalse()
+     * @testdox Should not be able to set a currency as the default if is_active is false
+     *
+     * @return void
+     */
+    public function testUpdateSetInactiveCurrencyAsDefault()
     {
         $tenantId = rand(50000, 70000);
 
         $data = [
-            'code'=> 'USD',
-            'is_active'=> '1'
+            'code' => 'USD',
+            'is_active' => false,
+            'default' => true
+        ];
+        $request = new Request($data);
+        $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
+        $tenantRepository->shouldReceive('find')
+            ->once()
+            ->with($tenantId)
+            ->andReturn($tenant);
+
+        $repository = $this->mock(CurrencyRepository::class);
+        $repository->shouldReceive('isSupported')
+            ->never();
+
+        $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
+        $tenantAvailableCurrencyRepository->shouldReceive('update')
+            ->never();
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=> config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper
+        ->shouldReceive('error')
+        ->once()
+        ->with(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+            trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
+        )->andReturn($jsonResponse);
+
+        $controller = $this->getController(
+            $responseHelper,
+            $tenantAvailableCurrencyRepository,
+            $tenantRepository,
+            $repository
+        );
+
+        $response = $controller->update($request, $tenantId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+     * @testdox Should not be able to deactivate the default currency
+     *
+     * @return void
+     */
+    public function testUpdateDeactivateDefaultCurrency()
+    {
+        $tenantId = rand(50000, 70000);
+
+        $data = [
+            'code' => 'USD',
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
@@ -837,7 +905,7 @@ class TenantCurrencyControllerTest extends TestCase
         $tenantAvailableCurrencyRepository->shouldReceive('update')
             ->once()
             ->with($data, $tenantId)
-            ->andReturn(false);
+            ->andThrow(CannotDeactivateDefaultTenantCurrencyException::class);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 
@@ -846,8 +914,8 @@ class TenantCurrencyControllerTest extends TestCase
                 [
                     'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
                     'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    'code'=> config('constants.error_codes.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE'),
-                    'message'=> trans('messages.custom_error_message.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE')
+                    'code'=> config('constants.error_codes.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE')
                 ]
             ]
         ];
@@ -860,10 +928,10 @@ class TenantCurrencyControllerTest extends TestCase
         ->with(
             Response::HTTP_UNPROCESSABLE_ENTITY,
             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            config('constants.error_codes.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE'),
-            trans('messages.custom_error_message.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE')
+            config('constants.error_codes.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE'),
+            trans('messages.custom_error_message.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE')
         )->andReturn($jsonResponse);
-        
+
         $controller = $this->getController(
             $responseHelper,
             $tenantAvailableCurrencyRepository,
@@ -877,10 +945,10 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test update with success
-    *
-    * @return void
-    */
+     * @testdox Test update with success
+     *
+     * @return void
+     */
     public function testUpdateSuccess()
     {
         $this->expectsEvents(ActivityLogEvent::class);
@@ -888,9 +956,9 @@ class TenantCurrencyControllerTest extends TestCase
         $tenantId = rand(50000, 70000);
 
         $data = [
-            'code'=> 'USD',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'USD',
+            'default' => true,
+            'is_active' => true
         ];
         $request = new Request($data);
         $tenantRepository = $this->mock(TenantRepository::class);
@@ -969,24 +1037,24 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * Mock an object
-    *
-    * @param string name
-    *
-    * @return Mockery
-    */
+     * Mock an object
+     *
+     * @param string name
+     *
+     * @return Mockery
+     */
     private function mock($class)
     {
         return Mockery::mock($class);
     }
 
     /**
-    * get json reponse
-    *
-    * @param class name
-    *
-    * @return JsonResponse
-    */
+     * get json reponse
+     *
+     * @param class name
+     *
+     * @return JsonResponse
+     */
     private function getJson($class)
     {
         return new JsonResponse($class);

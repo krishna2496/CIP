@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Repositories\Currency;
 
+use App\Exceptions\CannotDeactivateDefaultTenantCurrencyException;
 use App\Models\Tenant;
 use App\Models\TenantAvailableCurrency;
 use App\Models\TenantCurrency;
@@ -19,7 +20,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
      *
      * @return void
      */
-    public function testStoreRepositorySuccess()
+    public function testStore()
     {
         $tenant = $this->mock(Tenant::class);
         $currencyRepository = $this->mock(CurrencyRepository::class);
@@ -31,9 +32,9 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
         );
         $tenantId = 1;
         $data = [
-            'code'=> 'USD',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'USD',
+            'default' => true,
+            'is_active' => true
         ];
 
         $currencyData = [
@@ -69,7 +70,7 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateRepositorySuccess()
+    public function testUpdate()
     {
         $tenant = $this->mock(Tenant::class);
         $currencyRepository = $this->mock(CurrencyRepository::class);
@@ -82,9 +83,9 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
 
         $tenantId = 1;
         $data = [
-            'code'=> 'USD',
-            'default'=> '1',
-            'is_active'=> '1'
+            'code' => 'USD',
+            'default' => true,
+            'is_active' => true
         ];
 
         $currencyData = [
@@ -122,11 +123,61 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
     }
 
     /**
+     * @testdox Test update success
+     *
+     * @return void
+     */
+    public function testUpdateDeactivateDefaultCurrency()
+    {
+        $this->expectException(CannotDeactivateDefaultTenantCurrencyException::class);
+
+        $tenant = $this->mock(Tenant::class);
+        $currencyRepository = $this->mock(CurrencyRepository::class);
+        $tenantAvailableCurrency = $this->mock(TenantAvailableCurrency::class);
+        $repository = $this->getRepository(
+            $tenantAvailableCurrency,
+            $tenant,
+            $currencyRepository
+        );
+
+        $tenantId = 1;
+        $data = [
+            'code' => 'USD',
+            'is_active' => false
+        ];
+
+        $currencyData = [
+            'tenant_id' => $tenantId,
+            'code' => $data['code'],
+            'is_active' => $data['is_active']
+        ];
+
+        $tenantAvailableCurrency->shouldReceive('getAttribute')
+            ->once()
+            ->with('default')
+            ->andReturn(true);
+
+        $tenantAvailableCurrency->shouldReceive('where')
+            ->once()
+            ->with(['tenant_id' => $tenantId, 'code' => $data['code']])
+            ->andReturn($tenantAvailableCurrency);
+
+        $tenantAvailableCurrency->shouldReceive('firstOrFail')
+            ->once()
+            ->andReturn($tenantAvailableCurrency);
+
+        $tenantAvailableCurrency->shouldReceive('update')
+            ->never();
+
+        $repository->update($data, $tenantId);
+    }
+
+    /**
      * @testdox Test get tenant currency list
      *
      * @return void
      */
-    public function testGetTenantCurrencyListSuccess()
+    public function testGetTenantCurrencyList()
     {
         $tenant = $this->mock(Tenant::class);
         $currencyRepository = $this->mock(CurrencyRepository::class);
@@ -156,9 +207,9 @@ class TenantAvailableCurrencyRepositoryTest extends TestCase
              ->andReturn($tenantAvailableCurrency);
 
         $items = [
-            'code'=> 'INR',
-            'default'=> 1,
-            'is_active'=> 1
+            'code' => 'INR',
+            'default' => 1,
+            'is_active' => 1
         ];
         $mockTenantCurrencies = new LengthAwarePaginator($items, 0, 10, 1);
         $tenantAvailableCurrency->shouldReceive('paginate')

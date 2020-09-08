@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\ActivityLogEvent;
+use App\Exceptions\CannotDeactivateDefaultTenantCurrencyException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Repositories\Currency\CurrencyRepository;
@@ -128,8 +129,8 @@ class TenantCurrencyController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
-                trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+                config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
             );
         }
 
@@ -216,8 +217,8 @@ class TenantCurrencyController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_DEFAULT_FIELD_MUST_BE_TRUE'),
-                trans('messages.custom_error_message.ERROR_DEFAULT_FIELD_MUST_BE_TRUE')
+                config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
             );
         }
 
@@ -241,21 +242,18 @@ class TenantCurrencyController extends Controller
         }
 
         try {
-            $response = $this->tenantAvailableCurrencyRepository->update($currencyData, $tenantId);
+            $this->tenantAvailableCurrencyRepository->update($currencyData, $tenantId);
+        } catch (CannotDeactivateDefaultTenantCurrencyException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE')
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.CURRENCY_CODE_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_FOUND')
-            );
-        }
-
-        // Set is_active is false while default currency is already true and not to change
-        if (!$response) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE'),
-                trans('messages.custom_error_message.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE')
             );
         }
 
