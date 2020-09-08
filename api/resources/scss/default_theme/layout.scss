@@ -149,6 +149,7 @@ ul {
       left: 300px;
     }
   }
+
   &.loaded {
     display: block;
   }
@@ -241,19 +242,6 @@ tspan {
       display: block;
     }
 
-    &.breadcrumb-left {
-      @include sm-min {
-        margin-right: 40px;
-
-        @include lg-max {
-          margin-right: 35px;
-        }
-
-        @include md-max {
-          margin-right: 15px;
-        }
-      }
-    }
     .breadcrumb-item {
       margin-right: 40px;
 
@@ -340,7 +328,7 @@ tspan {
     flex-wrap: wrap;
 
     .page-item {
-      margin: 0 5px;
+      margin: 0 3px;
 
       &:nth-child(1),
       &:nth-child(2),
@@ -377,25 +365,14 @@ tspan {
       span,
       .page-link {
         border-radius: 3px;
-        border-color: $gray2;
-        border-width: 2px;
-        // @include border-radius(100%);
+        border-color: $primary-border-color;
       }
 
       .page-link {
-        font-size: 18px;
-        line-height: 18px;
-        color: $gray2;
+        font-size: 16px;
+        color: $gray-primary;
         margin: 0;
-        padding: 6px 10px;
-        min-width: 32px;
-        height: 36px;
-        text-align: center;
-
-        @include lg-max {
-          min-width: 34px;
-          height: 34px;
-        }
+        padding: 6px 12px;
 
         @include md-max {
           font-size: 14px;
@@ -536,7 +513,7 @@ tspan {
   align-items: flex-start;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 27px;
   padding-top: 8px;
   min-height: 50px;
 
@@ -550,8 +527,7 @@ tspan {
 
     strong {
       font-size: 24px;
-      font-weight: 700;
-      // font-weight: 400;
+      font-weight: 400;
     }
   }
 
@@ -1198,7 +1174,6 @@ main {
         display: flex;
         max-width: 100%;
         flex: 0 0 100%;
-        // padding: 10px 0 15px;
 
         &.has-progress {
           .detail-column {
@@ -1210,13 +1185,10 @@ main {
               }
             }
             &.progress-bar-block {
-              width: 100%;
+              width: 100% !important;
             }
             &.progress-block {
               width: 56%;
-              &.progress-bar-block {
-                width: 100%;
-              }
 
               @include xl-max {
                 width: 60%;
@@ -1565,9 +1537,6 @@ main {
   }
 
   .tab-content-wrap {
-    @include sm-max {
-      margin-bottom: 30px;
-    }
     .tab-title {
       display: none;
 
@@ -1583,9 +1552,6 @@ main {
           line-height: 26px;
           position: relative;
 
-          &:focus {
-            outline: none;
-          }
           &:after {
             position: absolute;
             content: "";
@@ -1616,90 +1582,6 @@ main {
       &:first-child {
         @include sm-max {
           border-top: 1px solid $primary-border-color;
-        }
-      }
-    }
-
-    .impact-listing {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      .impact-item {
-        width: calc(50% - 15px);
-        max-width: calc(50% - 15px);
-        flex: 0 0 calc(50% - 15px);
-        display: flex;
-        @include border-radius(10px);
-        overflow: hidden;
-        border: 1px solid $primary-border-color;
-        margin-bottom: 30px;
-        @include lg-max {
-          width: calc(50% - 8px);
-          max-width: calc(50% - 8px);
-          flex: 0 0 calc(50% - 8px);
-          margin-bottom: 16px;
-        }
-        @include xs-max {
-          width: 100%;
-          max-width: 100%;
-          flex: 0 0 100%;
-        }
-        .img-wrap {
-          width: 110px;
-          flex: 0 0 110px;
-          max-width: 110px;
-          background: $light-gray;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          @include lg-max {
-            width: 80px;
-            max-width: 80px;
-            flex: 0 0 80px;
-          }
-          i {
-            width: 55px;
-            height: 50px;
-            line-height: 0;
-            display: flex;
-            align-items: center;
-            @include lg-max {
-              width: 50px;
-              height: 45px;
-            }
-            img {
-              width: 100%;
-              height: auto;
-            }
-          }
-        }
-        .text-wrap {
-          width: calc(100% - 110px);
-          max-width: calc(100% - 110px);
-          flex: 0 0 calc(100% - 110px);
-          min-height: 110px;
-          align-items: center;
-          display: flex;
-          padding: 10px 15px;
-          @include lg-max {
-            width: calc(100% - 80px);
-            max-width: calc(100% - 80px);
-            flex: 0 0 calc(100% - 80px);
-            min-height: 80px;
-          }
-          p {
-            font-size: 18px;
-            line-height: 22px;
-            font-family: $general-font;
-            font-weight: 400;
-            color: $black-primary;
-            @include lg-max {
-              font-size: 15px;
-            }
-            &:last-child {
-              margin-bottom: 0;
-            }
-          }
         }
       }
     }
@@ -2043,15 +1925,6 @@ main {
     @include lg-max {
       padding-right: 15px;
     }
-
-    .organization-detail {
-      @-moz-document url-prefix() {
-        li {
-          margin-left: 15px;
-          padding-left: 8px;
-        }
-      }
-    }
   }
 
   .platform-details-right {
@@ -2082,7 +1955,6 @@ main {
       padding: 23px 29px 10px;
       margin-bottom: 40px;
       font-size: 13px;
-      border-radius: 10px;
 
       @include lg-max {
         padding: 20px 20px 10px;
@@ -2766,14 +2638,11 @@ main {
 
 .social-nav {
   justify-content: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   margin-top: 14px;
 
   .list-group-item {
     margin-right: 8px;
-    &:last-child {
-      margin-right: 0;
-    }
   }
 
   a {
@@ -2919,7 +2788,7 @@ main {
 
   .profile-form-wrap {
     // padding-left: 30px;
-    padding-left: 6px;
+    padding-left: 20px;
     margin-top: -7px;
 
     @include lg-max {
@@ -2938,10 +2807,12 @@ main {
 
     .title-with-border {
       margin-bottom: 18px;
-      span {
-        min-width: 185px;
-        @include lg-max {
-          min-width: 168px;
+    }
+
+    .checkbox-group-wrap {
+      .site-checkbox {
+        .custom-control-input {
+          line-height: 0;
         }
       }
     }
@@ -3131,7 +3002,7 @@ main {
             height: 24px;
           }
         }
-        &.setting-icon {
+        &.settings-icon {
           height: 30px;
           @include lg-max {
             height: 24px;
@@ -3268,6 +3139,12 @@ main {
           width: 22px;
           height: auto;
         }
+
+        &.active {
+          ~ .ellipse-menu {
+            display: block;
+          }
+        }
       }
       .ellipse-menu {
         position: absolute;
@@ -3275,6 +3152,7 @@ main {
         right: 4px;
         width: 200px;
         background: $white;
+        display: none;
         @include border-radius(10px);
         border: 1px solid $primary-border-color;
         box-shadow: 0 0 12.5px rgba($black, 0.1);
@@ -3293,6 +3171,7 @@ main {
           cursor: pointer;
           background: transparent;
           @include transition(all 0.5s);
+          color: $gray2;
           @include lg-max {
             padding: 10px 14px;
           }
@@ -3304,7 +3183,7 @@ main {
             border-radius: 10px 10px 0 0;
           }
           &:hover {
-            background: $control-border;
+            background: $light-gray-border;
           }
           i {
             line-height: 0;
@@ -3342,8 +3221,17 @@ main {
 }
 
 .recurring-payment-content {
-  padding-left: 7px;
+  padding-left: 20px;
   margin-top: -7px;
+  @include lg-max {
+    padding-left: 0;
+  }
+
+  @include md-max {
+    padding-left: 15px;
+    margin-top: 0;
+  }
+
   .title-with-border {
     margin-bottom: 30px;
   }
@@ -3593,7 +3481,8 @@ main {
           }
         }
         .table-responsive {
-          margin-bottom: 35px;
+          // margin-bottom: 35px;
+          margin-bottom: 0;
         }
         .title-block {
           padding: 24px 27px 30px;
@@ -3616,13 +3505,20 @@ main {
           }
           @include sm-max {
             width: 100%;
-            margin-bottom: 20px;
+            // margin-bottom: 20px;
           }
         }
         .table {
           color: $black-primary;
           table-layout: fixed;
-          min-width: 950px;
+          min-width: 1000px;
+          margin-bottom: 0;
+          @include lg-max {
+            min-width: 1070px;
+          }
+          // @include md-max {
+          //   min-width: 950px;
+          // }
           tr {
             th,
             td {
@@ -3679,6 +3575,9 @@ main {
                 //   max-width: 21.5%;
                 //   min-width: 21.5%;
                 // }
+                @include lg-max {
+                  padding-left: 10px;
+                }
               }
               &.name-column {
                 width: 27%;
@@ -3701,27 +3600,47 @@ main {
                 min-width: 13%;
                 max-width: 13%;
                 padding-left: 25px;
+                @include xl-max {
+                  padding-left: 15px;
+                }
+                @include lg-max {
+                  width: 14%;
+                  max-width: 14%;
+                  min-width: 14%;
+                }
               }
               &.amount-column {
                 width: 9.7%;
                 min-width: 9.7%;
                 max-width: 9.7%;
                 padding-left: 11px;
-                // @include lg-max {
-                //   width: 14%;
-                //   max-width: 14%;
-                //   min-width: 14%;
-                // }
+                @include xlg-max {
+                  padding-left: 0;
+                }
+                @include lg-max {
+                  width: 12%;
+                  min-width: 12%;
+                  max-width: 12%;
+                }
               }
               &.method-column {
                 width: 10%;
                 min-width: 10%;
                 max-width: 10%;
+                @include xl-max {
+                  padding-left: 10px;
+                }
+                @include lg-max {
+                  padding-left: 0;
+                }
               }
               &.end-date-column {
                 width: 11%;
                 min-width: 11%;
                 max-width: 11%;
+                @include xl-max {
+                  padding-left: 0;
+                }
               }
             }
             td {
@@ -3782,10 +3701,16 @@ main {
                 justify-content: center;
               }
             }
+            // &:last-child {
+            //   td {
+            //     border-bottom: none;
+            //   }
+            // }
           }
         }
       }
       .pagination-block {
+        margin-top: 40px;
         margin-bottom: 30px;
         margin-right: 38px;
         @include xlg-max {
@@ -3839,7 +3764,7 @@ main {
 }
 
 .dashboard-tab-content {
-  padding: 52px 0 40px;
+  padding: 30px 0 40px;
 
   @include sm-max {
     padding-top: 20px;
@@ -3862,12 +3787,7 @@ main {
   .status-bar {
     flex-wrap: wrap;
     margin: 0 -10px;
-    // padding-bottom: 40px;
-    padding-bottom: 78px;
-
-    @include lg-max {
-      padding-bottom: 40px;
-    }
+    padding-bottom: 40px;
 
     @include sm-max {
       margin: 0 -7px;
@@ -3890,16 +3810,16 @@ main {
       max-width: 20%;
       flex: 0 0 20%;
       padding: 0 10px;
-      margin-bottom: 20px;
 
       @include lg-max {
         max-width: 33.33%;
         flex: 0 0 33.33%;
+        margin-bottom: 20px;
       }
 
       @include sm-max {
-        padding: 0 7px;
         margin-bottom: 15px;
+        padding: 0 7px;
       }
 
       @include xs-max {
@@ -3909,8 +3829,12 @@ main {
 
       .list-item {
         border: 1px solid $primary-border-color;
-        padding: 23px 20px 20px 22px;
-        border-radius: 10px;
+        box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.06);
+        -webkit-box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.06);
+        -ms-box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.06);
+        -moz-box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.06);
+        padding: 20px;
+        border-radius: 3px;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -3922,14 +3846,10 @@ main {
       }
 
       i {
-        width: 39px;
+        width: 35px;
         height: 35px;
         display: block;
-        margin-bottom: 27px;
-
-        @include lg-max {
-          margin-bottom: 20px;
-        }
+        margin-bottom: 20px;
 
         @include sm-max {
           width: 30px;
@@ -3951,15 +3871,10 @@ main {
           font-size: 40px;
           line-height: 48px;
           display: block;
-          margin-bottom: 13px;
 
           @include xl-max {
             font-size: 30px;
             line-height: 40px;
-          }
-
-          @include lg-max {
-            margin-bottom: 0;
           }
 
           @include sm-max {
@@ -3974,11 +3889,10 @@ main {
   .chart-block {
     .inner-chart-col {
       border: 1px solid $primary-border-color;
-      padding: 19px 23px;
+      padding: 25px 30px;
       height: 100%;
       display: block;
       flex-wrap: wrap;
-      @include border-radius(10px);
 
       @include md-max {
         padding: 15px;
@@ -3994,31 +3908,6 @@ main {
         align-content: flex-start;
         flex-wrap: wrap;
 
-        .dropdown-wrapper {
-          display: inline-flex;
-          align-items: flex-start;
-          flex-wrap: wrap;
-          &.three-cols {
-            @include xs-max {
-              width: 100%;
-            }
-            .search-dropdown,
-            .site-multiselect {
-              margin-left: 20px;
-            }
-            .custom-dropdown,
-            .search-dropdown,
-            .site-multiselect {
-              @include xs-max {
-                max-width: 100%;
-                flex: 0 0 100%;
-                width: 100%;
-                margin-left: 0;
-                margin-bottom: 15px;
-              }
-            }
-          }
-        }
         h5 {
           @include xs-max {
             max-width: 100%;
@@ -4026,29 +3915,9 @@ main {
           }
         }
 
-        .custom-dropdown,
-        .search-dropdown,
-        .site-multiselect {
-          max-width: 145px;
-          flex: 0 0 145px;
-          width: 145px;
-          .select-text {
-            height: 34px;
-          }
-        }
-        .multiselect.site-multiselect {
-          .multiselect__tags {
-            padding: 7px 35px 7px 15px;
-          }
-          .multiselect__tags-wrap {
-            white-space: nowrap;
-            overflow: hidden;
-            width: 100%;
-            text-overflow: ellipsis;
-          }
-        }
-        .ui.selection.dropdown.search-dropdown {
-          height: 34px;
+        .custom-dropdown {
+          max-width: 150px;
+          flex: 0 0 150px;
         }
       }
 
@@ -4065,19 +3934,13 @@ main {
         justify-content: center;
 
         .progress-status {
-          margin-bottom: 20px;
-          font-size: 16px;
-          line-height: 20px;
+          margin-bottom: 10px;
         }
 
         .progress {
-          height: 50px;
+          height: 45px;
           border-radius: 50px;
           width: 100%;
-
-          @include sm-max {
-            height: 36px;
-          }
 
           .progress-bar {
             flex-direction: row;
@@ -4102,109 +3965,16 @@ main {
           font-size: 20px;
           line-height: 24px;
           margin: 20px 0 0;
-          &.has-edit-icon {
-            margin-top: 13px;
-            .edit-graph {
-              height: 22px;
-              width: 22px;
-              line-height: 0;
-              display: inline-block;
-              cursor: pointer;
-              position: relative;
-              top: -3px;
-              margin-left: 17px;
-              @include sm-max {
-                width: 20px;
-                height: 20px;
-                margin-left: 14px;
-              }
-              img {
-                height: 100%;
-                width: 100%;
-              }
-            }
-          }
-          strong {
-            font-size: 26px;
-            line-height: 34px;
-            font-weight: 700;
-            margin-left: 6px;
-            @include sm-max {
-              font-size: 22px;
-              line-height: 26px;
-            }
-          }
         }
       }
     }
 
     .chart-col {
-      margin-bottom: 30px;
       @include md-max {
-        // margin-bottom: 30px;
+        margin-bottom: 30px;
 
         &:last-child {
           margin-bottom: 0;
-        }
-      }
-      &.secondary-progress,
-      &.custom-progress {
-        .inner-chart-col {
-          .chart-title {
-            margin-bottom: 15px;
-          }
-          .progress-chart {
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: space-between;
-            .progress-label {
-              width: 206px;
-              flex: 0 0 206px;
-              max-width: 206px;
-              margin-top: 0;
-              padding-right: 20px;
-              text-align: left;
-              font-size: 16px;
-              line-height: 20px;
-              @include sm-max {
-                width: 160px;
-                max-width: 160px;
-                flex: 0 0 160px;
-                padding-right: 10px;
-              }
-              strong {
-                margin-left: 0;
-                display: block;
-              }
-            }
-            .progress-wrap {
-              width: calc(100% - 206px);
-              flex: 0 0 calc(100% - 206px);
-              max-width: calc(100% - 206px);
-              @include sm-max {
-                width: calc(100% - 160px);
-                flex: 0 0 calc(100% - 160px);
-                max-width: calc(100% - 160px);
-              }
-            }
-          }
-        }
-      }
-      &.secondary-progress {
-        .progress {
-          background: $orange1;
-        }
-        .progress-bar {
-          background: $orange2;
-        }
-      }
-      &.custom-progress {
-        .progress {
-          background: none;
-          border: 1px solid $gray-secondary;
-        }
-        .progress-bar {
-          background: $blue1;
         }
       }
     }
@@ -5274,7 +5044,6 @@ main {
       justify-content: center;
       outline: none;
       @include transition(all 0.3s);
-      cursor: pointer;
 
       img {
         width: 20px;
@@ -5385,759 +5154,6 @@ main {
     img {
       height: 15px;
       width: 15px;
-    }
-  }
-}
-
-/*Donation detail page*/
-.platform-page {
-  .slider-banner-block {
-    margin-bottom: 38px;
-    .thumb-slider {
-      padding-top: 50px;
-      @include sm-max {
-        padding-top: 25px;
-      }
-      .gallery-top {
-        .inner-gallery-block {
-          height: 674px;
-          @include lg-max {
-            height: 480px;
-          }
-
-          @include md-max {
-            height: 460px;
-          }
-
-          @include sm-max {
-            height: 290px;
-
-            @media screen and (orientation: landscape) {
-              height: 400px;
-            }
-          }
-        }
-      }
-      .gallery-thumbs {
-        margin-top: 13px;
-        @include sm-max {
-          margin-top: 8px;
-        }
-      }
-      .owl-nav {
-        > div {
-          width: 25px;
-          &:before,
-          &:after {
-            background-size: 20px;
-            height: 20px;
-            width: 20px;
-          }
-        }
-      }
-    }
-    .banner-content-block {
-      padding-top: 44px;
-      @include sm-max {
-        padding-top: 25px;
-      }
-      .rating-with-btn {
-        .rating-block {
-          margin-bottom: 18px;
-        }
-        .btn {
-          padding: 5px 28px;
-          min-height: 35px;
-          margin-bottom: 18px;
-          &.icon-btn {
-            i {
-              height: 20px;
-              width: 20px;
-              margin-left: 0;
-            }
-          }
-        }
-      }
-      .group-details {
-        padding: 0 0 14px;
-        background: $light-gray;
-        margin: 54px 0 25px;
-        .top-strip {
-          background: transparent;
-          @include lg-max {
-            top: -16px;
-          }
-        }
-      }
-      .btn-row {
-        .donate-btn {
-          width: 100%;
-          margin-bottom: 20px;
-          font-size: 26px;
-          min-height: 50px;
-          @include sm-max {
-            font-size: 20px;
-            min-height: 45px;
-          }
-        }
-        &.two-col {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          .donate-btn {
-            width: calc(50% - 12px);
-            flex: 0 0 calc(50% - 12px);
-            max-width: calc(50% - 12px);
-            margin: 0 0 20px;
-            @include xs-max {
-              width: 100%;
-              flex: 0 0 100%;
-              max-width: 100%;
-            }
-          }
-        }
-      }
-      .info-box {
-        margin: 0 -10px 15px;
-        @include sm-max {
-          margin: 0 -10px 0;
-        }
-        .list-group-item {
-          max-width: 33.33%;
-          flex: 0 0 33.33%;
-          padding-bottom: 15px;
-          @include sm-max {
-            max-width: 100%;
-            flex: 0 0 100%;
-            padding-bottom: 10px;
-          }
-          .info-box-inner {
-            border-radius: 10px;
-            padding: 77px 17px 15px;
-            @include sm-max {
-              padding: 10px 15px 12px 45px;
-            }
-          }
-          &.full-width-box {
-            max-width: 100%;
-            flex: 0 0 100%;
-            .info-box-inner {
-              padding: 18px 18px 17px 60px;
-              width: 100%;
-              flex-direction: row;
-              align-items: center;
-              border-radius: 10px;
-              @include sm-max {
-                padding: 10px 10px 12px 40px;
-              }
-              .img-wrap {
-                top: 50%;
-                @include transformY(-50%);
-                left: 29px;
-                width: 25px;
-                height: 25px;
-                @include sm-max {
-                  width: 23px;
-                  height: 23px;
-                  left: 20px;
-                }
-              }
-              .label {
-                font-size: 17px;
-                line-height: 20px;
-                padding-right: 20px;
-                @include sm-max {
-                  font-size: 13px;
-                  line-height: 18px;
-                  padding-right: 0;
-                }
-              }
-              .text-wrap {
-                font-size: 17px;
-                line-height: 20px;
-                @include sm-max {
-                  font-size: 13px;
-                  line-height: 18px;
-                }
-              }
-            }
-          }
-          .label {
-            color: $middle-gray;
-            margin-bottom: 3px;
-          }
-        }
-      }
-    }
-  }
-  .group-btns {
-    .share-block {
-      padding: 4px 0 0;
-      @include sm-max {
-        padding: 20px 0 0;
-      }
-      .social-block {
-        .social-icon {
-          border-color: $middle-gray;
-          margin-right: 11px;
-          @include xxs-max {
-            width: 30px;
-            height: 30px;
-            margin-right: 8px;
-          }
-          &:hover {
-            background: $middle-gray;
-          }
-          &:last-child {
-            margin-right: 0;
-          }
-          img {
-            @include xxs-max {
-              width: 17px;
-              height: 17px;
-            }
-          }
-        }
-      }
-    }
-    &.btn-wrap {
-      .btn {
-        &.btn-borderprimary {
-          &.icon-btn {
-            margin-right: 27px;
-            color: $middle-gray !important;
-            border-color: $middle-gray !important;
-            @include xlg-max {
-              margin-right: 15px;
-            }
-            @include xxxs-max {
-              font-size: 15px;
-              padding: 6px 12px;
-            }
-            &.remind-icon {
-              padding: 6px 12px;
-              min-width: 145px;
-              margin-right: 22px;
-              @include xlg-max {
-                margin-right: 15px;
-              }
-            }
-            i {
-              margin: 0 7px 0 4px;
-              height: 16px;
-              width: 16px;
-              svg {
-                fill: $middle-gray;
-              }
-            }
-            &:hover {
-              background: $middle-gray !important;
-              border-color: $middle-gray !important;
-              color: $white !important;
-              svg {
-                fill: $white;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .platform-details-tab {
-    padding-top: 0;
-    margin-top: -15px;
-    .tab-content-wrap {
-      .tabs {
-        &:last-child {
-          border-bottom: none;
-        }
-      }
-    }
-    .tab-content {
-      padding: 43px 0 40px;
-      @include sm-max {
-        padding: 10px 0 30px;
-      }
-      .mission-tab-block {
-        padding-bottom: 36px;
-        @include sm-max {
-          padding-bottom: 20px;
-          margin: 0 -15px;
-        }
-      }
-      h2 {
-        margin-bottom: 18px;
-      }
-      .content-wrap {
-        p {
-          font-size: 15px;
-          letter-spacing: -0.3px;
-          margin-bottom: 28px;
-          @include sm-max {
-            margin-bottom: 20px;
-          }
-          span {
-            display: block;
-          }
-        }
-      }
-      .document-block {
-        .custom-chip {
-          padding: 10px 21px;
-          border-radius: 32px;
-          margin-right: 27px;
-          @include xxs-max {
-            padding: 10px 15px;
-            margin-right: 17px;
-          }
-          .chip-content {
-            font-size: 15px;
-            @include xxs-max {
-              font-size: 14px;
-            }
-            .document-icon {
-              margin-right: 6px;
-              width: 23px;
-              height: 25px;
-            }
-          }
-        }
-      }
-    }
-    .mission-tab-col {
-      padding: 0 15px;
-      .mission-tab-inner {
-        padding: 20px 15px;
-        @include border-radius(5px);
-        p {
-          span {
-            margin: 4px 0 0;
-          }
-        }
-      }
-    }
-    .nav-tabs {
-      flex-wrap: wrap;
-      li {
-        .tablinks {
-          padding: 0 22px 20px;
-          margin-top: 16px;
-          color: $gray-primary;
-        }
-      }
-    }
-  }
-  .platform-details-left {
-    .recent-volunteer-block {
-      border: 1px solid $primary-border-color;
-      border-radius: 10px;
-      padding: 12px 29px 58px;
-      position: relative;
-      overflow: hidden;
-      @include sm-max {
-        padding: 12px 20px 58px;
-      }
-      .custom-pagination {
-        span {
-          @include xxxs-max {
-            font-size: 13px;
-          }
-        }
-      }
-      .volunteers-list {
-        padding-top: 28px;
-        @include sm-max {
-          padding-top: 18px;
-        }
-        .list-group-item {
-          width: 16.66%;
-          flex: 0 0 16.66%;
-          @include lg-max {
-            width: 25%;
-            flex: 0 0 25%;
-            @include sm-max {
-              width: 33.33%;
-              flex: 0 0 33.33%;
-            }
-            @include xxxs-max {
-              width: 50%;
-              flex: 0 0 50%;
-            }
-          }
-          .list-item {
-            align-items: flex-start;
-          }
-          .user-profile-icon {
-            margin: 0 auto 8px;
-          }
-          p {
-            font-size: 13px;
-            line-height: 19px;
-            margin-bottom: 0;
-            text-align: center;
-            span {
-              display: block;
-              em {
-                color: $black-primary;
-                font-weight: 700;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .platform-details-right {
-    .right-inner-block {
-      border: 1px solid $primary-border-color;
-      border-radius: 10px;
-      padding: 25px 28px 25px;
-      position: relative;
-      margin-bottom: 30px;
-      width: 100%;
-      @include sm-max {
-        padding: 20px 20px 20px;
-      }
-      &:last-child {
-        margin-bottom: 0;
-      }
-      span {
-        padding-bottom: 20px;
-      }
-    }
-    .impact-block {
-      .impact-checkbox-list {
-        .custom-control {
-          padding-left: 48px;
-          margin-top: 25px;
-          @include sm-max {
-            margin-top: 18px;
-            padding-left: 36px;
-          }
-          &:last-child {
-            margin-bottom: 17px;
-          }
-        }
-        .custom-control-label {
-          justify-content: flex-start;
-          font-size: 19px;
-          line-height: 38px;
-          color: $gray-primary;
-          letter-spacing: -0.4px;
-          @include sm-max {
-            font-size: 15px;
-            line-height: 26px;
-          }
-          span {
-            color: $black-primary;
-            margin-right: 8px;
-            padding-bottom: 0;
-          }
-          &:after,
-          &:before {
-            width: 38px;
-            height: 38px;
-            border-radius: 3px;
-            left: -48px;
-            top: 0;
-            @include sm-max {
-              width: 26px;
-              height: 26px;
-              left: -36px;
-            }
-          }
-          &:after {
-            background: no-repeat 60% / 65% 65%;
-            left: -50px;
-            @include sm-max {
-              left: -37px;
-            }
-          }
-        }
-        .custom-checkbox
-          .custom-control-input:checked
-          ~ .custom-control-label::after {
-          background-image: url($assetUrl+"/check-icon.svg");
-        }
-      }
-      .amount-control {
-        > div {
-          display: flex;
-          align-items: center;
-          label {
-            margin-bottom: 0;
-            font-size: 18px;
-            line-height: 22px;
-            color: $gray-primary;
-            @include sm-max {
-              font-size: 15px;
-              line-height: 20px;
-            }
-          }
-          .form-control-outer {
-            max-width: 108px;
-            margin-left: 6px;
-            position: relative;
-            .form-control {
-              padding-right: 30px;
-            }
-            .euro-sign {
-              position: absolute;
-              right: 14px;
-              top: 50%;
-              @include transformY(-50%);
-              font-size: 19px;
-              padding: 0;
-              @include sm-max {
-                font-size: 16px;
-              }
-            }
-          }
-        }
-      }
-      .donate-btn {
-        width: 100%;
-        font-size: 18px;
-        min-height: 40px;
-        margin: 20px 0;
-        line-height: 24px;
-      }
-      .secure-text-wrap {
-        min-height: 35px;
-        display: flex;
-        align-items: center;
-      }
-      .secure-text {
-        padding-left: 80px;
-        position: relative;
-        font-size: 16px;
-        line-height: 20px;
-        color: $gray-primary;
-        margin-bottom: 0;
-        letter-spacing: -0.3px;
-        @include sm-max {
-          font-size: 15px;
-          padding-left: 70px;
-        }
-        span {
-          padding: 0;
-        }
-        .img-wrap {
-          width: 80px;
-          display: flex;
-          position: absolute;
-          left: 0;
-          @include sm-max {
-            width: 70px;
-          }
-          img {
-            width: 30px;
-            height: 35px;
-            object-fit: contain;
-            margin-right: 7px;
-            @include sm-max {
-              width: 26px;
-              height: 30px;
-              margin-right: 4px;
-            }
-            &:last-child {
-              margin-right: 0;
-            }
-          }
-        }
-      }
-    }
-    .un-block {
-      .un-list {
-        display: flex;
-        margin-top: 28px;
-        flex-wrap: wrap;
-        margin: 28px -15px 0;
-        @include xxxs-max {
-          margin-top: 20px;
-        }
-        .un-column {
-          max-width: 33.33%;
-          flex: 0 0 33.33%;
-          padding: 0 15px 30px;
-        }
-        .img-wrap {
-          @include xxxs-max {
-            max-width: 70px;
-          }
-        }
-      }
-    }
-  }
-  .fundraiser-block {
-    background: $primary-border-color;
-    padding: 45px 0 52px;
-    text-align: center;
-    @include sm-max {
-      padding: 36px 0 40px;
-    }
-    h2 {
-      font-size: 36px;
-      line-height: 40px;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      margin-bottom: 10px;
-      @include sm-max {
-        font-size: 24px;
-        line-height: 30px;
-        margin-bottom: 8px;
-      }
-    }
-    p {
-      font-size: 24px;
-      line-height: 30px;
-      font-weight: 500;
-      @include sm-max {
-        font-size: 18px;
-        line-height: 24px;
-      }
-    }
-    .btn {
-      min-height: 56px;
-      min-width: 350px;
-      font-size: 22px;
-      line-height: 33px;
-      @include sm-max {
-        min-height: 45px;
-        line-height: 28px;
-        font-size: 18px;
-        min-width: 275px;
-      }
-    }
-  }
-}
-
-.donation-detail-page {
-  .slider-banner-block {
-    .banner-content-block {
-      .group-details {
-        .group-details-inner {
-          padding: 0;
-        }
-        .detail-column {
-          display: flex;
-          flex: 0 0 100%;
-          max-width: 100%;
-          margin: 54px 0;
-          padding: 0 80px;
-          .text-wrap {
-            width: 100%;
-            padding: 0;
-            p {
-              margin-bottom: 0;
-              text-align: center;
-              font-size: 16px;
-              line-height: 20px;
-              margin-bottom: 6px;
-              @include xxxs-max {
-                font-size: 14px;
-              }
-            }
-          }
-          &.progress-block {
-            padding: 0 79px;
-            margin: 0;
-            @include lg-max {
-              padding: 0 40px;
-            }
-            @include xxs-max {
-              padding: 0 20px;
-            }
-            .text-wrap {
-              padding: 0;
-              width: 100%;
-              .subtitle-text {
-                font-size: 14px;
-                line-height: 23px;
-                @include lg-max {
-                  line-height: 20px;
-                }
-              }
-            }
-          }
-          .progress {
-            .progress-bar {
-              background-image: -webkit-linear-gradient(
-                rgb(96, 170, 104) 0%,
-                rgb(21, 203, 40) 100%
-              );
-              background-image: -o-linear-gradient(
-                rgb(96, 170, 104) 0%,
-                rgb(21, 203, 40) 100%
-              );
-              background-image: linear-gradient(
-                rgb(96, 170, 104) 0%,
-                rgb(21, 203, 40) 100%
-              );
-            }
-          }
-          .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            span {
-              &:last-child {
-                text-align: right;
-              }
-              em {
-                display: block;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-.dashboard-donation {
-  .dashboard-tab-content {
-    .status-bar {
-      .list-group-item {
-        max-width: 50%;
-        flex: 0 0 50%;
-        @include xs-max {
-          max-width: 100%;
-          flex: 0 0 100%;
-        }
-        i {
-          margin-bottom: 50px;
-        }
-      }
-    }
-  }
-}
-
-.donation-graph {
-  .dashboard-tab-content {
-    .status-bar {
-      padding-bottom: 11px;
-      .list-group-item {
-        .list-item {
-          justify-content: space-between;
-        }
-      }
-    }
-    .chart-block {
-      .inner-chart-col {
-        .progress-chart {
-          .progress-axis {
-            li {
-              &:nth-child(2n) {
-                @include sm-max {
-                  display: none;
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 }

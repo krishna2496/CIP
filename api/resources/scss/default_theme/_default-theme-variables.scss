@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans");
-$general-font: "Noto Sans", sans-serif;
+$general-font: "Noto Sans",
+sans-serif;
 $primary: #f88634;
 
 $secondary: #313896;
@@ -13,10 +14,10 @@ $gray-secondary: #cccccc;
 $gray1: #bdbdbd;
 $gray2: #aaaaaa;
 $light-gray: #f7f7f7;
+$light-gray-border: #e1e1e1;
 $light-gray-secondary: #efefef;
+$middle-gray: #aaaaaa;
 $light-gray-bg: #f8f8f8;
-$light-gray-border:#E1E1E1;
-$middle-gray:#AAAAAA;
 
 $primary-border-color: #e8e8e8;
 $input-border: #b7b7b7;
@@ -29,20 +30,13 @@ $twitter-color: #2caae1;
 $linkedin-color: #007bb6;
 $envelope-color: #7d7d7d;
 $light-blue: #d1e4f8;
-$green: #9BCC36;
-$sky-blue: #2CA7F0;
-$lavender: #D16EFF;
-$green-color:#04a10c;
 $green-color: #04a10c;
-$orange1: #ff9900;
-$orange2: #f2c94c;
-$blue1: #00cccc;
-$link-color: #1a0dab;
 
 $success: #10aa3a;
 $failure: #e50000;
 $info: #0c5460;
 $disabled-bg: #f5f5f5;
+$link-color: #1a0dab;
 
 // rgba color variable
 $rgb-black: rgba(0, 0, 0, 0.4);
@@ -50,5 +44,3 @@ $rgb-black-darker: rgba(0, 0, 0, 0.9);
 $rgb-black-dark: rgba(0, 0, 0, 0.5);
 $rgb-black-hover: rgba(0, 0, 0, 0.8);
 $rgb-white: rgba(255, 255, 255, 0.4);
-$rgb-gray:rgba(238, 238, 238, 0.5);
-$rgb-border:rgba(225, 225, 225, 0.5);

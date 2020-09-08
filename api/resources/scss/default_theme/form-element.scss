@@ -90,39 +90,6 @@ a {
     background: none !important;
     border-color: $primary !important;
   }
-  &.icon-btn {
-    i {
-      svg {
-        height: 100%;
-        width: 100%;
-        fill: $white;
-      }
-    }
-
-    &:hover {
-      i {
-        svg {
-          fill: $primary;
-        }
-      }
-    }
-
-    &:focus {
-      i {
-        svg {
-          fill: $primary;
-        }
-      }
-
-      &:hover {
-        i {
-          svg {
-            fill: $primary;
-          }
-        }
-      }
-    }
-  }
 }
 
 .btn-bordersecondary {
@@ -435,7 +402,7 @@ textarea {
   width: 100%;
   max-width: 100%;
   height: 38px;
-  color: $gray-primary;
+  color: $black-primary;
   font-size: 14px;
   font-weight: 400;
   line-height: normal;
@@ -446,7 +413,7 @@ textarea {
   outline: none;
   overflow: hidden;
   @include placeholder {
-    color: $gray-primary;
+    color: $gray-secondary;
     font-family: $general-font;
     font-size: 14px;
     font-weight: 400;
@@ -458,7 +425,7 @@ textarea {
   &:focus {
     box-shadow: none;
     border-color: $gray-primary;
-    color: $gray-primary;
+    color: $black-primary;
     outline: none;
   }
   &.is-invalid,
@@ -549,6 +516,64 @@ label {
   }
 }
 
+.optimy-multiselect {
+  & .multiselect__tags {
+    border-radius: 3px !important;
+    border: 1px solid $control-border;
+    cursor: pointer;
+    box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -o-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+  }
+  & .multiselect__select {
+    &:before {
+      border-style: none;
+      margin-top: 0;
+      position: absolute;
+      content: "";
+      background: url($assetUrl+"/down-arrow.svg") no-repeat;
+      background-size: 11px;
+      width: 11px;
+      height: 11px;
+      right: 13px;
+      top: 50%;
+      @include transformY(-50%);
+      @include transition(all 0.3s);
+    }
+  }
+  & .multiselect__tag {
+    background: $primary;
+    margin-bottom: 0;
+  }
+  & .multiselect__input {
+    padding-top: 2px;
+  }
+  & .multiselect__placeholder {
+    color: $gray-secondary;
+    font-size: 16px;
+    margin: 0;
+    padding-left: 5px;
+    padding-top: 0;
+  }
+  & .multiselect__option--highlight {
+    background: $primary;
+    &:after {
+      background: $primary;
+    }
+  }
+  & .multiselect__tag-icon:hover {
+    background: $primary;
+  }
+  & .multiselect__tag-icon:after {
+    color: $white;
+  }
+  & .multiselect__tag-icon:hover:after {
+    color: $secondary;
+  }
+}
+
 .site-checkbox {
   .custom-checkbox {
     .custom-control-label {
@@ -601,6 +626,9 @@ label {
     &:before {
       display: none;
     }
+    &::-ms-check {
+      display: none;
+    }
     &:checked {
       ~ .custom-control-label {
         &:after {
@@ -626,7 +654,7 @@ label {
   height: 100%;
   & > span {
     display: block;
-    padding: 6px 33px 6px 15px;
+    padding: 6px 35px 6px 15px;
     border: 1px solid $control-border;
     border-radius: 3px;
     text-overflow: ellipsis;
@@ -742,7 +770,7 @@ label {
   line-height: 18px;
   & > span {
     display: block;
-    padding: 6px 33px 6px 15px;
+    padding: 6px 35px 6px 15px;
     border: 1px solid $control-border;
     border-radius: 3px;
     text-overflow: ellipsis;
@@ -751,7 +779,6 @@ label {
     max-width: 100%;
     white-space: nowrap;
     cursor: pointer;
-    color: $gray-primary;
     &:after {
       position: absolute;
       content: "";
@@ -934,144 +961,96 @@ label {
   }
 }
 
-.multiselect {
-  &.site-multiselect {
-    min-height: auto;
-    .multiselect__select {
-      background: url($assetUrl+"/down-arrow.svg") no-repeat;
-      background-size: 11px;
-      width: 11px;
-      height: 11px;
-      right: 13px;
-      top: 50%;
-      @include transformY(-50%);
-      padding: 0;
-      &::before {
-        display: none;
-      }
+.autocomplete-control {
+  position: relative;
+  input {
+    width: 100%;
+    max-width: 100%;
+    height: 38px;
+    color: $black-primary;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    @extend .control_shadow;
+    border: 1px solid $control-border;
+    padding: 5px 12px;
+    border-radius: 3px;
+    &.autosuggest__input--open {
+      border-radius: 3px 3px 0 0;
     }
-    .multiselect__tags {
-      min-height: auto;
-      background: transparent;
-      border: 1px solid $control-border;
-      padding: 10px 35px 10px 15px;
-      line-height: 18px;
-      @include border-radius(3px);
-      box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-      -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-      -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-      -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-      -o-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-    }
-    .multiselect__tags-wrap {
-      line-height: 0;
-      display: block;
-    }
-    .multiselect__tag {
-      padding: 0;
-      padding: 0;
-      color: $gray-primary;
-      background: transparent;
-      margin-right: 5px;
-      margin-bottom: 0;
+    @include placeholder {
+      color: $black-primary;
+      font-family: $general-font;
       font-size: 14px;
-      line-height: 18px;
-      &:after {
-        position: relative;
-        content: ",";
-        font-size: 14px;
-        line-height: 18px;
-        color: $black-primary;
-      }
-      &:last-child {
-        &:after {
-          display: none;
-        }
-      }
-      .multiselect__tag-icon {
-        display: none;
-      }
+      font-weight: 400;
     }
-    .multiselect__input {
-      background: transparent;
-      border-radius: 0;
+    &:focus {
+      box-shadow: none;
+      border-color: $gray-primary;
+      color: $black-primary;
+      outline: none;
+    }
+  }
+  .autosuggest__results-container {
+    .autosuggest__results {
+      position: absolute;
+      background: $white;
+      z-index: 2;
+      border: 1px solid $primary-border-color;
+      width: 100%;
       padding: 0;
-      font-size: 14px;
-      line-height: 18px;
-    }
-    .multiselect__placeholder {
-      color: $gray-primary;
-      margin-bottom: 0;
-      padding-top: 0;
-    }
-    .multiselect__content-wrapper {
-      min-width: 100%;
-      right: 0;
-      top: 100%;
+      border-radius: 0 0 3px 3px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      @include md-max {
+        max-height: 275px;
+      }
       ul {
-        padding: 10px 0;
-        height: 100%;
+        padding: 4px 0;
         li {
-          .multiselect__option {
-            padding: 6px 15px 6px 42px;
-            font-size: 14px;
-            line-height: 18px;
-            cursor: pointer;
-            position: relative;
-            color: $black-primary !important;
-            min-height: auto;
-            &:after,
-            &:before {
-              position: absolute;
-              left: 15px;
-              content: "";
-              top: 5px;
-              height: 20px;
-              width: 20px;
-              box-shadow: none !important;
-              border: 1px solid $control-border !important;
-              border-radius: 2px;
-              padding: 0;
-              background: transparent;
-            }
-            &:before {
-              // background: $primary url("../images/check-icon.svg") no-repeat
-              //   center center;
-
-              background: $primary url($assetUrl+"/check-icon.svg") no-repeat
-                center center;
-              background-size: 14px 14px;
-              opacity: 0;
-              @include transition(all 0.3s);
-            }
-            &.multiselect__option--selected {
-              background: transparent;
-              font-weight: 400;
-              &:after {
-                border-color: $primary !important;
-              }
-              &::before {
-                opacity: 1;
+          padding: 8px 15px;
+          @include transition(all 0.3s);
+          cursor: pointer;
+          white-space: nowrap;
+          font-size: 18px;
+          line-height: 22px;
+          @include sm-max {
+            font-size: 16px;
+            line-break: 20px;
+          }
+          > div {
+            display: flex;
+            align-items: center;
+            img {
+              display: inline-flex;
+              width: 50px;
+              height: 50px;
+              margin-right: 15px;
+              border-radius: 100%;
+              @include sm-max {
+                width: 35px;
+                height: 35px;
               }
             }
-            &.multiselect__option--highlight {
-              font-weight: 400;
-              background: $primary-border-color;
+            > div {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              span {
+                font-size: 12px;
+                line-height: 16px;
+                display: inline-block;
+                vertical-align: middle;
+                color: $gray-primary;
+              }
             }
           }
+          &:hover,
+          &.autosuggest__results-item--highlighted {
+            background: $primary-border-color;
+          }
         }
-      }
-    }
-    &.multiselect--active {
-      .multiselect__select {
-        transform: translateY(-50%) rotate(180deg);
-        -webkit-transform: translateY(-50%) rotate(180deg);
-        -ms-transform: translateY(-50%) rotate(180deg);
-        -moz-transform: translateY(-50%) rotate(180deg);
-        -o-transform: translateY(-50%) rotate(180deg);
-      }
-      .multiselect__placeholder {
-        display: block !important;
       }
     }
   }
@@ -1081,7 +1060,7 @@ label {
 
 .breadcrumb-current {
   display: none;
-  padding: 6px 33px 6px 15px;
+  padding: 6px 35px 6px 15px;
   border: 1px solid $control-border;
   border-radius: 3px;
   text-overflow: ellipsis;
@@ -1098,7 +1077,7 @@ label {
     background-size: 11px;
     width: 11px;
     height: 11px;
-    right: 14px;
+    right: 13px;
     top: 50%;
     @include transformY(-50%);
     @include transition(all 0.3s);
@@ -1133,10 +1112,6 @@ label {
 }
 
 .breadcrumb-dropdown {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
   @include sm-max {
     position: absolute !important;
     top: 100%;
@@ -1146,7 +1121,6 @@ label {
     width: 100%;
     width: auto;
     max-height: 226px;
-    overflow: auto;
     margin-top: -1px;
     background: $white;
     border: 1px solid $control-border;
@@ -1205,14 +1179,6 @@ label {
       position: relative;
       border-radius: 100%;
       z-index: 1039;
-      @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-        max-width: 180px !important;
-        height: 180px !important;
-        @include sm-max {
-          max-width: 160px !important;
-          height: 160px !important;
-        }
-      }
     }
     .picture-preview {
       background: $primary-border-color;
@@ -1350,7 +1316,7 @@ label {
 .mx-input {
   height: 38px !important;
   @include placeholder {
-    color: $gray-primary;
+    color: $black-primary;
     opacity: 1;
   }
   &:focus {
@@ -1663,7 +1629,7 @@ input[type="search"]::-webkit-search-cancel-button {
   border-color: $control-border;
   border-radius: 3px;
   @extend .control_shadow;
-  padding: 6px 33px 6px 15px;
+  padding: 6px 35px 6px 15px;
   @include transition(all 0.3s);
   min-height: 1px;
   line-height: normal;
@@ -1678,7 +1644,7 @@ input[type="search"]::-webkit-search-cancel-button {
     @extend .control_shadow;
   }
   .search {
-    padding: 6px 33px 6px 15px !important;
+    padding: 6px 35px 6px 15px !important;
   }
   .text {
     overflow: hidden;
@@ -1687,7 +1653,7 @@ input[type="search"]::-webkit-search-cancel-button {
     width: 100%;
     font-size: 14px;
     line-height: 18px;
-    color: $gray-primary !important;
+    color: $black-primary !important;
   }
   &.active {
     .dropdown.icon {
@@ -1725,7 +1691,7 @@ input[type="search"]::-webkit-search-cancel-button {
     width: auto !important;
     top: 100%;
     max-height: 250px;
-    padding: 0;
+    padding: 4px 0;
     border: 1px solid $control-border !important;
     @extend .control_shadow;
     border-radius: 0 0 3px 3px;
