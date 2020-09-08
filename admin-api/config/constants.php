@@ -25,7 +25,8 @@
             'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => '2001011',
             'CURRENCY_CODE_NOT_FOUND' => '2001012',
             'ERROR_SYSTEM_CURRENCY_CODE_WRONG' => '2001013',
-            'ERROR_DEFAULT_FIELD_MUST_BE_TRUE' => '2001014'
+            'ERROR_DEFAULT_FIELD_MUST_BE_TRUE' => '2001014',
+            'ERROR_CURRENCY_DEFAULT_SET_TO_FALSE' => '2001015'
         ],
         'background_process_status' => [
             'PENDING' => '0',

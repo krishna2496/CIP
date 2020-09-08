@@ -49,14 +49,19 @@ class TenantAvailableCurrencyRepository
         $currencyData = [
             'tenant_id' => $tenantId,
             'code' => $currency['code'],
-            'default' => $currency['default'],
             'is_active' => $currency['is_active']
         ];
 
-        if ($currency['is_active'] == true && $currency['default'] == true) {
-            $this->tenantAvailableCurrency
-            ->where('tenant_id', $tenantId)
-            ->update(['default' => '0']);
+        if (isset($currency['default'])) {
+            $currencyData['default'] = $currency['default'];
+        }
+
+        if (isset($currency['default'])) {
+            if ($currency['is_active'] == true && $currency['default'] == true) {
+                $this->tenantAvailableCurrency
+                ->where('tenant_id', $tenantId)
+                ->update(['default' => '0']);
+            }
         }
 
         $this->tenantAvailableCurrency->create($currencyData);
@@ -67,7 +72,7 @@ class TenantAvailableCurrencyRepository
      *
      * @param array $currency
      * @param int $tenantId
-     * @return void
+     * @return boolean
      */
     public function update(array $currency, int $tenantId)
     {
@@ -78,15 +83,27 @@ class TenantAvailableCurrencyRepository
         $currencyData = [
             'tenant_id' => $tenantId,
             'code' => $currency['code'],
-            'default' => $currency['default'],
             'is_active' => $currency['is_active']
         ];
 
-        if ($currency['is_active'] == true && $currency['default'] == true) {
-            $this->tenantAvailableCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
+        if ($currency['is_active'] == false && !isset($currency['default'])) {
+            $currencyDetail = $this->tenantAvailableCurrency->where(['tenant_id' => $tenantId, 'code' => $currency['code']])->get()->toArray();
+            if ($currencyDetail[0]['default'] == true) {
+                return false;
+            }
         }
+
+        if (isset($currency['default'])) {
+            $currencyData['default'] = $currency['default'];
+            if ($currency['is_active'] == true && $currency['default'] == true) {
+                $this->tenantAvailableCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
+            }
+        }
+
         $this->tenantAvailableCurrency->where(['tenant_id' => $tenantId, 'code' => $currency['code']])
             ->update($currencyData);
+
+        return true;
     }
 
     /**

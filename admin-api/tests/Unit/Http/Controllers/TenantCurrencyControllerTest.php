@@ -807,6 +807,76 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
+    * @testdox Test update with error when default currency is set is_active false
+    *
+    * @return void
+    */
+    public function testUpdateErrorIfdefaultFieldTrueWhenIsActiveFalse()
+    {
+        $tenantId = rand(50000, 70000);
+
+        $data = [
+            'code'=> 'USD',
+            'is_active'=> '1'
+        ];
+        $request = new Request($data);
+        $tenantRepository = $this->mock(TenantRepository::class);
+        $tenant = $this->mock(Tenant::class);
+        $tenantRepository->shouldReceive('find')
+            ->once()
+            ->with($tenantId)
+            ->andReturn($tenant);
+
+        $repository = $this->mock(CurrencyRepository::class);
+        $repository->shouldReceive('isSupported')
+            ->once()
+            ->with($request['code'])
+            ->andReturn(true);
+
+        $tenantAvailableCurrencyRepository = $this->mock(TenantAvailableCurrencyRepository::class);
+        $tenantAvailableCurrencyRepository->shouldReceive('update')
+            ->once()
+            ->with($data, $tenantId)
+            ->andReturn(false);
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=> config('constants.error_codes.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE'),
+                    'message'=> trans('messages.custom_error_message.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper
+        ->shouldReceive('error')
+        ->once()
+        ->with(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            config('constants.error_codes.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE'),
+            trans('messages.custom_error_message.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE')
+        )->andReturn($jsonResponse);
+        
+        $controller = $this->getController(
+            $responseHelper,
+            $tenantAvailableCurrencyRepository,
+            $tenantRepository,
+            $repository
+        );
+
+        $response = $controller->update($request, $tenantId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
     * @testdox Test update with success
     *
     * @return void
@@ -840,7 +910,7 @@ class TenantCurrencyControllerTest extends TestCase
         $tenantAvailableCurrencyRepository->shouldReceive('update')
             ->once()
             ->with($data, $tenantId)
-            ->andReturn();
+            ->andReturn(true);
 
         $responseHelper = $this->mock(ResponseHelper::class);
 

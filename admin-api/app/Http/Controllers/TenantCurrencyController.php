@@ -124,7 +124,7 @@ class TenantCurrencyController extends Controller
             'is_active' => 'required|boolean',
         ]);
 
-        if($request['is_active'] == false && $request['default'] == true) {
+        if ($request['is_active'] == false && $request['default'] == true) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -154,9 +154,12 @@ class TenantCurrencyController extends Controller
 
         $currencyData = [
             'code' => $request['code'],
-            'default' => isset($request->default) ? $request->default : 0,
             'is_active' => $request['is_active']
         ];
+
+        if (isset($request->default)) {
+            $currencyData['default'] = $request->default;
+        }
 
         // Store tenant currency details
         $this->tenantAvailableCurrencyRepository->store($currencyData, $tenantId);
@@ -209,7 +212,7 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if($request['is_active'] == false && $request['default'] == true) {
+        if ($request['is_active'] == false && $request['default'] == true) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -230,16 +233,29 @@ class TenantCurrencyController extends Controller
 
         $currencyData = [
             'code' => $request['code'],
-            'default' => isset($request->default) ? $request->default : 0,
             'is_active' => $request['is_active']
         ];
 
+        if (isset($request->default)) {
+            $currencyData['default'] = $request->default;
+        }
+
         try {
-            $this->tenantAvailableCurrencyRepository->update($currencyData, $tenantId);
+            $response = $this->tenantAvailableCurrencyRepository->update($currencyData, $tenantId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.CURRENCY_CODE_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_CURRENCY_CODE_NOT_FOUND')
+            );
+        }
+
+        // Set is_active is false while default currency is already true and not to change
+        if (!$response) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE'),
+                trans('messages.custom_error_message.ERROR_CURRENCY_DEFAULT_SET_TO_FALSE')
             );
         }
 
