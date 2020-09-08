@@ -32,8 +32,8 @@ class WhitelistControllerTest extends TestCase
         $filters = [
             'search' => 'sample',
             'order' => [
-                'pattern' => null,
-                'created_at' => 'desc'
+                'orderBy' => 'pattern',
+                'orderDir' => 'asc'
             ]
         ];
         $request = new Request();
@@ -45,6 +45,10 @@ class WhitelistControllerTest extends TestCase
             count($whitelistedIp),
             $paginate['perPage']
         );
+
+        $filters['order'] = [
+            $filters['order']['orderBy'] => $filters['order']['orderDir']
+        ];
 
         $whitelistService = $this->mock(WhitelistService::class);
         $whitelistService->shouldReceive('getList')
@@ -83,8 +87,8 @@ class WhitelistControllerTest extends TestCase
         $filters = [
             'search' => 'sample',
             'order' => [
-                'pattern' => null,
-                'created_at' => 'desc'
+                'orderBy' => 'pattern',
+                'orderDir' => 'asc'
             ]
         ];
         $request = new Request();
@@ -94,6 +98,10 @@ class WhitelistControllerTest extends TestCase
             0,
             $paginate['perPage']
         );
+
+        $filters['order'] = [
+            $filters['order']['orderBy'] => $filters['order']['orderDir']
+        ];
 
         $whitelistService = $this->mock(WhitelistService::class);
         $whitelistService->shouldReceive('getList')

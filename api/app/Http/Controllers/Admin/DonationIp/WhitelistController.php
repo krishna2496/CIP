@@ -18,6 +18,21 @@ class WhitelistController extends Controller
     use RestExceptionHandlerTrait;
 
     /**
+     * @var Array | All allowed order fields
+     */
+    const ORDER_FIELDS = [
+        'pattern'
+    ];
+
+    /**
+     * @var Array | All allowed order directions
+     */
+    const ORDER_DIRECTIONS = [
+        'desc',
+        'asc'
+    ];
+
+    /**
      * @var WhitelistService
      */
     private $whitelistService;
@@ -63,12 +78,16 @@ class WhitelistController extends Controller
             'perPage' => $request->perPage
         ];
         $filters = [
-            'search' => $request->get('search', null),
-            'order' => [
-                'pattern' => $request->input('order.pattern', null),
-                'created_at' => $request->input('order.created_at', 'desc')
-            ]
+            'search' => $request->get('search', null)
         ];
+
+        $orderBy = $request->input('order.orderBy', null);
+        $orderDir = $request->input('order.orderDir', null);
+        if (in_array($orderBy, self::ORDER_FIELDS) && in_array($orderDir, self::ORDER_DIRECTIONS)) {
+            $filters['order'][$orderBy] = $orderDir;
+        } else {
+            $filters['order']['created_at'] = 'desc';
+        }
 
         $patterns = $this->whitelistService->getList($paginate, $filters);
 

@@ -8553,20 +8553,16 @@
             "type": "string"
           },
           {
-            "name": "order[pattern]",
+            "name": "order[orderBy]",
             "in": "path",
-            "description": "Order list by pattern",
+            "description": "Field name for ordering",
             "required": false,
-            "type": "string",
-            "enum": [
-              "desc",
-              "asc"
-            ]
+            "type": "string"
           },
           {
-            "name": "order[created_at]",
+            "name": "order[orderDir]",
             "in": "path",
-            "description": "Order list by item created_at",
+            "description": "Kind or ordering: asc or desc",
             "required": false,
             "type": "string",
             "enum": [
