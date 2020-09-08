@@ -58,7 +58,7 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
-    * @var App\Repositories\MissionMedia\ImpactDonationMissionRepository
+    * @var App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository
     */
     private $impactDonationMissionRepository;
     
@@ -76,8 +76,8 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
-     * @param  App\Repositories\MissionMedia\ImpactDonationMissionRepository $impactDonationMissionRepository
-     * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
+     * @param  App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository $impactDonationMissionRepository
+     * @param  App\Repositories\MissionTab\MissionTabRepository $missionTabRepository
      * @return void
      */
     public function __construct(

@@ -7,6 +7,7 @@ use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Repositories\Mission\MissionRepository;
 use App\Services\Mission\ModelsService;
+use App\Models\MissionImpactDonation;
 use App\Models\MissionApplication;
 use App\Models\MissionTabLanguage;
 use App\Models\FavouriteMission;
@@ -24,6 +25,7 @@ use App\Models\Mission;
 use App\Models\City;
 use TestCase;
 use Mockery;
+use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -56,6 +58,8 @@ class MissionRepositoryTest extends TestCase
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -67,6 +71,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpactDonation,
             $organization,
             $missionTab,
             $missionTabLanguage
@@ -84,6 +89,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $impactDonationMissionRepository,
             $missionTabRepository
         );
 
@@ -99,6 +105,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
@@ -109,6 +116,7 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        ImpactDonationMissionRepository $impactDonationMissionRepository,
         MissionTabRepository $missionTabRepository
     ) {
         return new MissionRepository(
@@ -118,6 +126,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $impactDonationMissionRepository,
             $missionTabRepository
         );
     }
@@ -146,6 +155,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
@@ -161,6 +171,7 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        MissionImpactDonation $missionImpactDonation,
         Organization $organization,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage
@@ -175,6 +186,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpactDonation,
             $organization,
             $missionTab,
             $missionTabLanguage
