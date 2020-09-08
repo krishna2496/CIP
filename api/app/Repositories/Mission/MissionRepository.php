@@ -2,25 +2,25 @@
 
 namespace App\Repositories\Mission;
 
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
-use App\Models\Mission;
 use App\Models\FavouriteMission;
-use App\Models\MissionRating;
+use App\Models\Mission;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
+use App\Models\MissionRating;
+use App\Models\MissionTab;
 use App\Repositories\Country\CountryRepository;
-use DB;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
-use App\Services\Mission\ModelsService;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
-use App\Models\MissionTab;
+use App\Services\Mission\ModelsService;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
 
@@ -60,7 +60,7 @@ class MissionRepository implements MissionInterface
      * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
      */
     private $missionUnitedNationSDGRepository;
-    
+
     /**
      * @var App\Repositories\MissionTab\MissionTabRepository
      */
@@ -76,7 +76,6 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
-     * @param  App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository;
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
@@ -491,7 +490,7 @@ class MissionRepository implements MissionInterface
                 unset($missionDocument);
             }
         }
-        
+
         // Update UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
             $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
