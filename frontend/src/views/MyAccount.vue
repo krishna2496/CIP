@@ -852,6 +852,7 @@
             store.commit('setDefaultLanguageCode', this.languageCode);
             this.showPage = false;
             this.setPolicyPage();
+            this.isShownComponent = false;
             this.getUserProfileDetail().then(() => {
               this.showPage = true;
               loadLocaleMessages(this.profile.languageCode).then(() => {
