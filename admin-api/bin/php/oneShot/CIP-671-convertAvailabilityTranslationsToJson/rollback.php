@@ -28,7 +28,7 @@ if (count($tenants) > 0) {
         // Set default database
         \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
         $availabilities = $pdo->query('select availability_id, translations from availability')->fetchAll();
-        // $themes = $pdo->query('select mission_theme_id, translations from mission_theme')->fetchAll();
+
         if (!empty($availabilities)) {
             foreach ($availabilities as $availability) {
 
