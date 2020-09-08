@@ -299,3 +299,15 @@ $factory->define(App\Models\DonationIpWhitelist::class, function (Faker\Generato
         'description' => $faker->text(60)
     ];
 });
+
+$factory->define(App\Models\MissionMedia::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => $faker->randomDigit
+    ];
+});
+
+$factory->define(App\Models\MissionDocument::class, function (Faker\Generator $faker) {
+    return [
+        'mission_document_id' => $faker->randomDigit
+    ];
+});
