@@ -186,7 +186,7 @@ class UserService
      */
     public function getUserCount(
         bool $includeInactive = false,
-        bool $includeAdmin = false,
+        bool $includeAdmin = false
     ): int {
         return $this->userRepository->getUserCount(
             $includeInactive,
