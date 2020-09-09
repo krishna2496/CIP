@@ -17,7 +17,7 @@ class AddColumnIsAdminInUserTable extends Migration
             $table->boolean('is_admin')
                 ->after('expiry')
                 ->index('is_admin')
-                ->nullable();
+                ->default(0);
         });
     }
 

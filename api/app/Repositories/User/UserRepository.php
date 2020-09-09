@@ -752,7 +752,10 @@ class UserRepository implements UserInterface
         bool $includeAdmin = false
     ): int {
         $query = $this->user->selectRaw('COUNT(1) AS user_count');
-        $query->where('is_admin', $includeAdmin);
+
+        if (!$includeAdmin) {
+            $query->where('is_admin', '<>', 1);
+        }
 
         $status = [
             config('constants.user_statuses.ACTIVE'),
