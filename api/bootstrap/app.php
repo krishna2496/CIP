@@ -74,7 +74,8 @@ $app->routeMiddleware([
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
     'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
     'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class,
-    'user.profile.complete' => App\Http\Middleware\UserProfileCompleteMiddleware::class
+    'user.profile.complete' => App\Http\Middleware\UserProfileCompleteMiddleware::class,
+    'TenantHasSettings' => App\Http\Middleware\TenantHasSettings::class
 ]);
 
 /**

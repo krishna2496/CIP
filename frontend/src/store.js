@@ -173,7 +173,11 @@ export default new Vuex.Store({
             } else {
                 localStorage.setItem('stateId', '')
             }
-            localStorage.setItem('cityId', filters.cityId)
+            if (filters.cityId) {
+                localStorage.setItem('cityId', filters.cityId)
+            } else {
+                localStorage.setItem('cityId', '')
+            }
             localStorage.setItem('themeId', filters.themeId)
             localStorage.setItem('skillId', filters.skillId)
             localStorage.setItem('tags', JSON.stringify(filters.tags))
@@ -192,7 +196,11 @@ export default new Vuex.Store({
             } else {
                 state.stateId = ''
             }
-            state.cityId = filters.cityId
+            if (filters.cityId) {
+                state.cityId = filters.cityId
+            } else {
+                state.cityId = ''
+            }
             state.themeId = filters.themeId
             state.skillId = filters.skillId
             state.tags = JSON.stringify(filters.tags)
@@ -256,13 +264,11 @@ export default new Vuex.Store({
             localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
             localStorage.setItem('defaultLanguageId', data.language);
             localStorage.setItem('countryId', data.country)
-            localStorage.setItem('cityId', data.city)
             state.defaultLanguage = langaugeCode.toUpperCase()
             state.defaultLanguageId = data.language;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.countryId = data.country
-            state.cityId = data.city
         },
         saveCurrentSkill(state, data) {
             if (data !== null) {

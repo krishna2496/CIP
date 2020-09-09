@@ -11,12 +11,12 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {    
+$factory->define(App\User::class, function (Faker\Generator $faker) {
     \DB::setDefaultConnection('tenant');
     $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
     $cityId = $countryDetail->city->first()->city_id;
     \DB::setDefaultConnection('mysql');
-    
+
     return [
         'first_name' => $faker->firstname,
         'last_name' => $faker->lastname,
@@ -55,7 +55,7 @@ $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $f
             [
                 'lang' => "en",
                 'name' => str_random(10),
-                'values' => "[".'1:'.rand(1, 5).",".'2:'.rand(5, 10)."]"                
+                'values' => "[".'1:'.rand(1, 5).",".'2:'.rand(5, 10)."]"
             ]
         ]
     ];
@@ -87,12 +87,9 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "country_id" => $countryDetail->country_id,
         "start_date" => "2019-05-15 10:40:00",
         "end_date" => "2022-10-15 10:40:00",
-        "total_seats" => rand(10, 1000),        
         "mission_type" => config("constants.mission_type.GOAL"),
         "publication_status" => config("constants.publication_status.APPROVED"),
-        "organisation_id" => 1,
-        "organisation_name" => str_random(10),
-        "availability_id" => 1
+        "organization_id" => 1
     ];
 });
 
@@ -103,7 +100,7 @@ $factory->define(App\Models\Skill::class, function (Faker\Generator $faker) {
             [
                 'lang' => "en",
                 'title' => str_random(10)
-            ]            
+            ]
         ],
         'parent_skill' => 0,
     ];
@@ -191,7 +188,7 @@ $factory->define(App\Models\MissionLanguage::class, function (Faker\Generator $f
             [
                 'title' => str_random(10),
                 'description' => str_random(100)
-            ]            
+            ]
         ]
     ];
 });
@@ -277,11 +274,11 @@ $factory->define(App\Models\Organization::class, function (Faker\Generator $fake
         'state_id' => 1,
         'country_id' => 1,
         'postal_code' => rand()
-    ];    
+    ];
 });
 $factory->define(App\Models\CityLanguage::class, function (Faker\Generator $faker) {
     return [
-        'city_id' => 1, 
+        'city_id' => 1,
         'language_id' => 1,
         'name' => $faker->name,
     ];
@@ -289,8 +286,28 @@ $factory->define(App\Models\CityLanguage::class, function (Faker\Generator $fake
 
 $factory->define(App\Models\CountryLanguage::class, function (Faker\Generator $faker) {
     return [
-        'country_id' => 1, 
+        'country_id' => 1,
         'language_id' => 1,
         'name' => $faker->name,
+    ];
+});
+
+$factory->define(App\Models\DonationIpWhitelist::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->uuid,
+        'pattern' => $faker->ipv4,
+        'description' => $faker->text(60)
+    ];
+});
+
+$factory->define(App\Models\MissionMedia::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => $faker->randomDigit
+    ];
+});
+
+$factory->define(App\Models\MissionDocument::class, function (Faker\Generator $faker) {
+    return [
+        'mission_document_id' => $faker->randomDigit
     ];
 });

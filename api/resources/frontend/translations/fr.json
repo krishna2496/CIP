@@ -296,7 +296,8 @@
 		"virtual_mission" : "En ligne",
 		"virtual_missions" : "Mécénat en ligne",
 		"home" : "Bouton d'accueil",
-		"login_with_sso": "Connectez-vous avec SSO"
+		"login_with_sso": "Connectez-vous avec SSO",
+		"site_title" : "Accueil"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",
