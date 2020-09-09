@@ -83,9 +83,9 @@ class WhitelistController extends Controller
         ];
 
         $orderBy = $request->input('order.orderBy', null);
-        $orderDir = $request->input('order.orderDir', null);
-        if (in_array($orderBy, self::ORDER_FIELDS) && in_array($orderDir, self::ORDER_DIRECTIONS)) {
-            $filters['order'][$orderBy] = $orderDir;
+        if (in_array($orderBy, self::ORDER_FIELDS)) {
+            $orderDir = $request->input('order.orderDir', null);
+            $filters['order'][$orderBy] = in_array($orderDir, self::ORDER_DIRECTIONS) ? $orderDir : 'asc';
         } else {
             $filters['order']['created_at'] = 'desc';
         }
