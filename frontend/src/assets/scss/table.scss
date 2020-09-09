@@ -787,10 +787,6 @@
           height: auto !important;
           padding: 10px 33px 10px 15px;
           line-height: 18px;
-          color: $gray-primary;
-          @include placeholder {
-            color: $gray-primary;
-          }
         }
         .mx-input-append {
           top: 0;
