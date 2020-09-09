@@ -364,6 +364,8 @@ class UserController extends Controller
 
         //Remove params
         $request->request->remove("email");
+        $request->request->remove("is_admin");
+        $request->request->remove("expiry");
 
         // Update user filter
         $this->userFilterRepository->saveFilter($request);
