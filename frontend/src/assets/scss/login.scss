@@ -342,3 +342,94 @@
     }
   }
 }
+
+/* custom text style*/
+.custom-text-wrap {
+  &.signin-form-wrapper {
+    .signin-form-block {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+  }
+}
+.custom-text-block {
+  text-align: center;
+  margin-top: 24px;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  object {
+    span,
+    em,
+    i,
+    b,
+    strong,
+    u,
+    a {
+      display: inline;
+    }
+  }
+  a {
+    span,
+    em,
+    i,
+    b,
+    strong,
+    u {
+      display: inline;
+    }
+  }
+  span,
+  em,
+  i,
+  b,
+  strong,
+  a,
+  u {
+    display: block;
+  }
+  b,
+  strong {
+    font-weight: bold;
+  }
+  em,
+  i {
+    font-style: italic;
+  }
+  u {
+    text-decoration: underline;
+  }
+  a {
+    text-decoration: underline;
+    color: $primary;
+    &:hover {
+      color: $gray-primary;
+      text-decoration: underline;
+    }
+  }
+  ul {
+    list-style: disc;
+    text-align: left;
+    padding-inline-start: 40px;
+    ul {
+      list-style: circle;
+      ul {
+        list-style: square;
+      }
+    }
+  }
+  ol {
+    text-align: left;
+  }
+  img {
+    max-width: 150px;
+    @include sm-max {
+      width: 115px;
+    }
+  }
+}
+
