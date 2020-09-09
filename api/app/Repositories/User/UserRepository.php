@@ -747,9 +747,13 @@ class UserRepository implements UserInterface
      *
      * @return  int
      */
-    public function getUserCount(bool $includeInactive = false): int
-    {
+    public function getUserCount(
+        bool $includeInactive = false,
+        bool $includeAdmin = false
+    ): int {
         $query = $this->user->selectRaw('COUNT(1) AS user_count');
+        $query->where('is_admin', $includeAdmin);
+
         $status = [
             config('constants.user_statuses.ACTIVE'),
         ];
