@@ -23,7 +23,10 @@
             'ERROR_LANGUAGE_UNABLE_TO_DELETE' => '200109',
             'ERROR_TENANT_CURRENCY_FIELD_REQUIRED' => '2001010',
             'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => '2001011',
-            'CURRENCY_CODE_NOT_FOUND' => '2001012'
+            'CURRENCY_CODE_NOT_FOUND' => '2001012',
+            'ERROR_SYSTEM_CURRENCY_CODE_WRONG' => '2001013',
+            'ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE' => '2001014',
+            'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => '2001015'
         ],
         'background_process_status' => [
             'PENDING' => '0',

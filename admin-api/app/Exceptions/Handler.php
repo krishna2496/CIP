@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exceptions;
 
 use Exception;
@@ -9,11 +10,11 @@ use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestExceptionHandlerTrait;
 use Throwable;
-use App\Exceptions\InvalidCurrencyArgumentException;
 
 class Handler extends ExceptionHandler
 {
     use RestExceptionHandlerTrait;
+
     /**
      * A list of the exception types that should not be reported.
      *
@@ -48,10 +49,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if($exception instanceof InvalidCurrencyArgumentException){
-            return $this->invalidArgument('', $exception->getMessage());
-        }
-
         return $this->internalServerError();
     }
 }

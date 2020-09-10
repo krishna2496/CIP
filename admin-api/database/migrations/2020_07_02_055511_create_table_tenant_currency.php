@@ -16,8 +16,8 @@ class CreateTableTenantCurrency extends Migration
         Schema::create('tenant_currency', function (Blueprint $table) {
             $table->string('code', 3);
             $table->unsignedBigInteger('tenant_id');
-            $table->enum('default', [0, 1])->default(0);
-            $table->enum('is_active', [0, 1])->default(0)->comment('0: Inactive, 1: Active');
+            $table->boolean('default')->default(0);
+            $table->boolean('is_active')->default(0)->comment('0: Inactive, 1: Active');
             $table->timestamps();
             $table->primary(['code', 'tenant_id']);
         });

@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Currency\TenantAvailableCurrencyRepository;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Helpers\ResponseHelper;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\RestExceptionHandlerTrait;
-use DB;
 use App\Events\ActivityLogEvent;
-use Validator;
-use App\Rules\DefaultCurrencyAvailable;
-use Illuminate\Validation\Rule;
-use App\Repositories\Tenant\TenantRepository;
+use App\Exceptions\CannotDeactivateDefaultTenantCurrencyException;
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
 use App\Repositories\Currency\CurrencyRepository;
+use App\Repositories\Currency\TenantAvailableCurrencyRepository;
+use App\Repositories\Tenant\TenantRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
+use Validator;
 
 //!  TenantCurrencyController controller
 /*!
@@ -53,7 +52,7 @@ class TenantCurrencyController extends Controller
      * @param App\Repositories\Currency\TenantAvailableCurrencyRepository $tenantAvailableCurrencyRepository
      * @param App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param App\Repositories\Currency\CurrencyRepository $currencyRepository
-     * @return void
+     * @return App\Http\Controllers\TenantCurrencyController
      */
     public function __construct(
         ResponseHelper $responseHelper,
@@ -77,15 +76,17 @@ class TenantCurrencyController extends Controller
     public function index(Request $request, int $tenantId): JsonResponse
     {
         try {
-            $tenantCurrencyList = $this->tenantAvailableCurrencyRepository->getTenantCurrencyList($request, $tenantId);
+            $perPage = $request->perPage;
+            $tenantCurrencyList = $this->tenantAvailableCurrencyRepository->getTenantCurrencyList($perPage, $tenantId);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiData = $tenantCurrencyList;
+
             $apiMessage = (count($apiData) > 0)  ?
                 trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING') :
                 trans('messages.custom_error_message.ERROR_TENANT_CURRENCY_EMPTY_LIST');
-                        
+
             return $this->responseHelper->successWithPagination($apiData, $apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -116,13 +117,22 @@ class TenantCurrencyController extends Controller
         $validator = Validator::make($request->toArray(), [
             'code' => [
                 'required',
-                'regex:/^[A-Z]{3}$/', 
+                'regex:/^[A-Z]{3}$/',
                 Rule::unique('tenant_currency')->where(function ($query) use ($tenantId, $request) {
-                $query->where(['tenant_id' => $tenantId]);
-            })],
-            'default' => 'required|in:0,1',
-            'is_active' => 'required|in:0,1',
+                    $query->where(['tenant_id' => $tenantId]);
+                })],
+            'default' => 'boolean',
+            'is_active' => 'required|boolean',
         ]);
+
+        if ($request['is_active'] == false && $request['default'] == true) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
+            );
+        }
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -133,7 +143,8 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
+        $isCurrencySupported = $this->currencyRepository->isSupported($request['code']);
+        if (!$isCurrencySupported) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -142,8 +153,17 @@ class TenantCurrencyController extends Controller
             );
         }
 
+        $currencyData = [
+            'code' => $request['code'],
+            'is_active' => $request['is_active']
+        ];
+
+        if (isset($request->default)) {
+            $currencyData['default'] = $request->default;
+        }
+
         // Store tenant currency details
-        $this->tenantAvailableCurrencyRepository->store($request, $tenantId);
+        $this->tenantAvailableCurrencyRepository->store($currencyData, $tenantId);
 
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_CURRENCY_ADDED');
@@ -180,8 +200,8 @@ class TenantCurrencyController extends Controller
 
         $validator = Validator::make($request->toArray(), [
             'code' => 'required|regex:/^[A-Z]{3}$/',
-            'default' => 'required|in:0,1',
-            'is_active' => 'required|in:0,1',
+            'default' => 'boolean',
+            'is_active' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -193,7 +213,17 @@ class TenantCurrencyController extends Controller
             );
         }
 
-        if (!$this->currencyRepository->isAvailableCurrency($request['code'])) {
+        if ($request['is_active'] == false && $request['default'] == true) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE'),
+                trans('messages.custom_error_message.ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE')
+            );
+        }
+
+        $isCurrencySupported = $this->currencyRepository->isSupported($request['code']);
+        if (!$isCurrencySupported) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -202,8 +232,24 @@ class TenantCurrencyController extends Controller
             );
         }
 
+        $currencyData = [
+            'code' => $request['code'],
+            'is_active' => $request['is_active']
+        ];
+
+        if (isset($request->default)) {
+            $currencyData['default'] = $request->default;
+        }
+
         try {
-            $this->tenantAvailableCurrencyRepository->update($request, $tenantId);
+            $this->tenantAvailableCurrencyRepository->update($currencyData, $tenantId);
+        } catch (CannotDeactivateDefaultTenantCurrencyException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE')
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.CURRENCY_CODE_NOT_FOUND'),

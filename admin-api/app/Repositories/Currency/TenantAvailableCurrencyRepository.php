@@ -2,11 +2,12 @@
 
 namespace App\Repositories\Currency;
 
-use Illuminate\Http\Request;
-use App\Models\TenantAvailableCurrency;
+use App\Exceptions\CannotDeactivateDefaultTenantCurrencyException;
 use App\Models\Tenant;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\TenantAvailableCurrency;
 use App\Repositories\Currency\CurrencyRepository;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TenantAvailableCurrencyRepository
 {
@@ -38,25 +39,30 @@ class TenantAvailableCurrencyRepository
     /**
      * Store currency
      *
-     * @param Request $request
+     * @param array $currency
      * @param int $tenantId
      * @return void
      */
-    public function store(Request $request, int $tenantId)
+    public function store(array $currency, int $tenantId)
     {
         $tenant = $this->tenant->findOrFail($tenantId);
 
         $currencyData = [
             'tenant_id' => $tenantId,
-            'code' => $request['code'],
-            'default' => $request['default'],
-            'is_active' => $request['is_active']
+            'code' => $currency['code'],
+            'is_active' => $currency['is_active']
         ];
 
-        if ($request['is_active'] === '1' && $request['default'] === '1') {
-            $this->tenantAvailableCurrency
-            ->where('tenant_id', $tenantId)
-            ->update(['default' => '0']);
+        if (isset($currency['default'])) {
+            $currencyData['default'] = $currency['default'];
+        }
+
+        if (isset($currency['default'])) {
+            if ($currency['is_active'] == true && $currency['default'] == true) {
+                $this->tenantAvailableCurrency
+                ->where('tenant_id', $tenantId)
+                ->update(['default' => '0']);
+            }
         }
 
         $this->tenantAvailableCurrency->create($currencyData);
@@ -65,38 +71,54 @@ class TenantAvailableCurrencyRepository
     /**
      * Update currency
      *
-     * @param Request $request
+     * @param array $currency
      * @param int $tenantId
      * @return void
+     * @throws ModelNotFoundException
+     * @throws CannotDeactivateDefaultTenantCurrencyException
      */
-    public function update(Request $request, int $tenantId)
+    public function update(array $currency, int $tenantId)
     {
-        $tenantCurrencyData = $this->tenantAvailableCurrency
-            ->where(['tenant_id' => $tenantId, 'code' => $request['code']])
+        $tenantCurrency = $this->tenantAvailableCurrency
+            ->where(['tenant_id' => $tenantId, 'code' => $currency['code']])
             ->firstOrFail();
 
         $currencyData = [
             'tenant_id' => $tenantId,
-            'code' => $request['code'],
-            'default' => $request['default'],
-            'is_active' => $request['is_active']
+            'code' => $currency['code'],
+            'is_active' => $currency['is_active']
         ];
 
-        if ($request['is_active'] === '1' && $request['default'] === '1') {
-            $this->tenantAvailableCurrency->where('tenant_id', $tenantId)->update(['default' => '0']);
+        if ($currency['is_active'] == false
+            && (!isset($currency['default']) || !$currency['default'])
+        ) {
+            if ($tenantCurrency->default) {
+                throw new CannotDeactivateDefaultTenantCurrencyException();
+            }
         }
-        $this->tenantAvailableCurrency->where(['tenant_id' => $tenantId, 'code' => $request['code']])
+
+        if (isset($currency['default'])) {
+            $currencyData['default'] = $currency['default'];
+            if ($currency['is_active'] == true && $currency['default'] == true) {
+                $this->tenantAvailableCurrency
+                    ->where('tenant_id', $tenantId)
+                    ->update(['default' => '0']);
+            }
+        }
+
+        $this->tenantAvailableCurrency
+            ->where(['tenant_id' => $tenantId, 'code' => $currency['code']])
             ->update($currencyData);
     }
 
     /**
      * List of all tenant currency
      *
-     * @param array $request
+     * @param int $perPage
      * @param int $tenantId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getTenantCurrencyList(Request $request, int $tenantId) : LengthAwarePaginator
+    public function getTenantCurrencyList(int $perPage, int $tenantId) : LengthAwarePaginator
     {
         // Check tenant is present in the system
         $tenantData = $this->tenant->findOrFail($tenantId);
@@ -104,7 +126,7 @@ class TenantAvailableCurrencyRepository
         $currencyTenantDetails = $this->tenantAvailableCurrency
             ->where(['tenant_id' => $tenantId])
             ->orderBy('code', 'ASC')
-            ->paginate($request->perPage);
+            ->paginate($perPage);
         return $currencyTenantDetails;
     }
 }

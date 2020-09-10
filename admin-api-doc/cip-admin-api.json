@@ -707,12 +707,12 @@
                 }
             }
         },
-        "/tenants/tenant-currency/{TenantId}": {
+        "/tenants/{tenantId}/tenant-currencies/": {
             "post": {
-                "operationId": "POST_team4-cip-admin-api-add-currency",
+                "operationId": "POST-cip-admin-api-add-currency",
                 "summary": "Add currency for a tenant",
                 "description": "Add currency for a tenant",
-                "tags":[  
+                "tags": [  
                     "Currency management"
                 ],
                 "consumes": [
@@ -724,27 +724,35 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                        "$ref":"#/definitions/Currency"
+                        "$ref": "#/definitions/Currency"
                         }
+                    },
+                    {  
+                        "name": "tenantId",
+                        "in": "path",
+                        "description": "Tenant id to create tenant currency",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
-                    "400":{  
-                        "description":"Bad request"
+                    "400": {  
+                        "description": "Bad request"
                     },
-                    "422":{  
-                        "description":"Unprocessable entity - Invalid input"
+                    "422": {  
+                        "description": "Unprocessable entity - Invalid input"
                     },
-                    "404":{  
-                        "description":"Tenant not found in the system"
+                    "404": {  
+                        "description": "Tenant not found in the system"
                     }
                 }
             },
             "get": {
-                "operationId": "GET_team4-cip-admin-api-get-currency",
+                "operationId": "GET-cip-admin-api-get-currency",
                 "summary": "List tenant’s currency",
                 "description": "To fetch all tenant currency",
-                "tags":[  
+                "tags": [  
                     "Currency management"
                 ],
                 "consumes": [
@@ -752,28 +760,28 @@
                 ],
                 "parameters": [
                     {  
-                        "name":"tenantId",
-                        "in":"path",
-                        "description":"Tenant Id",
-                        "required":true,
-                        "type":"integer",
-                        "format":"int64"
+                        "name": "tenantId",
+                        "in": "path",
+                        "description": "Tenant Id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
-                    "400":{  
-                        "description":"Bad request"
+                    "400": {  
+                        "description": "Bad request"
                     },
-                    "404":{  
-                        "description":"Tenant not found in the system"
+                    "404": {  
+                        "description": "Tenant not found in the system"
                     }
                 }
             },
             "patch": {
-                "operationId": "GET_team4-cip-admin-api-update-currency",
+                "operationId": "PATCH-cip-admin-api-update-currency",
                 "summary": "Update tenant’s currency",
                 "description": "To update tenant currency",
-                "tags":[  
+                "tags": [  
                     "Currency management"
                 ],
                 "consumes": [
@@ -785,19 +793,27 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                        "$ref":"#/definitions/Currency"
+                        "$ref": "#/definitions/Currency"
                         }
+                    },
+                    {  
+                        "name": "tenantId",
+                        "in": "path",
+                        "description": "Tenant id to update tenant currency",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "400":{  
-                        "description":"Bad request"
+                        "description": "Bad request"
                     },
                     "404":{  
-                        "description":"Tenant not found in the system"
+                        "description": "Tenant not found in the system"
                     },
                     "422":{  
-                        "descrip,tion":"Unprocessable entity - Invalid input"
+                        "descrip,tion": "Unprocessable entity - Invalid input"
                     }
                 }
             }
@@ -864,20 +880,12 @@
                     "description" : "Currency code according to ISO-4217"
                 },
                 "default": {
-                    "type":"integer",
-                    "description":"Set default currency of the platform",
-                    "enum":[  
-                        "1",
-                        "0"
-                    ]
+                    "type":"boolean",
+                    "description":"Set default currency of the platform"
                 },
                 "is_active": {
-                    "type":"integer",
-                    "description":"Set currency active or in-active of the platform",
-                    "enum":[
-                        "1",
-                        "0"
-                    ]
+                    "type":"boolean",
+                    "description":"Set if currency is active/inactive on the platform"
                 }
             }
         }

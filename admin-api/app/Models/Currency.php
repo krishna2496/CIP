@@ -43,13 +43,7 @@ final class Currency
      */
     private function setCode(string $code)
     {
-        $pattern = '/^[A-Z]{3}$/m';
-        $result = preg_match_all($pattern, $code, $matches);
-        if (!empty($matches[0])) {
-            return $this->code = $code;
-        } else {
-            throw new InvalidCurrencyArgumentException("Currency code {$code} is invalid.");
-        }
+        return $this->code = $code;
     }
 
     /**

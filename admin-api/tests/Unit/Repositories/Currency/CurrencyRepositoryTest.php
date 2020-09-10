@@ -2,13 +2,8 @@
 
 namespace Tests\Unit\Repositories\Currency;
 
-use App\Models\TenantCurrency;
-use App\Models\Tenant;
-use App\Repositories\Currency\Currency;
+use App\Models\Currency;
 use App\Repositories\Currency\CurrencyRepository;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
 use TestCase;
 use Mockery;
 
@@ -21,15 +16,12 @@ class CurrencyRepositoryTest extends TestCase
      */
     public function testfindAllSuccess()
     {
-        $tenant = $this->mock(Tenant::class);
-        $tenantCurrency = $this->mock(TenantCurrency::class);
-        $repository = $this->getRepository(
-            $tenantCurrency,
-            $tenant
-        );
-
+        $repository = new CurrencyRepository();
         $currencies = $repository->findAll();
         $this->assertIsArray($currencies);
+
+        $currency = $currencies[0];
+        $this->assertInstanceOf(Currency::class, $currency);
     }
 
     /**
@@ -37,26 +29,12 @@ class CurrencyRepositoryTest extends TestCase
      *
      * @return void
      */
-    public function testIsAvailableCurrencyFalse()
+    public function testIsSupportedFalse()
     {
-        $tenant = $this->mock(Tenant::class);
-        $tenantCurrency = $this->mock(TenantCurrency::class);
-
-        $repository = $this->getRepository(
-            $tenantCurrency,
-            $tenant
-        );
-
-        $tenantId = 1;
-        $data = [
-            'code'=> 'FAK',
-            'default'=> '1',
-            'is_active'=> '1'
-        ];
-        $request = new Request($data);
-
-        $isValid = $repository->isAvailableCurrency($request['code']);
-        $this->assertEquals(false, $isValid);
+        $repository = new CurrencyRepository();
+        $currencyCode = 'ABCD';
+        $isValid = $repository->isSupported($currencyCode);
+        $this->assertFalse($isValid);
     }
 
     /**
@@ -64,55 +42,11 @@ class CurrencyRepositoryTest extends TestCase
      *
      * @return void
      */
-    public function testIsAvailableCurrencySuccess()
+    public function testIsSupportedTrue()
     {
-        $tenant = $this->mock(Tenant::class);
-        $tenantCurrency = $this->mock(TenantCurrency::class);
-
-
-        $repository = $this->getRepository(
-            $tenantCurrency,
-            $tenant
-        );
-
-        $tenantId = 1;
-        $data = [
-            'code'=> 'USD',
-            'default'=> '1',
-            'is_active'=> '1'
-        ];
-        $request = new Request($data);
-
-        $isValid = $repository->isAvailableCurrency($request['code']);
-        $this->assertEquals(true, $isValid);
-    }
-
-    /**
-     * Create a new repository instance.
-     *
-     * @param  App\Models\Tenant $tenant
-     * @param  App\Models\TenantCurrency $tenantCurrency
-     * @return void
-     */
-    private function getRepository(
-        TenantCurrency $tenantCurrency,
-        Tenant $tenant
-    ) {
-        return new CurrencyRepository(
-            $tenantCurrency,
-            $tenant
-        );
-    }
-
-    /**
-     * Mock an object
-     *
-     * @param string name
-     *
-     * @return Mockery
-     */
-    private function mock($class)
-    {
-        return Mockery::mock($class);
+        $repository = new CurrencyRepository();
+        $currencyCode = array_keys(CurrencyRepository::SUPPORTED_CURRENCIES)[0];
+        $isValid = $repository->isSupported($currencyCode);
+        $this->assertTrue($isValid);
     }
 }

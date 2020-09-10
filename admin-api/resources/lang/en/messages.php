@@ -1,6 +1,6 @@
 <?php
 return [
-    
+
     /**
     * Success messages
     */
@@ -11,7 +11,7 @@ return [
         'MESSAGE_TENANT_LISTING' => 'Tenants listed successfully',
         'MESSAGE_NO_RECORD_FOUND' => 'No records found',
         'MESSAGE_TENANT_FOUND' => 'Tenant found successfully',
-        'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant\'s API users listed successfully',        
+        'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant\'s API users listed successfully',
         'MESSAGE_API_USER_FOUND' => 'API user found successfully',
         'MESSAGE_API_USER_CREATED_SUCCESSFULLY' => 'API user created successfully',
         'MESSAGE_API_USER_DELETED' => 'API user deleted successfully',
@@ -37,7 +37,7 @@ return [
         'MESSAGE_TENANT_CURRENCY_LISTING' => 'Tenant currency listed successfully',
         'MESSAGE_TENANT_CURRENCY_UPDATED' => 'Tenant currency updated successfully'
     ],
-    
+
     /**
     * API Error Codes and Message
     */
@@ -57,10 +57,13 @@ return [
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'You can not delete default tenant language',
         'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
         'ERROR_LANGUAGE_UNABLE_TO_DELETE' => 'Language can not be deleted as it is currently in use.',
-        'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => 'Currency code is not available in system.',
-        'ERROR_TENANT_CURRENCY_NOT_FOUND' => 'Tenant currency not found in the system',
+        'ERROR_CURRENCY_CODE_NOT_AVAILABLE' => 'Currency code is not supported.',
         'ERROR_CURRENCY_CODE_NOT_FOUND' => 'Currency not found in system',
-        'ERROR_TENANT_CURRENCY_EMPTY_LIST' => 'Tenant has no any currency.'
+        'ERROR_TENANT_CURRENCY_EMPTY_LIST' => 'Tenant has no currency.',
+        'CURRENCY_CODE' => 'Currency Code ',
+        'CURRENCY_IS_NOT_VALID_ONLY' => ' is not valid',
+        'ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE' => 'Currency should be active to set it as default.',
+        'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => 'Cannot deactivate the default currency.'
     ],
     'email_text' => [
         'ERROR' => 'Error',
@@ -81,5 +84,5 @@ return [
         'MESSAGE' => 'Message',
         'BACKGROUND_JOB_EXCEPTION_MESSAGE' => 'Background job exception message'
     ]
-    
+
 ];
