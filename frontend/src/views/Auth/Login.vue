@@ -1,15 +1,14 @@
 <template>
 <div class="signin-page-wrapper" v-if="isPageShown">
     <TheSlider v-if="isShowComponent" />
-    <div class="signin-form-wrapper custom-text-wrap">
+    <div class="signin-form-wrapper" v-bind:class="{ 'custom-text-wrap' : customText !== ''}">
         <div class="lang-drodown-wrap">
             <AppCustomDropdown :optionList="langList" :defaultText="defautLang" translationEnable="false" @updateCall="setLanguage" v-if="isShowComponent" />
         </div>
         <div class="signin-form-block">
-            <div class="custom-text-block">
-                <p>
-                    Lorem Ipsum is <b>simply</b> dummy text of <i>the printing</i> and
-                    <a href="#" title="">typesetting industry</a>.
+            <!-- custom text block -->
+            <div class="custom-text-block" v-if="customText != ''">
+                <p v-html="customText">
                 </p>
             </div>
             <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
@@ -45,12 +44,7 @@
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
             </div>
-<div class="custom-text-block">
-                <p>
-                    Lorem Ipsum is <b>simply</b> dummy text of <i>the printing</i> and
-                    <a href="#" title="">typesetting industry</a>.
-                </p>
-            </div>
+        
             <b-button type="button" v-if="hasSSO" @click="handleSSO" class=" btn-borderprimary mt-3">
                 {{ languageData.label.login_with_sso || 'Login with SSO' }}
             </b-button>
@@ -130,6 +124,32 @@ export default {
                 const defaultLanguage = store.state.defaultLanguage;
                 this.defautLang = defaultLanguage.toUpperCase();
                 this.hasSSO = Boolean(store.state.samlSettings);
+                const customTextArray = JSON.parse(store.state.customLoginText)
+                if (customTextArray) {
+                    const translations = customTextArray.translations;
+                    //Fetch text by language
+                    if (translations) {
+                        const filteredObj = translations.filter( (item, i) => {
+                            if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+                                this.customText = translations[i].message;
+                            }
+                        });
+                        if (filteredObj.length > 0 && filteredObj[0].message) {
+                            this.customText = filteredObj[0].message;
+                        } else {
+                            const filtereObj = translations.filter((item, i) => {
+                                if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+                                    this.customText = translations[i].message;
+                                }
+                            });
+
+                            if (filtereObj.length > 0 && filtereObj[0].message) {
+                                this.customText = filtereObj[0].message;
+                            }
+                        }
+                    }
+                }
+                
                 // Get tenant setting
                 tenantSetting();
                 loadLocaleMessages(store.state.defaultLanguage).then(() => {
