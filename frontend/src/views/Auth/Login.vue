@@ -105,7 +105,8 @@ export default {
             isShowComponent: false,
             languageData: [],
             isPageShown: false,
-            componentKey: 0
+            componentKey: 0,
+            customText : ''
         };
     },
 

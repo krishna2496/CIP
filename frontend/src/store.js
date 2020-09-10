@@ -61,7 +61,8 @@ export default new Vuex.Store({
         stateId: localStorage.getItem('stateId'),
         samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
         ssoLogin: JSON.parse(localStorage.getItem('ssoLogin')),
-        siteTitle: JSON.parse(localStorage.getItem('siteTitle'))
+        siteTitle: JSON.parse(localStorage.getItem('siteTitle')),
+        customLoginText : JSON.parse(localStorage.getItem('customLoginText'))
     },
     mutations: {
         setToken(state, data) {
@@ -402,6 +403,11 @@ export default new Vuex.Store({
         siteTitle(state, data) {
             localStorage.setItem('siteTitle', data);
             state.siteTitle = JSON.parse(data);
+        },
+
+        customLoginText(state, data) {
+            localStorage.setItem('customLoginText', data);
+            state.customLoginText = JSON.parse(data);
         }
     },
     getters: {},
