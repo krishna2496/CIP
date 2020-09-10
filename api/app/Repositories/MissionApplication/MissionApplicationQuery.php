@@ -218,7 +218,11 @@ class MissionApplicationQuery implements QueryableInterface
                 $query->orderBy($order['orderBy'], $order['orderDir']);
             })
             // Pagination
-            ->paginate($limit['limit'], '*', 'page', 1 + ceil($limit['offset'] / $limit['limit']));
+            ->paginate(
+                $limit['limit'],
+                '*',
+                'page',
+                1 + ceil($limit['offset'] / $limit['limit']));
 
         $this->addCityCountryLanguageCode($applications);
 
@@ -307,7 +311,7 @@ class MissionApplicationQuery implements QueryableInterface
     private function getLimit(array $limit): array
     {
         if (!array_key_exists('limit', $limit)) {
-            $limit['limit'] = 25;
+            $limit['limit'] = config('constants.PER_PAGE_ALL'); // we get all the results
         }
 
         if (!array_key_exists('offset', $limit)) {

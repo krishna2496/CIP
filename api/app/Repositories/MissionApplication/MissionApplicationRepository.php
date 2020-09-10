@@ -177,7 +177,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
         ->leftJoin('mission_application', 'mission_application.mission_id', '=', 'mission.mission_id')
         ->where(['mission_application.user_id' => $userId])
         ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
-        ->groupBy('mission.organisation_id');
+        ->groupBy('mission.organization_id');
 
         if (isset($year) && $year != '') {
             $countQuery->whereYear('applied_at', $year);

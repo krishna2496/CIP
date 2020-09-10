@@ -88,6 +88,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'code' => [
+            'regex' => 'The code field must be of 3 uppercase characters only.'
+        ]
     ],
 
     /*
@@ -103,7 +106,8 @@ return [
 
     'attributes' => [
         'settings.*.tenant_setting_id' => 'tenant setting id',
-        'settings.*.value' => 'value',        
+        'settings.*.value' => 'value',
+        'is_active' => 'is_active'
     ],
 
 ];

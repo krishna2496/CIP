@@ -75,6 +75,8 @@ return [
     'present'              => 'The :attribute field is required',
     'distinct'             => 'The :attribute field has a duplicate value.',
     'uuid'                 => 'Please use valid UUID string for :attribute',
+    'ip_whitelist_pattern' => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
+    'max_item'             => 'The record count may not be greater than :max_item.',
 
     /*
     |--------------------------------------------------------------------------
@@ -224,6 +226,7 @@ return [
         'impact_donation.*.translations.*.language_code' => 'impact donation language code',
         'impact_donation.*.translations.*.content' => 'impact donation content',
         'impact_donation.*.impact_donation_id' => 'impact donation id',
+        'un_sdg.*' => 'UN SDG number',
         'organization.name' => 'organization name',
         'organization.organization_id' => 'organization id',
         'organization.legal_number' => 'organization legal number',
