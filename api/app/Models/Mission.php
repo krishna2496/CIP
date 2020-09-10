@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\MissionUnSdg;
 
 class Mission extends Model
 {
@@ -86,7 +87,8 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab', 'volunteeringAttribute', 'is_virtual'];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab', 'volunteeringAttribute',
+    'unSdg', 'is_virtual'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -393,5 +395,15 @@ class Mission extends Model
     public function missionTab(): HasMany
     {
         return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get UN SDG associated with mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function unSdg(): HasMany
+    {
+        return $this->hasMany(MissionUnSdg::class, 'mission_id', 'mission_id')->orderBy('un_sdg_number');
     }
 }

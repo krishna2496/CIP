@@ -207,6 +207,9 @@ class MissionController extends Controller
                 "required_with:mission_tabs.*.translations.*.sections",
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
+
             ]
         );
         // If request parameter have any error
@@ -361,6 +364,8 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
