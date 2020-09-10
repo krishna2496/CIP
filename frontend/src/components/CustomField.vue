@@ -13,6 +13,7 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'radio'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
@@ -22,7 +23,11 @@
                                     :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                                     @change="updateChanges" :name="item.translations.name">
                 </b-form-radio-group>
+                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
+                </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'checkbox'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
@@ -32,7 +37,11 @@
                                        :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                                        @input="updateChanges">
                 </b-form-checkbox-group>
+                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
+                </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'multiselect'">
                 <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
                 <multiselect
@@ -44,6 +53,8 @@
                   :custom-label="customLabel"
                   :placeholder="defaultText"
                   :allow-empty="item.is_mandatory !== 1"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id) }"
+                  :validstate="getErrorState(item.field_id)"
                   :close-on-select="false"
                   @select="addMultiSelect"
                   @remove="removeMultiSelect"
@@ -52,6 +63,7 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'textarea'">
                 <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
                 <b-form-textarea v-model.trim="customFeildData[item.field_id]" :id='`textarea-${item.field_id}`'
@@ -63,9 +75,9 @@
                     {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
+
             <b-form-group v-if="item.type == 'text'">
                 <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
-
                 <b-form-input v-model.trim="customFeildData[item.field_id]" @input="updateChanges"
                               :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                               :placeholder='`Enter ${item.translations.name}`'></b-form-input>
@@ -76,15 +88,13 @@
 
             <b-form-group v-if="item.type == 'email'">
                 <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
-
                 <b-form-input type="email" v-model.trim="customFeildData[item.field_id]" @input="updateChanges"
                               :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                               :placeholder='`Enter ${item.translations.name}`'></b-form-input>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     <span v-if="!$v.customFeildData[item.field_id].required">{{item.translations.name}}
                         {{ languageData.errors.field_required }}</span>
-                    <span
-                            v-if="!$v.customFeildData[item.field_id].email">{{ languageData.errors.invalid_email }}</span>
+                    <span v-if="!$v.customFeildData[item.field_id].email">{{ languageData.errors.invalid_email }}</span>
                 </div>
             </b-form-group>
         </b-col>
@@ -230,8 +240,59 @@
       });
       return validations;
     },
-    mounted() {},
+    mounted() {
+      this.validateCustomFieldValues();
+    },
     methods: {
+      validateCustomFieldValues() {
+        this.CustomFieldList.map(customField => {
+          let customFieldValue = `${customField.user_custom_field_value}`;
+          if (customFieldValue === '' || customFieldValue === null) {
+            return;
+          }
+          // Some custom field value are separated by comma, that is used in multiselect type
+          customFieldValue = customFieldValue.split(',');
+
+
+          if (!customField.translations.values) {
+            /**
+             * Remove the custom field value if the custom field is an open type 
+             *  and it has UUID as its value. This means that the custom field is 
+             *  previously a closed type, so we removed the value previously saved in it.
+             */
+            const values = customFieldValue.filter(value => {
+              return this.isUUID(value) === true;
+            });
+            if (customFieldValue.length === values.length) {
+              customField.user_custom_field_value = '';
+            }
+            return;
+          }
+
+          /**
+           * Remove the custom field value if the custom field is a closed type 
+           *  and the custom field value does not exists in the array of options. 
+           *  This means that the custom field is previously an open type, 
+           *  so we removed the value previously saved in it.
+           */
+          const customFieldKeys = customField.translations.values.map(data => {
+            return Object.keys(data)[0];
+          });
+
+          const result = customFieldValue.filter(value => {
+            return customFieldKeys.includes(value) === true;
+          });
+          
+          if (result.length === 0) {
+            customField.user_custom_field_value = '';
+            return;
+          }
+
+          if (customFieldValue.length > 1 && (customField.type === 'radio' || customField.type === 'drop-down')) {
+            customField.user_custom_field_value = customFieldValue[0];
+          }
+        });
+      },
       customLabel(item){
         return `${item.text}`
       },
@@ -251,11 +312,13 @@
             if(item.user_custom_field_value != ''){
               let obj = [];
               _.each(item.user_custom_field_value.split(","), function(val){
-                obj.push({
-                  text: options[item.field_id][val],
-                  value: val,
-                  fieldId: item.field_id
-                });
+                if (options[item.field_id][val]) {
+                  obj.push({
+                    text: options[item.field_id][val],
+                    value: val,
+                    fieldId: item.field_id
+                  });
+                }
               });
               selectedItems[item.field_id] = obj;
             }
@@ -361,6 +424,10 @@
       },
       updateChanges() {
         this.$emit("detectChangeInCustomFeild", this.customFeildData);
+      },
+      isUUID(value) {
+        const pattern = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
+        return pattern.test(value);
       }
     },
     updated() {},

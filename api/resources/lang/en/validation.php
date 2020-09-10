@@ -227,6 +227,7 @@ return [
         'impact.*.translations.*.language_code' => 'language code',
         'impact.*.translations.*.content' => 'content',
         'impact.*.mission_impact_id' => 'mission impact id',
+        'un_sdg.*' => 'UN SDG number',
         'organization.name' => 'organization name',
         'organization.organization_id' => 'organization id',
         'organization.legal_number' => 'organization legal number',
