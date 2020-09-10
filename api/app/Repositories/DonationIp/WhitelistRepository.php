@@ -51,7 +51,8 @@ class WhitelistRepository
             ->select(
                 'id',
                 'pattern',
-                'description'
+                'description',
+                'created_at'
             )
             ->when($filters['search'], function($query) use ($filters) {
                 $keyword = $filters['search'];
