@@ -296,7 +296,7 @@ class MissionRepository implements MissionInterface
             if (!empty($request->impact)) {
                 $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->checkTenantSettingStatus('mission_impact', $request);
                 if ($allTenantActivatedSetting) {
-                    foreach($request->impact as $impactValue){
+                    foreach ($request->impact as $impactValue) {
                         $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId, $tenantName);
                     }
                 }
@@ -534,11 +534,11 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        // Add/update impact mission 
+        // Add/update impact mission
         if (isset($request->impact) && count($request->impact)) {
             foreach ($request->impact as $impactValue) {
-                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
-                if (in_array('mission_impact', $allTenantActivatedSetting)) {
+                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->checkTenantSettingStatus('mission_impact', $request);
+                if ($allTenantActivatedSetting) {
                     if (isset($impactValue['mission_impact_id'])) {
                         $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId, $tenantName);
                     } else {
@@ -1814,8 +1814,8 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Check impact mission is available for mission 
-     * 
+     * Check impact mission is available for mission
+     *
      * @param int $missionId
      * @param string $missionImpactId
      */
