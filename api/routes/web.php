@@ -207,7 +207,7 @@ $router->group(
 
 /* Policy pages  */
 $router->get('/app/policy/listing', ['as' => 'policy.listing',
-    'middleware' => 'localization|tenant.connection',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\PolicyPage\PolicyPageController@index']);
 $router->get('/app/policy/{slug}', ['as' => 'policy.show',
     'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
