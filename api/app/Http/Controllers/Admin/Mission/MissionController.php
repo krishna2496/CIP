@@ -164,8 +164,8 @@ class MissionController extends Controller
                 "mission_detail.*.section.*.title" => "required_with:mission_detail.*.section",
                 "mission_detail.*.section.*.description" =>
                 "required_with:mission_detail.*.section",
-                "organization" => "required_without:organisation",
-                "organization.organization_id" => "required_without:organisation|uuid",
+                "organization" => "required",
+                "organization.organization_id" => "required|uuid",
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
@@ -174,9 +174,6 @@ class MissionController extends Controller
                 "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
-                "organisation" => "required_without:organization",
-                "organisation.organisation_id" => "required_without:organization|uuid",
-                "organisation.organisation_name" => "required_without:organization",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
@@ -225,7 +222,10 @@ class MissionController extends Controller
                 'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
-                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
+
             ]
         );
         // If request parameter have any error
@@ -251,14 +251,10 @@ class MissionController extends Controller
         }
 
         // check organization exist in database
-        $organizationId = (!empty($request->get('organization'))) ? $request->get('organization')['organization_id']
-        : $request->get('organisation')['organisation_id'];
+        $organizationId = $request->get('organization')['organization_id'];
 
         if ((!empty($request->get('organization')) && !empty($request->get('organization')['name']))) {
             $organizationName = $request->get('organization')['name'];
-        }
-        if ((!empty($request->get('organisation')) && !empty($request->get('organisation')['organisation_name']))) {
-            $organizationName = $request->get('organisation')['organisation_name'];
         }
 
         $organization = $this->organizationRepository->find($organizationId);
@@ -388,6 +384,8 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
@@ -397,8 +395,6 @@ class MissionController extends Controller
                 "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
-                "organisation.organisation_name" => "sometimes|required_without:organization",
-                "organisation.organisation_id" => "required_with:organisation|uuid",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.mission_tab_id" =>
@@ -442,20 +438,15 @@ class MissionController extends Controller
 
         // check organization exist in database
         if ((!empty($request->get('organization')) && !empty($request->get('organization')['organization_id']))) {
-            $organisationId = $request->get('organization')['organization_id'];
+            $organizationId = $request->get('organization')['organization_id'];
         }
-        if ((!empty($request->get('organisation')) && !empty($request->get('organisation')['organisation_id']))) {
-            $organisationId = $request->get('organisation')['organisation_id'];
-        }
+
         if ((!empty($request->get('organization')) && !empty($request->get('organization')['name']))) {
             $organizationName = $request->get('organization')['name'];
         }
-        if ((!empty($request->get('organisation')) && !empty($request->get('organisation')['organisation_name']))) {
-            $organizationName = $request->get('organisation')['organisation_name'];
-        }
 
-        if (!empty($organisationId)) {
-            $organization = $this->organizationRepository->find($organisationId);
+        if (!empty($organizationId)) {
+            $organization = $this->organizationRepository->find($organizationId);
 
             // if organization id not exist then check for organization name is required
             if (!$organization && empty($organizationName)) {
