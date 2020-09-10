@@ -42,6 +42,7 @@ class ResponseHelper
         string $apiMessage = ''
     ) {
         $response['status'] = $apiStatus;
+        $response['data'] = [];
 
         // Check response data have pagination or not? Pagination response parameter sets
         if ($apiData->count()) {
