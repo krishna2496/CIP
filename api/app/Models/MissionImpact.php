@@ -37,14 +37,14 @@ class MissionImpact extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_id', 'mission_id', 'icon', 'sort_key', 'missionImpactLanguageDetails'];
+    protected $visible = ['mission_impact_id', 'mission_id', 'icon_path', 'sort_key', 'missionImpactLanguageDetails'];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'icon', 'sort_key'];
+    protected $fillable = ['mission_id', 'icon_path', 'sort_key'];
 
     /**
      * Binds creating/saving events to create UUIDs.

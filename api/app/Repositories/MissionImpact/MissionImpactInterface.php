@@ -9,9 +9,10 @@ interface MissionImpactInterface
      * @param array $missionImpact
      * @param int $missionId
      * @param int $defaultTenantLanguageId
+     * @param string $tenantName
      * @return void
      */
-    public function store(array $missionImpact, int $missionId, int $defaultTenantLanguageId);
+    public function store(array $missionImpact, int $missionId, int $defaultTenantLanguageId, string $tenantName);
 
     /**
      * Update a resource into database
@@ -19,7 +20,8 @@ interface MissionImpactInterface
      * @param array $missionImpact
      * @param int $missionId
      * @param int $defaultTenantLanguageId
+     * @param string $tenantName
      * @return void
      */
-    public function update(array $missionImpact, int $missionId, int $defaultTenantLanguageId);
+    public function update(array $missionImpact, int $missionId, int $defaultTenantLanguageId, string $tenantName);
 }

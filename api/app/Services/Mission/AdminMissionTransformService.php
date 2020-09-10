@@ -33,12 +33,13 @@ class AdminMissionTransformService
     {
         // Transform impact mission attribute
         $languages = $this->languageHelper->getLanguages();
-        $impactMission =  $mission['impactMission']->toArray();
+        
+        $impactMission =  $mission['impact']->toArray();
         if ($impactMission != null) {
             $impactMissionDetails = [];
             foreach ($impactMission as $impactMissionKey => $impactMissionValue) {
                 $impactMissionDetails['sort_key'] = $impactMissionValue['sort_key'];
-                $impactMissionDetails['icon'] = $impactMissionValue['icon'];
+                $impactMissionDetails['icon'] = $impactMissionValue['icon_path'];
                 $impactMissionDetails["languages"] = [];
                 foreach ($impactMissionValue['mission_impact_language_details'] as $impactMissionLanguageValue) {
                     $languageCode = $languages->where('language_id', $impactMissionLanguageValue['language_id'])
@@ -48,8 +49,7 @@ class AdminMissionTransformService
                     $impactMissionLanguage['content'] = json_decode($impactMissionLanguageValue['content']);
                     array_push($impactMissionDetails['languages'], $impactMissionLanguage);
                 }
-
-                $mission['impactMission'][$impactMissionKey] = $impactMissionDetails;
+                $mission['impact'][$impactMissionKey] = $impactMissionDetails;
             }
         }
     }

@@ -5,6 +5,7 @@ use App\Models\MissionImpact;
 use App\Helpers\LanguageHelper;
 use App\Models\MissionImpactLanguage;
 use App\Repositories\MissionImpact\MissionImpactInterface;
+use App\Helpers\S3Helper;
 
 class MissionImpactRepository implements MissionImpactInterface
 {
@@ -24,20 +25,28 @@ class MissionImpactRepository implements MissionImpactInterface
     private $languageHelper;
 
     /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+
+    /**
      * Create a new MissionImpact repository instance.
      *
      * @param App\Models\MissionImpact $missionImpactModel
      * @param App\Models\MissionImpactLanguage $missionImpactLanguageModel
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Helpers\S3Helper $s3helper
      */
     public function __construct(
         MissionImpact $missionImpactModel,
         MissionImpactLanguage $missionImpactLanguageModel,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        S3Helper $s3helper
     ) {
         $this->missionImpactModel = $missionImpactModel;
         $this->missionImpactLanguageModel = $missionImpactLanguageModel;
         $this->languageHelper = $languageHelper;
+        $this->s3helper = $s3helper;
     }
 
     /**
@@ -46,18 +55,27 @@ class MissionImpactRepository implements MissionImpactInterface
      * @param array $missionImpact
      * @param int $missionId
      * @param int $defaultTenantLanguageId
+     * @param string $tenantName
      * @return void
      */
-    public function store(array $missionImpact, int $missionId, int $defaultTenantLanguageId)
+    public function store(array $missionImpact, int $missionId, int $defaultTenantLanguageId, string $tenantName)
     {
         $languages = $this->languageHelper->getLanguages();
         $missionImpactPostData = [
             'mission_id' => $missionId,
-            'icon' => isset($missionImpact['icon_path']) ? $missionImpact['icon_path'] : null,
             'sort_key' => $missionImpact['sort_key']
         ];
 
         $missionImpactModelData = $this->missionImpactModel->create($missionImpactPostData);
+        $missionImpactId = $missionImpactModelData->mission_impact_id;
+
+        $iconPath = $this->s3helper->uploadFileOnS3Bucket(
+            $missionImpact['icon_path'],
+            $tenantName,
+            "missions/$missionId/icons/$missionImpactId"
+        );
+
+        $missionImpactModelData->update(['icon_path' => $iconPath]);
 
         foreach ($missionImpact['translations'] as $missionImpactValue) {
             $language = $languages->where('code', $missionImpactValue['language_code'])->first();
@@ -79,9 +97,10 @@ class MissionImpactRepository implements MissionImpactInterface
     * @param array $missionImpact
     * @param int $missionId
     * @param int $defaultTenantLanguageId
+    * @param string $tenantName
     * @return void
     */
-    public function update(array $missionImpact, int $missionId, int $defaultTenantLanguageId)
+    public function update(array $missionImpact, int $missionId, int $defaultTenantLanguageId, string $tenantName)
     {
         $languages = $this->languageHelper->getLanguages();
         $missionImpactId = $missionImpact['mission_impact_id'];
@@ -94,10 +113,17 @@ class MissionImpactRepository implements MissionImpactInterface
         }
 
         // Update icon
-        if (isset($missionImpact['icon_path']) && !empty($missionImpact['icon_path'])) {
+        if (isset($missionImpact['icon_path']) && !empty($missionImpact['icon_path'])) { 
+
+            $iconPath = $this->s3helper->uploadFileOnS3Bucket(
+                $missionImpact['icon_path'],
+                $tenantName,
+                "missions/$missionId/icons/$missionImpactId"
+            );
+
             $this->missionImpactModel
             ->where(['mission_impact_id' => $missionImpactId])
-            ->update(['icon' => $missionImpact['icon_path']]);
+            ->update(['icon_path' => $iconPath]);
         }
 
         if (isset($missionImpact['translations'])) {

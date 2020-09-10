@@ -294,10 +294,10 @@ class MissionRepository implements MissionInterface
         //Add mission impact
         if (isset($request->impact) && count($request->impact) > 0) {
             if (!empty($request->impact)) {
-                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
-                if (in_array('mission_impact', $allTenantActivatedSetting)) {
+                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->checkTenantSettingStatus('mission_impact', $request);
+                if ($allTenantActivatedSetting) {
                     foreach($request->impact as $impactValue){
-                        $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId);
+                        $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId, $tenantName);
                     }
                 }
             }
@@ -540,10 +540,10 @@ class MissionRepository implements MissionInterface
                 $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->getAllTenantActivatedSetting($request);
                 if (in_array('mission_impact', $allTenantActivatedSetting)) {
                     if (isset($impactValue['mission_impact_id'])) {
-                        $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId);
+                        $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId, $tenantName);
                     } else {
                         //Mission impact id is not available and create the mission impact and details
-                        $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId);
+                        $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId, $tenantName);
                     }
                 }
             }
@@ -598,9 +598,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['impactMission' => function ($query) {
+        }])->with(['impact' => function ($query) {
             $query->orderBy('sort_key');
-        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
+        }, 'impact.missionImpactLanguageDetails' => function ($query) {
         }])->with(['missionTab' => function ($query) {
             $query->orderBy('sort_key');
         }, 'missionTab.getMissionTabDetail' => function ($query) {
@@ -668,9 +668,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['impactMission' => function ($query) {
+        }])->with(['impact' => function ($query) {
             $query->orderBy('sort_key');
-        }, 'impactMission.missionImpactLanguageDetails' => function ($query) {
+        }, 'impact.missionImpactLanguageDetails' => function ($query) {
         }])->with(['missionTab' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
         }, 'missionTab.getMissionTabDetail' => function ($query) {

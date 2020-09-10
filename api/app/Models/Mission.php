@@ -89,7 +89,7 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab', 'volunteeringAttribute',
-    'unSdg', 'impactMission'
+    'unSdg', 'impact'
     ];
 
     /*
@@ -97,7 +97,7 @@ class Mission extends Model
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'missionTab', 'volunteeringAttribute', 'impactMission'
+        'goalMission','timeMission','comment','timesheet', 'missionTab', 'volunteeringAttribute', 'impact'
     ];
 
     /**
@@ -394,7 +394,7 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function impactMission(): HasMany
+    public function impact(): HasMany
     {
         return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id');
     }
