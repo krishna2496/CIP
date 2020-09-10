@@ -2,24 +2,25 @@
 
 namespace App\Repositories\Mission;
 
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
-use App\Models\Mission;
 use App\Models\FavouriteMission;
-use App\Models\MissionRating;
+use App\Models\Mission;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
+use App\Models\MissionRating;
+use App\Models\MissionTab;
 use App\Repositories\Country\CountryRepository;
-use DB;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Services\Mission\ModelsService;
-use App\Models\MissionTab;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
 
@@ -56,6 +57,11 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
+     * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+     */
+    private $missionUnitedNationSDGRepository;
+
+    /**
      * @var App\Repositories\MissionTab\MissionTabRepository
      */
     private $missionTabRepository;
@@ -69,6 +75,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
@@ -79,6 +86,7 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
         $this->languageHelper = $languageHelper;
@@ -87,6 +95,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
     }
 
@@ -251,6 +260,11 @@ class MissionRepository implements MissionInterface
                     unset($missionDocument);
                 }
             }
+        }
+
+        // Add UN SDG for mission
+        if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
+            $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request->toArray());
         }
 
         return $mission;
@@ -477,6 +491,11 @@ class MissionRepository implements MissionInterface
             }
         }
 
+        // Update UN SDG for mission
+        if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
+            $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
+        }
+
         // Add/Update mission tab details
         if (isset($request->mission_tabs) && count($request->mission_tabs)) {
             foreach ($request->mission_tabs as $missionTabValue) {
@@ -511,6 +530,7 @@ class MissionRepository implements MissionInterface
             'missionLanguage',
             'timeMission',
             'goalMission',
+            'unSdg',
             'organization',
             'volunteeringAttribute'
         )->with(['missionSkill' => function ($query) {
@@ -575,7 +595,7 @@ class MissionRepository implements MissionInterface
             'mission.organization_id'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute' ])
+        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute', 'unSdg' ])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -648,7 +668,7 @@ class MissionRepository implements MissionInterface
         $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organization_id');
         $missionQuery->leftjoin('volunteering_attribute', 'volunteering_attribute.mission_id', '=', 'mission.mission_id');
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization', 'unSdg'])
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
@@ -1329,7 +1349,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute', 'unSdg'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])

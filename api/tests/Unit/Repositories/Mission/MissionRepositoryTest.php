@@ -21,6 +21,7 @@ use App\Repositories\Country\CountryRepository;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Services\Mission\ModelsService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -57,6 +58,7 @@ class MissionRepositoryTest extends TestCase
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
 
@@ -87,6 +89,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
 
@@ -160,13 +163,12 @@ class MissionRepositoryTest extends TestCase
             'start_date' => null,
             'end_date' => null,
             'publication_status' => $request->publication_status,
-            'organisation_id' => $organizationObject->organization_id,
+            'organization_id' => $organizationObject->organization_id,
             'organisation_detail' => null,
             'mission_type' => $request->mission_type,
             'availability_id' => $request->availability_id,
             'total_seats' => null,
-            'is_virtual' => '0',
-            'organisation_name' => $organizationObject->name
+            'is_virtual' => '0'
         ];
 
         $missionObject = new Mission();
@@ -235,6 +237,7 @@ class MissionRepositoryTest extends TestCase
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
 
         $modelService = $this->modelService(
@@ -259,6 +262,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->store($request);
 
@@ -353,6 +357,7 @@ class MissionRepositoryTest extends TestCase
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $organization = $this->mock(Organization::class);
 
@@ -378,6 +383,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->update($request, $missionId);
 
@@ -393,6 +399,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
+     * @param  App\Repositories\MissionMedia\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository
      * @return void
      */
     private function getRepository(
@@ -402,6 +409,7 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
         return new MissionRepository(
@@ -411,6 +419,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
     }
