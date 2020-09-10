@@ -86,7 +86,8 @@ class WhitelistRepositoryTest extends TestCase
             ->with(
                 'id',
                 'pattern',
-                'description'
+                'description',
+                'created_at'
             )
             ->andReturn($model);
 
