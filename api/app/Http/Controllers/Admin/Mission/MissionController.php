@@ -216,6 +216,8 @@ class MissionController extends Controller
                 "required_with:mission_tabs.*.translations.*.sections",
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
 
             ]
         );
@@ -384,6 +386,8 @@ class MissionController extends Controller
                 "required_with:impact_donation.*.translations|max:2",
                 "impact_donation.*.translations.*.content" =>
                 "required_with:impact_donation.*.translations",
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
