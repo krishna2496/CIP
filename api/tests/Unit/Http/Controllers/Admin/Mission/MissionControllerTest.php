@@ -81,6 +81,8 @@ class MissionControllerTest extends TestCase
         $responseHelper = $this->mock(ResponseHelper::class);
         $request = $this->mock(Request::class);
         $mission = $this->mock(Mission::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
 
         $defaultLanguage = (object)[
             'language_id' => 1,
@@ -251,6 +253,8 @@ class MissionControllerTest extends TestCase
         $request = $this->mock(Request::class);
         $mission = $this->mock(Mission::class);
         $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelsService = $this->mock(ModelsService::class);
 
         $defaultLanguage = (object)[
             'language_id' => 1,
@@ -321,7 +325,9 @@ class MissionControllerTest extends TestCase
             $languageHelper,
             $missionMediaRepository,
             $tenantActivatedSettingRepository,
-            $notificationRepository
+            $notificationRepository,
+            $organizationRepository,
+            $modelsService
         );
 
         $response = $callController->update($requestData, $missionId);
@@ -397,7 +403,6 @@ class MissionControllerTest extends TestCase
     }
 
     /**
-    /** 
      * Create a new service instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository

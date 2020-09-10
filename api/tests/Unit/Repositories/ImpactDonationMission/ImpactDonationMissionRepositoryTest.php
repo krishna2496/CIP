@@ -23,6 +23,9 @@ use App\Models\MissionSkill;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
+use App\Models\Organization;
+use App\Models\MissionTab;
+use App\Models\MissionTabLanguage;
 
 class ImpactDonationMissionRepositoryTest extends TestCase
 {
@@ -84,6 +87,9 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $missionRating = $this->mock(MissionRating::class);
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
+        $organization = $this->mock(Organization::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -95,7 +101,10 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $missionImpactDonation
+            $missionImpactDonation,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
 
         $languageHelper->shouldReceive('getLanguages')
@@ -185,6 +194,9 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $missionRating = $this->mock(MissionRating::class);
         $missionApplication = $this->mock(MissionApplication::class);
         $city = $this->mock(City::class);
+        $organization = $this->mock(Organization::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -196,7 +208,10 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
-            $missionImpactDonation
+            $missionImpactDonation,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
@@ -273,6 +288,9 @@ class ImpactDonationMissionRepositoryTest extends TestCase
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
      * @param  App\Models\MissionImpactDonation $missionImpactDonation
+     * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
      */
     private function modelService(
@@ -285,7 +303,10 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
-        MissionImpactDonation $missionImpactDonation
+        MissionImpactDonation $missionImpactDonation,
+        Organization $organization,
+        MissionTab $missionTab,
+        MissionTabLanguage $missionTabLanguage
     ) {
         return new ModelsService(
             $mission,
@@ -298,6 +319,9 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionApplication,
             $city,
             $missionImpactDonation,
+            $organization,
+            $missionTab,
+            $missionTabLanguage
         );
     }
 
