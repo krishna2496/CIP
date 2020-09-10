@@ -1160,7 +1160,7 @@
           {
             "name": "order[orderDir]",
             "in": "path",
-            "description": "Kind or ordering: asc or desc",
+            "description": "Kind of ordering: asc or desc",
             "required": false,
             "type": "string"
           },
@@ -8562,7 +8562,7 @@
           {
             "name": "order[orderDir]",
             "in": "path",
-            "description": "Kind or ordering: asc or desc",
+            "description": "Kind of ordering: asc (default) or desc",
             "required": false,
             "type": "string",
             "enum": [
