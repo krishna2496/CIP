@@ -144,6 +144,13 @@ class MissionRepositoryTest extends TestCase
         $request = new Request();
         $request->query->add($params);
 
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
         $organizationObject = factory(Organization::class)->make([
             'organization_id' => $request->organization['organization_id'],
             'name' => 'organizationName'
@@ -170,6 +177,12 @@ class MissionRepositoryTest extends TestCase
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($languages);
+
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+        ->once()
+        ->with($request)
+        ->andReturn($defaultLanguage);
+    
 
         $countryId = 1;
         $countryRepository = $this->mock(CountryRepository::class);
@@ -317,6 +330,13 @@ class MissionRepositoryTest extends TestCase
         $request = new Request();
         $request->query->add($params);
 
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
         $languages = new Collection([
             [
                 'code' => 'en'
@@ -327,6 +347,11 @@ class MissionRepositoryTest extends TestCase
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($languages);
+
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+        ->once()
+        ->with($request)
+        ->andReturn($defaultLanguage);
 
         $missionId = 1;
         $missionObject = new Mission();
@@ -367,13 +392,13 @@ class MissionRepositoryTest extends TestCase
 
         $s3Helper = $this->mock(S3Helper::class);
         $s3Helper->shouldReceive('uploadFileOnS3Bucket')
-            ->once()
-            ->with(
-                $documentObject->document_path,
-                $tenantName,
-                "missions/$missionId/documents/$documentId"
-            )
-            ->andReturn($documentObject->document_path);
+        ->once()
+        ->with(
+            $documentObject->document_path,
+            $tenantName,
+            "missions/$missionId/documents/$documentId"
+        )
+        ->andReturn($documentObject->document_path);
 
         $countryRepository = $this->mock(CountryRepository::class);
         $timeMission = $this->mock(TimeMission::class);
@@ -393,7 +418,7 @@ class MissionRepositoryTest extends TestCase
         $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
         $adminMissionTransformService = $this->mock(AdminMissionTransformService::Class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
-        $missionImpact = $thiis->mock(MissionImpact::class);
+        $missionImpact = $this->mock(MissionImpact::class);
 
         $modelService = $this->modelService(
             $mission,
