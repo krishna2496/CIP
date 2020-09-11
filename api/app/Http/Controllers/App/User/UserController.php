@@ -316,7 +316,8 @@ class UserController extends Controller
             "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
             'skills' => 'array',
-            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
+            "title" => "max:60"]
         );
 
         // If request parameter have any error
