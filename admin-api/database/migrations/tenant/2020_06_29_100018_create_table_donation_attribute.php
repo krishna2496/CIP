@@ -15,7 +15,7 @@ class CreateTableDonationAttribute extends Migration
             $table->uuid('donation_attribute_id')->primary();
             $table->unsignedBigInteger('mission_id');
             $table->string('goal_amount_currency', 3);
-            $table->unsignedBigInteger('goal_amount')->nullable();
+            $table->decimal('goal_amount', 16, 4);
             $table->boolean('show_goal_amount')->default('0');
             $table->boolean('show_donation_percentage')->default('0');
             $table->boolean('show_donation_meter')->default('0');
