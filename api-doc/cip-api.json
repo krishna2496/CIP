@@ -1160,7 +1160,7 @@
           {
             "name": "order[orderDir]",
             "in": "path",
-            "description": "Kind or ordering: asc or desc",
+            "description": "Kind of ordering: asc or desc",
             "required": false,
             "type": "string"
           },
@@ -8598,6 +8598,24 @@
             "description": "Search donation IP whitelist on pattern or description",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "order[orderBy]",
+            "in": "path",
+            "description": "Field name for ordering",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order[orderDir]",
+            "in": "path",
+            "description": "Kind of ordering: asc (default) or desc",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "desc",
+              "asc"
+            ]
           },
           {
             "name": "Authorization",
