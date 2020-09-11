@@ -414,6 +414,44 @@
         }
       }
     },
+    "/missions/mission-impact/{missionImpactId}/": {
+      "delete": {
+        "operationId": "delete_cip-api-delete-mission-impact",
+        "summary": "Admin - Delete mission impact",
+        "description": "Delete mission impact by missionImpactId",
+        "tags": [
+          "Mission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "missionImpactId",
+            "in": "path",
+            "description": "mission_impact_id to delete",
+            "type": "string",
+            "default": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden - mission impact deletion failed"
+          },
+          "404": {
+            "description": "Not Found - Requested mission impact id does not exist"
+          }
+        }
+      }
+    },
     "/app/missions?country_id={country_id}&city_id={city_id}&theme_id={theme_id}&skill_id={skill_id}&sort_by={sort_by}": {
       "get": {
         "operationId": "GET_team4-cip-api-app-missions-listing",

@@ -1878,4 +1878,15 @@ class MissionRepository implements MissionInterface
     {
         return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
     }
+
+    /**
+     * Remove mission impact by mission_impact_id
+     *
+     * @param string $missionImpactId
+     * @return bool
+     */
+    public function deleteMissionImpact(string $missionImpactId): bool
+    {
+        return $this->modelsService->missionImpact->deleteMissionImpact($missionImpactId);
+    }
 }

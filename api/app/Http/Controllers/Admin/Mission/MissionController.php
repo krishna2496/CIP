@@ -357,7 +357,7 @@ class MissionController extends Controller
                 exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "is_virtual" => "sometimes|required|in:0,1",
-				"total_seats" => "integer|min:1",
+                "total_seats" => "integer|min:1",
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
@@ -755,6 +755,40 @@ class MissionController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
                 trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Remove mission impact
+     *
+     * @param string $missionImpactId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpact($missionImpactId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpact($missionImpactId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionImpactId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
     }

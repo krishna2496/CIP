@@ -63,11 +63,22 @@ class MissionImpact extends Model
 
     /**
      * Get mission impact language details
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionImpactLanguageDetails() : HasMany
     {
         return $this->hasMany(MissionImpactLanguage::class, 'mission_impact_id', 'mission_impact_id');
+    }
+
+    /**
+     * Soft delete the mission impact by mission_impact_id from the database.
+     *
+     * @param string $missionImpactId
+     * @return bool
+     */
+    public function deleteMissionImpact(string $missionImpactId): bool
+    {
+        return static::findOrFail($missionImpactId)->delete();
     }
 }

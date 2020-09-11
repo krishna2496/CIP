@@ -235,4 +235,13 @@ interface MissionInterface
      * @return bool
      */
     public function deleteMissionTabByMissionTabId(string $missionTabId): bool;
+
+    /**
+     * Remove mission impact by mission_impact_id
+     *
+     * @param string $missionImpactId
+     *
+     * @return bool
+     */
+    public function deleteMissionImpact(string $missionImpactId): bool;
 }

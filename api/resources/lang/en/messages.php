@@ -209,7 +209,8 @@ return [
         'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
         'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
         'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
-        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully'
+        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully',
+        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully'
     ],
 
 
@@ -380,7 +381,7 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
         
-        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Impact mission not found for a mission.',
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Impact mission not found fin the system.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
 
@@ -388,6 +389,6 @@ return [
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
-        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system'
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
     ]
 ];
