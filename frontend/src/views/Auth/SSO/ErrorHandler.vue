@@ -8,6 +8,10 @@
             <i class="glyphicon glyphicon-th-list"></i>
 
             <!-- From Saml SSO -->
+            <template v-if="saml && error">
+              <h4 class="text-danger">{{ error }}</h4>
+            </template>
+
             <template v-if="saml && errors.length">
               <h4 class="text-danger">{{ languageData.errors.invalid_saml_setting }}</h4>
               <span class="errors" v-for="error in errors">{{ error }}</span>
@@ -69,6 +73,9 @@ export default {
   created() {
     this.saml = this.$route.query.source === 'saml';
     this.google = this.$route.query.source === 'google';
+    if (this.$route.query.error) {
+      this.error = this.$route.query.error;
+    }
     if (this.$route.query.errors) {
       this.errors = this.$route.query.errors.split(',');
     }
