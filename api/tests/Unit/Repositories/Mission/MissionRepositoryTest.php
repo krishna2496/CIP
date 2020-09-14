@@ -240,17 +240,6 @@ class MissionRepositoryTest extends TestCase
             'is_virtual' => $requestData->volunteering_attribute['is_virtual']
         ];
 
-        // $missionModel = new Mission();
-        // $missionModel->mission_id = 6587;
-        // $modelService->mission
-        // ->shouldReceive('create')
-        // ->once()
-        // ->andReturn($missionModel);
-
-        // $modelService->missionLanguage->shouldReceive('create')
-        // ->once()
-        // ->andReturn(false);
-
         $missionObject = new Mission();
         $missionObject->setAttribute('mission_id', 1);
 
