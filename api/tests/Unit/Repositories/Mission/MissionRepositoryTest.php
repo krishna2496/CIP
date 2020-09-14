@@ -116,6 +116,11 @@ class MissionRepositoryTest extends TestCase
                         ]
                     ]
                 ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => rand(5000, 10000),
+                'availability_id' => 1,
+                'is_virtual' => 1
             ]
         ];
 
@@ -220,16 +225,54 @@ class MissionRepositoryTest extends TestCase
         ->with($requestData->location['country_code'])
         ->andReturn($countryId);
 
-        $missionModel = new Mission();
-        $missionModel->mission_id = 6587;
-        $modelService->mission
-        ->shouldReceive('create')
-        ->once()
-        ->andReturn($missionModel);
+        $missionData = [
+            'theme_id' => null,
+            'city_id' => $requestData->location['city_id'],
+            'country_id' => $countryId,
+            'start_date' => null,
+            'end_date' => null,
+            'publication_status' => $requestData->publication_status,
+            'organization_id' =>  $organizationModel->organization_id,
+            'organisation_detail' => null,
+            'mission_type' => $requestData->mission_type,
+            'availability_id' => $requestData->volunteering_attribute['availability_id'],
+            'total_seats' => $requestData->volunteering_attribute['total_seats'],
+            'is_virtual' => $requestData->volunteering_attribute['is_virtual']
+        ];
+
+        // $missionModel = new Mission();
+        // $missionModel->mission_id = 6587;
+        // $modelService->mission
+        // ->shouldReceive('create')
+        // ->once()
+        // ->andReturn($missionModel);
+
+        // $modelService->missionLanguage->shouldReceive('create')
+        // ->once()
+        // ->andReturn(false);
+
+        $missionObject = new Mission();
+        $missionObject->setAttribute('mission_id', 1);
+
+        $hasOne = $this->mock(HasOne::class);
+        $hasOne->shouldReceive('create')
+            ->once()
+            ->andReturn(true);
+
+        $mission->shouldReceive('create')
+            ->once()
+            ->andReturn($mission)
+            ->shouldReceive('volunteeringAttribute')
+            ->once()
+            ->andReturn($hasOne)
+            ->shouldReceive('getAttribute')
+            ->twice()
+            ->with('mission_id')
+            ->andReturn($missionObject->mission_id);
 
         $modelService->missionLanguage->shouldReceive('create')
         ->once()
-        ->andReturn(false);
+        ->andReturn();
 
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')
