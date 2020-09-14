@@ -56,11 +56,9 @@ class SkillRepository implements SkillInterface
         }
 
         $skillQuery->when($request->has('search'), function ($query) use ($request) {
-            $query->where('skill_name', 'like', '%'.$request->search.'%');
+            $query->where('skill_name', 'like', $request->search.'%');
             $searchLanguage = $request->searchLanguage ?? '.{0,3}';
-            $query->orWhere(
-                'translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$searchLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$request->search.'[^"]*";}'
-            );
+            $query->orWhere('translations->' . $searchLanguage, 'like', '%' . $request->search . '%');
         })->when($request->has('translations'), function ($query) use ($request) {
             /*
              * Filtering on translations
@@ -70,7 +68,7 @@ class SkillRepository implements SkillInterface
             $query->where(function ($query) use ($request) {
                 foreach ($request->translations as $languageCode) {
                     // Regex searches in translations column if the translation in the $languageCode exists and its length is greater than 0
-                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'.$languageCode.'";s:5:"title";s:[1-9][0-9]{0,1}:"');
+                    $query->whereNotNull('translations->' . $languageCode);
                 }
             });
         });
