@@ -26,6 +26,7 @@ use App\Events\User\UserActivityLogEvent;
 use App\Repositories\User\UserRepository;
 use App\Repositories\State\StateRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
 
 //!  Mission controller
 /*!
@@ -97,6 +98,12 @@ class MissionController extends Controller
 
     /**
      * Create a new Mission controller instance.
+     *@var App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
+     */
+    private $unitedNationSDGRepository;
+
+    /**
+     * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository           $missionRepository
      * @param Illuminate\Helpers\ResponseHelper                    $responseHelper
@@ -104,13 +111,13 @@ class MissionController extends Controller
      * @param Illuminate\Helpers\LanguageHelper                    $languageHelper
      * @param App\Helpers\Helpers                                  $helpers
      * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
-     * @param App\Repositories\Skill\SkillRepository               $skillRepository
-     * @param App\Repositories\Country\CountryRepository           $countryRepository
-     * @param App\Repositories\City\CityRepository                 $cityRepository
-     * @param App\Repositories\User\UserRepository                 $userRepository
-     * @param App\Repositories\State\StateRepository               $stateRepository
+     * @param App\Repositories\Skill\SkillRepository $skillRepository
+     * @param App\Repositories\Country\CountryRepository $countryRepository
+     * @param App\Repositories\City\CityRepository $cityRepository
+     * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\State\StateRepository $stateRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
-     *
+     * @param App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @return void
      */
     public function __construct(
@@ -125,7 +132,8 @@ class MissionController extends Controller
         CityRepository $cityRepository,
         UserRepository $userRepository,
         StateRepository $stateRepository,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        UnitedNationSDGRepository $unitedNationSDGRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -139,6 +147,7 @@ class MissionController extends Controller
         $this->userRepository = $userRepository;
         $this->stateRepository = $stateRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->unitedNationSDGRepository = $unitedNationSDGRepository;
     }
 
     /**
