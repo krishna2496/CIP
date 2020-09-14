@@ -628,13 +628,15 @@ export default {
         if (JSON.parse(store.state.policyPage) != null) {
             this.policyPage = JSON.parse(store.state.policyPage)
         } else {
-            policy().then(response => {
-                if (response.error == false) {
-                    if (response.data.length > 0) {
-                        this.policyPage = response.data;
+            if (store.state.isLoggedIn) {
+                policy().then(response => {
+                    if (response.error == false) {
+                        if (response.data.length > 0) {
+                            this.policyPage = response.data;
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         setTimeout(function () {
             let notificationMenu = document.querySelector(".notification-menu");
