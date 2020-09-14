@@ -42,6 +42,7 @@ use App\Models\MissionTabLanguage;
 use App\Models\MissionTab;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Ramsey\Uuid\Uuid;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -62,9 +63,9 @@ class MissionRepositoryTest extends TestCase
             'mission_type' => 'DONATION',
             'publication_status' => 'APPROVED',
             'availability_id' => 1,
-            'organisation' => [
-                'organisation_id' => 1,
-                'organisation_name' => str_random(10)
+            'organization' => [
+                'organization_id' => 1,
+                'organization_name' => str_random(10)
             ],
             'location' => [
                 'city_id' => 1,
@@ -195,11 +196,13 @@ class MissionRepositoryTest extends TestCase
         ];
 
         $collectionLanguages = collect($languages);
+        $organizationModel = new Organization();
+        $organizationModel->organization_id = rand(50000, 70000);
 
         $modelService->organization->shouldReceive('updateOrCreate')
         ->once()
-        ->with(['organization_id'=>$data['organisation']['organisation_id']], $requestData->organisation)
-        ->andReturn();
+        ->with(['organization_id'=>$data['organization']['organization_id']], $requestData->organization)
+        ->andReturn($organizationModel);
 
         $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -614,15 +617,16 @@ class MissionRepositoryTest extends TestCase
      */
     public function testStoreDocumentUpload()
     {
+        $organizationId = Uuid::uuid4()->toString();
         $params = [
             'organization' => [
-                'organization_id' => 'organizationID'
+                'organization_id' => $organizationId
             ],
             'location' => [
-                'city_id' => 'cityId',
+                'city_id' => 1,
                 'country_code' => 'PH'
             ],
-            'theme_id' => '',
+            'theme_id' => 1,
             'publication_status' => true,
             'availability_id' => 1,
             'mission_type' => config('constants.mission_type.GOAL'),
@@ -632,8 +636,21 @@ class MissionRepositoryTest extends TestCase
                     'sort_order' => 0,
                     'document_path' => 'http://admin-m7pww5ymmj28.back.staging.optimy.net/assets/images/optimy-logo.png'
                 ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => 100,
+                'availability_id' => 1,
+                'is_virtual' => 1
             ]
         ];
+
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
         $request = new Request();
         $request->query->add($params);
 
@@ -645,11 +662,13 @@ class MissionRepositoryTest extends TestCase
         $organization = $this->mock(Organization::class);
         $organization->shouldReceive('updateOrCreate')
             ->once()
-            ->with([
-                'organization_id' => $organizationObject->organization_id
-            ], $request->organization)
+            ->with(
+                [
+                    'organization_id' => $organizationObject->organization_id
+                ],
+                $request->organization
+            )
             ->andReturn($organizationObject);
-
 
         $languages = new Collection([
             [
@@ -662,6 +681,11 @@ class MissionRepositoryTest extends TestCase
             ->once()
             ->andReturn($languages);
 
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($request)
+            ->andReturn($defaultLanguage);
+
         $countryId = 1;
         $countryRepository = $this->mock(CountryRepository::class);
         $countryRepository->shouldReceive('getCountryId')
@@ -670,8 +694,8 @@ class MissionRepositoryTest extends TestCase
             ->andReturn($countryId);
 
         $missionData = [
-            'theme_id' => null,
-            'city_id' => $request->location['city_id'],
+            'theme_id' => 1,
+            'city_id' => 1,
             'country_id' => $countryId,
             'start_date' => null,
             'end_date' => null,
@@ -680,8 +704,8 @@ class MissionRepositoryTest extends TestCase
             'organisation_detail' => null,
             'mission_type' => $request->mission_type,
             'availability_id' => $request->availability_id,
-            'total_seats' => null,
-            'is_virtual' => '0'
+            'total_seats' => 100,
+            'is_virtual' => '1'
         ];
 
         $missionObject = new Mission();
@@ -820,10 +844,22 @@ class MissionRepositoryTest extends TestCase
             ]
         ]);
 
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
         $languageHelper = $this->mock(LanguageHelper::class);
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($languages);
+
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($request)
+            ->andReturn($defaultLanguage);
 
         $missionId = 1;
         $missionObject = new Mission();

@@ -65,7 +65,11 @@ class WhitelistRepositoryTest extends TestCase
             'perPage' => 10
         ];
         $filters = [
-            'search' => 'search'
+            'search' => 'search',
+            'order' => [
+                'pattern' => null,
+                'created_at' => 'desc'
+            ]
         ];
 
         $modelData = factory(DonationIpWhitelist::class, 2)->make();
@@ -76,20 +80,27 @@ class WhitelistRepositoryTest extends TestCase
         );
 
         $model = $this->mock(DonationIpWhitelist::class);
-        $model->shouldReceive('select')
+        $model
+            ->shouldReceive('select')
             ->once()
             ->with(
                 'id',
                 'pattern',
-                'description'
+                'description',
+                'created_at'
             )
-            ->andReturn($model)
+            ->andReturn($model);
+
+        $model
             ->shouldReceive('when')
-            ->once()
-            ->andReturn($model)
-            ->shouldReceive('orderBy')
-            ->with('created_at', 'DESC')
-            ->once()
+            ->twice()
+            ->with(
+                Mockery::anyOf(
+                    $filters['search'],
+                    $filters['order']
+                ),
+                Mockery::any()
+            )
             ->andReturn($model);
 
         $model->shouldReceive('paginate')
