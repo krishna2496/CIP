@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Mockery;
 use TestCase;
+use Ramsey\Uuid\Uuid;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -101,15 +102,16 @@ class MissionRepositoryTest extends TestCase
      */
     public function testStoreDocumentUpload()
     {
+        $organizationId = Uuid::uuid4()->toString();
         $params = [
             'organization' => [
-                'organization_id' => 'organizationID'
+                'organization_id' => $organizationId
             ],
             'location' => [
-                'city_id' => 'cityId',
+                'city_id' => 1,
                 'country_code' => 'PH'
             ],
-            'theme_id' => '',
+            'theme_id' => 1,
             'publication_status' => true,
             'availability_id' => 1,
             'mission_type' => config('constants.mission_type.GOAL'),
@@ -119,8 +121,14 @@ class MissionRepositoryTest extends TestCase
                     'sort_order' => 0,
                     'document_path' => 'http://admin-m7pww5ymmj28.back.staging.optimy.net/assets/images/optimy-logo.png'
                 ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => 100,
+                'availability_id' => 1,
+                'is_virtual' => 1
             ]
         ];
+
         $request = new Request();
         $request->query->add($params);
 
@@ -132,11 +140,13 @@ class MissionRepositoryTest extends TestCase
         $organization = $this->mock(Organization::class);
         $organization->shouldReceive('updateOrCreate')
             ->once()
-            ->with([
-                'organization_id' => $organizationObject->organization_id
-            ], $request->organization)
+            ->with(
+                [
+                    'organization_id' => $organizationObject->organization_id
+                ],
+                $request->organization
+            )
             ->andReturn($organizationObject);
-
 
         $languages = new Collection([
             [
@@ -157,8 +167,8 @@ class MissionRepositoryTest extends TestCase
             ->andReturn($countryId);
 
         $missionData = [
-            'theme_id' => null,
-            'city_id' => $request->location['city_id'],
+            'theme_id' => 1,
+            'city_id' => 1,
             'country_id' => $countryId,
             'start_date' => null,
             'end_date' => null,
@@ -167,8 +177,8 @@ class MissionRepositoryTest extends TestCase
             'organisation_detail' => null,
             'mission_type' => $request->mission_type,
             'availability_id' => $request->availability_id,
-            'total_seats' => null,
-            'is_virtual' => '0'
+            'total_seats' => 100,
+            'is_virtual' => '1'
         ];
 
         $missionObject = new Mission();
