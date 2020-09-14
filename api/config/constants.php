@@ -617,7 +617,8 @@ return [
         'STATE' => 'STATE',
         'ORGANIZATION' => 'ORGANIZATION',
         'MISSION_TAB' => 'MISSION_TAB',
-        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST'
+        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
+        'MISSION_IMPACT' => 'MISSION_IMPACT'
     ],
 
     'activity_log_actions' => [
@@ -670,5 +671,15 @@ return [
     'user_statuses' => [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
-    ]
+    ],
+
+    /*
+     * Slider image types
+     */
+    'icon_image_mime_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/svg+xml'
+    ],
 ];

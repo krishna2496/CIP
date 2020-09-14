@@ -72,7 +72,7 @@ class MissionImpactRepository implements MissionImpactInterface
         $iconPath = $this->s3helper->uploadFileOnS3Bucket(
             $missionImpact['icon_path'],
             $tenantName,
-            "missions/$missionId/icons/$missionImpactId"
+            "missions/$missionId/impact/$missionImpactId"
         );
 
         $missionImpactModelData->update(['icon_path' => $iconPath]);
@@ -117,7 +117,7 @@ class MissionImpactRepository implements MissionImpactInterface
             $iconPath = $this->s3helper->uploadFileOnS3Bucket(
                 $missionImpact['icon_path'],
                 $tenantName,
-                "missions/$missionId/icons/$missionImpactId"
+                "missions/$missionId/impact/$missionImpactId"
             );
 
             $this->missionImpactModel

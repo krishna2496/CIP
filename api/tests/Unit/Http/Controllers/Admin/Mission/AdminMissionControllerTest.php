@@ -29,12 +29,12 @@ use Ramsey\Uuid\Uuid;
 class AdminMissionControllerTest extends Testcase
 {
     /**
-     * @testdox Test udpate mission with impact donation attribute with success status
+     * @testdox Test udpate mission with impact mission attribute with success status
      */
     public function testUpdateImpactDonationAttributeSuccess()
     {
-        \DB::setDefaultConnection('tenant');
-
+        $this->expectsEvents(UserActivityLogEvent::class);
+        
         $data = [
             'impact' => [
                 [

@@ -293,12 +293,10 @@ class MissionRepository implements MissionInterface
 
         //Add mission impact
         if (isset($request->impact) && count($request->impact) > 0) {
-            if (!empty($request->impact)) {
-                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(config('constants.tenant_settings.MISSION_IMPACT'), $request);
-                if ($allTenantActivatedSetting) {
-                    foreach ($request->impact as $impactValue) {
-                        $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId, $tenantName);
-                    }
+            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(config('constants.tenant_settings.MISSION_IMPACT'), $request);
+            if ($missionImpactSettingActivated) {
+                foreach ($request->impact as $impactValue) {
+                    $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId, $tenantName);
                 }
             }
         }
@@ -537,9 +535,9 @@ class MissionRepository implements MissionInterface
 
         // Add/update impact mission
         if (isset($request->impact) && count($request->impact)) {
-            foreach ($request->impact as $impactValue) {
-                $allTenantActivatedSetting = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(config('constants.tenant_settings.MISSION_IMPACT'), $request);
-                if ($allTenantActivatedSetting) {
+            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(config('constants.tenant_settings.MISSION_IMPACT'), $request);
+            if ($missionImpactSettingActivated) {
+                foreach ($request->impact as $impactValue) {
                     if (isset($impactValue['mission_impact_id'])) {
                         $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId, $tenantName);
                     } else {

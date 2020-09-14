@@ -38,9 +38,10 @@ class AdminMissionTransformService
         if ($impactMission != null) {
             $impactMissionDetails = [];
             foreach ($impactMission as $impactMissionKey => $impactMissionValue) {
+                $impactMissionDetails['mission_impact_id'] = $impactMissionValue['mission_impact_id'];
                 $impactMissionDetails['sort_key'] = $impactMissionValue['sort_key'];
-                $impactMissionDetails['icon'] = $impactMissionValue['icon_path'];
-                $impactMissionDetails["languages"] = [];
+                $impactMissionDetails['icon_path'] = $impactMissionValue['icon_path'];
+                $impactMissionDetails['languages'] = [];
                 foreach ($impactMissionValue['mission_impact_language_details'] as $impactMissionLanguageValue) {
                     $languageCode = $languages->where('language_id', $impactMissionLanguageValue['language_id'])
                         ->first()->code;

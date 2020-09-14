@@ -8984,8 +8984,8 @@
                 "description": "mission impact id is only neccessary when want to update specific impact mission data. If have not specified mission_impact_id then it will create a new data for impact mission."
               },
               "icon_path": {
-                "type": "text",
-                "description": "Mention particulat URL for impact mission icon,"
+                "type": "string",
+                "description": "URL of mission impact icon"
               },
               "sort_key": {
                 "type": "integer",

@@ -194,8 +194,9 @@ class MissionController extends Controller
                 exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "impact.*.icon_path" => 'sometimes|required',
-                "impact.*.sort_key" => 'required|integer',
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
+                "impact.*.sort_key" => 'required|integer|min:0',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
                 "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
@@ -377,8 +378,9 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
-                "impact.*.icon_path" => "sometimes|required",
-                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer",
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => "sometimes|required|valid_icon_path",
+                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0",
                 "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
                 "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
                 "impact.*.translations.*.content" => "required_with:impact.*.translations|max:300",
@@ -546,7 +548,7 @@ class MissionController extends Controller
         try {
             if (isset($request->impact) && count($request->impact) > 0) {
                 foreach ($request->impact as $impactValue) {
-                    if (isset($impactValue['mission_impact_id']) && ($impactValue['mission_impact_id'] !== "")) {
+                    if (isset($impactValue['mission_impact_id']) && ($impactValue['mission_impact_id'] !== '')) {
                         $this->missionRepository
                         ->isMissionImpactLinkedToMission($missionId, $impactValue['mission_impact_id']);
                     }

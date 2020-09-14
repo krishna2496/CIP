@@ -39,6 +39,11 @@ class MissionImpact extends Model
      */
     protected $visible = ['mission_impact_id', 'mission_id', 'icon_path', 'sort_key', 'missionImpactLanguageDetails'];
 
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['missionImpactLanguageDetails'];
+
     /**
      * The attributes that are mass assignable.
      *
