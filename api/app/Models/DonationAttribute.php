@@ -29,16 +29,35 @@ class DonationAttribute extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
-    'show_donors_count', 'disable_when_funded', 'is_disabled', ];
+    protected $fillable = [
+        'mission_id',
+        'goal_amount_currency',
+        'goal_amount',
+        'show_goal_amount',
+        'show_donation_percentage',
+        'show_donation_meter',
+        'show_donation_count',
+        'show_donors_count',
+        'disable_when_funded',
+        'is_disabled'
+    ];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['goal_amount_currency', 'goal_amount', 'show_goal_amount', 'show_donation_percentage', 'show_donation_meter', 'show_donation_count',
-    'show_donors_count', 'disable_when_funded', 'is_disabled', ];
+    protected $visible = [
+        'goal_amount_currency',
+        'goal_amount',
+        'show_goal_amount',
+        'show_donation_percentage',
+        'show_donation_meter',
+        'show_donation_count',
+        'show_donors_count',
+        'disable_when_funded',
+        'is_disabled'
+    ];
     
     /**
      * listen for any Eloquent events

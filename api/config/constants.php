@@ -331,7 +331,8 @@ return [
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection'
+        'STATE_ENABLED' => 'state_selection',
+        'DONATION_MISSION' => 'donation'
     ],
 
     'TOP_THEME' => 'top_themes',

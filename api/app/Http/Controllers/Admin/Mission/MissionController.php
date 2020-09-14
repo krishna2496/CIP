@@ -214,7 +214,7 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
+                'donation_attribute.goal_amount_currency' => 'required_with:donation_attribute.goal_amount|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
@@ -228,6 +228,12 @@ class MissionController extends Controller
 
             ]
         );
+
+        $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DONATION_MISSION'),
+            $request
+        );
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -414,7 +420,7 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
+                'donation_attribute.goal_amount_currency' => 'sometimes|required_with:donation_attribute.goal_amount|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
