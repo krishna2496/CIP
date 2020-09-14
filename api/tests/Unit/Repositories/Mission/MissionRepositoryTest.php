@@ -119,6 +119,11 @@ class MissionRepositoryTest extends TestCase
                     'sort_order' => 0,
                     'document_path' => 'http://admin-m7pww5ymmj28.back.staging.optimy.net/assets/images/optimy-logo.png'
                 ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => rand(5000, 10000),
+                'availability_id' => 1,
+                'is_virtual' => 1
             ]
         ];
         $request = new Request();
@@ -165,11 +170,8 @@ class MissionRepositoryTest extends TestCase
             'publication_status' => $request->publication_status,
             'organization_id' => $organizationObject->organization_id,
             'organisation_detail' => null,
-            'mission_type' => $request->mission_type,
-            'availability_id' => $request->availability_id,
-            'total_seats' => null,
-            'is_virtual' => '0'
-        ];
+            'mission_type' => $request->mission_type
+        ];        
 
         $missionObject = new Mission();
         $missionObject->setAttribute('mission_id', 1);
