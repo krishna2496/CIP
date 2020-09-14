@@ -176,7 +176,7 @@ class MissionRepositoryTest extends TestCase
             'organization_id' => $organizationObject->organization_id,
             'organisation_detail' => null,
             'mission_type' => $request->mission_type
-        ];        
+        ];
 
         $missionObject = new Mission();
         $missionObject->setAttribute('mission_id', 1);
@@ -272,7 +272,6 @@ class MissionRepositoryTest extends TestCase
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->store($request);
-
     }
 
     /**
@@ -393,7 +392,6 @@ class MissionRepositoryTest extends TestCase
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->update($request, $missionId);
-
     }
 
     /**
