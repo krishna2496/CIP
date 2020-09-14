@@ -86,7 +86,7 @@ class Mission extends Model
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
-    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
+    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab', 'volunteeringAttribute',
     'unSdg', 'is_virtual'];
 
