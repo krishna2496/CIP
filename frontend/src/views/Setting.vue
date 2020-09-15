@@ -371,7 +371,9 @@ export default {
                     this.showPage = false;
                     this.getSettingListing().then(() => {
                         this.showPage = true;
-                       
+                        this.oldPassword = "",
+                        this.newPassword = "",
+                        this.confirmPassword = "",
                         loadLocaleMessages(this.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
                             this.makeToast("success", response.message);
