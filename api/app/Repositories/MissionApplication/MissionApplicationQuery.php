@@ -184,7 +184,7 @@ class MissionApplicationQuery implements QueryableInterface
                         ->whereHas('user', function($query) use ($search) {
                             $query
                                 ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}%"])
-                                ->orWhere('email', 'like', "%${search}%")
+                                ->orWhere('email', 'like', "${search}%")
                                 ->orWhere('first_name', 'like', "${search}%")
                                 ->orWhere('last_name', 'like', "${search}%");
                         })
