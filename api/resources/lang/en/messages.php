@@ -386,6 +386,7 @@ return [
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
-        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system'
-    ]
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
+        'DONATION_MISSION_PERMISSION_DENIED' => 'Permission denied for donation mission',
+        'ERROR_INVALID_TENANT_CURRENCY' => 'Please enter valid tenant currency',
 ];

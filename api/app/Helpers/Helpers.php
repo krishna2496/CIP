@@ -540,4 +540,27 @@ class Helpers
             'why_i_volunteer'
         ];
     }
+
+    /**
+     * Check for valid currency from `ci_admin` table.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String
+     * @return mix
+     */
+    public function validateTenantCurrency(Request $request, $currencyCode)
+    {
+        $tenant = $this->getTenantDetail($request);
+        // Connect master database to get currency details
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantLanguage = $this->db->table('tenant_currency')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->where('code', $currencyCode);
+
+        // Connect tenant database
+        $this->switchDatabaseConnection('tenant');
+
+        return ($tenantLanguage->count() > 0) ? true : false;
+    }
 }

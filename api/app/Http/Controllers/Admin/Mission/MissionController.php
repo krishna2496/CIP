@@ -22,6 +22,7 @@ use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
 use App\Services\Mission\ModelsService;
+use App\Helpers\Helpers;
 
 //!  Mission controller
 /*!
@@ -76,6 +77,11 @@ class MissionController extends Controller
     private $modelsService;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -87,6 +93,7 @@ class MissionController extends Controller
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
@@ -98,7 +105,8 @@ class MissionController extends Controller
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         NotificationRepository $notificationRepository,
         OrganizationRepository $organizationRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        Helpers $helpers
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -109,6 +117,7 @@ class MissionController extends Controller
         $this->notificationRepository = $notificationRepository;
         $this->organizationRepository = $organizationRepository;
         $this->modelsService = $modelsService;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -228,11 +237,21 @@ class MissionController extends Controller
 
             ]
         );
-
+        
+        // check if donation mission setting enable or not for donation mission
         $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
             config('constants.tenant_settings.DONATION_MISSION'),
             $request
         );
+        
+        if (!$isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.DONATION_MISSION_PERMISSION_DENIED')
+            );
+        }
 
         // If request parameter have any error
         if ($validator->fails()) {
@@ -242,6 +261,18 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 $validator->errors()->first()
             );
+        }
+
+        // Check language id is set and valid or not
+        if ($isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
+            if ($request->get('donation_attribute')['goal_amount_currency'] && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                    trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+                );
+            }
         }
 
         // Update organization city,state & country id to null if it's blank
@@ -431,6 +462,21 @@ class MissionController extends Controller
                 'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
+        
+        // check if donation mission setting enable or not for donation mission
+        $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DONATION_MISSION'),
+            $request
+        );
+        
+        if (!$isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.DONATION_MISSION_PERMISSION_DENIED')
+            );
+        }
 
         // If request parameter have any error
         if ($validator->fails()) {
