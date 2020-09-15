@@ -40,9 +40,6 @@ class MissionRepositoryTest extends TestCase
     */
     public function testAddDonationMissionSuccess()
     {
-        \DB::setDefaultConnection('tenant');
-        
-
         $requestParams = [
             'theme_id' => 1,
             'start_date' => "2019-05-15 10:40:00",
@@ -215,9 +212,6 @@ class MissionRepositoryTest extends TestCase
     */
     public function testUpdateDonationMissionSuccess()
     {
-        \DB::setDefaultConnection('tenant');
-        
-
         $requestParams = [
             'mission_type' => config("constants.mission_type.DONATION"),
             'location' => [
