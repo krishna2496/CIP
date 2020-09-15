@@ -21,12 +21,14 @@ use App\Repositories\Country\CountryRepository;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Services\Mission\ModelsService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Mockery;
 use TestCase;
+use Ramsey\Uuid\Uuid;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -57,6 +59,7 @@ class MissionRepositoryTest extends TestCase
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
 
@@ -87,6 +90,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
 
@@ -98,15 +102,16 @@ class MissionRepositoryTest extends TestCase
      */
     public function testStoreDocumentUpload()
     {
+        $organizationId = Uuid::uuid4()->toString();
         $params = [
             'organization' => [
-                'organization_id' => 'organizationID'
+                'organization_id' => $organizationId
             ],
             'location' => [
-                'city_id' => 'cityId',
+                'city_id' => 1,
                 'country_code' => 'PH'
             ],
-            'theme_id' => '',
+            'theme_id' => 1,
             'publication_status' => true,
             'availability_id' => 1,
             'mission_type' => config('constants.mission_type.GOAL'),
@@ -116,8 +121,14 @@ class MissionRepositoryTest extends TestCase
                     'sort_order' => 0,
                     'document_path' => 'http://admin-m7pww5ymmj28.back.staging.optimy.net/assets/images/optimy-logo.png'
                 ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => 100,
+                'availability_id' => 1,
+                'is_virtual' => 1
             ]
         ];
+
         $request = new Request();
         $request->query->add($params);
 
@@ -129,11 +140,13 @@ class MissionRepositoryTest extends TestCase
         $organization = $this->mock(Organization::class);
         $organization->shouldReceive('updateOrCreate')
             ->once()
-            ->with([
-                'organization_id' => $organizationObject->organization_id
-            ], $request->organization)
+            ->with(
+                [
+                    'organization_id' => $organizationObject->organization_id
+                ],
+                $request->organization
+            )
             ->andReturn($organizationObject);
-
 
         $languages = new Collection([
             [
@@ -154,19 +167,18 @@ class MissionRepositoryTest extends TestCase
             ->andReturn($countryId);
 
         $missionData = [
-            'theme_id' => null,
-            'city_id' => $request->location['city_id'],
+            'theme_id' => 1,
+            'city_id' => 1,
             'country_id' => $countryId,
             'start_date' => null,
             'end_date' => null,
             'publication_status' => $request->publication_status,
-            'organisation_id' => $organizationObject->organization_id,
+            'organization_id' => $organizationObject->organization_id,
             'organisation_detail' => null,
             'mission_type' => $request->mission_type,
             'availability_id' => $request->availability_id,
-            'total_seats' => null,
-            'is_virtual' => '0',
-            'organisation_name' => $organizationObject->name
+            'total_seats' => 100,
+            'is_virtual' => '1'
         ];
 
         $missionObject = new Mission();
@@ -235,6 +247,7 @@ class MissionRepositoryTest extends TestCase
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
 
         $modelService = $this->modelService(
@@ -259,6 +272,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->store($request);
 
@@ -353,6 +367,7 @@ class MissionRepositoryTest extends TestCase
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $modelService = $this->mock(ModelsService::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $organization = $this->mock(Organization::class);
 
@@ -378,6 +393,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->update($request, $missionId);
 
@@ -393,6 +409,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
+     * @param  App\Repositories\MissionMedia\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository
      * @return void
      */
     private function getRepository(
@@ -402,6 +419,7 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
         return new MissionRepository(
@@ -411,6 +429,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
     }

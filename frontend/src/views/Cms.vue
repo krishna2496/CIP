@@ -44,6 +44,9 @@
   import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
   import axios from "axios";
   import store from '../store';
+  import {
+    cmsDetail
+  } from '../services/service';
 
   export default {
     components: {
@@ -123,27 +126,16 @@
       },
       //List cms pages
       cmsListing(slug) {
-        axios.get(process.env.VUE_APP_API_ENDPOINT + "app/cms/" + slug, { headers: {"X-localization":  store.state.defaultLanguage} })
-          .then((response) => {
-            if (response.data.data) {
-              let dataList = [];
-              response.data.data.pages.forEach(function (value) {
-
-                if (value.language_id == store.state.defaultLanguageId) {
-                  dataList.push(value);
-                }
-              })
-
-              this.footerItems = dataList[0]
-              this.isDynamicFooterItemsSet = true
-            }
-          }).catch((error) => {
-          if (error.response.status == 404) {
+        cmsDetail(slug).then((response) => {
+          if (response.error === false) {
+            this.isDynamicFooterItemsSet = true;
+            this.footerItems = response.data.pages[0];
+          } else {
             this.$router.push({
               name: '404'
             });
           }
-        })
+        });
       }
     },
 

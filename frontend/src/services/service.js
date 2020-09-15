@@ -5,6 +5,7 @@ import forgotPassword from "./Auth/ForgotPassword";
 import resetPassword from "./Auth/ResetPassword";
 import databaseConnection from "./Tenant/DatabaseConnection";
 import cmsPages from "./Cms/CmsListing";
+import cmsDetail from "./Cms/CmsDetail";
 import filterList from "./filterList";
 import missionFilterListing from "./Mission/MissionFilterListing";
 import exploreMission from "./Mission/ExploreMission";
@@ -75,6 +76,7 @@ export {
     forgotPassword,
     resetPassword,
     cmsPages,
+    cmsDetail,
     missionFilterListing,
     exploreMission,
     filterList,
