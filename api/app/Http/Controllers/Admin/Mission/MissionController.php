@@ -234,7 +234,6 @@ class MissionController extends Controller
                 'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 "un_sdg" => "sometimes|required|array",
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
-
             ]
         );
         
@@ -263,14 +262,14 @@ class MissionController extends Controller
             );
         }
 
-        // Check language id is set and valid or not
+        // Check goal amount currency  set is valid or not
         if ($isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
             if ($request->get('donation_attribute')['goal_amount_currency'] && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_INVALID_CURRENCY'),
-                    trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+                    trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
                 );
             }
         }
@@ -488,6 +487,18 @@ class MissionController extends Controller
             );
         }
 
+        // Check goal amount currency  set is valid or not
+        if ($isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
+            if ($request->get('donation_attribute')['goal_amount_currency'] && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                    trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+                );
+            }
+        }
+        
         // check organization exist in database
         if ((!empty($request->get('organization')) && !empty($request->get('organization')['organization_id']))) {
             $organizationId = $request->get('organization')['organization_id'];
