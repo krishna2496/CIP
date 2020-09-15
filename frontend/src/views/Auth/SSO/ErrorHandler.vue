@@ -80,18 +80,17 @@ export default {
       this.errors = this.$route.query.errors.split(',');
     }
 
+    this.languageData = JSON.parse(store.state.languageLabel);
+
     this.action = this.$route.query.action && this.$route.query.action === 'login'
       ? {
-          label: languageData.label.go_to_login_page,
+          label: this.languageData.label.go_to_login_page,
           url: '/',
         }
       : {
-          label: languageData.label.go_to_home_page,
+          label: this.languageData.label.go_to_home_page,
           url: '/home',
         };
-
-
-    this.languageData = JSON.parse(store.state.languageLabel);
   },
 };
 
