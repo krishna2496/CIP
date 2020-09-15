@@ -27,7 +27,7 @@ class MissionImpactRepository implements MissionImpactInterface
     /**
      * @var App\Helpers\S3Helper
      */
-    private $s3helper;
+    private $s3Helper;
 
     /**
      * Create a new MissionImpact repository instance.
@@ -35,18 +35,18 @@ class MissionImpactRepository implements MissionImpactInterface
      * @param App\Models\MissionImpact $missionImpactModel
      * @param App\Models\MissionImpactLanguage $missionImpactLanguageModel
      * @param App\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\S3Helper $s3helper
+     * @param App\Helpers\S3Helper $s3Helper
      */
     public function __construct(
         MissionImpact $missionImpactModel,
         MissionImpactLanguage $missionImpactLanguageModel,
         LanguageHelper $languageHelper,
-        S3Helper $s3helper
+        S3Helper $s3Helper
     ) {
         $this->missionImpactModel = $missionImpactModel;
         $this->missionImpactLanguageModel = $missionImpactLanguageModel;
         $this->languageHelper = $languageHelper;
-        $this->s3helper = $s3helper;
+        $this->s3Helper = $s3Helper;
     }
 
     /**
@@ -69,7 +69,7 @@ class MissionImpactRepository implements MissionImpactInterface
         $missionImpactModelData = $this->missionImpactModel->create($missionImpactPostData);
         $missionImpactId = $missionImpactModelData->mission_impact_id;
         
-        $iconPath = $this->s3helper->uploadFileOnS3Bucket(
+        $iconPath = $this->s3Helper->uploadFileOnS3Bucket(
             $missionImpact['icon_path'],
             $tenantName,
             "missions/$missionId/impact/$missionImpactId"
@@ -114,7 +114,7 @@ class MissionImpactRepository implements MissionImpactInterface
 
         // Update icon
         if (isset($missionImpact['icon_path']) && !empty($missionImpact['icon_path'])) {
-            $iconPath = $this->s3helper->uploadFileOnS3Bucket(
+            $iconPath = $this->s3Helper->uploadFileOnS3Bucket(
                 $missionImpact['icon_path'],
                 $tenantName,
                 "missions/$missionId/impact/$missionImpactId"

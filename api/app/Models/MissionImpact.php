@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class MissionImpact extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.

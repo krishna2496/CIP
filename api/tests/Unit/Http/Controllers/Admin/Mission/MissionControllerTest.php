@@ -32,6 +32,7 @@ use App\Repositories\Organization\OrganizationRepository;
 use App\Events\User\UserNotificationEvent;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Validator;
 
 class MissionControllerTest extends TestCase
 {
@@ -166,7 +167,7 @@ class MissionControllerTest extends TestCase
      */
     public function testUpdateImpactDonationAttributeSuccess()
     {
-        \DB::setDefaultConnection('tenant');
+        $this->expectsEvents(UserActivityLogEvent::class);
 
         $data = [
             'impact' => [
@@ -288,8 +289,6 @@ class MissionControllerTest extends TestCase
      */
     public function testImpactMissionNotLinkWithMissionError()
     {
-        \DB::setDefaultConnection('tenant');
-
         $data = [
             'impact' => [
                 [
@@ -621,4 +620,14 @@ class MissionControllerTest extends TestCase
         );
     }
 
+    /**
+    * get json reponse
+    *
+    * @param class name
+    * @return JsonResponse
+    */
+    private function getJson($class)
+    {
+        return new JsonResponse($class);
+    }
 }

@@ -17,7 +17,6 @@ use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Services\Mission\ModelsService;
 use App\Repositories\MissionImpact\MissionImpactRepository;
-use App\Services\Mission\AdminMissionTransformService;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use Carbon\Carbon;
 use DB;
@@ -26,9 +25,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
+use App\Transformations\AdminMissionTransformable;
 
 class MissionRepository implements MissionInterface
 {
+    use AdminMissionTransformable;
+
     /**
      * @var App\Helpers\LanguageHelper
      */
@@ -65,11 +67,6 @@ class MissionRepository implements MissionInterface
     private $missionImpactRepository;
 
     /**
-     * @var App\Services\Mission\AdminMissionTransformService
-     */
-    private $adminMissionTransformService;
-
-    /**
      * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      */
     private $tenantActivatedSettingRepository;
@@ -94,7 +91,6 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
-     * @param  App\Services\Mission\AdminMissionTransformService $adminMissionTransformService
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
@@ -108,7 +104,6 @@ class MissionRepository implements MissionInterface
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
         MissionImpactRepository $missionImpactRepository,
-        AdminMissionTransformService $adminMissionTransformService,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
@@ -120,7 +115,6 @@ class MissionRepository implements MissionInterface
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
         $this->missionImpactRepository = $missionImpactRepository;
-        $this->adminMissionTransformService = $adminMissionTransformService;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
@@ -615,12 +609,10 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        $this->adminMissionTransformService->transfromAdminMission($mission);
-        
         // mission tab array modification
         $this->missionTabTransformArray($mission, $languages);
 
-        return $mission;
+        return $this->adminTransformMission($mission, $languages);
     }
 
     /**
@@ -709,10 +701,10 @@ class MissionRepository implements MissionInterface
                 }
             }
 
-            $this->adminMissionTransformService->transfromAdminMission($value);
-
             // mission tab array modification
             $this->missionTabTransformArray($value, $languages);
+
+            $this->adminTransformMission($value, $languages);
         }
 
         return $mission;
