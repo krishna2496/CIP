@@ -43,78 +43,78 @@ class MissionRepositoryTest extends TestCase
         
 
         $requestParams = [
-            "theme_id" => 1,
-            "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2022-10-15 10:40:00",
-            "total_seats" => rand(10, 1000),
-            "mission_type" => config("constants.mission_type.DONATION"),
-            "publication_status" => config("constants.publication_status.APPROVED"),
-            "organisation_id" => 1,
-            "organisation_name" => str_random(10),
-            "availability_id" => 1,
-            "location" => [
-                "city_id" => 1,
-                "country_id" => 233,
-                "country_code" => "US"
+            'theme_id' => 1,
+            'start_date' => "2019-05-15 10:40:00",
+            'end_date' => "2022-10-15 10:40:00",
+            'total_seats' => rand(10, 1000),
+            'mission_type' => config("constants.mission_type.DONATION"),
+            'publication_status' => config("constants.publication_status.APPROVED"),
+            'organisation_id' => 1,
+            'organisation_name' => str_random(10),
+            'availability_id' => 1,
+            'location' => [
+                'city_id' => 1,
+                'country_id' => 233,
+                'country_code' => "US"
             ],
-            "donation_attribute" => [
-                "goal_amount_currency" => "CAD",
-                "goal_amount" => 253,
-                "show_goal_amount" => 1,
-                "show_donation_percentage" => 0,
-                "show_donation_meter" => 0,
-                "show_donation_count" => 0,
-                "show_donors_count" => 0,
-                "disable_when_funded" => 0,
-                "is_disabled" => 0
+            'donation_attribute' => [
+                'goal_amount_currency' => "CAD",
+                'goal_amount' => 253,
+                'show_goal_amount' => 1,
+                'show_donation_percentage' => 0,
+                'show_donation_meter' => 0,
+                'show_donation_count' => 0,
+                'show_donors_count' => 0,
+                'disable_when_funded' => 0,
+                'is_disabled' => 0
             ],
-            "mission_detail"=> [
+            'mission_detail'=> [
                 [
-                  "lang" => "en",
-                  "title" => "New Organization Mission created",
-                  "short_description" => "this is testing api with all mission details",
-                  "objective" => "To test and check",
-                  "label_goal_achieved" => "test percentage",
-                  "label_goal_objective" => "check test percentage",
-                  "section" => [
+                  'lang' => "en",
+                  'title' => "New Organization Mission created",
+                  'short_description' => "this is testing api with all mission details",
+                  'objective' => "To test and check",
+                  'label_goal_achieved' => "test percentage",
+                  'label_goal_objective' => "check test percentage",
+                  'section' => [
                     [
-                      "title" => "Section title",
-                      "description" => "Section description"
+                      'title' => "Section title",
+                      'description' => "Section description"
                     ]
                   ],
-                  "custom_information" => [
+                  'custom_information' => [
                     [
-                      "title" => "Customer info",
-                      "description" => "Description of customer info"
+                      'title' => "Customer info",
+                      'description' => "Description of customer info"
                     ]
                   ]
                 ]
               ],
-              "organisation" => [
-                  "organisation_id" => '1',
-                  "organisation_name" => 'namee'
+              'organisation' => [
+                  'organisation_id' => '1',
+                  'organisation_name' => 'namee'
               ]
               
         ];
 
         $languagesArray = [
             (object)[
-                "language_id" => 1,
-                "name" => "English",
-                "code" => "en",
-                "status" => "1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 1,
+                'name' => "English",
+                'code' => "en",
+                'status' => "1",
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status" => "1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null,
+                'language_id' => 2,
+                'name' => "French",
+                'code' => "fr",
+                'status' => "1",
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ];
 
@@ -218,44 +218,43 @@ class MissionRepositoryTest extends TestCase
         
 
         $requestParams = [
-            
-            "mission_type" => config("constants.mission_type.DONATION"),
-            "location" => [
-                "city_id" => 1,
-                "country_id" => 233,
-                "country_code" => "US"
+            'mission_type' => config("constants.mission_type.DONATION"),
+            'location' => [
+                'city_id' => 1,
+                'country_id' => 233,
+                'country_code' => "US"
             ],
-            "donation_attribute" => [
-                "goal_amount_currency" => "CAD",
-                "goal_amount" => 253,
-                "show_goal_amount" => 1,
-                "show_donation_percentage" => 0,
-                "show_donation_meter" => 0,
-                "show_donation_count" => 0,
-                "show_donors_count" => 0,
-                "disable_when_funded" => 0,
-                "is_disabled" => 0
+            'donation_attribute' => [
+                'goal_amount_currency' => "CAD",
+                'goal_amount' => 253,
+                'show_goal_amount' => 1,
+                'show_donation_percentage' => 0,
+                'show_donation_meter' => 0,
+                'show_donation_count' => 0,
+                'show_donors_count' => 0,
+                'disable_when_funded' => 0,
+                'is_disabled' => 0
             ]
         ];
 
         $languagesArray = [
             (object)[
-                "language_id" => 1,
-                "name" => "English",
-                "code" => "en",
-                "status" => "1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null
+                'language_id' => 1,
+                'name' => "English",
+                'code' => "en",
+                'status' => "1",
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null
             ],
             (object)[
-                "language_id" => 2,
-                "name" => "French",
-                "code" => "fr",
-                "status" => "1",
-                "created_at" => null,
-                "updated_at" => null,
-                "deleted_at" => null
+                'language_id' => 2,
+                'name' => "French",
+                'code' => "fr",
+                'status' => "1",
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null
             ]
         ];
 
