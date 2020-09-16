@@ -19,7 +19,6 @@ trait AdminMissionTransformable
         Collection $languages
     ) {
         // Transform impact mission attribute
-        $languages = $this->languageHelper->getLanguages();
 
         if (isset($mission['impact'])) {
             $impactMission =  $mission['impact']->toArray();
