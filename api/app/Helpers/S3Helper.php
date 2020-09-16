@@ -106,6 +106,34 @@ class S3Helper
     }
 
     /**
+     * Upload favicon on AWS s3 bucket
+     *
+     * @param string $favicon
+     * @param string $tenantName
+     *
+     * @return string
+     */
+    public function uploadFaviconOnS3Bucket(string $favicon, string $tenantName): string
+    {
+        $imagePath = $tenantName.'/assets/images/favicon/favicon.ico';
+        Storage::disk('s3')->put($imagePath, base64_decode($favicon), 'public');
+        return Storage::disk('s3')->url($imagePath);
+    }
+
+    /**
+     * Retrieve favicon from AWS s3 bucket
+     *
+     * @param string $tenantName
+     *
+     * @return string
+     */
+    public function retrieveFaviconFromS3Bucket(string $tenantName): string
+    {
+        $imagePath = $tenantName.'/assets/images/favicon/favicon.ico';
+        return Storage::disk('s3')->url($imagePath);
+    }
+
+    /**
      * Upload document on AWS s3 bucket
      *
      * @param $file
