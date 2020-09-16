@@ -28,14 +28,16 @@ trait AdminMissionTransformable
                     $impactMissionDetails['mission_impact_id'] = $impactMissionValue['mission_impact_id'];
                     $impactMissionDetails['sort_key'] = $impactMissionValue['sort_key'];
                     $impactMissionDetails['icon_path'] = $impactMissionValue['icon_path'];
-                    $impactMissionDetails['languages'] = [];
+                    $impactMissionDetails['translations'] = [];
                     foreach ($impactMissionValue['mission_impact_language_details'] as $impactMissionLanguageValue) {
-                        $languageCode = $languages->where('language_id', $impactMissionLanguageValue['language_id'])
-                            ->first()->code;
+                        $languageCode = $languages
+                            ->where('language_id', $impactMissionLanguageValue['language_id'])
+                            ->first()
+                            ->code;
                         $impactMissionLanguage['language_id'] = $impactMissionLanguageValue['language_id'];
                         $impactMissionLanguage['language_code'] = $languageCode;
                         $impactMissionLanguage['content'] = json_decode($impactMissionLanguageValue['content']);
-                        array_push($impactMissionDetails['languages'], $impactMissionLanguage);
+                        array_push($impactMissionDetails['translations'], $impactMissionLanguage);
                     }
                     $mission['impact'][$impactMissionKey] = $impactMissionDetails;
                 }

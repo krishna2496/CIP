@@ -79,7 +79,7 @@ class AvailabilityController extends Controller
             );
         }
     }
-    
+
     /**
      * Store a newly created availability.
      *
@@ -108,7 +108,7 @@ class AvailabilityController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Create new availability
         $availability = $this->availabilityRepository->store($request->all());
 
@@ -116,7 +116,7 @@ class AvailabilityController extends Controller
         $apiData = ['availability_id' => $availability->availability_id];
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_CREATED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AVAILABILITY'),
@@ -167,15 +167,15 @@ class AvailabilityController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Update availability details
             $availability = $this->availabilityRepository->update($request->toArray(), $availabilityId);
-       
+
             // Set response data
             $apiData = ['availability_id' => $availability->availability_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_UPDATED');
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.AVAILABILITY'),
@@ -207,11 +207,11 @@ class AvailabilityController extends Controller
     {
         try {
             $availability = $this->availabilityRepository->find($availabilityId);
-            
+
             $apiData = $availability->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -230,7 +230,7 @@ class AvailabilityController extends Controller
     public function destroy(int $availabilityId): JsonResponse
     {
         try {
-            
+
             if ($this->availabilityRepository->hasMission($availabilityId) || $this->availabilityRepository->hasUser($availabilityId)) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -241,7 +241,7 @@ class AvailabilityController extends Controller
             }
 
             $availability = $this->availabilityRepository->delete($availabilityId);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_AVAILABILITY_DELETED');
@@ -257,7 +257,7 @@ class AvailabilityController extends Controller
                 null,
                 $availabilityId
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

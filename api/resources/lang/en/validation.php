@@ -138,7 +138,7 @@ return [
             'max' => 'Maximum '.config('constants.STORY_MAX_IMAGE_LIMIT').' images can be added',
         ],
         'impact.*.icon_path' => [
-            'valid_icon_path' => 'Please enter valid icon image',
+            'valid_icon_path' => 'Please enter a valid icon image.',
         ]
     ],
 

@@ -67,16 +67,16 @@ class MissionControllerTest extends TestCase
         $this->expectsEvents(UserActivityLogEvent::class);
 
         $missionRepository->shouldReceive('deleteMissionTabByMissionTabId')
-        ->once()
-        ->andReturn(true);
+            ->once()
+            ->andReturn(true);
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with(
-            Response::HTTP_NO_CONTENT,
-            trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NO_CONTENT,
+                trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
+            )
+           ->andReturn($JsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -131,19 +131,19 @@ class MissionControllerTest extends TestCase
         $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $missionRepository->shouldReceive('deleteMissionTabByMissionTabId')
-        ->once()
-        ->with($missionTabId)
-        ->andThrow($modelNotFoundException);
+            ->once()
+            ->with($missionTabId)
+            ->andThrow($modelNotFoundException);
 
         $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-            trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            )
+           ->andReturn($JsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -163,9 +163,9 @@ class MissionControllerTest extends TestCase
     }
 
     /**
-     * @testdox Test udpate mission with impact donation attribute with success status
+     * @testdox Test udpate mission with impact
      */
-    public function testUpdateImpactDonationAttributeSuccess()
+    public function testUpdateMissionImpactSuccess()
     {
         $this->expectsEvents(UserActivityLogEvent::class);
 
@@ -218,39 +218,39 @@ class MissionControllerTest extends TestCase
 
         $key = str_random(16);
         $requestHeader = $request->shouldReceive('header')
-        ->once()
-        ->with('php-auth-user')
-        ->andReturn($key);
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
 
         Validator::shouldReceive('make')
-        ->once()
-        ->andReturn(Mockery::mock(['fails' => false]));
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
 
         $missionRepository->shouldReceive('find')
-        ->once()
-        ->with($missionId)
-        ->andReturn();
+            ->once()
+            ->with($missionId)
+            ->andReturn();
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
-        ->once()
-        ->with($requestData)
-        ->andReturn($defaultLanguage);
+            ->once()
+            ->with($requestData)
+            ->andReturn($defaultLanguage);
 
         $missionModel = new Mission();
         $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
-        ->once()
-        ->with($missionId, $defaultLanguage->language_id)
-        ->andReturn($missionModel);
+            ->once()
+            ->with($missionId, $defaultLanguage->language_id)
+            ->andReturn($missionModel);
 
         $missionRepository->shouldReceive('isMissionImpactLinkedToMission')
-        ->once()
-        ->with($missionId, $data['impact'][0]['mission_impact_id'])
-        ->andReturn();
+            ->once()
+            ->with($missionId, $data['impact'][0]['mission_impact_id'])
+            ->andReturn();
 
         $missionRepository->shouldReceive('update')
-        ->once()
-        ->andReturn();
+            ->once()
+            ->andReturn();
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
@@ -263,9 +263,9 @@ class MissionControllerTest extends TestCase
         $jsonResponse = $this->getJson($methodResponse);
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with($apiStatus, $apiMessage)
-        ->andReturn($jsonResponse);
+            ->once()
+            ->with($apiStatus, $apiMessage)
+            ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -285,9 +285,9 @@ class MissionControllerTest extends TestCase
     }
 
     /**
-     * @testdox Test not found mission with impact mission attribute with error status
+     * @testdox Test update mission with invalid mission_impact_id
      */
-    public function testImpactMissionNotLinkWithMissionError()
+    public function testMissionImpactNotFoundError()
     {
         $data = [
             'impact' => [
@@ -330,35 +330,35 @@ class MissionControllerTest extends TestCase
 
         $key = str_random(16);
         $requestHeader = $request->shouldReceive('header')
-        ->once()
-        ->with('php-auth-user')
-        ->andReturn($key);
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
 
         Validator::shouldReceive('make')
-        ->once()
-        ->andReturn(Mockery::mock(['fails' => false]));
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
 
         $missionRepository->shouldReceive('find')
-        ->once()
-        ->with($missionId)
-        ->andReturn();
+            ->once()
+            ->with($missionId)
+            ->andReturn();
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
-        ->once()
-        ->with($requestData)
-        ->andReturn($defaultLanguage);
+            ->once()
+            ->with($requestData)
+            ->andReturn($defaultLanguage);
 
         $missionModel = new Mission();
         $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
-        ->once()
-        ->with($missionId, $defaultLanguage->language_id)
-        ->andReturn($missionModel);
+            ->once()
+            ->with($missionId, $defaultLanguage->language_id)
+            ->andReturn($missionModel);
 
         $missionRepository->shouldReceive('isMissionImpactLinkedToMission')
-        ->once()
-        ->with($missionId, $data['impact'][0]['mission_impact_id'])
-        ->andThrow($modelNotFoundException);
+            ->once()
+            ->with($missionId, $data['impact'][0]['mission_impact_id'])
+            ->andThrow($modelNotFoundException);
 
         $methodResponse = [
             'errors'=> [
@@ -374,14 +374,14 @@ class MissionControllerTest extends TestCase
         $jsonResponse = $this->getJson($methodResponse);
 
         $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
-            trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
-        )
-        ->andReturn($jsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            )
+            ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -401,11 +401,11 @@ class MissionControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test remove mission impact successfully
+    * @testdox Test delete mission impact
     *
     * @return void
     */
-    public function testRemoveMissionImpactSuccess()
+    public function testDeleteMissionImpactSuccess()
     {
         $missionImpactId = Uuid::uuid4()->toString();
 
@@ -431,16 +431,16 @@ class MissionControllerTest extends TestCase
         $this->expectsEvents(UserActivityLogEvent::class);
 
         $missionRepository->shouldReceive('deleteMissionImpact')
-        ->once()
-        ->andReturn(true);
+            ->once()
+            ->andReturn(true);
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with(
-            Response::HTTP_NO_CONTENT,
-            trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NO_CONTENT,
+                trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED')
+            )
+           ->andReturn($JsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -460,11 +460,11 @@ class MissionControllerTest extends TestCase
     }
 
     /**
-    * @testdox Test remove mission impact error of mission_impact_id does not found
+    * @testdox Test delete mission impact with invalid ID
     *
     * @return void
     */
-    public function testRemoveMissionImpactError()
+    public function testDeleteMissionImpactError()
     {
         $missionTabId = Uuid::uuid4()->toString();
 
@@ -495,19 +495,19 @@ class MissionControllerTest extends TestCase
         $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $missionRepository->shouldReceive('deleteMissionImpact')
-        ->once()
-        ->with($missionTabId)
-        ->andThrow($modelNotFoundException);
+            ->once()
+            ->with($missionTabId)
+            ->andThrow($modelNotFoundException);
 
         $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
-            trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            )
+           ->andReturn($JsonResponse);
 
         $callController = $this->getController(
             $missionRepository,

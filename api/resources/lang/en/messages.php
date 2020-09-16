@@ -238,6 +238,7 @@ return [
         'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
         'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
+        'ERROR_MAXIMUM_USERS_REACHED' => 'You have reached the maximum number of users. Contact us at ' . config('constants.SUPPORT_EMAIL') . ' to upgrade your account.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -380,8 +381,8 @@ return [
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
-        
-        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Impact mission not found in the system.',
+
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Mission impact not found in the system.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
 

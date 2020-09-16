@@ -70,7 +70,7 @@ class MissionRepository implements MissionInterface
      * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      */
     private $tenantActivatedSettingRepository;
-    
+
     /**
      * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
      */
@@ -285,12 +285,20 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        //Add mission impact
+        // Add mission impact
         if (isset($request->impact) && count($request->impact) > 0) {
-            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(config('constants.tenant_settings.MISSION_IMPACT'), $request);
+            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+                config('constants.tenant_settings.MISSION_IMPACT'),
+                $request
+            );
             if ($missionImpactSettingActivated) {
                 foreach ($request->impact as $impactValue) {
-                    $this->missionImpactRepository->store($impactValue, $mission->mission_id, $defaultTenantLanguageId, $tenantName);
+                    $this->missionImpactRepository->store(
+                        $impactValue,
+                        $mission->mission_id,
+                        $defaultTenantLanguageId,
+                        $tenantName
+                    );
                 }
             }
         }
@@ -529,19 +537,27 @@ class MissionRepository implements MissionInterface
 
         // Add/update impact mission
         if (isset($request->impact) && count($request->impact)) {
-            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(config('constants.tenant_settings.MISSION_IMPACT'), $request);
+            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+                config('constants.tenant_settings.MISSION_IMPACT'),
+                $request
+            );
             if ($missionImpactSettingActivated) {
                 foreach ($request->impact as $impactValue) {
                     if (isset($impactValue['mission_impact_id'])) {
-                        $this->missionImpactRepository->update($impactValue, $id, $defaultTenantLanguageId, $tenantName);
+                        $this->missionImpactRepository->update(
+                            $impactValue,
+                            $id,
+                            $defaultTenantLanguageId,
+                            $tenantName
+                        );
                     } else {
-                        //Mission impact id is not available and create the mission impact and details
+                        // Mission impact id is not available, create the mission impact and details
                         $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId, $tenantName);
                     }
                 }
             }
         }
-        
+
         // Update UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
             $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
@@ -1818,7 +1834,7 @@ class MissionRepository implements MissionInterface
                 ['mission_impact_id', '=', $missionImpactId]
             ])->firstOrFail();
     }
-     
+
     /**
      * Get mission tab details
      *
