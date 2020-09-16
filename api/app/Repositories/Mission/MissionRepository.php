@@ -227,8 +227,8 @@ class MissionRepository implements MissionInterface
         if ($request->donation_attribute) {
             $donationData = array(
                 'mission_id' => $mission->mission_id,
-                'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'],
-                'goal_amount' => $request->donation_attribute['goal_amount'] != '' ? $request->donation_attribute['goal_amount'] : null,
+                'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'] ?? null,
+                'goal_amount' => $request->donation_attribute['goal_amount'] ?? null,
                 'show_goal_amount' => $request->donation_attribute['show_goal_amount'] ?? '0',
                 'show_donation_percentage' => $request->donation_attribute['show_donation_percentage'] ?? '0',
                 'show_donation_meter' => $request->donation_attribute['show_donation_meter'] ?? '0',
