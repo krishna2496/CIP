@@ -38,7 +38,13 @@ class MissionImpact extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_id', 'mission_id', 'icon_path', 'sort_key', 'missionImpactLanguageDetails'];
+    protected $visible = [
+        'mission_impact_id',
+        'mission_id',
+        'icon_path',
+        'sort_key',
+        'missionImpactLanguageDetails'
+    ];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -60,7 +66,7 @@ class MissionImpact extends Model
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             // Generate UUID
             $model->mission_impact_id = Uuid::uuid4()->toString();

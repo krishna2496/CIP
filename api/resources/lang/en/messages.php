@@ -380,8 +380,8 @@ return [
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
-        
-        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Impact mission not found in the system.',
+
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Mission impact not found in the system.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
 

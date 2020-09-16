@@ -8981,7 +8981,7 @@
             "properties": {
               "mission_impact_id": {
                 "type": "string",
-                "description": "mission impact id is only neccessary when want to update specific impact mission data. If have not specified mission_impact_id then it will create a new data for impact mission."
+                "description": "Required only when updating an existing mission impact"
               },
               "icon_path": {
                 "type": "string",
@@ -8998,11 +8998,11 @@
                   "properties": {
                     "language_code": {
                       "type": "string",
-                      "description": "Language code.(i.e. en, fr etc)"
+                      "description": "Language ISO code (e.g. en, fr)"
                     },
                     "content" : {
-                      "type": "text",
-                      "description": "Add description for impact mission"
+                      "type": "string",
+                      "description": "Mission impact description"
                     }
                   }
                 }

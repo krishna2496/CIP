@@ -68,7 +68,7 @@ class MissionImpactRepository implements MissionImpactInterface
 
         $missionImpactModelData = $this->missionImpactModel->create($missionImpactPostData);
         $missionImpactId = $missionImpactModelData->mission_impact_id;
-        
+
         $iconPath = $this->s3Helper->uploadFileOnS3Bucket(
             $missionImpact['icon_path'],
             $tenantName,
@@ -78,12 +78,14 @@ class MissionImpactRepository implements MissionImpactInterface
         $missionImpactModelData->update(['icon_path' => $iconPath]);
 
         foreach ($missionImpact['translations'] as $missionImpactValue) {
-            $language = $languages->where('code', $missionImpactValue['language_code'])->first();
+            $language = $languages
+                ->where('code', $missionImpactValue['language_code'])
+                ->first();
             $missionImpactLanguagePostData = [
-                    'mission_impact_id' => $missionImpactModelData['mission_impact_id'],
-                    'language_id' => !empty($language) ? $language->language_id : $defaultTenantLanguageId,
-                    'content' => json_encode($missionImpactValue['content'])
-                ];
+                'mission_impact_id' => $missionImpactModelData['mission_impact_id'],
+                'language_id' => !empty($language) ? $language->language_id : $defaultTenantLanguageId,
+                'content' => json_encode($missionImpactValue['content'])
+            ];
             $this->missionImpactLanguageModel->create($missionImpactLanguagePostData);
             unset($missionImpactLanguagePostData);
         }
@@ -108,8 +110,8 @@ class MissionImpactRepository implements MissionImpactInterface
         // Update sort_key
         if (isset($missionImpact['sort_key']) && !empty($missionImpact['sort_key'])) {
             $this->missionImpactModel
-            ->where(['mission_impact_id' => $missionImpactId])
-            ->update(['sort_key' => $missionImpact['sort_key']]);
+                ->where(['mission_impact_id' => $missionImpactId])
+                ->update(['sort_key' => $missionImpact['sort_key']]);
         }
 
         // Update icon
@@ -121,26 +123,31 @@ class MissionImpactRepository implements MissionImpactInterface
             );
 
             $this->missionImpactModel
-            ->where(['mission_impact_id' => $missionImpactId])
-            ->update(['icon_path' => $iconPath]);
+                ->where(['mission_impact_id' => $missionImpactId])
+                ->update(['icon_path' => $iconPath]);
         }
 
         if (isset($missionImpact['translations'])) {
             foreach ($missionImpact['translations'] as $missionImpactLanguageValue) {
-                $language = $languages->where('code', $missionImpactLanguageValue['language_code'])
-                ->first();
+                $language = $languages
+                    ->where('code', $missionImpactLanguageValue['language_code'])
+                    ->first();
                 $missionImpactPostData['mission_impact_id'] = $missionImpactId;
-                $missionImpactPostData['language_id'] =
-                !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
+                $missionImpactPostData['language_id'] = !empty($language) ? $language->language_id : $defaultTenantLanguageId;
 
                 if (isset($missionImpactLanguageValue['content'])) {
                     $missionImpactPostData['content'] = json_encode($missionImpactLanguageValue['content']);
                 }
 
-                $languageId = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
+                $languageId = !empty($language) ? $language->language_id : $defaultTenantLanguageId;
                 $this->missionImpactLanguageModel
-                    ->createOrUpdateMissionImpactTranslation(['mission_impact_id' => $missionImpactId,
-                    'language_id' => $languageId], $missionImpactPostData);
+                    ->createOrUpdateMissionImpactTranslation(
+                        [
+                            'mission_impact_id' => $missionImpactId,
+                            'language_id' => $languageId
+                        ],
+                        $missionImpactPostData
+                    );
                 unset($missionImpactPostData);
             }
         }
