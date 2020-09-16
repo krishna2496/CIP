@@ -482,9 +482,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionTab' => function ($query) {
+        }])->with(['missionTabs' => function ($query) {
             $query->orderBy('sort_key');
-        }, 'missionTab.getMissionTabDetail' => function ($query) {
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
         }])->findOrFail($id);
 
         if (isset($mission->missionLanguage)) {
@@ -550,9 +550,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionTab' => function ($query) {
+        }])->with(['missionTabs' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
-        }, 'missionTab.getMissionTabDetail' => function ($query) {
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
             $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
@@ -1693,7 +1693,7 @@ class MissionRepository implements MissionInterface
      */
     public function missionTabTransformArray($value, $languages)
     {
-        $missionTabInfo =  $value['missionTab']->toArray();
+        $missionTabInfo =  $value['missionTabs']->toArray();
         if ($missionTabInfo != null) {
             $missionTranslationsArray = [];
             foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
@@ -1708,7 +1708,7 @@ class MissionRepository implements MissionInterface
                     $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
                     array_push($missionTranslationsArray["translations"], $missionTabTranslations);
                 }
-                $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
+                $value['missionTabs'][$missionTabKey] = $missionTranslationsArray;
             }
         }
     }

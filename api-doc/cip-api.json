@@ -8547,10 +8547,6 @@
           "items": {
             "type": "object",
             "properties": {
-              "mission_tab_id": {
-                "type": "string",
-                "description": "Its “Required“ if you are updating existing mission tab"
-              },
               "sort_key": {
                 "type": "integer",
                 "description": "Sort Order for mission tabs. It must be numeric value. Example: 0,1,2,3…"
