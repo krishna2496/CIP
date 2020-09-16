@@ -33,6 +33,7 @@ use App\Events\User\UserNotificationEvent;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Validator;
+use Illuminate\Database\Eloquent\Collection;
 
 class MissionControllerTest extends TestCase
 {
@@ -524,6 +525,210 @@ class MissionControllerTest extends TestCase
         $response = $callController->removeMissionImpact($missionTabId);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+     * @testdox Test store method validation error
+     */
+    public function testStoreValidationError()
+    {
+        $organizationId = Uuid::uuid4()->toString();
+        $data = [
+            'organization' => [
+                'organization_id' => $organizationId
+            ],
+            'location' => [
+                'city_id' => 1,
+                'country_code' => 'PH'
+            ],
+            'theme_id' => 'abc',
+            'publication_status' => true,
+            'availability_id' => 1,
+            'mission_type' => config('constants.mission_type.GOAL'),
+            'mission_detail' => [],
+            'documents' => [
+                [
+                    'sort_order' => 0,
+                    'document_path' => 'http://admin-m7pww5ymmj28.back.staging.optimy.net/assets/images/optimy-logo.png'
+                ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => 100,
+                'availability_id' => 1,
+                'is_virtual' => 1
+            ]
+        ];
+
+        $requestData = new Request($data);
+        $missionId = rand(50000, 70000);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = $this->mock(Request::class);
+        $mission = $this->mock(Mission::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $key = str_random(16);
+        $requestHeader = $request->shouldReceive('header')
+        ->once()
+        ->with('php-auth-user')
+        ->andReturn($key);
+
+        $errors = new Collection([
+            config('constants.error_codes.ERROR_INVALID_MISSION_DATA')
+        ]);
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(true)
+            ->shouldReceive('errors')
+            ->andReturn($errors);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                $errors->first()
+            );
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+
+        $response = $callController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+     * @testdox Test store mission successfully
+     */
+    public function testStoreSuccess()
+    {
+        $organizationId = Uuid::uuid4()->toString();
+        $data = [
+            'organization' => [
+                'organization_id' => $organizationId,
+                'city_id' => '',
+                'country_id' => ''
+            ],
+            'location' => [
+                'city_id' => 1,
+                'country_code' => 'PH'
+            ],
+            'theme_id' => 1,
+            'publication_status' => true,
+            'availability_id' => 1,
+            'mission_type' => config('constants.mission_type.GOAL'),
+            'mission_detail' => [],
+            'documents' => [
+                [
+                    'sort_order' => 0,
+                    'document_path' => 'http://admin-m7pww5ymmj28.back.staging.optimy.net/assets/images/optimy-logo.png'
+                ]
+            ],
+            'volunteering_attribute' => [
+                'total_seats' => 100,
+                'availability_id' => 1,
+                'is_virtual' => 1
+            ]
+        ];
+
+        $requestData = new Request($data);
+        $missionId = rand(50000, 70000);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = $this->mock(Request::class);
+        $mission = $this->mock(Mission::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
+        $key = str_random(16);
+        $requestHeader = $request->shouldReceive('header')
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
+
+        Validator::shouldReceive('make')
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
+
+        $missionRepository->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn();
+
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($requestData)
+            ->andReturn($defaultLanguage);
+
+        $missionModel = new Mission();
+        $missionModel->publication_status = 'DRAFT';
+        $missionRepository->shouldReceive('getMissionDetailsFromId')
+            ->once()
+            ->with($missionId, $defaultLanguage->language_id)
+            ->andReturn($missionModel);
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+
+        $methodResponse = [
+            'status' => $apiStatus,
+            'message' => $apiMessage
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper->shouldReceive('success')
+            ->once()
+            ->with($apiStatus, $apiMessage)
+            ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+
+        $response = $callController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
     /**
