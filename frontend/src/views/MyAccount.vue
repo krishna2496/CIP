@@ -201,19 +201,7 @@
 
                             </b-col>
                         </b-row>
-                        <b-row class="row-form" v-if="isShownComponent && CustomFieldList.length > 0">
-                            <b-col cols="12">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.custom_field}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col cols="12">
-                                <CustomField :optionList="CustomFieldList" :optionListValue="CustomFieldValue" :isSubmit="isCustomFieldSubmit" @detectChangeInCustomFeild="detectChangeInCustomFeild" />
-                            </b-col>
-
-                        </b-row>
-
-                        <b-row class="row-form">
+                          <b-row class="row-form">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
                                     <span>{{languageData.label.donations}}</span>
@@ -238,6 +226,16 @@
                                         Error message !
                                     </div>
                                 </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row class="row-form" v-if="isShownComponent && CustomFieldList.length > 0">
+                            <b-col cols="12">
+                                <h2 class="title-with-border">
+                                    <span>{{languageData.label.custom_field}}</span>
+                                </h2>
+                            </b-col>
+                            <b-col cols="12">
+                                <CustomField :optionList="CustomFieldList" :optionListValue="CustomFieldValue" :isSubmit="isCustomFieldSubmit" @detectChangeInCustomFeild="detectChangeInCustomFeild" />
                             </b-col>
                             <b-col cols="12">
                                 <div class="btn-wrapper">
