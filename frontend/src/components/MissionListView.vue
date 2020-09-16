@@ -38,7 +38,7 @@
                                     </div> -->
 
                             </div>
-                            <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id" class="card-title">
+                            <b-link :to="'/mission-detail/' + mission.mission_id" class="card-title">
                                 {{mission.title | substring(75)}}
                             </b-link>
                             <div class="ratings" v-if="isStarRatingDisplay">
@@ -51,7 +51,7 @@
                             <p class="event-name" v-if="mission.organization != null">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
                         </div>
                         <div class="group-details volunteer-progress">
-                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
+                            <template v-if="mission.total_seats && mission.total_seats != 0 && mission.total_seats !== null">
                                 <div class="detail-column seat-info">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">

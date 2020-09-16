@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                                 <div class="content-inner-block">
-                                    <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id" class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
+                                    <b-link  :to="'/mission-detail/' + mission.mission_id" class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
                                         {{mission.title | substring(60)}}
                                     </b-link>
 
@@ -116,7 +116,7 @@
                                     </template>
                                     <template v-if="checkMissionTypeGoal(mission.mission_type)">
                                         <div class="group-details-inner volunteer-progress">
-                                            <div class="detail-column info-block">
+                                            <div class="detail-column info-block" v-if="mission.seats_left && mission.seats_left !== null">
                                                 <i class="icon-wrap">
                                                     <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                                 </i>
