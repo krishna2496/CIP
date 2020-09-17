@@ -16,6 +16,7 @@ use App\Services\Mission\ModelsService;
 use App\Models\MissionImpactLanguage;
 use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Helpers\S3Helper;
+use App\Helpers\Helpers;
 
 class MissionImpactRepositoryTest extends TestCase
 {
@@ -71,6 +72,7 @@ class MissionImpactRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $missionImpact = $this->mock(MissionImpact::class);
         $s3helper = $this->mock(S3Helper::class);
+        $helpers = $this->mock(Helpers::class);
 
         $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -100,7 +102,8 @@ class MissionImpactRepositoryTest extends TestCase
             $missionImpact,
             $missionImpactLanguage,
             $languageHelper,
-            $s3helper
+            $s3helper,
+            $helpers
         );
 
         $response = $repository->store($data, $missionId, $defaultTenantLanguageId, $tenantName);
@@ -158,6 +161,7 @@ class MissionImpactRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $missionImpact = $this->mock(MissionImpact::class);
         $s3helper = $this->mock(S3Helper::class);
+        $helpers = $this->mock(Helpers::class);
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -202,7 +206,8 @@ class MissionImpactRepositoryTest extends TestCase
             $missionImpact,
             $missionImpactLanguage,
             $languageHelper,
-            $s3helper
+            $s3helper,
+            $helpers
         );
 
         $response = $repository->update($data, $missionId, $defaultTenantLanguageId, $tenantName);
@@ -215,19 +220,22 @@ class MissionImpactRepositoryTest extends TestCase
      * @param  App\Models\MissionImpactLanguage $missionImpactLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\S3Helper $s3helper
+     * @param  App\Helpers\Helpers
      * @return void
      */
     private function getRepository(
         MissionImpact $missionImpact,
         MissionImpactLanguage $missionImpactLanguage,
         LanguageHelper $languageHelper,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        Helpers $helpers
     ) {
         return new MissionImpactRepository(
             $missionImpact,
             $missionImpactLanguage,
             $languageHelper,
-            $s3helper
+            $s3helper,
+            $helpers
         );
     }
 

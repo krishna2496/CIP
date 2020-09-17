@@ -6,6 +6,9 @@ use App\Helpers\LanguageHelper;
 use App\Models\MissionImpactLanguage;
 use App\Repositories\MissionImpact\MissionImpactInterface;
 use App\Helpers\S3Helper;
+use App\Helpers\Helpers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MissionImpactRepository implements MissionImpactInterface
 {
@@ -30,6 +33,11 @@ class MissionImpactRepository implements MissionImpactInterface
     private $s3Helper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new MissionImpact repository instance.
      *
      * @param App\Models\MissionImpact $missionImpactModel
@@ -41,12 +49,14 @@ class MissionImpactRepository implements MissionImpactInterface
         MissionImpact $missionImpactModel,
         MissionImpactLanguage $missionImpactLanguageModel,
         LanguageHelper $languageHelper,
-        S3Helper $s3Helper
+        S3Helper $s3Helper,
+        Helpers $helpers
     ) {
         $this->missionImpactModel = $missionImpactModel;
         $this->missionImpactLanguageModel = $missionImpactLanguageModel;
         $this->languageHelper = $languageHelper;
         $this->s3Helper = $s3Helper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -151,5 +161,28 @@ class MissionImpactRepository implements MissionImpactInterface
                 unset($missionImpactPostData);
             }
         }
+    }
+
+    /**
+     * Delete mission impact and s3bucket data
+     *
+     * @param string $missionImpactId
+     * @return bool
+     */
+    public function deleteS3bucketData(string $missionImpactId): bool
+    {
+        $request = new Request();
+        $missionImpactData = $this->missionImpactModel->select('mission_id')
+            ->where(['mission_impact_id' => $missionImpactId, ['deleted_at', '=', null]])->get()->toArray();
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        
+        if (!empty($missionImpactData)) {
+            $missionId = $missionImpactData[0]['mission_id'];
+            if (Storage::disk('s3')->exists("$tenantName/missions/$missionId/impact/$missionImpactId")) {
+                Storage::disk('s3')->deleteDirectory("$tenantName/missions/$missionId/impact/$missionImpactId");
+            }
+        }
+
+        return $this->missionImpactModel->deleteMissionImpact($missionImpactId);
     }
 }

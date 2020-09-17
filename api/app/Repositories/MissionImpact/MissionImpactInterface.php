@@ -24,4 +24,12 @@ interface MissionImpactInterface
      * @return void
      */
     public function update(array $missionImpact, int $missionId, int $defaultTenantLanguageId, string $tenantName);
+
+    /**
+     * Delete mission impact and s3bucket data
+     * 
+     * @param string $missionImpactId
+     * @return bool
+     */
+    public function deleteS3bucketData(string $missionImpactId): bool;
 }

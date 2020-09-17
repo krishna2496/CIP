@@ -53,9 +53,6 @@ class AdminMissionTransformableTest extends TestCase
         
         $this->requestParametersTrait = $this->getObjectForTrait('App\Transformations\AdminMissionTransformable');
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
-        ->once()
-        ->andReturn(true);
 
         $getRequestParameterReflection = $this->getGetRequestParameterReflection();
         $this->assertEquals(
