@@ -201,13 +201,13 @@ class MissionController extends Controller
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "volunteering_attribute.is_virtual" => "sometimes|required_if:mission_type,TIME,GOAL|boolean",
-                "volunteering_attribute.total_seats" => "required_if:mission_type,TIME,GOAL|integer|min:1",
+                "volunteering_attribute.total_seats" => "sometimes|required_if:mission_type,TIME,GOAL|integer|min:1",
                 "volunteering_attribute.availability_id" => "required_if:mission_type,TIME,GOAL|integer|required_with:volunteering_attribute|
                 exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "availability_id" => "integer|required_if:mission_type,TIME,GOAL|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
-                "total_seats" => "required_if:mission_type,TIME,GOAL|integer|min:1",
+                "total_seats" => "sometimes|required_if:mission_type,TIME,GOAL|integer|min:1",
                 "is_virtual" => "sometimes|required_if:mission_type,TIME,GOAL|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer',
@@ -397,12 +397,12 @@ class MissionController extends Controller
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
                 "volunteering_attribute.is_virtual" => "sometimes|required_if:mission_type,TIME,GOAL|boolean",
-                "volunteering_attribute.total_seats" => "required_if:mission_type,TIME,GOAL|integer|min:1",
+                "volunteering_attribute.total_seats" => "sometimes|required_if:mission_type,TIME,GOAL|integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|required_with:volunteering_attribute|integer|
                 exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "is_virtual" => "sometimes|required_if:mission_type,TIME,GOAL|in:0,1",
-				"total_seats" => "required_if:mission_type,TIME,GOAL|integer|min:1",
+				"total_seats" => "sometimes|required_if:mission_type,TIME,GOAL|integer|min:1",
                 "availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
@@ -467,6 +467,12 @@ class MissionController extends Controller
             config('constants.tenant_settings.DONATION_MISSION'),
             $request
         );
+
+        // check if voluteering mission setting enable or not for time/goal mission
+        $isVolunteeringMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+            $request
+        );
         
         if (!$isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
             return $this->responseHelper->error(
@@ -474,6 +480,15 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 trans('messages.custom_error_message.DONATION_MISSION_PERMISSION_DENIED')
+            );
+        }
+
+        if (!$isVolunteeringMissionEnable && ($request->get('mission_type') == config('constants.mission_type.TIME') || $request->get('mission_type') == config('constants.mission_type.GOAL'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.VOLUNTEERING_MISSION_PERMISSION_DENIED')
             );
         }
 
