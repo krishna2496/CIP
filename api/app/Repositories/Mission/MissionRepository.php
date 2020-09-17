@@ -1925,6 +1925,12 @@ class MissionRepository implements MissionInterface
      */
     public function deleteMissionImpact(string $missionImpactId): bool
     {
+        // $missionId = $this->modelsService->missionImpact->select('mission_id')->where('mission_impact_id', $missionImpactId)->get();
+        // Storage::disk('s3')->deleteDirectory("missions/$missionId/impact/$missionImpactId");
+        // if(!Storage::disk('public')->exists('your folder name'))
+        // {
+        //     //what you want to do
+        // }
         return $this->modelsService->missionImpact->deleteMissionImpact($missionImpactId);
     }
 }
