@@ -57,8 +57,8 @@ class SkillRepository implements SkillInterface
 
         $skillQuery->when($request->has('search'), function ($query) use ($request) {
             $query->where('skill_name', 'like', $request->search.'%');
-            $searchLanguage = $request->searchLanguage ?? '.{0,3}';
-            $query->orWhere('translations->' . $searchLanguage, 'like', $request->search . '%');
+            $searchLanguage = $request->searchLanguage ?? '[a-z]{2}';
+            $query->orWhere('translations', 'regexp', '"'.$searchLanguage.'":[[:space:]]*"'.$request->search.'.+"');
         })->when($request->has('translations'), function ($query) use ($request) {
             /*
              * Filtering on translations
