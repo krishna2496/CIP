@@ -47,7 +47,9 @@ return [
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
-	'PER_PAGE_ALL' => '100000',
+    'PER_PAGE_ALL' => '100000',
+    'SUPPORT_EMAIL' => 'support@optimy.com',
+
     /*
      * User custom field types
      */
@@ -396,6 +398,7 @@ return [
         'ERROR_USER_ACTIVE' => '210016',
         'ERROR_USER_INVITE_INVALID_DATA' => '210017',
         'ERROR_ACCOUNT_EXPIRED' => '210018',
+        'ERROR_MAXIMUM_USERS_REACHED' =>  '210019',
 
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',

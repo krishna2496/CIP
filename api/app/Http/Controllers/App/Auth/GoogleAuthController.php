@@ -120,6 +120,7 @@ class GoogleAuthController extends Controller
             'last_name' => $userProfile->lastName,
             'email' => $userProfile->email,
             'status' => '1',
+            'is_admin' => true,
         ];
 
         if (!$userDetail) {
