@@ -197,7 +197,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
                 "mission_tabs.*.translations.*.lang" =>
                 "required_with:mission_tabs.*.translations|max:2",
@@ -353,7 +353,7 @@ class MissionController extends Controller
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
+                "mission_detail.*.custom_information" => "nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -379,11 +379,16 @@ class MissionController extends Controller
                 "organisation.organisation_name" => "sometimes|required_without:organization",
                 "organisation.organisation_id" => "required_with:organisation|uuid",
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
-                "mission_tabs.*.sort_key" =>
-                "required_without:mission_tabs.*.mission_tab_id|integer",
+                "mission_tabs.*.sort_key" => [
+                    'required_without:mission_tabs.*.mission_tab_id',
+                    'integer',
+                    'distinct',
+                    Rule::unique('mission_tab')->where(function ($query) use($missionId) {
+                        return $query->where('mission_id', $missionId);
+                    }),
+                ],
                 "mission_tabs.*.translations" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 "mission_tabs.*.translations.*.lang" =>
