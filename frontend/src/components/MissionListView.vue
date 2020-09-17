@@ -80,17 +80,19 @@
                                     <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                 </i>
                                 <div class="text-wrap" v-if="mission.end_date !== null">
+                                    <template v-if="mission.end_date !=  mission.end_date">
                                     <span class="title-text"><em>{{ languageData.label.from }}</em>
                                         {{mission.start_date | formatDate }}</span>
                                     <span class="title-text"><em>{{ languageData.label.until}}</em>
                                         {{ mission.end_date | formatDate }}</span>
+                                    </template>
+                                    <template>
+                                         <span class="title-text"><em>{{ languageData.label.on }} on</em>
+                                        {{mission.start_date | formatDate }}</span>
+                                    </template>
                                 </div>
                                 <div class="text-wrap" v-else>
                                     <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
-                                </div>
-                                <!-- on block HTML -->
-                                 <div class="text-wrap mt-2">
-                                    <span class="title-text"><em>on </em>17/08/2002</span>
                                 </div>
                             </div>
                             <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
