@@ -51,95 +51,95 @@
                             <p class="event-name" v-if="mission.organization != null">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
                         </div>
                         <div class="group-details volunteer-progress">
-                            <template v-if="mission.total_seats && mission.total_seats != 0 && mission.total_seats !== null">
-                                <div class="detail-column seat-info">
+                            <div class="content-wrap">
+                                <template v-if="mission.total_seats && mission.total_seats != 0 && mission.total_seats !== null">
+                                    <div class="detail-column seat-info">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <span class="title-text">{{mission.seats_left}}</span>
+                                            <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template v-if="mission.application_deadline != null ||
+                                            checkMissionTypeTime(mission.mission_type)
+                                            ">
+                                    <div class="detail-column info-block" v-if="mission.application_deadline != null">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <span class="title-text">{{mission.application_deadline | formatDate}}</span>
+                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="detail-column calendar-col">
                                     <i class="icon-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                        <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
-                                    <div class="text-wrap">
-                                        <span class="title-text">{{mission.seats_left}}</span>
-                                        <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                    <div class="text-wrap" v-if="mission.end_date !== null">
+                                        <span class="title-text"><em>{{ languageData.label.from }}</em>
+                                            {{mission.start_date | formatDate }}</span>
+                                        <span class="title-text"><em>{{ languageData.label.until}}</em>
+                                            {{ mission.end_date | formatDate }}</span>
+                                    </div>
+                                    <div class="text-wrap" v-else>
+                                        <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
+                                    </div>
+                                    <!-- on block HTML -->
+                                    <div class="text-wrap mt-2">
+                                        <span class="title-text"><em>on </em>17/08/2002</span>
                                     </div>
                                 </div>
-                            </template>
-                            <template v-if="mission.application_deadline != null ||
-                                        checkMissionTypeTime(mission.mission_type)
-                                        ">
-                                <div class="detail-column info-block" v-if="mission.application_deadline != null">
+                                <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
                                     <i class="icon-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                        <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
                                     </i>
                                     <div class="text-wrap">
-                                        <span class="title-text">{{mission.application_deadline | formatDate}}</span>
-                                        <span class="subtitle-text">{{ languageData.label.deadline }}</span>
-                                    </div>
-                                </div>
-                            </template>
-                            <div class="detail-column calendar-col">
-                                <i class="icon-wrap">
-                                    <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
-                                </i>
-                                <div class="text-wrap" v-if="mission.end_date !== null">
-                                    <span class="title-text"><em>{{ languageData.label.from }}</em>
-                                        {{mission.start_date | formatDate }}</span>
-                                    <span class="title-text"><em>{{ languageData.label.until}}</em>
-                                        {{ mission.end_date | formatDate }}</span>
-                                </div>
-                                <div class="text-wrap" v-else>
-                                    <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
-                                </div>
-                                <!-- on block HTML -->
-                                 <div class="text-wrap mt-2">
-                                    <span class="title-text"><em>on </em>17/08/2002</span>
-                                </div>
-                            </div>
-                            <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
-                                <i class="icon-wrap">
-                                    <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
-                                </i>
-                                <div class="text-wrap">
-                                    <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
-                                    <span class="subtitle-text">{{mission.achieved_goal}}
-                                        <span v-if="mission.label_goal_achieved != ''"> {{ mission.label_goal_achieved }}
+                                        <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
+                                        <span class="subtitle-text">{{mission.achieved_goal}}
+                                            <span v-if="mission.label_goal_achieved != ''"> {{ mission.label_goal_achieved }}
+                                            </span>
+                                            <span v-else>{{ languageData.label.achieved }}</span>
                                         </span>
-                                        <span v-else>{{ languageData.label.achieved }}</span>
-                                    </span>
+                                    </div>
+                                </div>
+                                <div class="detail-column skill-col" v-if="mission.skill && isSkillDisplay">
+                                    <i class="icon-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/skill-icon.svg'" alt="skill icon">
+                                    </i>
+
+                                    <div class="text-wrap dropdown-outer" :id="`skillWrap_${mission.mission_id}`">
+                                        <span class="title-text">
+                                            {{ getFirstSkill(mission.skill) }}
+                                            <template v-if="mission.skill.length > 1">
+                                                <span> {{ languageData.label.and }} </span>
+                                                <u>
+                                                    <b-button :id="`skillPopover_${mission.mission_id}`"
+                                                        class="more-btn">
+                                                    <span> {{ mission.skill.length - 1 }} </span>{{ languageData.label.more }}
+                                                    </b-button>
+                                                </u>
+                                                <b-popover :target="`skillPopover_${mission.mission_id}`"
+                                                    triggers="hover focus"
+                                                    placement="top"
+                                                    custom-class="skill-popover"
+                                                    :container="`skillWrap_${mission.mission_id}`">
+                                                    <b-list-group v-for="(skill, key) in getRemainingSkill(mission.skill)"
+                                                        :key=key>
+                                                        <b-list-group-item>{{ skill.title }}</b-list-group-item>
+                                                    </b-list-group>
+                                                </b-popover>
+                                            </template>
+                                        </span>
+                                        <span class="subtitle-text skill-text-wrap">{{ languageData.label.skills }}</span>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="detail-column skill-col" v-if="mission.skill && isSkillDisplay">
-                                <i class="icon-wrap">
-                                    <img :src="$store.state.imagePath+'/assets/images/skill-icon.svg'" alt="skill icon">
-                                </i>
-
-                                <div class="text-wrap dropdown-outer" :id="`skillWrap_${mission.mission_id}`">
-                                    <span class="title-text">
-                                        {{ getFirstSkill(mission.skill) }}
-                                        <template v-if="mission.skill.length > 1">
-                                            <span> {{ languageData.label.and }} </span>
-                                            <u>
-                                                <span> {{ mission.skill.length - 1 }} </span>
-                                                <b-button :id="`skillPopover_${mission.mission_id}`"
-                                                    class="more-btn">
-                                                    {{ languageData.label.more }}
-                                                </b-button>
-                                            </u>
-                                            <b-popover :target="`skillPopover_${mission.mission_id}`"
-                                                triggers="hover focus"
-                                                placement="top"
-                                                custom-class="skill-popover"
-                                                :container="`skillWrap_${mission.mission_id}`">
-                                                <b-list-group v-for="(skill, key) in getRemainingSkill(mission.skill)"
-                                                    :key=key>
-                                                    <b-list-group-item>{{ skill.title }}</b-list-group-item>
-                                                </b-list-group>
-                                            </b-popover>
-                                        </template>
-                                    </span>
-                                    <span class="subtitle-text skill-text-wrap">{{ languageData.label.skills }}</span>
-                                </div>
-
-                            </div>
-
                         </div>
                     </div>
                     <div class="card-action-block">

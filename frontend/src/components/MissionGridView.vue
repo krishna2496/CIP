@@ -7,42 +7,41 @@
             <b-col lg="4" sm="6" class="card-outer" :id="`gridview-${key}`" data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
                 <div class="card-inner">
                     <b-card no-body>
-                        <div class="location">
+                        <b-link target="_self" :to="'/mission-detail/' + mission.mission_id" class="location">
                             <i>
                                 <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
                             </i>
                             {{mission.city_name}}
-                        </div>
+                        </b-link>
                         <b-card-header>
-                            <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
-                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
-                                    {{languageData.label.applied}}</b-alert>
-                                <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
-                                    {{languageData.label.closed}}</b-alert>
-                                <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
-                                    <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
+                            <b-link target="_self" :to="'/mission-detail/' + mission.mission_id">
+                                <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
+                                    <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
+                                        {{languageData.label.applied}}</b-alert>
+                                    <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
+                                        {{languageData.label.closed}}</b-alert>
+                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                                        <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
+                                    </div>
+                                    <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
+                                    </div>
                                 </div>
-
-                                <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
+                                <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                                 </div>
-
-                            </div>
-                            <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
-                            </div>
+                            </b-link>
                         </b-card-header>
 
                         <b-card-body>
-
-                            <div class="content-block">
+                            <b-link target="_self" :to="'/mission-detail/' + mission.mission_id" class="content-block">
                                 <div class="mission-label-wrap">
                                     <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
                                         <span>{{languageData.label.virtual_mission}}</span>
                                     </div>
                                 </div>
                                 <div class="content-inner-block">
-                                    <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id" class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
+                                    <div class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
                                         {{mission.title | substring(60)}}
-                                    </b-link>
+                                    </div>
 
                                     <div class="group-ratings" v-if="checkMissionTypeTime(mission.mission_type) || checkMissionTypeGoal(mission.mission_type)">
                                         <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18" :rating="mission.mission_rating_count" :read-only="true">
@@ -61,7 +60,7 @@
                                     </b-button>
                                 </div>
 
-                            </div>
+                            </b-link>
                             <div class="init-hidden">
                                 <div class="group-details"><!-- add 'mb-3' class here when no data -->
                                     <div class="top-strip">

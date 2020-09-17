@@ -493,7 +493,7 @@
       position: relative;
 
       .content-wrap {
-        padding: 24px 15px 22px;
+        padding: 29px 15px 13px;
         background: $rgb-gray;
         display: flex;
         justify-content: space-between;
@@ -602,6 +602,9 @@
                 .progress-bar {
                   background: $primary;
                 }
+              }
+              .subtitle-text {
+                color: $gray-primary;
               }
             }
           }
@@ -774,7 +777,9 @@
       .left-btn {
         .icon-btn {
           display: inline-flex;
-          min-width: 195px;
+          min-width: 172px;
+          max-width: 172px;
+          flex: 0 0 172px;
           min-height: 40px;
           align-items: center;
           font-size: 18px;
@@ -782,8 +787,7 @@
           padding: 5px 20px;
           background: transparent;
           color: $primary;
-          max-width: 195px;
-          flex: 0 0 195px;
+          @include border-radius(40px);
           // font-size: 15px;
           // justify-content: space-between;
           justify-content: center;
@@ -792,6 +796,15 @@
             max-width: 156px;
             flex: 0 0 156px;
             font-size: 15px;
+          }
+          span {
+            max-height: 48px;
+            -webkit-box-orient: vertical;
+            display: block;
+            display: -webkit-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 2;
           }
           svg {
             path {
@@ -945,6 +958,11 @@
     .card-body {
       @include transition(transform 0.3s);
     }
+    .group-details {
+      .group-details-inner {
+        align-items: center;
+      }
+    }
   }
 
   > .row {
@@ -1096,7 +1114,6 @@
           align-content: space-between;
         }
         .group-details {
-          padding: 15px 20px 3px;
           flex-wrap: wrap;
           justify-content: flex-start;
           align-items: flex-start;
@@ -1104,6 +1121,11 @@
           flex: 0 0 100%;
           &:before {
             display: none;
+          }
+          .content-wrap {
+            padding: 15px 20px 3px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
           }
           &.progress-details {
             justify-content: flex-start;
@@ -1143,20 +1165,24 @@
             }
           }
           .detail-column {
-            width: 180px;
+            width: auto;
             flex: 0 0 auto;
             padding: 0 15px 12px 0;
+            margin-right: 15px;
+            &:last-child {
+              margin-right: 0;
+            }
             &.progress-block {
               padding-top: 3px;
             }
-            &.seat-info {
-              width: 107px;
-              flex: 0 0 107px;
-            }
-            &.info-block {
-              width: 175px;
-              flex: 0 0 175px;
-            }
+            // &.seat-info {
+            //   width: 107px;
+            //   flex: 0 0 107px;
+            // }
+            // &.info-block {
+            //   width: 175px;
+            //   flex: 0 0 175px;
+            // }
             .icon-wrap {
               width: 18px;
               height: 18px;
@@ -1164,8 +1190,8 @@
               top: 8px;
             }
             &.calendar-col {
-              flex: 0 0 166px;
-              width: 166px;
+              flex: 0 0 auto;
+              width: auto;
               .text-wrap {
                 .gray-text {
                   color: $gray-primary;
@@ -1174,18 +1200,21 @@
                   em {
                     font-size: 12px;
                     line-height: 16px;
+                    color: $gray-primary;
                   }
                 }
               }
             }
             &.skill-col {
-              width: 177px;
+              width: auto;
               flex: 0 0 auto;
               .text-wrap {
                 display: inline-block;
                 span {
                   &.title-text {
                     display: block;
+                    position: relative;
+                    top: 4px;
                     u {
                       text-decoration: none;
                       position: relative;
@@ -1207,6 +1236,7 @@
               .subtitle-text {
                 font-size: 12px;
                 line-height: 16px;
+                color: $gray-primary;
               }
             }
           }
@@ -1234,8 +1264,18 @@
               display: flex !important;
               align-items: center;
               justify-content: center;
+              @include border-radius(40px);
               i {
                 margin-left: 8px;
+              }
+              span {
+                max-height: 48px;
+                -webkit-box-orient: vertical;
+                display: block;
+                display: -webkit-box;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                -webkit-line-clamp: 2;
               }
               &.gray-btn {
                 &:focus .icon-wrap {
