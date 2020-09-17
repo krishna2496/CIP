@@ -26,7 +26,7 @@
                                     <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
                                     </div>
                                 </div>
-                                <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
+                                <div class="group-category" v-if="mission.mission_theme != null && isThemeSet && getThemeTitle(mission.mission_theme.translations) != ''"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                                 </div>
                             </b-link>
                         </b-card-header>
@@ -62,16 +62,25 @@
 
                             </b-link>
                             <div class="init-hidden">
-                                <div class="group-details"><!-- add 'mb-3' class here when no data -->
+                                <!-- add 'mb-3' class here when no data -->
+                                <div class="group-details" v-bind:class="{
+                                        'mb-3' : !isContentBlockDisplay(mission)
+                                    }">
                                     <div class="top-strip">
                                         <span>
                                             <!-- Mission type time -->
                                             <template v-if="checkMissionTypeTime(mission.mission_type)">
                                                 <template v-if="mission.end_date !== null">
-                                                    {{ languageData.label.from }}
-                                                    {{mission.start_date | formatDate }}
-                                                    {{ languageData.label.until}}
-                                                    {{ mission.end_date | formatDate }}
+                                                    <template v-if="!compareDate(mission.end_date,mission.start_date)">
+                                                        {{ languageData.label.from }}
+                                                        {{mission.start_date | formatDate }}
+                                                        {{ languageData.label.until}}
+                                                        {{ mission.end_date | formatDate }}
+                                                    </template>
+                                                    <template v-else>
+                                                        {{ languageData.label.on }}
+                                                        {{mission.start_date | formatDate }}
+                                                    </template>
                                                 </template>
                                                 <template v-else>
                                                     {{ languageData.label.ongoing }}
@@ -85,7 +94,8 @@
                                             </template>
                                         </span>
                                     </div>
-                                    <div class="content-wrap"><!-- remove this block when no data -->
+                                    <div class="content-wrap" v-if="isContentBlockDisplay(mission)">
+                                        <!-- remove this block when no data -->
                                         <template v-if="checkMissionTypeTime(mission.mission_type)">
                                             <div class="group-details-inner">
                                                 <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
@@ -315,13 +325,13 @@ export default {
             });
             cardHeader.forEach(function (cardHeaderElem) {
                 cardHeaderElem.style.transform = "translateY(0)";
-			});
-			
-			const cardInner = document.querySelectorAll(".card-grid .card-inner");
-			cardInner.forEach(function (cardInnerElem) {
-				cardInnerElem.classList.remove("active");
-			});
-           
+            });
+
+            const cardInner = document.querySelectorAll(".card-grid .card-inner");
+            cardInner.forEach(function (cardInnerElem) {
+                cardInnerElem.classList.remove("active");
+            });
+
         },
         getAppliedStatus(missionDetail) {
             const currentDate = moment().format('YYYY-MM-DD');
@@ -565,6 +575,28 @@ export default {
                 return true;
             } else {
                 return false;
+            }
+        },
+
+        compareDate(endDates, startDates) {
+            const endDate = moment(endDates).format("YYYY-MM-DD");
+            const startDate = moment(startDates).format("YYYY-MM-DD");
+
+            if (startDate == endDate) {
+                return true;
+            }
+
+            return false;
+        },
+
+        isContentBlockDisplay(mission) {
+            if (mission.mission_type == constants.MISSION_TYPE_TIME) {
+                if ((mission.seats_left && mission.seats_left != 0 && mission.seats_left !== null) || (mission.application_deadline != null)) {
+                    return true;
+                }
+                return false;
+            } else {
+                return true;
             }
         }
     },
