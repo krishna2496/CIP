@@ -660,6 +660,10 @@ class MissionRepository implements MissionInterface
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
             }, ]);
         $missionQuery->with(['missionRating']);
+        $missionQuery->with(['missionTabs' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
+        }]);
 
         //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
@@ -1333,7 +1337,10 @@ class MissionRepository implements MissionInterface
                 },
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers',
-            ]);
+            ])->with(['missionTabs' => function ($query) {
+                $query->orderBy('sort_key');
+            }, 'missionTabs.getMissionTabDetail' => function ($query) {
+            }]);
 
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {

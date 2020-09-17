@@ -203,6 +203,38 @@ trait MissionTransformable
         }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
+
+        // get mission tab transformation
+        $missionTabDetails = $mission['missionTabs']->toArray();
+        if ($missionTabDetails) {
+            $missionLanguageArray = [];
+            foreach ($missionTabDetails as $missionTabKey => $missionTabValue) {
+                $missionLanguageArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionLanguageArray["languages"] = [];
+                if (isset($missionTabValue['get_mission_tab_detail'])) {
+                    foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabLanguadeValue) {
+                        $languageCode = $tenantLanguages->where('language_id', $missionTabLanguadeValue['language_id'])->first()->code;
+                        $missionTabLanguage['language_id'] = $missionTabLanguadeValue['language_id'];
+                        $missionTabLanguage['language_code'] = $languageCode;
+                        $missionTabLanguage['name'] = $missionTabLanguadeValue['name'];
+                        $missionTabLanguage['section'] = json_decode($missionTabLanguadeValue['section']);
+                        array_push($missionLanguageArray["languages"], $missionTabLanguage);
+                    }
+                }
+                $mission['missionTabs'][$missionTabKey] = $missionLanguageArray;
+            }
+        }
+
+        // Mission tab details
+        if (!empty($mission['missionTabs']) && (isset($mission['missionTabs']))
+        ) {
+            $missionTab = $mission['missionTabs']->toArray();
+            array_multisort(
+                array_column($missionTab, 'sort_key'),
+                SORT_ASC,
+                $missionTab
+            );
+        }
       
         return $mission;
     }
