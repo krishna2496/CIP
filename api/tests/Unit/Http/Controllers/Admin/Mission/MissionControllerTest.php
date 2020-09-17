@@ -33,6 +33,7 @@ use App\Events\User\UserNotificationEvent;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Validator;
+use App\Models\Organization;
 
 class MissionControllerTest extends TestCase
 {
@@ -525,6 +526,381 @@ class MissionControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
+
+    public function testMissionStoreValidationFailure(){
+        
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = new Request();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $requestData = new Request();
+
+        $JsonResponse = new JsonResponse();
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                'The mission type field is required.'
+            )
+           ->andReturn($JsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+        $response = $callController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testMissionStoreOrganizationNameRequired(){
+        $input = [
+            "organization" => [
+            "organization_id" => rand(),
+            "legal_number" =>1,
+            "phone_number" =>123,
+            "address_line_1" =>"test",
+            "address_line_2" =>"2323",
+            "city_id" =>'',
+            "country_id" =>'',
+            "postal_code" =>1
+            ],
+            "organisation_detail" => [
+            [
+            "lang" => "en",
+            "detail" => "test oraganization detail3333333333"
+            ]
+            ],
+            "location" => [
+            "city_id" => "1",
+            "country_code" => "US"
+            ],
+            "mission_detail" => [
+            [
+            "lang" => "en",
+            "title" => "testing api mission details",
+            "short_description" => "this is testing api with all mission details",
+            "objective" => "To test and check",
+            "label_goal_achieved" => "test percentage",
+            "label_goal_objective" => "check test percentage",
+            "section" => [
+                [
+                "title" => "string",
+                "description" => "string"
+                ]
+                ],
+                "custom_information" => [
+                [
+                "title" => "string",
+                "description" => "string"
+                ]
+            ]
+            ]
+            ],
+            "impact" => [
+                    [
+                    "icon_path" => "filepath available",
+                    "sort_key" => 1525,
+                    "translations" => [
+                    [
+                    "language_code" => "tr",
+                    "content" => "mission impact content other lang."
+                    ],
+                    [
+                    "language_code" => "es",
+                    "content" => "mission impact content es lang."
+                    ]
+                ]
+            ],
+                [
+                "sort_key" => 2,
+                "translations" => [
+                [
+                "language_code" => "fr",
+                "content" => "mission impact content fr lang."
+                ]
+            ]
+            ]
+            ],
+            "impact_donation" => [
+                [
+                    "amount" => 5,
+                    "translations" => [
+                        [
+                        "language_code" => "en",
+                        "content" => "this is test impact donation mission in english language."
+                        ],
+                        [
+                        "language_code" => "fr",
+                        "content" => "this is test impact donation mission in french language."
+                        ]
+                    ]
+                ]
+            ],
+            "skills" => [
+                [
+                    "skill_id" => 2
+                ]
+            ],
+            "volunteering_attribute" =>
+            [
+                "availability_id" => 1,
+                "total_seats" => 25,
+                "is_virtual" => 1
+            ],
+            "start_date" => "2020-05-13T06 =>07 =>47.115Z",
+            "end_date" => "2020-05-21T06 =>07 =>47.115Z",
+            "mission_type" => "GOAL",
+            "goal_objective" => "535",
+            "application_deadline" => "2020-05-16T06 =>07 =>47.115Z",
+            "application_start_date" => "2020-05-18T06 =>07 =>47.115Z",
+            "application_start_time" => "2020-05-18T06 =>07 =>47.115Z",
+            "application_end_date" => "2020-05-20T06 =>07 =>47.115Z",
+            "application_end_time" => "2020-05-20T06 =>07 =>47.115Z",
+            "publication_status" => "APPROVED",
+            "availability_id" => 1,
+            "is_virtual" => "0",
+            "un_sdg" =>[1,2,3]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = new Request();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $requestData = new Request($input);
+
+        $JsonResponse = new JsonResponse();
+
+        $organizationRepository->shouldReceive('find')
+        ->once()
+        ->andReturn(false);
+
+        $responseHelper->shouldReceive('error')
+        ->once()
+        ->with(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+            trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
+        )
+       ->andReturn($JsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+        $response = $callController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testMissionStoreSuccess(){
+        $input = [
+            "organization" => [
+            "organization_id" => rand(),
+            "name" => 'test name',
+            "legal_number" =>1,
+            "phone_number" =>123,
+            "address_line_1" =>"test",
+            "address_line_2" =>"2323",
+            "city_id" =>'',
+            "country_id" =>'',
+            "postal_code" =>1
+            ],
+            "organisation_detail" => [
+            [
+            "lang" => "en",
+            "detail" => "test oraganization detail3333333333"
+            ]
+            ],
+            "location" => [
+            "city_id" => "1",
+            "country_code" => "US"
+            ],
+            "mission_detail" => [
+            [
+            "lang" => "en",
+            "title" => "testing api mission details",
+            "short_description" => "this is testing api with all mission details",
+            "objective" => "To test and check",
+            "label_goal_achieved" => "test percentage",
+            "label_goal_objective" => "check test percentage",
+            "section" => [
+                [
+                "title" => "string",
+                "description" => "string"
+                ]
+                ],
+                "custom_information" => [
+                [
+                "title" => "string",
+                "description" => "string"
+                ]
+            ]
+            ]
+            ],
+            "impact" => [
+                    [
+                    "icon_path" => "filepath available",
+                    "sort_key" => 1525,
+                    "translations" => [
+                    [
+                    "language_code" => "tr",
+                    "content" => "mission impact content other lang."
+                    ],
+                    [
+                    "language_code" => "es",
+                    "content" => "mission impact content es lang."
+                    ]
+                ]
+            ],
+                [
+                "sort_key" => 2,
+                "translations" => [
+                [
+                "language_code" => "fr",
+                "content" => "mission impact content fr lang."
+                ]
+            ]
+            ]
+            ],
+            "impact_donation" => [
+                [
+                    "amount" => 5,
+                    "translations" => [
+                        [
+                        "language_code" => "en",
+                        "content" => "this is test impact donation mission in english language."
+                        ],
+                        [
+                        "language_code" => "fr",
+                        "content" => "this is test impact donation mission in french language."
+                        ]
+                    ]
+                ]
+            ],
+            "skills" => [
+                [
+                    "skill_id" => 2
+                ]
+            ],
+            "volunteering_attribute" =>
+            [
+                "availability_id" => 1,
+                "total_seats" => 25,
+                "is_virtual" => 1
+            ],
+            "start_date" => "2020-05-13T06 =>07 =>47.115Z",
+            "end_date" => "2020-05-21T06 =>07 =>47.115Z",
+            "mission_type" => "GOAL",
+            "goal_objective" => "535",
+            "application_deadline" => "2020-05-16T06 =>07 =>47.115Z",
+            "application_start_date" => "2020-05-18T06 =>07 =>47.115Z",
+            "application_start_time" => "2020-05-18T06 =>07 =>47.115Z",
+            "application_end_date" => "2020-05-20T06 =>07 =>47.115Z",
+            "application_end_time" => "2020-05-20T06 =>07 =>47.115Z",
+            "publication_status" => "APPROVED",
+            "availability_id" => 1,
+            "is_virtual" => "0",
+            "un_sdg" =>[1,2,3]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = new Request();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand();
+
+        $JsonResponse = new JsonResponse();
+
+        $organizationRepository->shouldReceive('find')
+        ->once()
+        ->andReturn($organizationModel);
+
+        $missionRepository->shouldReceive('store')
+        ->once()
+        ->andReturn($missionModel);
+
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
+        $apiData = ['mission_id' => $missionModel->mission_id];
+
+        $responseHelper->shouldReceive('success')
+        ->once()
+        ->with($apiStatus, $apiMessage, $apiData)
+       ->andReturn($JsonResponse);
+        
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+        $response = $callController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    
 
     /**
      * Create a new service instance.
