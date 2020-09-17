@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
 use App\Transformations\AdminMissionTransformable;
+use Illuminate\Support\Facades\Storage;
 
 class MissionRepository implements MissionInterface
 {
@@ -1925,12 +1926,16 @@ class MissionRepository implements MissionInterface
      */
     public function deleteMissionImpact(string $missionImpactId): bool
     {
-        // $missionId = $this->modelsService->missionImpact->select('mission_id')->where('mission_impact_id', $missionImpactId)->get();
+        $missionImpactData = $this->modelsService->missionImpact->select('mission_id')
+            ->where('mission_impact_id', $missionImpactId)->get()->toArray();
+        $missionId = $missionImpactData[0]['mission_id'];
+        // dd(Storage::disk('s3')->exists("$teantnName/missions/$missionId/impact/$missionImpactId"));
         // Storage::disk('s3')->deleteDirectory("missions/$missionId/impact/$missionImpactId");
-        // if(!Storage::disk('public')->exists('your folder name'))
-        // {
-        //     //what you want to do
-        // }
+        // dd(Storage::disk('s3')->exists("optimydev/missions/$missionId/impact/$missionImpactId"));
+        if(Storage::disk('s3')->exists("optimydev/missions/$missionId/impact/$missionImpactId"))
+        {
+            Storage::disk('s3')->deleteDirectory("missions/$missionId/impact/$missionImpactId");
+        }
         return $this->modelsService->missionImpact->deleteMissionImpact($missionImpactId);
     }
 }
