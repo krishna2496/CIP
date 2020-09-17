@@ -242,6 +242,12 @@ class MissionController extends Controller
             config('constants.tenant_settings.DONATION_MISSION'),
             $request
         );
+
+        // check if voluteering mission setting enable or not for time/goal mission
+        $isVolunteeringMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+            $request
+        );
         
         if (!$isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
             return $this->responseHelper->error(
@@ -249,6 +255,15 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 trans('messages.custom_error_message.DONATION_MISSION_PERMISSION_DENIED')
+            );
+        }
+
+        if (!$isVolunteeringMissionEnable && ($request->get('mission_type') == config('constants.mission_type.TIME') || $request->get('mission_type') == config('constants.mission_type.GOAL'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.VOLUNTEERING_MISSION_PERMISSION_DENIED')
             );
         }
 
