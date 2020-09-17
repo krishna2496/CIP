@@ -6,12 +6,12 @@ $db = app()->make('db');
 
 $pdo = setAdminDatabaseConnection($db);
 
-// Get all the tenants id
+// Fetch all tenants
 $tenants = $pdo->query('select tenant_id from tenant where deleted_at is null')->fetchAll();
-$tenantSettingData = $pdo->query('select tenant_setting_id from tenant_setting where title IN ("Volunteering time mission","Volunteering goal mission") AND  deleted_at is null')->fetchAll();
+$tenantSettingData = $pdo->query('select tenant_setting_id from tenant_setting where tenant_setting.key IN ("volunteering_time_mission","volunteering_goal_mission") AND  deleted_at is null')->fetchAll();
 
 if (!count($tenantSettingData)) {
-    echo "Tenant setting not found in system" ;
+    echo "Tenant setting not found." ;
     exit;
 }
 
