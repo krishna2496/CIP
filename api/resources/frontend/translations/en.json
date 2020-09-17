@@ -42,7 +42,7 @@
 		"newest": "Newest",
 		"lowest_available_seats": "Lowest available seats",
 		"highest_available_seats": "Highest available seats",
-		"my_favourite": "My favorite",
+		"my_favourite": "Sort by my favorite",
 		"top_themes": "Top themes",
 		"top_country": "Top countries",
 		"education": "Education",
@@ -301,7 +301,8 @@
 		"more": "more",
 		"and": "&",
 		"for": "For",
-		"on": "On"
+		"on": "On",
+		"sort_deadline" : "Sort by deadline"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",

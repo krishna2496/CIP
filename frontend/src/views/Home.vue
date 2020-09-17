@@ -135,7 +135,7 @@ export default {
                 ["lowest_available_seats", "lowest_available_seats"],
                 ["highest_available_seats", "highest_available_seats"],
                 ["my_favourite", "my_favourite"],
-                ["deadline", "deadline"]
+                ["sort_deadline", "sort_deadline"]
             ],
             sortByDefault: '',
             missionList: [],
