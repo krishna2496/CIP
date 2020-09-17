@@ -299,7 +299,9 @@
 		"site_title": "Home",
 		"ongoing": "Ongoing",
 		"more": "more",
-		"and": "&"
+		"and": "&",
+		"for": "For",
+		"on": "On"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
