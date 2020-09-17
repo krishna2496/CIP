@@ -47,6 +47,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
 
+    /* Get custom favicon url  */
+    $router->get('/app/custom-favicon', ['as' => 'custom_favicon', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Tenant\TenantOptionController@getCustomFavicon']);
+
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',

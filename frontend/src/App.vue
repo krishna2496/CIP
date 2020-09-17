@@ -9,6 +9,7 @@ import {
     setTimeout
 } from "timers";
 import customCss from './services/CustomCss';
+import customFavicon from './services/CustomFavicon';
 import { setSiteTitle } from './utils';
 
 export default {
@@ -88,6 +89,8 @@ export default {
                 document.body.classList.remove("loader-enable");
                 this.stylesLoaded = true;
             });
+
+        customFavicon().catch(/* nothing to do since default favicon is already set */);
 
         let ua = navigator.userAgent.toLowerCase();
         if (ua.indexOf("safari") != -1) {
