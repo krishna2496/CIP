@@ -176,6 +176,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     $router->post('/users/invite', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
         'uses' => 'App\User\UserController@inviteUser']);
+
+    $router->patch('/users/password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@createPassword']);
+
 });
 
 /* SAML */
@@ -875,5 +879,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->post('/', ['uses' => 'Admin\Organization\OrganizationController@store']);
             $router->patch('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@update']);
             $router->delete('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@destroy']);
+        }
+    );
+
+    /* Routes for whitelisted Ips */
+    $router->group(
+        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\DonationIp\WhitelistController@getList']);
+            $router->post('/', ['uses' => 'Admin\DonationIp\WhitelistController@create']);
+            $router->patch('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@update']);
+            $router->delete('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@delete']);
         }
     );

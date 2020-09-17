@@ -204,8 +204,12 @@ return [
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
-
-        'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully'
+        'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
+        'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
+        'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully'
     ],
 
 
@@ -233,6 +237,7 @@ return [
         'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
         'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
+        'ERROR_MAXIMUM_USERS_REACHED' => 'You have reached the maximum number of users. Contact us at ' . config('constants.SUPPORT_EMAIL') . ' to upgrade your account.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -380,5 +385,8 @@ return [
 
         // mission tab module
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
+
+        // For Donation IP Whitelist module
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system'
     ]
 ];

@@ -716,7 +716,7 @@ class UserRepository implements UserInterface
         return $user
             ->missionApplication()
             ->selectRaw('
-                COUNT(DISTINCT mission.organisation_id) as organization_count
+                COUNT(DISTINCT mission.organization_id) as organization_count
             ')
             ->join('mission', 'mission.mission_id', '=', 'mission_application.mission_id')
             ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
@@ -742,4 +742,31 @@ class UserRepository implements UserInterface
         return $requestData;
     }
 
+    /**
+     * @param  bool
+     *
+     * @return  int
+     */
+    public function getUserCount(
+        bool $includeInactive = false,
+        bool $includeAdmin = false
+    ): int {
+        $query = $this->user->selectRaw('COUNT(1) AS user_count');
+
+        if (!$includeAdmin) {
+            $query->where('is_admin', '<>', 1);
+        }
+
+        $status = [
+            config('constants.user_statuses.ACTIVE'),
+        ];
+
+        if ($includeInactive) {
+            $status[] = config('constants.user_statuses.INACTIVE');
+        }
+
+        $query->whereIn('status', $status);
+
+        return $query->first()->user_count;
+    }
 }

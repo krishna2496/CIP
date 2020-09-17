@@ -75,6 +75,8 @@ return [
     'present'              => 'The :attribute field is required',
     'distinct'             => 'The :attribute field has a duplicate value.',
     'uuid'                 => 'Please use valid UUID string for :attribute',
+    'ip_whitelist_pattern' => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
+    'max_item'             => 'The record count may not be greater than :max_item.',
 
     /*
     |--------------------------------------------------------------------------
@@ -219,6 +221,7 @@ return [
         'states.*.translations' => 'translations',
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
+        'un_sdg.*' => 'UN SDG number',
         'organization.name' => 'organization name',
         'organization.organization_id' => 'organization id',
         'organization.legal_number' => 'organization legal number',
@@ -229,6 +232,9 @@ return [
         'organization.state_id' => 'organization state id',
         'organization.country_id' => 'organization country id',
         'organization.postal_code' => 'organization postal code',
+        'volunteering_attribute.availability_id' => 'availability id',
+        'volunteering_attribute.is_virtual' => 'is virtual',
+        'volunteering_attribute.total_seats' => 'total seats',
         'mission_tabs.*.translations' => 'mission tab translation',
         'mission_tabs.*.sort_key' => 'sort key',
         'mission_tabs.*.languages.*.language_id' => 'language id',
