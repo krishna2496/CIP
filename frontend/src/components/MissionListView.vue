@@ -79,7 +79,7 @@
                                 <i class="icon-wrap">
                                     <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                 </i>
-                                <div class="text-wrap" v-if="mission.end_date !== null">
+                                <div class="text-wrap d-none" v-if="mission.end_date !== null">
                                     <span class="title-text"><em>{{ languageData.label.from }}</em>
                                         {{mission.start_date | formatDate }}</span>
                                     <span class="title-text"><em>{{ languageData.label.until}}</em>
@@ -87,6 +87,10 @@
                                 </div>
                                 <div class="text-wrap" v-else>
                                     <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
+                                </div>
+                                <!-- on block HTML -->
+                                 <div class="text-wrap mt-2">
+                                    <span class="title-text"><em>on </em>17/08/2002</span>
                                 </div>
                             </div>
                             <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
