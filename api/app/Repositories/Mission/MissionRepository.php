@@ -367,14 +367,16 @@ class MissionRepository implements MissionInterface
         }
 
         $missionData = $request->toArray();
-        if (array_key_exists('total_seats', $volunteeringAttributeArray)) {
-            $missionData['total_seats'] = $volunteeringAttributeArray['total_seats'];
-        }
-        if (array_key_exists('availability_id', $volunteeringAttributeArray)) {
-            $missionData['availability_id'] = $volunteeringAttributeArray['availability_id'];
-        }
-        if (array_key_exists('is_virtual', $volunteeringAttributeArray)) {
-            $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'] ? '1' : '0';
+        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME')) {    
+            if (array_key_exists('total_seats', $volunteeringAttributeArray)) {
+                $missionData['total_seats'] = $volunteeringAttributeArray['total_seats'];
+            }
+            if (array_key_exists('availability_id', $volunteeringAttributeArray)) {
+                $missionData['availability_id'] = $volunteeringAttributeArray['availability_id'];
+            }
+            if (array_key_exists('is_virtual', $volunteeringAttributeArray)) {
+                $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'] ? '1' : '0';
+            }
         }
 
         $mission->update($missionData);
