@@ -607,13 +607,26 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['impact' => function ($query) {
-            $query->orderBy('sort_key');
-        }, 'impact.missionImpactLanguageDetails' => function ($query) {
         }])->with(['missionTab' => function ($query) {
             $query->orderBy('sort_key');
         }, 'missionTab.getMissionTabDetail' => function ($query) {
-        }])->findOrFail($id);
+        }]);
+
+        // Check mission_imapct setting is avctivated or not
+        $request = new Request();
+        $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.MISSION_IMPACT'),
+            $request
+        );
+
+        if ($missionImpactSettingActivated) {
+            $mission->with(['impact' => function ($query) {
+                $query->orderBy('sort_key');
+            }, 'impact.missionImpactLanguageDetails' => function ($query) {
+            }]);
+        }
+
+        $mission = $mission->findOrFail($id);
 
         if (isset($mission->missionLanguage)) {
             $languages = $this->languageHelper->getLanguages();
@@ -628,7 +641,11 @@ class MissionRepository implements MissionInterface
         // mission tab array modification
         $this->missionTabTransformArray($mission, $languages);
         
-        return $this->adminTransformMission($mission, $languages, $this->tenantActivatedSettingRepository);
+        if ($missionImpactSettingActivated) {
+            return $this->adminTransformMission($mission, $languages, $this->tenantActivatedSettingRepository);
+        }
+
+        return $mission;
     }
 
     /**
@@ -675,9 +692,6 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['impact' => function ($query) {
-            $query->orderBy('sort_key');
-        }, 'impact.missionImpactLanguageDetails' => function ($query) {
         }])->with(['missionTab' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
         }, 'missionTab.getMissionTabDetail' => function ($query) {
@@ -702,6 +716,21 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBy('mission_id', $orderDirection);
         }
 
+        // Check mission_imapct setting is avctivated or not
+        $request = new Request();
+        $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.MISSION_IMPACT'),
+            $request
+        );
+
+        $missionImpactSettingActivated = false;
+        if ($missionImpactSettingActivated) {
+            $missionQuery->with(['impact' => function ($query) {
+                $query->orderBy('sort_key');
+            }, 'impact.missionImpactLanguageDetails' => function ($query) {
+            }]);
+        }
+
         $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
@@ -720,7 +749,9 @@ class MissionRepository implements MissionInterface
             // mission tab array modification
             $this->missionTabTransformArray($value, $languages);
 
-            $this->adminTransformMission($value, $languages, $this->tenantActivatedSettingRepository);
+            if ($missionImpactSettingActivated) {
+                $this->adminTransformMission($value, $languages, $this->tenantActivatedSettingRepository);
+            }
         }
 
         return $mission;
