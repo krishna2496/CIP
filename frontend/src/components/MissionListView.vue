@@ -120,9 +120,8 @@
                                             <template v-if="mission.skill.length > 1">
                                                 <span> {{ languageData.label.and }} </span>
                                                 <u>
-                                                    <span> {{ mission.skill.length - 1 }} </span>
                                                     <b-button :id="`skillPopover_${mission.mission_id}`" class="more-btn">
-                                                        {{ languageData.label.more }}
+                                                    <span> {{ mission.skill.length - 1 }} </span>{{ languageData.label.more }}
                                                     </b-button>
                                                 </u>
                                                 <b-popover :target="`skillPopover_${mission.mission_id}`" triggers="hover focus" placement="top" custom-class="skill-popover" :container="`skillWrap_${mission.mission_id}`">
