@@ -627,8 +627,8 @@ class MissionRepository implements MissionInterface
 
         // mission tab array modification
         $this->missionTabTransformArray($mission, $languages);
-
-        return $this->adminTransformMission($mission, $languages);
+        
+        return $this->adminTransformMission($mission, $languages, $this->tenantActivatedSettingRepository);
     }
 
     /**
@@ -720,7 +720,7 @@ class MissionRepository implements MissionInterface
             // mission tab array modification
             $this->missionTabTransformArray($value, $languages);
 
-            $this->adminTransformMission($value, $languages);
+            $this->adminTransformMission($value, $languages, $this->tenantActivatedSettingRepository);
         }
 
         return $mission;

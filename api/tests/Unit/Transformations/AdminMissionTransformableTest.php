@@ -12,6 +12,7 @@ use Closure;
 use App\Transformations\AdminMissionTransformable;
 use App\Models\Mission;
 use Illuminate\Support\Collection;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class AdminMissionTransformableTest extends TestCase
 {
@@ -51,11 +52,15 @@ class AdminMissionTransformableTest extends TestCase
         $mission->impact = collect($impact);
         
         $this->requestParametersTrait = $this->getObjectForTrait('App\Transformations\AdminMissionTransformable');
-        
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        ->once()
+        ->andReturn(true);
+
         $getRequestParameterReflection = $this->getGetRequestParameterReflection();
         $this->assertEquals(
             $mission,
-            $getRequestParameterReflection->invoke($this->requestParametersTrait, $mission, $languages)
+            $getRequestParameterReflection->invoke($this->requestParametersTrait, $mission, $languages, $tenantActivatedSettingRepository)
         );
     }
 
@@ -69,6 +74,18 @@ class AdminMissionTransformableTest extends TestCase
         $getRequestParameterReflection->setAccessible(true);
 
         return $getRequestParameterReflection;
+    }
+
+    /**
+    * Mock an object
+    *
+    * @param string name
+    *
+    * @return Mockery
+    */
+    private function mock($class)
+    {
+        return Mockery::mock($class);
     }
     
 }
