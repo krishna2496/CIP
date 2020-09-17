@@ -27,7 +27,7 @@
                                 </div>
 
                             </div>
-                            <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
+                            <div class="group-category" v-if="mission.mission_theme != null && isThemeSet && getThemeTitle(mission.mission_theme.translations) != ''"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                             </div>
                         </b-card-header>
 

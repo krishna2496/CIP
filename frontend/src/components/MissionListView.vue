@@ -26,7 +26,7 @@
                     <div class="card-detail-column">
                         <div class="content-block">
                             <div class="mission-label-wrap">
-                                <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span></div>
+                                <div class="group-category" v-if="mission.mission_theme != null && isThemeSet && getThemeTitle(mission.mission_theme.translations) != ''"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span></div>
                                 <!-- <div class="mission-label volunteer-label">
                                         <span><i class="icon-wrap"><img :src="$store.state.imagePath+'/assets/images/volunteer-icon'.svg" alt="volunteer icon"></i>Volunteer</span>
                                     </div> -->
