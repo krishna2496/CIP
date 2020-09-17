@@ -8,6 +8,7 @@ use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Helpers\S3Helper;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -57,7 +58,7 @@ class TenantCustomizationController extends Controller
     public function uploadFavicon(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'favicon' => 'required|file|image|mimetypes:image/x-icon,image/vnd.microsoft.icon'
+            'favicon' => 'required|file|mimetypes:image/x-icon,image/vnd.microsoft.icon'
         ]);
 
         // If request parameter have any error
@@ -70,10 +71,19 @@ class TenantCustomizationController extends Controller
             );
         }
 
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        $favicon = preg_replace('#^data:image/\w+;base64,#i', '', $request->favicon);
-        $imagePath = $this->s3helper->uploadFaviconOnS3Bucket($favicon, $tenantName);
+        try {
+            $favicon = base64_encode($request->file('favicon')->get());
+        } catch (FileNotFoundException $exception) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
+                $exception->getMessage()
+            );
+        }
 
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $imagePath = $this->s3helper->uploadFaviconOnS3Bucket($favicon, $tenantName);
         $apiData = ['favicon' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_FAVICON_UPLOADED');
         $apiStatus = Response::HTTP_OK;
