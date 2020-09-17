@@ -65,7 +65,9 @@
                             <div class="init-hidden">
                                 <div class="group-details">
                                     <!-- add 'mb-3' class here when no data -->
-                                    <div class="top-strip">
+                                    <div class="top-strip" v-bind:class="{
+                                        'mb-3' : !isContentBlockDisplay(mission)
+                                    }">
                                         <span>
                                             <!-- Mission type time -->
                                             <template v-if="checkMissionTypeTime(mission.mission_type)">
@@ -78,7 +80,7 @@
                                                     </template>
                                                     <template v-else>
                                                         {{ languageData.label.on }}
-                                                            {{mission.start_date | formatDate }}
+                                                        {{mission.start_date | formatDate }}
                                                     </template>
                                                 </template>
                                                 <template v-else>
@@ -93,7 +95,7 @@
                                             </template>
                                         </span>
                                     </div>
-                                    <div class="content-wrap">
+                                    <div class="content-wrap" v-if="isContentBlockDisplay(mission)">
                                         <!-- remove this block when no data -->
                                         <template v-if="checkMissionTypeTime(mission.mission_type)">
                                             <div class="group-details-inner">
@@ -580,12 +582,23 @@ export default {
         compareDate(endDates, startDates) {
             const endDate = moment(endDates).format("YYYY-MM-DD");
             const startDate = moment(startDates).format("YYYY-MM-DD");
-            
+
             if (startDate == endDate) {
                 return true;
             }
 
             return false;
+        },
+
+        isContentBlockDisplay(mission) {
+            if (mission.mission_type == constants.MISSION_TYPE_TIME) {
+                if ((mission.seats_left && mission.seats_left != 0 && mission.seats_left !== null) || (mission.application_deadline != null)) {
+                    return true;
+                }
+                return false;
+            } else {
+                return true;
+            }
         }
     },
     created() {

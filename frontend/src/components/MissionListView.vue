@@ -79,9 +79,7 @@
                                 <i class="icon-wrap">
                                     <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                 </i>
-                                <div class="text-wrap" 
-                                v-bind:class="{'mt-2' : compareDate(mission.end_date,mission.start_date)}"
-                                v-if="mission.end_date !== null">
+                                <div class="text-wrap" v-bind:class="{'mt-2' : compareDate(mission.end_date,mission.start_date)}" v-if="mission.end_date !== null">
                                     <template v-if="!compareDate(mission.end_date,mission.start_date)">
                                         <span class="title-text"><em>{{ languageData.label.from }}</em>
                                             {{mission.start_date | formatDate }}</span>
@@ -520,7 +518,7 @@ export default {
         compareDate(endDates, startDates) {
             const endDate = moment(endDates).format("YYYY-MM-DD");
             const startDate = moment(startDates).format("YYYY-MM-DD");
-            
+
             if (startDate == endDate) {
                 return true;
             }
