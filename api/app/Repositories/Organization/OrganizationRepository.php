@@ -129,6 +129,6 @@ class OrganizationRepository implements OrganizationInterface
      */
     public function isOrganizationLinkedtoMission($organizationId)
     {
-        return $this->mission->where('organisation_id', $organizationId)->count();
+        return $this->mission->where('organization_id', $organizationId)->count();
     }
 }

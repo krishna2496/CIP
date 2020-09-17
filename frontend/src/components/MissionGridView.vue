@@ -63,7 +63,7 @@
 
                             </div>
                             <div class="init-hidden">
-                                <div class="group-details mb-3">
+                                <div class="group-details">
                                     <div class="top-strip">
                                         <span>
                                             <!-- Mission type time -->
@@ -86,68 +86,66 @@
                                             </template>
                                         </span>
                                     </div>
-                                    <div class="content-wrap d-none">
-                                        <template v-if="checkMissionTypeTime(mission.mission_type)">
-                                            <div class="group-details-inner">
-                                                <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
-                                                    <div class="detail-column info-block">
-                                                        <i class="icon-wrap">
-                                                            <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-
-                                                        </i>
-                                                        <div class="text-wrap">
-                                                            <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                            <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-                                                <template v-if="mission.application_deadline != null">
-                                                    <div class="detail-column info-block">
-                                                        <i class="icon-wrap">
-                                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-                                                        </i>
-                                                        <div class="text-wrap">
-                                                            <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
-                                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </template>
-                                        <template v-if="checkMissionTypeGoal(mission.mission_type)">
-                                            <div class="group-details-inner volunteer-progress">
+                                    <template v-if="checkMissionTypeTime(mission.mission_type)">
+                                        <div class="group-details-inner">
+                                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                                 <div class="detail-column info-block">
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+
                                                     </i>
                                                     <div class="text-wrap">
                                                         <span class="title-text mb-1">{{mission.seats_left}}</span>
                                                         <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
                                                     </div>
                                                 </div>
-                                                <div v-bind:class="{
-                                                    'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
-                                                    'detail-column' : true,
-                                                    'progress-block' :true
-                                                    }">
+                                            </template>
+
+                                            <template v-if="mission.application_deadline != null">
+                                                <div class="detail-column info-block">
                                                     <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
+                                                        <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
                                                     </i>
                                                     <div class="text-wrap">
-                                                        <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
-                                                        <span class="subtitle-text">
-                                                            {{mission.achieved_goal}}
-                                                            <em v-if="mission.label_goal_achieved != ''">
-                                                                {{ mission.label_goal_achieved }}
-                                                            </em>
-                                                            <em v-else>{{ languageData.label.achieved }}</em>
-                                                        </span>
+                                                        <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
+                                                        <span class="subtitle-text">{{ languageData.label.deadline }}</span>
                                                     </div>
                                                 </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template v-if="checkMissionTypeGoal(mission.mission_type)">
+                                        <div class="group-details-inner volunteer-progress">
+                                            <div class="detail-column info-block">
+                                                <i class="icon-wrap">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <span class="title-text mb-1">{{mission.seats_left}}</span>
+                                                    <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                                </div>
                                             </div>
-                                        </template>
-                                    </div>
+                                            <div v-bind:class="{
+                                                'progress-bar-block': (mission.total_seats == 0 || mission.total_seats === null),
+                                                'detail-column' : true,
+                                                'progress-block' :true
+                                                }">
+                                                <i class="icon-wrap">
+                                                    <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
+                                                    <span class="subtitle-text">
+                                                        {{mission.achieved_goal}}
+                                                        <em v-if="mission.label_goal_achieved != ''">
+                                                            {{ mission.label_goal_achieved }}
+                                                        </em>
+                                                        <em v-else>{{ languageData.label.achieved }}</em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
                                 </div>
                                 <div class="card-action-block">
                                     <div class="left-btn">

@@ -38,7 +38,7 @@
                                     </div> -->
 
                             </div>
-                            <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id" class="card-title">
+                            <b-link :to="'/mission-detail/' + mission.mission_id" class="card-title">
                                 {{mission.title | substring(75)}}
                             </b-link>
                             <div class="ratings" v-if="isStarRatingDisplay">
@@ -51,7 +51,7 @@
                             <p class="event-name" v-if="mission.organization != null">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
                         </div>
                         <div class="group-details volunteer-progress">
-                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
+                            <template v-if="mission.total_seats && mission.total_seats != 0 && mission.total_seats !== null">
                                 <div class="detail-column seat-info">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
@@ -220,8 +220,8 @@
 </div>
 <div class="no-data-found" v-else>
     <h2 class="text-center">{{noRecordFound()}}</h2>
-    <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
-        <b-button class="btn-bordersecondary icon-btn">
+    <div class="btn-wrap" v-if="isSubmitNewMissionSet">
+        <b-button class="btn-bordersecondary icon-btn" @click="submitNewMission">
             <span>{{ languageData.label.submit_new_mission }}</span>
             <i>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
