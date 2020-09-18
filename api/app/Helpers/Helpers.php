@@ -556,7 +556,8 @@ class Helpers
 
         $tenantLanguage = $this->db->table('tenant_currency')
         ->where('tenant_id', $tenant->tenant_id)
-        ->where('code', $currencyCode);
+        ->where('code', $currencyCode)
+        ->where('is_active', 1);
 
         // Connect tenant database
         $this->switchDatabaseConnection('tenant');
