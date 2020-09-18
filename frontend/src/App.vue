@@ -90,7 +90,10 @@ export default {
                 this.stylesLoaded = true;
             });
 
-        customFavicon().catch(/* nothing to do since default favicon is already set */);
+        customFavicon()
+            .catch(() => {
+              /* nothing to do since default favicon is already set to Optimy icon*/
+            });
 
         let ua = navigator.userAgent.toLowerCase();
         if (ua.indexOf("safari") != -1) {
