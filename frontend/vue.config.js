@@ -24,7 +24,7 @@ module.exports = {
         });
     },
 
-    publicPath: process.env.NODE_ENV === "production" ? "/ciplatform-donation-qa/" : "/",
+    publicPath: process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
 
     lintOnSave: false,
 
