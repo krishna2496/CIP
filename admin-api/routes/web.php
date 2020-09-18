@@ -155,3 +155,15 @@ $router->group(
         );
     }
 );
+
+
+/* health check */
+$router->group(
+    ['prefix' => '/health'],
+
+    function ($router) {
+        $router->get(
+            '/', 'HealthCheckController@index'
+        );
+    }
+);
