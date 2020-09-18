@@ -31,5 +31,5 @@ interface MissionImpactInterface
      * @param string $missionImpactId
      * @return bool
      */
-    public function deleteS3bucketData(string $missionImpactId): bool;
+    public function deleteMissionImpactAndS3bucketData(string $missionImpactId): bool;
 }

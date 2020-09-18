@@ -396,7 +396,7 @@ class Mission extends Model
      */
     public function impact(): HasMany
     {
-        return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
     
     /** 

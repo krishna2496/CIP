@@ -621,7 +621,6 @@ class MissionRepository implements MissionInterface
 
         if ($missionImpactSettingActivated) {
             $mission->with(['impact' => function ($query) {
-                $query->orderBy('sort_key');
             }, 'impact.missionImpactLanguageDetails' => function ($query) {
             }]);
         }
@@ -723,10 +722,8 @@ class MissionRepository implements MissionInterface
             $request
         );
 
-        $missionImpactSettingActivated = false;
         if ($missionImpactSettingActivated) {
             $missionQuery->with(['impact' => function ($query) {
-                $query->orderBy('sort_key');
             }, 'impact.missionImpactLanguageDetails' => function ($query) {
             }]);
         }
@@ -1925,6 +1922,6 @@ class MissionRepository implements MissionInterface
      */
     public function deleteMissionImpact(string $missionImpactId): bool
     {
-        return $this->missionImpactRepository->deleteS3bucketData($missionImpactId);
+        return $this->missionImpactRepository->deleteMissionImpactAndS3bucketData($missionImpactId);
     }
 }
