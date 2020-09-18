@@ -191,7 +191,7 @@ class TenantOptionController extends Controller
         $isCustomFaviconEnabled = false;
         $tenantCustomFaviconUrl = '';
 
-        // Check presence of custom css option
+        // Check presence of custom favicon option
         try {
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_favicon']);
             $isCustomFaviconEnabled = $tenantOption !== null && $tenantOption->option_value === 1;
@@ -199,7 +199,7 @@ class TenantOptionController extends Controller
             /*
              * If there was some trouble when retrieving this option
              * we have nothing to do as the default is to consider
-             * the custom css option turned off
+             * the custom favicon option turned off
              */
         }
 
