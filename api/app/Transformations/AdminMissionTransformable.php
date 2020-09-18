@@ -4,8 +4,6 @@ namespace App\Transformations;
 use App\Models\Mission;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use Illuminate\Http\Request;
 
 trait AdminMissionTransformable
 {
@@ -18,11 +16,9 @@ trait AdminMissionTransformable
      */
     protected function adminTransformMission(
         $mission,
-        Collection $languages,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        Collection $languages
     ) {
         // Transform impact mission attribute
-
         if (isset($mission['impact'])) {
             $impactMission =  $mission['impact']->toArray();
             if ($impactMission != null) {

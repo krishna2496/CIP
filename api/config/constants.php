@@ -677,7 +677,7 @@ return [
     ],
 
     /*
-     * Slider image types
+     * Icon image types
      */
     'icon_image_mime_types' => [
         'image/png',
