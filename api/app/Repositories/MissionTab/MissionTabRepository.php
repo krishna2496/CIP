@@ -124,29 +124,31 @@ class MissionTabRepository implements MissionTabInterface
 
     /**
      * Check sort key is already exist or not
-     * 
+     *
      * @param int $missionId
      * @param array $missionTabs
      * @return bool
      */
-    public function checkSortKeyExist(int $missionId, $missionTabs): bool {
-
-        foreach($missionTabs as $key => $value) {
-            if(isset($value['sort_key'])) {
-                if(isset($value['mission_tab_id'])){
+    public function checkSortKeyExist(int $missionId, array $missionTabs): bool
+    {
+        foreach ($missionTabs as $key => $value) {
+            if (isset($value['sort_key'])) {
+                if (isset($value['mission_tab_id'])) {
                     $result = $this->modelsService->missionTab->where([
                         ['mission_id', '=' ,$missionId],
                         ['sort_key', '=' ,$value['sort_key']],
                         ['mission_tab_id', '!=', $value['mission_tab_id']]
                     ])->get()->toArray();
-                    if(count($result) >= 1){
+
+                    if (count($result) >= 1) {
                         return false;
                     }
                 } else {
                     $result = $this->modelsService->missionTab->where(
                         [ 'mission_id' => $missionId, 'sort_key' => $value['sort_key']]
                     )->get()->toArray();
-                    if(count($result) >= 1){
+                    
+                    if (count($result) >= 1) {
                         return false;
                     }
                 }

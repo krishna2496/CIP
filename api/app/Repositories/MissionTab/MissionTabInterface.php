@@ -14,7 +14,7 @@ interface MissionTabInterface
      */
     public function store(array $missionTabValue, int $missionId);
 
-        /**
+    /**
      * Store a newly created resource into database
      *
      * @param array $missionTabValue
@@ -25,12 +25,11 @@ interface MissionTabInterface
 
     /**
      * Check sort key is already exist or not
-     * 
+     *
      * @param int $missionId
      * @param array $missionTabs
-     * 
+     *
      * @return bool
      */
-    public function checkSortKeyExist(int $missionId, $missionTabs): bool;
-
+    public function checkSortKeyExist(int $missionId, array $missionTabs): bool;
 }

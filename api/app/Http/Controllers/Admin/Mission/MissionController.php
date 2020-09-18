@@ -405,7 +405,7 @@ class MissionController extends Controller
 
         // Check sort key already exist for mission tabs
         if (isset($request->mission_tabs)) {
-            $missionTabresponse = $this->missionRepository->checkDuplicateSortKey($missionId, $request->mission_tabs);
+            $missionTabresponse = $this->missionRepository->checkExistSortKey($missionId, $request->mission_tabs);
             if(!$missionTabresponse){
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,

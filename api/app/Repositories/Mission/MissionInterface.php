@@ -236,13 +236,13 @@ interface MissionInterface
      */
     public function deleteMissionTabByMissionTabId(string $missionTabId): bool;
 
-        /**
+    /**
      * Check sort key is already exist or not
-     * 
+     *
      * @param int $missionId
      * @param array $missionTabs
-     * 
+     *
      * @return bool
      */
-    public function checkDuplicateSortKey(int $missionId, $missionTabs): bool;
+    public function checkExistSortKey(int $missionId, array $missionTabs): bool;
 }
