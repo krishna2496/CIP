@@ -553,9 +553,12 @@ export default {
                     const cardHeight = cardBody.children[0].offsetHeight + card.children[1].offsetHeight;
                     const cardHeaderHeight = card.querySelector(".card-header").offsetHeight;
                     const contentBlock = cardBody.querySelector(".content-block");
-                    const contentBlockHeight = cardHeight - cardHeaderHeight;
-                    card.style.height = `${cardHeight}px`;
+                        card.style.height = `${cardHeight}px`;
+                    setTimeout(function(){
+                        const contentBlockHeight = card.offsetHeight - cardHeaderHeight;
+                        console.log(card.offsetHeight);
                     contentBlock.style.height = `${contentBlockHeight}px`;
+                    },1000);
 
                     if(screen.width > 1024){
                         cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
