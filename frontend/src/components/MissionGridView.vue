@@ -126,7 +126,7 @@
                                         </template>
                                         <template v-if="checkMissionTypeGoal(mission.mission_type)">
                                             <div class="group-details-inner volunteer-progress">
-                                                <div class="detail-column info-block">
+                                                <div class="detail-column info-block" v-if="mission.seats_left && mission.seats_left != ''">
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                                     </i>
