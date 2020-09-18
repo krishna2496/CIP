@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\App\Tenant;
 
 use App\Helpers\S3Helper;
-use App\Http\Controllers\Admin\Tenant\TenantCustomizationController;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Models\TenantOption;
@@ -184,11 +183,10 @@ class TenantOptionController extends Controller
      * Get tenant custom favicon from table `tenant_options`
      *
      * @param Request $request
-     * @param TenantCustomizationController $tenantCustomizationController
      *
      * @return JsonResponse
      */
-    public function getCustomFavicon(Request $request, TenantCustomizationController $tenantCustomizationController): JsonResponse
+    public function getCustomFavicon(Request $request): JsonResponse
     {
         $isCustomFaviconEnabled = false;
         $tenantCustomFaviconUrl = '';
@@ -204,18 +202,16 @@ class TenantOptionController extends Controller
              * the custom css option turned off
              */
         }
-        var_dump($this->tenantOptionRepository->getOptionValueFromOptionName('custom_favicon'));die();
 
         if ($isCustomFaviconEnabled) {
-//            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-//            $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
-//            $customCssName = env('S3_CUSTOME_CSS_NAME');
-//
-//            $tenantCustomFaviconUrl = S3Helper::makeTenantS3BaseUrl($tenantName)
-//                . $assetsFolder
-//                . '/css/'
-//                . $customCssName;
-            $tenantCustomFaviconUrl = $tenantCustomizationController->getFavicon($request);
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
+            $customFaviconName = 'favicon.ico';
+
+            $tenantCustomFaviconUrl = S3Helper::makeTenantS3BaseUrl($tenantName)
+                . $assetsFolder
+                . '/images/favicon/'
+                . $customFaviconName;
         }
 
         $apiData = [
