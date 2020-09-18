@@ -212,7 +212,7 @@
         pageLoaded: false,
         config: {
           toolbar: [
-            ['Source', '-', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'],
+            ['NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'],
             ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
             ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
