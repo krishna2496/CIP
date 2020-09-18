@@ -4,16 +4,24 @@
         <div class="card-outer" :id="`listview-${index}`" v-for="(mission, index) in items" :key=index>
             <b-card no-body>
                 <b-card-header>
-                    <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
+                    <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission),'no-img' : checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == ''}">
                         <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
                             {{languageData.label.applied}}</b-alert>
                         <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
                             {{languageData.label.closed}}</b-alert>
-                        <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                        <div v-if="checkDefaultMediaFormat(mission.default_media_type)" 
+                            v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}"
+                            class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                             <img :src="getMediaPath(mission.default_media_path)" alt="">
                         </div>
                         <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
                         </div>
+                        <template v-if="checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == ''">
+                            <i class="camera-icon">
+                                <img src="../assets/images/camera-ic.svg" />
+                            </i>
+                            <p>{{languageData.label.no_image_available}}</p>
+                        </template>  
                         <div class="location">
                             <i>
                                 <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
@@ -357,11 +365,7 @@ export default {
             if (mediaPath != "") {
                 return mediaPath;
             } else {
-                return (
-                    store.state.imagePath +
-                    "/assets/images/" +
-                    constants.MISSION_DEFAULT_PLACEHOLDER
-                );
+                return ''
             }
         },
         // Is default media is video or not
