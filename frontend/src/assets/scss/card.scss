@@ -104,6 +104,39 @@
             filter: grayscale(1);
           }
         }
+        &.no-img {
+          background: $rgb-orange;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          align-content: center;
+          .camera-icon {
+            width: 44px;
+            height: 36px;
+            line-height: 0;
+            margin-bottom: 10px;
+            @include sm-max {
+              width: 40px;
+              height: 32px;
+            }
+            img {
+              height: 100%;
+              width: 100%;
+            }
+          }
+          p {
+            font-size: 20px;
+            line-height: 27px;
+            font-weight: 400;
+            text-align: center;
+            width: 100%;
+            @include sm-max {
+              font-size: 18px;
+              line-height: 24px;
+            }
+          }
+        }
       }
 
       .group-img {
@@ -486,6 +519,12 @@
             }
           }
         }
+      }
+      .content-inner-block {
+        width: 100%;
+      }
+      .event-block {
+        width: 100%;
       }
     }
 
@@ -943,6 +982,18 @@
     .content-block {
       max-width: 100%;
       flex: 0 0 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .mission-label-wrap,
+      .content-inner-block,
+      .event-block {
+        width: 100%;
+      }
+      .event-block {
+        display: flex;
+        align-items: flex-end;
+      }
     }
     .card-header {
       @include transition(transform 0.3s);
@@ -957,6 +1008,7 @@
     }
     .card-body {
       @include transition(transform 0.3s);
+      position: relative;
     }
     .group-details {
       .group-details-inner {

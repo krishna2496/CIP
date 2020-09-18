@@ -15,16 +15,23 @@
                         </b-link>
                         <b-card-header>
                             <b-link target="_self" :to="'/mission-detail/' + mission.mission_id">
+                                <!-- add 'no-img' class with 'header-img-block' -->
                                 <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
                                     <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
                                         {{languageData.label.applied}}</b-alert>
                                     <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
                                         {{languageData.label.closed}}</b-alert>
-                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img d-none" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                                         <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
                                     </div>
                                     <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
                                     </div>
+                                    <!-- no img content start -->
+                                    <i class="camera-icon">
+                                        <img src="../assets/images/camera-ic.svg" />
+                                    </i>
+                                    <p>No image available</p>
+                                    <!-- no img content end -->
                                 </div>
                                 <div class="group-category" v-if="mission.mission_theme != null && isThemeSet && getThemeTitle(mission.mission_theme.translations) != ''"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                                 </div>
@@ -545,10 +552,15 @@ export default {
                 cardBodyList.forEach((cardBody) => {
                     const card = cardBody.parentNode;
                     const cardHeight = cardBody.children[0].offsetHeight + card.children[1].offsetHeight;
+                    const cardHeaderHeight = card.querySelector(".card-header").offsetHeight;
+                    const contentBlock = cardBody.querySelector(".content-block");
+                    const contentBlockHeight = cardHeight - cardHeaderHeight;
                     card.style.height = `${cardHeight}px`;
+                    contentBlock.style.height = `${contentBlockHeight}px`;
 
-                    cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
-                        const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
+                    if(screen.width > 1024){
+                        cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
+                            const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
                         const cardTotalHeight = cardBodyH - this.offsetHeight;
                         this.children[1].style.transform = `translateY(-${cardTotalHeight}px)`;
                         this.children[2].style.transform = `translateY(-${cardTotalHeight}px)`;
@@ -562,6 +574,7 @@ export default {
                             this.parentNode.classList.remove('active');
                         }
                     });
+                    }
                 });
 
                 if (this.cardHeightAdjIntervalId) {
