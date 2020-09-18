@@ -176,6 +176,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     $router->post('/users/invite', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
         'uses' => 'App\User\UserController@inviteUser']);
+
+    $router->patch('/users/password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@createPassword']);
+
 });
 
 /* SAML */

@@ -141,7 +141,6 @@ class MissionRepository implements MissionInterface
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
-
         $organizationDetail = (isset($request->organisation_detail)) ?
             $request->organisation_detail : null;
 
@@ -151,13 +150,6 @@ class MissionRepository implements MissionInterface
                                 ($request->volunteering_attribute['total_seats'] !== '')) ? $request->volunteering_attribute['total_seats'] : null,
                 'availability_id' => $request->volunteering_attribute['availability_id'],
                 'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : 0,
-            ];
-        } else {
-            $volunteeringAttributeArray = [
-                'total_seats' =>  (isset($request->total_seats) && ($request->total_seats !== ''))
-                    ? $request->total_seats : null,
-                'availability_id' => $request->availability_id,
-                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : 0
             ];
         }
 
@@ -170,10 +162,7 @@ class MissionRepository implements MissionInterface
             'publication_status' => $request->publication_status,
             'organization_id' => $organization->organization_id,
             'organisation_detail' => $organizationDetail,
-            'mission_type' => $request->mission_type,
-            'availability_id' => $volunteeringAttributeArray['availability_id'],
-            'total_seats' => $volunteeringAttributeArray['total_seats'],
-            'is_virtual' => $volunteeringAttributeArray['is_virtual'] ? '1' : '0'
+            'mission_type' => $request->mission_type
         ];
 
         // Create new record
@@ -356,17 +345,6 @@ class MissionRepository implements MissionInterface
             $request->volunteering_attribute['total_seats'] : null;
             $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
             $volunteeringAttributeArray['total_seats'] = $totalSeats;
-        } else {
-            if (isset($request->total_seats)) {
-                $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
-                $request->total_seats : null;
-                $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-                $volunteeringAttributeArray['total_seats'] = $totalSeats;
-            }
-
-            if (isset($request->total_seats) && ($request->total_seats === '')) {
-                $volunteeringAttributeArray['total_seats'] = null;
-            }
         }
 
         if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
@@ -374,14 +352,10 @@ class MissionRepository implements MissionInterface
         }
         if (isset($request->volunteering_attribute['availability_id'])) {
             $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
-        } elseif (isset($request->availability_id)) {
-            $volunteeringAttributeArray['availability_id'] = $request->availability_id;
         }
 
         if (isset($request->volunteering_attribute['is_virtual'])) {
             $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
-        } elseif (isset($request->is_virtual)) {
-            $volunteeringAttributeArray['is_virtual'] = $request->is_virtual;
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -1571,7 +1545,6 @@ class MissionRepository implements MissionInterface
             $todayDate = Carbon::parse(date(config('constants.DB_DATE_FORMAT')));
             $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
             $todayTime = $this->helpers->getUserTimeZoneDate(date(config('constants.DB_DATE_TIME_FORMAT')));
-
 
             if ((!isset($timeMissionDetails[0]['application_deadline'])) && ((isset($timeMissionDetails[0]['application_start_date']) && ($timeMissionDetails[0]['application_start_date'] !== null)) &&
             (isset($timeMissionDetails[0]['application_end_date']) && ($timeMissionDetails[0]['application_end_date'] !== null)) &&

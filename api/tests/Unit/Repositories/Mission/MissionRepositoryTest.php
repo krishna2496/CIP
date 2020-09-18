@@ -132,7 +132,7 @@ class MissionRepositoryTest extends TestCase
                 ]
             ],
             'volunteering_attribute' => [
-                'total_seats' => 100,
+                'total_seats' => rand(5000, 10000),
                 'availability_id' => 1,
                 'is_virtual' => 1
             ]
@@ -197,10 +197,7 @@ class MissionRepositoryTest extends TestCase
             'publication_status' => $request->publication_status,
             'organization_id' => $organizationObject->organization_id,
             'organisation_detail' => null,
-            'mission_type' => $request->mission_type,
-            'availability_id' => $request->availability_id,
-            'total_seats' => 100,
-            'is_virtual' => '1'
+            'mission_type' => $request->mission_type
         ];
 
         $missionObject = new Mission();
@@ -303,7 +300,6 @@ class MissionRepositoryTest extends TestCase
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->store($request);
-
     }
 
     /**
@@ -442,7 +438,6 @@ class MissionRepositoryTest extends TestCase
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->update($request, $missionId);
-
     }
 
     /**
