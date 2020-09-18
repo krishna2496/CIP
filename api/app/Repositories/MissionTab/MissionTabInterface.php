@@ -23,4 +23,14 @@ interface MissionTabInterface
      */
     public function update(array $missionTabValue, int $missionId);
 
+    /**
+     * Check sort key is already exist or not
+     * 
+     * @param int $missionId
+     * @param array $missionTabs
+     * 
+     * @return bool
+     */
+    public function checkSortKeyExist(int $missionId, $missionTabs): bool;
+
 }

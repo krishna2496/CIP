@@ -1775,4 +1775,15 @@ class MissionRepository implements MissionInterface
     {
         return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
     }
+
+    /**
+     * Check sort key is already exist or not
+     * 
+     * @param int $missionId
+     * @param array $missionTabs
+     * @return bool
+     */
+    public function checkDuplicateSortKey(int $missionId, $missionTabs): bool {
+        return $this->missionTabRepository->checkSortKeyExist($missionId, $missionTabs);
+    }
 }

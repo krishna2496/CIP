@@ -9196,7 +9196,7 @@
             "properties": {
               "mission_tab_id": {
                 "type": "string",
-                "description": "Add mission_tab_id for updating specific mission_tabs, if not providing then will create a new mission_tab"
+                "description": "Provide mission_tab_id to update an existing record"
               },
               "sort_key": {
                 "type": "integer",

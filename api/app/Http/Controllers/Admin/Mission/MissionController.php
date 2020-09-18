@@ -376,14 +376,8 @@ class MissionController extends Controller
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
-                "mission_tabs.*.sort_key" => [
-                    'required_without:mission_tabs.*.mission_tab_id',
-                    'integer',
-                    'distinct',
-                    Rule::unique('mission_tab')->where(function ($query) use($missionId) {
-                        return $query->where('mission_id', $missionId);
-                    }),
-                ],
+                "mission_tabs.*.sort_key" => 
+                'required_without:mission_tabs.*.mission_tab_id|integer|distinct',
                 "mission_tabs.*.translations" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 "mission_tabs.*.translations.*.lang" =>
@@ -407,6 +401,19 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
+        }
+
+        // Check sort key already exist for mission tabs
+        if (isset($request->mission_tabs)) {
+            $missionTabresponse = $this->missionRepository->checkDuplicateSortKey($missionId, $request->mission_tabs);
+            if(!$missionTabresponse){
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                );
+            }
         }
 
         // check organization exist in database
