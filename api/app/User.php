@@ -83,7 +83,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'receive_email_notification',
         'expiry',
         'invitation_sent_at',
-        'pseudonymize_at'
+        'pseudonymize_at',
+        'is_admin',
     ];
 
     /**
@@ -152,6 +153,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'is_admin',
     ];
 
     /**

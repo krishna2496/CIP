@@ -364,6 +364,8 @@ class UserController extends Controller
 
         //Remove params
         $request->request->remove("email");
+        $request->request->remove("is_admin");
+        $request->request->remove("expiry");
 
         // Update user filter
         $this->userFilterRepository->saveFilter($request);
@@ -542,7 +544,10 @@ class UserController extends Controller
 
         // Server side validations
         $validator = Validator::make($request->toArray(), [
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'subject' => 'required',
+            'body' => 'required',
+            'language' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -586,25 +591,13 @@ class UserController extends Controller
             }
         }
 
-        $language = $this->languageHelper->getLanguageDetails($request);
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $tenantLogo = $this->tenantOptionRepository->getOptionValueFromOptionName('custom_logo');
-        $password = str_random(8);
-        $siteUrl = 'http' . ($request->secure() ? 's' : '') . '://' . $tenantName;
 
         $details = [
-            'subject' => 'Set Up Account',
-            'first_name' => $userDetail->first_name,
-            'last_name' => $userDetail->last_name,
-            'customer_name' => $request->get('sponsor_frontend_name'),
-            'site_name' => $tenantName,
-            'email' => $userDetail->email,
-            'password' => $password,
-            'language_code' => $language->code,
-            'site_url' => $siteUrl,
-            'login_url' => $siteUrl,
-            'account_url' => $siteUrl . '/my-account',
+            'subject' => $request->get('subject'),
+            'body' => $request->get('body'),
             'company_logo' => $tenantLogo->option_value,
+            'language' => $request->get('language'),
         ];
 
         try {
@@ -618,7 +611,6 @@ class UserController extends Controller
             );
         }
 
-        $userDetail->password = $password;
         $userDetail->status = config('constants.user_statuses.ACTIVE');
         $userDetail->invitation_sent_at = Carbon::now()->toDateTimeString();
         $userDetail->save();
@@ -626,14 +618,65 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_INVITE_LINK_SEND_SUCCESS');
 
-        // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
             config('constants.activity_log_actions.UPDATED'),
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
-            $request->toArray(),
+            $request->only('email', 'subject', 'language'),
+            $userDetail->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Set password triggered by the send invite action
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function createPassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->toArray(), [
+            'email' => 'required|email',
+            'password' => 'required|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        if (!$userDetail) {
+            return $this->responseHelper->error(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
+                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+
+        $userDetail->password = $request->get('password');
+        $userDetail->save();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->only('email'),
             $userDetail->user_id
         ));
 
