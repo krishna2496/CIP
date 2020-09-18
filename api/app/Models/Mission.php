@@ -394,7 +394,7 @@ class Mission extends Model
      */
     public function missionTabs(): HasMany
     {
-        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
 
     /**

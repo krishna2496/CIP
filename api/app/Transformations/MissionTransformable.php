@@ -235,18 +235,7 @@ trait MissionTransformable
                 $mission['missionTabs'][$missionTabKey] = $missionLanguageArray;
             }
         }
-
-        // Mission tab details
-        if (!empty($mission['missionTabs']) && (isset($mission['missionTabs']))
-        ) {
-            $missionTab = $mission['missionTabs']->toArray();
-            array_multisort(
-                array_column($missionTab, 'sort_key'),
-                SORT_ASC,
-                $missionTab
-            );
-        }
-      
+         
         unset($mission['volunteeringAttribute']);
         return $mission;
     }

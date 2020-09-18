@@ -9000,11 +9000,6 @@
           "type": "integer",
           "format": "int64"
         },
-        "total_seats": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Total seats for this mission"
-        },
         "application_deadline": {
           "type": "string",
           "format": "date-time",
@@ -9046,17 +9041,28 @@
           "format": "int64",
           "description": "mission_theme_id from `mission_theme` table"
         },
-        "availability_id": {
-          "type": "integer",
-          "format": "int64",
-          "description": "availability_id from `availability` table"
+        "volunteering_attribute": {
+          "type": "object",
+          "properties": {
+            "availability_id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "availability_id from `availability` table"
+            },
+            "is_virtual": {
+              "type": "boolean"
+            },
+            "total_seats": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Total seats for this mission"
+            }
+          }
         },
-        "is_virtual": {
-          "type": "string",
-          "enum": [
-            "0",
-            "1"
-          ]
+        "un_sdg": {
+          "type": "array",
+          "description": "Array of valid UN SDG numbers (1 to 17)",
+          "example": [1, 2, 3]
         },
         "organization": {
           "type": "object",
@@ -9098,7 +9104,7 @@
               "description": "Organization postal code"
             }
           }
-        },
+        }
       }
     },
     "MissionUpdate": {
@@ -9190,7 +9196,7 @@
             "properties": {
               "mission_tab_id": {
                 "type": "string",
-                "description": "Add mission_tab_id for updating specific mission_tabs, if not providing then create a new mission_tab"
+                "description": "Add mission_tab_id for updating specific mission_tabs, if not providing then will create a new mission_tab"
               },
               "sort_key": {
                 "type": "integer",
