@@ -3973,6 +3973,80 @@
         }
       }
     },
+    "/style/favicon": {
+      "get": {
+        "operationId": "GET_team4-cip-api-favicon",
+        "summary": "Admin - Retrieve tenant favicon (Milestone - 1)",
+        "description": "It is for custom styling - Tenant admin can change favicon used in platform (front end) and retrieve it from here.",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      },
+      "post": {
+        "operationId": "POST_team4-cip-api-favicon",
+        "summary": "Admin - Update tenant favicon (Milestone - 1)",
+        "description": "It is for custom styling - Tenant admin can change favicon used in platform (front end) and upload it from here.",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "favicon",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "_method",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "default": "patch"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "No files found on S3 assets folder for this tenant"
+          }
+        }
+      }
+    },
     "/tenant-option": {
       "post": {
         "operationId": "GET_team4-cip-api-save-tenant-option",
@@ -4225,7 +4299,7 @@
             "items": {
               "type": "string"
             }
-          },
+          }
         ],
         "responses": {
           "200": {
@@ -4269,6 +4343,21 @@
         "operationId": "GET_team4-cip-api-custom-css",
         "summary": "App - Get custom styling(css) file (Milestone - 1)",
         "description": "This API will fetch custom styling css file which could be modified by tenant admin. So front end can reflect those css changes.",
+        "tags": [
+          "Tenant - App"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+        }
+      }
+    },
+    "/app/custom-favicon": {
+      "get": {
+        "operationId": "GET_team4-cip-api-custom-favicon",
+        "summary": "App - Get custom favicon url (Milestone - 1)",
+        "description": "This API will retrieve custom favicon url. So front end can use this favicon.",
         "tags": [
           "Tenant - App"
         ],
@@ -4358,7 +4447,7 @@
       "post": {
         "operationId": "GET_team4-cip-api-get-tenant-option",
         "summary": "App - Get tenant option value by option name (Milestone - 2)",
-        "description": "In front end - It will fetch particular option value by its name which is set by tenant adnin. Example: it will fetch option_value (Custom text set by admin) for option_name(no_mission_custom_text)",
+        "description": "In front end - It will fetch particular option value by its name which is set by tenant admin. Example: it will fetch option_value (Custom text set by admin) for option_name(no_mission_custom_text)",
         "tags": [
           "Tenant - App"
         ],
@@ -6040,7 +6129,7 @@
     },
     "/app/story/list": {
       "get": {
-        "operationId": "POST_team4-cip-api-get-story-lsiting",
+        "operationId": "POST_team4-cip-api-get-story-listing",
         "summary": "App - Get published stories (Milestone - 4)",
         "description": "Fetch all published stories for story listing page",
         "tags": [
@@ -7219,7 +7308,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availabilty does not found in system"
+            "description": "Not found - Availability does not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -7259,7 +7348,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availabilty does not found in system"
+            "description": "Not found - Availability does not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -7299,7 +7388,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availabilty does not found in system"
+            "description": "Not found - Availability does not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -9212,7 +9301,7 @@
         "expiry": {
           "type":  "string",
           "format": "date-time",
-          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         },
         "position": {
           "type": "string"
