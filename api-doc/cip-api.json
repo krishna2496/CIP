@@ -7308,7 +7308,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availability does not found in system"
+            "description": "Not found - Availability was not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -7348,7 +7348,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availability does not found in system"
+            "description": "Not found - Availability was not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -7388,7 +7388,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availability does not found in system"
+            "description": "Not found - Availability was not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
