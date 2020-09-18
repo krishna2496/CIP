@@ -15,8 +15,7 @@
                         </b-link>
                         <b-card-header>
                             <b-link target="_self" :to="'/mission-detail/' + mission.mission_id">
-                                <!-- add 'no-img' class with 'header-img-block' -->
-                                <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
+                                <!-- add 'no-img' class with 'header-img-block' -->                                <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission)}">
                                     <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
                                         {{languageData.label.applied}}</b-alert>
                                     <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">

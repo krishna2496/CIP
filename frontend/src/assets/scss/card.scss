@@ -1221,6 +1221,8 @@
             flex: 0 0 auto;
             padding: 0 15px 12px 0;
             margin-right: 15px;
+            display: flex;
+            align-items: center;
             &:last-child {
               margin-right: 0;
             }
@@ -1239,7 +1241,7 @@
               width: 18px;
               height: 18px;
               flex: 0 0 18px;
-              top: 8px;
+              top: 0;
             }
             &.calendar-col {
               flex: 0 0 auto;
@@ -1275,6 +1277,9 @@
                     }
                   }
                 }
+              }
+              .icon-wrap {
+                top: -3px;
               }
             }
             &:last-child {

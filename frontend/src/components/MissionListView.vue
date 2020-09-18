@@ -52,7 +52,7 @@
                         </div>
                         <div class="group-details volunteer-progress">
                             <div class="content-wrap">
-                                <template v-if="mission.total_seats && mission.total_seats != 0 && mission.total_seats !== null">
+                                <template>
                                     <div class="detail-column seat-info">
                                         <i class="icon-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
