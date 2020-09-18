@@ -387,6 +387,9 @@ return [
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
-        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system'
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
+
+        //For submitting a story feature
+        'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, either mission application was not found or not approved.'
     ]
 ];
