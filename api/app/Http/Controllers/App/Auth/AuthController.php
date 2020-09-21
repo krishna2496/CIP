@@ -2,33 +2,28 @@
 
 namespace App\Http\Controllers\App\Auth;
 
-use Validator;
+use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Config;
+use App\Http\Controllers\Controller;
+use App\Models\PasswordReset;
+use App\Models\TenantOption;
+use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Repositories\User\UserRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use App\User;
+use Carbon\Carbon;
 use DateTime;
 use DB;
-use App\User;
-use App\Models\TenantOption;
-use Firebase\JWT\JWT;
+use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\Config;
-use App\Helpers\Helpers;
-use App\Helpers\ResponseHelper;
-use App\Models\PasswordReset;
-use Carbon\Carbon;
-use App\Repositories\TenantOption\TenantOptionRepository;
-use App\Traits\RestExceptionHandlerTrait;
-use InvalidArgumentException;
-use App\Helpers\LanguageHelper;
-use App\Exceptions\TenantDomainNotFoundException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Repositories\User\UserRepository;
-use App\Events\User\UserActivityLogEvent;
+use Symfony\Component\HttpFoundation\Cookie;
+use Validator;
 
 //!  Auth controller
 /*!
@@ -211,6 +206,7 @@ class AuthController extends Controller
             (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification !=""
         ) ?
         $userDetail->receive_email_notification : '0';
+        $data['isSuccessfulLogin'] = true;
 
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
@@ -226,8 +222,24 @@ class AuthController extends Controller
             null,
             $userDetail->user_id
         ));
-        header('Token: '.$this->helpers->getJwtToken($userDetail->user_id, $tenantName));
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+
+        // As we don't use HTTPS on the local stack, it's not possible to use secured cookies on this environment
+        $isSecuredCookie = config('app.env') !== 'local';
+
+        // Create the cookie holding the token
+        $cookie = new Cookie(
+            'token',
+            $this->helpers->getJwtToken($userDetail->user_id, $tenantName),
+            strtotime('+4hours'),
+            '/',
+            parse_url(request()->headers->get('referer'), PHP_URL_HOST),
+            $isSecuredCookie,
+            true
+        );
+
+        return $this->responseHelper
+            ->success($apiStatus, $apiMessage, $apiData)
+            ->withCookie($cookie);
     }
 
     /**
