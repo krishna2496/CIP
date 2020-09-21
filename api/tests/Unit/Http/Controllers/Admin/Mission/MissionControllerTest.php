@@ -210,18 +210,18 @@ class MissionControllerTest extends TestCase
             ->andReturn($key);
 
         $missionRepository->shouldReceive('find')
-        ->once()
-        ->with($missionId)
-        ->andReturn();
+            ->once()
+            ->with($missionId)
+            ->andReturn();
 
         Validator::shouldReceive('make')
             ->once()
             ->andReturn(Mockery::mock(['fails' => false]));
 
         $missionRepository->shouldReceive('checkExistSortKey')
-        ->once()
-        ->with($missionId, $requestData->mission_tabs)
-        ->andReturn(false);
+            ->once()
+            ->with($missionId, $requestData->mission_tabs)
+            ->andReturn(false);
 
         $methodResponse = [
             'errors'=> [
@@ -360,11 +360,11 @@ class MissionControllerTest extends TestCase
     /**
     * get json reponse
     *
-    * @param class name
+    * @param array $data
     * @return JsonResponse
     */
-    private function getJson($class)
+    private function getJson($data)
     {
-        return new JsonResponse($class);
+        return new JsonResponse($data);
     }
 }

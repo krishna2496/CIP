@@ -1751,14 +1751,14 @@ class MissionRepository implements MissionInterface
             foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
                 $missionTranslationsArray['mission_tab_id'] = $missionTabValue['mission_tab_id'];
                 $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
-                $missionTranslationsArray["translations"] = [];
+                $missionTranslationsArray['translations'] = [];
                 foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
                     $languageCode = $languages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
                     $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
                     $missionTabTranslations['language_code'] = $languageCode;
                     $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
                     $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
-                    array_push($missionTranslationsArray["translations"], $missionTabTranslations);
+                    array_push($missionTranslationsArray['translations'], $missionTabTranslations);
                 }
                 $value['missionTabs'][$missionTabKey] = $missionTranslationsArray;
             }

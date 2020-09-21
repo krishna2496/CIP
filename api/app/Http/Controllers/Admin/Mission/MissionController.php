@@ -376,7 +376,7 @@ class MissionController extends Controller
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
-                "mission_tabs.*.sort_key" => 
+                "mission_tabs.*.sort_key" =>
                 'required_without:mission_tabs.*.mission_tab_id|integer|distinct',
                 "mission_tabs.*.translations" =>
                 "required_without:mission_tabs.*.mission_tab_id",
@@ -406,7 +406,7 @@ class MissionController extends Controller
         // Check sort key already exist for mission tabs
         if (isset($request->mission_tabs)) {
             $missionTabresponse = $this->missionRepository->checkExistSortKey($missionId, $request->mission_tabs);
-            if(!$missionTabresponse){
+            if (!$missionTabresponse) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

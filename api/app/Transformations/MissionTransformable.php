@@ -218,21 +218,21 @@ trait MissionTransformable
         // get mission tab transformation
         $missionTabDetails = $mission['missionTabs']->toArray();
         if ($missionTabDetails) {
-            $missionLanguageArray = [];
+            $missionTranslationsArray = [];
             foreach ($missionTabDetails as $missionTabKey => $missionTabValue) {
-                $missionLanguageArray['sort_key'] = $missionTabValue['sort_key'];
-                $missionLanguageArray["languages"] = [];
+                $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionTranslationsArray["translations"] = [];
                 if (isset($missionTabValue['get_mission_tab_detail'])) {
-                    foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabLanguadeValue) {
-                        $languageCode = $tenantLanguages->where('language_id', $missionTabLanguadeValue['language_id'])->first()->code;
-                        $missionTabLanguage['language_id'] = $missionTabLanguadeValue['language_id'];
-                        $missionTabLanguage['language_code'] = $languageCode;
-                        $missionTabLanguage['name'] = $missionTabLanguadeValue['name'];
-                        $missionTabLanguage['section'] = json_decode($missionTabLanguadeValue['section']);
-                        array_push($missionLanguageArray["languages"], $missionTabLanguage);
+                    foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
+                        $languageCode = $tenantLanguages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
+                        $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
+                        $missionTabTranslations['language_code'] = $languageCode;
+                        $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
+                        $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
+                        array_push($missionTranslationsArray["translations"], $missionTabTranslations);
                     }
                 }
-                $mission['missionTabs'][$missionTabKey] = $missionLanguageArray;
+                $mission['missionTabs'][$missionTabKey] = $missionTranslationsArray;
             }
         }
          
