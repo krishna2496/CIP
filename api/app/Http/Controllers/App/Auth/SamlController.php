@@ -109,7 +109,8 @@ class SamlController extends Controller
             'linkedin' => 'linked_in_url',
             'volunteer' => 'why_i_volunteer',
             'position' => 'position',
-            'title' => 'title'
+            'title' => 'title',
+            'expires' => 'expiry',
         ];
 
         $validProperties = [
@@ -127,7 +128,8 @@ class SamlController extends Controller
             'linked_in_url',
             'why_i_volunteer',
             'title',
-            'position'
+            'position',
+            'expiry',
         ];
 
         foreach ($auth->getAttributes() as $key => $attribute) {
@@ -290,11 +292,13 @@ class SamlController extends Controller
         if ($userDetail->expiry) {
             $userExpirationDate = new DateTime($userDetail->expiry);
             if ($userExpirationDate < new DateTime()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_FORBIDDEN,
-                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    config('constants.error_codes.ERROR_USER_EXPIRED'),
-                    trans('messages.custom_error_message.ERROR_USER_EXPIRED')
+                $auth->redirectTo(
+                    "{$authRedirectAuthSsoUrl}/error",
+                    [
+                        'error' => trans('messages.custom_error_message.ERROR_USER_EXPIRED'),
+                        'source' => 'saml',
+                        'action' => 'login',
+                    ]
                 );
             }
         }
