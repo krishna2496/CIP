@@ -144,7 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "El reportaje se copió correctamente",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "No se encontraron reportajes",
         'MESSAGE_STORY_UPDATED' => "El reportaje se actualizó correctamente",
-        'MESSAGE_FAVICON_UPLOADED' => 'Favicon uploaded successfully',
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon se cargó correctamente',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Los comentarios del usuario se listaron correctamente",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "El reportaje se envió correctamente",
