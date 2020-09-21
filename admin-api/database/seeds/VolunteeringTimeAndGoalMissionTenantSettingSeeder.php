@@ -15,20 +15,20 @@ class VolunteeringTimeAndGoalMissionTenantSettingSeeder extends Seeder
         $items = [
             [
                 'title' => 'Volunteering time mission',
-                'description' => 'Enabled/disabled Volunteering time mission',
+                'description' => 'Enable/disable volunteering time mission',
                 'key' => 'volunteering_time_mission',
-                "created_at" => Carbon::now()
+                'created_at' => Carbon::now()
             ],
             [
                 'title' => 'Volunteering goal mission',
-                'description' => 'Enabled/disabled Volunteering goal mission',
+                'description' => 'Enable/disable volunteering goal mission',
                 'key' => 'volunteering_goal_mission',
-                "created_at" => Carbon::now()
+                'created_at' => Carbon::now()
             ]
         ];
 
         foreach ($items as $item) {
-            \DB::table('tenant_setting')->insert($item);
+            DB::table('tenant_setting')->insert($item);
         }
     }
 }
