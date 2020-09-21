@@ -127,14 +127,20 @@ class S3Helper
      *
      * @return string
      */
-    public function retrieveFaviconFromS3Bucket(string $tenantName): string
+    public function retrieveFaviconFromS3Bucket(string $tenantName): ?string
     {
-        $imagePath = $tenantName.'/assets/images/favicon/favicon.ico';
+        $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
+        $customFaviconName = config('constants.AWS_S3_CUSTOM_FAVICON_NAME');
+
+        $imagePath = $tenantName . '/'
+            . $assetsFolder
+            . '/images/favicon/'
+            . $customFaviconName;
 
         if (Storage::disk('s3')->exists($imagePath)) {
             return Storage::disk('s3')->url($imagePath);
         } else {
-            return '';
+            return null;
         }
     }
 

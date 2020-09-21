@@ -76,7 +76,7 @@ class TenantCustomizationController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
+                config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
                 $exception->getMessage()
             );
         }
@@ -102,8 +102,9 @@ class TenantCustomizationController extends Controller
         $imagePath = $this->s3helper->retrieveFaviconFromS3Bucket($tenantName);
 
         $apiData = ['favicon' => $imagePath];
-        $apiMessage = trans('messages.success.MESSAGE_FAVICON_UPLOADED');
-        $apiStatus = Response::HTTP_OK;
+        $apiStatus = $imagePath ? Response::HTTP_OK : Response::HTTP_NOT_FOUND;
+        $apiMessage = $imagePath ? trans('messages.success.MESSAGE_FAVICON_UPLOADED') :
+            trans('messages.custom_error_message.ERROR_NO_DATA_FOUND');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }

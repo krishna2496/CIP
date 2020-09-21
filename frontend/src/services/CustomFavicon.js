@@ -3,7 +3,7 @@ import axios from "axios";
 export default async() => {
     let apiUrl = process.env.VUE_APP_API_ENDPOINT;
     let getDynamicFaviconUrl = apiUrl + "app/custom-favicon";
-    await axios.get(getDynamicFaviconUrl).then(({data: {data: {custom_favicon = false}}}) => {
+    await axios.get(getDynamicFaviconUrl).then(({data: {data: {custom_favicon = null}}}) => {
         // Reject the promise if no custom favicon defined
         if (!custom_favicon) {
             return Promise.reject();
@@ -15,5 +15,8 @@ export default async() => {
             .setAttribute("href", custom_favicon);
 
         return Promise.resolve();
+    }).catch((error) => {
+        // Reject the promise if favicon not found
+        return Promise.reject(error);
     });
 };

@@ -15,6 +15,7 @@ use App\Repositories\Slider\SliderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use Validator;
@@ -189,7 +190,7 @@ class TenantOptionController extends Controller
     public function getCustomFavicon(Request $request): JsonResponse
     {
         $isCustomFaviconEnabled = false;
-        $tenantCustomFaviconUrl = '';
+        $tenantCustomFaviconUrl = null;
 
         // Check presence of custom favicon option
         try {
@@ -208,18 +209,24 @@ class TenantOptionController extends Controller
             $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
             $customFaviconName = config('constants.AWS_S3_CUSTOM_FAVICON_NAME');
 
-            $tenantCustomFaviconUrl = S3Helper::makeTenantS3BaseUrl($tenantName)
+            $customFaviconS3Path = $tenantName . '/'
                 . $assetsFolder
                 . '/images/favicon/'
                 . $customFaviconName;
+
+            if (Storage::disk('s3')->exists($customFaviconS3Path)) {
+                $tenantCustomFaviconUrl = Storage::disk('s3')->url($customFaviconS3Path);
+            }
         }
 
         $apiData = [
-            'custom_favicon' => $isCustomFaviconEnabled ? $tenantCustomFaviconUrl : false,
+            'custom_favicon' => $tenantCustomFaviconUrl,
         ];
-        $apiStatus = Response::HTTP_OK;
+        $apiStatus = $tenantCustomFaviconUrl ? Response::HTTP_OK : Response::HTTP_NOT_FOUND;
+        $apiMessage = $tenantCustomFaviconUrl ? trans('messages.success.MESSAGE_FAVICON_UPLOADED') :
+            trans('messages.custom_error_message.ERROR_NO_DATA_FOUND');
 
-        return $this->responseHelper->success($apiStatus, '', $apiData);
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
