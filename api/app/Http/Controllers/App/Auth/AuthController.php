@@ -190,6 +190,10 @@ class AuthController extends Controller
             }
         }
 
+        if ($userDetail->timezone_id === 0) {
+            $userDetail->is_profile_complete = '';
+        }
+
         // Generate JWT token
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
