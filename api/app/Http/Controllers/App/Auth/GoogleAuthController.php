@@ -60,6 +60,7 @@ class GoogleAuthController extends Controller
                         "secret" => env('GOOGLE_AUTH_SECRET'),
                     ],
                     'authorize_url_parameters' => [
+                        'approval_prompt' => 'force',
                         'state' => $state,
                     ]
                 ]
@@ -119,6 +120,7 @@ class GoogleAuthController extends Controller
             'last_name' => $userProfile->lastName,
             'email' => $userProfile->email,
             'status' => '1',
+            'is_admin' => true,
         ];
 
         if (!$userDetail) {

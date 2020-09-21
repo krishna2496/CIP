@@ -1160,7 +1160,7 @@
           {
             "name": "order[orderDir]",
             "in": "path",
-            "description": "Kind or ordering: asc or desc",
+            "description": "Kind of ordering: asc or desc",
             "required": false,
             "type": "string"
           },
@@ -3106,6 +3106,53 @@
                   "type": "string"
                 },
                 "body": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden - Email address does not exist in the system"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/users/password": {
+      "patch": {
+        "operationId": "POST_team4-cip-api-create-password",
+        "summary": "App - Creates User Password (Milestone - 1)",
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
                   "type": "string"
                 }
               }
@@ -8553,6 +8600,24 @@
             "type": "string"
           },
           {
+            "name": "order[orderBy]",
+            "in": "path",
+            "description": "Field name for ordering",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order[orderDir]",
+            "in": "path",
+            "description": "Kind of ordering: asc (default) or desc",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "desc",
+              "asc"
+            ]
+          },
+          {
             "name": "Authorization",
             "in": "header",
             "required": true,
@@ -8998,6 +9063,11 @@
             }
           }
         },
+        "un_sdg": {
+          "type": "array",
+          "description": "Array of valid UN SDG numbers (1 to 17)",
+          "example": [1, 2, 3]
+        },
         "organization": {
           "type": "object",
           "properties": {
@@ -9038,7 +9108,7 @@
               "description": "Organization postal code"
             }
           }
-        },
+        }
       }
     },
     "FooterPage": {

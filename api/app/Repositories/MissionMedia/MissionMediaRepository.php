@@ -45,7 +45,6 @@ class MissionMediaRepository implements MissionMediaInterface
     {
         $isDefault = 0;
         foreach ($mediaImages as $value) {
-            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
             // Check for default image in mission_media
             $default = (isset($value['default']) && ($value['default'] !== '')) ? $value['default'] : '0';
             if ($default === '1') {
@@ -55,17 +54,29 @@ class MissionMediaRepository implements MissionMediaInterface
             }
 
             $missionMedia = array(
-                    'mission_id' => $missionId,
-                    'media_name' => basename($filePath),
-                    'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
-                    'media_path' => $filePath,
-                    'default' => $default,
-                    'sort_order' => $value['sort_order']
-                );
+                'mission_id' => $missionId,
+                'default' => $default,
+                'sort_order' => $value['sort_order']
+            );
+
             if (isset($value['internal_note'])) {
                 $missionMedia['internal_note'] = $value['internal_note'];
             }
-            $this->missionMedia->create($missionMedia);
+
+            $mediaData = $this->missionMedia->create($missionMedia);
+            $mediaId = $mediaData->mission_media_id;
+
+            $filePath = $this->s3helper->uploadFileOnS3Bucket(
+                $value['media_path'],
+                $tenantName,
+                "missions/$missionId/media/$mediaId"
+            );
+            $mediaData->update([
+                'media_name' => basename($filePath),
+                'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
+                'media_path' => $filePath,
+            ]);
+
             unset($missionMedia);
         }
 
@@ -120,12 +131,6 @@ class MissionMediaRepository implements MissionMediaInterface
         $isDefault = 0;
         foreach ($mediaImages as $value) {
             $missionMedia = array();
-            if (isset($value['media_path'])) {
-                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
-                $missionMedia = array('media_name' => basename($filePath),
-                                      'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
-                                      'media_path' => $filePath);
-            }
             if (isset($value['default'])) {
                 // Check for default image in mission_media
                 $default = (isset($value['default']) && ($value['default'] !== '')) ? $value['default'] : '0';
@@ -141,8 +146,26 @@ class MissionMediaRepository implements MissionMediaInterface
             if (isset($value['internal_note'])) {
                 $missionMedia['internal_note'] = $value['internal_note'];
             }
-            $this->missionMedia->createOrUpdateMedia(['mission_id' => $missionId,
-                'mission_media_id' => $value['media_id']], $missionMedia);
+
+            $mediaData = $this->missionMedia->createOrUpdateMedia([
+                'mission_id' => $missionId,
+                'mission_media_id' => $value['media_id']
+            ], $missionMedia);
+
+            if (isset($value['media_path'])) {
+                $mediaId = $mediaData->mission_media_id;
+                $filePath = $this->s3helper->uploadFileOnS3Bucket(
+                    $value['media_path'],
+                    $tenantName,
+                    "missions/$missionId/media/$mediaId"
+                );
+                $mediaData->update([
+                    'media_name' => basename($filePath),
+                    'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
+                    'media_path' => $filePath
+                ]);
+            }
+
             unset($missionMedia);
         }
         $defaultData = $this->missionMedia->where('mission_id', $missionId)->where('default', '1')->count();

@@ -1,5 +1,5 @@
 <?php
-    
+
 namespace Tests\Unit\Repositories\Timesheet;
 
 use App\Helpers\Helpers;
@@ -14,150 +14,133 @@ use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\User\UserRepository;
 use Bschmitt\Amqp\Amqp;
 use TestCase;
+use Mockery;
+use DB;
+use Illuminate\Database\Eloquent\Collection;
 
 class TimeSheetRepositoryTest extends TestCase
 {
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->generateMocks();
+    }
     /**
     * @testdox Get sum of all users approved time
     */
     public function testGetSumOfUsersTotalMinutes()
     {
-        /**
-         * code commented by tatvasoft to ignore test case failer
-         */
-        /*
-        $timeSheetModel = new Timesheet;
-        $instance = $this->getIntance(['timesheet' => $timeSheetModel]);
-        $originalTotalMinutes = $instance->getSumOfUsersTotalMinutes();
-
-        $connection = 'tenant';
-        $missionFactory = factory(Mission::class)->make();
-        $missionFactory->setConnection($connection);
-        $missionFactory->save();
-        $missionId = $missionFactory->mission_id;
-        $timeSheets = [
+        $userTotalMinutes = 100;
+        $timeSheet = $this->mock(Timesheet::class);
+        $totalMinutes = new Collection([
             [
                 'user_id' => 1,
-                'mission_id' => $missionId,
-                'time' => '01:00:00',
-                'action' => null,
-                'date_volunteered' => '2020-06-06',
-                'day_volunteered' => 'WORKDAY',
-                'notes' => 'Some Sample Notes',
-                'status' => 'APPROVED'
-            ],
-            [
-                'user_id' => 1,
-                'mission_id' => $missionId,
-                'time' => '02:00:00',
-                'action' => null,
-                'date_volunteered' => '2020-06-06',
-                'day_volunteered' => 'WORKDAY',
-                'notes' => 'Some Sample Notes',
-                'status' => 'APPROVED'
+                'month' => 9,
+                'total_minutes' => $userTotalMinutes
             ]
+        ]);
+
+        DB::shouldReceive('raw')
+            ->with("user_id, MONTH(date_volunteered) as month,
+        sum(((hour(time) * 60) + minute(time))) as 'total_minutes'")
+            ->once()
+            ->andReturn($totalMinutes);
+
+        $timeSheet
+            ->shouldReceive('select')
+            ->once()
+            ->with($totalMinutes)
+            ->andReturnSelf();
+
+        $timeSheet
+            ->shouldReceive('whereHas')
+            ->once()
+            ->with('mission')
+            ->andReturnSelf();
+
+        $timeSheet
+            ->shouldReceive('leftjoin')
+            ->once()
+            ->with('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
+            ->andReturnSelf();
+
+        $timeSheet
+            ->shouldReceive('where')
+            ->once()
+            ->with('mission.publication_status', config("constants.publication_status")["APPROVED"])
+            ->andReturnSelf();
+
+        $statusArray = [
+            config('constants.timesheet_status.APPROVED'),
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
         ];
 
-        foreach ($timeSheets as $timeSheet) {
-            $timeSheetFactory = factory(Timesheet::class)->make($timeSheet);
-            $timeSheetFactory->setConnection($connection);
-            $timeSheetFactory->save();
-        }
+        $timeSheet
+            ->shouldReceive('whereIn')
+            ->once()
+            ->with('status', $statusArray)
+            ->andReturnSelf();
 
-        $newTotalMinutes = $instance->getSumOfUsersTotalMinutes();
-        // 180 total of new minutes record added
-        $expectedTotalMinutes = $originalTotalMinutes + 180;
+        $timeSheet
+            ->shouldReceive('get')
+            ->once()
+            ->andReturnSelf();
 
-        $this->assertEquals($newTotalMinutes, $expectedTotalMinutes);
-        */
+        $timeSheet
+            ->shouldReceive('first')
+            ->once()
+            ->andReturnSelf();
+
+        $timeSheet
+            ->shouldReceive('toArray')
+            ->once()
+            ->andReturn($totalMinutes[0]);
+
+        $instance = $this->getIntance($timeSheet);
+        $originalTotalMinutes = $instance->getSumOfUsersTotalMinutes();
+
+        $this->assertSame($originalTotalMinutes, $userTotalMinutes);
     }
 
-    private function getIntance($defaults = [])
+    private function getIntance($timeSheet)
     {
-        $timesheet = array_key_exists('timesheet', $defaults) ?
-            $defaults['timesheet'] : $this->getTimeSheetMock();
-
         return new TimesheetRepository(
-            $timesheet,
-            $this->getMissionMock(),
-            $this->getMissionLanguageMock(),
-            $this->getTimesheetDocumentMock(),
-            $this->getHelpersMock(),
-            $this->getLanguageHelperMock(),
-            $this->getS3HelperMock(),
-            $this->getTenantOptionRepositoryMock(),
-            $this->getUserRepositoryMock(),
-            $this->getAmqpMock()
+            $timeSheet,
+            $this->mission,
+            $this->missionLanguage,
+            $this->timesheetDocument,
+            $this->helpers,
+            $this->languageHelper,
+            $this->s3Helper,
+            $this->tenantOptionRepository,
+            $this->userRepository,
+            $this->amqp
         );
     }
 
-    private function getTimeSheetMock()
+    private function generateMocks()
     {
-        return $this->getMockBuilder(Timesheet::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->mission = $this->mock(Mission::class);
+        $this->missionLanguage = $this->mock(MissionLanguage::class);
+        $this->timesheetDocument = $this->mock(TimesheetDocument::class);
+        $this->helpers = $this->mock(Helpers::class);
+        $this->languageHelper = $this->mock(LanguageHelper::class);
+        $this->s3Helper = $this->mock(S3Helper::class);
+        $this->tenantOptionRepository = $this->mock(TenantOptionRepository::class);
+        $this->userRepository = $this->mock(UserRepository::class);
+        $this->amqp = $this->mock(Amqp::class);
     }
 
-    private function getMissionMock()
+    /**
+    * Mock an object
+    *
+    * @param string name
+    *
+    * @return Mockery
+    */
+    private function mock($class)
     {
-        return $this->getMockBuilder(Mission::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getMissionLanguageMock()
-    {
-        return $this->getMockBuilder(MissionLanguage::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getTimesheetDocumentMock()
-    {
-        return $this->getMockBuilder(TimesheetDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getHelpersMock()
-    {
-        return $this->getMockBuilder(Helpers::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getLanguageHelperMock()
-    {
-        return $this->getMockBuilder(LanguageHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getS3HelperMock()
-    {
-        return $this->getMockBuilder(S3Helper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getTenantOptionRepositoryMock()
-    {
-        return $this->getMockBuilder(TenantOptionRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getUserRepositoryMock()
-    {
-        return $this->getMockBuilder(UserRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getAmqpMock()
-    {
-        return $this->getMockBuilder(Amqp::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return Mockery::mock($class);
     }
 }

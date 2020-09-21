@@ -2,24 +2,25 @@
 
 namespace App\Repositories\Mission;
 
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
-use App\Models\Mission;
 use App\Models\FavouriteMission;
-use App\Models\MissionRating;
+use App\Models\Mission;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
+use App\Models\MissionRating;
+use App\Models\MissionTab;
 use App\Repositories\Country\CountryRepository;
-use DB;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Carbon\Carbon;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Services\Mission\ModelsService;
-use App\Models\MissionTab;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
 
@@ -56,6 +57,11 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
+     * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+     */
+    private $missionUnitedNationSDGRepository;
+
+    /**
      * @var App\Repositories\MissionTab\MissionTabRepository
      */
     private $missionTabRepository;
@@ -69,6 +75,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
      */
@@ -79,6 +86,7 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
         $this->languageHelper = $languageHelper;
@@ -87,6 +95,7 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
     }
 
@@ -107,24 +116,10 @@ class MissionRepository implements MissionInterface
             );
         }
 
-        if (isset($request->organisation)) {
-            $organisation = $request->organisation;
-            $organisation['name'] = $organisation['organisation_name'];
-            $request->request->add(['organisation' => $organisation]);
-            $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id' => $request->organisation['organisation_id']],
-                $request->organisation
-            );
-        }
-
         $languages = $this->languageHelper->getLanguages();
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
-
         $organizationDetail = (isset($request->organisation_detail)) ?
             $request->organisation_detail : null;
-        if ($organizationDetail === null && isset($request->organisation['organisation_detail'])) {
-            $organizationDetail = $request->organisation['organisation_detail'];
-        }
 
         if (isset($request->volunteering_attribute)) {
             $volunteeringAttributeArray = [
@@ -132,13 +127,6 @@ class MissionRepository implements MissionInterface
                                 ($request->volunteering_attribute['total_seats'] !== '')) ? $request->volunteering_attribute['total_seats'] : null,
                 'availability_id' => $request->volunteering_attribute['availability_id'],
                 'is_virtual' => (isset($request->volunteering_attribute['is_virtual'])) ? $request->volunteering_attribute['is_virtual'] : 0,
-            ];
-        } else {
-            $volunteeringAttributeArray = [
-                'total_seats' =>  (isset($request->total_seats) && ($request->total_seats !== ''))
-                    ? $request->total_seats : null,
-                'availability_id' => $request->availability_id,
-                'is_virtual' => (isset($request->is_virtual)) ? $request->is_virtual : 0
             ];
         }
 
@@ -149,17 +137,10 @@ class MissionRepository implements MissionInterface
             'start_date' => (isset($request->start_date)) ? $request->start_date : null,
             'end_date' => (isset($request->end_date)) ? $request->end_date : null,
             'publication_status' => $request->publication_status,
-            'organisation_id' => (!empty($organization->organization_id)) ? $organization->organization_id
-                : $request->organisation['organisation_id'],
+            'organization_id' => $organization->organization_id,
             'organisation_detail' => $organizationDetail,
-            'mission_type' => $request->mission_type,
-            'availability_id' => $volunteeringAttributeArray['availability_id'],
-            'total_seats' => $volunteeringAttributeArray['total_seats'],
-            'is_virtual' => $volunteeringAttributeArray['is_virtual'] ? '1' : '0'
+            'mission_type' => $request->mission_type
         ];
-
-        $missionData['organisation_name'] = (!empty($organization)) ? $organization->name :
-            $request->organisation['organisation_name'];
 
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
@@ -249,16 +230,30 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             if (!empty($request->documents)) {
                 foreach ($request->documents as $value) {
-                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
-                    $missionDocument = array('mission_id' => $mission->mission_id,
-                                            'document_name' => basename($filePath),
-                                            'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                            'document_path' => $filePath,
-                                            'sort_order' => $value['sort_order'], );
-                    $this->modelsService->missionDocument->create($missionDocument);
+                    $missionDocument = [
+                        'mission_id' => $mission->mission_id,
+                        'sort_order' => $value['sort_order']
+                    ];
+                    $document = $this->modelsService->missionDocument->create($missionDocument);
+                    $documentId = $document->mission_document_id;
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket(
+                        $value['document_path'],
+                        $tenantName,
+                        "missions/$mission->mission_id/documents/$documentId"
+                    );
+                    $document->update([
+                        'document_name' => basename($filePath),
+                        'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
+                        'document_path' => $filePath,
+                    ]);
                     unset($missionDocument);
                 }
             }
+        }
+
+        // Add UN SDG for mission
+        if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
+            $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request->toArray());
         }
 
         return $mission;
@@ -284,40 +279,19 @@ class MissionRepository implements MissionInterface
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
 
-        if (empty($request->organization) && isset($request->organisation['organisation_id'])) {
-            $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
-        }
-        if (isset($request->organisation['organisation_detail'])) {
-            $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
-        }
-
         if (isset($request->theme_id) && ($request->theme_id === '')) {
             $request->request->set('theme_id', null);
         }
 
         // Create or update organization
-        if (isset($request->organization)) {
+        if (!empty($request->organization)) {
             $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id'=>$request->organization['organization_id']],
+                ['organization_id' => $request->organization['organization_id']],
                 $request->organization
             );
         }
-
-        if (isset($request->organisation)) {
-            $organisation = $request->organisation;
-            if (!empty($organisation['organisation_name'])) {
-                $organisation['name'] = $organisation['organisation_name'];
-                $request->request->add(['organisation' => $organisation]);
-            }
-            $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id'=>$request->organisation['organisation_id']],
-                $request->organisation
-            );
-        }
-
         if (!empty($organization)) {
-            $request->request->add(['organisation_id' => $organization->organization_id]);
-            $request->request->add(['organisation_name' => $organization->name]);
+            $request->request->add(['organization_id' => $organization->organization_id]);
         }
 
         // update volunteering attribute
@@ -327,17 +301,6 @@ class MissionRepository implements MissionInterface
             $request->volunteering_attribute['total_seats'] : null;
             $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
             $volunteeringAttributeArray['total_seats'] = $totalSeats;
-        } else {
-            if (isset($request->total_seats)) {
-                $totalSeats = (isset($request->total_seats) && (trim($request->total_seats) !== '')) ?
-                $request->total_seats : null;
-                $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-                $volunteeringAttributeArray['total_seats'] = $totalSeats;
-            }
-
-            if (isset($request->total_seats) && ($request->total_seats === '')) {
-                $volunteeringAttributeArray['total_seats'] = null;
-            }
         }
 
         if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
@@ -345,14 +308,10 @@ class MissionRepository implements MissionInterface
         }
         if (isset($request->volunteering_attribute['availability_id'])) {
             $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
-        } elseif (isset($request->availability_id)) {
-            $volunteeringAttributeArray['availability_id'] = $request->availability_id;
         }
 
         if (isset($request->volunteering_attribute['is_virtual'])) {
             $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
-        } elseif (isset($request->is_virtual)) {
-            $volunteeringAttributeArray['is_virtual'] = $request->is_virtual;
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -479,20 +438,36 @@ class MissionRepository implements MissionInterface
         if (isset($request->documents) && count($request->documents) > 0) {
             foreach ($request->documents as $value) {
                 $missionDocument = array('mission_id' => $id);
-                if (isset($value['document_path'])) {
-                    $filePath = $this->s3helper->uploadMissionDocumentOnS3Bucket($value['document_path'], $tenantName);
-                    $missionDocument['document_path'] = $filePath;
-                    $missionDocument['document_name'] = basename($filePath);
-                    $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
-                }
                 if (isset($value['sort_order'])) {
                     $missionDocument['sort_order'] = $value['sort_order'];
                 }
 
-                $this->modelsService->missionDocument->createOrUpdateDocument(['mission_id' => $id,
-                 'mission_document_id' => $value['document_id'], ], $missionDocument);
+                $document = $this->modelsService->missionDocument->createOrUpdateDocument([
+                    'mission_id' => $id,
+                    'mission_document_id' => $value['document_id']
+                ], $missionDocument);
+
+                if (isset($value['document_path'])) {
+                    $documentId = $document->mission_document_id;
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket(
+                        $value['document_path'],
+                        $tenantName,
+                        "missions/$id/documents/$documentId"
+                    );
+                    $document->update([
+                        'document_path' => $filePath,
+                        'document_name' => basename($filePath),
+                        'document_type' => pathinfo($filePath, PATHINFO_EXTENSION)
+                    ]);
+                }
+
                 unset($missionDocument);
             }
+        }
+
+        // Update UN SDG for mission
+        if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
+            $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
         }
 
         // Add/Update mission tab details
@@ -529,6 +504,7 @@ class MissionRepository implements MissionInterface
             'missionLanguage',
             'timeMission',
             'goalMission',
+            'unSdg',
             'organization',
             'volunteeringAttribute'
         )->with(['missionSkill' => function ($query) {
@@ -590,11 +566,10 @@ class MissionRepository implements MissionInterface
             'mission.end_date',
             'mission.mission_type',
             'mission.publication_status',
-            'mission.organisation_id',
-            'mission.organisation_name'
+            'mission.organization_id'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission', 'volunteeringAttribute'])
+        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute', 'unSdg' ])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -617,8 +592,8 @@ class MissionRepository implements MissionInterface
                     $missionLanguageQuery->where('title', 'like', '%'.$searchString.'%');
                     $missionLanguageQuery->orWhere('short_description', 'like', '%'.$searchString.'%');
                 });
-                $query->orWhere(function ($organizationQuery) use ($searchString) {
-                    $organizationQuery->orWhere('organisation_name', 'like', '%'.$searchString.'%');
+                $query->wherehas('organization', function ($organizationQuery) use ($searchString) {
+                    $organizationQuery->where('name', 'like', '%'.$searchString.'%');
                 });
             });
         }
@@ -664,10 +639,10 @@ class MissionRepository implements MissionInterface
         // Get  mission data
         $missionQuery = $this->modelsService->mission->select('mission.*');
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
-        $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organisation_id');
+        $missionQuery->leftjoin('organization', 'organization.organization_id', '=', 'mission.organization_id');
         $missionQuery->leftjoin('volunteering_attribute', 'volunteering_attribute.mission_id', '=', 'mission.mission_id');
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'volunteeringAttribute', 'organization', 'unSdg'])
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
@@ -741,7 +716,7 @@ class MissionRepository implements MissionInterface
                 });
             }
             if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
-                $missionQuery->where('mission.organisation_id', $request->input('explore_mission_params'));
+                $missionQuery->where('mission.organization_id', $request->input('explore_mission_params'));
             }
         }
 
@@ -884,10 +859,10 @@ class MissionRepository implements MissionInterface
                 ->orderBY('mission_country_count', 'desc');
                 break;
             case config('constants.TOP_ORGANISATION'):
-                $missionQuery->selectRaw('COUNT(mission.organisation_id) as mission_organisation_count')
+                $missionQuery->selectRaw('COUNT(mission.organization_id) as mission_organization_count')
                 ->with('organization')
-                ->groupBy('mission.organisation_id')
-                ->orderBY('mission_organisation_count', 'desc');
+                ->groupBy('mission.organization_id')
+                ->orderBY('mission_organization_count', 'desc');
                 break;
         }
         $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();
@@ -945,7 +920,7 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
-                            'organisation_id',
+                            'organization_id',
                             $request->input('explore_mission_params')
                         );
                     }
@@ -997,7 +972,7 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
-                            'organisation_id',
+                            'organization_id',
                             $request->input('explore_mission_params')
                         );
                     }
@@ -1051,7 +1026,7 @@ class MissionRepository implements MissionInterface
                     }
                     if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                         $missionQuery->where(
-                            'organisation_id',
+                            'organization_id',
                             $request->input('explore_mission_params')
                         );
                     }
@@ -1134,7 +1109,7 @@ class MissionRepository implements MissionInterface
                         }
                         if ($request->input('explore_mission_type') === config('constants.ORGANIZATION')) {
                             $query->where(
-                                'organisation_id',
+                                'organization_id',
                                 $request->input('explore_mission_params')
                             );
                         }
@@ -1348,7 +1323,7 @@ class MissionRepository implements MissionInterface
         // Get  mission detail
         $missionQuery = $this->modelsService->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config('constants.publication_status')['APPROVED'])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission', 'volunteeringAttribute', 'unSdg'])
             ->with(['missionSkill' => function ($query) {
                 $query->with('mission', 'skill');
             }])
@@ -1467,7 +1442,6 @@ class MissionRepository implements MissionInterface
             $todayDate = Carbon::parse(date(config('constants.DB_DATE_FORMAT')));
             $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
             $todayTime = $this->helpers->getUserTimeZoneDate(date(config('constants.DB_DATE_TIME_FORMAT')));
-
 
             if ((!isset($timeMissionDetails[0]['application_deadline'])) && ((isset($timeMissionDetails[0]['application_start_date']) && ($timeMissionDetails[0]['application_start_date'] !== null)) &&
             (isset($timeMissionDetails[0]['application_end_date']) && ($timeMissionDetails[0]['application_end_date'] !== null)) &&

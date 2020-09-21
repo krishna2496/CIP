@@ -237,6 +237,7 @@ return [
         'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
         'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
+        'ERROR_MAXIMUM_USERS_REACHED' => 'You have reached the maximum number of users. Contact us at ' . config('constants.SUPPORT_EMAIL') . ' to upgrade your account.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
