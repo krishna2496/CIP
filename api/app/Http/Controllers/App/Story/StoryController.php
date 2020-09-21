@@ -128,8 +128,7 @@ class StoryController extends Controller
         try {
             $missionApplicationStatus = $this->missionRepository->getLatestMissionApplicationStatus(
                 (int)$request->get('mission_id'),
-                $request->auth->user_id,
-                config('constants.application_status.AUTOMATICALLY_APPROVED')
+                $request->auth->user_id
             );
 
             if ($missionApplicationStatus === config('constants.application_status.REFUSED')) {
