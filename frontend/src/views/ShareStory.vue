@@ -212,16 +212,16 @@
         pageLoaded: false,
         config: {
           toolbar: [
-            ['PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
-            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+            ['Templates'],
+            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote',
               '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr',
               'BidiRtl'
             ],
-            ['Link', 'Unlink', 'Anchor'],
+            ['Link', 'Unlink'],
             ['Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak'],
-            ['Styles', 'Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
+            ['Format'],
             ['ShowBlocks','Maximize']
           ]
         },
