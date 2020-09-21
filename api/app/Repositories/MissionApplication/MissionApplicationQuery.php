@@ -21,6 +21,7 @@ class MissionApplicationQuery implements QueryableInterface
     private const FILTER_MISSION_CITIES     = 'missionCities';
     private const FILTER_MISSION_TYPES      = 'missionTypes';
     private const FILTER_MISSION_VIRTUAL    = 'isVirtual';
+    private const FILTER_STATUS             = 'approvalStatuses';
 
     private const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
@@ -56,6 +57,7 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
+        $andSearch = $parameters['andSearch'];
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
@@ -118,6 +120,10 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.country.languages',
                 'mission.city.languages',
             ])
+            // Filter by Status
+            ->when(isset($filters[self::FILTER_STATUS]), function($query) use ($filters) {
+                $query->whereIn('approval_status', $filters[self::FILTER_STATUS]);
+            })
             // Filter by application ID
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
                 $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
@@ -174,11 +180,7 @@ class MissionApplicationQuery implements QueryableInterface
                 });
             })
             // Search
-            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
-                /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
-                 * the condition on the where can *not* be exclusive as we might lose valid results from
-                 * previous filtering. We then need to use the OR condition for searchable fields.
-                 */
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId, $andSearch) {
                 $searchCallback = function ($query) use ($search, $filters, $languageId) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
@@ -207,11 +209,13 @@ class MissionApplicationQuery implements QueryableInterface
                         });
                 };
 
-                if (isset($filters[self::FILTER_APPLICATION_IDS])) {
-                    $query->orWhere($searchCallback);
-                } else {
-                    $query->where($searchCallback);
-                }
+                /* In the case we have the $andSearch set to false,
+                 * the condition on the where can *not* be exclusive as we might lose valid results from
+                 * previous filtering (in Optimy). We then need to use the OR condition for searchable fields.
+                 */
+                $andSearch
+                    ? $query->where($searchCallback)
+                    : $query->orWhere($searchCallback);
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
