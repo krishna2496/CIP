@@ -5,8 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        isLoggedIn: !!localStorage.getItem('token'),
-        token: localStorage.getItem('token'),
+        isLoggedIn: !!localStorage.getItem('isLoggedIn'),
         listOfLanguage: localStorage.getItem('listOfLanguage'),
         defaultLanguage: localStorage.getItem('defaultLanguage'),
         defaultLanguageId: localStorage.getItem('defaultLanguageId'),
@@ -64,11 +63,9 @@ export default new Vuex.Store({
         siteTitle: JSON.parse(localStorage.getItem('siteTitle'))
     },
     mutations: {
-        setToken(state, data) {
-            localStorage.setItem('token', data)
-            localStorage.setItem('isLoggedIn', data.token)
-            state.isLoggedIn = true;
-            state.token = data;
+        setIsLoggedIn(state, data) {
+            localStorage.setItem('isLoggedIn', true)
+            state.isLoggedIn = data;
         },
         // Set login data in state and local storage
         loginUser(state, data) {
