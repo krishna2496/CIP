@@ -2,11 +2,15 @@
 
 namespace Tests\Unit\Services;
 
+use App\Exceptions\MaximumUsersReachedException;
 use App\Models\MissionApplication;
 use App\Models\ActivityLog;
+use App\Models\TenantOption;
 use App\Models\Timesheet;
 use App\Models\FavouriteMission;
+use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Repositories\User\UserRepository;
+use App\Services\TenantOptionService;
 use App\Services\UserService;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,6 +18,9 @@ use Illuminate\Http\Request;
 use Mockery;
 use TestCase;
 
+/**
+ * @coversDefaultClass  \App\Services\UserService
+ */
 class UserServiceTest extends TestCase
 {
     /**
@@ -33,8 +40,11 @@ class UserServiceTest extends TestCase
             ->with($user->user_id)
             ->andReturn($user);
 
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
         $service = $this->getService(
-            $userRepository
+            $userRepository,
+            $tenantOptionService
         );
 
         $response = $service->findById($user->user_id);
@@ -69,8 +79,11 @@ class UserServiceTest extends TestCase
             ->with($user, $request->all())
             ->andReturn($methodResponseTwo);
 
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
         $service = $this->getService(
-            $userRepository
+            $userRepository,
+            $tenantOptionService
         );
 
         $response = $service->statistics($user, $request->all());
@@ -130,8 +143,11 @@ class UserServiceTest extends TestCase
             ->with($user, $request->all())
             ->andReturn($favoriteMission);
 
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
         $service = $this->getService(
-            $userRepository
+            $userRepository,
+            $tenantOptionService
         );
         $response = $service->volunteerSummary($user, $request->all());
         $this->assertEquals([
@@ -141,6 +157,217 @@ class UserServiceTest extends TestCase
             'mission' => 1,
             'favourite_mission' => 1
         ], $response);
+    }
+
+    /**
+     * Data provider for ::testStore().
+     *
+     * @return  array<string, array<int, mixed>>
+     */
+    public function storeData(): array
+    {
+        $_this = $this;
+        $request = [];
+        $user = new User();
+        $getTenantOption = function ($value) {
+            $tenantOption = new TenantOption();
+            $tenantOption->option_name = TenantOption::MAXIMUM_USERS;
+            $tenantOption->option_value = $value;
+            return $tenantOption;
+        };
+
+        return [
+            'No maximum users set' => [
+                function () use ($_this, $request, $user) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldReceive('store')
+                        ->once()
+                        ->with($request)
+                        ->andReturn($user);
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn(null);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request,
+                null,
+            ],
+            'Unlimited users set' => [
+                function () use ($_this, $request, $user, $getTenantOption) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldNotReceive('getUserCount');
+                    $userRepository->shouldReceive('store')
+                        ->once()
+                        ->with($request)
+                        ->andReturn($user);
+
+                    $tenantOption = $getTenantOption('-1');
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn($tenantOption);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request,
+                null,
+            ],
+            'Limited users set; limit not yet reached' => [
+                function () use ($_this, $request, $user, $getTenantOption) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldReceive('getUserCount')
+                        ->once()
+                        ->with(true)
+                        ->andReturn(0);
+                    $userRepository->shouldReceive('store')
+                        ->once()
+                        ->with($request)
+                        ->andReturn($user);
+
+                    $tenantOption = $getTenantOption('1');
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn($tenantOption);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request,
+                null,
+            ],
+            'Limited users set, limit already reached' => [
+                function () use ($_this, $getTenantOption) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldReceive('getUserCount')
+                        ->once()
+                        ->with(true)
+                        ->andReturn(1);
+                    $userRepository->shouldNotReceive('store');
+
+                    $tenantOption = $getTenantOption('1');
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn($tenantOption);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request,
+                MaximumUsersReachedException::class,
+            ],
+            'Limited users set, limit already exceeded' => [
+                function () use ($_this, $getTenantOption) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldReceive('getUserCount')
+                        ->once()
+                        ->with(true)
+                        ->andReturn(2);
+                    $userRepository->shouldNotReceive('store');
+
+                    $tenantOption = $getTenantOption('1');
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn($tenantOption);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request,
+                MaximumUsersReachedException::class,
+            ],
+        ];
+    }
+
+    /**
+     * @param  callable
+     * @param  array
+     * @param  string|null
+     *
+     * @covers  ::store
+     *
+     * @dataProvider  storeData
+     */
+    public function testStore(callable $getUserService, array $request, ?string $expectedException = null): void
+    {
+        if ($expectedException) {
+            $this->expectException($expectedException);
+        }
+
+        $userService = $getUserService();
+        $userService->store($request);
+    }
+
+    /**
+     * @covers  ::update
+     */
+    public function testUpdate(): void
+    {
+        $request = [];
+        $id = 1;
+
+        $user = new User();
+        $user->setAttribute('id', $id);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository->shouldReceive('update')
+            ->once()
+            ->with($request, $id)
+            ->andReturn($user);
+
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
+        $userService = $this->getService($userRepository, $tenantOptionService);
+        $res = $userService->update($request, $id);
+
+        $this->assertSame($user, $res);
+    }
+
+    /**
+     * @covers  ::getUserCount
+     */
+    public function testGetUserCount(): void
+    {
+        $activeStatus = [
+            'inactive' => false,
+            'active' => true,
+        ];
+        $userCount = [
+            'inactive' => 3,
+            'active' => 9,
+        ];
+
+        $userRepository = $this->mock(UserRepository::class);
+        $_this = $this;
+        $userRepository->shouldReceive('getUserCount')
+            ->andReturnUsing(function ($active) use ($_this, $activeStatus, $userCount) {
+                $_this->assertIsBool($active);
+                $status = array_search($active, $activeStatus);
+                return $userCount[$status];
+            });
+
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
+        $userService = $this->getService($userRepository, $tenantOptionService);
+
+        $res = $userService->getUserCount(false);
+
+        $this->assertSame($userCount['inactive'], $res);
+
+        $res = $userService->getUserCount(true);
+
+        $this->assertSame($userCount['active'], $res);
     }
 
     private function getMockResponse()
@@ -170,15 +397,18 @@ class UserServiceTest extends TestCase
     /**
      * Create a new service instance.
      *
-     * @param  App\Repositories\Timesheet\UserRepository $userRepository
+     * @param  UserRepository       $userRepository
+     * @param  TenantOptionService  $tenantOptionService
      *
      * @return void
      */
     private function getService(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TenantOptionService $tenantOptionService
     ) {
         return new UserService(
-            $userRepository
+            $userRepository,
+            $tenantOptionService
         );
     }
 
