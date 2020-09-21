@@ -97,7 +97,6 @@ export default new Vuex.Store({
         logoutUser(state, data) {
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
-            localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
             localStorage.removeItem('lastName')
@@ -106,7 +105,6 @@ export default new Vuex.Store({
             localStorage.removeItem('policyPage')
             localStorage.removeItem('isProfileComplete');
             state.isLoggedIn = false;
-            state.token = null;
             state.userId = null;
             state.firstName = null;
             state.lastName = null;
@@ -245,10 +243,6 @@ export default new Vuex.Store({
         setlanguageLabel(state, data) {
             localStorage.setItem("languageLabel", JSON.stringify(data));
             state.languageLabel = JSON.stringify(data);
-        },
-        changeToken(state, data) {
-            localStorage.setItem('token', data)
-            state.token = data;
         },
         changeAvatar(state, data) {
             localStorage.setItem('avatar', data.avatar)
