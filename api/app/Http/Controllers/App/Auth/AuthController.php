@@ -32,6 +32,9 @@ This controller is responsible for handling authenticate, change password and re
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;
+
+    private const TOKEN_COOKIE_NAME = 'token';
+
     /**
      * The request instance.
      *
@@ -228,7 +231,7 @@ class AuthController extends Controller
 
         // Create the cookie holding the token
         $cookie = new Cookie(
-            'token',
+            self::TOKEN_COOKIE_NAME,
             $this->helpers->getJwtToken($userDetail->user_id, $tenantName),
             strtotime('+4hours'),
             '/',
@@ -503,5 +506,16 @@ class AuthController extends Controller
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    public function logout()
+    {
+        return $this->responseHelper
+            ->success(
+                Response::HTTP_OK,
+                'You were successfully logged out',
+                []
+            )
+            ->withCookie(new Cookie(self::TOKEN_COOKIE_NAME, '', 0));
     }
 }

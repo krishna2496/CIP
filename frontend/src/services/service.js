@@ -1,6 +1,7 @@
 import loadLocaleMessages from "./Tenant/LocaleMessages";
 import missionListing from "./Mission/MissionListing";
 import login from "./Auth/Login";
+import logout from "./Auth/Logout";
 import forgotPassword from "./Auth/ForgotPassword";
 import resetPassword from "./Auth/ResetPassword";
 import databaseConnection from "./Tenant/DatabaseConnection";
@@ -72,6 +73,7 @@ export {
     loadLocaleMessages,
     missionListing,
     login,
+    logout,
     databaseConnection,
     forgotPassword,
     resetPassword,
