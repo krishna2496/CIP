@@ -4038,7 +4038,10 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Unable to read the file of the favicon request parameter"
+            "description": "Unable to read the file specified in the favicon field"
+          },
+          "422": {
+            "description": "The favicon field is required"
           }
         }
       }

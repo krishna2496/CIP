@@ -74,8 +74,8 @@ class TenantCustomizationController extends Controller
             $favicon = $request->file('favicon')->get();
         } catch (FileNotFoundException $exception) {
             return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
                 $exception->getMessage()
             );
