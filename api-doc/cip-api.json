@@ -3976,13 +3976,13 @@
     "/style/favicon": {
       "get": {
         "operationId": "GET_team4-cip-api-favicon",
-        "summary": "Admin - Retrieve tenant favicon (Milestone - 1)",
-        "description": "It is for custom styling - Tenant admin can change favicon used in platform (front end) and retrieve it from here.",
+        "summary": "Admin - Retrieve tenant favicon",
+        "description": "Retrieve the tenant favicon url (if it exists).",
         "tags": [
           "Tenant - Admin"
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
@@ -3999,13 +3999,16 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "No favicon found for the tenant"
           }
         }
       },
       "post": {
         "operationId": "POST_team4-cip-api-favicon",
-        "summary": "Admin - Update tenant favicon (Milestone - 1)",
-        "description": "It is for custom styling - Tenant admin can change favicon used in platform (front end) and upload it from here.",
+        "summary": "Admin - Upload / Update tenant favicon",
+        "description": "Upload (or update if it already exists) the tenant favicon.",
         "tags": [
           "Tenant - Admin"
         ],
@@ -4025,13 +4028,6 @@
             "in": "formData",
             "required": true,
             "type": "file"
-          },
-          {
-            "name": "_method",
-            "in": "formData",
-            "required": true,
-            "type": "string",
-            "default": "patch"
           }
         ],
         "responses": {
@@ -4042,7 +4038,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "No files found on S3 assets folder for this tenant"
+            "description": "Unable to read the file of the favicon request parameter"
           }
         }
       }
@@ -4356,13 +4352,13 @@
     "/app/custom-favicon": {
       "get": {
         "operationId": "GET_team4-cip-api-custom-favicon",
-        "summary": "App - Get custom favicon url (Milestone - 1)",
+        "summary": "App - Get custom favicon url",
         "description": "This API will retrieve custom favicon url. So front end can use this favicon.",
         "tags": [
           "Tenant - App"
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "responses": {
         }
