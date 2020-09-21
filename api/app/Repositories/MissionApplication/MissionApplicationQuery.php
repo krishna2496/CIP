@@ -184,28 +184,28 @@ class MissionApplicationQuery implements QueryableInterface
                 $searchCallback = function ($query) use ($search, $filters, $languageId) {
                     $query->whereHas('user', function($query) use ($search) {
                         $query
-                            ->where('first_name', 'like', "%${search}%")
-                            ->orWhere('last_name', 'like', "%${search}%")
-                            ->orWhere('email', 'like', "%${search}%");
+                            ->where('first_name', 'like', "${search}%")
+                            ->orWhere('last_name', 'like', "${search}%")
+                            ->orWhere('email', 'like', "${search}%");
                     })
-                        ->orWhere('mission_language.title', 'like', "%${search}%")
+                        ->orWhere('mission_language.title', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('mission_language.title')
-                                ->where('mission_language_fallback.title', 'like', "%${search}%");
+                                ->where('mission_language_fallback.title', 'like', "${search}%");
                         })
-                        ->orWhere('city_language.name', 'like', "%${search}%")
+                        ->orWhere('city_language.name', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('city_language.name')
-                                ->where('city_language_fallback.name', 'like', "%${search}%");
+                                ->where('city_language_fallback.name', 'like', "${search}%");
 
                         })
-                        ->orWhere('country_language.name', 'like', "%${search}%")
+                        ->orWhere('country_language.name', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('country_language.name')
-                                ->where('country_language_fallback.name', 'like', "%${search}%");
+                                ->where('country_language_fallback.name', 'like', "${search}%");
                         });
                 };
 
