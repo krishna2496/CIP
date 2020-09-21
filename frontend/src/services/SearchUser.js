@@ -1,15 +1,19 @@
 import axios from 'axios'
 import store from '../store'
 
-export default async() => {
-  let responseData;
+export default async(keyword) => {
   let defaultLanguage = '';
   if (store.state.defaultLanguage !== null) {
     defaultLanguage = (store.state.defaultLanguage).toLowerCase();
   }
-  let url = process.env.VUE_APP_API_ENDPOINT + "app/user";
 
-  await axios({
+  let url = process.env.VUE_APP_API_ENDPOINT + 'app/user'
+
+  if (keyword) {
+    url = url + '?search=' + keyword;
+  }
+
+  return await axios({
     url: url,
     method: 'get',
     headers: {
@@ -17,11 +21,8 @@ export default async() => {
       'token': store.state.token,
     }
   })
-    .then((response) => {
-      if (response.data.data) {
-        responseData = response.data.data;
-      }
-    })
-    .catch(function() {});
-  return responseData;
+  .then(({ data: { data }}) => data)
+  .catch(function() {});
+
+
 }

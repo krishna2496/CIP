@@ -318,8 +318,7 @@
   export default {
     name: "MissionListView",
     props: {
-      items: Array,
-      userList: Array
+      items: Array
     },
     components: {
       StarRating,
