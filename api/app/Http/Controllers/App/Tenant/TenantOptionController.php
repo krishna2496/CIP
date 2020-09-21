@@ -206,7 +206,7 @@ class TenantOptionController extends Controller
         if ($isCustomFaviconEnabled) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
-            $customFaviconName = 'favicon.ico';
+            $customFaviconName = config('constants.AWS_S3_CUSTOM_FAVICON_NAME');
 
             $tenantCustomFaviconUrl = S3Helper::makeTenantS3BaseUrl($tenantName)
                 . $assetsFolder

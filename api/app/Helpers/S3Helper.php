@@ -116,7 +116,7 @@ class S3Helper
     public function uploadFaviconOnS3Bucket(string $favicon, string $tenantName): string
     {
         $imagePath = $tenantName.'/assets/images/favicon/favicon.ico';
-        Storage::disk('s3')->put($imagePath, base64_decode($favicon), 'public');
+        Storage::disk('s3')->put($imagePath, $favicon, 'public');
         return Storage::disk('s3')->url($imagePath);
     }
 

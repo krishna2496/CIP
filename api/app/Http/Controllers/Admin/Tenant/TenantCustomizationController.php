@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Admin\Tenant;
 
 use App\Events\User\UserActivityLogEvent;
@@ -72,7 +71,7 @@ class TenantCustomizationController extends Controller
         }
 
         try {
-            $favicon = base64_encode($request->file('favicon')->get());
+            $favicon = $request->file('favicon')->get();
         } catch (FileNotFoundException $exception) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
