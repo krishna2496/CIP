@@ -556,10 +556,11 @@ class MissionRepository implements MissionInterface
      * Find the specified resource from database.
      *
      * @param int $id
+     * @param bool $includeImpact
      *
      * @return App\Models\Mission
      */
-    public function find(int $id): Mission
+    public function find(int $id, bool $includeImpact = false): Mission
     {
         $mission = $this->modelsService->mission->
         with(
@@ -586,14 +587,7 @@ class MissionRepository implements MissionInterface
         }, 'missionTab.getMissionTabDetail' => function ($query) {
         }]);
 
-        // Check mission_imapct setting is avctivated or not
-        $request = new Request();
-        $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.MISSION_IMPACT'),
-            $request
-        );
-
-        if ($missionImpactSettingActivated) {
+        if ($includeImpact) {
             $mission->with(['impact' => function ($query) {
             }, 'impact.missionImpactLanguageDetails' => function ($query) {
             }]);
@@ -614,7 +608,7 @@ class MissionRepository implements MissionInterface
         // mission tab array modification
         $this->missionTabTransformArray($mission, $languages);
         
-        if ($missionImpactSettingActivated) {
+        if ($includeImpact) {
             return $this->adminTransformMission($mission, $languages, $this->tenantActivatedSettingRepository);
         }
 
@@ -637,10 +631,11 @@ class MissionRepository implements MissionInterface
      * Display a listing of mission.
      *
      * @param Illuminate\Http\Request $request
+     * @param bool $includeImpact
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function missionList(Request $request): LengthAwarePaginator
+    public function missionList(Request $request, $includeImpact = false): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages();
         $missionQuery = $this->modelsService->mission->select(
@@ -689,14 +684,7 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBy('mission_id', $orderDirection);
         }
 
-        // Check mission_imapct setting is avctivated or not
-        $request = new Request();
-        $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.MISSION_IMPACT'),
-            $request
-        );
-
-        if ($missionImpactSettingActivated) {
+        if ($includeImpact) {
             $missionQuery->with(['impact' => function ($query) {
             }, 'impact.missionImpactLanguageDetails' => function ($query) {
             }]);
@@ -720,7 +708,7 @@ class MissionRepository implements MissionInterface
             // mission tab array modification
             $this->missionTabTransformArray($value, $languages);
 
-            if ($missionImpactSettingActivated) {
+            if ($includeImpact) {
                 $this->adminTransformMission($value, $languages, $this->tenantActivatedSettingRepository);
             }
         }

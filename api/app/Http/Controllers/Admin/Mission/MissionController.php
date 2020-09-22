@@ -120,8 +120,12 @@ class MissionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+
+            // Get mission_impact tenant setting status
+            $tenantMissionImpactSettingStatus = $this->getTenantActivatedSetting();
+
             // Get mission
-            $missions = $this->missionRepository->missionList($request);
+            $missions = $this->missionRepository->missionList($request, $tenantMissionImpactSettingStatus);
 
             // Set response data
             $apiData = $missions;
@@ -301,8 +305,12 @@ class MissionController extends Controller
     public function show(int $missionId): JsonResponse
     {
         try {
+
+            // Get mission_impact tenant setting status
+            $tenantMissionImpactSettingStatus = $this->getTenantActivatedSetting();
+            
             // Get data for parent table
-            $mission = $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find($missionId, $tenantMissionImpactSettingStatus);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -791,5 +799,21 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Get mission impact tenant setting status
+     *
+     * @return bool
+     */
+    public function getTenantActivatedSetting()
+    {
+        $request = new Request();
+        $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.MISSION_IMPACT'),
+            $request
+        );
+
+        return $missionImpactSettingActivated;
     }
 }

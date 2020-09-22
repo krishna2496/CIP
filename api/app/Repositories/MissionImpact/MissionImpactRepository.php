@@ -171,15 +171,15 @@ class MissionImpactRepository implements MissionImpactInterface
      */
     public function deleteMissionImpactAndS3bucketData(string $missionImpactId): bool
     {
-        $request = new Request();
-        $missionImpactData = $this->missionImpactModel->select('mission_id')
+        $missionImpactData = $this->missionImpactModel->select('icon_path')
             ->where(['mission_impact_id' => $missionImpactId, ['deleted_at', '=', null]])->get()->toArray();
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
         if (!empty($missionImpactData)) {
-            $missionId = $missionImpactData[0]['mission_id'];
-            if (Storage::disk('s3')->exists("$tenantName/missions/$missionId/impact/$missionImpactId")) {
-                Storage::disk('s3')->deleteDirectory("$tenantName/missions/$missionId/impact/$missionImpactId");
+            $iconPath = $missionImpactData[0]['icon_path'];
+            $storageIconPath = parse_url($iconPath);
+            $trimIconPath = ltrim($storageIconPath['path'], '/');
+            if (Storage::disk('s3')->exists($trimIconPath)) {
+                Storage::disk('s3')->delete($trimIconPath);
             }
         }
 
