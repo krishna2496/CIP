@@ -104,6 +104,11 @@ export default new Vuex.Store({
             localStorage.removeItem('cookieAgreementDate')
             localStorage.removeItem('policyPage')
             localStorage.removeItem('isProfileComplete');
+            localStorage.removeItem('email');
+            localStorage.removeItem('cityId');
+            localStorage.removeItem('userTimezone');
+            localStorage.removeItem('tags');
+            localStorage.removeItem('isLoggedIn');
             state.isLoggedIn = false;
             state.userId = null;
             state.firstName = null;

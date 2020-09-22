@@ -124,14 +124,6 @@ class JwtMiddleware
                 }
             }
 
-            if (isset($credentials->sso) && $credentials->sso) {
-                $newToken = $this->helpers->getJwtToken(
-                    $user->user_id,
-                    $this->helpers->getSubDomainFromRequest($request)
-                );
-                header('Token: ' . $newToken);
-            }
-
             $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);
             if ($timezone) {
                 $timezone = $timezone->timezone;
