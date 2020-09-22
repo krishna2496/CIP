@@ -53,7 +53,7 @@ class CustomValidationRules
 
         Validator::extend('valid_linkedin_url', function ($attribute, $value) {
             return (preg_match(
-                '/^http(s)?:\/\/([\w]+\.)?linkedin\.com\/in\/[A-z0-9_-]+\/?/',
+                '/^http(s)?:\/\/(www)?(\.)?linkedin\.com\/in\/[A-z0-9_-]+\/?$/',
                 $value
             ))
             ? true : false;
