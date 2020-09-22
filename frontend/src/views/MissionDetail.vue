@@ -710,8 +710,7 @@
         },
         customInformation: [],
         missionRatingSetting:true,
-        isStarRatingDisable: false,
-        users: []
+        isStarRatingDisable: false
       };
     },
     mounted() {
