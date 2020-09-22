@@ -32,13 +32,13 @@
                             {{ languageData.errors.invalid_password }}
                         </div>
                         <div v-if="submitted && !$v.resetPassword.password.containsUpperCase" class="invalid-feedback">
-                            Password should contain atleast 1 uppercase letter. <!--Translations will follow-->
+                            {{ languageData.errors.password_should_contain_uppercase }}
                         </div>
                         <div v-if="submitted && !$v.resetPassword.password.containsLowerCase" class="invalid-feedback">
-                            Password should contain atleast 1 lowercase letter. <!--Translations will follow-->
+                            {{ languageData.errors.password_should_contain_lowercase }}
                         </div>
                         <div v-if="submitted && !$v.resetPassword.password.containsNumber" class="invalid-feedback">
-                            Password should contain atleast 1 digit. <!--Translations will follow-->
+                            {{ languageData.errors.password_should_contain_numbers }}
                         </div>
                     </b-form-group>
                     <b-form-group>
