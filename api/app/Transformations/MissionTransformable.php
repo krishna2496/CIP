@@ -3,6 +3,7 @@ namespace App\Transformations;
 
 use App\Models\Mission;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait MissionTransformable
 {
@@ -23,7 +24,7 @@ trait MissionTransformable
         int $languageId,
         int $defaultTenantLanguage,
         string $timezone,
-        object $tenantLanguages = null
+        Collection $tenantLanguages
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
@@ -223,7 +224,7 @@ trait MissionTransformable
             $missionTranslationsArray = [];
             foreach ($missionTabDetails as $missionTabKey => $missionTabValue) {
                 $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
-                $missionTranslationsArray["translations"] = [];
+                $missionTranslationsArray['translations'] = [];
                 if (isset($missionTabValue['get_mission_tab_detail'])) {
                     foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
                         $languageCode = $tenantLanguages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
@@ -231,13 +232,13 @@ trait MissionTransformable
                         $missionTabTranslations['language_code'] = $languageCode;
                         $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
                         $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
-                        array_push($missionTranslationsArray["translations"], $missionTabTranslations);
+                        array_push($missionTranslationsArray['translations'], $missionTabTranslations);
                     }
                 }
                 $mission['missionTabs'][$missionTabKey] = $missionTranslationsArray;
             }
         }
-         
+
         unset($mission['volunteeringAttribute']);
         return $mission;
     }
