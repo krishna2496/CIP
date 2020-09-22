@@ -226,59 +226,7 @@
             </div>
 
         </div>
-        <b-modal
-          @hidden="hideModal"
-          ref="userDetailModal"
-          :modal-class="['userdetail-modal']"
-          size="lg"
-          hide-footer
-        >
-          <template slot="modal-header" slot-scope="{ close }">
-            <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-            <h5 class="modal-title">{{languageData.label.search_user}}</h5>
-          </template>
-          <b-alert
-            show
-            :variant="classVariant"
-            dismissible
-            v-model="showErrorDiv"
-          >
-            {{ message }}
-          </b-alert>
-          <div class="autocomplete-control">
-            <div class="autosuggest-container">
-              <VueAutosuggest
-                ref="autosuggest"
-                name="user"
-                :suggestions="filteredOptions"
-                @input="onInputChange"
-                @selected="onSelected"
-                :get-suggestion-value="getSuggestionValue"
-                :input-props="{
-                  id:'autosuggest__input',
-                  placeholder:languageData.placeholder.search_user,
-                  ref:'inputAutoSuggest'
-                }"
-              >
-                <div slot-scope="{suggestion}">
-                  <img :src="suggestion.item.avatar" />
-                  <div>
-                    {{suggestion.item.first_name}} {{suggestion.item.last_name}}
-                  </div>
-                </div>
-              </VueAutosuggest>
-              </div>
-          </div>
-          <b-form>
-              <div class="btn-wrap">
-                  <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                      {{ languageData.label.close }}</b-button>
-                  <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
-                            v-bind:disabled="submitDisable">
-                      {{ languageData.label.submit }}</b-button>
-              </div>
-          </b-form>
-        </b-modal>
+      <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
     </div>
     <div class="no-data-found" v-else>
         <h2 class="text-center">{{noRecordFound()}}</h2>
@@ -304,16 +252,10 @@
 <script>
   import store from '../store';
   import constants from '../constant';
+  import InviteCoWorker from "@/components/InviteCoWorker";
   import StarRating from 'vue-star-rating';
   import moment from 'moment';
-  import {
-    favoriteMission,
-    inviteColleague,
-    applyMission, searchUser
-  } from "../services/service";
-  import {
-    VueAutosuggest
-  } from 'vue-autosuggest';
+  import { favoriteMission, applyMission } from "../services/service";
 
   export default {
     name: "MissionListView",
@@ -321,14 +263,12 @@
       items: Array
     },
     components: {
-      StarRating,
-      VueAutosuggest
+      InviteCoWorker,
+      StarRating
     },
     data() {
       return {
-        classVariant: "success",
         currentMissionId: 0,
-        invitedUserId: 0,
         isInviteCollegueDisplay: true,
         isQuickAccessSet: true,
         isThemeSet: true,
@@ -336,12 +276,8 @@
         isSubmitNewMissionSet: true,
         languageData: [],
         message: null,
-        selected: null,
-        showErrorDiv: false,
-        submitDisable: true,
         submitNewMissionUrl: '',
-        isSkillDisplay: true,
-        users: []
+        isSkillDisplay: true
       };
     },
     computed: {
@@ -433,96 +369,13 @@
 
       },
 
-
-      /*
-       * Sets display value of suggestion in Invite Co-worker modal
-       */
-      getSuggestionValue(suggestion) {
-        let firstName = suggestion.item.first_name;
-        let lastName = suggestion.item.last_name;
-        return firstName + ' ' + lastName;
-      },
       /*
 			 * Opens Recommend to a co-worker modal
 			 */
       handleModal(missionId) {
-        this.showErrorDiv = false;
-        this.message = null;
-        this.$refs.userDetailModal.show();
         this.currentMissionId = missionId;
-        setTimeout(() => {
-          this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-          var input = document.getElementById("autosuggest__input");
-          input.addEventListener("keyup", (event) => {
-            if (event.keyCode === 13 && !this.submitDisable) {
-              event.preventDefault();
-              this.inviteColleagues()
-            }
-          });
-        }, 100);
+        this.$refs.userDetailModal.show();
       },
-      /*
-		   * Hide Invite a co-worker modal
-		   */
-      hideModal() {
-        this.submitDisable = true;
-        this.currentMissionId = null;
-        this.invitedUserId = null;
-        this.selected = null;
-        this.users = [];
-      },
-      /*
-			 * Invite colleague api call
-			 */
-      inviteColleagues() {
-        let inviteData = {
-          mission_id: this.currentMissionId,
-          to_user_id: this.invitedUserId
-        };
-
-        inviteColleague(inviteData).then(response => {
-          this.submitDisable = true;
-          if (response.error == true) {
-            this.classVariant = "danger";
-            this.message = response.message;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = "";
-            this.showErrorDiv = true;
-
-          } else {
-            this.selected = null;
-            this.invitedUserId = null;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = "";
-            this.classVariant = "success";
-            this.message = response.message;
-            this.showErrorDiv = true;
-          }
-        });
-      },
-      /*
-       * Autocomplete search for users
-       */
-      onInputChange(input) {
-        this.submitDisable = true;
-        if (input.length > 2) {
-          searchUser(input).then(users => {
-            this.users = users
-          });
-        }
-      },
-      /*
-			 * Event triggered when user selects co-worker to invite
-			 */
-      onSelected(item) {
-        if(item) {
-          this.selected = item.item;
-          this.submitDisable = false;
-          this.invitedUserId = item.item.user_id;
-          this.users = [];
-        }
-      },
-
 
       // Apply for mission
       applyForMission(missionDetail) {
