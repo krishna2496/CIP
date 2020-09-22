@@ -46,12 +46,7 @@ class MissionTheme extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $translations = [];
-        foreach ($value as $translation) {
-            $translations[$translation['lang']] = $translation['title'];
-        }
-
-        $this->attributes['translations'] = json_encode($translations,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -63,19 +58,7 @@ class MissionTheme extends Model
     public function getTranslationsAttribute(string $value): array
     {
         $data = @json_decode($value);
-
-        $trans = [];
-        if ($data !== null) {
-            $translations = json_decode($value, true);
-
-            foreach ($translations as $lang => $title) {
-                $trans[] = [
-                    'lang' => $lang,
-                    'title' => $title,
-                ];
-            }
-        }
-        return $trans;
+        return ($data !== null) ? json_decode($value, true): array();
     }
 
     /**
