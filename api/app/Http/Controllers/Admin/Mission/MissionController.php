@@ -199,9 +199,6 @@ class MissionController extends Controller
                 'required_with:impact_donation.*.translations|max:2',
                 "impact_donation.*.translations.*.content" =>
                 'required_with:impact_donation.*.translations|max:160',
-                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
-                "total_seats" => "integer|min:1",
-                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.translations"=> 'required',
