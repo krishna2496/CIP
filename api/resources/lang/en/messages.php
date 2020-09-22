@@ -390,6 +390,8 @@ return [
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
         'DONATION_MISSION_PERMISSION_DENIED' => 'Permission denied for donation mission',
         'ERROR_INVALID_TENANT_CURRENCY' => 'Please enter valid tenant currency',
-        'VOLUNTEERING_MISSION_PERMISSION_DENIED' => 'Permission denied for volunteering mission'
+        'VOLUNTEERING_MISSION_PERMISSION_DENIED' => 'Permission denied for volunteering mission',
+        'EAF_PERMISSION_DENIED' => 'Permission denied for EAF mission',
+        'DISASTER_RELIEF_MISSION_PERMISSION_DENIED' => 'Permission denied for disaster relief mission'
     ]
 ];
