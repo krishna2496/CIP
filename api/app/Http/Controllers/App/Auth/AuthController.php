@@ -131,7 +131,6 @@ class AuthController extends Controller
             );
         }
 
-        // Server side validataions
         $validator = Validator::make($request->toArray(), [
             'email' => 'required|email',
             'password' => 'required'
@@ -139,9 +138,9 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
                 $validator->errors()->first()
             );
         }
@@ -160,8 +159,8 @@ class AuthController extends Controller
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $userDetail->password)) {
             return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
                 config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
                 trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
