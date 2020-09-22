@@ -181,6 +181,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     $router->post('/users/invite', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
         'uses' => 'App\User\UserController@inviteUser']);
+
+    $router->patch('/users/password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@createPassword']);
+
 });
 
 /* SAML */
@@ -468,7 +472,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Message\MessageController@readMessage']);
 });
 
+/* health check */
+$router->group(
+    ['prefix' => '/health'],
+    function ($router) {
 
+        $router->get(
+            '/',
+            ['uses' => 'App\HealthCheck\HealthCheckController@index']
+        );
+    }
+);
 
 
 /*
