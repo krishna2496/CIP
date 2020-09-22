@@ -246,7 +246,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Forgot password - Send Reset password link to user's email address
+     * Forgot password - Send Reset password link to user's email address 
      *
      * @param \App\User $user
      * @param \Illuminate\Http\Request $request
@@ -506,6 +506,34 @@ class AuthController extends Controller
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    public function transmute(Request $request)
+    {
+        $isSecuredCookie = config('app.env') !== 'local';
+        $credentials = $this->helpers->decodeJwtToken($request->token);
+
+        $newToken = $this->helpers->getJwtToken(
+            $credentials->sub,
+            $this->helpers->getSubDomainFromRequest($request)
+        );
+
+        $cookie = new Cookie(
+            self::TOKEN_COOKIE_NAME,
+            $newToken,
+            strtotime('+4hours'),
+            '/',
+            parse_url(request()->headers->get('referer'), PHP_URL_HOST),
+            $isSecuredCookie,
+            true
+        );
+
+        return $this->responseHelper
+            ->success(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_LOGGED_IN')
+            )
+            ->withCookie($cookie);
     }
 
     public function logout()
