@@ -31,6 +31,15 @@
                         <div v-if="submitted && !$v.resetPassword.password.minLength" class="invalid-feedback">
                             {{ languageData.errors.invalid_password }}
                         </div>
+                        <div v-if="submitted && !$v.resetPassword.password.containsUpperCase" class="invalid-feedback">
+                            Password should contain atleast 1 uppercase letter. <!--Translations will follow-->
+                        </div>
+                        <div v-if="submitted && !$v.resetPassword.password.containsLowerCase" class="invalid-feedback">
+                            Password should contain atleast 1 lowercase letter. <!--Translations will follow-->
+                        </div>
+                        <div v-if="submitted && !$v.resetPassword.password.containsNumber" class="invalid-feedback">
+                            Password should contain atleast 1 digit. <!--Translations will follow-->
+                        </div>
                     </b-form-group>
                     <b-form-group>
                         <label>{{ languageData.label.confirm_new_password }}</label>
@@ -114,7 +123,16 @@
       resetPassword: {
         password: {
           required,
-          minLength: minLength(constants.PASSWORD_MIN_LENGTH)
+          minLength: minLength(constants.PASSWORD_MIN_LENGTH),
+          containsUpperCase: function(value) {
+            return /(?=.*[A-Z])/.test(value);
+          },
+          containsLowerCase: function(value) {
+            return /(?=.*[a-z])/.test(value);
+          },
+          containsNumber: function(value) {
+            return /(?=.*[0-9])/.test(value);
+          }
         },
         confirmPassword: {
           required,

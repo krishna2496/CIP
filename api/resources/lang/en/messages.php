@@ -293,6 +293,7 @@ return [
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Token not provided',
         'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'The old password you have entered is incorrect',
+        'ERROR_PASSWORD_VALIDATION_MESSAGE' => 'Password field must contain one number, uppercase and lowercase letters.',
 
 
         // Custom error code for common exception

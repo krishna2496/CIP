@@ -342,9 +342,17 @@ class AuthController extends Controller
         $validator = Validator::make($request->toArray(), [
                 'email' => 'required|email',
                 'token' => 'required',
-                'password' => 'required|min:8',
-                'password_confirmation' => 'required|min:8|same:password',
-        ]);
+                'password' => [
+                    'required',
+                    'min:8',
+                    'regex:/[0-9]/',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/'
+                ],
+                'password_confirmation' => 'required|min:8|same:password'
+            ],
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -443,10 +451,18 @@ class AuthController extends Controller
     public function changePassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->toArray(), [
-            'old_password' => 'required',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|min:8|same:password',
-        ]);
+                'old_password' => 'required',
+                'password' => [
+                    'required',
+                    'min:8',
+                    'regex:/[0-9]/',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/'
+                ],
+                'confirm_password' => 'required|min:8|same:password',
+            ],
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
