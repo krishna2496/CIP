@@ -335,7 +335,9 @@ return [
         'MISSION_COMMENTS' => 'mission_comments',
         'STATE_ENABLED' => 'state_selection',
         'DONATION_MISSION' => 'donation',
-        'VOLUNTEERING_MISSION' => 'volunteering'
+        'VOLUNTEERING_MISSION' => 'volunteering',
+        'EAF' => 'eaf',
+        'DISASTER_RELIEF' => 'disaster_relief'
     ],
 
     'TOP_THEME' => 'top_themes',
