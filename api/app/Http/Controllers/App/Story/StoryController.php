@@ -131,7 +131,7 @@ class StoryController extends Controller
                 $request->auth->user_id
             );
 
-            if ($missionApplicationStatus === config('constants.application_status.REFUSED')) {
+            if ($missionApplicationStatus !== config('constants.application_status.AUTOMATICALLY_APPROVED')) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
