@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Models\MissionTheme;
 use Illuminate\Support\Collection;
 use \Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class MissionThemeRepository implements MissionThemeInterface
 {
@@ -14,7 +15,7 @@ class MissionThemeRepository implements MissionThemeInterface
      * @var App\Models\MissionTheme
      */
     public $missionTheme;
- 
+
     /**
      * Create a new MissionTheme repository instance.
      *
@@ -25,7 +26,7 @@ class MissionThemeRepository implements MissionThemeInterface
     {
         $this->missionTheme = $missionTheme;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -54,8 +55,12 @@ class MissionThemeRepository implements MissionThemeInterface
         $themeQuery = $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations');
         if ($request->has('search')) {
             $themeQuery->where(function ($query) use ($request) {
-                $query->orWhere('theme_name', 'like', '%' . $request->input('search') . '%');
-                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+                if ($request->has('language')) {
+                    $query->orWhere(DB::raw("lower(json_unquote(json_extract(translations, '$.".$request->get('language')."')))"), 'LIKE', strtolower( $request->input('search') ).'%');
+                } else {
+                    $query->orWhere(DB::raw("lower(theme_name)"), 'LIKE', strtolower( $request->input('search') ).'%');
+                    $query->orWhere(DB::raw("lower(translations)"), 'LIKE', strtolower( $request->input('search') ).'%');
+                }
             });
         }
         if ($request->has('order')) {
@@ -89,7 +94,7 @@ class MissionThemeRepository implements MissionThemeInterface
         $missionTheme->update($request);
         return $missionTheme;
     }
-    
+
     /**
      * Find specified resource in storage.
      *
@@ -100,7 +105,7 @@ class MissionThemeRepository implements MissionThemeInterface
     {
         return $this->missionTheme->findMissionTheme($id);
     }
-    
+
     /**
      * Remove specified resource in storage.
      *
@@ -133,7 +138,7 @@ class MissionThemeRepository implements MissionThemeInterface
         if (!empty($year)) {
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
-        
+
         $statusArray = [
             config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
             config('constants.timesheet_status.APPROVED')
@@ -145,10 +150,10 @@ class MissionThemeRepository implements MissionThemeInterface
         ->whereNotNull('timesheet.timesheet_id')
         ->whereNull('timesheet.deleted_at')
         ->groupBy('mission_theme.mission_theme_id');
-        
-        
+
+
         $hoursPerThemes = $queryBuilder->get();
-        
+
         $languageCode = config('app.locale');
         foreach ($hoursPerThemes as $theme) {
             $arrayKey = array_search($languageCode, array_column(

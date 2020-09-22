@@ -79,6 +79,7 @@ class MissionApplicationQuery implements QueryableInterface
                 user.last_name,
                 user.email,
                 mission.mission_type,
+                mission_theme.translations,
                 COALESCE(mission_language.title, mission_language_fallback.title) AS mission_language_title,
                 COALESCE(city_language.name, city_language_fallback.name) AS city_language_name,
                 COALESCE(country_language.name, country_language_fallback.name) AS country_language_name
@@ -109,12 +110,14 @@ class MissionApplicationQuery implements QueryableInterface
                 $join->on('country_language_fallback.country_id', '=', 'mission.country_id')
                     ->where('country_language_fallback.language_id', '=', $defaultLanguageId);
             })
+            ->leftJoin('mission_theme', 'mission.theme_id', '=', 'mission_theme.mission_theme_id')
             ->with([
                 'user:user_id,first_name,last_name,avatar,email',
                 'user.skills.skill:skill_id',
                 'mission',
                 'mission.missionLanguage',
                 'mission.missionSkill',
+                'mission.missionTheme:translations',
                 'mission.country.languages',
                 'mission.city.languages',
             ])
@@ -175,35 +178,48 @@ class MissionApplicationQuery implements QueryableInterface
             })
             // Search
             ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
+                Log::debug('serach = '. $search);
                 /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
                  * the condition on the where can *not* be exclusive as we might lose valid results from
                  * previous filtering. We then need to use the OR condition for searchable fields.
                  */
                 $searchCallback = function ($query) use ($search, $filters, $languageId) {
-                    $query->whereHas('user', function($query) use ($search) {
-                        $query
-                            ->where('first_name', 'like', "%${search}%")
-                            ->orWhere('last_name', 'like', "%${search}%")
-                            ->orWhere('email', 'like', "%${search}%");
-                    })
-                        ->orWhere('mission_language.title', 'like', "%${search}%")
+                    $query
+                        ->whereHas('user', function($query) use ($search) {
+                            $query
+                                ->where('first_name', 'like', "${search}%")
+                                ->orWhere('last_name', 'like', "${search}%")
+                                ->orWhere('email', 'like', "${search}%");
+                            }
+                        )
+                        ->orWhere('mission_language.title', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('mission_language.title')
-                                ->where('mission_language_fallback.title', 'like', "%${search}%");
+                                ->where('mission_language_fallback.title', 'like', "${search}%");
                         })
-                        ->orWhere('city_language.name', 'like', "%${search}%")
+                        ->orWhere('city_language.name', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('city_language.name')
-                                ->where('city_language_fallback.name', 'like', "%${search}%");
+                                ->where('city_language_fallback.name', 'like', "${search}%");
 
                         })
-                        ->orWhere('country_language.name', 'like', "%${search}%")
+                        ->orWhere('country_language.name', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('country_language.name')
-                                ->where('country_language_fallback.name', 'like', "%${search}%");
+                                ->where('country_language_fallback.name', 'like', "${search}%");
+                        })
+                        ->orWhere(function ($query) use ($search, $filters) {
+                            if (array_key_exists('language', $filters)) {
+                                $codeLanguage = $filters['language'];
+                                $query->where(
+                                    DB::raw("lower(json_unquote(json_extract(mission_theme.translations, '$.".strtolower($codeLanguage)."')))"),
+                                    'LIKE',
+                                    strtolower($search).'%'
+                                );
+                            }
                         });
                 };
 
@@ -261,13 +277,24 @@ class MissionApplicationQuery implements QueryableInterface
     private function getFilteringLanguage(array $filters, Collection $tenantLanguages): int
     {
         $hasLanguageFilter = array_key_exists('language', $filters);
-        $defaultLanguageId = $tenantLanguages->filter(function ($language) use ($filters) { return $language->default == 1; })->first()->language_id;
+        $defaultLanguageId = $tenantLanguages
+            ->filter(
+                function ($language) use ($filters) {
+                    return $language->default == 1;
+                })
+            ->first()
+            ->language_id;
 
         if (!$hasLanguageFilter) {
             return $defaultLanguageId;
         }
 
-        $language = $tenantLanguages->filter(function ($language) use ($filters) { return $language->code === $filters['language']; })->first();
+        $language = $tenantLanguages
+            ->filter(
+                function ($language) use ($filters) {
+                    return $language->code === $filters['language'];
+                })
+            ->first();
 
         if (is_null($language)) {
             return $defaultLanguageId;
