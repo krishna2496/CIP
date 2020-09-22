@@ -14,6 +14,7 @@ trait MissionTransformable
      * @param int $languageId
      * @param int $defaultTenantLanguage
      * @param string $timezone
+     * @param object $tenantLanguages
      * @return App\Models\Mission
      */
     protected function transformMission(
@@ -21,7 +22,8 @@ trait MissionTransformable
         string $languageCode,
         int $languageId,
         int $defaultTenantLanguage,
-        string $timezone
+        string $timezone,
+        object $tenantLanguages = null
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
