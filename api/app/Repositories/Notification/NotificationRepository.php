@@ -81,7 +81,7 @@ class NotificationRepository implements NotificationInterface
         ->where(['notification_type' => $type])
         ->value('notification_type_id');
     }
-    
+
     /**
      * Check if user notification is enabled or not
      *
@@ -119,7 +119,7 @@ class NotificationRepository implements NotificationInterface
         $notifications = $this->notification->where([
             'user_id' => $userId
         ])->findOrFail($notificationId);
-        
+
         // found the notifications then update read/unread status
         if (!empty($notifications)) {
             $updateReadStatus = $notifications->is_read == config('constants.notification.read') ?
@@ -201,13 +201,7 @@ class NotificationRepository implements NotificationInterface
         ->with(['notificationType' => function ($query) {
             $query->whereIn('notification_type', [
                 config("constants.notification_type")["NEW_MISSIONS"],
-                config("constants.notification_type")["MISSION_APPLICATION"],
-                config("constants.notification_type")["RECOMMENDED_MISSIONS"],
-                config("constants.notification_type")["VOLUNTEERING_HOURS"],
-                config("constants.notification_type")["VOLUNTEERING_GOALS"],
-                config("constants.notification_type")["MY_COMMENTS"],
-                config("constants.notification_type")["MY_STORIES"],
-                config("constants.notification_type")["MISSION_APPLICATION"]
+                config("constants.notification_type")["RECOMMENDED_MISSIONS"]
             ]);
         }])
         ->where([
@@ -291,5 +285,4 @@ class NotificationRepository implements NotificationInterface
             'entity_id' => $messageId
         ])->delete();
     }
-    
 }

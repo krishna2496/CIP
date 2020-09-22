@@ -39,7 +39,7 @@ class Comment extends Model
      */
     protected $visible = ['comment_id', 'comment', 'created_at', 'user', 'approval_status',
     'published', 'declined', 'pending' , 'missionLanguage', 'mission_id', 'title', 'mission'];
-    
+
     /**
      * Get the user that has comment.
      *
@@ -58,5 +58,21 @@ class Comment extends Model
     public function mission(): BelongsTo
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    public function delete(): bool
+    {
+        $id = $this->comment_id;
+
+        Notification::with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["MY_COMMENTS"]
+            ]);
+        }])
+            ->where([
+                'entity_id' => $id
+            ])->delete();
+
+        return parent::delete();
     }
 }

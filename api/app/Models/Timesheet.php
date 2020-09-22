@@ -44,16 +44,16 @@ class Timesheet extends Model
      * @var array
      */
     protected $visible = [
-        'timesheet_id', 
-        'user_id', 
-        'mission_id', 
-        'time', 
-        'action', 
+        'timesheet_id',
+        'user_id',
+        'mission_id',
+        'time',
+        'action',
         'date_volunteered',
-        'day_volunteered', 
-        'notes', 
-        'timesheetDocument', 
-        'mission', 
+        'day_volunteered',
+        'notes',
+        'timesheetDocument',
+        'mission',
         'month',
         'total_hours',
         'total_minutes',
@@ -193,6 +193,23 @@ class Timesheet extends Model
         }
 
         return $query->whereMonth('created_at', $month);
+    }
+
+    public function delete(): bool
+    {
+        $id = $this->timesheet_id;
+
+        Notification::with(['notificationType' => function ($query) {
+            $query->whereIn('notification_type', [
+                config("constants.notification_type")["VOLUNTEERING_HOURS"],
+                config("constants.notification_type")["VOLUNTEERING_GOALS"],
+            ]);
+        }])
+            ->where([
+                'entity_id' => $id
+            ])->delete();
+
+        return parent::delete();
     }
 
 }
