@@ -71,24 +71,11 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template v-if="mission.application_deadline != null ||
-                                            checkMissionTypeTime(mission.mission_type)
-                                            ">
-                                    <div class="detail-column info-block" v-if="mission.application_deadline != null">
-                                        <i class="icon-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <span class="title-text">{{mission.application_deadline | formatDate}}</span>
-                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
-                                        </div>
-                                    </div>
-                                </template>
                                 <div class="detail-column calendar-col">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
-                                    <div class="text-wrap" v-bind:class="{'mt-2' : compareDate(mission.end_date,mission.start_date)}" v-if="mission.end_date !== null">
+                                    <div class="text-wrap" v-if="mission.end_date !== null">
                                         <template v-if="!compareDate(mission.end_date,mission.start_date)">
                                             <span class="title-text"><em>{{ languageData.label.from }}</em>
                                                 {{mission.start_date | formatDate }}</span>
@@ -104,6 +91,19 @@
                                         <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
                                     </div>
                                 </div>
+                                 <template v-if="mission.application_deadline != null ||
+                                            checkMissionTypeTime(mission.mission_type)
+                                            ">
+                                    <div class="detail-column info-block" v-if="mission.application_deadline != null">
+                                        <i class="icon-wrap">
+                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                        </i>
+                                        <div class="text-wrap">
+                                            <span class="title-text">{{mission.application_deadline | formatDate}}</span>
+                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
+                                        </div>
+                                    </div>
+                                </template>
                                 <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
