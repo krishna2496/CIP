@@ -554,14 +554,14 @@ class Helpers
         // Connect master database to get currency details
         $this->switchDatabaseConnection('mysql');
 
-        $tenantLanguage = $this->db->table('tenant_currency')
+        $tenantCurrency = $this->db->table('tenant_currency')
         ->where('tenant_id', $tenant->tenant_id)
         ->where('code', $currencyCode)
         ->where('is_active', '1');
 
-        // Connect tenant database
+        // Connect tenant databases
         $this->switchDatabaseConnection('tenant');
 
-        return ($tenantLanguage->count() > 0) ? true : false;
+        return ($tenantCurrency->count() > 0) ? true : false;
     }
 }

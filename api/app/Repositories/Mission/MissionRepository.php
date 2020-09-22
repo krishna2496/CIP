@@ -23,6 +23,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -67,6 +68,11 @@ class MissionRepository implements MissionInterface
     private $missionTabRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -77,6 +83,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -87,7 +94,8 @@ class MissionRepository implements MissionInterface
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
-        MissionTabRepository $missionTabRepository
+        MissionTabRepository $missionTabRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -97,6 +105,7 @@ class MissionRepository implements MissionInterface
         $this->modelsService = $modelsService;
         $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -213,9 +222,16 @@ class MissionRepository implements MissionInterface
                 $this->modelsService->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
         }
+
+        // check if donation mission setting enable or not for donation mission
+        $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DONATION_MISSION'),
+            $request
+        );
+
         //Add donation attribute
         
-        if ($request->donation_attribute) {
+        if ($request->donation_attribute && $isDonationMissionEnable) {
             $donationData = array(
                 'mission_id' => $mission->mission_id,
                 'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'] ?? null,
@@ -360,8 +376,15 @@ class MissionRepository implements MissionInterface
             );
             $mission->goalMission()->update($goalMissionArray);
         }
+
+        // check if donation mission setting enable or not for donation mission
+        $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DONATION_MISSION'),
+            $request
+        );
+
         //Add donation attribute         
-        if (isset($request->donation_attribute) && !empty($request->donation_attribute)) {
+        if (isset($request->donation_attribute) && !empty($request->donation_attribute) && $isDonationMissionEnable) {
             $donationAttributes = $mission->donationAttribute()->first();
             if (!is_null($donationAttributes)) {
                 if ($request->donation_attribute['goal_amount_currency']) {
