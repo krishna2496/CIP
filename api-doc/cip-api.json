@@ -3106,6 +3106,53 @@
                 },
                 "body": {
                   "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden - Email address does not exist in the system"
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/users/password": {
+      "patch": {
+        "operationId": "POST_team4-cip-api-create-password",
+        "summary": "App - Creates User Password (Milestone - 1)",
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
                 }
               }
             }

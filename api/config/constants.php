@@ -40,7 +40,7 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
-    'PER_PAGE_MAX' => '50',
+    'PER_PAGE_MAX' => '500',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
