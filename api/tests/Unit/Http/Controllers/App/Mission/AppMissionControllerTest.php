@@ -24,6 +24,7 @@ use App\Repositories\State\StateRepository;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
+use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
 
 class AppMissionControllerTest extends TestCase
 {
@@ -41,6 +42,7 @@ class AppMissionControllerTest extends TestCase
         $userRepository = $this->mock(UserRepository::class);
         $stateRepository = $this->mock(StateRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $unitedNationSDGRepository = $this->mock(UnitedNationSDGRepository::class);
         
         $missionId = rand();
         $request = new Request();
@@ -91,7 +93,8 @@ class AppMissionControllerTest extends TestCase
             $cityRepository,
             $userRepository,
             $stateRepository,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $unitedNationSDGRepository
         );
 
         $response = $missionController->getMissionDetail($request, $missionId);
@@ -113,6 +116,7 @@ class AppMissionControllerTest extends TestCase
         $userRepository = $this->mock(UserRepository::class);
         $stateRepository = $this->mock(StateRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $unitedNationSDGRepository = $this->mock(UnitedNationSDGRepository::class);
         
         $missionId = rand();
         $request = new Request();
@@ -163,7 +167,8 @@ class AppMissionControllerTest extends TestCase
             $cityRepository,
             $userRepository,
             $stateRepository,
-            $tenantActivatedSettingRepository
+            $tenantActivatedSettingRepository,
+            $unitedNationSDGRepository
         );
 
         $response = $missionController->getMissionDetail($request, $missionId);
