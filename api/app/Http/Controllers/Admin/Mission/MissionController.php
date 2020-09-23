@@ -194,7 +194,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
                 "mission_tabs.*.translations.*.lang" =>
                 "required_with:mission_tabs.*.translations|max:2",
@@ -349,7 +349,7 @@ class MissionController extends Controller
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
+                "mission_detail.*.custom_information" => "nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -374,11 +374,10 @@ class MissionController extends Controller
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
                 "mission_tabs.*.sort_key" =>
-                "required_without:mission_tabs.*.mission_tab_id|integer",
+                'required_without:mission_tabs.*.mission_tab_id|integer|distinct',
                 "mission_tabs.*.translations" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 "mission_tabs.*.translations.*.lang" =>
@@ -402,6 +401,19 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
+        }
+
+        // Check sort key already exist for mission tabs
+        if (isset($request->mission_tabs)) {
+            $missionTabresponse = $this->missionRepository->checkExistSortKey($missionId, $request->mission_tabs);
+            if (!$missionTabresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                );
+            }
         }
 
         // check organization exist in database
