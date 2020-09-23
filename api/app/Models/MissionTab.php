@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\MissionTabLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class MissionTab extends Model
 {
-    use softDeletes;
+    use softDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -53,6 +54,11 @@ class MissionTab extends Model
     protected $visible = [
         'mission_tab_id', 'mission_id', 'sort_key', 'getMissionTabDetail'
     ];
+    
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['getMissionTabDetail'];
 
     /**
      * Find the specified resource.
