@@ -21,6 +21,7 @@ class MissionApplicationQuery implements QueryableInterface
     private const FILTER_MISSION_CITIES     = 'missionCities';
     private const FILTER_MISSION_TYPES      = 'missionTypes';
     private const FILTER_MISSION_VIRTUAL    = 'isVirtual';
+    private const FILTER_STATUS             = 'approvalStatuses';
 
     private const ALLOWED_SORTABLE_FIELDS = [
         'applicant' => 'user.last_name',
@@ -56,6 +57,7 @@ class MissionApplicationQuery implements QueryableInterface
     {
         $filters = $parameters['filters'];
         $search = $parameters['search'];
+        $andSearch = $parameters['andSearch'];
         $order = $this->getOrder($parameters['order']);
         $limit = $this->getLimit($parameters['limit']);
         $tenantLanguages = $parameters['tenantLanguages'];
@@ -118,6 +120,10 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.country.languages',
                 'mission.city.languages',
             ])
+            // Filter by Status
+            ->when(isset($filters[self::FILTER_STATUS]), function($query) use ($filters) {
+                $query->whereIn('approval_status', $filters[self::FILTER_STATUS]);
+            })
             // Filter by application ID
             ->when(isset($filters[self::FILTER_APPLICATION_IDS]), function($query) use ($filters) {
                 $query->whereIn('mission_application_id', $filters[self::FILTER_APPLICATION_IDS]);
@@ -174,44 +180,44 @@ class MissionApplicationQuery implements QueryableInterface
                 });
             })
             // Search
-            ->when(!empty($search), function($query) use ($search, $filters, $languageId) {
-                /* In the case we have an existing filter on application ids (self::FILTER_APPLICATION_IDS),
-                 * the condition on the where can *not* be exclusive as we might lose valid results from
-                 * previous filtering. We then need to use the OR condition for searchable fields.
-                 */
+            ->when(!empty($search), function($query) use ($search, $filters, $languageId, $andSearch) {
                 $searchCallback = function ($query) use ($search, $filters, $languageId) {
-                    $query->whereHas('user', function($query) use ($search) {
-                        $query
-                            ->where('first_name', 'like', "%${search}%")
-                            ->orWhere('last_name', 'like', "%${search}%")
-                            ->orWhere('email', 'like', "%${search}%");
-                    })
+                    $query
+                        ->whereHas('user', function($query) use ($search) {
+                            $query
+                                ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["${search}"])
+                                ->orWhere('email', 'like', "${search}%")
+                                ->orWhere('first_name', 'like', "${search}%")
+                                ->orWhere('last_name', 'like', "${search}%");
+                        })
                         ->orWhere('mission_language.title', 'like', "%${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('mission_language.title')
-                                ->where('mission_language_fallback.title', 'like', "%${search}%");
+                                ->where('mission_language_fallback.title', 'like', "${search}%");
                         })
-                        ->orWhere('city_language.name', 'like', "%${search}%")
+                        ->orWhere('city_language.name', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('city_language.name')
-                                ->where('city_language_fallback.name', 'like', "%${search}%");
+                                ->where('city_language_fallback.name', 'like', "${search}%");
 
                         })
-                        ->orWhere('country_language.name', 'like', "%${search}%")
+                        ->orWhere('country_language.name', 'like', "${search}%")
                         ->orWhere(function ($query) use ($search) {
                             $query
                                 ->whereNull('country_language.name')
-                                ->where('country_language_fallback.name', 'like', "%${search}%");
+                                ->where('country_language_fallback.name', 'like', "${search}%");
                         });
                 };
 
-                if (isset($filters[self::FILTER_APPLICATION_IDS])) {
-                    $query->orWhere($searchCallback);
-                } else {
-                    $query->where($searchCallback);
-                }
+                /* In the case we have the $andSearch set to false,
+                 * the condition on the where can *not* be exclusive as we might lose valid results from
+                 * previous filtering (in Optimy). We then need to use the OR condition for searchable fields.
+                 */
+                $andSearch
+                    ? $query->where($searchCallback)
+                    : $query->orWhere($searchCallback);
             })
             // Ordering
             ->when($order, function ($query) use ($order) {
