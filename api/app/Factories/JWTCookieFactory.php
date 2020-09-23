@@ -20,7 +20,7 @@ class JWTCookieFactory
     public static function make(string $token, string $referer, bool $isSecured) : Cookie
     {
         return new Cookie(
-            JWTCookieFactory::TOKEN_COOKIE_NAME,
+            self::TOKEN_COOKIE_NAME,
             $token,
             strtotime('+4hours'),
             '/',
