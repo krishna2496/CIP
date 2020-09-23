@@ -481,9 +481,16 @@ class AuthController extends Controller
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id, $tenantName) : '';
 
+        // As we don't use HTTPS on the local stack, it's not possible to use secured cookies on this environment
+        $isSecuredCookie = config('app.env') !== 'local';
+
+        // Create the cookie holding the token
+        $referer = request()->headers->get('referer');
+        $cookie = JWTCookieFactory::make($newToken, $referer, $isSecuredCookie);
+
         // Send response
         $apiStatus = Response::HTTP_OK;
-        $apiData = array('token' => $newToken);
+        $apiData = [];
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
         // Make activity log
@@ -497,7 +504,9 @@ class AuthController extends Controller
             $request->auth->user_id
         ));
 
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        return $this->responseHelper
+            ->success($apiStatus, $apiMessage, $apiData)
+            ->withCookie($cookie);
     }
 
     public function transmute(Request $request)
