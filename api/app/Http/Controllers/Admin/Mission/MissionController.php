@@ -509,6 +509,18 @@ class MissionController extends Controller
             config('constants.tenant_settings.VOLUNTEERING_MISSION'),
             $request
         );
+
+        // check if EAF mission setting enable or not
+        $isEafMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.EAF'),
+            $request
+        );
+        
+        // check if DISASTER RELIEF mission setting enable or not 
+        $isDisasterReliefMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DISASTER_RELIEF'),
+            $request
+        );
         
         if (!$isDonationMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DONATION'))) {
             return $this->responseHelper->error(
@@ -516,6 +528,24 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 trans('messages.custom_error_message.DONATION_MISSION_PERMISSION_DENIED')
+            );
+        }
+
+        if (!$isEafMissionEnable && ($request->get('mission_type') == config('constants.mission_type.EAF'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.EAF_PERMISSION_DENIED')
+            );
+        }
+
+        if (!$isDisasterReliefMissionEnable && ($request->get('mission_type') == config('constants.mission_type.DISASTER_RELIEF'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.DISASTER_RELIEF_MISSION_PERMISSION_DENIED')
             );
         }
 
