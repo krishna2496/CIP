@@ -61,7 +61,7 @@
                         <div class="group-details volunteer-progress">
                             <div class="content-wrap">
                                 <template>
-                                    <div class="detail-column seat-info">
+                                    <div class="detail-column seat-info" v-if="mission.seats_left && mission.seats_left !=''">
                                         <i class="icon-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                         </i>
@@ -75,7 +75,7 @@
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
-                                    <div class="text-wrap" v-if="mission.end_date !== null">
+                                    <div class="text-wrap"  v-if="mission.end_date !== null">
                                         <template v-if="!compareDate(mission.end_date,mission.start_date)">
                                             <span class="title-text"><em>{{ languageData.label.from }}</em>
                                                 {{mission.start_date | formatDate }}</span>
@@ -88,7 +88,7 @@
                                         </template>
                                     </div>
                                     <div class="text-wrap" v-else>
-                                        <span class="title-text mt-2">{{ languageData.label.ongoing}}</span>
+                                        <span class="title-text">{{ languageData.label.ongoing}}</span>
                                     </div>
                                 </div>
                                  <template v-if="mission.application_deadline != null ||

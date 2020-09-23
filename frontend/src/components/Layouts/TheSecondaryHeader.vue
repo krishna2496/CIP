@@ -193,6 +193,7 @@ export default {
                 this.isStateChange = false;
                 this.isCityChange = false;
                 this.isThemeChange = false;
+                this.isStateClick = true
                 let selectedData = store.state.stateId.toString().split(',');
                 let filteredState = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -207,6 +208,7 @@ export default {
                 this.isStateChange = false;
                 this.isCityChange = false;
                 this.isThemeChange = false;
+                this.isCityClick = true
                 let selectedData = store.state.cityId.toString().split(',');
                 let filteredCity = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -220,6 +222,7 @@ export default {
                 this.isStateChange = false;
                 this.isCityChange = false;
                 this.isThemeChange = false;
+                this.isThemeClick = true
                 let selectedData = store.state.themeId.toString().split(',');
                 let filteredTheme = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -229,6 +232,7 @@ export default {
 
             }
             if (data.selectedType == "skill") {
+                this.isSkillClick = true
                 let selectedData = store.state.skillId.toString().split(',');
                 let filteredSkill = selectedData.filter((value) => {
                     return value != data.selectedId;
