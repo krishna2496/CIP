@@ -556,7 +556,6 @@ export default {
                         card.style.height = `${cardHeight}px`;
                     setTimeout(function(){
                         const contentBlockHeight = card.offsetHeight - cardHeaderHeight;
-                        console.log(card.offsetHeight);
                     contentBlock.style.height = `${contentBlockHeight}px`;
                     },1000);
 
