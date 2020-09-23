@@ -236,8 +236,12 @@
           height: 21px;
         }
       }
+      .event-name {
+        width: 100%;
+      }
       .progress-block {
         padding: 24px 45px 0 0;
+        width: 100%;
         &.success-donate {
           padding-top: 0;
         }
@@ -256,6 +260,9 @@
           top: auto;
           transform: none;
           bottom: 0;
+          &.donation-active {
+            bottom: 9px;
+          }
         }
       }
     }
@@ -993,6 +1000,7 @@
       .event-block {
         display: flex;
         align-items: flex-end;
+        flex-wrap: wrap;
       }
     }
     .card-header {
@@ -1289,6 +1297,11 @@
               .title-text {
                 font-size: 14px;
                 line-height: 19px;
+                display: flex;
+                justify-content: space-between;
+                em {
+                  margin-right: 5px;
+                }
               }
               .subtitle-text {
                 font-size: 12px;
