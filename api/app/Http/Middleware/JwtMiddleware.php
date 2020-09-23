@@ -55,8 +55,8 @@ class JwtMiddleware
      */
     public function handle(Request $request, Closure $next, $guard = null)
     {
-        $token = ($request->hasCookie(JWTCookieFactory::TOKEN_COOKIE_NAME))
-            ? $request->cookie(JWTCookieFactory::TOKEN_COOKIE_NAME)
+        $token = ($request->hasCookie(JWTCookieFactory::COOKIE_NAME))
+            ? $request->cookie(JWTCookieFactory::COOKIE_NAME)
             : '';
 
         if (!$token) {

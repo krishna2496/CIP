@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Cookie;
  */
 class JWTCookieFactory
 {
-    public const TOKEN_COOKIE_NAME = 'token';
+    public const COOKIE_NAME = 'token';
 
     /**
      * @param string $token The JWT token that will be stored in the cookie
@@ -20,7 +20,7 @@ class JWTCookieFactory
     public static function make(string $token, string $referer, bool $isSecured) : Cookie
     {
         return new Cookie(
-            self::TOKEN_COOKIE_NAME,
+            self::COOKIE_NAME,
             $token,
             strtotime('+4hours'),
             '/',
@@ -32,6 +32,6 @@ class JWTCookieFactory
 
     public static function makeExpired() : Cookie
     {
-        return new Cookie(self::TOKEN_COOKIE_NAME, 0);
+        return new Cookie(self::COOKIE_NAME, 0);
     }
 }
