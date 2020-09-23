@@ -309,6 +309,31 @@ class TenantOptionsController extends Controller
 
         $data = $request->toArray();
 
+        if ($data['option_name'] == 'custom_login_text') {
+            $optionValue = $data['option_value'];
+            $optionData = $optionValue['translations'][0]['message'];
+            $strippedValue = strip_tags($optionData);
+            if (strlen($strippedValue) > 370) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION'),
+                    trans('messages.custom_error_message.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION')
+                );
+            }
+            $isIframeExist = strpos ($optionData, '<iframe');
+            $isScriptExist = strpos ($optionData, '<script');
+            $isJavascriptExist = strpos ($optionData, 'javascript:');
+            if (!empty($isIframeExist) || !empty($isIframeExist) || !empty($isJavascriptExist)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVAID_TENANT_OPTION_VALUE'),
+                    trans('messages.custom_error_message.ERROR_INVAID_TENANT_OPTION_VALUE')
+                );
+            }
+        }
+
         $data['option_value'] = is_array($request->option_value) ?
             json_encode($request->option_value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) :
             $request->option_value;
