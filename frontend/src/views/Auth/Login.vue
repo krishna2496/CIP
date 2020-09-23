@@ -124,31 +124,7 @@ export default {
                 const defaultLanguage = store.state.defaultLanguage;
                 this.defautLang = defaultLanguage.toUpperCase();
                 this.hasSSO = Boolean(store.state.samlSettings);
-                const customTextArray = JSON.parse(store.state.customLoginText)
-                if (customTextArray) {
-                    const translations = customTextArray.translations;
-                    //Fetch text by language
-                    if (translations) {
-                        const filteredObj = translations.filter( (item, i) => {
-                            if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-                                this.customText = translations[i].message;
-                            }
-                        });
-                        if (filteredObj.length > 0 && filteredObj[0].message) {
-                            this.customText = filteredObj[0].message;
-                        } else {
-                            const filtereObj = translations.filter((item, i) => {
-                                if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
-                                    this.customText = translations[i].message;
-                                }
-                            });
-
-                            if (filtereObj.length > 0 && filtereObj[0].message) {
-                                this.customText = filtereObj[0].message;
-                            }
-                        }
-                    }
-                }
+                this.getCustomText();
                 
                 // Get tenant setting
                 tenantSetting();
@@ -175,6 +151,7 @@ export default {
             this.$refs.ThePrimaryFooter.$forceUpdate()
             this.componentKey += 1;
             setSiteTitle();
+            this.getCustomText();
         },
 
         handleSubmit() {
@@ -218,6 +195,37 @@ export default {
 
         handleSSO() {
             window.location = store.state.samlSettings.sso_url;
+        },
+
+        getCustomText() {
+            alert(store.state.defaultLanguage);
+            const customTextArray = JSON.parse(store.state.customLoginText)
+            if (customTextArray) {
+                const translations = customTextArray.translations;
+                //Fetch text by language
+                if (translations) {
+                    const filteredObj = translations.filter( (item, i) => {
+                        if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+                            alert(0)
+                            this.customText = translations[i].message;
+                        }
+                    });
+                    if (filteredObj.length > 0 && filteredObj[0].message) {
+                        alert(1)
+                        this.customText = filteredObj[0].message;
+                    } else {
+                        const filtereObj = translations.filter((item, i) => {
+                            if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
+                                this.customText = translations[i].message;
+                            }
+                        });
+
+                        if (filtereObj.length > 0 && filtereObj[0].message) {
+                            this.customText = filtereObj[0].message;
+                        }
+                    }
+                }
+            }
         }
     },
     created() {
