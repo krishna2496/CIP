@@ -846,15 +846,6 @@
             flex: 0 0 156px;
             font-size: 15px;
           }
-          span {
-            max-height: 48px;
-            -webkit-box-orient: vertical;
-            display: block;
-            display: -webkit-box;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            -webkit-line-clamp: 2;
-          }
           svg {
             path {
               fill: $primary;
@@ -1352,15 +1343,6 @@
               @include border-radius(40px);
               i {
                 margin-left: 8px;
-              }
-              span {
-                max-height: 48px;
-                -webkit-box-orient: vertical;
-                display: block;
-                display: -webkit-box;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                -webkit-line-clamp: 2;
               }
               &.gray-btn {
                 &:focus .icon-wrap {
