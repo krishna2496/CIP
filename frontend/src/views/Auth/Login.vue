@@ -173,19 +173,19 @@ export default {
             if (customTextArray) {
                 const translations = customTextArray.translations;
                 if (translations && Array.isArray(translations)) {
-                    const translatedCustomText = translations.find((item, i) => {
+                    const translatedCustomText = translations.find((item) => {
                         return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
                     });
                     if (translatedCustomText && translatedCustomText.message) {
                         this.customText = translatedCustomText.message;
                     } else {
-                        const translatedCustomText = translations.find((item, i) => {
+                        // get custom text for default language if no translation is found
+                        const customTextInDefaultLang = translations.find((item) => {
                             return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
                         });
-                        if (translatedCustomText && translatedCustomText.message) {
-                            this.customText = translatedCustomText.message;
+                        if (customTextInDefaultLang && customTextInDefaultLang.message) {
+                            this.customText = customTextInDefaultLang.message;
                         }
-                        
                     }
                 }
             }
