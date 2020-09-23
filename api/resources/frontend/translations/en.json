@@ -302,7 +302,8 @@
 		"and": "&",
 		"for": "For",
 		"on": "On",
-		"sort_deadline" : "Sort by deadline"
+		"sort_deadline" : "Sort by deadline",
+		"no_image_available" : "No image available"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
