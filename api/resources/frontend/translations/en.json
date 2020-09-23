@@ -388,9 +388,9 @@
 		"max_video_upload": "Maximum 20 videos can be added",
 		"duplicate_video_url": "Duplicate video url are not allowed",
 		"invalid_saml_setting": "The following mapping(s) are required:",
-		"password_should_contain_uppercase": "Password should contain atleast 1 uppercase letter.",
-		"password_should_contain_lowercase": "Password should contain atleast 1 lowercase letter.",
-		"password_should_contain_numbers": "Password should contain atleast 1 digit."
+		"password_should_contain_uppercase": "Password should contain at least 1 uppercase letter.",
+		"password_should_contain_lowercase": "Password should contain at least 1 lowercase letter.",
+		"password_should_contain_numbers": "Password should contain at least 1 digit."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

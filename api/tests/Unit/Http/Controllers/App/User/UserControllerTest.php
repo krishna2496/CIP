@@ -17,6 +17,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Mockery;
 use TestCase;
 
@@ -126,6 +127,83 @@ class UserControllerTest extends TestCase
 
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper->shouldReceive('success');
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+
+        $helpers = $this->mock(Helpers::class);
+
+        $s3Helper = $this->mock(S3Helper::class);
+
+        $tenantOptionRepository = $this->mock(TenantOptionRepository::class);
+
+        $userController = new UserController(
+            $userRepository,
+            $userCustomFieldRepository,
+            $cityRepository,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            $s3Helper,
+            $tenantOptionRepository
+        );
+
+        $this->withoutEvents();
+
+        $response = $userController->createPassword($request);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * @testdox Test create password with invalid password
+    *
+    * @return void
+    */
+    public function testCreatePasswordInvalidPassword()
+    {
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('toArray')
+            ->andReturn([
+                'email' => 'test@optimy.com',
+                'password' => 'password'
+            ])
+            ->shouldReceive('get')
+            ->andReturn('test@optimy.com')
+            ->shouldReceive('only');
+
+        $userModel = $this->mock(User::class);
+        $userModel->shouldReceive('getAttribute')
+            ->shouldReceive('setAttribute')
+            ->shouldReceive('save');
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository->shouldReceive('findUserByEmail')
+            ->andReturn($userModel);
+
+        $userCustomFieldRepository = $this->mock(UserCustomFieldRepository::class);
+        $cityRepository = $this->mock(CityRepository::class);
+        $userFilterRepository = $this->mock(UserFilterRepository::class);
+
+        $jsonResponse = new JsonResponse(
+            [
+                'errors' => [
+                    'messages' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+                ]
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        );
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+            )
+            ->andReturn($jsonResponse);
 
         $languageHelper = $this->mock(LanguageHelper::class);
 
