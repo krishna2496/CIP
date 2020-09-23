@@ -20,9 +20,7 @@
                                         {{languageData.label.applied}}</b-alert>
                                     <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
                                         {{languageData.label.closed}}</b-alert>
-                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
-                                    v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}"
-                                    :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                                         <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
                                     </div>
                                     <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
@@ -32,7 +30,7 @@
                                             <img src="../assets/images/camera-ic.svg" />
                                         </i>
                                         <p>{{languageData.label.no_image_available}}</p>
-                                    </template>                            
+                                    </template>
                                 </div>
                                 <div class="group-category" v-if="mission.mission_theme != null && isThemeSet && getThemeTitle(mission.mission_theme.translations) != ''"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                                 </div>
@@ -553,28 +551,28 @@ export default {
                     const cardHeight = cardBody.children[0].offsetHeight + card.children[1].offsetHeight;
                     const cardHeaderHeight = card.querySelector(".card-header").offsetHeight;
                     const contentBlock = cardBody.querySelector(".content-block");
-                        card.style.height = `${cardHeight}px`;
-                    setTimeout(function(){
+                    card.style.height = `${cardHeight}px`;
+                    setTimeout(function () {
                         const contentBlockHeight = card.offsetHeight - cardHeaderHeight;
-                    contentBlock.style.height = `${contentBlockHeight}px`;
-                    },1000);
+                        contentBlock.style.height = `${contentBlockHeight}px`;
+                    }, 1000);
 
-                    if(screen.width > 1024){
+                    if (screen.width > 1024) {
                         cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
                             const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
-                        const cardTotalHeight = cardBodyH - this.offsetHeight;
-                        this.children[1].style.transform = `translateY(-${cardTotalHeight}px)`;
-                        this.children[2].style.transform = `translateY(-${cardTotalHeight}px)`;
-                        this.parentNode.classList.add('active');
-                    });
+                            const cardTotalHeight = cardBodyH - this.offsetHeight;
+                            this.children[1].style.transform = `translateY(-${cardTotalHeight}px)`;
+                            this.children[2].style.transform = `translateY(-${cardTotalHeight}px)`;
+                            this.parentNode.classList.add('active');
+                        });
 
-                    cardBody.parentNode.addEventListener('mouseleave', function () {
-                        if (!document.body.classList.contains("modal-open")) {
-                            this.children[1].style.transform = 'translateY(0)';
-                            this.children[2].style.transform = 'translateY(0)';
-                            this.parentNode.classList.remove('active');
-                        }
-                    });
+                        cardBody.parentNode.addEventListener('mouseleave', function () {
+                            if (!document.body.classList.contains("modal-open")) {
+                                this.children[1].style.transform = 'translateY(0)';
+                                this.children[2].style.transform = 'translateY(0)';
+                                this.parentNode.classList.remove('active');
+                            }
+                        });
                     }
                 });
 
