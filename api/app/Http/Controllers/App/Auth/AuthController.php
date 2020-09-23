@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\App\Auth;
 
 use App\Events\User\UserActivityLogEvent;
-use App\Factories\TokenCookieFactory;
+use App\Factories\JWTCookieFactory;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
@@ -230,7 +230,7 @@ class AuthController extends Controller
         // Create the cookie holding the token
         $jwtToken = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
         $referer = request()->headers->get('referer');
-        $cookie = TokenCookieFactory::make($jwtToken, $referer, $isSecuredCookie);
+        $cookie = JWTCookieFactory::make($jwtToken, $referer, $isSecuredCookie);
 
         return $this->responseHelper
             ->success($apiStatus, $apiMessage, $apiData)
@@ -510,7 +510,7 @@ class AuthController extends Controller
             $this->helpers->getSubDomainFromRequest($request)
         );
 
-        $cookie = TokenCookieFactory::make($newToken, request()->headers->get('referer'), $isSecuredCookie);
+        $cookie = JWTCookieFactory::make($newToken, request()->headers->get('referer'), $isSecuredCookie);
 
         return $this->responseHelper
             ->success(
@@ -528,6 +528,6 @@ class AuthController extends Controller
                 'You were successfully logged out',
                 []
             )
-            ->withCookie(TokenCookieFactory::makeExpired());
+            ->withCookie(JWTCookieFactory::makeExpired());
     }
 }

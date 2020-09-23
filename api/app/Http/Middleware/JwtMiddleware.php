@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 
-use App\Factories\TokenCookieFactory;
+use App\Factories\JWTCookieFactory;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Repositories\Timezone\TimezoneRepository;
@@ -55,8 +55,8 @@ class JwtMiddleware
      */
     public function handle(Request $request, Closure $next, $guard = null)
     {
-        $token = ($request->hasCookie(TokenCookieFactory::TOKEN_COOKIE_NAME))
-            ? $request->cookie(TokenCookieFactory::TOKEN_COOKIE_NAME)
+        $token = ($request->hasCookie(JWTCookieFactory::TOKEN_COOKIE_NAME))
+            ? $request->cookie(JWTCookieFactory::TOKEN_COOKIE_NAME)
             : '';
 
         if (!$token) {

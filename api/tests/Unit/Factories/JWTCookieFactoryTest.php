@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Factories;
 
-use App\Factories\TokenCookieFactory;
+use App\Factories\JWTCookieFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Cookie;
 
-class TokenCookieFactoryTest extends TestCase
+class JWTCookieFactoryTest extends TestCase
 {
     public function testMake()
     {
@@ -16,7 +16,7 @@ class TokenCookieFactoryTest extends TestCase
         $expectedPath = '/';
         $isSecured = true;
 
-        $actual = TokenCookieFactory::make($token, $referer, $isSecured);
+        $actual = JWTCookieFactory::make($token, $referer, $isSecured);
         $this->assertInstanceOf(Cookie::class, $actual);
         $this->assertEquals($expectedDomain, $actual->getDomain());
         $this->assertEquals($expectedPath, $actual->getPath());
@@ -31,14 +31,14 @@ class TokenCookieFactoryTest extends TestCase
         $referer = 'http://somedomain.com:1234/foo';
         $isSecured = false;
 
-        $actual = TokenCookieFactory::make($token, $referer, $isSecured);
+        $actual = JWTCookieFactory::make($token, $referer, $isSecured);
         $this->assertFalse($actual->isSecure());
     }
 
     public function testMakeExpired()
     {
         $expectedExpirationTime = 0;
-        $actual = TokenCookieFactory::makeExpired();
+        $actual = JWTCookieFactory::makeExpired();
         $this->assertInstanceOf(Cookie::class, $actual);
         $this->assertEquals($expectedExpirationTime, $actual->getExpiresTime());
     }

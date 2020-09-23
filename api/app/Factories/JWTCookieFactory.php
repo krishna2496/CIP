@@ -5,9 +5,9 @@ namespace App\Factories;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
- * @coversDefaultClass  \App\Factories\TokenCookieFactory
+ * @coversDefaultClass  \App\Factories\JWTCookieFactory
  */
-class TokenCookieFactory
+class JWTCookieFactory
 {
     public const TOKEN_COOKIE_NAME = 'token';
 
@@ -20,7 +20,7 @@ class TokenCookieFactory
     public static function make(string $token, string $referer, bool $isSecured) : Cookie
     {
         return new Cookie(
-            TokenCookieFactory::TOKEN_COOKIE_NAME,
+            JWTCookieFactory::TOKEN_COOKIE_NAME,
             $token,
             strtotime('+4hours'),
             '/',
