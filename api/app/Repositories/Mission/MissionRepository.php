@@ -15,15 +15,16 @@ use App\Repositories\Country\CountryRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Services\Mission\ModelsService;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Validator;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionRepository implements MissionInterface
 {
@@ -594,6 +595,8 @@ class MissionRepository implements MissionInterface
             $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
+        $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
+
         if ($request->has('search') && $request->has('search') !== '') {
             $searchString = $request->search;
             $missionQuery->where(function ($query) use ($searchString) {
@@ -825,24 +828,9 @@ class MissionRepository implements MissionInterface
             $missionQuery->where('volunteering_attribute.is_virtual', '1');
         }
 
-        // Need to check activated setting for volunteering time mission
-        $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-            $request
-        );
-        if (!$isTimeMissionEnabled) {
-            $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.TIME'));
-        }
+        // Check tenant settings for mission types
+        $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
 
-        // Need to check activated setting for volunteering goal mission
-        $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-            $request
-        );
-        if (!$isGoalMissionEnabled) {
-            $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.GOAL'));
-        }
-        
         $page = $request->page ?? 1;
         $perPage = $request->perPage;
         $offSet = ($page - 1) * $perPage;
@@ -874,23 +862,7 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->modelsService->mission->select('*')
         ->where('publication_status', config("constants.publication_status")["APPROVED"]);
 
-        // Need to check activated setting for volunteering time mission
-        $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-            $request
-        );
-        if (!$isTimeMissionEnabled) {
-            $missionQuery->where('mission_type', '!=', config('constants.mission_type.TIME'));
-        }
-
-        // Need to check activated setting for volunteering goal mission
-        $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-            $request
-        );
-        if (!$isGoalMissionEnabled) {
-            $missionQuery->where('mission_type', '!=', config('constants.mission_type.GOAL'));
-        }
+        $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
 
         switch ($topFilterParams) {
             case config('constants.TOP_THEME'):
@@ -938,23 +910,7 @@ class MissionRepository implements MissionInterface
                     config('constants.publication_status')['APPROVED']
                 );
 
-                // Need to check activated setting for volunteering time mission
-                $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                    $request
-                );
-                if (!$isTimeMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.TIME'));
-                }
-
-                // Need to check activated setting for volunteering goal mission
-                $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                    $request
-                );
-                if (!$isGoalMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.GOAL'));
-                }
+                $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
 
                 if ($request->has('search') && $request->input('search') !== '') {
                     $missionQuery->where(function ($query) use ($request) {
@@ -1009,23 +965,7 @@ class MissionRepository implements MissionInterface
                     config('constants.publication_status')['APPROVED']
                 );
 
-                // Need to check activated setting for volunteering time mission
-                $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                    $request
-                );
-                if (!$isTimeMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.TIME'));
-                }
-
-                // Need to check activated setting for volunteering goal mission
-                $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                    $request
-                );
-                if (!$isGoalMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.GOAL'));
-                }
+                $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
 
                 $missionQuery->with('organization');
                 if ($request->has('search') && $request->input('search') !== '') {
@@ -1088,23 +1028,7 @@ class MissionRepository implements MissionInterface
                     config('constants.publication_status')['APPROVED']
                 );
 
-                // Need to check activated setting for volunteering time mission
-                $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                    $request
-                );
-                if (!$isTimeMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.TIME'));
-                }
-
-                // Need to check activated setting for volunteering goal mission
-                $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                    $request
-                );
-                if (!$isGoalMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.GOAL'));
-                }
+                $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
 
                 $missionQuery->with('organization');
                 if ($request->has('search') && $request->input('search') !== '') {
@@ -1229,25 +1153,9 @@ class MissionRepository implements MissionInterface
                         }
                     }
 
-                    // Need to check activated setting for volunteering time mission
-                    $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                        config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                        $request
-                    );
-                    if (!$isTimeMissionEnabled) {
-                        $query->where('mission_type', '!=', config('constants.mission_type.TIME'));
-                    }
-
-                    // Need to check activated setting for volunteering goal mission
-                    $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                        config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                        $request
-                    );
-                    if (!$isGoalMissionEnabled) {
-                        $query->where('mission_type', '!=', config('constants.mission_type.GOAL'));
-                    }
+                    $this->filterMissionsBasedOnSettingsEnabled($request, $query);
                 });
-                
+
                 $missionSkillQuery->with('mission', 'skill');
                 $missionSkillQuery->groupBy('skill_id');
                 $missionSkillQuery->orderBy('mission_count', 'desc');
@@ -1260,23 +1168,9 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config('constants.publication_status')['APPROVED']
                 );
-                // Need to check activated setting for volunteering time mission
-                $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                    $request
-                );
-                if (!$isTimeMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.TIME'));
-                }
 
-                // Need to check activated setting for volunteering goal mission
-                $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                    $request
-                );
-                if (!$isGoalMissionEnabled) {
-                    $missionQuery->where('mission.mission_type', '!=', config('constants.mission_type.GOAL'));
-                }
+                $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
+
                 $missionQuery->selectRaw('COUNT(mission.mission_id) as mission_count');
                 $missionQuery->join('city', 'city.city_id', '=', 'mission.city_id');
                 $missionQuery->join('state', 'state.state_id', '=', 'city.state_id');
@@ -1924,5 +1818,38 @@ class MissionRepository implements MissionInterface
     public function checkExistSortKey(int $missionId, array $missionTabs): bool
     {
         return $this->missionTabRepository->checkSortKeyExist($missionId, $missionTabs);
+    }
+
+    /**
+     * Filter missions based on currently activated tenant settings
+     *
+     * @param Request $request
+     * @param Builder $queryBuilder
+     * @param Query $query
+     */
+    private function filterMissionsBasedOnSettingsEnabled(
+        Request $request,
+        Builder $queryBuilder
+    ) {
+        $missionTypeSettingsMap = [
+            config('constants.mission_type.TIME') => config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+            config('constants.mission_type.GOAL') => config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+        ];
+
+        foreach ($missionTypeSettingsMap as $missionType => $setting) {
+            $isSettingEnabled = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    $setting,
+                    $request
+                );
+
+            if (!$isSettingEnabled) {
+                $queryBuilder->where(
+                    'mission.mission_type',
+                    '!=',
+                    $missionType
+                );
+            }
+        }
     }
 }

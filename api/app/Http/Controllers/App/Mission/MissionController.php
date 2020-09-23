@@ -167,7 +167,7 @@ class MissionController extends Controller
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
-       
+
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
@@ -268,7 +268,7 @@ class MissionController extends Controller
         $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
         $returnData[config('constants.TOP_THEME')] = [];
-        
+
         // Return data by top theme
         if (!empty($topTheme->toArray())) {
             foreach ($topTheme as $key => $value) {
@@ -704,36 +704,17 @@ class MissionController extends Controller
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
 
-            // check mission status goal and its related permission
-            if ($missionData[0]->mission_type == config('constants.mission_type.GOAL')) {
-                $isGoalMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                    $request
+            $isRequiredSettingEnabled = $this->isRequiredSettingForMissionTypeEnabled(
+                $request,
+                $missionData[0]->mission_type
+            );
+            if (!$isRequiredSettingEnabled) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    '',
+                    trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
                 );
-                if (!$isGoalMissionEnabled) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_FORBIDDEN,
-                        Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                        '',
-                        trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
-                    );
-                }
-            }
-
-            // check mission status time and its related permission
-            if ($missionData[0]->mission_type == config('constants.mission_type.TIME')) {
-                $isTimeMissionEnabled = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                    $request
-                );
-                if (!$isTimeMissionEnabled) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_FORBIDDEN,
-                        Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                        '',
-                        trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
-                    );
-                }
             }
 
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
@@ -786,5 +767,33 @@ class MissionController extends Controller
         : trans('messages.success.MESSAGE_MISSION_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType
+    ) : bool {
+
+        $tenantSetting = null;
+        switch ($missionType) {
+            case config('constants.mission_type.GOAL'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case config('constants.mission_type.TIME'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }
