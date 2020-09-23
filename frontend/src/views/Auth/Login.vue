@@ -11,9 +11,16 @@
                 <p v-html="customText">
                 </p>
             </div>
+
             <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
                 <img :src="this.$store.state.logo">
             </router-link>
+
+            <!-- Uncomment below code to display custom text below login icon-->
+            <!-- <div class="custom-text-block" v-if="customText != ''">
+                <p v-html="customText">
+                </p>
+            </div> -->
 
             <b-alert v-if="this.$store.state.samlSettings && this.$store.state.samlSettings.saml_access_only" />
             <div v-else>
@@ -43,6 +50,13 @@
                 <div class="form-link">
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
+
+                <!-- Uncomment below code to display custom text below login fields-->
+                <!-- <div class="custom-text-block" v-if="customText != ''">
+                    <p v-html="customText">
+                    </p>
+                </div> -->
+
             </div>
 
             <b-button type="button" v-if="hasSSO" @click="handleSSO" class=" btn-borderprimary mt-3">
