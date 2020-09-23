@@ -145,6 +145,20 @@ Vue.filter('substring', (value, data) => {
     }
 });
 
+Vue.filter('substringWithOutDot', (value, data) => {
+    if (typeof value !== 'string'
+      && typeof value.toString === 'function'
+    ) {
+      value = value.toString();
+    }
+
+    if (value.length <= data) {
+        return value;
+    } else {
+        return value.substring(0, data);
+    }
+});
+
 window.addEventListener('storage', function (e) {
     if (event.key === 'logout-event') {
         location.reload();
