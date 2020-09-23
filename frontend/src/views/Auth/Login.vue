@@ -14,7 +14,7 @@
             <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
                 <img :src="this.$store.state.logo">
             </router-link>
-            
+
             <b-alert v-if="this.$store.state.samlSettings && this.$store.state.samlSettings.saml_access_only" />
             <div v-else>
                 <!-- success or error msg -->
@@ -44,7 +44,7 @@
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
             </div>
-        
+
             <b-button type="button" v-if="hasSSO" @click="handleSSO" class=" btn-borderprimary mt-3">
                 {{ languageData.label.login_with_sso || 'Login with SSO' }}
             </b-button>
@@ -124,32 +124,9 @@ export default {
                 const defaultLanguage = store.state.defaultLanguage;
                 this.defautLang = defaultLanguage.toUpperCase();
                 this.hasSSO = Boolean(store.state.samlSettings);
-                const customTextArray = JSON.parse(store.state.customLoginText)
-                if (customTextArray) {
-                    const translations = customTextArray.translations;
-                    //Fetch text by language
-                    if (translations) {
-                        const filteredObj = translations.filter( (item, i) => {
-                            if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-                                this.customText = translations[i].message;
-                            }
-                        });
-                        if (filteredObj.length > 0 && filteredObj[0].message) {
-                            this.customText = filteredObj[0].message;
-                        } else {
-                            const filtereObj = translations.filter((item, i) => {
-                                if (item.lang === store.state.defaultTenantLanguage.toLowerCase()) {
-                                    this.customText = translations[i].message;
-                                }
-                            });
 
-                            if (filtereObj.length > 0 && filtereObj[0].message) {
-                                this.customText = filtereObj[0].message;
-                            }
-                        }
-                    }
-                }
-                
+                this.setCustomText();
+
                 // Get tenant setting
                 tenantSetting();
                 loadLocaleMessages(store.state.defaultLanguage).then(() => {
@@ -171,10 +148,26 @@ export default {
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);
             this.languageData = JSON.parse(store.state.languageLabel);
+            this.setCustomText();
             this.$forceUpdate();
             this.$refs.ThePrimaryFooter.$forceUpdate()
             this.componentKey += 1;
             setSiteTitle();
+        },
+
+        setCustomText() {
+            const customTextArray = JSON.parse(store.state.customLoginText)
+            if (customTextArray) {
+                const translations = customTextArray.translations;
+                if (translations && Array.isArray(translations)) {
+                    const translatedCustomText = translations.find((item, i) => {
+                        return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
+                    });
+                    if (translatedCustomText && translatedCustomText.message) {
+                        this.customText = translatedCustomText.message;
+                    }
+                }
+            }
         },
 
         handleSubmit() {
