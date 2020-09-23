@@ -386,7 +386,10 @@
 		"max_image_upload": "Можно добавить не более 20 изображений",
 		"max_video_upload": "Можно добавить не более 20 видео",
 		"duplicate_video_url": "Не допускается дублировать URL видео",
-		"invalid_saml_setting": "Требуется следующее сопоставление (я):"
+		"invalid_saml_setting": "Требуется следующее сопоставление (я):",
+		"password_should_contain_uppercase": "Как минимум 1 заглавная буква",
+		"password_should_contain_lowercase": "Как минимум 1 строчная буква",
+		"password_should_contain_numbers": "Как минимум 1 цифра"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
