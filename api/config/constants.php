@@ -519,6 +519,7 @@ return [
         // Donation error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102'
     ],
 
     /**

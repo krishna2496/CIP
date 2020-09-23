@@ -388,6 +388,7 @@ return [
 
         // For Donation IP Whitelist module
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
 
         //For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',

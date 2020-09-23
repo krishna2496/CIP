@@ -117,12 +117,14 @@ class TimesheetController extends Controller
     {
         $filters = $request->get('filters', []);
         $search = $request->get('search');
+        $andSearch = $request->get('andSearch', false);
         $order = $request->get('order', []);
         $limit = $request->get('limit', []);
         $tenantLanguages = $languageHelper->getTenantLanguages($request);
 
         $timesheetList = $timesheetQuery->run([
             'filters' => $filters,
+            'andSearch' => $andSearch,
             'search' => $search,
             'order' => $order,
             'limit' => $limit,
