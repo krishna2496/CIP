@@ -1,16 +1,15 @@
 <?php
 namespace App\Http\Middleware;
 
+use App\Factories\TokenCookieFactory;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Repositories\Timezone\TimezoneRepository;
+use App\User;
 use Closure;
 use DateTime;
-use Firebase\JWT\JWT;
-use App\User;
-use App\Helpers\ResponseHelper;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\Helpers;
-use App\Repositories\Timezone\TimezoneRepository;
 
 class JwtMiddleware
 {
@@ -56,7 +55,9 @@ class JwtMiddleware
      */
     public function handle(Request $request, Closure $next, $guard = null)
     {
-        $token = ($request->hasCookie('token')) ? $request->cookie('token') : '';
+        $token = ($request->hasCookie(TokenCookieFactory::TOKEN_COOKIE_NAME))
+            ? $request->cookie(TokenCookieFactory::TOKEN_COOKIE_NAME)
+            : '';
 
         if (!$token) {
             // Unauthorized response if token not there

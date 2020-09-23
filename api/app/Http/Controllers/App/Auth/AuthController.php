@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\App\Auth;
 
 use App\Events\User\UserActivityLogEvent;
+use App\Factories\TokenCookieFactory;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
@@ -32,8 +33,6 @@ This controller is responsible for handling authenticate, change password and re
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;
-
-    private const TOKEN_COOKIE_NAME = 'token';
 
     /**
      * The request instance.
@@ -229,15 +228,9 @@ class AuthController extends Controller
         $isSecuredCookie = config('app.env') !== 'local';
 
         // Create the cookie holding the token
-        $cookie = new Cookie(
-            self::TOKEN_COOKIE_NAME,
-            $this->helpers->getJwtToken($userDetail->user_id, $tenantName),
-            strtotime('+4hours'),
-            '/',
-            parse_url(request()->headers->get('referer'), PHP_URL_HOST),
-            $isSecuredCookie,
-            true
-        );
+        $jwtToken = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
+        $referer = request()->headers->get('referer');
+        $cookie = TokenCookieFactory::make($jwtToken, $referer, $isSecuredCookie);
 
         return $this->responseHelper
             ->success($apiStatus, $apiMessage, $apiData)
@@ -245,7 +238,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Forgot password - Send Reset password link to user's email address 
+     * Forgot password - Send Reset password link to user's email address
      *
      * @param \App\User $user
      * @param \Illuminate\Http\Request $request
@@ -517,15 +510,7 @@ class AuthController extends Controller
             $this->helpers->getSubDomainFromRequest($request)
         );
 
-        $cookie = new Cookie(
-            self::TOKEN_COOKIE_NAME,
-            $newToken,
-            strtotime('+4hours'),
-            '/',
-            parse_url(request()->headers->get('referer'), PHP_URL_HOST),
-            $isSecuredCookie,
-            true
-        );
+        $cookie = TokenCookieFactory::make($newToken, request()->headers->get('referer'), $isSecuredCookie);
 
         return $this->responseHelper
             ->success(
@@ -543,6 +528,6 @@ class AuthController extends Controller
                 'You were successfully logged out',
                 []
             )
-            ->withCookie(new Cookie(self::TOKEN_COOKIE_NAME, '', 0));
+            ->withCookie(TokenCookieFactory::makeExpired());
     }
 }
