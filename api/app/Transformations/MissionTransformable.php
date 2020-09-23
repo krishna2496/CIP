@@ -3,6 +3,7 @@ namespace App\Transformations;
 
 use App\Models\Mission;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait MissionTransformable
 {
@@ -265,6 +266,28 @@ trait MissionTransformable
 
         // Add user currency
         $mission['user_currency'] = $userCurrency;
+        
+        // get mission tab transformation
+        $missionTabDetails = $mission['missionTabs']->toArray();
+        if ($missionTabDetails) {
+            $missionTranslationsArray = [];
+            foreach ($missionTabDetails as $missionTabKey => $missionTabValue) {
+                $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionTranslationsArray['translations'] = [];
+                if (isset($missionTabValue['get_mission_tab_detail'])) {
+                    foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
+                        $languageCode = $tenantLanguages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
+                        $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
+                        $missionTabTranslations['language_code'] = $languageCode;
+                        $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
+                        $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
+                        array_push($missionTranslationsArray['translations'], $missionTabTranslations);
+                    }
+                }
+                $mission['missionTabs'][$missionTabKey] = $missionTranslationsArray;
+            }
+        }
+
         unset($mission['volunteeringAttribute']);
         return $mission;
     }
