@@ -124,7 +124,6 @@ export default {
                 const defaultLanguage = store.state.defaultLanguage;
                 this.defautLang = defaultLanguage.toUpperCase();
                 this.hasSSO = Boolean(store.state.samlSettings);
-
                 this.setCustomText();
 
                 // Get tenant setting
