@@ -1289,6 +1289,11 @@
               .title-text {
                 font-size: 14px;
                 line-height: 19px;
+                display: flex;
+                justify-content: space-between;
+                em {
+                  margin-right: 5px;
+                }
               }
               .subtitle-text {
                 font-size: 12px;
