@@ -88,16 +88,15 @@ class Mission extends Model
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTab', 'volunteeringAttribute',
-    'unSdg', 'is_virtual', 'total_seats', 'impact'
-    ];
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
+    'unSdg', 'is_virtual', 'total_seats', 'impact'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'missionTab', 'volunteeringAttribute', 'impact'
+        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact'
     ];
 
     /**
@@ -404,9 +403,9 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function missionTab(): HasMany
+    public function missionTabs(): HasMany
     {
-        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
 
     /**

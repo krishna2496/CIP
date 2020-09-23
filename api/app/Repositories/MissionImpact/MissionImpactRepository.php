@@ -186,4 +186,39 @@ class MissionImpactRepository implements MissionImpactInterface
 
         return $this->missionImpactModel->deleteMissionImpact($missionImpactId);
     }
+
+    /**
+     * Check sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionImpact
+     * @return bool
+     */
+    public function checkImpactSortKeyExist(int $missionId, array $missionImpact): bool
+    {
+        foreach ($missionImpact as $key => $value) {
+            if (isset($value['sort_key'])) {
+                if (isset($value['mission_impact_id'])) {
+                    $result = $this->missionImpactModel->where([
+                        ['mission_id', '=' ,$missionId],
+                        ['sort_key', '=' ,$value['sort_key']],
+                        ['mission_impact_id', '!=', $value['mission_impact_id']]
+                    ])->get()->toArray();
+
+                    if (count($result) >= 1) {
+                        return false;
+                    }
+                } else {
+                    $result = $this->missionImpactModel->where(
+                        [ 'mission_id' => $missionId, 'sort_key' => $value['sort_key']]
+                    )->get()->toArray();
+                    
+                    if (count($result) >= 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -582,9 +582,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionTab' => function ($query) {
+        }])->with(['missionTabs' => function ($query) {
             $query->orderBy('sort_key');
-        }, 'missionTab.getMissionTabDetail' => function ($query) {
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
         }]);
 
         if ($includeImpact) {
@@ -660,9 +660,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionTab' => function ($query) {
+        }])->with(['missionTabs' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
-        }, 'missionTab.getMissionTabDetail' => function ($query) {
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
             $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
@@ -780,6 +780,10 @@ class MissionRepository implements MissionInterface
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
             }, ]);
         $missionQuery->with(['missionRating']);
+        $missionQuery->with(['missionTabs' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
+        }]);
 
         //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
@@ -1468,7 +1472,10 @@ class MissionRepository implements MissionInterface
                 },
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers',
-            ]);
+            ])->with(['missionTabs' => function ($query) {
+                $query->orderBy('sort_key');
+            }, 'missionTabs.getMissionTabDetail' => function ($query) {
+            }]);
 
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
@@ -1844,22 +1851,22 @@ class MissionRepository implements MissionInterface
      */
     public function missionTabTransformArray($value, $languages)
     {
-        $missionTabInfo =  $value['missionTab']->toArray();
+        $missionTabInfo =  $value['missionTabs']->toArray();
         if ($missionTabInfo != null) {
             $missionTranslationsArray = [];
             foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
                 $missionTranslationsArray['mission_tab_id'] = $missionTabValue['mission_tab_id'];
                 $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
-                $missionTranslationsArray["translations"] = [];
+                $missionTranslationsArray['translations'] = [];
                 foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
                     $languageCode = $languages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
                     $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
                     $missionTabTranslations['language_code'] = $languageCode;
                     $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
                     $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
-                    array_push($missionTranslationsArray["translations"], $missionTabTranslations);
+                    array_push($missionTranslationsArray['translations'], $missionTabTranslations);
                 }
-                $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
+                $value['missionTabs'][$missionTabKey] = $missionTranslationsArray;
             }
         }
     }
@@ -1884,5 +1891,29 @@ class MissionRepository implements MissionInterface
     public function deleteMissionImpact(string $missionImpactId): bool
     {
         return $this->missionImpactRepository->deleteMissionImpactAndS3bucketData($missionImpactId);
+    }
+    
+    /** 
+     * Check sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionTabs
+     * @return bool
+     */
+    public function checkExistSortKey(int $missionId, array $missionTabs): bool
+    {
+        return $this->missionTabRepository->checkSortKeyExist($missionId, $missionTabs);
+    }
+
+    /** 
+     * Check mission_impact sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionImpact
+     * @return bool
+     */
+    public function checkExistImpactSortKey(int $missionId, array $missionImpact): bool
+    {
+        return $this->missionImpactRepository->checkImpactSortKeyExist($missionId, $missionImpact);
     }
 }

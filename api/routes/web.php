@@ -467,7 +467,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Message\MessageController@readMessage']);
 });
 
+/* health check */
+$router->group(
+    ['prefix' => '/health'],
+    function ($router) {
 
+        $router->get(
+            '/',
+            ['uses' => 'App\HealthCheck\HealthCheckController@index']
+        );
+    }
+);
 
 
 /*

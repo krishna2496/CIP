@@ -244,4 +244,24 @@ interface MissionInterface
      * @return bool
      */
     public function deleteMissionImpact(string $missionImpactId): bool;
+    
+    /** 
+     * Check sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionTabs
+     *
+     * @return bool
+     */
+    public function checkExistSortKey(int $missionId, array $missionTabs): bool;
+
+    /** 
+     * Check mission_impact sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionImpact
+     *
+     * @return bool
+     */
+    public function checkExistImpactSortKey(int $missionId, array $missionImpact): bool;
 }

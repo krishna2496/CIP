@@ -390,6 +390,9 @@ return [
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
-        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system', 
+
+        'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.'
     ]
 ];

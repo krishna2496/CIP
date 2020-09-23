@@ -199,7 +199,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact" => "sometimes|required|array",
                 "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
-                "impact.*.sort_key" => 'required|integer|min:0',
+                "impact.*.sort_key" => 'required|integer|min:0|distinct',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
                 "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
@@ -207,7 +207,7 @@ class MissionController extends Controller
                 "total_seats" => "integer|min:1",
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
                 "mission_tabs.*.translations.*.lang" =>
                 "required_with:mission_tabs.*.translations|max:2",
@@ -369,7 +369,7 @@ class MissionController extends Controller
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
+                "mission_detail.*.custom_information" => "nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -386,7 +386,7 @@ class MissionController extends Controller
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",
                 "impact.*.icon_path" => "sometimes|required|valid_icon_path",
-                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0",
+                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
                 "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
                 "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
                 "impact.*.translations.*.content" => "required_with:impact.*.translations|max:300",
@@ -402,11 +402,10 @@ class MissionController extends Controller
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
                 "mission_tabs.*.sort_key" =>
-                "required_without:mission_tabs.*.mission_tab_id|integer",
+                'required_without:mission_tabs.*.mission_tab_id|integer|distinct',
                 "mission_tabs.*.translations" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 "mission_tabs.*.translations.*.lang" =>
@@ -430,6 +429,32 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
+        }
+
+        // Check sort key already exist for mission tabs
+        if (isset($request->mission_tabs)) {
+            $missionTabresponse = $this->missionRepository->checkExistSortKey($missionId, $request->mission_tabs);
+            if (!$missionTabresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                );
+            }
+        }
+
+        // Check sort key already exist for mission impact
+        if (isset($request->impact)) {
+            $missionImpactresponse = $this->missionRepository->checkExistImpactSortKey($missionId, $request->impact);
+            if (!$missionImpactresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST')
+                );
+            }
         }
 
         // check organization exist in database

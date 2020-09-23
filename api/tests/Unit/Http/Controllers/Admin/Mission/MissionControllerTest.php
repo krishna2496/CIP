@@ -29,9 +29,6 @@ use App\Models\City;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
 use App\Repositories\Organization\OrganizationRepository;
-use App\Events\User\UserNotificationEvent;
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 use Validator;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Collection;
@@ -228,6 +225,11 @@ class MissionControllerTest extends TestCase
             ->once()
             ->andReturn(Mockery::mock(['fails' => false]));
 
+        $missionRepository->shouldReceive('checkExistImpactSortKey')
+            ->once()
+            ->with($missionId, $requestData->impact)
+            ->andReturn(true);
+
         $missionRepository->shouldReceive('find')
             ->once()
             ->with($missionId)
@@ -339,6 +341,11 @@ class MissionControllerTest extends TestCase
         Validator::shouldReceive('make')
             ->once()
             ->andReturn(Mockery::mock(['fails' => false]));
+        
+        $missionRepository->shouldReceive('checkExistImpactSortKey')
+            ->once()
+            ->with($missionId, $requestData->impact)
+            ->andReturn(true);
 
         $missionRepository->shouldReceive('find')
             ->once()
@@ -994,6 +1001,209 @@ class MissionControllerTest extends TestCase
     }
 
     /**
+    * @testdox Test sort key of mission_tab update is already exist error
+    *
+    * @return void
+    */
+    public function testMissionTabSortKeyExistError()
+    {
+        $missionTabId = Uuid::uuid4()->toString();
+        $data = [
+            'mission_tabs' => [
+                [
+                    'mission_tab_id' => $missionTabId,
+                    'sort_key' => rand(100, 200),
+                    'translations' => [
+                        [
+                            'lang' => 'es',
+                            'name' => str_random(160),
+                            'sections' => [
+                                [
+                                    'title'=> str_random(20),
+                                    'content' => str_random(200)
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $requestData = new Request($data);
+        $missionId = rand(50000, 70000);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = $this->mock(Request::class);
+        $mission = $this->mock(Mission::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+
+        $key = str_random(16);
+        $requestHeader = $request->shouldReceive('header')
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
+
+        $missionRepository->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn();
+
+        Validator::shouldReceive('make')
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
+
+        $missionRepository->shouldReceive('checkExistSortKey')
+            ->once()
+            ->with($missionId, $requestData->mission_tabs)
+            ->andReturn(false);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=>  config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    'message'=> trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+            )
+            ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+
+        $response = $callController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+    * @testdox Test sort key of mission_impact update is already exist error
+    *
+    * @return void
+    */
+    public function testMissionImpactSortKeyExistError()
+    {
+        $missionImpactId = Uuid::uuid4()->toString();
+        $data = [
+            'impact' => [
+                [
+                    'mission_impact_id' => $missionImpactId,
+                    'icon_path' => 'https://cdn.pixabay.com/photo/2020/09/13/16/10/rose-beetle-5568669_960_720.jpg',
+                    'sort_key' => rand(100, 200),
+                    'translations' => [
+                        [
+                            'language_code' => 'es',
+                            'content' => str_random(160)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $requestData = new Request($data);
+        $missionId = rand(50000, 70000);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = $this->mock(Request::class);
+        $mission = $this->mock(Mission::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+
+        $key = str_random(16);
+        $requestHeader = $request->shouldReceive('header')
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
+
+        $missionRepository->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn();
+
+        Validator::shouldReceive('make')
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
+
+        $missionRepository->shouldReceive('checkExistImpactSortKey')
+            ->once()
+            ->with($missionId, $requestData->impact)
+            ->andReturn(false);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=>  config('constants.error_codes.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST'),
+                    'message'=> trans('messages.custom_error_message.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST'),
+                trans('messages.custom_error_message.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST')
+            )
+            ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+
+        $response = $callController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -1090,11 +1300,11 @@ class MissionControllerTest extends TestCase
     /**
     * get json reponse
     *
-    * @param class name
+    * @param array $data
     * @return JsonResponse
     */
-    private function getJson($class)
+    private function getJson($data)
     {
-        return new JsonResponse($class);
+        return new JsonResponse($data);
     }
 }

@@ -41,7 +41,7 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
-    'PER_PAGE_MAX' => '50',
+    'PER_PAGE_MAX' => '500',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
@@ -521,6 +521,8 @@ return [
         // Donation error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103'
     ],
 
     /**

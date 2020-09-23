@@ -301,14 +301,14 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            ["first_name" => "required|max:16",
-            "last_name" => "required|max:16",
+            ["first_name" => "required|max:60",
+            "last_name" => "required|max:60",
             "password" => "sometimes|required|min:8",
             "employee_id" => [
-                "max:16",
+                "max:60",
                 "nullable",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-            "department" => "max:16",
+            "department" => "max:60",
             "linked_in_url" => "url|valid_linkedin_url",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
@@ -316,7 +316,8 @@ class UserController extends Controller
             "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
             'skills' => 'array',
-            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
+            "title" => "max:60"]
         );
 
         // If request parameter have any error
