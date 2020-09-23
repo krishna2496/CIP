@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exceptions;
 
 use Exception;
@@ -13,6 +14,7 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     use RestExceptionHandlerTrait;
+
     /**
      * A list of the exception types that should not be reported.
      *

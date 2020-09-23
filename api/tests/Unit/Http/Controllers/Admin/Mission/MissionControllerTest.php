@@ -29,6 +29,7 @@ use App\Models\City;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
 use App\Repositories\Organization\OrganizationRepository;
+use Validator;
 
 class MissionControllerTest extends TestCase
 {
@@ -159,6 +160,110 @@ class MissionControllerTest extends TestCase
     }
 
     /**
+    * @testdox Test sort key of mission_tab update is already exist errro
+    *
+    * @return void
+    */
+    public function testMissionTabSortKeyExistError()
+    {
+        $missionTabId = Uuid::uuid4()->toString();
+        $data = [
+            'mission_tabs' => [
+                [
+                    'mission_tab_id' => $missionTabId,
+                    'sort_key' => rand(100, 200),
+                    'translations' => [
+                        [
+                            'lang' => 'es',
+                            'name' => str_random(160),
+                            'sections' => [
+                                [
+                                    'title'=> str_random(20),
+                                    'content' => str_random(200)
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $requestData = new Request($data);
+        $missionId = rand(50000, 70000);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = $this->mock(Request::class);
+        $mission = $this->mock(Mission::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+
+        $key = str_random(16);
+        $requestHeader = $request->shouldReceive('header')
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
+
+        $missionRepository->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn();
+
+        Validator::shouldReceive('make')
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
+
+        $missionRepository->shouldReceive('checkExistSortKey')
+            ->once()
+            ->with($missionId, $requestData->mission_tabs)
+            ->andReturn(false);
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'type'=> Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    'code'=>  config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    'message'=> trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                ]
+            ]
+        ];
+
+        $jsonResponse = $this->getJson($methodResponse);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+            )
+            ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+
+        $response = $callController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -252,4 +357,14 @@ class MissionControllerTest extends TestCase
         );
     }
 
+    /**
+    * get json reponse
+    *
+    * @param array $data
+    * @return JsonResponse
+    */
+    private function getJson($data)
+    {
+        return new JsonResponse($data);
+    }
 }

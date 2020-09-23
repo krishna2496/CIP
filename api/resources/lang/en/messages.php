@@ -237,6 +237,7 @@ return [
         'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
         'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
+        'ERROR_MAXIMUM_USERS_REACHED' => 'You have reached the maximum number of users. Contact us at ' . config('constants.SUPPORT_EMAIL') . ' to upgrade your account.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -386,6 +387,8 @@ return [
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
-        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system'
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system', 
+
+        'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.'
     ]
 ];
