@@ -336,7 +336,12 @@ class MissionController extends Controller
     public function update(Request $request, int $missionId): JsonResponse
     {
         try {
-            $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find($missionId);
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
