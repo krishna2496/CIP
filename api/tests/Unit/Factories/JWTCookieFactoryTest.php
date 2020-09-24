@@ -11,12 +11,12 @@ class JWTCookieFactoryTest extends TestCase
     public function testMake()
     {
         $token = '1234567890';
-        $referer = 'http://somedomain.com:1234/foo';
+        $apiUrl = 'http://somedomain.com:1234/';
         $expectedDomain = 'somedomain.com';
         $expectedPath = '/';
         $isSecured = true;
 
-        $actual = JWTCookieFactory::make($token, $referer, $isSecured);
+        $actual = JWTCookieFactory::make($token, $apiUrl, $isSecured);
         $this->assertInstanceOf(Cookie::class, $actual);
         $this->assertEquals($expectedDomain, $actual->getDomain());
         $this->assertEquals($expectedPath, $actual->getPath());
@@ -28,10 +28,10 @@ class JWTCookieFactoryTest extends TestCase
     public function testMakeWithNonSecureOption()
     {
         $token = '1234567890';
-        $referer = 'http://somedomain.com:1234/foo';
+        $apiUrl = 'http://somedomain.com:1234/';
         $isSecured = false;
 
-        $actual = JWTCookieFactory::make($token, $referer, $isSecured);
+        $actual = JWTCookieFactory::make($token, $apiUrl, $isSecured);
         $this->assertFalse($actual->isSecure());
     }
 

@@ -13,18 +13,18 @@ class JWTCookieFactory
 
     /**
      * @param string $token The JWT token that will be stored in the cookie
-     * @param string $referer Referer extracted from the request, from which we'll retrieve the domain
+     * @param string $apiUrl The API URL, from which we'll retrieve the domain
      * @param bool $isSecured Whether the cookie should be secured or not (not enabled by default to support local env)
      * @return Cookie
      */
-    public static function make(string $token, string $referer, bool $isSecured) : Cookie
+    public static function make(string $token, string $apiUrl, bool $isSecured) : Cookie
     {
         return new Cookie(
             self::COOKIE_NAME,
             $token,
             strtotime('+4hours'),
             '/',
-            parse_url($referer, PHP_URL_HOST),
+            parse_url($apiUrl, PHP_URL_HOST),
             $isSecured,
             true
         );

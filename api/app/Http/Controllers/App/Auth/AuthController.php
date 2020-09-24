@@ -229,8 +229,7 @@ class AuthController extends Controller
 
         // Create the cookie holding the token
         $jwtToken = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
-        $referer = request()->headers->get('referer');
-        $cookie = JWTCookieFactory::make($jwtToken, $referer, $isSecuredCookie);
+        $cookie = JWTCookieFactory::make($jwtToken, config('app.url'), $isSecuredCookie);
 
         return $this->responseHelper
             ->success($apiStatus, $apiMessage, $apiData)
@@ -485,8 +484,7 @@ class AuthController extends Controller
         $isSecuredCookie = config('app.env') !== 'local';
 
         // Create the cookie holding the token
-        $referer = request()->headers->get('referer');
-        $cookie = JWTCookieFactory::make($newToken, $referer, $isSecuredCookie);
+        $cookie = JWTCookieFactory::make($newToken, config('app.url'), $isSecuredCookie);
 
         // Send response
         $apiStatus = Response::HTTP_OK;
@@ -519,7 +517,7 @@ class AuthController extends Controller
             $this->helpers->getSubDomainFromRequest($request)
         );
 
-        $cookie = JWTCookieFactory::make($newToken, request()->headers->get('referer'), $isSecuredCookie);
+        $cookie = JWTCookieFactory::make($newToken, config('app.url'), $isSecuredCookie);
 
         return $this->responseHelper
             ->success(
