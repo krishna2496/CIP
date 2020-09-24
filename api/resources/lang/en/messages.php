@@ -391,6 +391,6 @@ return [
 
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
         'ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION' => 'You cannot add more than 370 character for custom login text',
-        'ERROR_INVAID_TENANT_OPTION_VALUE' => 'You cannot add iframe,script and javascript in custo login text value'
+        'ERROR_INVAID_TENANT_OPTION_VALUE' => 'You cannot add iframe,script and javascript in custom login text value'
     ]
 ];
