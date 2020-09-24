@@ -324,7 +324,7 @@ class TenantOptionsController extends Controller
             $isIframeExist = strpos ($optionData, '<iframe');
             $isScriptExist = strpos ($optionData, '<script');
             $isJavascriptExist = strpos ($optionData, 'javascript:');
-            if (!empty($isIframeExist) || !empty($isIframeExist) || !empty($isJavascriptExist)) {
+            if ($isIframeExist !== false || $isScriptExist !== false || $isJavascriptExist !== false) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -402,7 +402,7 @@ class TenantOptionsController extends Controller
                 $isScriptExist = strpos ($optionData, '<script');
                 $isJavascriptExist = strpos ($optionData, 'javascript:');
                 
-                if (!empty($isIframeExist) || !empty($isIframeExist) || !empty($isJavascriptExist)) {
+                if ($isIframeExist !== false || $isScriptExist !== false || $isJavascriptExist !== false) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
