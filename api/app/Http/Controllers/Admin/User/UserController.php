@@ -306,7 +306,7 @@ class UserController extends Controller
         }
 
         if (!isset($request->timezone_id)) {
-            $defaultTimezone = env('TENANT_DEFAULT_TIMEZONE', 'Europe/Paris');
+            $defaultTimezone = env('DEFAULT_TIMEZONE', 'Europe/Paris');
             $timezone = $this->timezoneRepository->getTenantTimezoneByCode($defaultTimezone);
             $request->merge(['timezone_id' => $timezone->timezone_id]);
         }
