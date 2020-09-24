@@ -444,6 +444,10 @@ class UserController extends Controller
                 $requestData['status'] = config('constants.user_statuses.INACTIVE');
             }
 
+            if (isset($requestData['avatar'])) {
+                $requestData['avatar'] = empty($requestData['avatar']) ? null : $requestData['avatar'];
+            }
+
             // Update user
             $user = $this->userRepository->update($requestData, $id);
 
