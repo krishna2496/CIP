@@ -1809,6 +1809,23 @@ class MissionRepository implements MissionInterface
     }
 
     /**
+     * Get the latest mission application status by mission id and user id
+     *
+     * @param int    $missionId
+     * @param int    $userId
+     */
+    public function getLatestMissionApplicationStatus(int $missionId, int $userId)
+    {
+        $application = $this->modelsService->missionApplication
+            ->where([
+                'user_id' => $userId,
+                'mission_id' => $missionId
+            ])->orderBy('created_at', 'desc')->firstOrFail();
+
+        return $application->approval_status;
+    }
+
+    /*
      * Check sort key is already exist or not
      *
      * @param int $missionId
