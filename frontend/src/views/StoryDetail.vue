@@ -81,7 +81,7 @@
                                     <i class="user-profile-icon"
                                        :style="{backgroundImage: 'url(' + storyDetailList.avatar + ')'}"></i>
                                     <h4>{{storyDetailList.first_name}} {{storyDetailList.last_name}}</h4>
-                                    <p>{{storyDetailList.city.name}}, {{storyDetailList.country.name}}</p>
+                                    <p>{{ storyDetailList.city.name === '' ? '' : storyDetailList.city.name + ',' }} {{storyDetailList.country.name}}</p>
                                     <div class="social-nav"  v-if="storyDetailList.linked_in_url != null && storyDetailList.linked_in_url != ''  ">
                                         <b-link :href="storyDetailList.linked_in_url" target="_blank"
                                                 :title="languageData.label.linked_in" class="linkedin-link">

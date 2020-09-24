@@ -42,11 +42,11 @@ trait StoryTransformable
             $storyData->storyMedia = $story->storyMedia;
         }
 
-        
+
         $key = array_search($languageId, array_column($storyData->mission->missionLanguage->toArray(), 'language_id'));
         $language = ($key === false) ? 'en' : $languageId;
         $missionLanguage = $storyData->mission->missionLanguage->where('language_id', $language)->first();
-        
+
         if (!is_null($missionLanguage)) {
             $storyData->mission_title = $missionLanguage->title;
         }
@@ -84,7 +84,7 @@ trait StoryTransformable
             $transformedUserStories['stats']['pending'] =  $storyStatusCount->pending;
             $transformedUserStories['stats']['declined'] =  $storyStatusCount->declined;
         }
-        
+
         return $transformedUserStories;
     }
 
@@ -97,7 +97,7 @@ trait StoryTransformable
      */
     protected function transformPublishedStory(Object $story, string $defaultAvatar): array
     {
-        $transformedPublishedStories = array();
+        $transformedPublishedStories = [];
         $languageCode = config('app.locale');
         foreach ($story as $storyData) {
             // get the theme name based on language set
@@ -109,7 +109,7 @@ trait StoryTransformable
             if ($arrayKey  !== false) {
                 $themeName = $storyData->mission->missionTheme['translations'][$arrayKey]['title'];
             }
-            
+
             $transformedPublishedStories [] = [
                     'story_id' => (int) $storyData->story_id,
                     'mission_id' => $storyData->mission_id,
@@ -144,7 +144,7 @@ trait StoryTransformable
         string $defaultAvatar,
         int $languageId
     ):array {
-        
+
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
         $storyData['title'] = $story->title;
@@ -153,7 +153,7 @@ trait StoryTransformable
         $storyData['status'] = trans('general.status.' . $story->status);
         $storyData['published_at'] = $story->published_at;
 
-        $cityTranslation = $story->user->city->languages->toArray();
+        $cityTranslation = $story->user->city ? $story->user->city->languages->toArray() : [];
         $countryTranslation = $story->user->country->languages->toArray();
 
         $cityTranslationKey = $countryTranslationKey = $cityName = $countryName = '';
@@ -170,7 +170,7 @@ trait StoryTransformable
         if (array_search($languageId, array_column($countryTranslation, 'language_id')) !== false) {
             $countryTranslationKey = array_search($languageId, array_column($countryTranslation, 'language_id'));
         }
-       
+
         if ($cityTranslationKey !== '' && $story->user->city) {
             $cityName = $cityTranslation[$cityTranslationKey]['name'];
         }
