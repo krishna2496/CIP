@@ -221,6 +221,16 @@ class MissionController extends Controller
             );
         }
 
+        // Check if required tenant setting based on mission type is enabled
+        if (!$this->isRequiredSettingForMissionTypeEnabled($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
         // Update organization city,state & country id to null if it's blank
         if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
             $organization = $request->get('organization');
@@ -289,11 +299,16 @@ class MissionController extends Controller
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $missionId): JsonResponse
+    public function show(Request $request, int $missionId): JsonResponse
     {
         try {
             // Get data for parent table
             $mission = $this->missionRepository->find($missionId);
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -400,6 +415,16 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
+            );
+        }
+
+        // Check if required tenant setting based on mission type is enabled
+        if (!$this->isRequiredSettingForMissionTypeEnabled($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
         }
 
@@ -732,5 +757,34 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType if not provided, mission type from the request will be used
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType = null
+    ) : bool {
+
+        $tenantSetting = null;
+        $missionType = $missionType ?? $request->get('mission_type');
+        switch ($missionType) {
+            case config('constants.mission_type.GOAL'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case config('constants.mission_type.TIME'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }
