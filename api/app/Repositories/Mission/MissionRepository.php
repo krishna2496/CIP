@@ -607,7 +607,7 @@ class MissionRepository implements MissionInterface
 
         // mission tab array modification
         $this->missionTabTransformArray($mission, $languages);
-        
+
         if ($includeImpact) {
             return $this->adminTransformMission($mission, $languages, $this->tenantActivatedSettingRepository);
         }
@@ -1892,7 +1892,7 @@ class MissionRepository implements MissionInterface
     {
         return $this->missionImpactRepository->deleteMissionImpactAndS3bucketData($missionImpactId);
     }
-    
+
     /**
      * Get the latest mission application status by mission id and user id
      *
@@ -1917,7 +1917,7 @@ class MissionRepository implements MissionInterface
      * @param array $missionTabs
      * @return bool
      */
-    public function checkExistSortKey(int $missionId, array $missionTabs): bool
+    public function checkExistTabSortKey(int $missionId, array $missionTabs): bool
     {
         return $this->missionTabRepository->checkSortKeyExist($missionId, $missionTabs);
     }
@@ -1931,6 +1931,9 @@ class MissionRepository implements MissionInterface
      */
     public function checkExistImpactSortKey(int $missionId, array $missionImpact): bool
     {
-        return $this->missionImpactRepository->checkImpactSortKeyExist($missionId, $missionImpact);
+        return $this->missionImpactRepository->checkImpactSortKeyExist(
+            $missionId,
+            $missionImpact
+        );
     }
 }

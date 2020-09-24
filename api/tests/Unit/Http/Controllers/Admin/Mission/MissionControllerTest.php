@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Unit\Http\Controllers\App\Mission;
+namespace Tests\Unit\Http\Controllers\Admin\Mission;
 
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
@@ -341,7 +341,7 @@ class MissionControllerTest extends TestCase
         Validator::shouldReceive('make')
             ->once()
             ->andReturn(Mockery::mock(['fails' => false]));
-        
+
         $missionRepository->shouldReceive('checkExistImpactSortKey')
             ->once()
             ->with($missionId, $requestData->impact)
@@ -536,7 +536,7 @@ class MissionControllerTest extends TestCase
     }
 
     public function testMissionStoreValidationFailure(){
-        
+
         $missionRepository = $this->mock(MissionRepository::class);
         $responseHelper = $this->mock(ResponseHelper::class);
         $request = new Request();
@@ -888,7 +888,7 @@ class MissionControllerTest extends TestCase
         ->once()
         ->with($apiStatus, $apiMessage, $apiData)
        ->andReturn($JsonResponse);
-        
+
 
         $this->expectsEvents(UserActivityLogEvent::class);
 
@@ -908,7 +908,7 @@ class MissionControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    
+
 
     /**
      * @testdox Test store method validation error
@@ -1059,7 +1059,7 @@ class MissionControllerTest extends TestCase
             ->once()
             ->andReturn(Mockery::mock(['fails' => false]));
 
-        $missionRepository->shouldReceive('checkExistSortKey')
+        $missionRepository->shouldReceive('checkExistTabSortKey')
             ->once()
             ->with($missionId, $requestData->mission_tabs)
             ->andReturn(false);

@@ -120,12 +120,17 @@ class MissionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-
-            // Get mission_impact tenant setting status
-            $tenantMissionImpactSettingStatus = $this->getTenantActivatedSetting();
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
 
             // Get mission
-            $missions = $this->missionRepository->missionList($request, $tenantMissionImpactSettingStatus);
+            $missions = $this->missionRepository->missionList(
+                $request,
+                $includeMissionImpact
+            );
 
             // Set response data
             $apiData = $missions;
@@ -299,18 +304,24 @@ class MissionController extends Controller
     /**
      * Display the specified mission detail.
      *
+     * @param Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $missionId): JsonResponse
+    public function show(Request $request, int $missionId): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
 
-            // Get mission_impact tenant setting status
-            $tenantMissionImpactSettingStatus = $this->getTenantActivatedSetting();
-            
             // Get data for parent table
-            $mission = $this->missionRepository->find($missionId, $tenantMissionImpactSettingStatus);
+            $mission = $this->missionRepository->find(
+                $missionId,
+                $includeMissionImpact
+            );
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -433,7 +444,10 @@ class MissionController extends Controller
 
         // Check sort key already exist for mission tabs
         if (isset($request->mission_tabs)) {
-            $missionTabresponse = $this->missionRepository->checkExistSortKey($missionId, $request->mission_tabs);
+            $missionTabresponse = $this->missionRepository->checkExistTabSortKey(
+                $missionId,
+                $request->mission_tabs
+            );
             if (!$missionTabresponse) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -446,7 +460,10 @@ class MissionController extends Controller
 
         // Check sort key already exist for mission impact
         if (isset($request->impact)) {
-            $missionImpactresponse = $this->missionRepository->checkExistImpactSortKey($missionId, $request->impact);
+            $missionImpactresponse = $this->missionRepository->checkExistImpactSortKey(
+                $missionId,
+                $request->impact
+            );
             if (!$missionImpactresponse) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -579,9 +596,12 @@ class MissionController extends Controller
         try {
             if (isset($request->impact) && count($request->impact) > 0) {
                 foreach ($request->impact as $impactValue) {
-                    if (isset($impactValue['mission_impact_id']) && ($impactValue['mission_impact_id'] !== '')) {
-                        $this->missionRepository
-                        ->isMissionImpactLinkedToMission($missionId, $impactValue['mission_impact_id']);
+                    if (isset($impactValue['mission_impact_id'])
+                        && ($impactValue['mission_impact_id'] !== '')) {
+                        $this->missionRepository->isMissionImpactLinkedToMission(
+                            $missionId,
+                            $impactValue['mission_impact_id']
+                        );
                     }
                 }
             }
@@ -591,7 +611,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
-        
+
         // Check for mission tab id is valid or not
         try {
             if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
@@ -824,21 +844,5 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
-    }
-
-    /**
-     * Get mission impact tenant setting status
-     *
-     * @return bool
-     */
-    public function getTenantActivatedSetting()
-    {
-        $request = new Request();
-        $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.MISSION_IMPACT'),
-            $request
-        );
-
-        return $missionImpactSettingActivated;
     }
 }

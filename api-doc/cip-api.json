@@ -9017,6 +9017,38 @@
             }
           }
         },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "icon_path": {
+                "type": "string",
+                "description": "URL of mission impact icon"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content" : {
+                      "type": "string",
+                      "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "start_date": {
           "type": "string",
           "format": "date-time",
