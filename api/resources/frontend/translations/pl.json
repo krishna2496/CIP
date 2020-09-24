@@ -299,7 +299,11 @@
 		"site_title": "Strona główna",
 		"ongoing": "Ongoing",
 		"more": "jeszcze",
-		"and": "i"
+		"and": "i",
+		"for": "Dla",
+		"on": "W",
+		"sort_deadline": "Sortuj według ostateczny termin rejestracji",
+		"no_image_available": "Obraz nie dostępny"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",

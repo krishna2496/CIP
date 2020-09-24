@@ -299,7 +299,11 @@
 		"site_title": "Inicio",
 		"ongoing": "En curso",
 		"more": "mas",
-		"and": "y"
+		"and": "y",
+		"for": "Para",
+		"on": "El",
+		"sort_deadline": "Ordenar por fecha límite de inscripción",
+		"no_image_available": "No hay imagen disponible"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",

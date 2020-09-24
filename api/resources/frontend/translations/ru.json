@@ -299,7 +299,11 @@
 		"site_title": "Главная",
 		"ongoing": "постоянный",
 		"more": "еще",
-		"and": "и"
+		"and": "и",
+		"for": "Для",
+		"on": "Ha",
+		"sort_deadline": "Упорядочить до окончания регистрации",
+		"no_image_available": "Изображение отсутствует"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",

@@ -299,7 +299,11 @@
 		"site_title": "Koti",
 		"ongoing": "Ongoing",
 		"more": "muuta",
-		"and": "ja"
+		"and": "ja",
+		"for": "Sillä",
+		"on": "On",
+		"sort_deadline": "Lajittele rekisteröinnin määräajan mukaan",
+		"no_image_available": "Ei kuvaa saatavilla"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",

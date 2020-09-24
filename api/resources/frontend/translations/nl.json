@@ -300,6 +300,10 @@
 		"ongoing": "Lopend",
 		"more": "meer",
 		"and": "en",
+		"for": "Voor",
+		"on": "Op",
+		"sort_deadline": "Sorteren op registratie deadline",
+		"no_image_available": "Geen afbeelding beschikbaar"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",

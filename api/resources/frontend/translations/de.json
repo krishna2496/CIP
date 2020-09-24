@@ -299,7 +299,11 @@
 		"site_title": "Startseite",
 		"ongoing": "Laufend",
 		"more": "weitere",
-		"and": "und"
+		"and": "und",
+		"for": "Für",
+		"on": "Am",
+		"sort_deadline": "Sortieren nach anmeldefrist",
+		"no_image_available": "Kein Bild verfügbar"
 	},
 	"placeholder": {
 		"email_address": "E-Mail-Adresse eingeben",
