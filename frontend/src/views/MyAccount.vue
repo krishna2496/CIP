@@ -486,7 +486,7 @@
             if (linkedInUrl == '') {
               return true
             }
-            const regexp = /^http(s)?:\/\/([\w]+\.)?linkedin\.com\/[//A-z0-9_-]+\/?$/;
+            const regexp = /^https:\/\/www\.linkedin\.com\/[a-z0-9]+/;
             return (regexp.test(linkedInUrl));
           }
         },
