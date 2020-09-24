@@ -417,9 +417,8 @@
       // Add mission to favorite
       favoriteMission(missionId) {
         this.items.map(mission => {
-            const isFavourite = mission.is_favourite === 0;
             if (mission.mission_id === missionId) {
-                mission.is_favourite = isFavourite ? 1 : 0;
+                mission.is_favourite = (mission.is_favourite === 0) ? 1 : 0;
             }
         });
         let missionData = {
