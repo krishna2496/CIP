@@ -47,7 +47,7 @@
         /*.icon-btn {
 			i {
 			  @include transformX(4px);
-
+  
 			  svg {
 				fill: $white;
 			  }
@@ -1002,6 +1002,9 @@
       .event-block {
         width: 100%;
       }
+      .mission-label-wrap {
+        min-height: 32px;
+      }
       .event-block {
         display: flex;
         align-items: flex-end;
@@ -1274,7 +1277,7 @@
                 span {
                   em {
                     font-size: 12px;
-                    line-height: 16px;
+                    line-height: 18px;
                     color: $gray-primary;
                   }
                 }
@@ -1309,7 +1312,7 @@
                 line-height: 19px;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
+                align-items: flex-end;
                 em {
                   margin-right: 6px;
                 }
