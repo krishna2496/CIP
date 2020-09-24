@@ -24,13 +24,13 @@ class AuthControllerTest extends TestCase
 {
 	private function getController(
 		Request $request,
-        ResponseHelper $responseHelper = null,
-        TenantOptionRepository $tenantOptionRepository = null,
-        Helpers $helpers = null,
+		ResponseHelper $responseHelper = null,
+		TenantOptionRepository $tenantOptionRepository = null,
+		Helpers $helpers = null,
 		LanguageHelper $languageHelper = null,
 		UserRepository $userRepository = null,
 		PasswordReset $passwordReset = null
-    ) {
+	) {
 		$responseHelper = $responseHelper ?? $this->mock(ResponseHelper::class);
 		$tenantOptionRepository = $tenantOptionRepository ?? $this->mock(TenantOptionRepository::class);
 		$helpers = $helpers ?? $this->mock(Helpers::class);
@@ -38,39 +38,39 @@ class AuthControllerTest extends TestCase
 		$userRepository = $userRepository ?? $this->mock(UserRepository::class);
 		$passwordReset = $passwordReset ?? $this->mock(PasswordReset::class);
 
-        return new AuthController(
-            $request,
-            $responseHelper,
-            $tenantOptionRepository,
-            $helpers,
-            $languageHelper,
-            $userRepository,
-            $passwordReset
-        );
-    }
+		return new AuthController(
+			$request,
+			$responseHelper,
+			$tenantOptionRepository,
+			$helpers,
+			$languageHelper,
+			$userRepository,
+			$passwordReset
+		);
+	}
 
-    /**
-    * @testdox Test change password
-    *
-    * @return void
-    */
-    public function testChangePasswordSuccess()
-    {
-    	$this->expectsEvents(UserActivityLogEvent::class);
-    	$symfonyRequest = $this->mock(SymfonyRequest::class);
-    	$symfonyRequest->password = Hash::make('old-password');
-    	$symfonyRequest->user_id = 1;
-    	$symfonyRequest->email = 'testuser@email.com';
+	/**
+	* @testdox Test change password
+	*
+	* @return void
+	*/
+	public function testChangePasswordSuccess()
+	{
+		$this->expectsEvents(UserActivityLogEvent::class);
+		$symfonyRequest = $this->mock(SymfonyRequest::class);
+		$symfonyRequest->password = Hash::make('old-password');
+		$symfonyRequest->user_id = 1;
+		$symfonyRequest->email = 'testuser@email.com';
 
-    	$request = $this->mock(Request::class);
-    	$request
-    		->shouldReceive('header')
-    		->shouldReceive('toArray')
-    		->andReturn([
-    			'old_password' => 'old-password',
-    			'password' => 'Passw0rd',
-    			'confirm_password' => 'Passw0rd'
-    		]);
+		$request = $this->mock(Request::class);
+		$request
+			->shouldReceive('header')
+			->shouldReceive('toArray')
+			->andReturn([
+				'old_password' => 'old-password',
+				'password' => 'Passw0rd',
+				'confirm_password' => 'Passw0rd'
+			]);
 		$request->auth = $symfonyRequest;
 		$request->old_password = 'old-password';
 		$request->password = 'Passw0rd';
@@ -126,39 +126,39 @@ class AuthControllerTest extends TestCase
 		$response = $controller->changePassword($request);
 		$this->assertInstanceOf(JsonResponse::class, $response);
 		$this->assertEquals(
-            ['token' => 'tenant-token'],
-            json_decode($response->getContent(), true)
-        );
-    }
+			['token' => 'tenant-token'],
+			json_decode($response->getContent(), true)
+		);
+	}
 
-    /**
-    * @testdox Test change password 
-    *
-    * @return void
-    */
-    public function testChangePasswordInvalidPassword()
-    {
-    	$symfonyRequest = $this->mock(SymfonyRequest::class);
-    	$symfonyRequest->password = Hash::make('old-password');
-    	$symfonyRequest->user_id = 1;
-    	$symfonyRequest->email = 'testuser@email.com';
+	/**
+	* @testdox Test change password 
+	*
+	* @return void
+	*/
+	public function testChangePasswordInvalidPassword()
+	{
+		$symfonyRequest = $this->mock(SymfonyRequest::class);
+		$symfonyRequest->password = Hash::make('old-password');
+		$symfonyRequest->user_id = 1;
+		$symfonyRequest->email = 'testuser@email.com';
 
-    	$request = $this->mock(Request::class);
-    	$request
-    		->shouldReceive('header')
-    		->shouldReceive('toArray')
-    		->andReturn([
-    			'old_password' => 'old-password',
-    			'password' => 'password',
-    			'confirm_password' => 'password'
-    		]);
+		$request = $this->mock(Request::class);
+		$request
+			->shouldReceive('header')
+			->shouldReceive('toArray')
+			->andReturn([
+				'old_password' => 'old-password',
+				'password' => 'password',
+				'confirm_password' => 'password'
+			]);
 		$request->auth = $symfonyRequest;
 		$request->old_password = 'old-password';
 		$request->password = 'password';
 
 		$errors = new Collection([
-            trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
-        ]);
+			trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+		]);
 
 		$validator = $this->mock(\Illuminate\Validation\Validator::class);
 		$validator
@@ -180,9 +180,9 @@ class AuthControllerTest extends TestCase
 			->andReturn(new JsonResponse(
 				[
 					'errors' => [
-                		'message' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
-            		]
-            	],
+						'message' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+					]
+				],
 				Response::HTTP_UNPROCESSABLE_ENTITY
 			));
 
@@ -218,20 +218,20 @@ class AuthControllerTest extends TestCase
 		$response = $controller->changePassword($request);
 		$this->assertInstanceOf(JsonResponse::class, $response);
 		$this->assertEquals(
-            [
-            	'errors' => [
-	                'message' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
-	            ]
-            ],
-            json_decode($response->getContent(), true)
-        );
-    }
+			[
+				'errors' => [
+					'message' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+				]
+			],
+			json_decode($response->getContent(), true)
+		);
+	}
 
-    /**
-    * @testdox Test change password
-    *
-    * @return void
-    */
+	/**
+	* @testdox Test change password
+	*
+	* @return void
+	*/
 	public function testChangePasswordInvalidOldPassword()
 	{
 		$symfonyRequest = $this->mock(SymfonyRequest::class);
@@ -312,19 +312,19 @@ class AuthControllerTest extends TestCase
 				'errors' => [
 					'message' => trans('messages.custom_error_message.ERROR_OLD_PASSWORD_NOT_MATCHED')
 				]
-            ],
-            json_decode($response->getContent(), true)
-        );
-    }
+			],
+			json_decode($response->getContent(), true)
+		);
+	}
 
-    /**
-    * Mock an object
-    *
-    * @param string name
-    * @return Mockery
-    */
-    private function mock($class)
-    {
-        return Mockery::mock($class);
-    }
+	/**
+	* Mock an object
+	*
+	* @param string name
+	* @return Mockery
+	*/
+	private function mock($class)
+	{
+		return Mockery::mock($class);
+	}
 }
