@@ -102,7 +102,7 @@
                                     <div class="content-wrap" v-if="isContentBlockDisplay(mission)">
                                         <template v-if="checkMissionTypeTime(mission.mission_type)">
                                             <div class="group-details-inner">
-                                                <template v-if="mission.seats_left != 0 && mission.seats_left !== null">
+                                                <template v-if="mission.seats_left && mission.seats_left != 0 && mission.seats_left !== null">
                                                     <div class="detail-column info-block">
                                                         <i class="icon-wrap">
                                                             <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
@@ -130,7 +130,7 @@
                                         </template>
                                         <template v-if="checkMissionTypeGoal(mission.mission_type)">
                                             <div class="group-details-inner volunteer-progress">
-                                                <div class="detail-column info-block" v-if="mission.seats_left && mission.seats_left != ''">
+                                                <div class="detail-column info-block" v-if="mission.seats_left && mission.seats_left != '' && mission.seats_left != 0">
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                                     </i>
