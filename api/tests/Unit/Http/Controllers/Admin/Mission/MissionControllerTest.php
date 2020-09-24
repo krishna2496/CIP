@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Unit\Http\Controllers\App\Mission;
+namespace Tests\Unit\Http\Controllers\Admin\Mission;
 
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
@@ -64,16 +64,16 @@ class MissionControllerTest extends TestCase
         $this->expectsEvents(UserActivityLogEvent::class);
 
         $missionRepository->shouldReceive('deleteMissionTabByMissionTabId')
-        ->once()
-        ->andReturn(true);
+            ->once()
+            ->andReturn(true);
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with(
-            Response::HTTP_NO_CONTENT,
-            trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NO_CONTENT,
+                trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
+            )
+           ->andReturn($JsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -128,19 +128,19 @@ class MissionControllerTest extends TestCase
         $organizationRepository = $this->mock(OrganizationRepository::class);
 
         $missionRepository->shouldReceive('deleteMissionTabByMissionTabId')
-        ->once()
-        ->with($missionTabId)
-        ->andThrow($modelNotFoundException);
+            ->once()
+            ->with($missionTabId)
+            ->andThrow($modelNotFoundException);
 
         $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
-            trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            )
+           ->andReturn($JsonResponse);
 
         $callController = $this->getController(
             $missionRepository,

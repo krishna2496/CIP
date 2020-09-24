@@ -419,7 +419,9 @@ class MissionController extends Controller
         }
 
         // Check if required tenant setting based on mission type is enabled
-        if (!$this->isRequiredSettingForMissionTypeEnabled($request)) {
+        if ($request->get('mission_type') &&
+            !$this->isRequiredSettingForMissionTypeEnabled($request)) {
+
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
