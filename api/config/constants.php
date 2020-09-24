@@ -41,13 +41,15 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
-    'PER_PAGE_MAX' => '50',
+    'PER_PAGE_MAX' => '500',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
-	'PER_PAGE_ALL' => '100000',
+    'PER_PAGE_ALL' => '100000',
+    'SUPPORT_EMAIL' => 'support@optimy.com',
+
     /*
      * User custom field types
      */
@@ -396,6 +398,7 @@ return [
         'ERROR_USER_ACTIVE' => '210016',
         'ERROR_USER_INVITE_INVALID_DATA' => '210017',
         'ERROR_ACCOUNT_EXPIRED' => '210018',
+        'ERROR_MAXIMUM_USERS_REACHED' =>  '210019',
 
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
@@ -455,6 +458,7 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+        'ERROR_SUBMIT_STORY_INVALID' => '700011',
 
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
@@ -517,6 +521,7 @@ return [
         // Donation error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102'
     ],
 
     /**
