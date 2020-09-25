@@ -311,26 +311,29 @@ class TenantOptionsController extends Controller
 
         if ($data['option_name'] == 'custom_login_text') {
             $optionValue = $data['option_value'];
-            $optionData = $optionValue['translations'][0]['message'];
-            $strippedValue = strip_tags($optionData);
-            if (strlen($strippedValue) > 370) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION'),
-                    trans('messages.custom_error_message.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION')
-                );
-            }
-            $isIframeExist = strpos ($optionData, '<iframe');
-            $isScriptExist = strpos ($optionData, '<script');
-            $isJavascriptExist = strpos ($optionData, 'javascript:');
-            if ($isIframeExist !== false || $isScriptExist !== false || $isJavascriptExist !== false) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVAID_TENANT_OPTION_VALUE'),
-                    trans('messages.custom_error_message.ERROR_INVAID_TENANT_OPTION_VALUE')
-                );
+            foreach ($optionValue['translations'] as $value) {
+                $optionData = $value['message'];
+                $strippedValue = strip_tags($optionData);
+                if (strlen($strippedValue) > 370) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION'),
+                        trans('messages.custom_error_message.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION')
+                    );
+                }
+                $isIframeExist = strpos ($optionData, '<iframe');
+                $isScriptExist = strpos ($optionData, '<script');
+                $isJavascriptExist = strpos ($optionData, 'javascript:');
+                
+                if ($isIframeExist !== false || $isScriptExist !== false || $isJavascriptExist !== false) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_INVAID_TENANT_OPTION_VALUE'),
+                        trans('messages.custom_error_message.ERROR_INVAID_TENANT_OPTION_VALUE')
+                    );
+                }
             }
         }
 
@@ -387,28 +390,30 @@ class TenantOptionsController extends Controller
             $data['option_name'] = $request->option_name;
 
             if ($data['option_name'] == 'custom_login_text') {
-                $optionValue = $request->option_value;
-                $optionData = $optionValue['translations'][0]['message'];
-                $strippedValue = strip_tags($optionData);
-                if (strlen($strippedValue) > 370) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION'),
-                        trans('messages.custom_error_message.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION')
-                    );
-                }
-                $isIframeExist = strpos ($optionData, '<iframe');
-                $isScriptExist = strpos ($optionData, '<script');
-                $isJavascriptExist = strpos ($optionData, 'javascript:');
-                
-                if ($isIframeExist !== false || $isScriptExist !== false || $isJavascriptExist !== false) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_INVAID_TENANT_OPTION_VALUE'),
-                        trans('messages.custom_error_message.ERROR_INVAID_TENANT_OPTION_VALUE')
-                    );
+                $optionValue = $data['option_value'];
+                foreach ($optionValue['translations'] as $value) {
+                    $optionData = $value['message'];
+                    $strippedValue = strip_tags($optionData);
+                    if (strlen($strippedValue) > 370) {
+                        return $this->responseHelper->error(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                            config('constants.error_codes.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION'),
+                            trans('messages.custom_error_message.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION')
+                        );
+                    }
+                    $isIframeExist = strpos ($optionData, '<iframe');
+                    $isScriptExist = strpos ($optionData, '<script');
+                    $isJavascriptExist = strpos ($optionData, 'javascript:');
+                    
+                    if ($isIframeExist !== false || $isScriptExist !== false || $isJavascriptExist !== false) {
+                        return $this->responseHelper->error(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                            config('constants.error_codes.ERROR_INVAID_TENANT_OPTION_VALUE'),
+                            trans('messages.custom_error_message.ERROR_INVAID_TENANT_OPTION_VALUE')
+                        );
+                    }
                 }
             }
 
