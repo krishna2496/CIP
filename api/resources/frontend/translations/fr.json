@@ -299,7 +299,11 @@
 		"site_title": "Accueil",
 		"ongoing": "En cours",
 		"more": "de plus",
-		"and": "et"
+		"and": "et",
+		"for": "Pour la",
+		"on": "En",
+		"sort_deadline": "Trier par date limite d’inscription",
+		"no_image_available": "Pas d'image disponible"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",

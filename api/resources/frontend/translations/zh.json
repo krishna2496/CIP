@@ -299,7 +299,11 @@
 		"site_title": "首页",
 		"ongoing": "Ongoing",
 		"more": "more",
-		"and": "&"
+		"and": "&",
+		"for": "对于",
+		"on": "On",
+		"sort_deadline": "排序方式注册截止日期",
+		"no_image_available": "没有可用的图像"
 	},
 	"placeholder": {
 		"email_address": "输入电子邮件地址",
