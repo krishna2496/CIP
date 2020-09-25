@@ -7,7 +7,8 @@
         </div>
         <div class="signin-form-block">
             <!-- custom text block -->
-            <div class="custom-text-block" v-if="customText != ''">
+            {{customTextPosition}}
+            <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'before_logo'">
                 <p v-html="customText">
                 </p>
             </div>
@@ -17,10 +18,10 @@
             </router-link>
 
             <!-- Uncomment below code to display custom text below login icon-->
-            <!-- <div class="custom-text-block" v-if="customText != ''">
+            <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_logo'">
                 <p v-html="customText">
                 </p>
-            </div> -->
+            </div>
 
             <b-alert v-if="this.$store.state.samlSettings && this.$store.state.samlSettings.saml_access_only" />
             <div v-else>
@@ -52,7 +53,7 @@
                 </div>
 
                 <!-- Uncomment below code to display custom text below login fields-->
-                <!-- <div class="custom-text-block" v-if="customText != ''">
+                <!-- <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_login_form'">
                     <p v-html="customText">
                     </p>
                 </div> -->
@@ -114,7 +115,8 @@ export default {
             languageData: [],
             isPageShown: false,
             componentKey: 0,
-            customText : ''
+            customText : '',
+            customTextPosition : 'before_logo'
         };
     },
 
@@ -172,6 +174,7 @@ export default {
             const customTextArray = JSON.parse(store.state.customLoginText)
             if (customTextArray) {
                 const translations = customTextArray.translations;
+                this.customTextPosition = customTextArray.position;
                 if (translations && Array.isArray(translations)) {
                     const translatedCustomText = translations.find((item) => {
                         return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
