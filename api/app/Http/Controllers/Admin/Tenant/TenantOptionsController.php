@@ -311,7 +311,10 @@ class TenantOptionsController extends Controller
 
         if ($data['option_name'] == 'custom_login_text') {
             $optionValue = $data['option_value'];
-            return $this->validateTenantOption($optionValue['translations']);
+            $validationResponse =  $this->validateTenantOption($optionValue['translations']);
+            if ($validationResponse != null) {
+                return $validationResponse;
+            }
         }
 
         $data['option_value'] = is_array($request->option_value) ?
@@ -368,7 +371,10 @@ class TenantOptionsController extends Controller
 
             if ($data['option_name'] == 'custom_login_text') {
                 $optionValue = $request->option_value;
-                return $this->validateTenantOption($optionValue['translations']);
+                $validationResponse =  $this->validateTenantOption($optionValue['translations']);
+                if ($validationResponse != null) {
+                    return $validationResponse;
+                }
             }
 
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
