@@ -32,6 +32,6 @@ class JWTCookieFactory
 
     public static function makeExpired() : Cookie
     {
-        return new Cookie(self::COOKIE_NAME, 0);
+        return new Cookie(self::COOKIE_NAME, null);
     }
 }

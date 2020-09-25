@@ -37,9 +37,8 @@ class JWTCookieFactoryTest extends TestCase
 
     public function testMakeExpired()
     {
-        $expectedExpirationTime = 0;
         $actual = JWTCookieFactory::makeExpired();
         $this->assertInstanceOf(Cookie::class, $actual);
-        $this->assertEquals($expectedExpirationTime, $actual->getExpiresTime());
+        $this->assertNull($actual->getValue());
     }
 }
