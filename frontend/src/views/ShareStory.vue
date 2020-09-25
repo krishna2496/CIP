@@ -483,16 +483,6 @@
             this.saveButtonAjaxCall = false
           })
         } else {
-          if (params == "preview" && this.storyId != '') {
-            this.formChange = 0;
-            let routeData = this.$router.resolve({
-              path: "/story-preview" + '/' + this.storyId
-            });
-            window.open(routeData.href, '_blank');
-            this.isLoaderActive = false
-            this.saveButtonAjaxCall = false
-            return false;
-          }
           if (this.story.videoUrl == '') {
             formData.append('story_videos', '');
           }
@@ -505,7 +495,19 @@
               this.message = response.message
             } else {
               this.formChange = 0;
-              if (this.storyId != '') {
+
+              if (params == "preview" && this.storyId != '') {
+                let routeData = this.$router.resolve({
+                  path: "/story-preview" + '/' + this.storyId
+                });
+                window.open(routeData.href, '_blank');
+                this.isLoaderActive = false;
+                this.saveButtonAjaxCall = false;
+                this.showDismissibleAlert = false;
+                return false;
+              }
+
+              if (this.storyId != '' && params != 'preview') {
                 this.previewButtonEnable = false
                 this.submitButtonEnable = false
                 this.getStoryDetail();
