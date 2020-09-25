@@ -7,7 +7,6 @@
         </div>
         <div class="signin-form-block">
             <!-- custom text block -->
-            {{customTextPosition}}
             <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'before_logo'">
                 <p v-html="customText">
                 </p>
@@ -17,7 +16,6 @@
                 <img :src="this.$store.state.logo">
             </router-link>
 
-            <!-- Uncomment below code to display custom text below login icon-->
             <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_logo'">
                 <p v-html="customText">
                 </p>
@@ -52,11 +50,10 @@
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
 
-                <!-- Uncomment below code to display custom text below login fields-->
-                <!-- <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_login_form'">
+                <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_login_form'">
                     <p v-html="customText">
                     </p>
-                </div> -->
+                </div>
 
             </div>
 
@@ -174,7 +171,9 @@ export default {
             const customTextArray = JSON.parse(store.state.customLoginText)
             if (customTextArray) {
                 const translations = customTextArray.translations;
-                this.customTextPosition = customTextArray.position;
+                if (customTextArray.position !== '' && customTextArray.position != null) {
+                    this.customTextPosition = customTextArray.position;
+                }
                 if (translations && Array.isArray(translations)) {
                     const translatedCustomText = translations.find((item) => {
                         return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
