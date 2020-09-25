@@ -190,7 +190,7 @@ class TenantOptionController extends Controller
     public function getCustomFavicon(Request $request): JsonResponse
     {
         $isCustomFaviconEnabled = false;
-        $tenantCustomFaviconUrl = null;
+        $tenantCustomFaviconUrl = '';
 
         // Check presence of custom favicon option
         try {
@@ -222,8 +222,8 @@ class TenantOptionController extends Controller
         $apiData = [
             'custom_favicon' => $tenantCustomFaviconUrl,
         ];
-        $apiStatus = $tenantCustomFaviconUrl ? Response::HTTP_OK : Response::HTTP_NOT_FOUND;
-        $apiMessage = $tenantCustomFaviconUrl ? trans('messages.success.MESSAGE_FAVICON_UPLOADED') :
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = $tenantCustomFaviconUrl !== '' ? trans('messages.success.MESSAGE_FAVICON_UPLOADED') :
             trans('messages.custom_error_message.ERROR_NO_DATA_FOUND');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

@@ -10,9 +10,10 @@ export default async() => {
         }
 
         // Replace the favicon of the page
+        // (adding the 'v' parameter to avoid retrieving cached favicon after a favicon update)
         document
             .getElementById("favicon")
-            .setAttribute("href", custom_favicon);
+            .setAttribute("href", custom_favicon + '?v=' + Date.now().toString());
 
         return Promise.resolve();
     }).catch((error) => {
