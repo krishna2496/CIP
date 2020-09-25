@@ -498,7 +498,7 @@
 
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
-                  path: "/story-preview" + '/' + this.storyId
+                  path: `/story-preview/${this.storyId}`
                 });
                 window.open(routeData.href, '_blank');
                 this.isLoaderActive = false;
