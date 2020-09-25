@@ -49,7 +49,7 @@ class TenantHasSettings
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
                     '',
-                    trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+                    trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED').$setting.$result
                 );
             }
         }

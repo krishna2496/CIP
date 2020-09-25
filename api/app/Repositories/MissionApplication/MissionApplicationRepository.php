@@ -156,11 +156,21 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * @param int $userId
      * @param $year
      * @param $month
+     * @param null|array $missionTypes
      * @return null|int
      */
-    public function missionApplicationCount(int $userId, $year, $month): ?int
-    {
-        return $this->missionApplication->missionApplicationCount($userId, $year, $month);
+    public function missionApplicationCount(
+        int $userId,
+        $year,
+        $month,
+        array $missionTypes = null
+    ): ?int {
+        return $this->missionApplication->missionApplicationCount(
+            $userId,
+            $year,
+            $month,
+            $missionTypes
+        );
     }
 
     /**
@@ -169,15 +179,24 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * @param int $userId
      * @param $year
      * @param $month
+     * @param null|array $missionTypes
      * @return null|array
      */
-    public function organizationCount(int $userId, $year, $month): ?array
-    {
+    public function organizationCount(
+        int $userId,
+        $year,
+        $month,
+        array $missionTypes = null
+    ): ?array {
         $countQuery = $this->mission
-        ->leftJoin('mission_application', 'mission_application.mission_id', '=', 'mission.mission_id')
-        ->where(['mission_application.user_id' => $userId])
-        ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
-        ->groupBy('mission.organization_id');
+            ->leftJoin('mission_application', 'mission_application.mission_id', '=', 'mission.mission_id')
+            ->where(['mission_application.user_id' => $userId])
+            ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
+            ->groupBy('mission.organization_id');
+
+        if ($missionTypes !== null) {
+            $countQuery->whereIn('mission_type', $missionTypes);
+        }
 
         if (isset($year) && $year != '') {
             $countQuery->whereYear('applied_at', $year);
@@ -194,11 +213,21 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * @param int $userId
      * @param $year
      * @param $month
+     * @param null|array $missionTypes
      * @return null|int
      */
-    public function pendingApplicationCount(int $userId, $year, $month): ?int
-    {
-        return $this->missionApplication->pendingApplicationCount($userId, $year, $month);
+    public function pendingApplicationCount(
+        int $userId,
+        $year,
+        $month,
+        array $missionTypes = null
+    ): ?int {
+        return $this->missionApplication->pendingApplicationCount(
+            $userId,
+            $year,
+            $month,
+            $missionTypes
+        );
     }
 
     /**
@@ -209,6 +238,9 @@ class MissionApplicationRepository implements MissionApplicationInterface
      */
     public function getMissionId(int $applicationId): int
     {
-        return $this->missionApplication->where('mission_application_id', $applicationId)->first()->mission_id;
+        return $this->missionApplication
+            ->where('mission_application_id', $applicationId)
+            ->first()
+            ->mission_id;
     }
 }

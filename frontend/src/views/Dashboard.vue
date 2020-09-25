@@ -452,7 +452,7 @@
                 if (this.barChartCanvas != null) {
                   this.barChartCanvas.destroy();
                 }
-                if(this.isChartDataFound) {
+                if (this.isChartDataFound) {
                   setTimeout(()=> {
                     var barChartRefs = this.$refs.barChartRefs;
                     var lineContent = barChartRefs.getContext("2d");

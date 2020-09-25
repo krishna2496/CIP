@@ -1582,14 +1582,18 @@ class MissionRepository implements MissionInterface
         $userId = $request->auth->user_id;
         $missionLists = array();
 
-        $missionData = $this->modelsService->mission->select('mission.mission_id', 'city_id')
+        $missionQuery = $this->modelsService->mission->select('mission.mission_id', 'city_id')
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
             ->whereIn('approval_status', [config('constants.application_status')['AUTOMATICALLY_APPROVED']]);
         })
         ->with(['missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title', 'language_id');
-        }])->get();
+        }]);
+
+        $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
+
+        $missionData = $missionQuery->get();
 
         foreach ($missionData as $key => $value) {
             $index = array_search($languageId, array_column($value->missionLanguage->toArray(), 'language_id'));

@@ -7,10 +7,12 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Helpers\ResponseHelper;
+use App\Helpers\TenantSettingHelper;
 use App\Helpers\Helpers;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Services\Dashboard\DashboardService;
 
@@ -30,22 +32,32 @@ class DashboardController extends Controller
      * @var App\Repositories\Timesheet\TimesheetRepository
      */
     private $timesheetRepository;
-    
+
     /**
      * @var App\Repositories\MissionApplication\MissionApplicationRepository
      */
     private $missionApplicationRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * @var App\Repositories\TenantOption\TenantOptionRepository
      */
     private $tenantOptionRepository;
-        
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
+    /**
+     * @var App\Helpers\TenantSettingHelper
+     */
+    private $tenantSettingHelper;
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -64,6 +76,7 @@ class DashboardController extends Controller
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\TenantSettingHelper $tenantSettingHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Services\Dashboard\DashboardService $dashboardService
      * @return void
@@ -72,20 +85,24 @@ class DashboardController extends Controller
         UserRepository $userRepository,
         TimesheetRepository $timesheetRepository,
         MissionApplicationRepository $missionApplicationRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
+        TenantSettingHelper $tenantSettingHelper,
         Helpers $helpers,
         DashboardService $dashboardService
     ) {
         $this->userRepository = $userRepository;
         $this->timesheetRepository = $timesheetRepository;
         $this->missionApplicationRepository = $missionApplicationRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
+        $this->tenantSettingHelper = $tenantSettingHelper;
         $this->helpers = $helpers;
         $this->dashboardService = $dashboardService;
     }
-    
+
     /**
      * Get dashboard statistics
      *
@@ -97,52 +114,85 @@ class DashboardController extends Controller
         $userId = $request->auth->user_id;
         $year = ((!is_null($request->year)) && ($request->year != "")) ? $request->year : '';
         $month = ((!is_null($request->month)) && ($request->month != "")) ? $request->month : '';
-        $missionId = $request->mission_id ?? null;
-        $totalHours = $totalGoals = 0;
-        $currentYear = ($year != '') ? $year : (int) date('Y');
 
-        $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
-        $pendingApplicationCount = $this->missionApplicationRepository->pendingApplicationCount($userId, $year, $month);
-        $approvedApplicationCount = $this->missionApplicationRepository->missionApplicationCount(
-            $userId,
-            $year,
-            $month
-        );
-        $organizationCount = $this->missionApplicationRepository->organizationCount($userId, $year, $month);
-        $goalHours = $this->userRepository->getUserHoursGoal($userId);
-        $tenantGoalHours = $this->tenantOptionRepository->getOptionValueFromOptionName('default_user_hours_goal');
-        $tenantGoalHours = $tenantGoalHours->option_value ?? config('constants.DEFAULT_USER_HOURS_GOAL');
-        $allUsersTimesheetData = $this->timesheetRepository->getUsersTotalHours($year, $month);
-        $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
-        // For dashboard chart : Hours per month
-        $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $currentYear, $missionId);
-        // For total hours
-        foreach ($timesheetData as $timesheet) {
-            $totalHours += $timesheet['total_minutes'];
-        }
-        
-        // For hours tracked this year
-        foreach ($totalGoalHours as $timesheetHours) {
-            $totalGoals += $timesheetHours['total_minutes'];
-        }
-
-        // For volunteering Rank
-        $volunteeringRank = $this->dashboardService->getvolunteeringRank($allUsersTimesheetData, $userId);
-        
-        $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
-        // dd($apiData);
-        $apiData['volunteering_rank'] = (int)$volunteeringRank;
+        $missionTypes = $this->tenantSettingHelper->getAvailableMissionTypes($request);
+        $pendingApplicationCount = $this->missionApplicationRepository
+            ->pendingApplicationCount(
+                $userId,
+                $year,
+                $month,
+                $missionTypes
+            );
+        $approvedApplicationCount = $this->missionApplicationRepository
+            ->missionApplicationCount(
+                $userId,
+                $year,
+                $month,
+                $missionTypes
+            );
+        $organizationCount = $this->missionApplicationRepository
+            ->organizationCount(
+                $userId,
+                $year,
+                $month,
+                $missionTypes
+            );
         $apiData['open_volunteering_requests'] = $pendingApplicationCount;
         $apiData['mission_count'] = $approvedApplicationCount;
-        $apiData['voted_missions'] = '';
         $apiData['organization_count'] = count($organizationCount);
-        $apiData['total_goal_hours'] = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;
-        $apiData['completed_goal_hours'] = (int)($totalGoals / 60);
-        $apiData['chart'] = $chartData;
-        
+
+        if (in_array(config('constants.mission_type.TIME'), $missionTypes)) {
+            $missionId = $request->mission_id ?? null;
+            $totalHours = $totalGoals = 0;
+            $currentYear = ($year != '') ? $year : (int) date('Y');
+
+            $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
+            $goalHours = $this->userRepository->getUserHoursGoal($userId);
+            $tenantGoalHours = $this->tenantOptionRepository
+                ->getOptionValueFromOptionName('default_user_hours_goal');
+            $tenantGoalHours = $tenantGoalHours->option_value ?? config('constants.DEFAULT_USER_HOURS_GOAL');
+            $allUsersTimesheetData = $this->timesheetRepository
+                ->getUsersTotalHours($year, $month);
+            $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear(
+                $userId,
+                $year
+            );
+            // For dashboard chart : Hours per month
+            $chartData = $this->timesheetRepository->getTotalHoursbyMonth(
+                $userId,
+                $currentYear,
+                $missionId
+            );
+
+            // For total hours
+            foreach ($timesheetData as $timesheet) {
+                $totalHours += $timesheet['total_minutes'];
+            }
+
+            // For hours tracked this year
+            foreach ($totalGoalHours as $timesheetHours) {
+                $totalGoals += $timesheetHours['total_minutes'];
+            }
+
+            // For volunteering Rank
+            $volunteeringRank = $this->dashboardService->getvolunteeringRank($allUsersTimesheetData, $userId);
+
+            $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
+            $apiData['volunteering_rank'] = (int)$volunteeringRank;
+            $apiData['voted_missions'] = '';
+            $apiData['total_goal_hours'] = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;
+            $apiData['completed_goal_hours'] = (int)($totalGoals / 60);
+            $apiData['chart'] = $chartData;
+        }
+
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_DASHBOARD_STATISTICS_LISTING');
-        return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $apiData);
+
+        return $this->responseHelper->success(
+            Response::HTTP_OK,
+            $apiMessage,
+            $apiData
+        );
     }
 }

@@ -243,8 +243,8 @@ $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image'
 
 /* Fetch pending goal requests */
 $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
-    'middleware' => 
-    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission,',
+    'middleware' =>
+    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
 /* Export pending goal requests */
