@@ -255,11 +255,6 @@
         }
       }
     }
-    .form-control {
-      @include placeholder {
-        color: $gray-primary;
-      }
-    }
     .ui.selection.dropdown.search-dropdown .menu {
       max-height: 150px;
     }
