@@ -124,6 +124,27 @@ class StoryController extends Controller
                 $validator->errors()->first()
             );
         }
+
+        try {
+            $missionApplicationStatus = $this->missionRepository->getLatestMissionApplicationStatus(
+                (int)$request->get('mission_id'),
+                $request->auth->user_id
+            );
+
+            if ($missionApplicationStatus !== config('constants.application_status.AUTOMATICALLY_APPROVED')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SUBMIT_STORY_INVALID'),
+                    trans('messages.custom_error_message.ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED')
+                );
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_SUBMIT_STORY_INVALID'),
+                trans('messages.custom_error_message.ERROR_STORY_MISSION_APPLICATION_NOT_FOUND')
+            );
+        }
         
         // Store story data
         $storyData = $this->storyRepository->store($request);

@@ -119,6 +119,7 @@ class MissionApplicationQuery implements QueryableInterface
                 'mission.missionSkill',
                 'mission.country.languages',
                 'mission.city.languages',
+                'mission.volunteeringAttribute'
             ])
             // Filter by Status
             ->when(isset($filters[self::FILTER_STATUS]), function($query) use ($filters) {
