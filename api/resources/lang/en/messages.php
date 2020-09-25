@@ -387,10 +387,13 @@ return [
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
-        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system', 
-
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
+
         'ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION' => 'You cannot add more than 370 character for custom login text',
-        'ERROR_INVAID_TENANT_OPTION_VALUE' => 'You cannot add iframe,script and javascript in custom login text value'
+        'ERROR_INVAID_TENANT_OPTION_VALUE' => 'You cannot add iframe,script and javascript in custom login text value',
+        //For submitting a story feature
+        'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
+        'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.'
     ]
 ];
