@@ -89,12 +89,22 @@ a {
     color: $primary !important;
     background: none !important;
     border-color: $primary !important;
+    i {
+      svg {
+        fill: $primary;
+      }
+    }
   }
   &:disabled {
     background: $primary;
     border-color: $primary;
     color: $white;
     opacity: 0.4;
+  }
+  i {
+    svg {
+      fill: $white;
+    }
   }
 }
 
