@@ -1259,6 +1259,11 @@
               this.timesheetRequestItems = currentData;
             })
           }
+
+          if (!this.isGoalMissionActive) {
+            this.isComponentLoaded = true;
+            this.isAllVisible = this.timeMissionData.length;
+          }
         })
       },
       getGoalRequest(currentPage) {
@@ -1333,19 +1338,19 @@
       this.timeRequestLabel = this.languageData.label.hours_requests
       this.goalRequestLabel = this.languageData.label.goals_requests
       this.userTimezone = store.state.userTimezone
-      this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
+      this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION)
       this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
-      this.getVolunteerHoursData();
-      setTimeout(() => {
-        this.getVolunteerGoalsData();
-      }, 90)
+
       this.isShownComponent = true;
-      setTimeout(() => {
+      if (this.isTimeMissionActive) {
+        this.getVolunteerHoursData();
         this.getTimeRequestData(this.hourRequestCurrentPage);
-      }, 80)
-      setTimeout(() => {
+      }
+
+      if (this.isGoalMissionActive) {
+        this.getVolunteerGoalsData();
         this.getGoalRequestData(this.goalRequestCurrentPage);
-      }, 100)
+      }
 
       let timeRequestFieldArray = [
         this.languageData.label.mission,

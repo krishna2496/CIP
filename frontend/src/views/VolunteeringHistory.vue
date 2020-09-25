@@ -234,6 +234,10 @@
 							})
 						})
 					}
+
+					if (!this.isGoalMissionActive) {
+						this.isLoading = false;
+					}
 				})
 			},
 			getVolunteerMissionsGoals(currentPage) {
@@ -275,12 +279,18 @@
 			this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
 			this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
 			this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
-      		this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
+			this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
 
-			this.getVolunteerHistoryHoursOfType("theme");
-			this.getVolunteerHistoryHoursOfType("skill");
-			this.getVolunteerMissionsHours();
-			this.getVolunteerMissionsGoals();
+			if (this.isTimeMissionActive) {
+				this.getVolunteerHistoryHoursOfType('theme');
+				this.getVolunteerHistoryHoursOfType('skill');
+				this.getVolunteerMissionsHours();
+			}
+
+			if (this.isGoalMissionActive) {
+				this.getVolunteerMissionsGoals();
+			}
+
 			let timeRequestFieldArray = [
 				this.languageData.label.mission,
 				this.languageData.label.time,
