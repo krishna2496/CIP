@@ -92,23 +92,6 @@ class Story extends Model
         'user_id' => $userId])->firstOrFail()->delete();
     }
 
-    public function delete(): bool
-    {
-        $id = $this->story_id;
-
-        Notification::with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["MY_STORIES"],
-                config("constants.notification_type")["RECOMMENDED_STORY"]
-            ]);
-        }])
-            ->where([
-                'entity_id' => $id
-            ])->delete();
-
-        return parent::delete();
-    }
-
     /**
      * Remove the script tag from description attribute
      *

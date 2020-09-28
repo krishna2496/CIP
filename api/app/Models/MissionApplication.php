@@ -208,20 +208,4 @@ class MissionApplication extends Model
                 ->count();
         }
     }
-
-    public function delete(): bool
-    {
-        $id = $this->mission_application_id;
-
-        Notification::with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["MISSION_APPLICATION"]
-                ]);
-            }])
-        ->where([
-            'entity_id' => $id
-        ])->delete();
-
-        return parent::delete();
-    }
 }

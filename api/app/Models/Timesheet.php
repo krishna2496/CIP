@@ -194,22 +194,4 @@ class Timesheet extends Model
 
         return $query->whereMonth('created_at', $month);
     }
-
-    public function delete(): bool
-    {
-        $id = $this->timesheet_id;
-
-        Notification::with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["VOLUNTEERING_HOURS"],
-                config("constants.notification_type")["VOLUNTEERING_GOALS"],
-            ]);
-        }])
-            ->where([
-                'entity_id' => $id
-            ])->delete();
-
-        return parent::delete();
-    }
-
 }

@@ -59,20 +59,4 @@ class Comment extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-
-    public function delete(): bool
-    {
-        $id = $this->comment_id;
-
-        Notification::with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["MY_COMMENTS"]
-            ]);
-        }])
-            ->where([
-                'entity_id' => $id
-            ])->delete();
-
-        return parent::delete();
-    }
 }

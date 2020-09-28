@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\App\Story;
 
+use App\Events\Story\StoryDeletedEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Story\StoryRepository;
@@ -37,12 +38,12 @@ class StoryController extends Controller
      * @var App\Repositories\StoryVisitor\StoryVisitorRepository
      */
     private $storyVisitorRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\Helpers
      */
@@ -57,7 +58,7 @@ class StoryController extends Controller
      * @var App\Repositories\Mission\MissionRepository
      */
     private $missionRepository;
-    
+
     /**
      * @var App\Repositories\Notification\NotificationRepository
      */
@@ -92,7 +93,7 @@ class StoryController extends Controller
         $this->missionRepository = $missionRepository;
         $this->notificationRepository = $notificationRepository;
     }
-       
+
     /**
      * Store story details
      *
@@ -114,7 +115,7 @@ class StoryController extends Controller
                 'description' => 'required|max:40000'
             ]
         );
-        
+
         // If validator fails
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -145,7 +146,7 @@ class StoryController extends Controller
                 trans('messages.custom_error_message.ERROR_STORY_MISSION_APPLICATION_NOT_FOUND')
             );
         }
-        
+
         // Store story data
         $storyData = $this->storyRepository->store($request);
 
@@ -160,7 +161,7 @@ class StoryController extends Controller
         if ($request->hasFile('story_images')) {
             $storyImageArray = array();
             $storyMedia = $this->storyRepository->getStoryMedia($storyData->story_id);
-            
+
             foreach ($storyMedia as $mediaData) {
                 // found the image
                 if ($mediaData->type == 'image') {
@@ -208,7 +209,7 @@ class StoryController extends Controller
                     'description' => 'sometimes|required|max:40000'
                 ]
             );
-            
+
             // If validator fails
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -218,7 +219,7 @@ class StoryController extends Controller
                     $validator->errors()->first()
                 );
             }
-    
+
             $storyStatus = array(config('constants.story_status.PUBLISHED'),
             config('constants.story_status.DECLINED'));
 
@@ -240,7 +241,7 @@ class StoryController extends Controller
 
             // Update story data
             $storyData = $this->storyRepository->update($request, $storyId);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_UPDATED');
@@ -252,7 +253,7 @@ class StoryController extends Controller
             if ($request->hasFile('story_images')) {
                 $storyImageArray = array();
                 $storyMedia = $this->storyRepository->getStoryMedia($storyData->story_id);
-                
+
                 foreach ($storyMedia as $mediaData) {
                     // found the image
                     if ($mediaData->type == 'image') {
@@ -273,7 +274,7 @@ class StoryController extends Controller
                 $request->auth->user_id,
                 $storyData->story_id
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -294,7 +295,8 @@ class StoryController extends Controller
     {
         try {
             $this->storyRepository->delete($storyId, $request->auth->user_id);
-            $this->notificationRepository->deleteStoryNotifications($storyId);
+            event(new StoryDeletedEvent($storyId));
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_STORY_DELETED');
@@ -319,7 +321,7 @@ class StoryController extends Controller
             );
         }
     }
-    
+
     /**
      * Get story details.
      *
@@ -331,7 +333,7 @@ class StoryController extends Controller
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
-       
+
         // Get Story details
         $story = $this->storyRepository
         ->getStoryDetails(
@@ -340,7 +342,7 @@ class StoryController extends Controller
             $request->auth->user_id,
             array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
         );
-        
+
         if ($story->count() == 0) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
@@ -352,7 +354,7 @@ class StoryController extends Controller
         $storyArray = array('story_id' => $story[0]->story_id,
                             'story_user_id' => $story[0]->user_id,
                             'status' => $story[0]->status);
-        
+
         $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
 
         // not found same story user & login user & story status is published then story visitor count is updated
@@ -364,7 +366,7 @@ class StoryController extends Controller
                 $storyArray['story_id'],
                 $request->auth->user_id
             );
-            
+
             //Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.STORY_VISITOR'),
@@ -389,7 +391,7 @@ class StoryController extends Controller
             $defaultAvatar,
             $languageId
         );
-        
+
         // Check mission status
         $missionStatus = $this->missionRepository->checkMissionStatus($storyTransformedData['mission_id']);
         $storyTransformedData['open_mission_button'] = ($missionStatus) ? "1" : "0";
@@ -399,7 +401,7 @@ class StoryController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransformedData);
     }
-    
+
     /**
      * User can copy story if its declined
      *
@@ -423,7 +425,7 @@ class StoryController extends Controller
                 $oldStoryId,
                 $storyStatus
             );
-            
+
             if ($notDeclinedStory) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -443,7 +445,7 @@ class StoryController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
         $apiData = ['story_id' => $newStoryId ];
-            
+
         //Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.STORY'),
@@ -458,8 +460,8 @@ class StoryController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-    
-    
+
+
     /**
      * Export user's story
      *
@@ -471,13 +473,13 @@ class StoryController extends Controller
         //get login user story data
         $language = $this->languageHelper->getLanguageDetails($request);
         $stories = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
-        
+
         if ($stories->count() == 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         }
-        
+
         $fileName = config('constants.export_story_file_names.STORY_XLSX');
         $excel = new ExportCSV($fileName);
         $headings = [
@@ -488,7 +490,7 @@ class StoryController extends Controller
             trans("general.export_story_headings.CREATED_DATE"),
             trans("general.export_story_headings.PUBLISHED_DATE")
         ];
-        
+
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
@@ -500,7 +502,7 @@ class StoryController extends Controller
                 $story->published_at
             ]);
         }
-        
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         // Make activity log
@@ -551,7 +553,7 @@ class StoryController extends Controller
 
             // Submit story
             $storyData = $this->storyRepository->submitStory($request->auth->user_id, $storyId);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCCESSFULLY');
@@ -568,7 +570,7 @@ class StoryController extends Controller
                 $request->auth->user_id,
                 $storyId
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -591,12 +593,12 @@ class StoryController extends Controller
         try {
             // Fetch story data
             $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
-            
+
             $statusArray = [
                 config('constants.story_status.PUBLISHED'),
                 config('constants.story_status.DECLINED')
             ];
-            
+
             // User cannot remove story image if story is published or declined
             if (in_array($storyData->status, $statusArray)) {
                 return $this->responseHelper->error(
@@ -606,7 +608,7 @@ class StoryController extends Controller
                     trans('messages.custom_error_message.ERROR_STORY_IMAGE_DELETE')
                 );
             }
-            
+
             // Delete story image
             try {
                 $storyImage = $this->storyRepository->deleteStoryImage($mediaId, $storyId);
@@ -632,7 +634,7 @@ class StoryController extends Controller
                 $request->auth->user_id,
                 $mediaId
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -641,7 +643,7 @@ class StoryController extends Controller
             );
         }
     }
-    
+
     /**
      * Used for get login user's all stories data
      *
@@ -652,16 +654,16 @@ class StoryController extends Controller
     {
         // get user's all story data
         $language = $this->languageHelper->getLanguageDetails($request);
-        
+
         $userStories = $this->storyRepository->getUserStoriesWithPagination(
             $request,
             $language->language_id,
             $request->auth->user_id
         );
-        
+
         // Get the story status count
         $storyStatusCounts = $this->storyRepository->getUserStoriesStatusCounts($request->auth->user_id);
-        
+
         $storyTransformedData = $this->transformUserStories($userStories, $storyStatusCounts);
 
         $requestString = $request->except(['page','perPage']);
@@ -677,13 +679,13 @@ class StoryController extends Controller
                 ]
             ]
         );
-        
+
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($apiData->total() > 0) ?
             trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
-        
+
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
@@ -691,7 +693,7 @@ class StoryController extends Controller
             []
         );
     }
-    
+
     /**
      * Story listing on front end
      *
@@ -710,7 +712,7 @@ class StoryController extends Controller
             null,
             config('constants.story_status.PUBLISHED')
         );
-        
+
         // get default avatar
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
@@ -729,13 +731,13 @@ class StoryController extends Controller
                 ]
             ]
         );
-         
+
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($apiData->count()) ?
         trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
         trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
-         
+
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
@@ -756,7 +758,7 @@ class StoryController extends Controller
         try {
             // Fetch story details
             $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
-            
+
             $statusArray = [
                 config('constants.story_status.DRAFT'),
                 config('constants.story_status.PENDING')
@@ -770,7 +772,7 @@ class StoryController extends Controller
                     trans('messages.custom_error_message.ERROR_STORY_PUBLISHED_OR_DECLINED')
                 );
             }
-            
+
             // Fetch edit story details
             $story = $this->storyRepository
             ->getStoryDetails($storyData->story_id);
@@ -778,7 +780,7 @@ class StoryController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiData = $story->toArray();
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
-    
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
