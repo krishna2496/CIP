@@ -332,7 +332,8 @@ return [
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection'
+        'STATE_ENABLED' => 'state_selection',
+        'MISSION_IMPACT' => 'mission_impact'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -458,6 +459,7 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+        'ERROR_SUBMIT_STORY_INVALID' => '700011',
 
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
@@ -510,6 +512,8 @@ return [
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
+
+        'IMPACT_MISSION_NOT_FOUND' => '400060',
         'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
@@ -518,6 +522,8 @@ return [
         // Donation error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103'
     ],
 
     /**
@@ -617,7 +623,8 @@ return [
         'STATE' => 'STATE',
         'ORGANIZATION' => 'ORGANIZATION',
         'MISSION_TAB' => 'MISSION_TAB',
-        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST'
+        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
+        'MISSION_IMPACT' => 'MISSION_IMPACT'
     ],
 
     'activity_log_actions' => [
@@ -670,5 +677,15 @@ return [
     'user_statuses' => [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
-    ]
+    ],
+
+    /*
+     * Icon image types
+     */
+    'icon_image_mime_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/svg+xml'
+    ],
 ];

@@ -16,6 +16,8 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Services\Mission\ModelsService;
+use App\Repositories\MissionImpact\MissionImpactRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -23,9 +25,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Validator;
+use App\Transformations\AdminMissionTransformable;
 
 class MissionRepository implements MissionInterface
 {
+    use AdminMissionTransformable;
+
     /**
      * @var App\Helpers\LanguageHelper
      */
@@ -57,6 +62,16 @@ class MissionRepository implements MissionInterface
     private $modelsService;
 
     /**
+     * @var App\Repositories\MissionImpact\MissionImpactRepository
+     */
+    private $missionImpactRepository;
+
+    /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
      */
     private $missionUnitedNationSDGRepository;
@@ -75,6 +90,8 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
+     * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @return void
@@ -86,6 +103,8 @@ class MissionRepository implements MissionInterface
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionImpactRepository $missionImpactRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
@@ -95,6 +114,8 @@ class MissionRepository implements MissionInterface
         $this->countryRepository = $countryRepository;
         $this->missionMediaRepository = $missionMediaRepository;
         $this->modelsService = $modelsService;
+        $this->missionImpactRepository = $missionImpactRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
     }
@@ -117,6 +138,8 @@ class MissionRepository implements MissionInterface
         }
 
         $languages = $this->languageHelper->getLanguages();
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
         $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $organizationDetail = (isset($request->organisation_detail)) ?
             $request->organisation_detail : null;
@@ -251,6 +274,24 @@ class MissionRepository implements MissionInterface
             }
         }
 
+        // Add mission impact
+        if (isset($request->impact) && count($request->impact) > 0) {
+            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+                config('constants.tenant_settings.MISSION_IMPACT'),
+                $request
+            );
+            if ($missionImpactSettingActivated) {
+                foreach ($request->impact as $impactValue) {
+                    $this->missionImpactRepository->store(
+                        $impactValue,
+                        $mission->mission_id,
+                        $defaultTenantLanguageId,
+                        $tenantName
+                    );
+                }
+            }
+        }
+
         // Add UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
             $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request->toArray());
@@ -270,6 +311,9 @@ class MissionRepository implements MissionInterface
     public function update(Request $request, int $id): Mission
     {
         $languages = $this->languageHelper->getLanguages();
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+
         // Set data for update record
         if (isset($request->location['country_code'])) {
             $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
@@ -465,6 +509,29 @@ class MissionRepository implements MissionInterface
             }
         }
 
+        // Add/update impact mission
+        if (isset($request->impact) && count($request->impact)) {
+            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+                config('constants.tenant_settings.MISSION_IMPACT'),
+                $request
+            );
+            if ($missionImpactSettingActivated) {
+                foreach ($request->impact as $impactValue) {
+                    if (isset($impactValue['mission_impact_id'])) {
+                        $this->missionImpactRepository->update(
+                            $impactValue,
+                            $id,
+                            $defaultTenantLanguageId,
+                            $tenantName
+                        );
+                    } else {
+                        // Mission impact id is not available, create the mission impact and details
+                        $this->missionImpactRepository->store($impactValue, $id, $defaultTenantLanguageId, $tenantName);
+                    }
+                }
+            }
+        }
+
         // Update UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
             $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
@@ -489,10 +556,11 @@ class MissionRepository implements MissionInterface
      * Find the specified resource from database.
      *
      * @param int $id
+     * @param bool $includeImpact
      *
      * @return App\Models\Mission
      */
-    public function find(int $id): Mission
+    public function find(int $id, bool $includeImpact = false): Mission
     {
         $mission = $this->modelsService->mission->
         with(
@@ -514,10 +582,18 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionTab' => function ($query) {
+        }])->with(['missionTabs' => function ($query) {
             $query->orderBy('sort_key');
-        }, 'missionTab.getMissionTabDetail' => function ($query) {
-        }])->findOrFail($id);
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
+        }]);
+
+        if ($includeImpact) {
+            $mission->with(['impact' => function ($query) {
+            }, 'impact.missionImpactLanguageDetails' => function ($query) {
+            }]);
+        }
+
+        $mission = $mission->findOrFail($id);
 
         if (isset($mission->missionLanguage)) {
             $languages = $this->languageHelper->getLanguages();
@@ -531,6 +607,10 @@ class MissionRepository implements MissionInterface
 
         // mission tab array modification
         $this->missionTabTransformArray($mission, $languages);
+
+        if ($includeImpact) {
+            return $this->adminTransformMission($mission, $languages, $this->tenantActivatedSettingRepository);
+        }
 
         return $mission;
     }
@@ -551,10 +631,11 @@ class MissionRepository implements MissionInterface
      * Display a listing of mission.
      *
      * @param Illuminate\Http\Request $request
+     * @param bool $includeImpact
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function missionList(Request $request): LengthAwarePaginator
+    public function missionList(Request $request, $includeImpact = false): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages();
         $missionQuery = $this->modelsService->mission->select(
@@ -579,9 +660,9 @@ class MissionRepository implements MissionInterface
         }])
         ->with(['missionDocument' => function ($query) {
             $query->orderBy('sort_order');
-        }])->with(['missionTab' => function ($query) {
+        }])->with(['missionTabs' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
-        }, 'missionTab.getMissionTabDetail' => function ($query) {
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
             $query->select('mission_tab_language.language_id', 'mission_tab_language.name', 'mission_tab_language.section', 'mission_tab_language.mission_tab_id', 'mission_tab_language.mission_tab_language_id');
         }]);
 
@@ -603,6 +684,12 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBy('mission_id', $orderDirection);
         }
 
+        if ($includeImpact) {
+            $missionQuery->with(['impact' => function ($query) {
+            }, 'impact.missionImpactLanguageDetails' => function ($query) {
+            }]);
+        }
+
         $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
@@ -620,6 +707,10 @@ class MissionRepository implements MissionInterface
 
             // mission tab array modification
             $this->missionTabTransformArray($value, $languages);
+
+            if ($includeImpact) {
+                $this->adminTransformMission($value, $languages, $this->tenantActivatedSettingRepository);
+            }
         }
 
         return $mission;
@@ -689,6 +780,10 @@ class MissionRepository implements MissionInterface
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
             }, ]);
         $missionQuery->with(['missionRating']);
+        $missionQuery->with(['missionTabs' => function ($query) {
+            $query->orderBy('sort_key');
+        }, 'missionTabs.getMissionTabDetail' => function ($query) {
+        }]);
 
         //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
@@ -1377,7 +1472,10 @@ class MissionRepository implements MissionInterface
                 },
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers',
-            ]);
+            ])->with(['missionTabs' => function ($query) {
+                $query->orderBy('sort_key');
+            }, 'missionTabs.getMissionTabDetail' => function ($query) {
+            }]);
 
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
@@ -1719,6 +1817,21 @@ class MissionRepository implements MissionInterface
     }
 
     /**
+     * Check impact mission is available for mission
+     *
+     * @param int $missionId
+     * @param string $missionImpactId
+     */
+    public function isMissionImpactLinkedToMission(int $missionId, string $missionImpactId)
+    {
+        return $this->modelsService->missionImpact
+            ->where([
+                ['mission_id', '=', $missionId],
+                ['mission_impact_id', '=', $missionImpactId]
+            ])->firstOrFail();
+    }
+
+    /**
      * Get mission tab details
      *
      * @param int $missionId
@@ -1738,22 +1851,22 @@ class MissionRepository implements MissionInterface
      */
     public function missionTabTransformArray($value, $languages)
     {
-        $missionTabInfo =  $value['missionTab']->toArray();
+        $missionTabInfo =  $value['missionTabs']->toArray();
         if ($missionTabInfo != null) {
             $missionTranslationsArray = [];
             foreach ($missionTabInfo as $missionTabKey => $missionTabValue) {
                 $missionTranslationsArray['mission_tab_id'] = $missionTabValue['mission_tab_id'];
                 $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
-                $missionTranslationsArray["translations"] = [];
+                $missionTranslationsArray['translations'] = [];
                 foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
                     $languageCode = $languages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
                     $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
                     $missionTabTranslations['language_code'] = $languageCode;
                     $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
                     $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
-                    array_push($missionTranslationsArray["translations"], $missionTabTranslations);
+                    array_push($missionTranslationsArray['translations'], $missionTabTranslations);
                 }
-                $value['missionTab'][$missionTabKey] = $missionTranslationsArray;
+                $value['missionTabs'][$missionTabKey] = $missionTranslationsArray;
             }
         }
     }
@@ -1767,5 +1880,60 @@ class MissionRepository implements MissionInterface
     public function deleteMissionTabByMissionTabId(string $missionTabId): bool
     {
         return $this->modelsService->missionTab->deleteMissionTabByMissionTabId($missionTabId);
+    }
+
+    /**
+     * Remove mission impact by mission_impact_id
+     *
+     * @param string $missionImpactId
+     * @return bool
+     */
+    public function deleteMissionImpact(string $missionImpactId): bool
+    {
+        return $this->missionImpactRepository->deleteMissionImpactAndS3bucketData($missionImpactId);
+    }
+
+    /**
+     * Get the latest mission application status by mission id and user id
+     *
+     * @param int    $missionId
+     * @param int    $userId
+     */
+    public function getLatestMissionApplicationStatus(int $missionId, int $userId)
+    {
+        $application = $this->modelsService->missionApplication
+            ->where([
+                'user_id' => $userId,
+                'mission_id' => $missionId
+            ])->orderBy('created_at', 'desc')->firstOrFail();
+
+        return $application->approval_status;
+    }
+
+    /*
+     * Check sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionTabs
+     * @return bool
+     */
+    public function checkExistTabSortKey(int $missionId, array $missionTabs): bool
+    {
+        return $this->missionTabRepository->checkSortKeyExist($missionId, $missionTabs);
+    }
+
+    /**
+     * Check mission_impact sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionImpact
+     * @return bool
+     */
+    public function checkExistImpactSortKey(int $missionId, array $missionImpact): bool
+    {
+        return $this->missionImpactRepository->checkImpactSortKeyExist(
+            $missionId,
+            $missionImpact
+        );
     }
 }
