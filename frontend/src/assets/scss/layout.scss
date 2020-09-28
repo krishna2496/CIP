@@ -1124,7 +1124,7 @@ main {
                 &:focus,
                 &.added-fav {
                     background: transparent !important;
-                    color: $gray-primary !important;
+                    color: $middle-gray !important;
 
                     .hover-img {
                         display: none;
@@ -1134,7 +1134,7 @@ main {
                         display: inline-block;
 
                         svg {
-                            fill: $gray-primary;
+                            fill: $middle-gray;
                         }
                     }
                 }
@@ -4543,7 +4543,7 @@ main {
                             }
 
                             .img-wrap {
-                                top: 50%;
+                                top: 47%;
                                 @include transformY(-50%);
                                 left: 29px;
                                 width: 25px;
@@ -4917,6 +4917,7 @@ main {
                         border-radius: 3px;
                         left: -48px;
                         top: 0;
+                        cursor: pointer;
 
                         @include sm-max {
                             width: 26px;
