@@ -28,6 +28,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Mockery;
 use TestCase;
+use App\Repositories\MissionImpact\MissionImpactRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Models\MissionImpact;
 use Ramsey\Uuid\Uuid;
 
 class MissionRepositoryTest extends TestCase
@@ -62,6 +65,9 @@ class MissionRepositoryTest extends TestCase
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
+        $missionImpact = $this->mock(MissionImpact::Class);
 
         $modelService = $this->modelService(
             $mission,
@@ -73,6 +79,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpact,
             $organization,
             $missionTab,
             $missionTabLanguage
@@ -90,6 +97,8 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionImpactRepository,
+            $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
@@ -132,6 +141,13 @@ class MissionRepositoryTest extends TestCase
         $request = new Request();
         $request->query->add($params);
 
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
         $organizationObject = factory(Organization::class)->make([
             'organization_id' => $request->organization['organization_id'],
             'name' => 'organizationName'
@@ -158,6 +174,12 @@ class MissionRepositoryTest extends TestCase
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($languages);
+
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+        ->once()
+        ->with($request)
+        ->andReturn($defaultLanguage);
+    
 
         $countryId = 1;
         $countryRepository = $this->mock(CountryRepository::class);
@@ -246,6 +268,9 @@ class MissionRepositoryTest extends TestCase
         $modelService = $this->mock(ModelsService::class);
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
+        $missionImpact = $this->mock(MissionImpact::Class);
 
         $modelService = $this->modelService(
             $mission,
@@ -257,6 +282,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpact,
             $organization,
             $missionTab,
             $missionTabLanguage
@@ -269,6 +295,8 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionImpactRepository,
+            $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->store($request);
@@ -293,6 +321,13 @@ class MissionRepositoryTest extends TestCase
         $request = new Request();
         $request->query->add($params);
 
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
+
         $languages = new Collection([
             [
                 'code' => 'en'
@@ -303,6 +338,11 @@ class MissionRepositoryTest extends TestCase
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($languages);
+
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+        ->once()
+        ->with($request)
+        ->andReturn($defaultLanguage);
 
         $missionId = 1;
         $missionObject = new Mission();
@@ -343,13 +383,13 @@ class MissionRepositoryTest extends TestCase
 
         $s3Helper = $this->mock(S3Helper::class);
         $s3Helper->shouldReceive('uploadFileOnS3Bucket')
-            ->once()
-            ->with(
-                $documentObject->document_path,
-                $tenantName,
-                "missions/$missionId/documents/$documentId"
-            )
-            ->andReturn($documentObject->document_path);
+        ->once()
+        ->with(
+            $documentObject->document_path,
+            $tenantName,
+            "missions/$missionId/documents/$documentId"
+        )
+        ->andReturn($documentObject->document_path);
 
         $countryRepository = $this->mock(CountryRepository::class);
         $timeMission = $this->mock(TimeMission::class);
@@ -366,6 +406,9 @@ class MissionRepositoryTest extends TestCase
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $organization = $this->mock(Organization::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
+        $missionImpact = $this->mock(MissionImpact::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -377,6 +420,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpact,
             $organization,
             $missionTab,
             $missionTabLanguage
@@ -389,6 +433,8 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $missionImpactRepository,
+            $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         )->update($request, $missionId);
@@ -403,6 +449,8 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param  App\Repositories\MissionImpact\MissionImpactRepository $missionImpactRepository
+     * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @param  App\Repositories\MissionMedia\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository
      * @return void
@@ -414,6 +462,8 @@ class MissionRepositoryTest extends TestCase
         CountryRepository $countryRepository,
         MissionMediaRepository $missionMediaRepository,
         ModelsService $modelsService,
+        MissionImpactRepository $missionImpactRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository
     ) {
@@ -424,6 +474,8 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $missionImpactRepository,
+            $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
@@ -453,6 +505,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
@@ -468,6 +521,7 @@ class MissionRepositoryTest extends TestCase
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        MissionImpact $missionImpact,
         Organization $organization,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage
@@ -482,6 +536,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpact,
             $organization,
             $missionTab,
             $missionTabLanguage
