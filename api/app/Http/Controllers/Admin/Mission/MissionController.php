@@ -685,8 +685,7 @@ class MissionController extends Controller
     {
         try {
             $this->missionRepository->delete($missionId);
-            // delete notification related to mission
-            event(new MissionDeletedEvent($missionId));
+
 
             // Make activity log
             event(new UserActivityLogEvent(

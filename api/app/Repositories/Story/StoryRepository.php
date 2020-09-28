@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Story;
 
+use App\Events\Story\StoryDeletedEvent;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
 use App\Models\Story;
@@ -140,7 +141,11 @@ class StoryRepository implements StoryInterface
      */
     public function delete(int $storyId, int $userId): bool
     {
-        return $this->story->deleteStory($storyId, $userId);
+        $wasDeleted = $this->story->deleteStory($storyId, $userId);
+        event(new StoryDeletedEvent($storyId));
+
+        return $wasDeleted;
+
     }
 
     /**
@@ -262,7 +267,7 @@ class StoryRepository implements StoryInterface
                 return $subQuery->where('status', $storyStatus);
             });
         });
-       
+
         // Only story creater can access DRAFT story
         if (!empty($userId) && !empty($allowedStoryStatus)) {
             $storyQuery->orWhere(function ($query) use ($userId, $allowedStoryStatus, $storyId) {

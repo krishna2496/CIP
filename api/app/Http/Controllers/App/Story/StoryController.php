@@ -295,7 +295,6 @@ class StoryController extends Controller
     {
         try {
             $this->storyRepository->delete($storyId, $request->auth->user_id);
-            event(new StoryDeletedEvent($storyId));
 
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
