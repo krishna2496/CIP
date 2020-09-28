@@ -101,7 +101,7 @@
                     </b-row>
                 </div>
                 <div class="story-content-wrap">
-                    <div class="story-content cms-content" v-html="storyDetailList.description">
+                    <div class="story-content cms-content" v-html="getStoryCleanDescription(storyDetailList.description)">
 
                     </div>
                     <div class="btn-wrap group-btns">
@@ -365,6 +365,10 @@
             this.$router.push('/404');
           }
         })
+      },
+
+      getStoryCleanDescription(str) {
+        return  str.replace(/<script>|<\/script>/i, '').replaceAll("javascript", "");
       },
 
       searchUsers() {
