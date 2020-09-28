@@ -89,38 +89,21 @@ a {
     color: $primary !important;
     background: none !important;
     border-color: $primary !important;
-  }
-  &.icon-btn {
     i {
       svg {
-        height: 100%;
-        width: 100%;
-        fill: $white;
+        fill: $primary;
       }
     }
-
-    &:hover {
-      i {
-        svg {
-          fill: $primary;
-        }
-      }
-    }
-
-    &:focus {
-      i {
-        svg {
-          fill: $primary;
-        }
-      }
-
-      &:hover {
-        i {
-          svg {
-            fill: $primary;
-          }
-        }
-      }
+  }
+  &:disabled {
+    background: $primary;
+    border-color: $primary;
+    color: $white;
+    opacity: 0.4;
+  }
+  i {
+    svg {
+      fill: $white;
     }
   }
 }
@@ -636,9 +619,9 @@ label {
     cursor: pointer;
     font-size: 16px;
     line-height: normal;
-    @include xl-max{
+    @include xl-max {
       font-size: 14px;
-      padding:6px 35px 6px 10px; 
+      padding: 6px 35px 6px 10px;
     }
     &:after {
       position: absolute;
