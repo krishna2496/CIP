@@ -298,11 +298,11 @@
 		"login_with_sso": "Accedi con SSO",
 		"site_title": "Home",
 		"ongoing": "In corso",
-		"more": "altri",
+		"more": "altro",
 		"and": "e",
-		"for": "Per la",
-		"on": "Il",
-		"sort_deadline": "Ordina per termine di iscrizione",
+		"for": "Per",
+		"on": "Su",
+		"sort_deadline": "Ordina per scadenza",
 		"no_image_available": "Nessuna immagine disponibile"
 	},
 	"placeholder": {

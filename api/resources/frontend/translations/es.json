@@ -298,11 +298,11 @@
 		"login_with_sso": "Iniciar sesión con SSO",
 		"site_title": "Inicio",
 		"ongoing": "En curso",
-		"more": "mas",
+		"more": "más",
 		"and": "y",
 		"for": "Para",
-		"on": "El",
-		"sort_deadline": "Ordenar por fecha límite de inscripción",
+		"on": "En",
+		"sort_deadline": "Ordenar por fecha límite",
 		"no_image_available": "No hay imagen disponible"
 	},
 	"placeholder": {

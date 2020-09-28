@@ -297,12 +297,12 @@
 		"home" : "Koti",
 		"login_with_sso": "Kirjaudu sisään SSO: lla",
 		"site_title": "Koti",
-		"ongoing": "Ongoing",
-		"more": "muuta",
+		"ongoing": "Jatkuva",
+		"more": "lisää",
 		"and": "ja",
 		"for": "Sillä",
-		"on": "On",
-		"sort_deadline": "Lajittele rekisteröinnin määräajan mukaan",
+		"on": "Päällä",
+		"sort_deadline": "Lajittele määräajan mukaan",
 		"no_image_available": "Ei kuvaa saatavilla"
 	},
 	"placeholder": {

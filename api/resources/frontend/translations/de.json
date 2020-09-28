@@ -298,11 +298,11 @@
 		"login_with_sso": "Anmeldung mit SSO",
 		"site_title": "Startseite",
 		"ongoing": "Laufend",
-		"more": "weitere",
+		"more": "mehr",
 		"and": "und",
 		"for": "Für",
-		"on": "Am",
-		"sort_deadline": "Sortieren nach anmeldefrist",
+		"on": "Auf",
+		"sort_deadline": "Nach Frist sortieren",
 		"no_image_available": "Kein Bild verfügbar"
 	},
 	"placeholder": {

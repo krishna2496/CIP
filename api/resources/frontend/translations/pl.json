@@ -297,13 +297,13 @@
 		"home" : "Dom",
 		"login_with_sso": "Entrar com SSO",
 		"site_title": "Strona główna",
-		"ongoing": "Ongoing",
-		"more": "jeszcze",
-		"and": "i",
+		"ongoing": "W trakcie realizacji",
+		"more": "więcej",
+		"and": "oraz",
 		"for": "Dla",
-		"on": "W",
-		"sort_deadline": "Sortuj według ostateczny termin rejestracji",
-		"no_image_available": "Obraz nie dostępny"
+		"on": "Na stronie",
+		"sort_deadline": "Sortowanie według terminów",
+		"no_image_available": "Brak obrazu"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",
