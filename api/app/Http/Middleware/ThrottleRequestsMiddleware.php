@@ -8,6 +8,7 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\InteractsWithTime;
 use Illuminate\Http\Response;
 
@@ -46,6 +47,10 @@ class ThrottleRequestsMiddleware
      */
     public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1)
     {
+        if (config('app.env') === 'staging' && $request->hasHeader('disableThrottle')) {
+            return $next($request);
+        }
+
         $throttle = new \stdClass();
         $throttle->key = $this->resolveRequestSignature($request);
         $throttle->maxAttempts = $maxAttempts;
