@@ -19,7 +19,7 @@ trait UserTransformable
         $prop->first_name = $user->first_name;
         $prop->last_name = $user->last_name;
         $prop->email = $user->email;
-        $prop->avatar = isset($user->avatar) ? $user->avatar : $this->helpers->getUserDefaultProfileImage($tenantName);
+        $prop->avatar = !empty($user->avatar)  ? $user->avatar : $this->helpers->getUserDefaultProfileImage($tenantName);
         return $prop;
     }
 }

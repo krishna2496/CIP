@@ -130,8 +130,17 @@ class MissionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
+
             // Get mission
-            $missions = $this->missionRepository->missionList($request);
+            $missions = $this->missionRepository->missionList(
+                $request,
+                $includeMissionImpact
+            );
 
             // Set response data
             $apiData = $missions;
@@ -205,8 +214,17 @@ class MissionController extends Controller
                 "volunteering_attribute.availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
+                "impact.*.sort_key" => 'required|integer|min:0|distinct',
+                "impact.*.translations" => 'required',
+                "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
+                "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
+                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
+                "total_seats" => "integer|min:1",
+                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
+                "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
                 "mission_tabs.*.translations.*.lang" =>
                 "required_with:mission_tabs.*.translations|max:2",
@@ -303,6 +321,16 @@ class MissionController extends Controller
             );
         }
 
+        // Check if required tenant setting based on mission type is enabled
+        if (!$this->isRequiredSettingForMissionTypeEnabled($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
         // Check goal amount currency  set is valid or not
         if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
             return $this->responseHelper->error(
@@ -312,7 +340,6 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
             );
         }
-        
 
         // Update organization city,state & country id to null if it's blank
         if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
@@ -380,14 +407,29 @@ class MissionController extends Controller
     /**
      * Display the specified mission detail.
      *
+     * @param Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $missionId): JsonResponse
+    public function show(Request $request, int $missionId): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
+
             // Get data for parent table
-            $mission = $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find(
+                $missionId,
+                $includeMissionImpact
+            );
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -415,7 +457,12 @@ class MissionController extends Controller
     public function update(Request $request, int $missionId): JsonResponse
     {
         try {
-            $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find($missionId);
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -440,10 +487,13 @@ class MissionController extends Controller
                 "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "is_virtual" => "sometimes|required|in:0,1",
+                "total_seats" => "integer|min:1",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
+                "mission_detail.*.custom_information" => "nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -456,6 +506,14 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact.*.mission_impact_id" =>
+                "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => "sometimes|required|valid_icon_path",
+                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
+                "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
+                "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
+                "impact.*.translations.*.content" => "required_with:impact.*.translations|max:300",
                 "un_sdg" => "sometimes|required|array",
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
@@ -468,11 +526,10 @@ class MissionController extends Controller
                 "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
                 "organization.postal_code" => "max:120",
                 "mission_tabs" => "sometimes|required|array",
-                "mission_tabs.*.sort_key" => 'required|integer',
                 "mission_tabs.*.mission_tab_id" =>
                 'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
                 "mission_tabs.*.sort_key" =>
-                "required_without:mission_tabs.*.mission_tab_id|integer",
+                'required_without:mission_tabs.*.mission_tab_id|integer|distinct',
                 "mission_tabs.*.translations" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 "mission_tabs.*.translations.*.lang" =>
@@ -568,16 +625,60 @@ class MissionController extends Controller
             );
         }
 
+        // Check if required tenant setting based on mission type is enabled
+        if ($request->get('mission_type') &&
+            !$this->isRequiredSettingForMissionTypeEnabled($request)) {
+
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
         // Check goal amount currency  set is valid or not
         if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+            );
+        }
+
+        // Check sort key already exist for mission tabs
+        if (isset($request->mission_tabs)) {
+            $missionTabresponse = $this->missionRepository->checkExistTabSortKey(
+                $missionId,
+                $request->mission_tabs
+            );
+            if (!$missionTabresponse) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_CURRENCY'),
-                    trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+                    config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
                 );
+            }
         }
-        
+
+        // Check sort key already exist for mission impact
+        if (isset($request->impact)) {
+            $missionImpactresponse = $this->missionRepository->checkExistImpactSortKey(
+                $missionId,
+                $request->impact
+            );
+            if (!$missionImpactresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST')
+                );
+            }
+        }
+
         // check organization exist in database
         if ((!empty($request->get('organization')) && !empty($request->get('organization')['organization_id']))) {
             $organizationId = $request->get('organization')['organization_id'];
@@ -694,6 +795,26 @@ class MissionController extends Controller
                     }
                 }
             }
+        }
+
+        // Check for mission impact id is valid or not
+        try {
+            if (isset($request->impact) && count($request->impact) > 0) {
+                foreach ($request->impact as $impactValue) {
+                    if (isset($impactValue['mission_impact_id'])
+                        && ($impactValue['mission_impact_id'] !== '')) {
+                        $this->missionRepository->isMissionImpactLinkedToMission(
+                            $missionId,
+                            $impactValue['mission_impact_id']
+                        );
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            );
         }
 
         // Check for mission tab id is valid or not
@@ -897,5 +1018,68 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Remove mission impact
+     *
+     * @param string $missionImpactId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpact($missionImpactId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpact($missionImpactId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionImpactId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType if not provided, mission type from the request will be used
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType = null
+    ) : bool {
+
+        $tenantSetting = null;
+        $missionType = $missionType ?? $request->get('mission_type');
+        switch ($missionType) {
+            case config('constants.mission_type.GOAL'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case config('constants.mission_type.TIME'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }

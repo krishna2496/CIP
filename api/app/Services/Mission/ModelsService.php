@@ -10,6 +10,7 @@ use App\Models\TimeMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
+use App\Models\MissionImpact;
 use App\Models\Organization;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
@@ -62,7 +63,12 @@ class ModelsService
      */
     public $city;
 
-    /*
+    /**
+     * @var App\Models\MissionImpact
+     */
+    public $missionImpact;
+    
+    /** 
      * @var App\Models\Organization
      */
     public $organization;
@@ -94,6 +100,7 @@ class ModelsService
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
@@ -110,6 +117,7 @@ class ModelsService
         MissionRating $missionRating,
         MissionApplication $missionApplication,
         City $city,
+        MissionImpact $missionImpact,
         Organization $organization,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage,
@@ -124,6 +132,7 @@ class ModelsService
         $this->missionRating = $missionRating;
         $this->missionApplication = $missionApplication;
         $this->city = $city;
+        $this->missionImpact = $missionImpact;
         $this->organization = $organization;
         $this->missionTab = $missionTab;
         $this->missionTabLanguage = $missionTabLanguage;

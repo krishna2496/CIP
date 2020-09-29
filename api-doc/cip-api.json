@@ -6,7 +6,7 @@
     "description": ""
   },
   "host": "ci-api-doc-service",
-  "basePath": "/team4/cip-api",
+  "basePath": "/cip/api",
   "tags": [
     {
       "name": "Mission"
@@ -226,7 +226,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Mission"
+              "$ref": "#/definitions/MissionUpdate"
             }
           },
           {
@@ -410,6 +410,44 @@
           },
           "404": {
             "description": "Not Found - Requested mission tab id does not exist"
+          }
+        }
+      }
+    },
+    "/missions/mission-impact/{missionImpactId}/": {
+      "delete": {
+        "operationId": "delete_cip-api-delete-mission-impact",
+        "summary": "Admin - Delete mission impact",
+        "description": "Delete mission impact by missionImpactId",
+        "tags": [
+          "Mission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "missionImpactId",
+            "in": "path",
+            "description": "mission_impact_id to delete",
+            "type": "string",
+            "default": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden - mission impact deletion failed"
+          },
+          "404": {
+            "description": "Not Found - Requested mission impact id does not exist"
           }
         }
       }
@@ -8820,9 +8858,411 @@
           "items": {
             "type": "object",
             "properties": {
+              "sort_key": {
+                "type": "integer",
+                "description": "Sort Order for mission tabs. It must be numeric value. Example: 0,1,2,3…"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lang": {
+                      "type": "string",
+                      "description": "Language code. Example: en, fr, es etc."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Tab heading name"
+                    },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Title of section"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "Description of section"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "organisation_detail": {
+          "type": "array",
+          "description": "Organisation detail.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code e.g. en, fr, de etc."
+              },
+              "detail": {
+                "type": "string",
+                "description": "Organisation detail"
+              }
+            }
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "document_id": {
+                "type": "integer",
+                "description": "If adding new document then leave it blank",
+                "format": "int64"
+              },
+              "document_path": {
+                "type": "string",
+                "description": "Url for document"
+              },
+              "sort_order": {
+                "type": "integer",
+                "description": "Mission document sort order",
+                "format": "int64"
+              }
+            }
+          }
+        },
+        "media_images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "media_id": {
+                "type": "integer",
+                "description": "If adding new media then leave it blank",
+                "format": "int64"
+              },
+              "media_path": {
+                "type": "string",
+                "description": "Url for media"
+              },
+              "internal_note": {
+                "type": "string",
+                "description": "Internal note describing the image"
+              },
+              "default": {
+                "type": "int32",
+                "enum": [
+                  "1",
+                  "0"
+                ],
+                "description": "If its set as 1, then mission thumbnail will be set to this media"
+              },
+              "sort_order": {
+                "type": "integer",
+                "description": "Mission media sort order ",
+                "format": "int64"
+              }
+            }
+          }
+        },
+        "media_videos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "media_id": {
+                "type": "integer",
+                "description": "If adding new media then leave it blank",
+                "format": "int64"
+              },
+              "media_name": {
+                "type": "string",
+                "description": "Name of the video"
+              },
+              "media_path": {
+                "type": "string",
+                "description": "Youtube url of a video"
+              },
+              "internal_note": {
+                "type": "string",
+                "description": "Internal note describing the video"
+              },
+              "sort_order": {
+                "type": "integer",
+                "description": "Mission media sort order",
+                "format": "int64"
+              }
+            }
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Skill id from `skill` table"
+              }
+            }
+          }
+        },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "icon_path": {
+                "type": "string",
+                "description": "URL of mission impact icon"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content" : {
+                      "type": "string",
+                      "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s - Mission start date"
+        },
+        "end_date": {
+          "type": "string",
+          "description": "dd-mm-yyyy h:i:s - Mission end date",
+          "format": "date-time"
+        },
+        "mission_type": {
+          "type": "string",
+          "enum": [
+            "TIME",
+            "GOAL"
+          ]
+        },
+        "goal_objective": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "application_deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_start_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_end_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "application_end_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "dd-mm-yyyy h:i:s"
+        },
+        "publication_status": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "PENDING_APPROVAL",
+            "APPROVED",
+            "PUBLISHED_FOR_VOTING",
+            "PUBLISHED_FOR_APPLYING",
+            "UNPUBLISHED"
+          ]
+        },
+        "theme_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "mission_theme_id from `mission_theme` table"
+        },
+        "volunteering_attribute": {
+          "type": "object",
+          "properties": {
+            "availability_id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "availability_id from `availability` table"
+            },
+            "is_virtual": {
+              "type": "boolean"
+            },
+            "total_seats": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Total seats for this mission"
+            }
+          }
+        },
+        "un_sdg": {
+          "type": "array",
+          "description": "Array of valid UN SDG numbers (1 to 17)",
+          "example": [1, 2, 3]
+        },
+        "organization": {
+          "type": "object",
+          "properties": {
+            "organization_id": {
+              "type": "string",
+              "description": "This id is reference to organization table"
+            },
+            "name": {
+              "type": "string",
+              "description": "Organization name"
+            },
+            "legal_number": {
+              "type": "string",
+              "description": "Organization legal number"
+            },
+            "phone_number": {
+              "type": "integer",
+              "description": "Organization phone number"
+            },
+            "address_line_1": {
+              "type": "string",
+              "description": "Organization address line 1"
+            },
+            "address_line_2": {
+              "type": "string",
+              "description": "Organization address line 2"
+            },
+            "city_id": {
+              "type": "integer",
+              "description": "Organization city"
+            },
+            "country_id": {
+              "type": "integer",
+              "description": "Organization country"
+            },
+            "postal_code": {
+              "type": "string",
+              "description": "Organization postal code"
+            }
+          }
+        }
+      }
+    },
+    "MissionUpdate": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "object",
+          "properties": {
+            "city_id": {
+              "type": "string",
+              "description": "City id from `city` table"
+            },
+            "country_code": {
+              "type": "string",
+              "description": "ISO code of country from `country` table"
+            }
+          }
+        },
+        "mission_detail": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lang": {
+                "type": "string",
+                "description": "Language code e.g. en, fr, de etc."
+              },
+              "title": {
+                "type": "string",
+                "description": "Mission title"
+              },
+              "short_description": {
+                "type": "string",
+                "description": "Mission short description"
+              },
+              "objective": {
+                "type": "string",
+                "description": "If mission is Goal then add its objective. e.g. Plant 100 trees"
+              },
+              "label_goal_achieved": {
+                "type": "string",
+                "description": "If mission is Goal then add its label of goal achieved. e.g. Achieved goal"
+              },
+              "label_goal_objective": {
+                "type": "string",
+                "description": "If mission is Goal then add its label of objective. e.g Tree plantation"
+              },
+              "section": {
+                "type": "array",
+                "description": "These section are for 'Mission' tab in front end, you can add unlimited amount of sections(Title+description)",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Title of section"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of section"
+                    }
+                  }
+                }
+              },
+              "custom_information": {
+                "type": "array",
+                "description": "This is for Custom Information in mission detail page. You will need to add title+description which will appear on Information section.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "mission_tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
               "mission_tab_id": {
                 "type": "string",
-                "description": "Its “Required“ if you are updating existing mission tab"
+                "description": "Provide mission_tab_id to update an existing record"
               },
               "sort_key": {
                 "type": "integer",
@@ -8975,6 +9415,42 @@
                 "type": "integer",
                 "format": "int64",
                 "description": "Skill id from `skill` table"
+              }
+            }
+          }
+        },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_impact_id": {
+                "type": "string",
+                "description": "Required only when updating an existing mission impact"
+              },
+              "icon_path": {
+                "type": "string",
+                "description": "URL of mission impact icon"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content" : {
+                      "type": "string",
+                      "description": "Mission impact description"
+                    }
+                  }
+                }
               }
             }
           }
