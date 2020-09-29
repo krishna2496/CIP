@@ -561,9 +561,14 @@ export default {
                         cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
                             const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
                             const cardTotalHeight = cardBodyH - this.offsetHeight;
-                            this.children[1].style.transform = `translateY(-${cardTotalHeight}px)`;
-                            this.children[2].style.transform = `translateY(-${cardTotalHeight}px)`;
                             this.parentNode.classList.add('active');
+                            const ratingBlock =  this.querySelector('.group-ratings');
+                            const ratingBlockH = ratingBlock ? 18 : 0;
+                             this.children[1].style.transform = `translateY(-${cardTotalHeight + ratingBlockH}px)`;
+                            this.children[2].style.transform = `translateY(-${cardTotalHeight + ratingBlockH}px)`;
+                            if(ratingBlock){
+                                this.parentNode.classList.add('has-rating');
+                            }
                         });
 
                         cardBody.parentNode.addEventListener('mouseleave', function () {
@@ -571,6 +576,7 @@ export default {
                                 this.children[1].style.transform = 'translateY(0)';
                                 this.children[2].style.transform = 'translateY(0)';
                                 this.parentNode.classList.remove('active');
+                                this.parentNode.classList.remove('has-ratings');
                             }
                         });
                     }
@@ -623,6 +629,7 @@ export default {
         );
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
+         window.addEventListener("resize", this.cardHeightAdj);
     },
     mounted() {
         this.cardHeightAdjIntervalId = setInterval(this.cardHeightAdj, 500);
