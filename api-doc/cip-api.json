@@ -6,7 +6,7 @@
     "description": ""
   },
   "host": "ci-api-doc-service",
-  "basePath": "/team4/cip-api",
+  "basePath": "/cip/api",
   "tags": [
     {
       "name": "Mission"
@@ -410,6 +410,44 @@
           },
           "404": {
             "description": "Not Found - Requested mission tab id does not exist"
+          }
+        }
+      }
+    },
+    "/missions/mission-impact/{missionImpactId}/": {
+      "delete": {
+        "operationId": "delete_cip-api-delete-mission-impact",
+        "summary": "Admin - Delete mission impact",
+        "description": "Delete mission impact by missionImpactId",
+        "tags": [
+          "Mission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "missionImpactId",
+            "in": "path",
+            "description": "mission_impact_id to delete",
+            "type": "string",
+            "default": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden - mission impact deletion failed"
+          },
+          "404": {
+            "description": "Not Found - Requested mission impact id does not exist"
           }
         }
       }
@@ -8979,6 +9017,38 @@
             }
           }
         },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "icon_path": {
+                "type": "string",
+                "description": "URL of mission impact icon"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content" : {
+                      "type": "string",
+                      "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "start_date": {
           "type": "string",
           "format": "date-time",
@@ -9353,6 +9423,42 @@
             }
           }
         },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_impact_id": {
+                "type": "string",
+                "description": "Required only when updating an existing mission impact"
+              },
+              "icon_path": {
+                "type": "string",
+                "description": "URL of mission impact icon"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content" : {
+                      "type": "string",
+                      "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "impact_donation": {
           "type": "array",
           "items": {
@@ -9373,10 +9479,11 @@
                   "properties": {
                     "language_code": {
                       "type": "string",
-                      "description": "Language code. Example: en, fr, es etc."
+                      "description": "Language ISO code (e.g. en, fr)"
                     },
                     "content": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Mission impact_donation description"
                     }
                   }
                 }
