@@ -238,6 +238,7 @@
       }
       .event-name {
         width: 100%;
+        padding-right: 20px;
       }
       .progress-block {
         padding: 24px 45px 0 0;
@@ -984,6 +985,13 @@
           .progress-block {
             display: none;
           }
+        }
+      }
+    }
+    &.has-rating {
+      .card {
+        .init-hidden {
+          margin-top: 18px;
         }
       }
     }
