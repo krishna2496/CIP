@@ -184,7 +184,7 @@ class SamlController extends Controller
         }
 
         if (isset($userData['timezone_id'])) {
-            // $timezoneCode = $userData['timezone_id'] ?? 'Europe/Paris'; //env('SAML_DEFAULT_TIMEZONE');
+            // $timezoneCode = $userData['timezone_id'] ?? 'Europe/Paris'; //env('DEFAULT_TIMEZONE');
             $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
                 $userData['timezone_id']
             );
@@ -247,9 +247,9 @@ class SamlController extends Controller
         if ((!$isNewUser && !isset($userData['timezone_id']) && !$userDetail->timezone_id)
             || ($isNewUser && !isset($userData['timezone_id']))
         ) {
-            // env('SAML_DEFAULT_TIMEZONE')
+            // env('DEFAULT_TIMEZONE')
             $timezone = $this->timezoneRepository->getTenantTimezoneByCode(
-                'Europe/Paris'
+                env('DEFAULT_TIMEZONE', 'Europe/Paris')
             );
             $userData['timezone_id'] = $timezone->timezone_id;
         }
