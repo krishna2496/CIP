@@ -277,6 +277,7 @@ import {
     numeric
 } from 'vuelidate/lib/validators';
 import constants from '../constant';
+import moment from 'moment'
 
 export default {
     components: {
@@ -415,6 +416,8 @@ export default {
         },
         updateYear(value) {
             this.yearDefault = value.selectedVal;
+            this.profile.year = value.selectedVal.replace(/[\s\/]/g, '')
+            
         },
         updateCountry(value) {
             this.countryDefault = value.selectedVal;
@@ -791,6 +794,10 @@ export default {
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.languageCode = store.state.defaultLanguage.toLowerCase();
+        this.profile.year = this.yearDefault = moment().format('Y')
+        for (let index = (this.yearDefault  - 5) ; index > this.yearDefault; index++) {
+				this.yearsList.push([index, index]);
+        }
         this.getUserProfileDetail();
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
