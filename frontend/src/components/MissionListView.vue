@@ -81,6 +81,17 @@
                                         </div>
                                     </div>
                                 </template>
+                                <div class="detail-column calendar-col" v-if="mission.end_date !== null">
+                                    <i class="icon-wrap">
+                                        <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
+                                    </i>
+                                    <div class="text-wrap" v-if="mission.end_date !== null">
+                                        <span class="title-text"><em>{{ languageData.label.from }}</em>
+                                            {{mission.start_date | formatDate }}</span>
+                                        <span class="title-text"><em>{{ languageData.label.until}}</em>
+                                            {{ mission.end_date | formatDate }}</span>
+                                    </div>
+                                </div>
                                 <template v-if="mission.application_deadline != null ||
                                         checkMissionTypeTime(mission.mission_type)
                                         ">
@@ -95,17 +106,6 @@
                                         </div>
                                     </div>
                                 </template>
-                                <div class="detail-column calendar-col" v-if="mission.end_date !== null">
-                                    <i class="icon-wrap">
-                                        <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
-                                    </i>
-                                    <div class="text-wrap" v-if="mission.end_date !== null">
-                                        <span class="title-text"><em>{{ languageData.label.from }}</em>
-                                            {{mission.start_date | formatDate }}</span>
-                                        <span class="title-text"><em>{{ languageData.label.until}}</em>
-                                            {{ mission.end_date | formatDate }}</span>
-                                    </div>
-                                </div>
                                 <div class="detail-column progress-block" v-if="!checkMissionTypeTime(mission.mission_type)">
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'"
@@ -155,15 +155,18 @@
                                             <span class="subtitle-text">{{ languageData.label.achieved}}</span>
                                         </div>
                                     </div>
-                                        <div class="detail-column info-block" 
-                                        v-if="mission.application_deadline != null">
+                                    <div class="detail-column calendar-col">
                                         <i class="icon-wrap">
-                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                            <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                         </i>
-										
-                                        <div class="text-wrap" v-if="mission.application_deadline != null">
-                                            <span class="title-text">{{mission.application_deadline | formatDate}}</span>
-                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
+                                        <div class="text-wrap" v-if="mission.end_date !== null">
+                                            <span class="title-text"><em>{{ languageData.label.from }}</em>
+                                            {{mission.start_date | formatDate }}</span>
+                                            <span class="title-text"><em>{{ languageData.label.until}}</em>
+                                            {{ mission.end_date | formatDate }}</span>
+                                        </div>
+                                        <div class="text-wrap" v-else>
+                                            <span>{{languageData.label.ongoing}}</span>
                                         </div>
                                     </div>
                             </div>
