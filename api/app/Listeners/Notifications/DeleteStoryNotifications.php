@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Listeners\Notifications;
 
 use App\Events\Story\StoryDeletedEvent;
-use App\Models\MissionApplication;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\Story;

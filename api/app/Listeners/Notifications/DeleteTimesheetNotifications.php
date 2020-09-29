@@ -1,11 +1,8 @@
 <?php
 
-
 namespace App\Listeners\Notifications;
 
-
 use App\Events\Mission\MissionDeletedEvent;
-use App\Models\MissionApplication;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\Timesheet;

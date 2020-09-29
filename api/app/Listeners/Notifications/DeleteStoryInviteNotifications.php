@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Listeners\Notifications;
 
 use App\Events\Story\StoryDeletedEvent;
