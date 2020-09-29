@@ -25,17 +25,23 @@ interface MissionCommentInterface
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getComments(int $missionId, array $statusList = [], Request $request = null): LengthAwarePaginator;
-    
+
     /**
      * Display user mission comments.
      *
      * @param int $userId
      * @param int $languageId
      * @param int $defaultTenantLanguageId
+     * @param array|null $missionTypes
      * @return array
      */
-    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array;
-    
+    public function getUserComments(
+        int $userId,
+        int $languageId,
+        int $defaultTenantLanguageId,
+        array $missionTypes = null
+    ): array;
+
     /**
      * Delete comment by commentId
      *
