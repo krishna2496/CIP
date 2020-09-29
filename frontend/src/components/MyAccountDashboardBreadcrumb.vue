@@ -77,7 +77,7 @@
                 {{languageData.label.recurring_payments}}
             </b-link>
         </li>
-        <li v-bind:class="{ active: isPreviewProfileActive }">
+        <!-- <li v-bind:class="{ active: isPreviewProfileActive }">
             <b-link href="#" :title="languageData.label.preview_profile">
                 <i class="preview-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 33" width="32" height="33">
@@ -86,7 +86,7 @@
                         </g>
                     </svg> </i>{{languageData.label.preview_profile}}
             </b-link>
-        </li>
+        </li> -->
     </ul>
     <b-modal ref="settingsModal" :modal-class="'settings-modal'" centered hide-footer @hide="closeSetting()">
         <template slot="modal-header" slot-scope="{ close }">
@@ -138,24 +138,8 @@ export default {
     data() {
         return {
             languageData: [],
-            timeList: [{
-                    value: "0",
-                    text: "GMT-4"
-                },
-                {
-                    value: "01",
-                    text: "UTC-5"
-                },
-                {
-                    value: "02",
-                    text: "UTC-6"
-                },
-                {
-                    value: "03",
-                    text: "UTC-7"
-                },
-            ],
-            selectTimeZone: "GMT-4",
+            timeList: [],
+            selectTimeZone: "",
             isProfileActive: false,
             isSettingActive: false,
             isPaymentActive: false,
@@ -202,7 +186,6 @@ export default {
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
-        console.log(this.$route.path)
         if (this.$route.path == '/my-account') {
             this.isProfileActive = true
         }

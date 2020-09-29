@@ -48,7 +48,7 @@
                 </b-col>
                 <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
                     <b-form class="profile-form">
-                        <b-row class="row-form">
+                        <!-- <b-row class="row-form">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
                                     <span>{{languageData.label.privacy}}</span>
@@ -67,7 +67,7 @@
                                     </div>
                                 </b-form-group>
                             </b-col>
-                        </b-row>
+                        </b-row> -->
                         <b-row class="row-form">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
@@ -456,10 +456,10 @@ export default {
                         })
                         this.currencyList = currenciesArray
                     }
-                    if (response.data.user_privacy.is_profile_visible == 1) {
+                    if (response.data.user_privacy && response.data.user_privacy.is_profile_visible == 1) {
                         this.is_profile_visible = true
                     }
-                    if (response.data.user_privacy.public_avatar_and_linkedin == 1) {
+                    if (response.data.user_privacy && response.data.user_privacy.public_avatar_and_linkedin == 1) {
                         this.public_avatar_and_linkedin = true
                     }
 
@@ -480,15 +480,13 @@ export default {
         this.currencyDefault = this.languageData.placeholder.currency
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.imageLoader = false;
+        this.isPrefilLoaded = true
         const img = new Image();
         if (store.state.avatar != '' && store.state.avatar != null) {
             img.src = store.state.avatar;
             img.onload = () => {
                 this.isPrefilLoaded = false
-                this.newUrl = store.state.avatar
             }
-        } else {
-            this.isPrefilLoaded = false
             this.newUrl = store.state.avatar
         }
         this.getSettingListing();
