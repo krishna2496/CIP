@@ -137,6 +137,9 @@ return [
         'story_images' => [
             'max' => 'Maximum '.config('constants.STORY_MAX_IMAGE_LIMIT').' images can be added',
         ],
+        'impact.*.icon_path' => [
+            'valid_icon_path' => 'Please enter a valid icon image.',
+        ]
     ],
 
     /*
@@ -226,6 +229,12 @@ return [
         'impact_donation.*.translations.*.language_code' => 'impact donation language code',
         'impact_donation.*.translations.*.content' => 'impact donation content',
         'impact_donation.*.impact_donation_id' => 'impact donation id',
+        'impact.*.icon_path' => 'icon path',
+        'impact.*.sort_key' => 'sort key',
+        'impact.*.translations' => 'translations',
+        'impact.*.translations.*.language_code' => 'language code',
+        'impact.*.translations.*.content' => 'content',
+        'impact.*.mission_impact_id' => 'mission impact id',
         'un_sdg.*' => 'UN SDG number',
         'organization.name' => 'organization name',
         'organization.organization_id' => 'organization id',
