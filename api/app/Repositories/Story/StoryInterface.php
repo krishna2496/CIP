@@ -42,16 +42,18 @@ interface StoryInterface
      * @param int $languageId
      * @param int $userId
      * @param string $status
+     * @param null|array $missionTypes
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserStoriesWithPagination(
         Request $request,
         int $languageId,
         int $userId = null,
-        string $status = null
+        string $status = null,
+        array $missionTypes = null
     ): LengthAwarePaginator;
 
-    
+
     /**
      * Get story details.
      *
@@ -59,13 +61,15 @@ interface StoryInterface
      * @param string $storyStatus
      * @param int $userId
      * @param array $allowedStoryStatus
+     * @param null|array $missionTypes
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getStoryDetails(
         int $storyId,
         string $storyStatus = null,
         int $userId = 0,
-        array $allowedStoryStatus = []
+        array $allowedStoryStatus = [],
+        array $missionTypes = []
     ): Collection;
     /**
      * Update story status field value, based on story_id condition
@@ -89,9 +93,10 @@ interface StoryInterface
      *
      * @param int $languageId
      * @param int $userId
+     * @param null|array $missionTypes
      * @return Object
      */
-    public function getUserStories(int $languageId, int $userId): Object;
+    public function getUserStories(int $languageId, int $userId, array $missionTypes = null): Object;
 
 
     /**
@@ -130,7 +135,7 @@ interface StoryInterface
      */
     public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool;
 
-    
+
     /**
      * Used for check if story exist or not
      *
@@ -162,9 +167,10 @@ interface StoryInterface
      * Get user stories status count
      *
      * @param int $userId
+     * @param null|array $missionTypes
      * @return App\Models\Story
      */
-    public function getUserStoriesStatusCounts(int $userId): Story;
+    public function getUserStoriesStatusCounts(int $userId, array $missionTypes = null): Story;
 
     /**
      * Get story media from storyid
