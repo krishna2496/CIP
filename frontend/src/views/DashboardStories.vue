@@ -193,7 +193,7 @@
         this.isLoaderActive = true
         myStory(page).then(response => {
           if (response.error == false) {
-            if (response.data) {
+            if (response.data && response.data.stats) {
               this.stats = response.data.stats
               this.storyData = response.data.story_data
               this.pagination.currentPage = response.pagination.current_page

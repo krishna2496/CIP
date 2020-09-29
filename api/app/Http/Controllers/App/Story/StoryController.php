@@ -9,6 +9,7 @@ use App\Repositories\StoryVisitor\StoryVisitorRepository;
 use App\Models\Story;
 use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
+use App\Helpers\TenantSettingHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\ExportCSV;
 use Illuminate\Http\JsonResponse;
@@ -55,6 +56,11 @@ class StoryController extends Controller
     private $languageHelper;
 
     /**
+     * @var App\Helpers\TenantSettingHelper
+     */
+    private $tenantSettingHelper;
+
+    /**
      * @var App\Repositories\Mission\MissionRepository
      */
     private $missionRepository;
@@ -72,6 +78,7 @@ class StoryController extends Controller
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Helpers\TenantSettingHelper $tenantSettingHelper
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
@@ -82,6 +89,7 @@ class StoryController extends Controller
         ResponseHelper $responseHelper,
         Helpers $helpers,
         LanguageHelper $languageHelper,
+        TenantSettingHelper $tenantSettingHelper,
         MissionRepository $missionRepository,
         NotificationRepository $notificationRepository
     ) {
@@ -90,6 +98,7 @@ class StoryController extends Controller
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
+        $this->tenantSettingHelper = $tenantSettingHelper;
         $this->missionRepository = $missionRepository;
         $this->notificationRepository = $notificationRepository;
     }
@@ -335,12 +344,13 @@ class StoryController extends Controller
 
         // Get Story details
         $story = $this->storyRepository
-        ->getStoryDetails(
-            $storyId,
-            config('constants.story_status.PUBLISHED'),
-            $request->auth->user_id,
-            array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
-        );
+            ->getStoryDetails(
+                $storyId,
+                config('constants.story_status.PUBLISHED'),
+                $request->auth->user_id,
+                array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING')),
+                $this->tenantSettingHelper->getAvailableMissionTypes($request)
+            );
 
         if ($story->count() == 0) {
             return $this->modelNotFound(
@@ -471,7 +481,11 @@ class StoryController extends Controller
     {
         //get login user story data
         $language = $this->languageHelper->getLanguageDetails($request);
-        $stories = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
+        $stories = $this->storyRepository->getUserStories(
+            $language->language_id,
+            $request->auth->user_id,
+            $this->tenantSettingHelper->getAvailableMissionTypes($request)
+        );
 
         if ($stories->count() == 0) {
             $apiStatus = Response::HTTP_OK;
@@ -657,11 +671,16 @@ class StoryController extends Controller
         $userStories = $this->storyRepository->getUserStoriesWithPagination(
             $request,
             $language->language_id,
-            $request->auth->user_id
+            $request->auth->user_id,
+            null,
+            $this->tenantSettingHelper->getAvailableMissionTypes($request)
         );
 
         // Get the story status count
-        $storyStatusCounts = $this->storyRepository->getUserStoriesStatusCounts($request->auth->user_id);
+        $storyStatusCounts = $this->storyRepository->getUserStoriesStatusCounts(
+            $request->auth->user_id,
+            $this->tenantSettingHelper->getAvailableMissionTypes($request)
+        );
 
         $storyTransformedData = $this->transformUserStories($userStories, $storyStatusCounts);
 
@@ -709,7 +728,8 @@ class StoryController extends Controller
             $request,
             $language->language_id,
             null,
-            config('constants.story_status.PUBLISHED')
+            config('constants.story_status.PUBLISHED'),
+            $this->tenantSettingHelper->getAvailableMissionTypes($request)
         );
 
         // get default avatar

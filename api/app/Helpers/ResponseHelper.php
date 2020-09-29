@@ -47,7 +47,8 @@ class ResponseHelper
         string $apiStatus = '',
         string $apiMessage = '',
         LengthAwarePaginator $apiData = null,
-        array $metaData = []
+        array $metaData = [],
+        bool $convertNumeric = true
     ): JsonResponse {
         $response['status'] = $apiStatus;
         $response['data'] = [];
@@ -74,7 +75,7 @@ class ResponseHelper
             $response['message'] = $apiMessage;
         }
 
-        return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
+        return response()->json($response, $apiStatus, [], $convertNumeric ? JSON_NUMERIC_CHECK: null);
     }
 
     /**

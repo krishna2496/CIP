@@ -155,13 +155,15 @@ class StoryRepository implements StoryInterface
      * @param int $languageId
      * @param int $userId
      * @param string $status
+     * @param null|array $missionTypes
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserStoriesWithPagination(
         Request $request,
         int $languageId,
         int $userId = null,
-        string $status = null
+        string $status = null,
+        array $missionTypes = null
     ): LengthAwarePaginator {
         $userStoryQuery = $this->story->select(
             'story_id',
@@ -184,7 +186,13 @@ class StoryRepository implements StoryInterface
                     'title'
                 )->where('language_id', $languageId);
             },
-        ])->whereHas('mission')->whereHas('user');
+        ])
+        ->whereHas('mission', function($query) use ($missionTypes) {
+            if ($missionTypes !== null) {
+                $query->whereIn('mission_type', $missionTypes);
+            }
+        })
+        ->whereHas('user');
 
         if ($request->has('search') && $request->has('search') !== '') {
             $userStoryQuery->where(function ($query) use ($request) {
@@ -243,13 +251,15 @@ class StoryRepository implements StoryInterface
      * @param string $storyStatus
      * @param int $userId
      * @param array $allowedStoryStatus
+     * @param null|array $missionTypes
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getStoryDetails(
         int $storyId,
         string $storyStatus = null,
         int $userId = 0,
-        array $allowedStoryStatus = []
+        array $allowedStoryStatus = [],
+        array $missionTypes = null
     ): Collection {
         $storyQuery = $this->story->with([
             'user',
@@ -260,7 +270,13 @@ class StoryRepository implements StoryInterface
             'mission.missionLanguage',
         ]);
 
-        $storyQuery->Where(function ($query) use ($storyId, $storyStatus) {
+        if ($missionTypes !== null) {
+            $storyQuery->whereHas('mission', function($query) use ($missionTypes) {
+                $query->whereIn('mission_type', $missionTypes);
+            });
+        }
+
+        $storyQuery->Where(function($query) use ($storyId, $storyStatus) {
             $query->when($storyId, function ($subQuery) use ($storyId) {
                 return $subQuery->where('story_id', $storyId);
             })->when($storyStatus, function ($subQuery) use ($storyStatus) {
@@ -311,10 +327,14 @@ class StoryRepository implements StoryInterface
      *
      * @param int $languageId
      * @param int $userId
+     * @param null|array $missionTypes
      * @return Object
      */
-    public function getUserStories(int $languageId, int $userId): Object
-    {
+    public function getUserStories(
+        int $languageId,
+        int $userId,
+        array $missionTypes = null
+    ): Object {
         $userStoryQuery = $this->story->select(
             'story_id',
             'mission_id',
@@ -323,7 +343,12 @@ class StoryRepository implements StoryInterface
             'status',
             'published_at',
             'created_at'
-        )->whereHas('mission')
+        )
+        ->whereHas('mission', function($query) use ($missionTypes) {
+            if ($missionTypes !== null) {
+                $query->whereIn('mission_type', $missionTypes);
+            }
+        })
         ->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
@@ -460,14 +485,24 @@ class StoryRepository implements StoryInterface
      * Get user stories status count
      *
      * @param int $userId
+     * @param null|array $missionTypes
      * @return App\Models\Story
      */
-    public function getUserStoriesStatusCounts(int $userId): Story
+    public function getUserStoriesStatusCounts(int $userId, array $missionTypes = null): Story
     {
-        return $this->story->whereHas('mission')->selectRaw("COUNT(CASE WHEN status = 'DRAFT' THEN 1 END) AS draft,
-        COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending,
-        COUNT(CASE WHEN status = 'PUBLISHED' THEN 1 END) AS published,
-        COUNT(CASE WHEN status = 'DECLINED' THEN 1 END) AS declined")->where('user_id', $userId)->first();
+        return $this->story
+            ->whereHas('mission', function($query) use ($missionTypes) {
+                if ($missionTypes !== null) {
+                    $query->whereIn('mission_type', $missionTypes);
+                }
+            })
+            ->selectRaw("
+                COUNT(CASE WHEN status = 'DRAFT' THEN 1 END) AS draft,
+                COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending,
+                COUNT(CASE WHEN status = 'PUBLISHED' THEN 1 END) AS published,
+                COUNT(CASE WHEN status = 'DECLINED' THEN 1 END) AS declined")
+            ->where('user_id', $userId)
+            ->first();
     }
 
     /**
