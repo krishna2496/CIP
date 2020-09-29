@@ -501,7 +501,9 @@
 		"max_video_upload": "Maximum 20 videos can be added",
 		"duplicate_video_url": "Duplicate video url are not allowed",
 		"invalid_saml_setting": "The following mapping(s) are required:",
-		"currency_required" : "Currency is required"
+		"currency_required" : "Currency is required",
+		"donation_goal_required" : "Donation goal amount is required",
+		"valid_donation_goal" : "Please enter valid donation goal amount"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
