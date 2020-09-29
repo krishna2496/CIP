@@ -263,7 +263,7 @@
                           <span
                             v-if="mission.donation_attribute.show_donors_count"
                             >{{ mission.donation_attribute.donor_count }}
-                            {{ languageData.label.donars }}</span
+                            {{ languageData.label.donors }}</span
                           >
                         </p>
                       </div>
@@ -461,7 +461,7 @@
                               >
                                 <b
                                   >{{ mission.donation_attribute.donor_count }}
-                                  {{ languageData.label.donars }}</b
+                                  {{ languageData.label.donors }}</b
                                 >
                               </span>
                             </p>
@@ -550,7 +550,7 @@
                                     mission.donation_attribute.show_donors_count
                                   "
                                   >{{ mission.donation_attribute.donor_count }}
-                                  {{ languageData.label.donars }}</b
+                                  {{ languageData.label.donors }}</b
                                 >
                               </span>
                             </p>
