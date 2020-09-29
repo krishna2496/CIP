@@ -15,6 +15,8 @@ use App\Models\MissionImpact;
 use App\Services\Mission\ModelsService;
 use App\Models\MissionImpactLanguage;
 use App\Repositories\MissionImpact\MissionImpactRepository;
+use App\Helpers\S3Helper;
+use App\Helpers\Helpers;
 
 class MissionImpactRepositoryTest extends TestCase
 {
@@ -38,7 +40,7 @@ class MissionImpactRepositoryTest extends TestCase
 
         $languagesData = [
             (object)[
-                'language_id'=>1,
+                'language_id' => 1,
                 'name'=> 'English',
                 'code'=> 'en',
                 'status'=> '1',
@@ -58,8 +60,10 @@ class MissionImpactRepositoryTest extends TestCase
         ];
 
         $collectionLanguageData = collect($languagesData);
-        $missionId = 13;
+        $missionId = rand(50000, 70000);
         $defaultTenantLanguageId = 1;
+        $tenantName = str_random(20);
+        $iconPath = str_random(200);
 
         $mission = $this->mock(Mission::class);
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -67,14 +71,23 @@ class MissionImpactRepositoryTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $collection = $this->mock(Collection::class);
         $missionImpact = $this->mock(MissionImpact::class);
+        $s3helper = $this->mock(S3Helper::class);
+        $helpers = $this->mock(Helpers::class);
 
         $languageHelper->shouldReceive('getLanguages')
         ->once()
         ->andReturn($collection);
 
+        $missionImpactModel = new MissionImpact();
+        $missionImpactModel->id = rand(50000, 70000);
+
         $missionImpact->shouldReceive('create')
         ->once()
-        ->andReturn(new MissionImpact());
+        ->andReturn($missionImpactModel);
+
+        $s3helper->shouldReceive('uploadFileOnS3Bucket')
+        ->once()
+        ->andReturn($iconPath);
 
         $collection->shouldReceive('where')
         ->once()
@@ -88,10 +101,12 @@ class MissionImpactRepositoryTest extends TestCase
         $repository = $this->getRepository(
             $missionImpact,
             $missionImpactLanguage,
-            $languageHelper
+            $languageHelper,
+            $s3helper,
+            $helpers
         );
 
-        $response = $repository->store($data, $missionId, $defaultTenantLanguageId);
+        $response = $repository->store($data, $missionId, $defaultTenantLanguageId, $tenantName);
     }
 
     /**
@@ -115,19 +130,19 @@ class MissionImpactRepositoryTest extends TestCase
 
         $languagesData = [
             (object)[
-                'language_id'=>1,
-                'name'=> 'English',
-                'code'=> 'en',
-                'status'=> '1',
-                'created_at'=> null,
-                'updated_at'=> null,
-                'deleted_at'=> null,
+                'language_id' => 1,
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ],
             (object)[
                 'language_id' => 2,
                 'name' => 'French',
                 'code' => 'fr',
-                'status'=>'1',
+                'status' =>'1',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
@@ -137,6 +152,7 @@ class MissionImpactRepositoryTest extends TestCase
         $collectionLanguageData = collect($languagesData);
         $missionId = rand(10000, 100000);
         $defaultTenantLanguageId = 1;
+        $tenantName = str_random(20);
 
         $mission = $this->mock(Mission::class);
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -144,6 +160,8 @@ class MissionImpactRepositoryTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $collection = $this->mock(Collection::class);
         $missionImpact = $this->mock(MissionImpact::class);
+        $s3helper = $this->mock(S3Helper::class);
+        $helpers = $this->mock(Helpers::class);
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
         ->once()
@@ -163,10 +181,16 @@ class MissionImpactRepositoryTest extends TestCase
         ->once()
         ->with(['mission_impact_id'=>$data['mission_impact_id']])
         ->andReturn($missionImpact);
+
+        $iconPath = str_random(100);
+        
+        $s3helper->shouldReceive('uploadFileOnS3Bucket')
+        ->once()
+        ->andReturn($iconPath);
         
         $missionImpact->shouldReceive('update')
         ->once()
-        ->with(['icon'=>$data['icon_path']])
+        ->with(['icon_path'=> $iconPath])
         ->andReturn($missionImpact);
 
         $collection->shouldReceive('where')
@@ -181,10 +205,12 @@ class MissionImpactRepositoryTest extends TestCase
         $repository = $this->getRepository(
             $missionImpact,
             $missionImpactLanguage,
-            $languageHelper
+            $languageHelper,
+            $s3helper,
+            $helpers
         );
 
-        $response = $repository->update($data, $missionId, $defaultTenantLanguageId);
+        $response = $repository->update($data, $missionId, $defaultTenantLanguageId, $tenantName);
     }
 
     /**
@@ -193,17 +219,23 @@ class MissionImpactRepositoryTest extends TestCase
      * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\MissionImpactLanguage $missionImpactLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Helpers\S3Helper $s3helper
+     * @param  App\Helpers\Helpers
      * @return void
      */
     private function getRepository(
         MissionImpact $missionImpact,
         MissionImpactLanguage $missionImpactLanguage,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        S3Helper $s3helper,
+        Helpers $helpers
     ) {
         return new MissionImpactRepository(
             $missionImpact,
             $missionImpactLanguage,
             $languageHelper,
+            $s3helper,
+            $helpers
         );
     }
 

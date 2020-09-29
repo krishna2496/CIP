@@ -36,7 +36,7 @@ class MissionImpactLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_id', 'language_id', 'content'];
+    protected $visible = ['language_id', 'content'];
 
     /**
      * The attributes that are mass assignable.

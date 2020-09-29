@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class MissionImpact extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -37,14 +38,25 @@ class MissionImpact extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_id', 'mission_id', 'icon', 'sort_key', 'missionImpactLanguageDetails'];
+    protected $visible = [
+        'mission_impact_id',
+        'mission_id',
+        'icon_path',
+        'sort_key',
+        'missionImpactLanguageDetails'
+    ];
+
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['missionImpactLanguageDetails'];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'icon', 'sort_key'];
+    protected $fillable = ['mission_id', 'icon_path', 'sort_key'];
 
     /**
      * Binds creating/saving events to create UUIDs.
@@ -54,7 +66,7 @@ class MissionImpact extends Model
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             // Generate UUID
             $model->mission_impact_id = Uuid::uuid4()->toString();
@@ -63,11 +75,22 @@ class MissionImpact extends Model
 
     /**
      * Get mission impact language details
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionImpactLanguageDetails() : HasMany
     {
         return $this->hasMany(MissionImpactLanguage::class, 'mission_impact_id', 'mission_impact_id');
+    }
+
+    /**
+     * Soft delete the mission impact by mission_impact_id from the database.
+     *
+     * @param string $missionImpactId
+     * @return bool
+     */
+    public function deleteMissionImpact(string $missionImpactId): bool
+    {
+        return static::findOrFail($missionImpactId)->delete();
     }
 }

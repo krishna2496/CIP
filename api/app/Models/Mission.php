@@ -90,14 +90,14 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
-    'unSdg', 'impactDonation', 'impactMission', 'user_currency', 'is_virtual', 'total_seats'];
+    'unSdg', 'is_virtual', 'total_seats', 'impact', 'impactDonation', 'user_currency'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impactDonation', 'impactMission'
+        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'impactDonation',
     ];
 
     /**
@@ -390,13 +390,13 @@ class Mission extends Model
     }
 
     /**
-     * Get mission-tab associated with the mission.
+     * Set impact mission attribute on the model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function missionTabs(): HasMany
+    public function impact(): HasMany
     {
-        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id')->orderBy('sort_key');
+        return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
     
     /** 
@@ -410,20 +410,19 @@ class Mission extends Model
     }
 
     /**
-     * Set impact mission attribute on the model.
+     * Get mission-tab associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function impactMission(): HasMany
+    public function missionTabs(): HasMany
     {
-        return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
 
     public function userInfo()
     {
         return $this->hasOne('App\User', 'user_id', 'user_id');
     }
-    
 
     /**
      * Get UN SDG associated with mission.

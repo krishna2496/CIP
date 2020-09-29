@@ -120,8 +120,17 @@ class MissionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
+
             // Get mission
-            $missions = $this->missionRepository->missionList($request);
+            $missions = $this->missionRepository->missionList(
+                $request,
+                $includeMissionImpact
+            );
 
             // Set response data
             $apiData = $missions;
@@ -199,11 +208,15 @@ class MissionController extends Controller
                 'required_with:impact_donation.*.translations|max:2',
                 "impact_donation.*.translations.*.content" =>
                 'required_with:impact_donation.*.translations|max:160',
-                "impact.*.icon_path" => 'sometimes|required',
-                "impact.*.sort_key" => 'required|integer',
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
+                "impact.*.sort_key" => 'required|integer|min:0|distinct',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
                 "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
+                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
+                "total_seats" => "integer|min:1",
+                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
@@ -297,14 +310,24 @@ class MissionController extends Controller
     /**
      * Display the specified mission detail.
      *
+     * @param Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $missionId): JsonResponse
+    public function show(Request $request, int $missionId): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
+
             // Get data for parent table
-            $mission = $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find(
+                $missionId,
+                $includeMissionImpact
+            );
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
@@ -357,6 +380,9 @@ class MissionController extends Controller
                 "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "is_virtual" => "sometimes|required|in:0,1",
+                "total_seats" => "integer|min:1",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
@@ -373,6 +399,14 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact.*.mission_impact_id" =>
+                "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => "sometimes|required|valid_icon_path",
+                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
+                "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
+                "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
+                "impact.*.translations.*.content" => "required_with:impact.*.translations|max:300",
                 "un_sdg" => "sometimes|required|array",
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
@@ -435,13 +469,32 @@ class MissionController extends Controller
 
         // Check sort key already exist for mission tabs
         if (isset($request->mission_tabs)) {
-            $missionTabresponse = $this->missionRepository->checkExistSortKey($missionId, $request->mission_tabs);
+            $missionTabresponse = $this->missionRepository->checkExistTabSortKey(
+                $missionId,
+                $request->mission_tabs
+            );
             if (!$missionTabresponse) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
                     trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                );
+            }
+        }
+
+        // Check sort key already exist for mission impact
+        if (isset($request->impact)) {
+            $missionImpactresponse = $this->missionRepository->checkExistImpactSortKey(
+                $missionId,
+                $request->impact
+            );
+            if (!$missionImpactresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST')
                 );
             }
         }
@@ -562,6 +615,26 @@ class MissionController extends Controller
                     }
                 }
             }
+        }
+
+        // Check for mission impact id is valid or not
+        try {
+            if (isset($request->impact) && count($request->impact) > 0) {
+                foreach ($request->impact as $impactValue) {
+                    if (isset($impactValue['mission_impact_id'])
+                        && ($impactValue['mission_impact_id'] !== '')) {
+                        $this->missionRepository->isMissionImpactLinkedToMission(
+                            $missionId,
+                            $impactValue['mission_impact_id']
+                        );
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            );
         }
 
         // Check for mission tab id is valid or not
@@ -793,6 +866,40 @@ class MissionController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
                 trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Remove mission impact
+     *
+     * @param string $missionImpactId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpact($missionImpactId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpact($missionImpactId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionImpactId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
     }
