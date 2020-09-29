@@ -298,12 +298,12 @@
 		"login_with_sso": "Connectez-vous avec SSO",
 		"site_title": "Accueil",
 		"ongoing": "En cours",
-		"more": "de plus",
+		"more": "plus",
 		"and": "et",
-		"for": "Pour la",
-		"on": "En",
-		"sort_deadline": "Trier par date limite d’inscription",
-		"no_image_available": "Pas d'image disponible"
+		"for": "Pour",
+		"on": "Sur",
+		"sort_deadline": "Trier par date limite",
+		"no_image_available": "Aucune image disponible"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",

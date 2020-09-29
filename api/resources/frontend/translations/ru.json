@@ -297,12 +297,12 @@
 		"home" : "дом",
 		"login_with_sso": "Войти с помощью SSO",
 		"site_title": "Главная",
-		"ongoing": "постоянный",
-		"more": "еще",
-		"and": "и",
-		"for": "Для",
+		"ongoing": "Постоянно",
+		"more": "Больше",
+		"and": "а также",
+		"for": "За",
 		"on": "Ha",
-		"sort_deadline": "Упорядочить до окончания регистрации",
+		"sort_deadline": "Сортировать по сроку",
 		"no_image_available": "Изображение отсутствует"
 	},
 	"placeholder": {

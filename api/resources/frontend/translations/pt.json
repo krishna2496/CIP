@@ -297,12 +297,12 @@
 		"home" : "Home",
 		"login_with_sso": "Entrar com SSO",
 		"site_title": "Início",
-		"ongoing": "Em curso",
+		"ongoing": "Em andamento",
 		"more": "mais",
 		"and": "e",
 		"for": "Para",
 		"on": "Em",
-		"sort_deadline": "Organizar por prazo de inscrição",
+		"sort_deadline": "Ordenar por prazo",
 		"no_image_available": "Nenhuma imagem disponível"
 	},
 	"placeholder": {
