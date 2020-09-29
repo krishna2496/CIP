@@ -265,6 +265,7 @@ export default {
                 if (!this.isExploreMission) {
                     this.isAjaxCall = false
                 }
+                this.$emit('cardHeightAdj')
             });
         },
 
