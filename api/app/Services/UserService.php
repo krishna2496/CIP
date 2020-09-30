@@ -9,6 +9,9 @@ use App\Services\TenantOptionService;
 use App\User;
 use DB;
 use Exception;
+use Illuminate\Validation\Rule;
+use Validator;
+use App\Helpers\Helpers;
 
 class UserService
 {
@@ -23,6 +26,11 @@ class UserService
     private $tenantOptionService;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param  UserRepository       $userRepository
@@ -32,10 +40,12 @@ class UserService
      */
     public function __construct(
         UserRepository $userRepository,
-        TenantOptionService $tenantOptionService
+        TenantOptionService $tenantOptionService,
+        Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
         $this->tenantOptionService = $tenantOptionService;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -192,5 +202,165 @@ class UserService
             $includeInactive,
             $includeAdmin
         );
+    }
+
+    /**
+     * Store a newly created resource into database
+     *
+     * @param array $data
+     * @param int $id
+     * @return array
+     */
+    public function linkSkill($data, $userId)
+    {
+        return $this->userRepository->linkSkill($data, $userId);
+    }
+
+    /**
+     * Delete skills by user ID then store a newly created one into database
+     *
+     * @param array $data
+     * @param int $id
+     * @return array
+     */
+    public function updateSkill($data, $userId)
+    {
+        $this->userRepository->deleteSkills($userId);
+        return $this->linkSkill($data, $userId);
+    }
+
+    /**
+     * Validate the user data that is passed in the request
+     *
+     * @param array $request
+     * @param boolean $isAdminRequest
+     * @return mixed
+     */
+    public function validateFields($request, $isAdminRequest = true)
+    {
+        $fields = [
+            'first_name' => 'sometimes|required|max:60',
+            'last_name' => 'sometimes|required|max:60',
+            'email' => 'required|email|unique:user,email,NULL,user_id,deleted_at,NULL',
+            'password' => 'required|min:8',
+            'availability_id' => 'sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL',
+            'timezone_id' => 'sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL',
+            'language_id' => 'sometimes|required|int', //Originally UPDATE method does not validate this field
+            'city_id' => 'sometimes|integer|exists:city,city_id,deleted_at,NULL',
+            'country_id' => 'sometimes|required|integer|exists:country,country_id,deleted_at,NULL',
+            'profile_text' => 'sometimes|required', //Originally UPDATE method initially does not validate this
+            'employee_id' => 'max:60|unique:user,employee_id,NULL,user_id,deleted_at,NULL',
+            'department' => 'sometimes|required|max:60',
+            'linked_in_url' => 'url|valid_linkedin_url',
+            'why_i_volunteer' => 'sometimes|required',
+            'expiry' => 'sometimes|date|nullable',
+            'status' => [
+                'sometimes',
+                Rule::in(config('constants.user_statuses'))
+            ],
+            'position' => 'sometimes|nullable',
+            'title' => 'max:60'
+        ];
+
+        if (array_key_exists('skills', $request)) {
+            $fields['skills'] = 'array'; //Originally ONLY UPDATE method has this validation
+            $fields['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
+        }
+
+        if (isset($request['id'])) {
+            $fields['email'] = [
+                'sometimes',
+                'required',
+                'email',
+                Rule::unique('user')->ignore($request['id'], 'user_id,deleted_at,NULL')
+            ];
+            $fields['employee_id'] = [
+                'sometimes',
+                'required',
+                'max:60',
+                Rule::unique('user')->ignore($request['id'], 'user_id,deleted_at,NULL')
+            ];
+        }
+
+        //If the request didn't came from CI API
+        if ($isAdminRequest === false) {
+            $fields['first_name'] = 'required|max:60';
+            $fields['last_name'] = 'required|max:60';
+            $fields['password'] = 'sometimes|required|min:8';
+            $fields['employee_id'] = ['max:60', 'nullable', Rule::unique('user')->ignore($request['id'], 'user_id,deleted_at,NULL')];
+            $fields['timezone_id'] = 'required|integer|exists:timezone,timezone_id,deleted_at,NULL';
+            $fields['custom_fields.*.field_id'] = 'sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL';
+        }
+
+        if (array_key_exists('pseudonymize_at', $request) && $isAdminRequest === true) {
+            $fields = $this->validatePseudonymizeData($fields, $request);
+        }
+
+        $validator = Validator::make($request, $fields);
+        return ($validator->fails()) ? $validator : true;
+    }
+
+    /**
+     * Update the validation rules if data is pseudonymized
+     *
+     * @param array $fields
+     * @param array $request
+     * @return array
+     */
+    private function validatePseudonymizeData($fields, $request)
+    {
+        $pseudomizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+        $user = $this->findById($request['id']);
+
+        if ($user->pseudonymize_at === '0000-00-00 00:00:00' || $user->pseudonymize_at === null) {
+            foreach ($pseudomizeFields as $pseudomize) {
+                $rules = ['sometimes', 'required'];
+
+                if ($pseudomize === 'email') {
+                    $fields[$pseudomize] = array_push($rules, 'email');
+                }
+
+                if ($pseudomize === 'linked_in_url') {
+                    $fields[$pseudomize] = array_push($rules, 'valid_linkedin_url');
+                }
+
+                $fields[$pseudomize] = implode('|', $rules);
+            }
+        }
+
+        $nullableFields = [
+            'employee_id',
+            'department',
+            'linked_in_url',
+            'why_i_volunteer',
+            'availability_id',
+            'city_id',
+            'country_id',
+            'profile_text',
+            'position',
+            'timezone_id'
+        ];
+        foreach ($nullableFields as $nullable) {
+            if (array_key_exists($nullable, $request) && !$request[$nullable]) {
+                $fields[$nullable] = 'nullable';
+            }
+        }
+        return $fields;
+    }
+
+    public function unsetPseudonymizedFields($data)
+    {
+        $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+        foreach ($pseudonymizeFields as $field) {
+            if (array_key_exists($field, $data)) {
+                unset($data[$field]);
+            }
+        }
+
+        if (array_key_exists('pseudonymize_at', $data)) {
+            unset($data['pseudonymize_at']);
+        }
+
+        return $data;
     }
 }

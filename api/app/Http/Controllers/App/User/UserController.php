@@ -27,6 +27,7 @@ use App\Transformations\CityTransformable;
 use App\Models\TenantOption;
 use App\Notifications\InviteUser;
 use Carbon\Carbon;
+use App\Services\UserService;
 
 //!  User controller
 /*!
@@ -84,6 +85,11 @@ class UserController extends Controller
     private $tenantOptionRepository;
 
     /**
+     * @var App\Services\UserService
+     */
+    private $userService;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
@@ -95,6 +101,7 @@ class UserController extends Controller
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\S3Helper $s3helper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param App\Services\UserService $userService
      * @return void
      */
     public function __construct(
@@ -106,7 +113,8 @@ class UserController extends Controller
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper,
-        TenantOptionRepository $tenantOptionRepository
+        TenantOptionRepository $tenantOptionRepository,
+        UserService $userService
     ) {
         $this->userRepository = $userRepository;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
@@ -117,6 +125,7 @@ class UserController extends Controller
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->userService = $userService;
     }
 
     /**
@@ -297,70 +306,38 @@ class UserController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        $id = $request->auth->user_id;
-        // Server side validataions
-        $validator = Validator::make(
-            $request->all(),
-            ["first_name" => "required|max:60",
-            "last_name" => "required|max:60",
-            "password" => "sometimes|required|min:8",
-            "employee_id" => [
-                "max:60",
-                "nullable",
-                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-            "department" => "max:60",
-            "linked_in_url" => "url|valid_linkedin_url",
-            "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-            "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-            "city_id" => "sometimes|integer|exists:city,city_id,deleted_at,NULL",
-            "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",
-            "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-            'skills' => 'array',
-            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
-            "title" => "max:60"]
-        );
+        $data = $request->all();
+        $data['id'] = $request->auth->user_id;
+        $validation = $this->userService->validateFields($data, false);
 
-        // If request parameter have any error
-        if ($validator->fails()) {
+        if ($validation !== true) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                $validator->errors()->first()
+                $validation->errors()->first()
+            );
+        }
+        if (isset($request->language_id) && !$this->languageHelper->validateLanguageId($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+            );
+        }
+        if (!empty($request->skills) && count($request->skills) > config('constants.SKILL_LIMIT')) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
             );
         }
 
-        // Check language id
-        if (isset($request->language_id)) {
-            if (!$this->languageHelper->validateLanguageId($request)) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                    trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
-                );
-            }
-        }
-
-        // Check if skills reaches maximum limit
-        if (!empty($request->skills)) {
-            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                    trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
-                );
-            }
-        }
-
-        $request->expiry = (isset($request->expiry) && $request->expiry)
-            ? $request->expiry : null;
-
+        $request->expiry = (isset($request->expiry) && $request->expiry) ? $request->expiry : null;
         if (isset($request->status)) {
-            $request->status = $request->status
-                ? config('constants.user_statuses.ACTIVE')
-                : config('constants.user_statuses.INACTIVE');
+            $request->status = $request->status ? config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE');
         }
 
         //Remove params
@@ -371,70 +348,51 @@ class UserController extends Controller
         // Update user filter
         $this->userFilterRepository->saveFilter($request);
 
-        $userDetail = $this->userRepository->find($id);
-        $requestData = $request->toArray();
-        // Skip updaing pseudonymize fields
+        $userDetail = $this->userService->findById($data['id']);
         if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
-            $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
-            foreach ($pseudonymizeFields as $field) {
-                if (array_key_exists($field, $requestData)) {
-                    unset($requestData[$field]);
-                }
-            }
-
-
-            if (array_key_exists('pseudonymize_at', $requestData)) {
-                unset($requestData['pseudonymize_at']);
-            }
+            $data = $this->userService->unsetPseudonymizedFields($data);
         }
 
         // Set user status to inactive when pseudonymized
         if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
-            array_key_exists('pseudonymize_at', $requestData)
+            array_key_exists('pseudonymize_at', $data)
         ) {
-            $requestData['status'] = config('constants.user_statuses.INACTIVE');
+            $data['status'] = config('constants.user_statuses.INACTIVE');
         }
 
         // Update user
-        $user = $this->userRepository->update($requestData, $id);
-
-        // Check profile complete status
+        $user = $this->userService->update($data, $data['id']);
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
 
         // Update user custom fields
         if (!empty($request->custom_fields) && isset($request->custom_fields)) {
-            $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
+            $this->userRepository->updateCustomFields($request->custom_fields, $data['id']);
         }
 
         // Update user skills
         if (!empty($request->skills)) {
-            $this->userRepository->deleteSkills($id);
-            $this->userRepository->linkSkill($request->toArray(), $id);
+            $this->userService->updateSkill($data, $data['id']);
         }
-
         $this->helpers->syncUserData($request, $user);
 
-        // Set response data
-        $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
-
-        // Remove password before logging it
-        $request->request->remove("password");
-
         // Store Activity log
+        $data = $request->except(['password']); //Remove password before logging it
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USER_PROFILE'),
             config('constants.activity_log_actions.UPDATED'),
             config('constants.activity_log_user_types.REGULAR'),
             $request->auth->email,
             get_class($this),
-            $request->toArray(),
+            $data,
             $request->auth->user_id,
             $user->user_id
         ));
 
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        return $this->responseHelper->success(
+            Response::HTTP_OK,
+            trans('messages.success.MESSAGE_USER_UPDATED'),
+            ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete]
+        );
     }
 
     /**
