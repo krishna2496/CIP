@@ -113,7 +113,7 @@ class TimesheetController extends Controller
             );
         }
 
-        $isRequiredSettingEnabled = $this->isRequiredSettingForMissionTypeEnabled(
+        $isRequiredSettingEnabled = $this->missionTypeTenantSettingStatus(
             $request,
             $request->type
         );
@@ -656,7 +656,7 @@ class TimesheetController extends Controller
      * @param string $missionType
      * @return bool
      */
-    private function isRequiredSettingForMissionTypeEnabled(
+    private function missionTypeTenantSettingStatus(
         Request $request,
         string $missionType
     ) : bool {
