@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    
+
     'mail_url' => env('MAIL_URL', ''),
 
     'tenant_logo' => '',
@@ -61,6 +61,8 @@ return [
     'asset_url' => env('ASSET_URL', null),
 
     'user_language_code' => '',
+
+    'office_ips' => ['212.161.79.82', '52.29.166.205'],
 
     /*
     |--------------------------------------------------------------------------

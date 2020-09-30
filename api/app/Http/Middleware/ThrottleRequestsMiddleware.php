@@ -47,7 +47,7 @@ class ThrottleRequestsMiddleware
      */
     public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1)
     {
-        if ($request->hasHeader('disableThrottle') && $request->header('disableThrottle') === config('app.disableThrottle')) {
+        if ($request->hasHeader('disableThrottle') && in_array($request->ip(), config('app.office_ips'))) {
             return $next($request);
         }
 
