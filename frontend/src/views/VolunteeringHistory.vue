@@ -11,7 +11,7 @@
 						<h1>{{languageData.label.volunteering_history}}</h1>
 					</div>
 					<div class="inner-content-wrap" v-if="isAllVisible && !isLoading">
-						<b-row class="chart-block" v-if="isThemeDisplay || isSkillDisplay">
+						<b-row class="chart-block" v-if="(isThemeDisplay || isSkillDisplay) && isTimeMissionActive">
 							<b-col lg="6" class="chart-col" v-if="isThemeDisplay">
 								<div class="inner-chart-col">
 									<div class="chart-title">
@@ -54,7 +54,7 @@
 							</b-col>
 						</b-row>
 						<b-row class="dashboard-table">
-							<b-col lg="6" class="table-col">
+							<b-col lg="6" class="table-col" v-if="isTimeMissionActive">
 								<VolunteeringRequest :headerField="timeMissionTimesheetFields"
 													 :items="timeMissionTimesheetItems" :headerLable="timeMissionTimesheetLabel"
 													 :currentPage="timeMissionCurrentPage" :totalRow="timeMissionTotalRow"
@@ -66,7 +66,7 @@
 													 requestType="time"
 								/>
 							</b-col>
-							<b-col lg="6" class="table-col">
+							<b-col lg="6" class="table-col"  v-if="isGoalMissionActive">
 								<VolunteeringRequest :headerField="goalMissionTimesheetFields"
 									:items="goalMissionTimesheetItems" :headerLable="goalMissionTimesheetLabel"
 									:currentPage="goalMissionCurrentPage" :totalRow="goalMissionTotalRow"
@@ -155,7 +155,9 @@
 				perHourDataNotFoundForSkill: null,
 				isLoading: true,
 				isThemeDisplay: true,
-				isSkillDisplay: true
+				isSkillDisplay: true,
+				isGoalMissionActive : false,
+        		isTimeMissionActive : false
 			};
 		},
 		mounted() {
@@ -232,6 +234,10 @@
 							})
 						})
 					}
+
+					if (!this.isGoalMissionActive) {
+						this.isLoading = false;
+					}
 				})
 			},
 			getVolunteerMissionsGoals(currentPage) {
@@ -272,11 +278,19 @@
 			this.skillYearText = this.languageData.label.all
 			this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
 			this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+			this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
+			this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
 
-			this.getVolunteerHistoryHoursOfType("theme");
-			this.getVolunteerHistoryHoursOfType("skill");
-			this.getVolunteerMissionsHours();
-			this.getVolunteerMissionsGoals();
+			if (this.isTimeMissionActive) {
+				this.getVolunteerHistoryHoursOfType('theme');
+				this.getVolunteerHistoryHoursOfType('skill');
+				this.getVolunteerMissionsHours();
+			}
+
+			if (this.isGoalMissionActive) {
+				this.getVolunteerMissionsGoals();
+			}
+
 			let timeRequestFieldArray = [
 				this.languageData.label.mission,
 				this.languageData.label.time,
