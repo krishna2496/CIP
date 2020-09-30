@@ -209,7 +209,8 @@ return [
         'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
         'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
         'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
-        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully'
+        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully',
+        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully'
     ],
 
 
@@ -380,6 +381,8 @@ return [
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
+
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Mission impact not found in the system.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
 
@@ -389,6 +392,7 @@ return [
         // For Donation IP Whitelist module
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.',
 
         //For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',

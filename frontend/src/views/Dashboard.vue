@@ -22,7 +22,7 @@
                     </div>
                     <div class="inner-content-wrap">
                         <b-list-group class="status-bar">
-                            <b-list-group-item v-if="isTotalVolunteeredHourDisplay">
+                            <b-list-group-item v-if="isTotalVolunteeredHourDisplay && isTimeMissionActive">
                                 <div class="list-item">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/clock-ic.svg'" alt />
@@ -32,7 +32,7 @@
                                     </p>
                                 </div>
                             </b-list-group-item>
-                            <b-list-group-item>
+                            <b-list-group-item v-if="isTimeMissionActive">
                                 <div class="list-item">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/certified-ic.svg'" alt />
@@ -78,7 +78,7 @@
                                 </div>
                             </b-list-group-item>
                         </b-list-group>
-                        <b-row class="chart-block">
+                        <b-row class="chart-block" v-if="isTimeMissionActive">
                             <b-col lg="6" class="chart-col">
                                 <div class="inner-chart-col">
                                     <div class="chart-title">
@@ -241,7 +241,9 @@
         barChartCanvas: null,
         isTotalVolunteeredHourDisplay : true,
         isChartDataFound : true,
-        missionFilterDisplay: false
+        missionFilterDisplay: false,
+        isGoalMissionActive : false,
+        isTimeMissionActive : false
       };
     },
     mounted() {
@@ -450,7 +452,7 @@
                 if (this.barChartCanvas != null) {
                   this.barChartCanvas.destroy();
                 }
-                if(this.isChartDataFound) {
+                if (this.isChartDataFound) {
                   setTimeout(()=> {
                     var barChartRefs = this.$refs.barChartRefs;
                     var lineContent = barChartRefs.getContext("2d");
@@ -528,6 +530,8 @@
       this.defaultMonth = this.languageData.label.month
       this.defaultMissionTitle = this.languageData.label.mission_title
       this.isTotalVolunteeredHourDisplay = this.settingEnabled(constants.TOTAL_HOURS_VOLUNTEERED)
+      this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
+      this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
       let currentYear = new Date().getFullYear()
       let currentMonth = moment().format('MM')
       // this.defaultYear = currentYear.toString();

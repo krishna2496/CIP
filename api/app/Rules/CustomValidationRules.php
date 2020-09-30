@@ -128,5 +128,16 @@ class CustomValidationRules
             return str_replace(':max_item', $parameters[1], $message);
         });
 
+        Validator::extend('valid_icon_path', function ($attribute, $value) {
+            try {
+                $urlMimeType = isset(get_headers($value, 1)['Content-Type']) ? get_headers($value, 1)['Content-Type'] :
+                get_headers($value, 1)['content-type'];
+                $validMimeTypes = config('constants.icon_image_mime_types');
+                return (!in_array($urlMimeType, $validMimeTypes)) ? false : true;
+            } catch (\Exception $e) {
+                return false;
+            }
+        });
+
     }
 }
