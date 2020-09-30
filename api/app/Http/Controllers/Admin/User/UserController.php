@@ -1,24 +1,26 @@
 <?php
 namespace App\Http\Controllers\Admin\User;
 
+use App\Events\User\UserActivityLogEvent;
+use App\Exceptions\MaximumUsersReachedException;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\User\UserRepository;
+use App\Repositories\Timezone\TimezoneRepository;
+use App\Services\TimesheetService;
+use App\Services\UserService;
+use App\Traits\RestExceptionHandlerTrait;
+use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Repositories\User\UserRepository;
-use App\Helpers\ResponseHelper;
-use App\Traits\RestExceptionHandlerTrait;
-use Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\User;
-use InvalidArgumentException;
 use Illuminate\Validation\Rule;
-use App\Helpers\LanguageHelper;
-use App\Helpers\Helpers;
-use App\Events\User\UserActivityLogEvent;
-use App\Services\UserService;
-use App\Services\TimesheetService;
-use App\Repositories\Notification\NotificationRepository;
+use InvalidArgumentException;
+use Validator;
 
 //!  User controller
 /*!
@@ -69,6 +71,11 @@ class UserController extends Controller
     private $notificationRepository;
 
     /**
+     * @var App\Repositories\Timezone\TimezoneRepository
+     */
+    private $timezoneRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
@@ -88,7 +95,8 @@ class UserController extends Controller
         TimesheetService $timesheetService,
         Helpers $helpers,
         Request $request,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        TimezoneRepository $timezoneRepository
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
@@ -98,6 +106,7 @@ class UserController extends Controller
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
         $this->notificationRepository = $notificationRepository;
+        $this->timezoneRepository = $timezoneRepository;
     }
 
     /**
@@ -241,8 +250,8 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         $fieldsToValidate = [
-            "first_name" => "sometimes|required|max:16",
-            "last_name" => "sometimes|required|max:16",
+            "first_name" => "sometimes|required|max:60",
+            "last_name" => "sometimes|required|max:60",
             "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
             "password" => "required|min:8",
             "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
@@ -251,9 +260,9 @@ class UserController extends Controller
             "city_id" => "sometimes|integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|sometimes|required|exists:country,country_id,deleted_at,NULL",
             "profile_text" => "sometimes|required",
-            "employee_id" => "max:16|
+            "employee_id" => "max:60|
             unique:user,employee_id,NULL,user_id,deleted_at,NULL",
-            "department" => "max:16",
+            "department" => "max:60",
             "linked_in_url" => "url|valid_linkedin_url",
             "why_i_volunteer" => "sometimes|required",
             "expiry" => "sometimes|date|nullable",
@@ -261,7 +270,8 @@ class UserController extends Controller
                 "sometimes",
                 Rule::in(config('constants.user_statuses'))
             ],
-            "position" => "sometimes|nullable"
+            "position" => "sometimes|nullable",
+            "title" => "max:60"
         ];
 
         if (is_array($request->skills)) {
@@ -295,11 +305,26 @@ class UserController extends Controller
             }
         }
 
+        if (!isset($request->timezone_id)) {
+            $defaultTimezone = env('DEFAULT_TIMEZONE', 'Europe/Paris');
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode($defaultTimezone);
+            $request->merge(['timezone_id' => $timezone->timezone_id]);
+        }
+
         $request->expiry = (isset($request->expiry) && $request->expiry)
             ? $request->expiry : null;
 
         // Create new user
-        $user = $this->userRepository->store($request->toArray());
+        try {
+            $user = $this->userService->store($request->toArray());
+        } catch (MaximumUsersReachedException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_BAD_REQUEST,
+                Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                config('constants.error_codes.ERROR_MAXIMUM_USERS_REACHED'),
+                trans('messages.custom_error_message.ERROR_MAXIMUM_USERS_REACHED')
+            );
+        }
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -433,6 +458,10 @@ class UserController extends Controller
                 $requestData['status'] = config('constants.user_statuses.INACTIVE');
             }
 
+            if (isset($requestData['avatar'])) {
+                $requestData['avatar'] = empty($requestData['avatar']) ? null : $requestData['avatar'];
+            }
+
             // Update user
             $user = $this->userRepository->update($requestData, $id);
 
@@ -478,8 +507,8 @@ class UserController extends Controller
     private function getFieldsTovalidate($id, $requestData)
     {
         $fieldsToValidate = [
-            "first_name" => "sometimes|required|max:16",
-            "last_name" => "sometimes|required|max:16",
+            "first_name" => "sometimes|required|max:60",
+            "last_name" => "sometimes|required|max:60",
             "email" => [
                 "sometimes",
                 "required",
@@ -490,9 +519,9 @@ class UserController extends Controller
             "employee_id" => [
                 "sometimes",
                 "required",
-                "max:16",
+                "max:60",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-            "department" => "sometimes|required|max:16",
+            "department" => "sometimes|required|max:60",
             "linked_in_url" => "url|valid_linkedin_url",
             "why_i_volunteer" => "sometimes|required",
             "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
@@ -505,7 +534,7 @@ class UserController extends Controller
                 Rule::in(config('constants.user_statuses'))
             ],
             "position" => "sometimes|nullable",
-
+            "title" => "max:60"
         ];
 
         if (array_key_exists('skills', $requestData)) {
@@ -536,7 +565,6 @@ class UserController extends Controller
             'department',
             'linked_in_url',
             'why_i_volunteer',
-            'timezone_id',
             'availability_id',
             'city_id',
             'country_id',

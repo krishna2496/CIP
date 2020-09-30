@@ -1,15 +1,15 @@
 <?php
 namespace App\Http\Middleware;
 
+use App\Factories\JWTCookieFactory;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Repositories\Timezone\TimezoneRepository;
+use App\User;
 use Closure;
 use DateTime;
-use Firebase\JWT\JWT;
-use App\User;
-use App\Helpers\ResponseHelper;
-use Firebase\JWT\ExpiredException;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\Helpers;
-use App\Repositories\Timezone\TimezoneRepository;
 
 class JwtMiddleware
 {
@@ -49,13 +49,15 @@ class JwtMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  object  $request
+     * @param  Request  $request
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, $guard = null)
     {
-        $token = ($request->hasHeader('token')) ? $request->header('token') : '';
+        $token = ($request->hasCookie(JWTCookieFactory::COOKIE_NAME))
+            ? $request->cookie(JWTCookieFactory::COOKIE_NAME)
+            : '';
 
         if (!$token) {
             // Unauthorized response if token not there
@@ -121,14 +123,6 @@ class JwtMiddleware
                         trans('messages.custom_error_message.ERROR_USER_EXPIRED')
                     );
                 }
-            }
-
-            if (isset($credentials->sso) && $credentials->sso) {
-                $newToken = $this->helpers->getJwtToken(
-                    $user->user_id,
-                    $this->helpers->getSubDomainFromRequest($request)
-                );
-                header('Token: ' . $newToken);
             }
 
             $timezone = $this->timezoneRepository->timezoneList($user->timezone_id);

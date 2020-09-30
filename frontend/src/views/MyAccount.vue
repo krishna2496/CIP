@@ -92,7 +92,7 @@
                                         <b-form-input id type="text" v-model.trim="profile.firstName"
                                                       :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }"
                                                       @keypress="alphaNumeric($event)"
-                                                      :placeholder="languageData.placeholder.name" maxlength="16"></b-form-input>
+                                                      :placeholder="languageData.placeholder.name" maxlength="60"></b-form-input>
                                         <div v-if="submitted && !$v.profile.firstName.required"
                                              class="invalid-feedback">
                                             {{ languageData.errors.name_required }}
@@ -105,7 +105,7 @@
                                         <b-form-input id type="text" v-model.trim="profile.lastName"
                                                       :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }"
                                                       @keypress="alphaNumeric($event)"
-                                                      :placeholder="languageData.placeholder.surname" maxlength="16">
+                                                      :placeholder="languageData.placeholder.surname" maxlength="60">
                                         </b-form-input>
                                         <div v-if="submitted && !$v.profile.lastName.required" class="invalid-feedback">
                                             {{ languageData.errors.last_name_required }}</div>
@@ -114,7 +114,7 @@
                                 <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.employee_id}}</label>
-                                        <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="16"
+                                        <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="60"
                                                       :placeholder="languageData.placeholder.employee_id">
                                         </b-form-input>
                                     </b-form-group>
@@ -131,7 +131,7 @@
                                     <b-form-group>
                                         <label for>{{languageData.label.title}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.title"
-                                                      :placeholder="languageData.placeholder.title" maxlength="25">
+                                                      :placeholder="languageData.placeholder.title" maxlength="60">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
@@ -159,7 +159,7 @@
                                 <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.department}}</label>
-                                        <b-form-input id type="text" v-model.trim="profile.department" maxlength="16"
+                                        <b-form-input id type="text" v-model.trim="profile.department" maxlength="60"
                                                       :placeholder="languageData.placeholder.department"></b-form-input>
 
                                     </b-form-group>
@@ -468,7 +468,7 @@
             if (linkedInUrl == '') {
               return true
             }
-            const regexp = /^http(s)?:\/\/([\w]+\.)?linkedin\.com\/[//A-z0-9_-]+\/?$/;
+            const regexp = /^https:\/\/www\.linkedin\.com\/[a-z0-9]+/;
             return (regexp.test(linkedInUrl));
           }
         },
