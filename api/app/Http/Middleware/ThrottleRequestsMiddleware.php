@@ -47,7 +47,7 @@ class ThrottleRequestsMiddleware
      */
     public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1)
     {
-        if (config('app.env') === 'staging' && $request->hasHeader('disableThrottle')) {
+        if ($request->hasHeader('disableThrottle') && $request->header('disableThrottle') === config('app.disableThrottle')) {
             return $next($request);
         }
 
