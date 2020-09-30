@@ -23,6 +23,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
+    $router->post('/app/transmute', ['as' => 'transmute', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\AuthController@transmute']);
+
+    /* Logout the user */
+    $router->get('/app/logout', ['as' => 'logout', 'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Auth\AuthController@logout']);
+
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
