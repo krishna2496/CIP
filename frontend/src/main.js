@@ -20,6 +20,7 @@ import 'moment-timezone';
 import customCss from './services/CustomCss'
 import 'vue-search-select/dist/VueSearchSelect.css'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
+import VueSanitize from "vue-sanitize";
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = process.env.NODE_ENV !== 'production';
@@ -28,6 +29,7 @@ Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 Vue.use(toast);
+Vue.use(VueSanitize);
 
 AOS.init({
     once: true,

@@ -76,7 +76,6 @@ import {
     email
 } from 'vuelidate/lib/validators';
 import store from '../../store';
-import sanitizeHtml from 'sanitize-html';
 import {
     loadLocaleMessages,
     login,
@@ -194,7 +193,11 @@ export default {
                     this.customText = customTextInDefaultLang.message;
                 }
             }
-            sanitizeHtml(this.customText)
+
+            this.customText  = this.$sanitize(
+                this.customText
+            );
+
         },
 
         handleSubmit() {
