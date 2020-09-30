@@ -203,7 +203,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact" => "sometimes|required|array",
-                "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
+                "impact.*.icon_path" => 'valid_icon_path',
                 "impact.*.sort_key" => 'required|integer|min:0|distinct',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
@@ -416,7 +416,7 @@ class MissionController extends Controller
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",
-                "impact.*.icon_path" => "sometimes|required|valid_icon_path",
+                "impact.*.icon_path" => "valid_icon_path",
                 "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
                 "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
                 "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
