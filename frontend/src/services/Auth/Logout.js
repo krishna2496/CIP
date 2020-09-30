@@ -1,30 +1,36 @@
 import store from '../../store'
 import axios from 'axios'
 
-export default async(data) => {
-  // Store mission rating
+export default async() => {
   let responseData = {}
   responseData.error = false;
   let defaultLanguage = '';
   if (store.state.defaultLanguage !== null) {
     defaultLanguage = (store.state.defaultLanguage).toLowerCase();
   }
+  document.body.classList.add("loader-enable");
   await axios({
-    url: process.env.VUE_APP_API_ENDPOINT + "app/mission/rating",
-    data,
-    method: 'post',
+    url: process.env.VUE_APP_API_ENDPOINT + "app/logout",
+    method: 'get',
     headers: {
-      'X-localization': defaultLanguage,
+      'X-localization': defaultLanguage
     }
   }).then((response) => {
-    responseData.error = false;
-    responseData.message = response.data.message;
+
+    //Store login data in local storage
+    store.commit('logoutUser', response.data.data)
+
+    setTimeout(() => {
+      document.body.classList.remove("loader-enable");
+    }, 700)
+
   })
-    .catch(function(error) {
+    .catch(error => {
+      document.body.classList.remove("loader-enable");
       if (error.response.data.errors[0].message) {
         responseData.error = true;
         responseData.message = error.response.data.errors[0].message;
       }
-    });
+    })
   return responseData;
 }

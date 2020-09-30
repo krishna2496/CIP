@@ -39,7 +39,7 @@ class MissionCommentRepository implements MissionCommentInterface
         $this->mission = $mission;
         $this->missionRepository = $missionRepository;
     }
-    
+
     /**
      * Store mission comment
      *
@@ -52,7 +52,7 @@ class MissionCommentRepository implements MissionCommentInterface
         $request['user_id'] = $userId;
         return $this->comment->create($request);
     }
-    
+
     /**
      * Get mission comments
      *
@@ -64,13 +64,13 @@ class MissionCommentRepository implements MissionCommentInterface
     public function getComments(int $missionId, array $statusList = [], Request $request = null): LengthAwarePaginator
     {
         $mission = $this->mission->findOrFail($missionId);
-        
+
         $approvalStatusList = ($statusList) ? $statusList : [config("constants.comment_approval_status.PUBLISHED")];
-            
+
         $commentQuery = $mission->comment()
         ->whereIn('approval_status', $approvalStatusList)
         ->with(['user:user_id,first_name,last_name,avatar']);
-        
+
         $orderDirection = 'desc';
         if (isset($request)) {
             $orderDirection = ($request->has('order')) ? $request->input('order', 'desc') : 'desc';
@@ -122,29 +122,52 @@ class MissionCommentRepository implements MissionCommentInterface
      * @param int $userId
      * @param int $languageId
      * @param int $defaultTenantLanguageId
+     * @param array|null $missionTypes
      * @return array
      */
-    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array
-    {
-        $comments = $this->comment->where('user_id', $userId)
-        ->orderby('created_at', 'desc')
-        ->with(['mission' => function ($query) use ($languageId) {
-            $query->select('mission_id');
-        }])->get();
+    public function getUserComments(
+        int $userId,
+        int $languageId,
+        int $defaultTenantLanguageId,
+        array $missionTypes = null
+    ): array {
+        $comments = $this->comment
+            ->where('user_id', $userId)
+            ->orderby('created_at', 'desc')
+            ->whereHas('mission', function ($query) use ($missionTypes) {
+                $query->select('mission_id');
+                if ($missionTypes !== null) {
+                    $query->whereIn('mission_type', $missionTypes);
+                }
+            })
+            ->get();
 
         $commentData = array();
         // Fetch comment counts by status
         if (count($comments) > 0) {
             // Count status
             $statusCount = $this->comment
-            ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
-            COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
-            COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
-            ->where('user_id', $userId)->get();
-            
+                ->selectRaw("
+                    COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
+                    COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
+                    COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined
+                ")
+                ->where('user_id', $userId)
+                ->whereHas('mission', function ($query) use ($missionTypes) {
+                    $query->select('mission_id');
+                    if ($missionTypes !== null) {
+                        $query->whereIn('mission_type', $missionTypes);
+                    }
+                })
+                ->get();
+
             foreach ($comments as $value) {
                 $value->title = $this->missionRepository
-                ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
+                    ->getMissionTitle(
+                        $value->mission_id,
+                        $languageId,
+                        $defaultTenantLanguageId
+                    );
                 unset($value->mission);
             }
             $commentData['comments'] = $comments;
