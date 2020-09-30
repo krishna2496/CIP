@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class SkillRepository implements SkillInterface
 {
@@ -57,8 +58,12 @@ class SkillRepository implements SkillInterface
 
         $skillQuery->when($request->has('search'), function ($query) use ($request) {
             $query->where('skill_name', 'like', $request->search.'%');
-            $searchLanguage = $request->searchLanguage ?? '[a-z]{2}';
-            $query->orWhere('translations', 'regexp', '"'.$searchLanguage.'":[[:space:]]*"'.$request->search.'.+"');
+            $searchLanguage = $request->searchLanguage;
+
+            $searchLanguage
+                ? $query->orWhere(DB::raw("lower(json_unquote(json_extract(translations, '$.".$searchLanguage."')))"), 'LIKE', strtolower( $request->search ).'%')
+                : $query->orWhere('translations', 'like', $request->search . '%');
+
         })->when($request->has('translations'), function ($query) use ($request) {
             /*
              * Filtering on translations
