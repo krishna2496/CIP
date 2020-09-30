@@ -72,4 +72,43 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
         }
         return true;
     }
+
+    /**
+     * Check for Volunterring time or goal mission shoudld be enabled
+     *
+     *  @param array $data
+     * @param int $tenantId
+     * @return bool
+     */
+    public function checkVolunteeringTimeAndGoalSetting(array $data, int $tenantId)
+    {
+        $volunteering = $this->tenantSetting->where('key', config('constants.tenant_settings.VOLUNTEERING'))->first();
+        $volunteeringSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteering->tenant_setting_id, 'tenant_id' => $tenantId])->first();
+        if ($volunteeringSetting) {
+            foreach ($data['settings'] as $value) {
+                $tenantSetting = $this->tenantSetting->where('tenant_setting_id', $value['tenant_setting_id'])->first();
+                
+                // Check volunteering goal should be active if we disable volunteering time mission
+                if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') && !$value['value']) {
+                    $volunteeringGoal = $this->tenantSetting->where('key', config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'))->first();
+                    $volunteeringGoalSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteeringGoal->tenant_setting_id, 'tenant_id' => $tenantId])->first();
+                    if (!$volunteeringGoalSetting) {
+                        return false;
+                    }
+                }
+
+                // Check volunteering time should be active if we disable volunteering goal mission
+                if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION') && !$value['value']) {
+                    $volunteeringTime = $this->tenantSetting->where('key', config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'))->first();
+                    $volunteeringTimeSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteeringTime->tenant_setting_id, 'tenant_id' => $tenantId])->first();
+                    
+                    if (!$volunteeringTimeSetting) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        return true;
+    }
 }
