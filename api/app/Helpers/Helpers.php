@@ -555,9 +555,9 @@ class Helpers
         $this->switchDatabaseConnection('mysql');
 
         $tenantCurrency = $this->db->table('tenant_currency')
-        ->where('tenant_id', $tenant->tenant_id)
-        ->where('code', $currencyCode)
-        ->where('is_active', '1');
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('code', $currencyCode)
+            ->where('is_active', '1');
 
         // Connect tenant databases
         $this->switchDatabaseConnection('tenant');

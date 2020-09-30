@@ -9035,7 +9035,7 @@
                       "type": "string",
                       "description": "Language ISO code (e.g. en, fr)"
                     },
-                    "content" : {
+                    "content": {
                       "type": "string",
                       "description": "Mission impact description"
                     }
@@ -9128,7 +9128,11 @@
         "un_sdg": {
           "type": "array",
           "description": "Array of valid UN SDG numbers (1 to 17)",
-          "example": [1, 2, 3]
+          "example": [
+            1,
+            2,
+            3
+          ]
         },
         "organization": {
           "type": "object",
@@ -9168,6 +9172,40 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            }
+          }
+        },
+        "donation_attribute": {
+          "type": "object",
+          "properties": {
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+              "type": "boolean"
+            },
+            "show_donation_percentage": {
+              "type": "boolean"
+            },
+            "show_donation_meter": {
+              "type": "boolean"
+            },
+            "show_donation_count": {
+              "type": "boolean"
+            },
+            "show_donors_count": {
+              "type": "boolean"
+            },
+            "disable_when_funded": {
+              "type": "boolean"
+            },
+            "is_disabled": {
+              "type": "boolean"
             }
           }
         }
@@ -9445,7 +9483,7 @@
                       "type": "string",
                       "description": "Language ISO code (e.g. en, fr)"
                     },
-                    "content" : {
+                    "content": {
                       "type": "string",
                       "description": "Mission impact description"
                     }
@@ -9538,7 +9576,11 @@
         "un_sdg": {
           "type": "array",
           "description": "Array of valid UN SDG numbers (1 to 17)",
-          "example": [1, 2, 3]
+          "example": [
+            1,
+            2,
+            3
+          ]
         },
         "organization": {
           "type": "object",
@@ -9584,37 +9626,37 @@
         "donation_attribute": {
           "type": "object",
           "properties": {
-             "goal_amount_currency": {
-                "type": "string",
-                "description": "Goal amount's currency"
-             },
-             "goal_amount": {
-                "type": "integer",
-                "description": "Goal amount for donation"
-             },
-             "show_goal_amount": {
-                "type": "boolean"
-             },
-             "show_donation_percentage": {
-                "type": "boolean"
-             },
-             "show_donation_meter": {
-                "type": "boolean"
-             },
-             "show_donation_count": {
-                "type": "boolean"
-             },
-             "show_donors_count": {
-                "type": "boolean"
-             },
-             "disable_when_funded": {
-                "type": "boolean"
-             },
-             "is_disabled": {
-                "type": "boolean"
-             }
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+              "type": "boolean"
+            },
+            "show_donation_percentage": {
+              "type": "boolean"
+            },
+            "show_donation_meter": {
+              "type": "boolean"
+            },
+            "show_donation_count": {
+              "type": "boolean"
+            },
+            "show_donors_count": {
+              "type": "boolean"
+            },
+            "disable_when_funded": {
+              "type": "boolean"
+            },
+            "is_disabled": {
+              "type": "boolean"
+            }
           }
-       }
+        }
       }
     },
     "FooterPage": {

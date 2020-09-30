@@ -162,36 +162,36 @@ class MissionRepositoryTest extends TestCase
 
         $missionModel->mission_id = 13;
         $modelsService->mission
-        ->shouldReceive('create')
-        ->once()
-        ->andReturn($missionModel);
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($missionModel);
  
         $collectionLanguageData = collect($languagesArray);
        
         $languageHelper->shouldReceive('getLanguages')
-        ->once()
-        ->andReturn($collectionLanguageData);
+            ->once()
+            ->andReturn($collectionLanguageData);
 
         $countryId= $requestParams['location']['country_id'];
         
         $countryRepository->shouldReceive('getCountryId')
-        ->once()
-        ->with($requestData->location['country_code'])
-        ->andReturn($countryId);
+            ->once()
+            ->with($requestData->location['country_code'])
+            ->andReturn($countryId);
 
         $modelsService->missionLanguage->shouldReceive('create')
-        ->once()
-        ->andReturn(false);
+            ->once()
+            ->andReturn(false);
         
         $modelsService->donationAttribute->shouldReceive('create')
-        ->once()
-        ->andReturn(false);
+            ->once()
+            ->andReturn(false);
         
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')
-        ->once()
-        ->with($requestData)
-        ->andReturn($tenantName);
+            ->once()
+            ->with($requestData)
+            ->andReturn($tenantName);
 
         $repository = $this->getRepository(
             $languageHelper,
@@ -300,29 +300,29 @@ class MissionRepositoryTest extends TestCase
         $missionId = 13;
         $missionModel->mission_id = $missionId;
         $modelsService->mission
-        ->shouldReceive('findOrFail')
-        ->once()
-        ->with($missionId)
-        ->andReturn($missionModel);
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
         
         $collectionLanguageData = collect($languagesArray);
        
         $languageHelper->shouldReceive('getLanguages')
-        ->once()
-        ->andReturn($collectionLanguageData);
+            ->once()
+            ->andReturn($collectionLanguageData);
 
         $countryId= $requestParams['location']['country_id'];
         
         $countryRepository->shouldReceive('getCountryId')
-        ->once()
-        ->with($requestData->location['country_code'])
-        ->andReturn($countryId);
+            ->once()
+            ->with($requestData->location['country_code'])
+            ->andReturn($countryId);
         
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')
-        ->once()
-        ->with($requestData)
-        ->andReturn($tenantName);
+            ->once()
+            ->with($requestData)
+            ->andReturn($tenantName);
 
         $repository = $this->getRepository(
             $languageHelper,
@@ -482,9 +482,9 @@ class MissionRepositoryTest extends TestCase
             ->andReturn($languages);
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
-        ->once()
-        ->with($request)
-        ->andReturn($defaultLanguage);
+            ->once()
+            ->with($request)
+            ->andReturn($defaultLanguage);
 
 
         $countryId = 1;
