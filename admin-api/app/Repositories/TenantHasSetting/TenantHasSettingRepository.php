@@ -86,7 +86,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
         $volunteeringSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteering->tenant_setting_id, 'tenant_id' => $tenantId])->first();
         if ($volunteeringSetting) {
             foreach ($data['settings'] as $value) {
-                $tenantSetting = $this->tenantSetting->where('t enant_setting_id', $value['tenant_setting_id'])->first();
+                $tenantSetting = $this->tenantSetting->where('tenant_setting_id', $value['tenant_setting_id'])->first();
                 
                 // Check volunteering goal should be active if we disable volunteering time mission
                 if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') && !$value['value']) {
