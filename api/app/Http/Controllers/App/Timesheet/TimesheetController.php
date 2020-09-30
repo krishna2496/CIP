@@ -22,6 +22,7 @@ use App\Helpers\Helpers;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 //!  Timesheet controller
 /*!
@@ -56,6 +57,11 @@ class TimesheetController extends Controller
     private $helpers;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param TimesheetRepository $timesheetRepository
@@ -64,6 +70,7 @@ class TimesheetController extends Controller
      * @param TenantOptionRepository $tenantOptionRepository
      * @param Helpers $helpers
      * @param Amqp $amqp
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      *
      * @return void
      */
@@ -73,7 +80,8 @@ class TimesheetController extends Controller
         MissionRepository $missionRepository,
         TenantOptionRepository $tenantOptionRepository,
         Helpers $helpers,
-        Amqp $amqp
+        Amqp $amqp,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
@@ -81,6 +89,7 @@ class TimesheetController extends Controller
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->helpers = $helpers;
         $this->amqp = $amqp;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -101,6 +110,19 @@ class TimesheetController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
+            );
+        }
+
+        $isRequiredSettingEnabled = $this->isRequiredSettingForMissionTypeEnabled(
+            $request,
+            $request->type
+        );
+        if (!$isRequiredSettingEnabled) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                '',
+                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
             );
         }
 
@@ -625,5 +647,33 @@ class TimesheetController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType
+    ) : bool {
+
+        $tenantSetting = null;
+        switch ($missionType) {
+            case 'goal':
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case 'hour':
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }
