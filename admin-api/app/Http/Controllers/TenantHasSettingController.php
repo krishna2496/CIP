@@ -120,7 +120,7 @@ class TenantHasSettingController extends Controller
             // Check tenant is available or not
             $tenant = $this->tenantRepository->find($tenantId);
 
-            //check for volunterring time or goal should be enabled
+            // check for volunterring time or goal should be enabled
             $response = $this->tenantHasSettingRepository->checkVolunteeringTimeAndGoalSetting($request->toArray(), $tenantId);
             if(!$response){
                 return $this->responseHelper->error(
