@@ -49,6 +49,8 @@ return [
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
     'PER_PAGE_ALL' => '100000',
     'SUPPORT_EMAIL' => 'support@optimy.com',
+    'TENANT_OPTION_NAME_MAX_LENGTH' => 370,
+    'TENANT_OPTION_NAME' => 'custom_login_text',
 
     /*
      * User custom field types

@@ -76,6 +76,7 @@ import {
     email
 } from 'vuelidate/lib/validators';
 import store from '../../store';
+import sanitizeHtml from 'sanitize-html';
 import {
     loadLocaleMessages,
     login,
@@ -112,8 +113,8 @@ export default {
             languageData: [],
             isPageShown: false,
             componentKey: 0,
-            customText : '',
-            customTextPosition : 'before_logo'
+            customText: '',
+            customTextPosition: 'before_logo'
         };
     },
 
@@ -169,28 +170,31 @@ export default {
 
         setCustomText() {
             const customTextArray = JSON.parse(store.state.customLoginText)
-            if (customTextArray) {
-                const translations = customTextArray.translations;
-                if (customTextArray.position !== '' && customTextArray.position != null) {
-                    this.customTextPosition = customTextArray.position;
-                }
-                if (translations && Array.isArray(translations)) {
-                    const translatedCustomText = translations.find((item) => {
-                        return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
-                    });
-                    if (translatedCustomText && translatedCustomText.message) {
-                        this.customText = translatedCustomText.message;
-                    } else {
-                        // get custom text for default language if no translation is found
-                        const customTextInDefaultLang = translations.find((item) => {
-                            return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
-                        });
-                        if (customTextInDefaultLang && customTextInDefaultLang.message) {
-                            this.customText = customTextInDefaultLang.message;
-                        }
-                    }
+
+            if (customTextArray.position !== '' && customTextArray.position != null) {
+                this.customTextPosition = customTextArray.position;
+            }
+            const translations = customTextArray.translations;
+            if (!translations || !Array.isArray(translations)) {
+                return;
+            }
+
+            const translatedCustomText = translations.find((item) => {
+                return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
+            });
+
+            if (translatedCustomText && translatedCustomText.message) {
+                this.customText = translatedCustomText.message;
+            } else {
+                // get custom text for default language if no translation is found
+                const customTextInDefaultLang = translations.find((item) => {
+                    return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
+                });
+                if (customTextInDefaultLang && customTextInDefaultLang.message) {
+                    this.customText = customTextInDefaultLang.message;
                 }
             }
+            sanitizeHtml(this.customText)
         },
 
         handleSubmit() {
