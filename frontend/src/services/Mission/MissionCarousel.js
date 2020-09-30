@@ -8,7 +8,6 @@ export default async(missionId) => {
     url: url,
     method: 'get',
     headers: {
-      'token': store.state.token,
     }
   }).then((response) => {
     responseData.error = false;

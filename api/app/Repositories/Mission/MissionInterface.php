@@ -18,7 +18,7 @@ interface MissionInterface
      * @return App\Models\Mission
      */
     public function store(Request $request): Mission;
-    
+
     /**
      * Update resource.
      *
@@ -27,7 +27,7 @@ interface MissionInterface
      * @return App\Models\Mission
      */
     public function update(Request $request, int $id): Mission;
-  
+
     /**
      * Find the specified resource from database
      *
@@ -35,7 +35,7 @@ interface MissionInterface
      * @return App\Models\Mission
      */
     public function find(int $id): Mission;
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -52,7 +52,7 @@ interface MissionInterface
      * @return null|App\Models\FavouriteMission
      */
     public function missionFavourite(int $userId, int $missionId): ?FavouriteMission;
-    
+
     /**
      * Add/update mission rating.
      *
@@ -147,7 +147,7 @@ interface MissionInterface
      * @return MissionApplication
      */
     public function getMissionApplication(int $missionId, int $userId, string $status): MissionApplication;
-    
+
     /**
      * Get Mission data for timesheet
      *
@@ -155,7 +155,7 @@ interface MissionInterface
      * @return App\Models\Mission
      */
     public function getTimesheetMissionData(int $id): Mission;
-    
+
     /**
      * Get Mission type
      *
@@ -163,7 +163,7 @@ interface MissionInterface
      * @return null|Collection
      */
     public function getMissionType(int $id): ?Collection;
-    
+
     /**
      * Get user mission lists
      *
@@ -171,7 +171,7 @@ interface MissionInterface
      * @return null|array
      */
     public function getUserMissions(Request $request): ?array;
-    
+
     /** Get mission title
      *
      * @param int $missionId
@@ -180,7 +180,7 @@ interface MissionInterface
      * @return string
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
-    
+
     /**
      * Check mission status
      *
@@ -188,7 +188,7 @@ interface MissionInterface
      * @return bool
      */
     public function checkMissionStatus(int $missionId): bool;
-      
+
     /**
      * Remove mission media
      *
@@ -206,7 +206,7 @@ interface MissionInterface
      * @return bool
      */
     public function deleteMissionDocument(int $documentId): bool;
-    
+
     /**
      * Get media details
      *
@@ -235,4 +235,33 @@ interface MissionInterface
      * @return bool
      */
     public function deleteMissionTabByMissionTabId(string $missionTabId): bool;
+
+    /**
+     * Remove mission impact by mission_impact_id
+     *
+     * @param string $missionImpactId
+     *
+     * @return bool
+     */
+    public function deleteMissionImpact(string $missionImpactId): bool;
+
+    /**
+     * Check sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionTabs
+     *
+     * @return bool
+     */
+    public function checkExistTabSortKey(int $missionId, array $missionTabs): bool;
+
+    /**
+     * Check mission_impact sort key is already exist or not
+     *
+     * @param int $missionId
+     * @param array $missionImpact
+     *
+     * @return bool
+     */
+    public function checkExistImpactSortKey(int $missionId, array $missionImpact): bool;
 }

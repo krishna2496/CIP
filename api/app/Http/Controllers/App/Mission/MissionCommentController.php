@@ -14,6 +14,7 @@ use Validator;
 use App\Helpers\Helpers;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Helpers\LanguageHelper;
+use App\Helpers\TenantSettingHelper;
 use App\Helpers\ExportCSV;
 use App\Events\User\UserActivityLogEvent;
 use Carbon\Carbon;
@@ -36,22 +37,27 @@ class MissionCommentController extends Controller
      * @var MissionCommentRepository
      */
     private $missionCommentRepository;
-    
+
     /**
      * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      */
     private $tenantActivatedSettingRepository;
-    
+
     /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
 
     /**
+     * @var App\Helpers\TenantSettingHelper
+     */
+    private $tenantSettingHelper;
+
+    /**
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
-    
+
     /**
      * @var App\Repositories\Notification\NotificationRepository
      */
@@ -66,6 +72,7 @@ class MissionCommentController extends Controller
      * @param App\Helpers\Helpers
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      * @param  App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Helpers\TenantSettingHelper $tenantSettingHelper
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @return void
      */
@@ -76,6 +83,7 @@ class MissionCommentController extends Controller
         Helpers $helpers,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         LanguageHelper $languageHelper,
+        TenantSettingHelper $tenantSettingHelper,
         NotificationRepository $notificationRepository
     ) {
         $this->missionCommentRepository = $missionCommentRepository;
@@ -84,6 +92,7 @@ class MissionCommentController extends Controller
         $this->helpers = $helpers;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->languageHelper = $languageHelper;
+        $this->tenantSettingHelper = $tenantSettingHelper;
         $this->notificationRepository = $notificationRepository;
     }
 
@@ -174,7 +183,7 @@ class MissionCommentController extends Controller
         $apiData = ['comment_id' => $missionComment->comment_id];
         $apiMessage = ($isAutoApproved) ? trans('messages.success.MESSAGE_AUTO_APPROVED_COMMENT_ADDED') :
         trans('messages.success.MESSAGE_COMMENT_ADDED');
-        
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION'),
@@ -204,15 +213,16 @@ class MissionCommentController extends Controller
         $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
             $languageId,
-			$defaultTenantLanguageId
+			$defaultTenantLanguageId,
+            $this->tenantSettingHelper->getAvailableMissionTypes($request)
         );
-        
+
         // Set response data
         $apiData = $userMissionComments;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_USER_COMMENTS_LISTING')
         : trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -231,7 +241,7 @@ class MissionCommentController extends Controller
             $this->notificationRepository->deleteCommentNotifications($commentId);
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-            
+
             //Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION_COMMENTS'),
@@ -267,7 +277,8 @@ class MissionCommentController extends Controller
         $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
             $languageId,
-			$defaultTenantLanguageId
+			$defaultTenantLanguageId,
+            $this->tenantSettingHelper->getAvailableMissionTypes($request)
         );
 
         if (count($userMissionComments) == 0) {
@@ -275,7 +286,7 @@ class MissionCommentController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         }
-        
+
         $fileName = config('constants.export_mission_comment_file_names.MISSION_COMMENT_XLSX');
         $excel = new ExportCSV($fileName);
         $headings = [
@@ -284,7 +295,7 @@ class MissionCommentController extends Controller
             trans("general.export_mission_comment_headings.STATUS"),
             trans("general.export_mission_comment_headings.PUBLISHED_DATE"),
         ];
-        
+
         $excel->setHeadlines($headings);
         foreach ($userMissionComments['comments'] as $comment) {
             $comment = $comment->toArray();
@@ -295,7 +306,7 @@ class MissionCommentController extends Controller
                 $comment['created_at']
             ]);
         }
-    
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         // Make activity log

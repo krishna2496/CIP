@@ -9,6 +9,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\User\UserRepository;
+use App\Repositories\Timezone\TimezoneRepository;
 use App\Services\TimesheetService;
 use App\Services\UserService;
 use App\Traits\RestExceptionHandlerTrait;
@@ -70,6 +71,11 @@ class UserController extends Controller
     private $notificationRepository;
 
     /**
+     * @var App\Repositories\Timezone\TimezoneRepository
+     */
+    private $timezoneRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
@@ -89,7 +95,8 @@ class UserController extends Controller
         TimesheetService $timesheetService,
         Helpers $helpers,
         Request $request,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        TimezoneRepository $timezoneRepository
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
@@ -99,6 +106,7 @@ class UserController extends Controller
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
         $this->notificationRepository = $notificationRepository;
+        $this->timezoneRepository = $timezoneRepository;
     }
 
     /**
@@ -297,6 +305,12 @@ class UserController extends Controller
             }
         }
 
+        if (!isset($request->timezone_id)) {
+            $defaultTimezone = env('DEFAULT_TIMEZONE', 'Europe/Paris');
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode($defaultTimezone);
+            $request->merge(['timezone_id' => $timezone->timezone_id]);
+        }
+
         $request->expiry = (isset($request->expiry) && $request->expiry)
             ? $request->expiry : null;
 
@@ -444,6 +458,10 @@ class UserController extends Controller
                 $requestData['status'] = config('constants.user_statuses.INACTIVE');
             }
 
+            if (isset($requestData['avatar'])) {
+                $requestData['avatar'] = empty($requestData['avatar']) ? null : $requestData['avatar'];
+            }
+
             // Update user
             $user = $this->userRepository->update($requestData, $id);
 
@@ -547,7 +565,6 @@ class UserController extends Controller
             'department',
             'linked_in_url',
             'why_i_volunteer',
-            'timezone_id',
             'availability_id',
             'city_id',
             'country_id',
