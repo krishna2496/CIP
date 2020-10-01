@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "Die Story wurde erfolgreich kopiert",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Es wurden keine Stories gefunden",
         'MESSAGE_STORY_UPDATED' => "Die Story wurde erfolgreich aktualisiert",
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon erfolgreich hochgeladen',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Nutzerkommentare erfolgreich aufgelistet",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "Story wurde erfolgreich eingereicht",
