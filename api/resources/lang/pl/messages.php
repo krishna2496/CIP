@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "Historia skopiowana z powodzeniem",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Nie znaleziono żadnych historii",
         'MESSAGE_STORY_UPDATED' => "Historia zaktualizowana z powodzeniem",
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon został pomyślnie przesłany',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Komentarze użytkowników wyświetlone z powodzeniem",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "Historia przesłana z powodzeniem",

@@ -669,11 +669,9 @@ export default {
                                 const ratingBlock = this.querySelector(".group-ratings");
                                 const ratingBlockH = ratingBlock ? 18 : 0;
                                 this.children[1].style.transform = `translateY(-${
-                  cardTotalHeight + ratingBlockH
-                }px)`;
+                                    cardTotalHeight + ratingBlockH}px)`;
                                 this.children[2].style.transform = `translateY(-${
-                  cardTotalHeight + ratingBlockH
-                }px)`;
+                                    cardTotalHeight + ratingBlockH}px)`;
                             }
                         });
 
