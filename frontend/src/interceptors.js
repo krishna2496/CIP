@@ -13,7 +13,7 @@ export default function setup() {
 
     // Add a response interceptor
     axios.interceptors.response.use(function(response) {
-        if ('data' in response.data && 'isSuccessfulLogin' in response.data.data && response.data.data.isSuccessfulLogin) {
+        if (response.data && 'data' in response.data && 'isSuccessfulLogin' in response.data.data && response.data.data.isSuccessfulLogin) {
           store.commit('setIsLoggedIn', true);
         }
         return response;
