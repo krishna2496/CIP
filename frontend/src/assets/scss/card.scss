@@ -147,7 +147,7 @@
         background-position: center center !important;
         background-size: cover !important;
         background-repeat: no-repeat;
-        border-radius: 3px 3px 0 0;
+        border-radius: 10px 10px 0 0;
 
         img {
           display: none;
@@ -199,6 +199,26 @@
       }
     }
 
+    .like-btn {
+      position: absolute;
+      right: 32px;
+      bottom: 20px;
+      background: transparent;
+      min-height: 1px;
+      min-width: 1px;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      opacity: 1;
+      img {
+        width: 18px;
+        height: 21px;
+      }
+      @include lg-max {
+        right: 15px;
+      }
+    }
+
     .card-text {
       margin-bottom: 13px;
       font-size: 14px;
@@ -215,27 +235,6 @@
     .event-block {
       display: block;
       position: relative;
-      .like-btn {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        -webkit-transform: translateY(-50%);
-        -ms-transform: translateY(-50%);
-        -moz-transform: translateY(-50%);
-        background: transparent;
-        min-height: 1px;
-        min-width: 1px;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        opacity: 1;
-        margin-top: -2px;
-        img {
-          width: 18px;
-          height: 21px;
-        }
-      }
       .event-name {
         width: 100%;
         padding-right: 20px;
@@ -735,8 +734,8 @@
       .top-strip {
         position: absolute;
         top: -17px;
-        right: 15px;
-        left: 15px;
+        right: 32px;
+        left: 32px;
         display: inline-flex;
         justify-content: center;
         align-items: center;
@@ -746,6 +745,12 @@
 
         @include lg-max {
           top: -16px;
+          right: 15px;
+          left: 15px;
+        }
+        @include sm-max {
+          right: 10px;
+          left: 10px;
         }
 
         span {
@@ -950,6 +955,7 @@
     .card {
       box-shadow: none;
       min-height: 100%;
+      z-index: 10;
       .content-inner-block {
         min-height: 90px;
       }
@@ -978,23 +984,23 @@
           opacity: 1;
           visibility: visible;
         }
+        .like-btn {
+          opacity: 0;
+        }
         .event-block {
-          .like-btn {
-            opacity: 0;
-          }
           .progress-block {
             display: none;
           }
         }
       }
     }
-    &.has-rating {
-      .card {
-        .init-hidden {
-          margin-top: 18px;
-        }
-      }
-    }
+    // &.has-rating {
+    //   .card {
+    //     .init-hidden {
+    //       margin-top: 18px;
+    //     }
+    //   }
+    // }
   }
   .card {
     @include transition(all 0.5s);
@@ -1027,8 +1033,6 @@
     .card-text {
       margin: 0 0 9px;
       @include transition(margin-top 0.3s);
-    }
-    &:hover {
     }
     .card-body {
       @include transition(transform 0.3s);
@@ -1170,9 +1174,11 @@
         flex: 0 0 23%;
         height: auto;
         min-height: 220px;
+        border-radius: 10px 0 0 10px;
+        overflow: hidden;
 
         .group-img {
-          border-radius: 3px 0 0 3px;
+          border-radius: 10px 0 0 10px;
         }
 
         @include md-max {

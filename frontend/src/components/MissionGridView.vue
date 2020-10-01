@@ -1,90 +1,124 @@
 <template>
 <div class="cards-wrapper" v-if="items.length > 0">
-    <div v-bind:class="{'card-grid' : !relatedMission,
-
-}">
+    <div v-bind:class="{ 'card-grid': !relatedMission }">
         <b-row>
-            <b-col lg="4" sm="6" class="card-outer" :id="`gridview-${key}`" data-aos="fade-up" v-for="(mission ,key) in items" :key=key>
+            <b-col lg="4" sm="6" class="card-outer" :id="`gridview-${key}`" data-aos="fade-up" v-for="(mission, key) in items" :key="key">
                 <div class="card-inner">
                     <b-card no-body>
                         <b-link target="_self" :to="'/mission-detail/' + mission.mission_id" class="location">
                             <i>
-                                <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
+                                <img :src="
+                      $store.state.imagePath + '/assets/images/location.svg'
+                    " :alt="languageData.label.location" />
                             </i>
-                            {{mission.city_name}}
+                            {{ mission.city_name }}
                         </b-link>
                         <b-card-header>
                             <b-link target="_self" :to="'/mission-detail/' + mission.mission_id">
-                                <div class="header-img-block" v-bind:class="{'grayed-out' :getClosedStatus(mission), 'no-img' : checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == ''}">
+                                <div class="header-img-block" v-bind:class="{
+                      'grayed-out': getClosedStatus(mission),
+                      'no-img':
+                        checkDefaultMediaFormat(mission.default_media_type) &&
+                        getMediaPath(mission.default_media_path) == '',
+                    }">
                                     <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">
-                                        {{languageData.label.applied}}</b-alert>
+                                        {{ languageData.label.applied }}</b-alert>
                                     <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
-                                        {{languageData.label.closed}}</b-alert>
-                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
-                                        <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
+                                        {{ languageData.label.closed }}</b-alert>
+                                    <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img" v-bind:class="{
+                        'd-none':
+                          checkDefaultMediaFormat(mission.default_media_type) &&
+                          getMediaPath(mission.default_media_path) == '',
+                      }" :style="{
+                        backgroundImage:
+                          'url(' +
+                          getMediaPath(mission.default_media_path) +
+                          ')',
+                      }">
+                                        <img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path" />
                                     </div>
-                                    <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
-                                    </div>
-                                    <template v-if="checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == ''">
+                                    <div v-else class="group-img" :style="{
+                        backgroundImage:
+                          'url(' +
+                          youtubeThumbImage(mission.default_media_path) +
+                          ')',
+                      }"></div>
+                                    <template v-if="
+                        checkDefaultMediaFormat(mission.default_media_type) &&
+                        getMediaPath(mission.default_media_path) == ''
+                      ">
                                         <i class="camera-icon">
                                             <img src="../assets/images/camera-ic.svg" />
                                         </i>
-                                        <p>{{languageData.label.no_image_available}}</p>
+                                        <p>{{ languageData.label.no_image_available }}</p>
                                     </template>
                                 </div>
-                                <div class="group-category" v-if="mission.mission_theme != null && isThemeSet && getThemeTitle(mission.mission_theme.translations) != ''"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
+                                <div class="group-category" v-if="
+                      mission.mission_theme != null &&
+                      isThemeSet &&
+                      getThemeTitle(mission.mission_theme.translations) != ''
+                    ">
+                                    <span class="category-text">{{
+                      getThemeTitle(mission.mission_theme.translations)
+                    }}</span>
                                 </div>
                             </b-link>
                         </b-card-header>
 
                         <b-card-body>
                             <b-link target="_self" :to="'/mission-detail/' + mission.mission_id" class="content-block">
-                                <div class="mission-label-wrap">
-                                    <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
-                                        <span>{{languageData.label.virtual_mission}}</span>
-                                    </div>
-                                </div>
                                 <div class="content-inner-block">
+                                    <div class="mission-label-wrap">
+                                        <div class="mission-label virtual-label" v-if="mission.is_virtual == 1">
+                                            <span>{{ languageData.label.virtual_mission }}</span>
+                                        </div>
+                                    </div>
                                     <div class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
-                                        {{mission.title | substring(60)}}
+                                        {{ mission.title | substring(60) }}
                                     </div>
 
-                                    <div class="group-ratings" v-if="checkMissionTypeTime(mission.mission_type) || checkMissionTypeGoal(mission.mission_type)">
+                                    <div class="group-ratings" v-if="
+                        checkMissionTypeTime(mission.mission_type) ||
+                        checkMissionTypeGoal(mission.mission_type)
+                      ">
                                         <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18" :rating="mission.mission_rating_count" :read-only="true">
                                         </star-rating>
                                     </div>
 
                                     <b-card-text>
-                                        {{mission.short_description | substring(105)}}
+                                        {{ mission.short_description | substring(105) }}
                                     </b-card-text>
                                 </div>
                                 <div class="event-block has-progress">
-                                    <p class="event-name" v-if="mission.organization != null">{{ languageData.label.for }} <span>{{mission.organization.name}}</span></p>
-
-                                    <b-button class="like-btn">
-                                        <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="Heart Icon" />
-                                    </b-button>
+                                    <p class="event-name" v-if="mission.organization != null">
+                                        {{ languageData.label.for }}
+                                        <span>{{ mission.organization.name }}</span>
+                                    </p>
                                 </div>
-
                             </b-link>
                             <div class="init-hidden">
                                 <div class="group-details" v-bind:class="{
-                                        'mb-3' : !isContentBlockDisplay(mission)
-                                    }">
+                      'mb-3': !isContentBlockDisplay(mission),
+                    }">
                                     <div class="top-strip">
                                         <span>
                                             <!-- Mission type time -->
                                             <template v-if="checkMissionTypeTime(mission.mission_type)">
                                                 <template v-if="mission.end_date !== null">
-                                                    <template v-if="!compareDate(mission.end_date,mission.start_date)">
+                                                    <template v-if="
+                                !compareDate(
+                                  mission.end_date,
+                                  mission.start_date
+                                )
+                              ">
                                                         {{ languageData.label.from }}
-                                                        {{mission.start_date | formatDate }}
-                                                        {{ languageData.label.until}}
+                                                        {{ mission.start_date | formatDate }}
+                                                        {{ languageData.label.until }}
                                                         {{ mission.end_date | formatDate }}
                                                     </template>
                                                     <template v-else>
                                                         {{ languageData.label.on }}
-                                                        {{mission.start_date | formatDate }}
+                                                        {{ mission.start_date | formatDate }}
                                                     </template>
                                                 </template>
                                                 <template v-else>
@@ -94,7 +128,7 @@
                                             <!-- Mission type goal -->
                                             <template v-else>
                                                 <template v-if="mission.objective != ''">
-                                                    {{mission.objective}}
+                                                    {{ mission.objective }}
                                                 </template>
                                             </template>
                                         </span>
@@ -102,15 +136,25 @@
                                     <div class="content-wrap" v-if="isContentBlockDisplay(mission)">
                                         <template v-if="checkMissionTypeTime(mission.mission_type)">
                                             <div class="group-details-inner">
-                                                <template v-if="mission.seats_left && mission.seats_left != 0 && mission.seats_left !== null">
+                                                <template v-if="
+                              mission.seats_left &&
+                              mission.seats_left != 0 &&
+                              mission.seats_left !== null
+                            ">
                                                     <div class="detail-column info-block">
                                                         <i class="icon-wrap">
-                                                            <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-
+                                                            <img :src="
+                                    $store.state.imagePath +
+                                    '/assets/images/user-icon.svg'
+                                  " alt="user" />
                                                         </i>
                                                         <div class="text-wrap">
-                                                            <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                            <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                                            <span class="title-text mb-1">{{
+                                  mission.seats_left
+                                }}</span>
+                                                            <span class="subtitle-text">{{
+                                  languageData.label.seats_left
+                                }}</span>
                                                         </div>
                                                     </div>
                                                 </template>
@@ -118,11 +162,18 @@
                                                 <template v-if="mission.application_deadline != null">
                                                     <div class="detail-column info-block">
                                                         <i class="icon-wrap">
-                                                            <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                                            <img :src="
+                                    $store.state.imagePath +
+                                    '/assets/images/clock.svg'
+                                  " alt="user" />
                                                         </i>
                                                         <div class="text-wrap">
-                                                            <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
-                                                            <span class="subtitle-text">{{ languageData.label.deadline }}</span>
+                                                            <span class="title-text mb-1">{{
+                                  mission.application_deadline | formatDate
+                                }}</span>
+                                                            <span class="subtitle-text">{{
+                                  languageData.label.deadline
+                                }}</span>
                                                         </div>
                                                     </div>
                                                 </template>
@@ -130,31 +181,49 @@
                                         </template>
                                         <template v-if="checkMissionTypeGoal(mission.mission_type)">
                                             <div class="group-details-inner volunteer-progress">
-                                                <div class="detail-column info-block" v-if="mission.seats_left && mission.seats_left != '' && mission.seats_left != 0">
+                                                <div class="detail-column info-block" v-if="
+                              mission.seats_left &&
+                              mission.seats_left != '' &&
+                              mission.seats_left != 0
+                            ">
                                                     <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                        <img :src="
+                                  $store.state.imagePath +
+                                  '/assets/images/user-icon.svg'
+                                " alt="user" />
                                                     </i>
                                                     <div class="text-wrap">
-                                                        <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                        <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
+                                                        <span class="title-text mb-1">{{
+                                mission.seats_left
+                              }}</span>
+                                                        <span class="subtitle-text">{{
+                                languageData.label.seats_left
+                              }}</span>
                                                     </div>
                                                 </div>
                                                 <div v-bind:class="{
-                                                    'progress-bar-block': !(mission.seats_left && mission.seats_left != ''),
-                                                    'detail-column' : true,
-                                                    'progress-block' :true
-                                                    }">
+                              'progress-bar-block': !(
+                                mission.seats_left && mission.seats_left != ''
+                              ),
+                              'detail-column': true,
+                              'progress-block': true,
+                            }">
                                                     <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
+                                                        <img :src="
+                                  $store.state.imagePath +
+                                  '/assets/images/target-ic.svg'
+                                " alt="user" />
                                                     </i>
                                                     <div class="text-wrap">
                                                         <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"></b-progress>
                                                         <span class="subtitle-text">
-                                                            {{mission.achieved_goal}}
+                                                            {{ mission.achieved_goal }}
                                                             <em v-if="mission.label_goal_achieved != ''">
                                                                 {{ mission.label_goal_achieved }}
                                                             </em>
-                                                            <em v-else>{{ languageData.label.achieved }}</em>
+                                                            <em v-else>{{
+                                  languageData.label.achieved
+                                }}</em>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -164,8 +233,15 @@
                                 </div>
                                 <div class="card-action-block">
                                     <div class="left-btn">
-                                        <b-link :to="'/mission-detail/' + mission.mission_id" v-if="checkMissionTypeVolunteering(mission.mission_type)" class="btn-bordersecondary icon-btn" v-bind:class="{'btn-lg' : (languageData.label.view_detail).length > 12}">
-                                            <span>{{ languageData.label.view_detail | substringWithOutDot(36) }}</span>
+                                        <b-link :to="'/mission-detail/' + mission.mission_id" v-if="
+                          checkMissionTypeVolunteering(mission.mission_type)
+                        " class="btn-bordersecondary icon-btn" v-bind:class="{
+                          'btn-lg': languageData.label.view_detail.length > 12,
+                        }">
+                                            <span>{{
+                          languageData.label.view_detail
+                            | substringWithOutDot(36)
+                        }}</span>
                                             <i class="icon-wrap">
                                                 <svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z" fill="#ffffff" />
@@ -175,23 +251,39 @@
                                     </div>
                                     <div class="social-btn">
                                         <b-button class="icon-btn" v-if="isInviteCollegueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
-                                            <img :src="$store.state.imagePath+'/assets/images/multi-user-icon.svg'" alt="multi user icon">
+                                            <img :src="
+                            $store.state.imagePath +
+                            '/assets/images/multi-user-icon.svg'
+                          " alt="multi user icon" />
                                         </b-button>
 
                                         <b-button v-bind:class="{
+                          'icon-btn': true,
 
-                                            'icon-btn' : true,
-
-                                            'fill-heart-btn' : mission.is_favourite == 1
-
-                                            }" v-b-tooltip.hover :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite" @click="favoriteMission(mission.mission_id)">
-                                            <img v-if="mission.is_favourite == 0" :src="$store.state.imagePath+'/assets/images/heart-icon.svg'" alt="heart icon">
-                                            <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="heart icon">
+                          'fill-heart-btn': mission.is_favourite == 1,
+                        }" v-b-tooltip.hover :title="
+                          mission.is_favourite == 1
+                            ? languageData.label.remove_from_favourite
+                            : languageData.label.add_to_favourite
+                        " @click="favoriteMission(mission.mission_id)">
+                                            <img v-if="mission.is_favourite == 0" :src="
+                            $store.state.imagePath +
+                            '/assets/images/heart-icon.svg'
+                          " alt="heart icon" />
+                                            <img v-if="mission.is_favourite == 1" :src="
+                            $store.state.imagePath +
+                            '/assets/images/heart-fill-icon.svg'
+                          " alt="heart icon" />
                                         </b-button>
-
                                     </div>
                                 </div>
                             </div>
+                            <b-button class="like-btn">
+                                <img v-if="mission.is_favourite == 1" :src="
+                      $store.state.imagePath +
+                      '/assets/images/heart-fill-icon.svg'
+                    " alt="Heart Icon" />
+                            </b-button>
                         </b-card-body>
                     </b-card>
                 </div>
@@ -201,21 +293,21 @@
     <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
         <template slot="modal-header" slot-scope="{ close }">
             <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-            <h5 class="modal-title">{{languageData.label.search_user}}</h5>
+            <h5 class="modal-title">{{ languageData.label.search_user }}</h5>
         </template>
         <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
         <div class="autocomplete-control">
             <div class="autosuggest-container">
                 <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions" @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue" :input-props="{
-                        id:'autosuggest__input',
-                        placeholder:autoSuggestPlaceholder,
+              id: 'autosuggest__input',
+              placeholder: autoSuggestPlaceholder,
 
-ref:'inputAutoSuggest'
-                        }">
-                    <div slot-scope="{suggestion}">
+              ref: 'inputAutoSuggest',
+            }">
+                    <div slot-scope="{ suggestion }">
                         <img :src="suggestion.item.avatar" />
                         <div>
-                            {{suggestion.item.first_name}} {{suggestion.item.last_name}}
+                            {{ suggestion.item.first_name }} {{ suggestion.item.last_name }}
                         </div>
                     </div>
                 </VueAutosuggest>
@@ -232,7 +324,7 @@ ref:'inputAutoSuggest'
     </b-modal>
 </div>
 <div class="no-data-found" v-else>
-    <h2 class="text-center">{{noRecordFound()}}</h2>
+    <h2 class="text-center">{{ noRecordFound() }}</h2>
     <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
         <b-button class="btn-bordersecondary icon-btn">
             <span>{{ languageData.label.submit_new_mission }}</span>
@@ -253,41 +345,41 @@ ref:'inputAutoSuggest'
 </template>
 
 <script>
-import store from '../store';
-import constants from '../constant';
-import StarRating from 'vue-star-rating';
+import store from "../store";
+import constants from "../constant";
+import StarRating from "vue-star-rating";
 import {
     favoriteMission,
     inviteColleague,
-    applyMission
-} from '../services/service';
+    applyMission,
+} from "../services/service";
 import {
     VueAutosuggest
-} from 'vue-autosuggest';
-import moment from 'moment';
+} from "vue-autosuggest";
+import moment from "moment";
 
 export default {
-    name: 'MissionGridView',
+    name: "MissionGridView",
     components: {
         StarRating,
-        VueAutosuggest
+        VueAutosuggest,
     },
     props: {
         items: Array,
         userList: Array,
-        relatedMission: Boolean
+        relatedMission: Boolean,
     },
     data() {
         return {
-            query: '',
-            selected: '',
-            myclass: ['userdetail-modal'],
+            query: "",
+            selected: "",
+            myclass: ["userdetail-modal"],
             currentMissionId: 0,
             invitedUserId: 0,
             showErrorDiv: false,
             message: null,
-            classVariant: 'success',
-            autoSuggestPlaceholder: '',
+            classVariant: "success",
+            autoSuggestPlaceholder: "",
             submitDisable: true,
             languageData: [],
             isInviteCollegueDisplay: true,
@@ -295,31 +387,31 @@ export default {
             isSubmitNewMissionSet: true,
             isThemeSet: true,
             submitNewMissionUrl: "",
-            cardHeightAdjIntervalId: null
+            cardHeightAdjIntervalId: null,
         };
     },
     computed: {
         filteredOptions() {
             if (this.userList) {
                 return [{
-                    data: this.userList.filter(option => {
+                    data: this.userList.filter((option) => {
                         const firstName = option.first_name.toLowerCase();
                         const lastName = option.last_name.toLowerCase();
                         const email = option.email.toLowerCase();
                         const searchString = `${firstName}${lastName}${email}`;
                         return searchString.indexOf(this.query.toLowerCase()) > -1;
-                    })
-                }];
+                    }),
+                }, ];
             }
-        }
+        },
     },
     methods: {
         hideModal() {
-            this.autoSuggestPlaceholder = '';
+            this.autoSuggestPlaceholder = "";
             this.submitDisable = true;
-            this.invitedUserId = '';
-            this.query = '';
-            this.selected = '';
+            this.invitedUserId = "";
+            this.query = "";
+            this.selected = "";
             const cardHeader = document.querySelectorAll(
                 ".card-grid .card .card-header"
             );
@@ -335,13 +427,14 @@ export default {
             cardInner.forEach(function (cardInnerElem) {
                 cardInnerElem.classList.remove("active");
             });
-
         },
         getAppliedStatus(missionDetail) {
-            const currentDate = moment().format('YYYY-MM-DD');
-            const missionEndDate = moment(missionDetail.end_date).format('YYYY-MM-DD');
+            const currentDate = moment().format("YYYY-MM-DD");
+            const missionEndDate = moment(missionDetail.end_date).format(
+                "YYYY-MM-DD"
+            );
             let checkEndDateExist = true;
-            if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+            if (missionDetail.end_date != "" && missionDetail.end_date != null) {
                 if (currentDate > missionEndDate) {
                     checkEndDateExist = false;
                 }
@@ -351,9 +444,11 @@ export default {
             }
         },
         getClosedStatus(missionDetail) {
-            const currentDate = moment().format('YYYY-MM-DD');
-            const missionEndDate = moment(missionDetail.end_date).format('YYYY-MM-DD');
-            if (missionDetail.end_date != '' && missionDetail.end_date != null) {
+            const currentDate = moment().format("YYYY-MM-DD");
+            const missionEndDate = moment(missionDetail.end_date).format(
+                "YYYY-MM-DD"
+            );
+            if (missionDetail.end_date != "" && missionDetail.end_date != null) {
                 if (currentDate > missionEndDate) {
                     return true;
                 }
@@ -362,9 +457,11 @@ export default {
         // No record found
         noRecordFound() {
             const defaultLang = store.state.defaultLanguage.toLowerCase();
-            if (JSON.parse(store.state.missionNotFoundText) != '') {
-                const missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-                const data = missionNotFoundArray.filter(item => {
+            if (JSON.parse(store.state.missionNotFoundText) != "") {
+                const missionNotFoundArray = JSON.parse(
+                    store.state.missionNotFoundText
+                );
+                const data = missionNotFoundArray.filter((item) => {
                     if (item.lang == defaultLang) {
                         return item;
                     }
@@ -380,8 +477,8 @@ export default {
             }
         },
         handleFav() {
-            const btn_active = document.querySelector('.favourite-icon');
-            btn_active.classList.toggle('active');
+            const btn_active = document.querySelector(".favourite-icon");
+            btn_active.classList.toggle("active");
         },
         // get theme title
         getThemeTitle(translations) {
@@ -417,14 +514,17 @@ export default {
         },
         // Check mission type
         checkMissionTypeVolunteering(missionType) {
-            if (missionType == constants.MISSION_TYPE_TIME || missionType == constants.MISSION_TYPE_GOAL) {
-                return true
+            if (
+                missionType == constants.MISSION_TYPE_TIME ||
+                missionType == constants.MISSION_TYPE_GOAL
+            ) {
+                return true;
             }
             return false;
         },
         // Get Youtube Thumb images
         youtubeThumbImage(videoPath) {
-            let data = videoPath.split('=');
+            let data = videoPath.split("=");
             return `https://img.youtube.com/vi/${data.slice(-1)[0]}/mqdefault.jpg`;
         },
         // Add mission to favorite
@@ -432,15 +532,15 @@ export default {
             const bodyTag = document.querySelector("body");
             bodyTag.classList.add("has-favourite");
             const missionData = {
-                mission_id: ''
+                mission_id: "",
             };
             missionData.mission_id = missionId;
-            favoriteMission(missionData).then(response => {
+            favoriteMission(missionData).then((response) => {
                 if (response.error == true) {
-                    this.makeToast('danger', response.message);
+                    this.makeToast("danger", response.message);
                 } else {
-                    this.makeToast('success', response.message);
-                    this.$emit('getMissions', 'removeLoader');
+                    this.makeToast("success", response.message);
+                    this.$emit("getMissions", "removeLoader");
                 }
             });
         },
@@ -462,10 +562,10 @@ export default {
             return `${firstName} ${lastName}`;
         },
         getMediaPath(mediaPath) {
-            if (mediaPath != '') {
+            if (mediaPath != "") {
                 return mediaPath;
             } else {
-                return ''
+                return "";
             }
         },
         // Open auto suggest modal
@@ -477,8 +577,8 @@ export default {
             this.currentMission = missionId;
             setTimeout(() => {
                 this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-                const input = document.getElementById('autosuggest__input');
-                input.addEventListener('keyup', event => {
+                const input = document.getElementById("autosuggest__input");
+                input.addEventListener("keyup", (event) => {
                     if (event.keyCode === 13 && !this.submitDisable) {
                         event.preventDefault();
                         this.inviteColleagues();
@@ -491,22 +591,22 @@ export default {
             const inviteData = {};
             inviteData.mission_id = this.currentMission;
             inviteData.to_user_id = this.invitedUserId;
-            inviteColleague(inviteData).then(response => {
+            inviteColleague(inviteData).then((response) => {
                 this.submitDisable = true;
                 if (response.error == true) {
-                    this.classVariant = 'danger';
+                    this.classVariant = "danger";
                     this.message = response.message;
                     this.$refs.autosuggest.$data.currentIndex = null;
                     this.$refs.autosuggest.$data.internalValue = "";
                     this.showErrorDiv = true;
                 } else {
-                    this.query = '';
-                    this.selected = '';
+                    this.query = "";
+                    this.selected = "";
                     this.currentMissionId = 0;
                     this.invitedUserId = 0;
                     this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = '';
-                    this.classVariant = 'success';
+                    this.$refs.autosuggest.$data.internalValue = "";
+                    this.classVariant = "success";
                     this.message = response.message;
                     this.showErrorDiv = true;
                 }
@@ -517,12 +617,12 @@ export default {
             const missionData = {};
             missionData.mission_id = mission.mission_id;
             missionData.availability_id = mission.availability_id;
-            applyMission(missionData).then(response => {
+            applyMission(missionData).then((response) => {
                 if (response.error == true) {
-                    this.makeToast('danger', response.message);
+                    this.makeToast("danger", response.message);
                 } else {
-                    this.makeToast('success', response.message);
-                    this.$emit('getMissions');
+                    this.makeToast("success", response.message);
+                    this.$emit("getMissions");
                 }
             });
         },
@@ -530,16 +630,16 @@ export default {
             this.$bvToast.toast(message, {
                 variant: variant,
                 solid: true,
-                autoHideDelay: 1000
+                autoHideDelay: 1000,
             });
         },
         submitNewMission() {
-            if (this.submitNewMissionUrl != '') {
-                window.open(this.submitNewMissionUrl, '_self');
+            if (this.submitNewMissionUrl != "") {
+                window.open(this.submitNewMissionUrl, "_self");
             }
         },
         cardHeightAdj() {
-            const cardBodyList = document.querySelectorAll('.card-grid .card-body');
+            const cardBodyList = document.querySelectorAll(".card-grid .card-body");
             // check if card content is already visible in the DOM
             if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
@@ -548,35 +648,40 @@ export default {
 
                 cardBodyList.forEach((cardBody) => {
                     const card = cardBody.parentNode;
-                    const cardHeight = cardBody.children[0].offsetHeight + card.children[1].offsetHeight;
-                    const cardHeaderHeight = card.querySelector(".card-header").offsetHeight;
+                    const cardHeight =
+                        cardBody.children[0].offsetHeight + card.children[1].clientHeight;
+                    const cardHeaderHeight = card.querySelector(".card-header")
+                        .offsetHeight;
                     const contentBlock = cardBody.querySelector(".content-block");
                     card.style.height = `${cardHeight}px`;
-                    setTimeout(function () {
-                        const contentBlockHeight = card.offsetHeight - cardHeaderHeight;
-                        contentBlock.style.height = `${contentBlockHeight}px`;
-                    }, 1000);
 
                     if (screen.width > 1024) {
-                        cardBody.parentNode.addEventListener('mouseover', function (mouseEvent) {
-                            const cardBodyH = this.children[2].children[1].offsetHeight + this.children[2].children[0].offsetHeight + this.children[1].offsetHeight;
-                            const cardTotalHeight = cardBodyH - this.offsetHeight;
-                            this.parentNode.classList.add('active');
-                            const ratingBlock =  this.querySelector('.group-ratings');
-                            const ratingBlockH = ratingBlock ? 18 : 0;
-                             this.children[1].style.transform = `translateY(-${cardTotalHeight + ratingBlockH}px)`;
-                            this.children[2].style.transform = `translateY(-${cardTotalHeight + ratingBlockH}px)`;
-                            if(ratingBlock){
-                                this.parentNode.classList.add('has-rating');
+                        cardBody.parentNode.addEventListener("mouseover", function (
+                            mouseEvent
+                        ) {
+                            if (!this.parentNode.classList.contains("active")) {
+                                const cardBodyH =
+                                    this.children[2].children[1].offsetHeight +
+                                    this.children[2].children[0].offsetHeight +
+                                    this.children[1].offsetHeight;
+                                const cardTotalHeight = cardBodyH - this.offsetHeight;
+                                this.parentNode.classList.add("active");
+                                const ratingBlock = this.querySelector(".group-ratings");
+                                const ratingBlockH = ratingBlock ? 18 : 0;
+                                this.children[1].style.transform = `translateY(-${
+                  cardTotalHeight + ratingBlockH
+                }px)`;
+                                this.children[2].style.transform = `translateY(-${
+                  cardTotalHeight + ratingBlockH
+                }px)`;
                             }
                         });
 
-                        cardBody.parentNode.addEventListener('mouseleave', function () {
+                        cardBody.parentNode.addEventListener("mouseleave", function () {
                             if (!document.body.classList.contains("modal-open")) {
-                                this.children[1].style.transform = 'translateY(0)';
-                                this.children[2].style.transform = 'translateY(0)';
-                                this.parentNode.classList.remove('active');
-                                this.parentNode.classList.remove('has-ratings');
+                                this.children[1].style.transform = "translateY(0)";
+                                this.children[2].style.transform = "translateY(0)";
+                                this.parentNode.classList.remove("active");
                             }
                         });
                     }
@@ -609,14 +714,19 @@ export default {
 
         isContentBlockDisplay(mission) {
             if (mission.mission_type == constants.MISSION_TYPE_TIME) {
-                if ((mission.seats_left && mission.seats_left != 0 && mission.seats_left !== null) || (mission.application_deadline != null)) {
+                if (
+                    (mission.seats_left &&
+                        mission.seats_left != 0 &&
+                        mission.seats_left !== null) ||
+                    mission.application_deadline != null
+                ) {
                     return true;
                 }
                 return false;
             } else {
                 return true;
             }
-        }
+        },
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
@@ -629,10 +739,19 @@ export default {
         );
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-         window.addEventListener("resize", this.cardHeightAdj);
+        var _this = this;
+        window.addEventListener("resize", this.cardHeightAdj);
+        var pageItem = document.querySelectorAll(".pagination-block .page-item");
+        pageItem.forEach(function (itemEvent) {
+            itemEvent.addEventListener("click", function () {
+                setTimeout(function () {
+                    _this.cardHeightAdj();
+                }, 2000);
+            });
+        });
     },
     mounted() {
         this.cardHeightAdjIntervalId = setInterval(this.cardHeightAdj, 500);
-    }
+    },
 };
 </script>
