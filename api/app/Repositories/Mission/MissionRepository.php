@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Mission;
 
+use App\Events\Mission\MissionDeletedEvent;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
@@ -625,7 +626,11 @@ class MissionRepository implements MissionInterface
      */
     public function delete(int $id): bool
     {
-        return $this->modelsService->mission->deleteMission($id);
+        $wasDeleted = $this->modelsService->mission->deleteMission($id);
+        // delete notification related to mission
+        event(new MissionDeletedEvent($id));
+
+        return $wasDeleted;
     }
 
     /**

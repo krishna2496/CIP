@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "История успешно скопирована",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Истории не найдены",
         'MESSAGE_STORY_UPDATED' => "История успешно обновлена",
+        'MESSAGE_FAVICON_UPLOADED' => 'Фавикон успешно загружен',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Комментарии пользователей успешно зарегистрированы",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "История успешно отправлена",
