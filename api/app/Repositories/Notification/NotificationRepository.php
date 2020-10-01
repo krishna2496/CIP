@@ -203,7 +203,7 @@ class NotificationRepository implements NotificationInterface
             ->notification_type_id;
 
         return Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $newsId)
+            ->where('entity_id', $newsId)
             ->delete();
     }
 
@@ -221,7 +221,7 @@ class NotificationRepository implements NotificationInterface
             ->notification_type_id;
 
         return Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $commentId)
+            ->where('entity_id', $commentId)
             ->delete();
     }
 
@@ -239,7 +239,7 @@ class NotificationRepository implements NotificationInterface
             ->notification_type_id;
 
         return Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $messageId)
+            ->where('entity_id', $messageId)
             ->delete();
     }
 }
