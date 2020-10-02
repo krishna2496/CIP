@@ -23,14 +23,10 @@ export default async(data) => {
     //Store login data in local storage
     store.commit('loginUser', response.data.data)
     policy().then(response => {
-      if (response.error == false) {
-        if(response.data.length > 0) {
-          store.commit('policyPage',response.data)
-        } else {
-          store.commit('policyPage',null)
-        }
+      if (!response.error && response.data.length > 0) {
+        store.commit('policyPage', response.data);
       } else {
-        store.commit('policyPage',null)
+        store.commit('policyPage', null);
       }
     });
     setTimeout(() => {

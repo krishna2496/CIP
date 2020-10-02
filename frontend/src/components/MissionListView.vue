@@ -9,7 +9,7 @@
                             {{languageData.label.applied}}</b-alert>
                         <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
                             {{languageData.label.closed}}</b-alert>
-                        <div v-if="checkDefaultMediaFormat(mission.default_media_type)" 
+                        <div v-if="checkDefaultMediaFormat(mission.default_media_type)"
                             v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}"
                             class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                             <img :src="getMediaPath(mission.default_media_path)" alt="">
@@ -21,7 +21,7 @@
                                 <img src="../assets/images/camera-ic.svg" />
                             </i>
                             <p>{{languageData.label.no_image_available}}</p>
-                        </template>  
+                        </template>
                         <div class="location">
                             <i>
                                 <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="languageData.label.location">
@@ -390,11 +390,16 @@ export default {
             };
             missionData.mission_id = missionId;
             favoriteMission(missionData).then(response => {
+                this.items.map(mission => {
+                    if (mission.mission_id === missionId) {
+                        mission.is_favourite = (mission.is_favourite === 0) ? 1 : 0;
+                    }
+                });
+
                 if (response.error == true) {
                     this.makeToast("danger", response.message);
                 } else {
                     this.makeToast("success", response.message);
-                    this.$emit("getMissions", "removeLoader");
                 }
             });
         },
