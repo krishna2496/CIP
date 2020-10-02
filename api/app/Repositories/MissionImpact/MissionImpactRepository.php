@@ -79,7 +79,7 @@ class MissionImpactRepository implements MissionImpactInterface
         $missionImpactModelData = $this->missionImpactModel->create($missionImpactPostData);
         $missionImpactId = $missionImpactModelData->mission_impact_id;
 
-        if (isset($missionImpact['icon_path'])) {
+        if (isset($missionImpact['icon_path']) && !empty($missionImpact['icon_path'])) {
             $iconPath = $this->s3Helper->uploadFileOnS3Bucket(
                 $missionImpact['icon_path'],
                 $tenantName,

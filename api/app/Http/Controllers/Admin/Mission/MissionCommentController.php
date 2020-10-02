@@ -167,7 +167,7 @@ class MissionCommentController extends Controller
                 "approval_status" => ['required',Rule::in(config('constants.comment_approval_status'))],
             ]
         );
-        
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -185,7 +185,7 @@ class MissionCommentController extends Controller
             $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
-            
+
             if (($comment->approval_status !== $request->approval_status) || (env('APP_ENV') === 'testing')) {
                 // Send notification to user
                 $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
@@ -195,7 +195,7 @@ class MissionCommentController extends Controller
 
                 event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             }
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION_COMMENTS'),
@@ -225,32 +225,13 @@ class MissionCommentController extends Controller
      */
     public function destroy(int $missionId, int $commentId): JsonResponse
     {
-        // First find mission
-        try {
-            $mission = $this->missionRepository->find($missionId);
-            $this->notificationRepository->deleteCommentNotifications($commentId);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-            );
-        }
+        $this->missionCommentRepository->deleteComment($commentId);
+        $this->notificationRepository->deleteCommentNotifications($commentId);
 
-        // Get comment and delete it.
-        try {
-            $commentDetails = $this->missionCommentRepository->getCommentById($commentId);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
-            );
-        }
-
-        $apiData = $this->missionCommentRepository->deleteComment($commentId);
 
         $apiStatus = Response::HTTP_NO_CONTENT;
         $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-       
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION_COMMENTS'),

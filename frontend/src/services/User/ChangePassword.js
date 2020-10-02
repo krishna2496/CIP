@@ -16,7 +16,6 @@ export default async(data) => {
     method: 'PATCH',
     headers: {
       'X-localization': defaultLanguage,
-      'token': store.state.token,
     }
   })
     .then((response) => {
