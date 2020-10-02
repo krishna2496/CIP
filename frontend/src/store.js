@@ -5,8 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        isLoggedIn: !!localStorage.getItem('token'),
-        token: localStorage.getItem('token'),
+        isLoggedIn: !!localStorage.getItem('isLoggedIn'),
         listOfLanguage: localStorage.getItem('listOfLanguage'),
         defaultLanguage: localStorage.getItem('defaultLanguage'),
         defaultLanguageId: localStorage.getItem('defaultLanguageId'),
@@ -64,11 +63,9 @@ export default new Vuex.Store({
         siteTitle: JSON.parse(localStorage.getItem('siteTitle'))
     },
     mutations: {
-        setToken(state, data) {
-            localStorage.setItem('token', data)
-            localStorage.setItem('isLoggedIn', data.token)
-            state.isLoggedIn = true;
-            state.token = data;
+        setIsLoggedIn(state, data) {
+            localStorage.setItem('isLoggedIn', true)
+            state.isLoggedIn = data;
         },
         // Set login data in state and local storage
         loginUser(state, data) {
@@ -100,7 +97,6 @@ export default new Vuex.Store({
         logoutUser(state, data) {
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
-            localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
             localStorage.removeItem('lastName')
@@ -108,8 +104,12 @@ export default new Vuex.Store({
             localStorage.removeItem('cookieAgreementDate')
             localStorage.removeItem('policyPage')
             localStorage.removeItem('isProfileComplete');
+            localStorage.removeItem('email');
+            localStorage.removeItem('cityId');
+            localStorage.removeItem('userTimezone');
+            localStorage.removeItem('tags');
+            localStorage.removeItem('isLoggedIn');
             state.isLoggedIn = false;
-            state.token = null;
             state.userId = null;
             state.firstName = null;
             state.lastName = null;
@@ -248,10 +248,6 @@ export default new Vuex.Store({
         setlanguageLabel(state, data) {
             localStorage.setItem("languageLabel", JSON.stringify(data));
             state.languageLabel = JSON.stringify(data);
-        },
-        changeToken(state, data) {
-            localStorage.setItem('token', data)
-            state.token = data;
         },
         changeAvatar(state, data) {
             localStorage.setItem('avatar', data.avatar)
