@@ -23,6 +23,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
+    $router->post('/app/transmute', ['as' => 'transmute', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\AuthController@transmute']);
+
+    /* Logout the user */
+    $router->get('/app/logout', ['as' => 'logout', 'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Auth\AuthController@logout']);
+
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
@@ -46,6 +53,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get custom css url  */
     $router->get('/app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
+
+    /* Get custom favicon url  */
+    $router->get('/app/custom-favicon', ['as' => 'custom_favicon', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Tenant\TenantOptionController@getCustomFavicon']);
 
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
@@ -606,6 +617,8 @@ $router->group(
             $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
             $router->patch('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
             $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
+            $router->get('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@getFavicon']);
+            $router->post('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@uploadFavicon']);
         }
     );
 

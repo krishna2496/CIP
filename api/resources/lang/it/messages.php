@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "Il rapporto è stato copiato correttamente",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Non è stato trovato alcun rapporto",
         'MESSAGE_STORY_UPDATED' => "Rapporto aggiornato correttamente",
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon caricata con successo',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Commenti dell’utente elencati correttamente",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "Rapporto presentato correttamente",

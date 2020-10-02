@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "História copiada com sucesso",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Não foram encontradas histórias",
         'MESSAGE_STORY_UPDATED' => "História atualizada com sucesso",
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon carregado com sucesso',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Comentários de usuário listados com sucesso",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "História submetida com sucesso",

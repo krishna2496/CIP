@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "故事已成功复制",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "找不到故事",
         'MESSAGE_STORY_UPDATED' => "故事已成功更新",
+        'MESSAGE_FAVICON_UPLOADED' => '图标成功上传',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "用户评论已成功列出",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "故事已成功提交",
