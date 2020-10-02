@@ -306,18 +306,12 @@ class UserController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        $data = $request->all();
-        $data['id'] = $request->auth->user_id;
-        $validation = $this->userService->validateFields($data, false);
-
+        $id = $request->auth->user_id;
+        $validation = $this->userService->validateFields($request->all(), $id, false);
         if ($validation !== true) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                $validation->errors()->first()
-            );
+            return $validation;
         }
+
         if (isset($request->language_id) && !$this->languageHelper->validateLanguageId($request)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -335,26 +329,14 @@ class UserController extends Controller
             );
         }
 
-        dd($request->all());
-
-        /*$request->expiry = (isset($request->expiry) && $request->expiry) ? $request->expiry : null;
-        if (isset($request->status)) {
-            $request->status = $request->status ? config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE');
-        }
-
-        //Remove params
-        $request->request->remove("email");
-        $request->request->remove("is_admin");
-        $request->request->remove("expiry");
-
-        // Update user filter
+        $request->replace($request->except(['email', 'is_admin', 'expiry']));
         $this->userFilterRepository->saveFilter($request);
+        $userDetail = $this->userService->findById($id);
+        $data = $request->all();
 
-        $userDetail = $this->userService->findById($data['id']);
         if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
             $data = $this->userService->unsetPseudonymizedFields($data);
         }
-
         // Set user status to inactive when pseudonymized
         if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
             array_key_exists('pseudonymize_at', $data)
@@ -363,29 +345,23 @@ class UserController extends Controller
         }
 
         // Update user
-        $user = $this->userService->update($data, $data['id']);
+        $user = $this->userService->update($data, $id);
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
-
-        // Update user custom fields
-        if (!empty($request->custom_fields) && isset($request->custom_fields)) {
-            $this->userRepository->updateCustomFields($request->custom_fields, $data['id']);
-        }
 
         // Update user skills
         if (!empty($request->skills)) {
-            $this->userService->updateSkill($data, $data['id']);
+            $this->userService->updateSkill($data, $id);
         }
         $this->helpers->syncUserData($request, $user);
 
         // Store Activity log
-        $data = $request->except(['password']); //Remove password before logging it
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.USER_PROFILE'),
             config('constants.activity_log_actions.UPDATED'),
             config('constants.activity_log_user_types.REGULAR'),
             $request->auth->email,
             get_class($this),
-            $data,
+            $request->except(['password']),
             $request->auth->user_id,
             $user->user_id
         ));
@@ -394,7 +370,7 @@ class UserController extends Controller
             Response::HTTP_OK,
             trans('messages.success.MESSAGE_USER_UPDATED'),
             ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete]
-        );*/
+        );
     }
 
     /**

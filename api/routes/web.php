@@ -500,9 +500,6 @@ $router->group(
             $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
             $router->patch('/{id}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
             $router->delete('/{id}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
-
-            // $router->post('/test', ['as' => 'users.teststore', 'uses' => 'Admin\User\UserController@testStore']);
-            //$router->patch('/{id}/test', ['as' => 'users.testupdate', 'uses' => 'Admin\User\UserController@testUpdate']);
         }
     );
 

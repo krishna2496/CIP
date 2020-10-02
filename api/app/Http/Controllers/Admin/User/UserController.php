@@ -354,9 +354,7 @@ class UserController extends Controller
 
         $request->merge([
             'avatar' => (isset($request->avatar) && !empty($request->avatar)) ? $request->avatar : null,
-            'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null,
-            'status' => (isset($request->status) && $request->status) ?
-                config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE')
+            'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null
         ]);
 
         try {

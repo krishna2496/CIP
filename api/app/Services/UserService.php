@@ -91,7 +91,11 @@ class UserService
             }
         }
 
-        return $this->userRepository->store($request);
+        $user = $this->userRepository->store($request);
+        if (!empty($request['custom_fields']) && isset($request['custom_fields'])) {
+            $this->updateCustomFieldsValue($request['custom_fields'], $user->user_id);
+        }
+        return $user;
     }
 
     /**
@@ -104,7 +108,11 @@ class UserService
      */
     public function update(Array $request, int $id): User
     {
-        return $this->userRepository->update($request, $id);
+        $response = $this->userRepository->update($request, $id);
+        if (!empty($request['custom_fields']) && isset($request['custom_fields'])) {
+            $this->updateCustomFieldsValue($request['custom_fields'], $id);
+        }
+        return $response;
     }
 
     /**
@@ -239,6 +247,18 @@ class UserService
     }
 
     /**
+     * Add/Update user custom field value.
+     *
+     * @param array $customFieldsValue
+     * @param int $id
+     * @return null|App\Models\UserCustomFieldValue
+     */
+    public function updateCustomFieldsValue($customFieldsValue, $id)
+    {
+        return $this->userRepository->updateCustomFields($request['custom_fields'], $id);
+    }
+
+    /**
      * Validate the user data that is passed in the request
      *
      * @param array $request
@@ -273,6 +293,11 @@ class UserService
             $fields['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
         }
 
+        if (array_key_exists('custom_fields', $request)) {
+            $fields['custom_fields'] = 'array';
+            $fields['custom_fields.*.field_id'] = 'required|exists:user_custom_field,field_id,deleted_at,NULL';
+        }
+
         if ($id !== null) {
             $fields['email'] = [
                 'sometimes',
@@ -286,6 +311,7 @@ class UserService
                 'max:60',
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
             ];
+            $fields['password'] = 'sometimes|required|min:8';
 
             if (array_key_exists('pseudonymize_at', $request) && $isAdminRequest === true) {
                 $fields = $this->validatePseudonymizeData($fields, $request, $id);
@@ -296,7 +322,10 @@ class UserService
         if ($isAdminRequest === false) {
             $fields['first_name'] = 'required|max:60';
             $fields['last_name'] = 'required|max:60';
-            $fields['password'] = 'sometimes|required|min:8';
+            $fields['country_id'] = 'required|integer|exists:country,country_id,deleted_at,NULL';
+            $fields['profile_text'] = 'nullable';
+            $fields['department'] = 'max:60';
+            $fields['why_i_volunteer'] = 'nullable';
             $fields['employee_id'] = ['max:60', 'nullable', Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')];
             $fields['timezone_id'] = 'required|integer|exists:timezone,timezone_id,deleted_at,NULL';
             $fields['custom_fields.*.field_id'] = 'sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL';
