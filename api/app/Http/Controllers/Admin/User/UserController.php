@@ -249,18 +249,11 @@ class UserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $data = $request->all();
-        $validation = $this->userService->validateFields($data);
-        
+        $validation = $this->userService->validateFields($request->all());
         if ($validation !== true) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                $validation->errors()->first()
-            );
+            return $validation;
         }
-
+        
         if (isset($request->language_id) && !$this->languageHelper->validateLanguageId($request)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -276,10 +269,12 @@ class UserController extends Controller
             $request->merge(['timezone_id' => $timezone->timezone_id]);
         }
 
-        $request->expiry = (isset($request->expiry) && $request->expiry) ? $request->expiry : null;
-
+        $request->merge([
+            'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null,
+            'pseudonymize_at' => null
+        ]);
         try {
-            $user = $this->userService->store($request->toArray());
+            $user = $this->userService->store($request->all());
         } catch (MaximumUsersReachedException $e) {
             return $this->responseHelper->error(
                 Response::HTTP_BAD_REQUEST,
@@ -291,7 +286,6 @@ class UserController extends Controller
 
         $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
         $data = $request->except(['password']); // Remove password before logging it
-
         if ($request->skills) {
             $this->userService->linkSkill($data, $user->user_id);
         }
@@ -342,19 +336,11 @@ class UserController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id)
     {
-        $data = $request->all();
-        $data['id'] = $id;
-        $validation = $this->userService->validateFields($data);
-        
+        $validation = $this->userService->validateFields($request->all(), $id);
         if ($validation !== true) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                $validation->errors()->first()
-            );
+            return $validation;
         }
 
         if (isset($request->language_id) && !$this->languageHelper->validateLanguageId($request)) {
@@ -366,19 +352,21 @@ class UserController extends Controller
             );
         }
 
-        $data['expiry'] = (isset($request->expiry)) && $request->expiry ? $request->expiry : null;
-        if (isset($request->status)) {
-            $data['status'] = $request->status ? config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE');
-        }
+        $request->merge([
+            'avatar' => (isset($request->avatar) && !empty($request->avatar)) ? $request->avatar : null,
+            'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null,
+            'status' => (isset($request->status) && $request->status) ?
+                config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE')
+        ]);
 
         try {
             $userDetail = $this->userService->findById($id);
+            $data = $request->all();
 
             // Skip updating pseudonymize fields
             if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
                 $data = $this->userService->unsetPseudonymizedFields($data);
             }
-
             // Set user status to inactive when pseudonymized
             if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
                 array_key_exists('pseudonymize_at', $data)
@@ -386,15 +374,11 @@ class UserController extends Controller
                 $data['status'] = config('constants.user_statuses.INACTIVE');
             }
 
-            if (isset($data['avatar'])) {
-                $data['avatar'] = empty($data['avatar']) ? null : $data['avatar'];
-            }
-
             $user = $this->userService->update($data, $id); // Update user
             $this->userRepository->checkProfileCompleteStatus($user->user_id, $request); // Check profile complete status
             $data = $request->except(['password']); // Remove password before logging it
 
-            if (is_array($request->skills)) {
+            if ($request->skills) {
                 $this->userService->updateSkill($data, $id);
             }
 
@@ -403,7 +387,6 @@ class UserController extends Controller
                 $data,
                 $user->user_id
             );
-
             return $this->responseHelper->success(
                 Response::HTTP_OK,
                 trans('messages.success.MESSAGE_USER_UPDATED'),

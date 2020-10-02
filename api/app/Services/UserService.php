@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Validation\Rule;
 use Validator;
 use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use Illuminate\Http\Response;
 
 class UserService
 {
@@ -31,6 +33,11 @@ class UserService
     private $helpers;
 
     /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
+
+    /**
      * Create a new controller instance.
      *
      * @param  UserRepository       $userRepository
@@ -41,11 +48,13 @@ class UserService
     public function __construct(
         UserRepository $userRepository,
         TenantOptionService $tenantOptionService,
-        Helpers $helpers
+        Helpers $helpers,
+        ResponseHelper $responseHelper
     ) {
         $this->userRepository = $userRepository;
         $this->tenantOptionService = $tenantOptionService;
         $this->helpers = $helpers;
+        $this->responseHelper = $responseHelper;
     }
 
     /**
@@ -234,9 +243,9 @@ class UserService
      *
      * @param array $request
      * @param boolean $isAdminRequest
-     * @return mixed
+     * @return JsonResponse | boolean
      */
-    public function validateFields($request, $isAdminRequest = true)
+    public function validateFields($request, $id = null, $isAdminRequest = true)
     {
         $fields = [
             'first_name' => 'sometimes|required|max:60',
@@ -254,10 +263,7 @@ class UserService
             'linked_in_url' => 'url|valid_linkedin_url',
             'why_i_volunteer' => 'sometimes|required',
             'expiry' => 'sometimes|date|nullable',
-            'status' => [
-                'sometimes',
-                Rule::in(config('constants.user_statuses'))
-            ],
+            'status' => ['sometimes', Rule::in(config('constants.user_statuses'))],
             'position' => 'sometimes|nullable',
             'title' => 'max:60'
         ];
@@ -267,19 +273,23 @@ class UserService
             $fields['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
         }
 
-        if (isset($request['id'])) {
+        if ($id !== null) {
             $fields['email'] = [
                 'sometimes',
                 'required',
                 'email',
-                Rule::unique('user')->ignore($request['id'], 'user_id,deleted_at,NULL')
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
             ];
             $fields['employee_id'] = [
                 'sometimes',
                 'required',
                 'max:60',
-                Rule::unique('user')->ignore($request['id'], 'user_id,deleted_at,NULL')
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
             ];
+
+            if (array_key_exists('pseudonymize_at', $request) && $isAdminRequest === true) {
+                $fields = $this->validatePseudonymizeData($fields, $request, $id);
+            }
         }
 
         //If the request didn't came from CI API
@@ -287,17 +297,21 @@ class UserService
             $fields['first_name'] = 'required|max:60';
             $fields['last_name'] = 'required|max:60';
             $fields['password'] = 'sometimes|required|min:8';
-            $fields['employee_id'] = ['max:60', 'nullable', Rule::unique('user')->ignore($request['id'], 'user_id,deleted_at,NULL')];
+            $fields['employee_id'] = ['max:60', 'nullable', Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')];
             $fields['timezone_id'] = 'required|integer|exists:timezone,timezone_id,deleted_at,NULL';
             $fields['custom_fields.*.field_id'] = 'sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL';
         }
 
-        if (array_key_exists('pseudonymize_at', $request) && $isAdminRequest === true) {
-            $fields = $this->validatePseudonymizeData($fields, $request);
-        }
-
         $validator = Validator::make($request, $fields);
-        return ($validator->fails()) ? $validator : true;
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+        return true;
     }
 
     /**
@@ -307,10 +321,10 @@ class UserService
      * @param array $request
      * @return array
      */
-    private function validatePseudonymizeData($fields, $request)
+    private function validatePseudonymizeData($fields, $request, $id)
     {
         $pseudomizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
-        $user = $this->findById($request['id']);
+        $user = $this->findById($id);
 
         if ($user->pseudonymize_at === '0000-00-00 00:00:00' || $user->pseudonymize_at === null) {
             foreach ($pseudomizeFields as $pseudomize) {
@@ -323,7 +337,6 @@ class UserService
                 if ($pseudomize === 'linked_in_url') {
                     $fields[$pseudomize] = array_push($rules, 'valid_linkedin_url');
                 }
-
                 $fields[$pseudomize] = implode('|', $rules);
             }
         }
@@ -360,7 +373,6 @@ class UserService
         if (array_key_exists('pseudonymize_at', $data)) {
             unset($data['pseudonymize_at']);
         }
-
         return $data;
     }
 }

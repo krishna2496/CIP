@@ -335,7 +335,9 @@ class UserController extends Controller
             );
         }
 
-        $request->expiry = (isset($request->expiry) && $request->expiry) ? $request->expiry : null;
+        dd($request->all());
+
+        /*$request->expiry = (isset($request->expiry) && $request->expiry) ? $request->expiry : null;
         if (isset($request->status)) {
             $request->status = $request->status ? config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE');
         }
@@ -392,7 +394,7 @@ class UserController extends Controller
             Response::HTTP_OK,
             trans('messages.success.MESSAGE_USER_UPDATED'),
             ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete]
-        );
+        );*/
     }
 
     /**
