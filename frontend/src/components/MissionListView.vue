@@ -354,6 +354,11 @@
       },
       // Add mission to favorite
       favoriteMission(missionId) {
+        this.items.map(mission => {
+            if (mission.mission_id === missionId) {
+                mission.is_favourite = (mission.is_favourite === 0) ? 1 : 0;
+            }
+        });
         let missionData = {
           mission_id: ''
         };
@@ -363,7 +368,6 @@
             this.makeToast("danger", response.message);
           } else {
             this.makeToast("success", response.message);
-            this.$emit("getMissions", "removeLoader");
           }
         });
 

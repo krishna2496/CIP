@@ -7,8 +7,8 @@ import {
     loadLocaleMessages,
     policy,
     tenantSetting,
+    transmuteToken,
 } from '../../services/service';
-import constants from '../../constant';
 
 export default {
     data() { return {}; },
@@ -19,15 +19,13 @@ export default {
         },
     },
     async created() {
-        document.body.classList.add("loader-enable");
         await this.createConnection();
-
         let redirect = '/';
         if (this.$route.query.token) {
             const token = this.$route.query.token;
-            store.commit('setToken', token);
+            await transmuteToken({token});
+            store.commit('setIsLoggedIn', true);
             let userDetail = await getUserDetail();
-            document.body.classList.add("loader-enable");
             await loadLocaleMessages(store.state.defaultLanguage);
             userDetail = userDetail.data;
             userDetail.timezone =  userDetail.timezone.timezone;
@@ -46,7 +44,7 @@ export default {
             });
             redirect = 'home';
         }
-        
+
         this.$router.replace({
             name: redirect,
         });

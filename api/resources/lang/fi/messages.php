@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "Tarinan kopiointi onnistui",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Tarinoita ei löytynyt",
         'MESSAGE_STORY_UPDATED' => "Tarinan päivittäminen onnistui",
+        'MESSAGE_FAVICON_UPLOADED' => 'Faviconin lataaminen onnistui',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Käyttäjän kommenttien luettelointi onnistui",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "Tarinan lähettäminen onnistui",

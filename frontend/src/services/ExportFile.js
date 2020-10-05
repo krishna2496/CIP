@@ -13,7 +13,6 @@ export default async(exportUrl, fileName) => {
         method: "get",
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token
         }
     }).then(response => {
 
