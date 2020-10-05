@@ -659,6 +659,7 @@ export default {
                         cardBody.parentNode.addEventListener("mouseover", function (
                             mouseEvent
                         ) {
+                            this.children[2].children[1].style.display = "block";
                             if (!this.parentNode.classList.contains("active")) {
                                 const cardBodyH =
                                     this.children[2].children[1].offsetHeight +

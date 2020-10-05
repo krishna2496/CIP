@@ -923,6 +923,8 @@
       opacity: 0;
       max-width: 100%;
       @include transition(all 0.3s);
+      visibility: hidden;
+      display: none;
       .progress-block {
         .progress-info {
           .subtitle-text {
@@ -973,6 +975,7 @@
           position: relative;
           z-index: 1;
           opacity: 1;
+          visibility: visible;
         }
         .group-ratings {
           display: block;
