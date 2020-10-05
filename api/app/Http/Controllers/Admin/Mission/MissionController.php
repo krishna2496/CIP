@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin\Mission;
 
+use App\Events\Mission\MissionDeletedEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -715,11 +716,8 @@ class MissionController extends Controller
     public function destroy(int $missionId): JsonResponse
     {
         try {
-            $mission = $this->missionRepository->delete($missionId);
-            // delete notification related to mission
-            $this->notificationRepository->deleteMissionNotifications($missionId);
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
+            $this->missionRepository->delete($missionId);
+
 
             // Make activity log
             event(new UserActivityLogEvent(
@@ -733,7 +731,7 @@ class MissionController extends Controller
                 $missionId
             ));
 
-            return $this->responseHelper->success($apiStatus, $apiMessage);
+            return $this->responseHelper->success(Response::HTTP_NO_CONTENT, trans('messages.success.MESSAGE_MISSION_DELETED'));
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

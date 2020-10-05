@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Story;
 
+use App\Events\Story\StoryDeletedEvent;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
 use App\Models\Story;
@@ -140,7 +141,11 @@ class StoryRepository implements StoryInterface
      */
     public function delete(int $storyId, int $userId): bool
     {
-        return $this->story->deleteStory($storyId, $userId);
+        $wasDeleted = $this->story->deleteStory($storyId, $userId);
+        event(new StoryDeletedEvent($storyId));
+
+        return $wasDeleted;
+
     }
 
     /**
