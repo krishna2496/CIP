@@ -47,9 +47,10 @@ class ThrottleRequestsMiddleware
      */
     public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1)
     {
-        Log::debug($request->getClientIp());
-
-        if ($request->hasHeader('disableThrottle') && in_array($request->getClientIp(), config('app.office_ips'))) {
+        if ($request->hasHeader('disableThrottle')
+            && env('DISABLE_THROTTLE_TOKEN', '') !== ''
+            && $request->header('disableThrottle') === env('DISABLE_THROTTLE_TOKEN')
+        ) {
             return $next($request);
         }
 
