@@ -47,6 +47,7 @@ return [
         'array'   => ":attribute ei saa sisältää enempää kuin :max kohdetta.",
     ],
     'mimes'                => ":attribute olla tiedostotyypiltään seuraava: :values.",
+    'mimetypes'            => ":attribute olla tiedostotyypiltään seuraava: :values.",
     'min'                  => [
         'numeric' => ":attribute tulee olla vähintään :min.",
         'file'    => ":attribute tulee olla vähintään :min kilotavua.",

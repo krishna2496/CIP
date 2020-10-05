@@ -152,7 +152,10 @@ class NotificationRepository implements NotificationInterface
      */
     public function getNotificationsCount(int $userId): int
     {
-        return $this->notification->where(['user_id' => $userId, 'is_read' => '0'])->get()->count();
+        return $this->notification
+            ->where(['user_id' => $userId, 'is_read' => '0'])
+            ->get()
+            ->count();
     }
 
     /**
@@ -164,8 +167,8 @@ class NotificationRepository implements NotificationInterface
     public function getNotificationType(int $notificationTypeId): string
     {
         return $this->notificationType
-        ->where(['notification_type_id' => $notificationTypeId])
-        ->value('notification_type');
+            ->where(['notification_type_id' => $notificationTypeId])
+            ->value('notification_type');
     }
 
     /**
@@ -176,7 +179,9 @@ class NotificationRepository implements NotificationInterface
      */
     public function getNotificationByTypeId(int $notificationTypeId): Notification
     {
-        return $this->notification->where(['notification_type_id' => $notificationTypeId])->first();
+        return $this->notification
+            ->where(['notification_type_id' => $notificationTypeId])
+            ->first();
     }
 
     /**
@@ -186,7 +191,9 @@ class NotificationRepository implements NotificationInterface
      */
     public function getEmailNotifications(): Collection
     {
-        return $this->notification->where('is_email_notification', 1)->get();
+        return $this->notification
+            ->where('is_email_notification', 1)
+            ->get();
     }
 
     /**
@@ -197,13 +204,15 @@ class NotificationRepository implements NotificationInterface
      */
     public function deleteNewsNotifications(int $newsId): bool
     {
-        $notificationTypeId = NotificationType::where(['notification_type' => config("constants.notification_type_keys")["NEW_NEWS"]])
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["NEW_NEWS"]
+            ])
             ->get('notification_type_id')
             ->first()
             ->notification_type_id;
 
         return Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $newsId)
+            ->where('entity_id', $newsId)
             ->delete();
     }
 
@@ -215,13 +224,15 @@ class NotificationRepository implements NotificationInterface
      */
     public function deleteCommentNotifications(int $commentId): bool
     {
-        $notificationTypeId = NotificationType::where(['notification_type' => config("constants.notification_type_keys")["MY_COMMENTS"]])
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["MY_COMMENTS"]
+            ])
             ->get('notification_type_id')
             ->first()
             ->notification_type_id;
 
         return Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $commentId)
+            ->where('entity_id', $commentId)
             ->delete();
     }
 
@@ -233,13 +244,15 @@ class NotificationRepository implements NotificationInterface
      */
     public function deleteMessageNotifications(int $messageId): bool
     {
-        $notificationTypeId = NotificationType::where(['notification_type' => config("constants.notification_type_keys")["NEW_MESSAGES"]])
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["NEW_MESSAGES"]
+            ])
             ->get('notification_type_id')
             ->first()
             ->notification_type_id;
 
         return Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $messageId)
+            ->where('entity_id', $messageId)
             ->delete();
     }
 }

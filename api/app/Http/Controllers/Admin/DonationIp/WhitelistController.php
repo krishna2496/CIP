@@ -179,8 +179,10 @@ class WhitelistController extends Controller
                 );
             }
 
-            $whitelistedIp->setAttribute('pattern', $request->get('pattern', null))
-                ->setAttribute('description', $request->get('description', null));
+            $whitelistedIp->setAttribute('pattern', $request->get('pattern', null));
+            if ($request->has('description')) {
+                $whitelistedIp->setAttribute('description', $request->get('description'));
+            }
 
             $updated = $this->whitelistService->update($whitelistedIp);
 

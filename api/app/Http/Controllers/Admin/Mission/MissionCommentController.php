@@ -225,6 +225,26 @@ class MissionCommentController extends Controller
      */
     public function destroy(int $missionId, int $commentId): JsonResponse
     {
+        // First find mission
+        try {
+            $this->missionRepository->find($missionId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
+
+        // Get comment
+        try {
+            $this->missionCommentRepository->getCommentById($commentId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
+            );
+        }
+
         $this->missionCommentRepository->deleteComment($commentId);
         $this->notificationRepository->deleteCommentNotifications($commentId);
 
