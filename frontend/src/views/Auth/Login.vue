@@ -86,6 +86,7 @@ import {
 import {
     setSiteTitle
 } from '../../utils';
+import sanitizeHtml from 'sanitize-html';
 
 export default {
     components: {
