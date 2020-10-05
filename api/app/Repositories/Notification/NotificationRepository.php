@@ -81,7 +81,7 @@ class NotificationRepository implements NotificationInterface
         ->where(['notification_type' => $type])
         ->value('notification_type_id');
     }
-    
+
     /**
      * Check if user notification is enabled or not
      *
@@ -119,7 +119,7 @@ class NotificationRepository implements NotificationInterface
         $notifications = $this->notification->where([
             'user_id' => $userId
         ])->findOrFail($notificationId);
-        
+
         // found the notifications then update read/unread status
         if (!empty($notifications)) {
             $updateReadStatus = $notifications->is_read == config('constants.notification.read') ?
@@ -152,7 +152,10 @@ class NotificationRepository implements NotificationInterface
      */
     public function getNotificationsCount(int $userId): int
     {
-        return $this->notification->where(['user_id' => $userId, 'is_read' => '0'])->get()->count();
+        return $this->notification
+            ->where(['user_id' => $userId, 'is_read' => '0'])
+            ->get()
+            ->count();
     }
 
     /**
@@ -164,8 +167,8 @@ class NotificationRepository implements NotificationInterface
     public function getNotificationType(int $notificationTypeId): string
     {
         return $this->notificationType
-        ->where(['notification_type_id' => $notificationTypeId])
-        ->value('notification_type');
+            ->where(['notification_type_id' => $notificationTypeId])
+            ->value('notification_type');
     }
 
     /**
@@ -176,7 +179,9 @@ class NotificationRepository implements NotificationInterface
      */
     public function getNotificationByTypeId(int $notificationTypeId): Notification
     {
-        return $this->notification->where(['notification_type_id' => $notificationTypeId])->first();
+        return $this->notification
+            ->where(['notification_type_id' => $notificationTypeId])
+            ->first();
     }
 
     /**
@@ -186,33 +191,9 @@ class NotificationRepository implements NotificationInterface
      */
     public function getEmailNotifications(): Collection
     {
-        return $this->notification->where('is_email_notification', 1)->get();
-    }
-
-    /**
-     * Delete mission related notifications
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function deleteMissionNotifications($missionId): bool
-    {
         return $this->notification
-        ->with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["NEW_MISSIONS"],
-                config("constants.notification_type")["MISSION_APPLICATION"],
-                config("constants.notification_type")["RECOMMENDED_MISSIONS"],
-                config("constants.notification_type")["VOLUNTEERING_HOURS"],
-                config("constants.notification_type")["VOLUNTEERING_GOALS"],
-                config("constants.notification_type")["MY_COMMENTS"],
-                config("constants.notification_type")["MY_STORIES"],
-                config("constants.notification_type")["MISSION_APPLICATION"]
-            ]);
-        }])
-        ->where([
-            'entity_id' => $missionId
-        ])->delete();
+            ->where('is_email_notification', 1)
+            ->get();
     }
 
     /**
@@ -221,37 +202,18 @@ class NotificationRepository implements NotificationInterface
      * @param int $newsId
      * @return bool
      */
-    public function deleteNewsNotifications($newsId): bool
+    public function deleteNewsNotifications(int $newsId): bool
     {
-        return $this->notification
-        ->with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["NEW_NEWS"]
-            ]);
-        }])
-        ->where([
-            'entity_id' => $newsId
-        ])->delete();
-    }
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["NEW_NEWS"]
+            ])
+            ->get('notification_type_id')
+            ->first()
+            ->notification_type_id;
 
-    /**
-     * Delete story related notifications
-     *
-     * @param int $storyId
-     * @return bool
-     */
-    public function deleteStoryNotifications($storyId): bool
-    {
-        return $this->notification
-        ->with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["MY_STORIES"],
-                config("constants.notification_type")["RECOMMENDED_STORY"]
-            ]);
-        }])
-        ->where([
-            'entity_id' => $storyId
-        ])->delete();
+        return Notification::where(['notification_type_id' => $notificationTypeId])
+            ->where('entity_id', $newsId)
+            ->delete();
     }
 
     /**
@@ -260,17 +222,18 @@ class NotificationRepository implements NotificationInterface
      * @param int $commentId
      * @return bool
      */
-    public function deleteCommentNotifications($commentId): bool
+    public function deleteCommentNotifications(int $commentId): bool
     {
-        return $this->notification
-        ->with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["MY_COMMENTS"]
-            ]);
-        }])
-        ->where([
-            'entity_id' => $commentId
-        ])->delete();
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["MY_COMMENTS"]
+            ])
+            ->get('notification_type_id')
+            ->first()
+            ->notification_type_id;
+
+        return Notification::where(['notification_type_id' => $notificationTypeId])
+            ->where('entity_id', $commentId)
+            ->delete();
     }
 
     /**
@@ -279,17 +242,17 @@ class NotificationRepository implements NotificationInterface
      * @param int $messageId
      * @return bool
      */
-    public function deleteMessageNotifications($messageId): bool
+    public function deleteMessageNotifications(int $messageId): bool
     {
-        return $this->notification
-        ->with(['notificationType' => function ($query) {
-            $query->whereIn('notification_type', [
-                config("constants.notification_type")["NEW_MESSAGES"]
-            ]);
-        }])
-        ->where([
-            'entity_id' => $messageId
-        ])->delete();
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["NEW_MESSAGES"]
+            ])
+            ->get('notification_type_id')
+            ->first()
+            ->notification_type_id;
+
+        return Notification::where(['notification_type_id' => $notificationTypeId])
+            ->where('entity_id', $messageId)
+            ->delete();
     }
-    
 }

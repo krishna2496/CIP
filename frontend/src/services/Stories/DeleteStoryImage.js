@@ -14,7 +14,6 @@ export default async(data) => {
         method: 'DELETE',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token
         }
     })
       .then((response) => {

@@ -1,11 +1,11 @@
 <template></template>
 <script>
-import store from '../../store';
+import { logout } from '../../services/service';
 
 export default {
     data() { return {}; },
     async beforeCreate() {
-      store.commit('logoutUser');
+        logout();
     },
 };
 </script>

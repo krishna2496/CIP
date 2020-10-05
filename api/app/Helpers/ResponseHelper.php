@@ -13,7 +13,7 @@ class ResponseHelper
      * @param string $apiMessage
      * @param array $apiData
      * @param bool $convertNumeric - To specify whether to transform number strings into int type
-     * @return Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function success(
         string $apiStatus = '',

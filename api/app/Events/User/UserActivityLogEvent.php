@@ -4,7 +4,6 @@ namespace App\Events\User;
 
 use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
-use App\Models\NotificationType;
 
 class UserActivityLogEvent extends Event
 {

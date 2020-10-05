@@ -5,6 +5,7 @@ import store from './store'
 export default function setup() {
     // Add a request interceptor
     axios.interceptors.request.use(function(config) {
+        config.withCredentials = true;
         return config;
     }, function(error) {
         return Promise.reject(error);
@@ -12,8 +13,8 @@ export default function setup() {
 
     // Add a response interceptor
     axios.interceptors.response.use(function(response) {
-        if (response.headers.token) {
-          store.commit('setToken', response.headers.token);
+        if (response.data && 'data' in response.data && 'isSuccessfulLogin' in response.data.data && response.data.data.isSuccessfulLogin) {
+          store.commit('setIsLoggedIn', true);
         }
         return response;
     }, function(error) {

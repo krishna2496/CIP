@@ -74,6 +74,7 @@ class UserControllerTest extends TestCase
             )
             ->andReturn($jsonResponse);
         $notificationRepository = $this->mock(NotificationRepository::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
 
         $service = $this->getController(
             null,
@@ -83,7 +84,8 @@ class UserControllerTest extends TestCase
             null,
             null,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
 
         $response = $service->contentStatistics($request, $user->user_id);
@@ -147,6 +149,7 @@ class UserControllerTest extends TestCase
             )
             ->andReturn($jsonResponse);
         $notificationRepository = $this->mock(NotificationRepository::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
 
         $service = $this->getController(
             null,
@@ -156,7 +159,8 @@ class UserControllerTest extends TestCase
             null,
             null,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
 
         $response = $service->volunteerSummary($request, $user->user_id);
