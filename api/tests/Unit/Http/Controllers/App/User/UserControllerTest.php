@@ -25,83 +25,6 @@ class UserControllerTest extends TestCase
 {
     const OPTION_NAME_SSO = 'saml_settings';
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * @var UserCustomFieldRepository
-     */
-    private $userCustomFieldRepository;
-
-    /**
-     * @var CityRepository
-     */
-    private $cityRepository;
-
-    /**
-     * @var ResponseHelper
-     */
-    private $responseHelper;
-
-    /**
-     * @var LanguageHelper
-     */
-    private $languageHelper;
-
-    /**
-     * @var Helpers
-     */
-    private $helpers;
-
-    /**
-     * @var S3Helper
-     */
-    private $s3helper;
-
-    /**
-     * @var UserFilterRepository
-     */
-    private $userFilterRepository;
-
-    /**
-     * The response instance.
-     *
-     * @var TenantOptionRepository
-     */
-    private $tenantOptionRepository;
-
-    /**
-     * @var UserController
-     */
-    private $controller;
-
-    public function setUp(): void
-    {
-        $this->userRepository = $this->createMock(UserRepository::class);
-        $this->userCustomFieldRepository = $this->createMock(UserCustomFieldRepository::class);
-        $this->responseHelper = $this->createMock(ResponseHelper::class);
-        $this->languageHelper = $this->createMock(LanguageHelper::class);
-        $this->helpers = $this->createMock(Helpers::class);
-        $this->s3helper = $this->createMock(S3Helper::class);
-        $this->userFilterRepository = $this->createMock(UserFilterRepository::class);
-        $this->tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
-        $this->cityRepository = $this->createMock(CityRepository::class);
-
-        $this->controller = new UserController(
-            $this->userRepository,
-            $this->userCustomFieldRepository,
-            $this->cityRepository,
-            $this->userFilterRepository,
-            $this->responseHelper,
-            $this->languageHelper,
-            $this->helpers,
-            $this->s3helper,
-            $this->tenantOptionRepository
-        );
-    }
-
     public function testInviteUser()
     {
         $request = $this->mock(Request::class);
@@ -234,6 +157,28 @@ class UserControllerTest extends TestCase
 
     public function testIndexGetAllUsers()
     {
+        $userRepository = $this->createMock(UserRepository::class);
+        $userCustomFieldRepository = $this->createMock(UserCustomFieldRepository::class);
+        $responseHelper = $this->createMock(ResponseHelper::class);
+        $languageHelper = $this->createMock(LanguageHelper::class);
+        $helpers = $this->createMock(Helpers::class);
+        $s3helper = $this->createMock(S3Helper::class);
+        $userFilterRepository = $this->createMock(UserFilterRepository::class);
+        $tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
+        $cityRepository = $this->createMock(CityRepository::class);
+
+        $controller = new UserController(
+            $userRepository,
+            $userCustomFieldRepository,
+            $cityRepository,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            $s3helper,
+            $tenantOptionRepository
+        );
+
         $request = new Request();
         $request->auth = new \stdClass();
         $request->auth->user_id = 1;
@@ -251,22 +196,22 @@ class UserControllerTest extends TestCase
             $user3
         ]);
 
-        $this->userRepository
+        $userRepository
             ->expects($this->once())
             ->method('listUsers')
             ->willReturn($userCollection);
 
-        $this->userRepository
+        $userRepository
             ->expects($this->never())
             ->method('searchUsers');
 
-        $this->helpers
+        $helpers
             ->expects($this->once())
             ->method('getSubDomainFromRequest')
             ->with($request)
             ->willReturn('ci-api');
 
-        $this->responseHelper
+        $responseHelper
             ->expects($this->once())
             ->method('success')
             ->with(
@@ -280,7 +225,7 @@ class UserControllerTest extends TestCase
             )
             ->willReturn(new JsonResponse());
 
-        $result = $this->controller->index($request);
+        $result = $controller->index($request);
 
         // testing the mock to avoid warning in phpunit
         $this->assertInstanceOf(JsonResponse::class, $result);
@@ -288,6 +233,28 @@ class UserControllerTest extends TestCase
 
     public function testIndexSearchUsers()
     {
+        $userRepository = $this->createMock(UserRepository::class);
+        $userCustomFieldRepository = $this->createMock(UserCustomFieldRepository::class);
+        $responseHelper = $this->createMock(ResponseHelper::class);
+        $languageHelper = $this->createMock(LanguageHelper::class);
+        $helpers = $this->createMock(Helpers::class);
+        $s3helper = $this->createMock(S3Helper::class);
+        $userFilterRepository = $this->createMock(UserFilterRepository::class);
+        $tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
+        $cityRepository = $this->createMock(CityRepository::class);
+
+        $controller = new UserController(
+            $userRepository,
+            $userCustomFieldRepository,
+            $cityRepository,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            $s3helper,
+            $tenantOptionRepository
+        );
+
         $request = new Request(['search' => 'jeannot']);
         $request->auth = new \stdClass();
         $request->auth->user_id = 1;
@@ -299,22 +266,22 @@ class UserControllerTest extends TestCase
             $user1
         ]);
 
-        $this->userRepository
+        $userRepository
             ->expects($this->never())
             ->method('listUsers');
 
-        $this->userRepository
+        $userRepository
             ->expects($this->once())
             ->method('searchUsers')
             ->willReturn($userCollection);
 
-        $this->helpers
+        $helpers
             ->expects($this->once())
             ->method('getSubDomainFromRequest')
             ->with($request)
             ->willReturn('ci-api');
 
-        $this->responseHelper
+        $responseHelper
             ->expects($this->once())
             ->method('success')
             ->with(
@@ -326,7 +293,7 @@ class UserControllerTest extends TestCase
             )
             ->willReturn(new JsonResponse());
 
-        $result = $this->controller->index($request);
+        $result = $controller->index($request);
 
         // testing the mock to avoid warning in phpunit
         $this->assertInstanceOf(JsonResponse::class, $result);
