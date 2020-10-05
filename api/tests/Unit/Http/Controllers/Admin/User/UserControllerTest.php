@@ -21,6 +21,7 @@ use TestCase;
 use App\Models\Timezone;
 use App\Events\User\UserActivityLogEvent;
 use App\Exceptions\MaximumUsersReachedException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserControllerTest extends TestCase
 {
@@ -512,6 +513,11 @@ class UserControllerTest extends TestCase
             ->with($request->all(), 1)
             ->andReturn($userDetail);
 
+        $userService
+            ->shouldReceive('updateSkill')
+            ->once()
+            ->andReturn([['skill_id' => 1]]);
+
         $languageHelper
             ->shouldReceive('validateLanguageId')
             ->once()
@@ -524,7 +530,16 @@ class UserControllerTest extends TestCase
             ->with(1, $request)
             ->andReturn($userDetail);
 
-        //$this->expectsEvents(UserActivityLogEvent::class);
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_UPDATED'),
+                ['user_id' => 1]
+            );
+
+        $this->expectsEvents(UserActivityLogEvent::class);
 
         $controller = $this->getController(
             $userRepository,
@@ -538,7 +553,431 @@ class UserControllerTest extends TestCase
             $timezoneRepository
         );
         $response = $controller->update($request, 1);
-        var_dump($response);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateSuccessWithPseudonymizeUserData()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]],
+            'department' => 'The Department',
+            'employee_id' => 123
+        ];
+        $notPseudonymizeFields = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData);
+
+        $userService = $this->mock(UserService::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(true);
+
+        $userDetail = new User();
+        $userDetail->setAttribute('pseudonymize_at', '2020-10-02 12:32:29.0');
+        $userDetail->setAttribute('user_id', 1);
+
+        $userService
+            ->shouldReceive('findById')
+            ->once()
+            ->with(1)
+            ->andReturn($userDetail);
+
+        $userService
+            ->shouldReceive('update')
+            ->once()
+            ->with($notPseudonymizeFields, 1)
+            ->andReturn($userDetail);
+
+        $userService
+            ->shouldReceive('unsetPseudonymizedFields')
+            ->once()
+            ->with($request->all())
+            ->andReturn($notPseudonymizeFields);
+
+        $userService
+            ->shouldReceive('updateSkill')
+            ->once()
+            ->andReturn([['skill_id' => 1]]);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($userDetail);
+
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_UPDATED'),
+                ['user_id' => 1]
+            );
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $controller = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            null,
+            $timezoneRepository
+        );
+        $response = $controller->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateSuccessWithPseudonymizeAtField()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]],
+            'department' => 'The Department',
+            'employee_id' => 123,
+            'pseudonymize_at' => '0000-00-00 00:00:00'
+        ];
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData);
+
+        $userService = $this->mock(UserService::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(true);
+
+        $userDetail = new User();
+        $userDetail->setAttribute('pseudonymize_at', '0000-00-00 00:00:00');
+        $userDetail->setAttribute('user_id', 1);
+
+        $userService
+            ->shouldReceive('findById')
+            ->once()
+            ->with(1)
+            ->andReturn($userDetail);
+
+        $userService
+            ->shouldReceive('update')
+            ->once()
+            ->with(array_merge($request->all(), ['status' => 0]), 1)
+            ->andReturn($userDetail);
+
+        $userService
+            ->shouldReceive('updateSkill')
+            ->once()
+            ->andReturn([['skill_id' => 1]]);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($userDetail);
+
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_UPDATED'),
+                ['user_id' => 1]
+            );
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $controller = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            null,
+            $timezoneRepository
+        );
+        $response = $controller->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateInvalidValidation()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData);
+
+        $userService = $this->mock(UserService::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(new JsonResponse);
+
+        $controller = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            null,
+            $timezoneRepository
+        );
+        $response = $controller->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateInvalidLanguageId()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData);
+
+        $userService = $this->mock(UserService::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(true);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(false);
+
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+            );
+
+        $controller = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            null,
+            $timezoneRepository
+        );
+        $response = $controller->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateInvalidThrowException()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData);
+
+        $userService = $this->mock(UserService::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(true);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $userService
+            ->shouldReceive('findById')
+            ->once()
+            ->with(1)
+            ->andThrow(ModelNotFoundException::class);
+
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+
+        $controller = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            null,
+            $timezoneRepository
+        );
+        $response = $controller->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
     /**
