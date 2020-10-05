@@ -10,7 +10,7 @@ export default async(keyword) => {
   let url = process.env.VUE_APP_API_ENDPOINT + 'app/user'
 
   if (keyword) {
-    url = url + '?search=' + keyword;
+    url = url + '?search=' + encodeURIComponent(keyword);
   }
 
   return await axios({

@@ -178,6 +178,9 @@ export default {
         searchUser(input).then(users => {
           this.users = users
         });
+      } else {
+        // reset to empty when user did not input at least 3 chars
+        this.users = [];
       }
     },
     /*
