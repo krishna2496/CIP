@@ -37,6 +37,18 @@ class UserService
      */
     private $responseHelper;
 
+    const NULLABLE_FIELDS = [
+        'employee_id',
+        'department',
+        'linked_in_url',
+        'why_i_volunteer',
+        'availability_id',
+        'city_id',
+        'country_id',
+        'profile_text',
+        'position'
+    ];
+
     /**
      * Create a new controller instance.
      *
@@ -255,7 +267,7 @@ class UserService
      */
     public function updateCustomFieldsValue($customFieldsValue, $id)
     {
-        return $this->userRepository->updateCustomFields($request['custom_fields'], $id);
+        return $this->userRepository->updateCustomFields($customFieldsValue, $id);
     }
 
     /**
@@ -274,10 +286,10 @@ class UserService
             'password' => 'required|min:8',
             'availability_id' => 'sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL',
             'timezone_id' => 'sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL',
-            'language_id' => 'sometimes|required|int', //Originally UPDATE method does not validate this field
+            'language_id' => 'sometimes|required|int',
             'city_id' => 'sometimes|integer|exists:city,city_id,deleted_at,NULL',
             'country_id' => 'sometimes|required|integer|exists:country,country_id,deleted_at,NULL',
-            'profile_text' => 'sometimes|required', //Originally UPDATE method initially does not validate this
+            'profile_text' => 'sometimes|required',
             'employee_id' => 'max:60|unique:user,employee_id,NULL,user_id,deleted_at,NULL',
             'department' => 'sometimes|required|max:60',
             'linked_in_url' => 'url|valid_linkedin_url',
@@ -289,7 +301,7 @@ class UserService
         ];
 
         if (array_key_exists('skills', $request)) {
-            $fields['skills'] = 'array'; //Originally ONLY UPDATE method has this validation
+            $fields['skills'] = 'array';
             $fields['skills.*.skill_id'] = 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL';
         }
 
@@ -315,6 +327,12 @@ class UserService
 
             if (array_key_exists('pseudonymize_at', $request) && $isAdminRequest === true) {
                 $fields = $this->validatePseudonymizeData($fields, $request, $id);
+            }
+
+            foreach (self::NULLABLE_FIELDS as $nullable) {
+                if (array_key_exists($nullable, $request) && !$request[$nullable]) {
+                    $fields[$nullable] = 'nullable';
+                }
             }
         }
 
@@ -367,24 +385,6 @@ class UserService
                     $fields[$pseudomize] = array_push($rules, 'valid_linkedin_url');
                 }
                 $fields[$pseudomize] = implode('|', $rules);
-            }
-        }
-
-        $nullableFields = [
-            'employee_id',
-            'department',
-            'linked_in_url',
-            'why_i_volunteer',
-            'availability_id',
-            'city_id',
-            'country_id',
-            'profile_text',
-            'position',
-            'timezone_id'
-        ];
-        foreach ($nullableFields as $nullable) {
-            if (array_key_exists($nullable, $request) && !$request[$nullable]) {
-                $fields[$nullable] = 'nullable';
             }
         }
         return $fields;

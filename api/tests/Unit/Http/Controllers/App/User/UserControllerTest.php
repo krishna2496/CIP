@@ -17,6 +17,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Services\UserService;
 use Mockery;
 use TestCase;
 
@@ -80,6 +81,8 @@ class UserControllerTest extends TestCase
             ->shouldReceive('getOptionValueFromOptionName')
             ->andReturn($tenantOption);
 
+        $userService = $this->mock(UserService::class);
+
         $userController = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -89,7 +92,8 @@ class UserControllerTest extends TestCase
             $languageHelper,
             $helpers,
             $s3Helper,
-            $tenantOptionRepository
+            $tenantOptionRepository,
+            $userService
         );
 
         $this->withoutEvents();
@@ -135,6 +139,8 @@ class UserControllerTest extends TestCase
 
         $tenantOptionRepository = $this->mock(TenantOptionRepository::class);
 
+        $userService = $this->mock(UserService::class);
+
         $userController = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -144,7 +150,8 @@ class UserControllerTest extends TestCase
             $languageHelper,
             $helpers,
             $s3Helper,
-            $tenantOptionRepository
+            $tenantOptionRepository,
+            $userService
         );
 
         $this->withoutEvents();
