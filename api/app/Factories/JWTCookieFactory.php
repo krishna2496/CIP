@@ -19,6 +19,23 @@ class JWTCookieFactory
      */
     public static function make(string $token, string $apiUrl, bool $isSecured) : Cookie
     {
+        /*
+         * On local dev, cookies will not be secured and should
+         * not have the "SameSite" attribute set to "none"
+         * otherwise they are not created.
+         */
+        $sameSite = Cookie::SAMESITE_LAX;
+
+        /*
+         * Secured cookies are expected to be used on staging and production.
+         * Since CIP frontend and API are hosted on different domains in production,
+         * we need to set the "SameSite" attribute to "none", otherwise there will
+         * be a security issue and the cookie will not be created.
+         */
+        if ($isSecured) {
+            $sameSite = Cookie::SAMESITE_NONE;
+        }
+
         return new Cookie(
             self::COOKIE_NAME,
             $token,
@@ -26,10 +43,17 @@ class JWTCookieFactory
             '/',
             parse_url($apiUrl, PHP_URL_HOST),
             $isSecured,
-            true
+            true,
+            false,
+            $sameSite
         );
     }
 
+    /**
+     * In order to remove the cookie from the client's browser when logging out.
+     *
+     * @return Cookie
+     */
     public static function makeExpired() : Cookie
     {
         return new Cookie(self::COOKIE_NAME, null);
