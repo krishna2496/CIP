@@ -8,6 +8,7 @@ $pdo = $db->connection('mysql')->getPdo();
 \Illuminate\Support\Facades\Config::set('database.default', 'mysql');
 $tenants = $pdo->query('select * from tenant where status = 1 and deleted_at IS NULL')->fetchAll();
 
+
 foreach ($tenants as $tenant) {
     $tenantId = $tenant['tenant_id'];
     $db->purge('tenant');
@@ -26,38 +27,30 @@ foreach ($tenants as $tenant) {
 
     // Set default database
     \Illuminate\Support\Facades\Config::set('database.default', 'tenant');
-    $skills = $pdo->query('select skill_id, translations from skill')->fetchAll();
 
-    if (!empty($skills)) {
-        foreach ($skills as $skill) {
+    $skills = $pdo->query('select skill_id, translations from skill')->fetchAll(PDO::FETCH_ASSOC);
 
-            $skillTranslations = json_decode($skill['translations'], true);
+    foreach ($skills as $skill) {
+        $skillTranslations = json_decode($skill['translations'], true);
 
-            $trans = [];
-            foreach ($skillTranslations as $key => $translation) {
-                 if (is_int($key)) {
-                     dump('Need manual verification: tenant id: ' . $tenantId . ' and skill id: '. $skill['skill_id']);
-                     continue;
-                 }
-
-
-                $trans[] = [
-                    'lang' => $key,
-                    'title' => $translation
-                ];
+        if ($skillTranslations[0] && is_int($skillTranslations[0]['lang'])) {
+            dump('corrupted skill: tenant: '. $tenantId . ' and skill id '. $skill['skill_id']);
+            $resolvedTrans = [];
+            // Extract 'title' key and put it back at the base of the array
+            foreach ($skillTranslations as $translation) {
+                $resolvedTrans[] = $translation['title'];
             }
 
-            $translations = json_encode($trans, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $translations = json_encode($resolvedTrans, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $pdo->prepare('
-                UPDATE skill
-                SET translations = :translations
-                WHERE skill_id = :id
-            ')
-            ->execute([
-                'translations' => $translations,
-                'id' => $skill['skill_id'],
-            ]);
+                    UPDATE skill
+                    SET translations = :translations
+                    WHERE skill_id = :id
+                ')
+                ->execute([
+                    'translations' => $translations,
+                    'id' => $skill['skill_id'],
+                ]);
         }
     }
 }
-
