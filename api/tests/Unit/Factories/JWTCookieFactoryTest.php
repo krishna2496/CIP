@@ -23,7 +23,13 @@ class JWTCookieFactoryTest extends TestCase
         $this->assertEquals($token, $actual->getValue());
         $this->assertTrue($actual->isSecure());
         $this->assertTrue($actual->isHttpOnly());
-        $this->assertNotContains($actual->getSameSite(), ['Strict', 'Lax']);
+        $this->assertNotContains(
+            $actual->getSameSite(),
+            [
+                Cookie::SAMESITE_LAX,
+                Cookie::SAMESITE_STRICT
+            ]
+        );
     }
 
     public function testMakeUnsecured()
@@ -34,7 +40,7 @@ class JWTCookieFactoryTest extends TestCase
 
         $actual = JWTCookieFactory::make($token, $apiUrl, $isSecured);
         $this->assertFalse($actual->isSecure());
-        $this->assertNotEquals('None', $actual->getSameSite());
+        $this->assertNotEquals(Cookie::SAMESITE_NONE, $actual->getSameSite());
     }
 
     public function testMakeExpired()
