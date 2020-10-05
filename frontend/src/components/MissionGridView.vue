@@ -536,11 +536,16 @@ export default {
             };
             missionData.mission_id = missionId;
             favoriteMission(missionData).then((response) => {
+                this.items.map(mission => {
+                    if (mission.mission_id === missionId) {
+                        mission.is_favourite = (mission.is_favourite === 0) ? 1 : 0;
+                    }
+                });
+
                 if (response.error == true) {
-                    this.makeToast("danger", response.message);
+                    this.makeToast('danger', response.message);
                 } else {
-                    this.makeToast("success", response.message);
-                    this.$emit("getMissions", "removeLoader");
+                    this.makeToast('success', response.message);
                 }
             });
         },
