@@ -309,14 +309,6 @@ class TenantOptionsController extends Controller
 
         $data = $request->toArray();
 
-        if ($data['option_name'] == config('constants.TENANT_OPTION_NAME')) {
-            $optionValue = $data['option_value'];
-            $validationResponse =  $this->validateTenantOption($optionValue['translations']);
-            if ($validationResponse != null) {
-                return $validationResponse;
-            }
-        }
-
         $data['option_value'] = is_array($request->option_value) ?
             json_encode($request->option_value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) :
             $request->option_value;
@@ -368,14 +360,6 @@ class TenantOptionsController extends Controller
         }
         try {
             $data['option_name'] = $request->option_name;
-
-            if ($data['option_name'] == config('constants.TENANT_OPTION_NAME')) {
-                $optionValue = $request->option_value;
-                $validationResponse =  $this->validateTenantOption($optionValue['translations']);
-                if ($validationResponse != null) {
-                    return $validationResponse;
-                }
-            }
 
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
@@ -462,39 +446,5 @@ class TenantOptionsController extends Controller
         $apiStatus = Response::HTTP_OK;
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
-    }
-
-    /**
-     * Validate tenant option value
-     *
-     * @param array $translations
-     */
-    private function validateTenantOption($translations)
-    {
-        foreach ($translations as $value) {
-            $optionData = $value['message'];
-            $strippedValue = strip_tags($optionData);
-            if (strlen($strippedValue) > config('constants.TENANT_OPTION_NAME_MAX_LENGTH')) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION'),
-                    trans('messages.custom_error_message.ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION')
-                );
-            }
-            $isIframeExist = $isScriptExist = $isJavascriptExist  = false;
-            $isIframeExist = strpos ($optionData, '<iframe') !== false ?? true;
-            $isScriptExist = strpos ($optionData, '<script') !== false ?? true;
-            $isJavascriptExist = strpos ($optionData, 'javascript:') !== false ?? true;
-            
-            if ($isIframeExist || $isScriptExist || $isJavascriptExist) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVAID_TENANT_OPTION_VALUE'),
-                    trans('messages.custom_error_message.ERROR_INVAID_TENANT_OPTION_VALUE')
-                );
-            }
-        }
     }
 }
