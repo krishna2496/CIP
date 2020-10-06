@@ -5,44 +5,44 @@ namespace Tests\Unit\Http\Repositories\Mission;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
+use App\Models\City;
+use App\Models\FavouriteMission;
+use App\Models\Mission;
+use App\Models\MissionApplication;
+use App\Models\MissionDocument;
+use App\Models\MissionImpact;
+use App\Models\MissionLanguage;
+use App\Models\MissionRating;
+use App\Models\MissionSkill;
+use App\Models\MissionTab;
+use App\Models\MissionTabLanguage;
+use App\Models\Organization;
+use App\Models\TimeMission;
 use App\Repositories\Country\CountryRepository;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Services\Mission\ModelsService;
 use App\Repositories\MissionTab\MissionTabRepository;
+use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Mission\ModelsService;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Repositories\Mission\MissionRepository;
-use App\Models\Mission;
-use App\Models\MissionLanguage;
 use App\User;
 use Mockery;
-use TestCase;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\TimeMission;
-use App\Models\MissionDocument;
-use App\Models\FavouriteMission;
-use App\Models\MissionSkill;
-use App\Models\MissionRating;
-use App\Models\MissionApplication;
-use App\Models\City;
-use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Services\Mission\AdminMissionTransformService;
-use App\Models\MissionImpact;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Models\Organization;
 use App\Models\MissionImpactDonation;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Repositories\Currency\CurrencyRepository;
-use App\Models\MissionTabLanguage;
-use App\Models\MissionTab;
-use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Ramsey\Uuid\Uuid;
+use TestCase;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -643,7 +643,7 @@ class MissionRepositoryTest extends TestCase
     *
     * @return void
     */
-    public function testDeleteMissionTabByMissionTabIdSuccess()
+    public function testDeletingMissionTabByMissionTabIdSuccess()
     {
         $missionTabId = str_random(8).'-'.str_random(4).'-'.str_random(4).'-'.str_random(4).'-'.str_random(12);
 
@@ -826,7 +826,7 @@ class MissionRepositoryTest extends TestCase
         $hasOne->shouldReceive('create')
             ->once()
             ->andReturn(true);
-
+        $modelService = $this->mock(ModelsService::class);
         $mission = $this->mock(Mission::class);
         $mission->shouldReceive('create')
             ->once()
@@ -884,7 +884,6 @@ class MissionRepositoryTest extends TestCase
         $missionTab = $this->mock(MissionTab::class);
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $modelService = $this->mock(ModelsService::class);
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);

@@ -14,7 +14,6 @@ export default async(messageId) => {
         method: 'POST',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token
         }
     })
       .then((response) => {

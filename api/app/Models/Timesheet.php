@@ -44,16 +44,16 @@ class Timesheet extends Model
      * @var array
      */
     protected $visible = [
-        'timesheet_id', 
-        'user_id', 
-        'mission_id', 
-        'time', 
-        'action', 
+        'timesheet_id',
+        'user_id',
+        'mission_id',
+        'time',
+        'action',
         'date_volunteered',
-        'day_volunteered', 
-        'notes', 
-        'timesheetDocument', 
-        'mission', 
+        'day_volunteered',
+        'notes',
+        'timesheetDocument',
+        'mission',
         'month',
         'total_hours',
         'total_minutes',
@@ -194,5 +194,4 @@ class Timesheet extends Model
 
         return $query->whereMonth('created_at', $month);
     }
-
 }

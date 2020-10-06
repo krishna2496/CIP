@@ -64,7 +64,7 @@ class NotificationTypeController extends Controller
     {
         //Fetch notification settings
         $notificationSettings = $this->notificationTypeRepository->getNotificationSettings($request->auth->user_id);
-        
+
         // Fetch tenant activated settings
         $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
         ->getAllTenantActivatedSetting($request);
@@ -104,11 +104,29 @@ class NotificationTypeController extends Controller
                         $enabledNotificationSettings[] = $value;
                     }
                     break;
+                case 'volunteering_hours':
+                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                    if (in_array($tenantSetting, $getActivatedTenantSettings)) {
+                        $enabledNotificationSettings[] = $value;
+                    }
+                    break;
+                case 'volunteering_goals':
+                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                    if (in_array($tenantSetting, $getActivatedTenantSettings)) {
+                        $enabledNotificationSettings[] = $value;
+                    }
+                    break;
+                case 'mission_application':
+                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING');
+                    if (in_array($tenantSetting, $getActivatedTenantSettings)) {
+                        $enabledNotificationSettings[] = $value;
+                    }
+                    break;
                 default:
                     $enabledNotificationSettings[] = $value;
             }
         }
-    
+
         // Set response data
         $apiData = $enabledNotificationSettings;
         $apiStatus = Response::HTTP_OK;
@@ -116,7 +134,7 @@ class NotificationTypeController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
-      
+
     /**
      * Store or update user notification settings into database
      *
@@ -141,11 +159,11 @@ class NotificationTypeController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Store or update user notification settings
         $notificationSettings = $this->notificationTypeRepository
         ->storeOrUpdateUserNotification($request->toArray(), $request->auth->user_id);
-                
+
         for ($i=0; $i<count($notificationSettings); $i++) {
             if ($notificationSettings[$i]['value']) {
                 $settingStatus = config('constants.activity_log_actions.ACTIVATED');
@@ -167,7 +185,7 @@ class NotificationTypeController extends Controller
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED');
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

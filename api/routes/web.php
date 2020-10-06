@@ -23,6 +23,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
+    $router->post('/app/transmute', ['as' => 'transmute', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\AuthController@transmute']);
+
+    /* Logout the user */
+    $router->get('/app/logout', ['as' => 'logout', 'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Auth\AuthController@logout']);
+
     /* Forgot password routing */
     $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
@@ -46,6 +53,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get custom css url  */
     $router->get('/app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
+
+    /* Get custom favicon url  */
+    $router->get('/app/custom-favicon', ['as' => 'custom_favicon', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Tenant\TenantOptionController@getCustomFavicon']);
 
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
@@ -249,13 +260,12 @@ $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image'
 /* Fetch pending goal requests */
 $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
     'middleware' =>
-    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
+    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
 /* Export pending goal requests */
 $router->get('/app/timesheet/goal-requests/export', ['as' => 'app.timesheet.goal-requests.export',
-    'middleware' =>
-    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@exportPendingGoalRequests']);
 
 /* Store timesheet data */
@@ -272,13 +282,12 @@ $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
 
 /* Fetch pending time requests */
 $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
-    'middleware' =>
-    'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
+    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_time_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
 /* Export pending time requests */
 $router->get('/app/timesheet/time-requests/export', ['as' => 'app.timesheet.time-requests.export',
-    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
     'uses' => 'App\Timesheet\TimesheetController@exportPendingTimeRequests']);
 
 /* Get timesheet data */
@@ -311,24 +320,22 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' =>
-        'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission/export', ['as' => 'app.volunteer.history.time-mission.export',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportTimeMissionHistory']);
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' =>
-        'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission/export', ['as' => 'app.volunteer.history.goal-mission.export',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_goal_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
     /* News listing */
@@ -615,6 +622,8 @@ $router->group(
             $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
             $router->patch('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
             $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
+            $router->get('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@getFavicon']);
+            $router->post('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@uploadFavicon']);
         }
     );
 

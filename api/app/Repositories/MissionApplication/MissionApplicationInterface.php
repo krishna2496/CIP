@@ -15,7 +15,7 @@ interface MissionApplicationInterface
      * @return int
      */
     public function checkApplyMission(int $missionId, int $userId): int;
-  
+
     /**
      * Add mission application.
      *
@@ -67,19 +67,21 @@ interface MissionApplicationInterface
      * @param int $userId
      * @param $year
      * @param $month
+     * @param null|array $missionTypes
      * @return null|int
      */
-    public function missionApplicationCount(int $userId, $year, $month): ?int;
-    
+    public function missionApplicationCount(int $userId, $year, $month, array $missionTypes = null): ?int;
+
     /**
      * Get organization count.
      *
      * @param int $userId
      * @param $year
      * @param $month
+     * @param null|array $missionTypes
      * @return null|array
      */
-    public function organizationCount(int $userId, $year, $month): ?array;
+    public function organizationCount(int $userId, $year, $month, array $missionTypes = null): ?array;
 
     /**
      * Get pending application count.
@@ -87,7 +89,8 @@ interface MissionApplicationInterface
      * @param int $userId
      * @param $year
      * @param $month
+     * @param null|array $missionTypes
      * @return null|int
      */
-    public function pendingApplicationCount(int $userId, $year, $month): ?int;
+    public function pendingApplicationCount(int $userId, $year, $month, array $missionTypes = null): ?int;
 }

@@ -14,7 +14,7 @@
                     </div>
                     <div class="inner-content-wrap">
                         <div class="dashboard-table">
-                            <div class="table-outer">
+                            <div class="table-outer" v-if="isTimeMissionActive">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.volunteering_hours}}</h3>
                                     <VolunteeringTimesheetTableHeader :currentWeek="timeSheetHourCurrentDate"
@@ -87,7 +87,7 @@
                                     </b-button>
                                 </div>
                             </div>
-                            <ul class="meta-data-list">
+                            <ul class="meta-data-list" v-if="isTimeMissionActive">
                                 <li class="approve-indication">{{languageData.label.approved}}</li>
                                 <li class="decline-indication">{{languageData.label.declined}}</li>
                                 <li class="approval-indication">
@@ -95,7 +95,7 @@
                                 </li>
                             </ul>
                             <!--    {{goalMissionData}} -->
-                            <div class="table-outer timesheet-table-outer">
+                            <div class="table-outer timesheet-table-outer" v-if="isGoalMissionActive">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.volunteering_goals}}</h3>
                                     <VolunteeringTimesheetTableHeader :currentWeek="timeSheetGoalCurrentDate"
@@ -167,7 +167,7 @@
                                         }">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
-                            <ul class="meta-data-list">
+                            <ul class="meta-data-list"  v-if="isGoalMissionActive">
                                 <li class="approve-indication">{{languageData.label.approved}}</li>
                                 <li class="decline-indication">{{languageData.label.declined}}</li>
                                 <li class="approval-indication">
@@ -175,7 +175,7 @@
                                 </li>
                             </ul>
                             <div class="timesheet-Request">
-                            <VolunteeringRequest :headerField="timesheetRequestFields" requestType="time"
+                            <VolunteeringRequest  v-if="isTimeMissionActive" :headerField="timesheetRequestFields" requestType="time"
                                 :items="timesheetRequestItems" :headerLable="timeRequestLabel"
                                 :currentPage="hourRequestCurrentPage" :totalRow="hourRequestTotalRow"
                                 @updateCall="getTimeRequest" exportUrl="app/timesheet/time-requests/export"
@@ -183,7 +183,7 @@
                                 :fileName="languageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
                                 :totalPages="timeMissionTotalPage" />
                             </div>
-                            <VolunteeringRequest :headerField="goalRequestFields" requestType="goal"
+                            <VolunteeringRequest  v-if="isGoalMissionActive" :headerField="goalRequestFields" requestType="goal"
                                                  :items="goalRequestItems" :headerLable="goalRequestLabel"
                                                  :currentPage="goalRequestCurrentPage" :totalRow="goalRequestTotalRow"
                                                  @updateCall="getGoalRequest" :perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
@@ -232,7 +232,7 @@
     import AddVolunteeringAction from "../components/AddVolunteeringAction";
     import VolunteeringRequest from "../components/VolunteeringRequest";
     import store from '../store';
-
+    import constants from '../constant';
     import {
         volunteerTimesheetHours,
         fetchTimeSheetDocuments,
@@ -348,7 +348,9 @@
                 goalPage: 1,
                 goalTotalRow: 0,
                 goalPerPage: 0,
-                goalsTableLoaderActive : true
+                goalsTableLoaderActive : true,
+                isGoalMissionActive : false,
+                isTimeMissionActive : false
             };
     },
     updated() {
@@ -1257,6 +1259,11 @@
               this.timesheetRequestItems = currentData;
             })
           }
+
+          if (!this.isGoalMissionActive) {
+            this.isComponentLoaded = true;
+            this.isAllVisible = this.timeMissionData.length;
+          }
         })
       },
       getGoalRequest(currentPage) {
@@ -1331,17 +1338,19 @@
       this.timeRequestLabel = this.languageData.label.hours_requests
       this.goalRequestLabel = this.languageData.label.goals_requests
       this.userTimezone = store.state.userTimezone
-      this.getVolunteerHoursData();
-      setTimeout(() => {
-        this.getVolunteerGoalsData();
-      }, 90)
+      this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION)
+      this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
+
       this.isShownComponent = true;
-      setTimeout(() => {
+      if (this.isTimeMissionActive) {
+        this.getVolunteerHoursData();
         this.getTimeRequestData(this.hourRequestCurrentPage);
-      }, 80)
-      setTimeout(() => {
+      }
+
+      if (this.isGoalMissionActive) {
+        this.getVolunteerGoalsData();
         this.getGoalRequestData(this.goalRequestCurrentPage);
-      }, 100)
+      }
 
       let timeRequestFieldArray = [
         this.languageData.label.mission,
