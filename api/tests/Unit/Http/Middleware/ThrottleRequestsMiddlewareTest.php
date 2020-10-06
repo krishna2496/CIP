@@ -6,10 +6,9 @@ use App\Helpers\ResponseHelper;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ThrottleRequestsMiddlewareTest extends TestCase
+class ThrottleRequestsMiddlewareTest extends \TestCase
 {
     /**
      * @var RateLimiter
@@ -27,8 +26,9 @@ class ThrottleRequestsMiddlewareTest extends TestCase
     private $middleware;
 
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
         $this->responseHelper = $this->createMock(ResponseHelper::class);
         $this->limiter = $this->createMock(RateLimiter::class);
 

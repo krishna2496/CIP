@@ -290,6 +290,544 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    public function testUpdateInvalidValidation()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->user_id = 1;
+        $symfonyRequest->email = 'testuser@email.com';
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData)
+            ->shouldReceive('replace')
+            ->andReturn($exceptData);
+        $request->auth = $symfonyRequest;
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userCustomFieldRepository = $this->mock(UserCustomFieldRepository::class);
+        $userFilterRepository = $this->mock(UserFilterRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userService = $this->mock(UserService::class);
+
+        $user = new User();
+        $user->setAttribute('pseudonymize_at', null);
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('is_profile_complete', 1);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1, false)
+            ->andReturn(new JsonResponse);
+
+        $this->withoutEvents();
+        $controller = $this->getController(
+            $userRepository,
+            $userCustomFieldRepository,
+            null,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            null,
+            null,
+            $userService
+        );
+
+        $response = $controller->update($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateInvalidLanguageId()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->user_id = 1;
+        $symfonyRequest->email = 'testuser@email.com';
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData)
+            ->shouldReceive('replace')
+            ->andReturn($exceptData);
+        $request->auth = $symfonyRequest;
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userCustomFieldRepository = $this->mock(UserCustomFieldRepository::class);
+        $userFilterRepository = $this->mock(UserFilterRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userService = $this->mock(UserService::class);
+
+        $user = new User();
+        $user->setAttribute('pseudonymize_at', null);
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('is_profile_complete', 1);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1, false)
+            ->andReturn(true);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(false);
+
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+            );
+
+        $this->withoutEvents();
+
+        $controller = $this->getController(
+            $userRepository,
+            $userCustomFieldRepository,
+            null,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            null,
+            null,
+            $userService
+        );
+
+        $response = $controller->update($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateInvalidMaximumSkill()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [
+                ['skill_id' => 1],
+                ['skill_id' => 2],
+                ['skill_id' => 3],
+                ['skill_id' => 4],
+                ['skill_id' => 5],
+                ['skill_id' => 6],
+                ['skill_id' => 7],
+                ['skill_id' => 8],
+                ['skill_id' => 9],
+                ['skill_id' => 10],
+                ['skill_id' => 11],
+                ['skill_id' => 12],
+                ['skill_id' => 13],
+                ['skill_id' => 14],
+                ['skill_id' => 15],
+                ['skill_id' => 16]
+            ]
+        ];
+
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->user_id = 1;
+        $symfonyRequest->email = 'testuser@email.com';
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData)
+            ->shouldReceive('replace')
+            ->andReturn($exceptData);
+        $request->auth = $symfonyRequest;
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userCustomFieldRepository = $this->mock(UserCustomFieldRepository::class);
+        $userFilterRepository = $this->mock(UserFilterRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userService = $this->mock(UserService::class);
+
+        $user = new User();
+        $user->setAttribute('pseudonymize_at', null);
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('is_profile_complete', 1);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1, false)
+            ->andReturn(true);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                trans('messages.custom_error_message.ERROR_SKILL_LIMIT')
+            );
+
+        $this->withoutEvents();
+
+        $controller = $this->getController(
+            $userRepository,
+            $userCustomFieldRepository,
+            null,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            null,
+            null,
+            $userService
+        );
+
+        $response = $controller->update($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateSuccessWithPseudonymizedUserData()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]],
+            'department' => 'The Department',
+            'employee_id' => 123
+        ];
+        $notPseudonymizeFields = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]]
+        ];
+
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->user_id = 1;
+        $symfonyRequest->email = 'testuser@email.com';
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData)
+            ->shouldReceive('replace')
+            ->andReturn($exceptData);
+        $request->auth = $symfonyRequest;
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userCustomFieldRepository = $this->mock(UserCustomFieldRepository::class);
+        $userFilterRepository = $this->mock(UserFilterRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userService = $this->mock(UserService::class);
+
+        $user = new User();
+        $user->setAttribute('pseudonymize_at', '2020-10-02 12:32:29.0');
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('is_profile_complete', 1);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1, false)
+            ->andReturn(true);
+
+        $userService
+            ->shouldReceive('unsetPseudonymizedFields')
+            ->once()
+            ->with($request->all())
+            ->andReturn($notPseudonymizeFields);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $userFilterRepository
+            ->shouldReceive('saveFilter')
+            ->once()
+            ->with($request)
+            ->andReturn(new UserFilter);
+
+        $userService
+            ->shouldReceive('update')
+            ->once()
+            ->with($notPseudonymizeFields, 1)
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('findById')
+            ->once()
+            ->with(1)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('updateSkill')
+            ->once()
+            ->with($notPseudonymizeFields, 1)
+            ->andReturn(true);
+
+        $helpers
+            ->shouldReceive('syncUserData')
+            ->once()
+            ->with($request, $user)
+            ->andReturn(true);
+
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_UPDATED'),
+                ['user_id' => 1, 'is_profile_complete' => 1]
+            );
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $controller = $this->getController(
+            $userRepository,
+            $userCustomFieldRepository,
+            null,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            null,
+            null,
+            $userService
+        );
+
+        $response = $controller->update($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateSuccessWithPseudonymizedAtField()
+    {
+        $mergeData = [
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+        $data = [
+            'password' => 'Qwerty1234',
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null,
+            'skills' => [['skill_id' => 1]],
+            'department' => 'The Department',
+            'employee_id' => 123,
+            'pseudonymize_at' => '0000-00-00 00:00:00'
+        ];
+
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->user_id = 1;
+        $symfonyRequest->email = 'testuser@email.com';
+
+        $request = $this->mock(Request::class);
+        $request
+            ->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn($data)
+            ->shouldReceive('merge')
+            ->andReturn(array_merge($data, $mergeData))
+            ->shouldReceive('except')
+            ->andReturn($exceptData)
+            ->shouldReceive('replace')
+            ->andReturn($exceptData);
+        $request->auth = $symfonyRequest;
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userCustomFieldRepository = $this->mock(UserCustomFieldRepository::class);
+        $userFilterRepository = $this->mock(UserFilterRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userService = $this->mock(UserService::class);
+
+        $user = new User();
+        $user->setAttribute('pseudonymize_at', '0000-00-00 00:00:00');
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('is_profile_complete', 1);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1, false)
+            ->andReturn(true);
+
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $userFilterRepository
+            ->shouldReceive('saveFilter')
+            ->once()
+            ->with($request)
+            ->andReturn(new UserFilter);
+
+        $userService
+            ->shouldReceive('update')
+            ->once()
+            ->with(array_merge($request->all(), ['status' => 0]), 1)
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('findById')
+            ->once()
+            ->with(1)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('updateSkill')
+            ->once()
+            ->with(array_merge($request->all(), ['status' => 0]), 1)
+            ->andReturn(true);
+
+        $helpers
+            ->shouldReceive('syncUserData')
+            ->once()
+            ->with($request, $user)
+            ->andReturn(true);
+
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_UPDATED'),
+                ['user_id' => 1, 'is_profile_complete' => 1]
+            );
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $controller = $this->getController(
+            $userRepository,
+            $userCustomFieldRepository,
+            null,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            null,
+            null,
+            $userService
+        );
+
+        $response = $controller->update($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
     private function getController(
         UserRepository $userRepository = null,
         UserCustomFieldRepository $userCustomFieldRepository = null,

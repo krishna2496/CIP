@@ -377,6 +377,112 @@ class UserServiceTest extends TestCase
     }
 
     /**
+     * Data provider for ::testStoreWithCustomFields().
+     *
+     * @return  array<string, array<int, mixed>>
+     */
+    public function storeWithCustomFieldsData(): array
+    {
+        $_this = $this;
+        $request = [
+            'custom_fields' => [
+                [
+                    'field_id' => 1,
+                    'value' => 'First Name'
+                ]
+            ]
+        ];
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+        $userCustomFieldValue = new UserCustomFieldValue();
+        $getTenantOption = function ($value) {
+            $tenantOption = new TenantOption();
+            $tenantOption->option_name = TenantOption::MAXIMUM_USERS;
+            $tenantOption->option_value = $value;
+            return $tenantOption;
+        };
+
+        return [
+            [
+                function () use ($_this, $request, $user, $userCustomFieldValue) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldReceive('store')
+                        ->once()
+                        ->with($request)
+                        ->andReturn($user);
+
+                    $userRepository->shouldReceive('updateCustomFields')
+                        ->once()
+                        ->with($request['custom_fields'], 1)
+                        ->andReturn($userCustomFieldValue);
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn(null);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request
+            ]
+        ];
+    }
+
+    /**
+     * @param  callable
+     * @param  array
+     * @param  string|null
+     *
+     * @covers  ::store
+     *
+     * @dataProvider  storeWithCustomFieldsData
+     */
+    public function testStoreWithCustomFields(callable $getUserService, array $request): void
+    {
+        $userService = $getUserService();
+        $userService->store($request);
+    }
+
+    /**
+     * @covers  ::update
+     */
+    public function testUpdateWithCustomFields(): void
+    {
+        $request = [
+            'custom_fields' => [
+                [
+                    'field_id' => 1,
+                    'value' => 'First Name'
+                ]
+            ]
+        ];
+        $id = 1;
+
+        $user = new User();
+        $user->setAttribute('id', $id);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository->shouldReceive('update')
+            ->once()
+            ->with($request, $id)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('updateCustomFields')
+            ->once()
+            ->with($request['custom_fields'], 1)
+            ->andReturn(new UserCustomFieldValue);
+
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
+        $userService = $this->getService($userRepository, $tenantOptionService);
+        $res = $userService->update($request, $id);
+
+        $this->assertSame($user, $res);
+    }
+
+    /**
     * @testdox Test link skill
     */
     public function testLinkSkill()

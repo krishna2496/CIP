@@ -176,6 +176,11 @@ class UserControllerTest extends TestCase
         ], json_decode($response->getContent(), true));
     }
 
+    /**
+    * @testdox Test store success scenario
+    *
+    * @return void
+    */
     public function testStoreSuccess()
     {
         $mergeData = [
@@ -275,6 +280,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test store invalid validation scenario
+    *
+    * @return void
+    */
     public function testStoreInvalidValidation()
     {
         $mergeData = [
@@ -321,6 +331,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test store invalid language ID scenario
+    *
+    * @return void
+    */
     public function testStoreInvalidLanguageId()
     {
         $mergeData = [
@@ -383,6 +398,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test store will throw exception scenario
+    *
+    * @return void
+    */
     public function testStoreInvalidThrowException()
     {
         $mergeData = [
@@ -456,6 +476,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test update success scenario
+    *
+    * @return void
+    */
     public function testUpdateSuccess()
     {
         $mergeData = [
@@ -556,6 +581,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test update success with pseudonymized user data scenario
+    *
+    * @return void
+    */
     public function testUpdateSuccessWithPseudonymizeUserData()
     {
         $mergeData = [
@@ -671,6 +701,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test update success with pseudonymized_at field scenario
+    *
+    * @return void
+    */
     public function testUpdateSuccessWithPseudonymizeAtField()
     {
         $mergeData = [
@@ -774,6 +809,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test update invalid validation scenario
+    *
+    * @return void
+    */
     public function testUpdateInvalidValidation()
     {
         $mergeData = [
@@ -830,6 +870,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test update invalid language ID scenario
+    *
+    * @return void
+    */
     public function testUpdateInvalidLanguageId()
     {
         $mergeData = [
@@ -902,6 +947,11 @@ class UserControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /**
+    * @testdox Test update will throw exception scenario
+    *
+    * @return void
+    */
     public function testUpdateInvalidThrowException()
     {
         $mergeData = [
