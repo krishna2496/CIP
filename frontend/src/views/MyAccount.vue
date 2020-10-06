@@ -280,16 +280,16 @@
                             <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required"
                                  class="invalid-feedback">
                                 {{ languageData.errors.field_is_required }}</div>
-                            <div v-if="passwordSubmit && !$v.resetPassword.newPassword.minLength"
+                            <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.minLength"
                                  class="invalid-feedback">
                                 {{ languageData.errors.invalid_password }}</div>
-                            <div v-if="passwordSubmit && !$v.resetPassword.newPassword.containsUpperCase" class="invalid-feedback">
+                            <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.containsUpperCase" class="invalid-feedback">
                                 {{ languageData.errors.password_should_contain_uppercase }}
                             </div>
-                            <div v-if="passwordSubmit && !$v.resetPassword.newPassword.containsLowerCase" class="invalid-feedback">
+                            <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.containsLowerCase" class="invalid-feedback">
                                 {{ languageData.errors.password_should_contain_lowercase }}
                             </div>
-                            <div v-if="passwordSubmit && !$v.resetPassword.newPassword.containsNumber" class="invalid-feedback">
+                            <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.containsNumber" class="invalid-feedback">
                                 {{ languageData.errors.password_should_contain_numbers }}
                             </div>
                         </b-form-group>

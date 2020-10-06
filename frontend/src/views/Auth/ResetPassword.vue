@@ -28,16 +28,16 @@
                         <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">
                             {{ languageData.errors.password_required }}
                         </div>
-                        <div v-if="submitted && !$v.resetPassword.password.minLength" class="invalid-feedback">
+                        <div v-else-if="submitted && !$v.resetPassword.password.minLength" class="invalid-feedback">
                             {{ languageData.errors.invalid_password }}
                         </div>
-                        <div v-if="submitted && !$v.resetPassword.password.containsUpperCase" class="invalid-feedback">
+                        <div v-else-if="submitted && !$v.resetPassword.password.containsUpperCase" class="invalid-feedback">
                             {{ languageData.errors.password_should_contain_uppercase }}
                         </div>
-                        <div v-if="submitted && !$v.resetPassword.password.containsLowerCase" class="invalid-feedback">
+                        <div v-else-if="submitted && !$v.resetPassword.password.containsLowerCase" class="invalid-feedback">
                             {{ languageData.errors.password_should_contain_lowercase }}
                         </div>
-                        <div v-if="submitted && !$v.resetPassword.password.containsNumber" class="invalid-feedback">
+                        <div v-else-if="submitted && !$v.resetPassword.password.containsNumber" class="invalid-feedback">
                             {{ languageData.errors.password_should_contain_numbers }}
                         </div>
                     </b-form-group>
@@ -124,7 +124,7 @@
         password: {
           required,
           minLength: minLength(constants.PASSWORD_MIN_LENGTH),
-          containsUpperCase: function(value) {
+          /*containsUpperCase: function(value) {
             return /(?=.*[A-Z])/.test(value);
           },
           containsLowerCase: function(value) {
@@ -132,7 +132,7 @@
           },
           containsNumber: function(value) {
             return /(?=.*[0-9])/.test(value);
-          }
+          }*/
         },
         confirmPassword: {
           required,
