@@ -64,7 +64,8 @@ return [
         'CURRENCY_IS_NOT_VALID_ONLY' => ' is not valid',
         'ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE' => 'Currency should be active to set it as default.',
         'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => 'Cannot deactivate the default currency.',
-        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Atleast volunterring time or volunterring goal should be active for tenant while volunteering setting is enabled.'
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Atleast volunterring time or volunterring goal should be active for tenant while volunteering setting is enabled.',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteer time or volunteering goal setting.'
     ],
     'email_text' => [
         'ERROR' => 'Error',

@@ -93,7 +93,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
                     $volunteeringGoal = $this->tenantSetting->where('key', config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'))->first();
                     $volunteeringGoalSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteeringGoal->tenant_setting_id, 'tenant_id' => $tenantId])->first();
                     if (!$volunteeringGoalSetting) {
-                        return false;
+                        return trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE');
                     }
                 }
 
@@ -103,12 +103,22 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
                     $volunteeringTimeSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteeringTime->tenant_setting_id, 'tenant_id' => $tenantId])->first();
                     
                     if (!$volunteeringTimeSetting) {
-                        return false;
+                        return trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE');
                     }
                 }
 
             }
         }
-        return true;
+        // Check if volunteering setting is disable the to now allow to update time and goal
+        if(!$volunteeringSetting){
+            foreach ($data['settings'] as $value) { 
+                $tenantSetting = $this->tenantSetting->where('tenant_setting_id', $value['tenant_setting_id'])->first();
+                if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') || 
+                    $tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')){
+                    return trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED');
+                }
+            }
+        }
+        return false;
     }
 }
