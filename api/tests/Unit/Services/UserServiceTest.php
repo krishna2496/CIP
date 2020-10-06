@@ -223,7 +223,7 @@ class UserServiceTest extends TestCase
                     $userRepository = $_this->mock(UserRepository::class);
                     $userRepository->shouldReceive('getUserCount')
                         ->once()
-                        ->with(true)
+                        ->with(true, false)
                         ->andReturn(0);
                     $userRepository->shouldReceive('store')
                         ->once()
@@ -248,7 +248,7 @@ class UserServiceTest extends TestCase
                     $userRepository = $_this->mock(UserRepository::class);
                     $userRepository->shouldReceive('getUserCount')
                         ->once()
-                        ->with(true)
+                        ->with(true, false)
                         ->andReturn(1);
                     $userRepository->shouldNotReceive('store');
 
@@ -270,7 +270,7 @@ class UserServiceTest extends TestCase
                     $userRepository = $_this->mock(UserRepository::class);
                     $userRepository->shouldReceive('getUserCount')
                         ->once()
-                        ->with(true)
+                        ->with(true, false)
                         ->andReturn(2);
                     $userRepository->shouldNotReceive('store');
 

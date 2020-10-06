@@ -10,6 +10,7 @@ use App\Repositories\User\UserRepository;
 use App\Services\TimesheetService;
 use App\Services\UserService;
 use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\Timezone\TimezoneRepository;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -73,6 +74,7 @@ class UserControllerTest extends TestCase
             )
             ->andReturn($jsonResponse);
         $notificationRepository = $this->mock(NotificationRepository::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
 
         $service = $this->getController(
             null,
@@ -82,7 +84,8 @@ class UserControllerTest extends TestCase
             null,
             null,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
 
         $response = $service->contentStatistics($request, $user->user_id);
@@ -146,6 +149,7 @@ class UserControllerTest extends TestCase
             )
             ->andReturn($jsonResponse);
         $notificationRepository = $this->mock(NotificationRepository::class);
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
 
         $service = $this->getController(
             null,
@@ -155,7 +159,8 @@ class UserControllerTest extends TestCase
             null,
             null,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
 
         $response = $service->volunteerSummary($request, $user->user_id);
@@ -850,6 +855,7 @@ class UserControllerTest extends TestCase
         $timesheetService = $timesheetService ?? $this->mock(TimesheetService::class);
         $helpers = $helpers ?? $this->mock(Helpers::class);
         $notificationRepository = $notificationRepository ?? $this->mock(NotificationRepository::class);
+         $timezoneRepository = $this->mock(TimezoneRepository::class);
 
         return new UserController(
             $userRepository,
@@ -859,7 +865,8 @@ class UserControllerTest extends TestCase
             $timesheetService,
             $helpers,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
     }
 

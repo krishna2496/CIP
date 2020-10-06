@@ -47,6 +47,7 @@ return [
         'array'   => ":attribute 不得超过 :max 项。",
     ],
     'mimes'                => ":attribute 必须是以下文件类型：。:values。",
+    'mimetypes'            => ":attribute 必须是以下文件类型：。:values。",
     'min'                  => [
         'numeric' => ":attribute 必须至少是 :min。",
         'file'    => ":attribute 必须至少是 :min 千字节。",
