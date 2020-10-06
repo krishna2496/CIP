@@ -45,21 +45,21 @@ class MissionRepositoryTest extends TestCase
     {
         $requestParams = [
             'theme_id' => 1,
-            'start_date' => "2019-05-15 10:40:00",
-            'end_date' => "2022-10-15 10:40:00",
+            'start_date' => '2019-05-15 10:40:00',
+            'end_date' => '2022-10-15 10:40:00',
             'total_seats' => rand(10, 1000),
-            'mission_type' => config("constants.mission_type.DONATION"),
-            'publication_status' => config("constants.publication_status.APPROVED"),
+            'mission_type' => config('constants.mission_type.DONATION'),
+            'publication_status' => config('constants.publication_status.APPROVED'),
             'organisation_id' => 1,
             'organisation_name' => str_random(10),
             'availability_id' => 1,
             'location' => [
                 'city_id' => 1,
                 'country_id' => 233,
-                'country_code' => "US"
+                'country_code' => 'US'
             ],
             'donation_attribute' => [
-                'goal_amount_currency' => "CAD",
+                'goal_amount_currency' => 'CAD',
                 'goal_amount' => 253,
                 'show_goal_amount' => 1,
                 'show_donation_percentage' => 0,
@@ -71,55 +71,55 @@ class MissionRepositoryTest extends TestCase
             ],
             'mission_detail'=> [
                 [
-                  'lang' => "en",
-                  'title' => "New Organization Mission created",
-                  'short_description' => "this is testing api with all mission details",
-                  'objective' => "To test and check",
-                  'label_goal_achieved' => "test percentage",
-                  'label_goal_objective' => "check test percentage",
-                  'section' => [
-                    [
-                      'title' => "Section title",
-                      'description' => "Section description"
+                    'lang' => 'en',
+                    'title' => 'New Organization Mission created',
+                    'short_description' => 'this is testing api with all mission details'
+                    ,
+                    'objective' => 'To test and check',
+                    'label_goal_achieved' => 'test percentage',
+                    'label_goal_objective' => 'check test percentage',
+                    'section' => [
+                        [
+                            'title' => 'Section title',
+                            'description' => 'Section description'
+                        ]
+                    ],
+                    'custom_information' => [
+                        [
+                            'title' => 'Customer info',
+                            'description' => 'Description of customer info'
+                        ]
                     ]
-                  ],
-                  'custom_information' => [
-                    [
-                      'title' => "Customer info",
-                      'description' => "Description of customer info"
-                    ]
-                  ]
                 ]
-              ],
-              'organisation' => [
-                  'organisation_id' => '1',
-                  'organisation_name' => 'namee'
-              ]
-              
+            ],
+            'organization' => [
+                'organization_id' => '1',
+                'name' => 'name'
+            ]
         ];
 
         $languagesArray = [
             (object)[
                 'language_id' => 1,
-                'name' => "English",
-                'code' => "en",
-                'status' => "1",
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
             ],
             (object)[
                 'language_id' => 2,
-                'name' => "French",
-                'code' => "fr",
-                'status' => "1",
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
             ]
         ];
 
-        $requestData = new Request($requestParams);
+        $request = new Request($requestParams);
 
         $mission = $this->mock(Mission::class);
         $timeMission = $this->mock(TimeMission::class);
@@ -141,7 +141,30 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $countryRepository = $this->mock(CountryRepository::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $request->organization['organization_id'],
+            'name' => $request->organization['name']
+        ]);
         $organization = $this->mock(Organization::class);
+        $organization->shouldReceive('updateOrCreate')
+            ->once()
+            ->with(
+                [
+                    'organization_id' => $request->organization['organization_id']
+                ],
+                $request->organization
+            )
+            ->andReturn($organizationObject);
+
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($request)
+            ->andReturn([config('constants.tenant_settings.DONATION_MISSION')]);
 
         $modelsService = $this->modelService(
             $mission,
@@ -153,6 +176,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpact,
             $organization,
             $missionTab,
             $missionTabLanguage,
@@ -165,32 +189,36 @@ class MissionRepositoryTest extends TestCase
             ->shouldReceive('create')
             ->once()
             ->andReturn($missionModel);
- 
+
         $collectionLanguageData = collect($languagesArray);
-       
+
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($collectionLanguageData);
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($request)
+            ->andReturn($languagesArray[0]);
 
-        $countryId= $requestParams['location']['country_id'];
-        
+        $countryId = $requestParams['location']['country_id'];
+
         $countryRepository->shouldReceive('getCountryId')
             ->once()
-            ->with($requestData->location['country_code'])
+            ->with($request->location['country_code'])
             ->andReturn($countryId);
 
         $modelsService->missionLanguage->shouldReceive('create')
             ->once()
             ->andReturn(false);
-        
+
         $modelsService->donationAttribute->shouldReceive('create')
             ->once()
             ->andReturn(false);
-        
+
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')
             ->once()
-            ->with($requestData)
+            ->with($request)
             ->andReturn($tenantName);
 
         $repository = $this->getRepository(
@@ -200,12 +228,15 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $missionImpactRepository,
+            $tenantActivatedSettingRepository,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
 
-        $response = $repository->store($requestData);
-        
-        $this->assertInstanceOf(mission::class, $response);
+        $response = $repository->store($request);
+
+        $this->assertInstanceOf(Mission::class, $response);
     }
 
     /**
@@ -216,14 +247,14 @@ class MissionRepositoryTest extends TestCase
     public function testUpdateDonationMissionSuccess()
     {
         $requestParams = [
-            'mission_type' => config("constants.mission_type.DONATION"),
+            'mission_type' => config('constants.mission_type.DONATION'),
             'location' => [
                 'city_id' => 1,
                 'country_id' => 233,
-                'country_code' => "US"
+                'country_code' => 'US'
             ],
             'donation_attribute' => [
-                'goal_amount_currency' => "CAD",
+                'goal_amount_currency' => 'CAD',
                 'goal_amount' => 253,
                 'show_goal_amount' => 1,
                 'show_donation_percentage' => 0,
@@ -238,25 +269,25 @@ class MissionRepositoryTest extends TestCase
         $languagesArray = [
             (object)[
                 'language_id' => 1,
-                'name' => "English",
-                'code' => "en",
-                'status' => "1",
+                'name' => 'English',
+                'code' => 'en',
+                'status' => '1',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null
             ],
             (object)[
                 'language_id' => 2,
-                'name' => "French",
-                'code' => "fr",
-                'status' => "1",
+                'name' => 'French',
+                'code' => 'fr',
+                'status' => '1',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null
             ]
         ];
 
-        $requestData = new Request($requestParams);
+        $request = new Request($requestParams);
 
         $mission = $this->mock(Mission::class);
         $timeMission = $this->mock(TimeMission::class);
@@ -279,6 +310,15 @@ class MissionRepositoryTest extends TestCase
         $countryRepository = $this->mock(CountryRepository::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
         $organization = $this->mock(Organization::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($request)
+            ->andReturn([config('constants.tenant_settings.DONATION_MISSION')]);
 
         $modelsService = $this->modelService(
             $mission,
@@ -290,6 +330,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpact,
             $organization,
             $missionTab,
             $missionTabLanguage,
@@ -297,6 +338,7 @@ class MissionRepositoryTest extends TestCase
         );
 
         $missionModel = new Mission();
+        $missionModel->donationAttribute = $donationAttribute;
         $missionId = 13;
         $missionModel->mission_id = $missionId;
         $modelsService->mission
@@ -304,24 +346,28 @@ class MissionRepositoryTest extends TestCase
             ->once()
             ->with($missionId)
             ->andReturn($missionModel);
-        
+
         $collectionLanguageData = collect($languagesArray);
-       
+
         $languageHelper->shouldReceive('getLanguages')
             ->once()
             ->andReturn($collectionLanguageData);
+        $languageHelper->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($request)
+            ->andReturn($languagesArray[0]);
 
-        $countryId= $requestParams['location']['country_id'];
-        
+        $countryId = $requestParams['location']['country_id'];
+
         $countryRepository->shouldReceive('getCountryId')
             ->once()
-            ->with($requestData->location['country_code'])
+            ->with($request->location['country_code'])
             ->andReturn($countryId);
-        
+
         $tenantName = str_random(10);
         $helpers->shouldReceive('getSubDomainFromRequest')
             ->once()
-            ->with($requestData)
+            ->with($request)
             ->andReturn($tenantName);
 
         $repository = $this->getRepository(
@@ -331,12 +377,15 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $missionImpactRepository,
+            $tenantActivatedSettingRepository,
+            $missionUnitedNationSDGRepository,
             $missionTabRepository
         );
-        
-        $response = $repository->update($requestData, $missionId);
-        
-        $this->assertInstanceOf(mission::class, $response);
+
+        $response = $repository->update($request, $missionId);
+
+        $this->assertInstanceOf(Mission::class, $response);
     }
 
     /**
@@ -370,9 +419,9 @@ class MissionRepositoryTest extends TestCase
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
-        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
-        $missionImpact = $this->mock(MissionImpact::Class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionImpact = $this->mock(MissionImpact::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -392,9 +441,9 @@ class MissionRepositoryTest extends TestCase
         );
 
         $modelService->missionTab
-        ->shouldReceive('deleteMissionTabByMissionTabId')
-        ->with($missionTabId)
-        ->andReturn();
+            ->shouldReceive('deleteMissionTabByMissionTabId')
+            ->with($missionTabId)
+            ->andReturn();
 
         $repository = $this->getRepository(
             $languageHelper,
@@ -486,7 +535,6 @@ class MissionRepositoryTest extends TestCase
             ->with($request)
             ->andReturn($defaultLanguage);
 
-
         $countryId = 1;
         $countryRepository = $this->mock(CountryRepository::class);
         $countryRepository->shouldReceive('getCountryId')
@@ -573,9 +621,9 @@ class MissionRepositoryTest extends TestCase
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
-        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
-        $missionImpact = $this->mock(MissionImpact::Class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionImpact = $this->mock(MissionImpact::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -712,8 +760,8 @@ class MissionRepositoryTest extends TestCase
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $organization = $this->mock(Organization::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $missionImpact = $this->mock(MissionImpact::class);
 
         $modelService = $this->modelService(

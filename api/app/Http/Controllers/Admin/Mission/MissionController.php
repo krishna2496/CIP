@@ -3,27 +3,27 @@
 namespace App\Http\Controllers\Admin\Mission;
 
 use App\Events\Mission\MissionDeletedEvent;
+use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionMedia\MissionMediaRepository;
+use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\Organization\OrganizationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Mission\ModelsService;
+use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
-use App\Repositories\Mission\MissionRepository;
-use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Helpers\ResponseHelper;
-use Validator;
-use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use App\Events\User\UserNotificationEvent;
-use App\Events\User\UserActivityLogEvent;
-use App\Helpers\LanguageHelper;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Repositories\Notification\NotificationRepository;
-use App\Repositories\Organization\OrganizationRepository;
-use App\Services\Mission\ModelsService;
-use App\Helpers\Helpers;
+use Validator;
 
 //!  Mission controller
 /*!
@@ -251,21 +251,6 @@ class MissionController extends Controller
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
             ]
         );
-
-        // check if voluteering mission setting enable or not for time/goal mission
-        $isVolunteeringMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.VOLUNTEERING_MISSION'),
-            $request
-        );
-
-        if (!$isVolunteeringMissionEnable && ($request->get('mission_type') == config('constants.mission_type.TIME') || $request->get('mission_type') == config('constants.mission_type.GOAL'))) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                trans('messages.custom_error_message.VOLUNTEERING_MISSION_PERMISSION_DENIED')
-            );
-        }
 
         // If request parameter have any error
         if ($validator->fails()) {
@@ -510,21 +495,6 @@ class MissionController extends Controller
                 'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
-    
-        // check if voluteering mission setting enable or not for time/goal mission
-        $isVolunteeringMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            config('constants.tenant_settings.VOLUNTEERING_MISSION'),
-            $request
-        );
-
-        if (!$isVolunteeringMissionEnable && ($request->get('mission_type') == config('constants.mission_type.TIME') || $request->get('mission_type') == config('constants.mission_type.GOAL'))) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                trans('messages.custom_error_message.VOLUNTEERING_MISSION_PERMISSION_DENIED')
-            );
-        }
 
         // If request parameter have any error
         if ($validator->fails()) {
