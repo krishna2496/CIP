@@ -2,6 +2,7 @@
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,6 +40,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait,
     CascadeSoftDeletes;
+
+    private const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * The table associated with the model.
@@ -258,11 +261,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @param string $term
      * @param int $userId
      *
-     * @return mixed
+     * @return Collection
      */
-    public function searchUser($term, $userId)
+    public function searchUser(string $term, int $userId)
     {
-        return self::where('user_id', '<>', $userId)->search($term);
+        return $this->where('user_id', '<>', $userId)
+            ->where('status', '=', '1')
+            ->where(function ($query) {
+                $query->whereNull('expiry')
+                    ->orWhere('expiry', '>', (new \DateTimeImmutable())->format(self::DATETIME_FORMAT));
+            })
+            ->search($term);
     }
 
     /**

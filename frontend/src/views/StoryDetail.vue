@@ -103,7 +103,7 @@
                 <div class="story-content-wrap">
                   <div class="story-content cms-content" v-html="storyDetailList.description"></div>
                     <div class="btn-wrap group-btns">
-                        <b-button class="btn-borderprimary icon-btn" @click="searchUsers">
+                        <b-button class="btn-borderprimary icon-btn" @click="handleModal()">
                             <i>
                                 <svg height="512pt" viewBox="0 0 512 512" width="512pt"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -131,42 +131,7 @@
                         </b-link>
                     </div>
                 </div>
-                <b-modal @hidden="hideModal" ref="userDetailModal" modal-class="userdetail-modal" hide-footer size="lg">
-                    <template slot="modal-header" slot-scope="{ close }">
-                        <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                        <h5 class="modal-title">{{languageData.label.search_user}}</h5>
-                    </template>
-                    <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
-                        {{ message }}
-                    </b-alert>
-                    <div class="autocomplete-control">
-                        <div class="autosuggest-container">
-                            <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                                            @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
-                                            :input-props="{
-								id:'autosuggest__input', 
-								placeholder:autoSuggestPlaceholder,
-								ref:'inputAutoSuggest'
-	                        }">
-                                <div slot-scope="{suggestion}">
-                                    <img :src="suggestion.item.avatar" />
-                                    <div>
-                                        {{suggestion.item.first_name}} {{suggestion.item.last_name}}
-                                    </div>
-                                </div>
-                            </VueAutosuggest>
-                        </div>
-                    </div>
-                    <b-form>
-                        <div class="btn-wrap">
-                            <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                                {{ languageData.label.close }}</b-button>
-                            <b-button class="btn-bordersecondary" @click="inviteColleaguesStory" ref="autosuggestSubmit"
-                                      v-bind:disabled="submitDisable">
-                                {{ languageData.label.submit }}</b-button>
-                        </div>
-                    </b-form>
-                </b-modal>
+              <invite-co-worker ref="userDetailModal" entity-type="STORY" :entity-id="storyId"></invite-co-worker>
             </b-container>
         </main>
         <footer>
@@ -179,38 +144,22 @@
   import store from '../store';
   import constants from '../constant';
   import sanitizeHtml from 'sanitize-html'
-
-  import {
-    storyDetail,
-    searchUser,
-    storyInviteColleague
-  } from "../services/service";
-  import {
-    VueAutosuggest
-  } from 'vue-autosuggest';
+  import { storyDetail } from "../services/service";
+  import InviteCoWorker from "@/components/InviteCoWorker";
   export default {
     components: {
       ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
       TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
       Slick,
-      VueAutosuggest
+      InviteCoWorker
     },
     name: "StoryDetail",
     data() {
       return {
-        storyId: this.$route.params.storyId,
+        storyId: parseInt(this.$route.params.storyId),
         isStoryDisplay: true,
         languageData: [],
         sliderToShow: false,
-        showErrorDiv: false,
-        message: null,
-        classVariant: "success",
-        autoSuggestPlaceholder: '',
-        submitDisable: true,
-        invitedUserId: '',
-        query: "",
-        selected: "",
-        currentStory: '',
         slickOptions: {
           autoplay: false,
           arrows: true,
@@ -243,34 +192,10 @@
 
         },
         storyDetailList: null,
-        userList: [],
         columnWidth: 10
       };
     },
-    mounted() {},
-    computed: {
-      filteredOptions() {
-        if (this.userList) {
-          return [{
-            data: this.userList.filter(option => {
-              let firstName = option.first_name.toLowerCase();
-              let lastName = option.last_name.toLowerCase();
-              let email = option.email.toLowerCase();
-              let searchString = firstName + '' + lastName + '' + email;
-              return searchString.indexOf(this.query.toLowerCase()) > -1;
-            })
-          }];
-        }
-      }
-    },
     methods: {
-      hideModal() {
-        this.autoSuggestPlaceholder = ""
-        this.submitDisable = true
-        this.invitedUserId = ""
-        this.query = ""
-        this.selected = ""
-      },
       handleSliderClick(event) {
         event.stopPropagation();
         let hideVideo = document.querySelector(".video-wrap");
@@ -368,73 +293,12 @@
         })
       },
 
-      searchUsers() {
-        searchUser().then(userResponse => {
-          this.userList = userResponse;
-          this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
-          this.showErrorDiv = false;
-          this.message = null;
-          this.$refs.userDetailModal.show();
-          this.currentStory = 1;
-          setTimeout(() => {
-            this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-            var input = document.getElementById("autosuggest__input");
-            input.addEventListener("keyup", (event) => {
-              if (event.keyCode === 13 && !this.submitDisable) {
-                event.preventDefault();
-                this.inviteColleaguesStory()
-              }
-            });
-          }, 100);
-        });
+      handleModal() {
+        this.$refs.userDetailModal.show();
       },
-      onInputChange() {
-        this.submitDisable = true;
-      },
-      // For selected user id.
-      onSelected(item) {
-        if (item) {
-          this.selected = item.item;
-          this.submitDisable = false;
-          this.invitedUserId = item.item.user_id;
-        }
-      },
-      //This is what the <input/> value is set to when you are selecting a suggestion.
-      getSuggestionValue(suggestion) {
-        let firstName = suggestion.item.first_name;
-        let lastName = suggestion.item.last_name;
-        return firstName + ' ' + lastName;
-      },
+
       getDefaultImage() {
         return store.state.imagePath + '/assets/images/' + constants.MISSION_DEFAULT_PLACEHOLDER;
-      },
-      inviteColleaguesStory() {
-        let data = {
-          'story_id': '',
-          'to_user_id': ''
-        }
-        data.story_id = this.storyId;
-        data.to_user_id = this.invitedUserId;
-        storyInviteColleague(data).then(response => {
-          this.submitDisable = true;
-          if (response.error == true) {
-            this.classVariant = "danger";
-            this.message = response.message;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = '';
-            this.showErrorDiv = true;
-          } else {
-            this.query = "";
-            this.selected = "";
-            this.currentMissionId = 0;
-            this.invitedUserId = 0;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = '';
-            this.classVariant = "success";
-            this.message = response.message;
-            this.showErrorDiv = true;
-          }
-        })
       }
     },
     created() {
