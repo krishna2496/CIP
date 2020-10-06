@@ -283,7 +283,7 @@ class UserService
             'first_name' => 'sometimes|required|max:60',
             'last_name' => 'sometimes|required|max:60',
             'email' => 'required|email|unique:user,email,NULL,user_id,deleted_at,NULL',
-            'password' => 'required|min:8',
+            'password' => 'required|min:8|regex:/[0-9]/|regex:/[a-z]/|regex:/[A-Z]/',
             'availability_id' => 'sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL',
             'timezone_id' => 'sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL',
             'language_id' => 'sometimes|required|int',
@@ -323,7 +323,7 @@ class UserService
                 'max:60',
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
             ];
-            $fields['password'] = 'sometimes|required|min:8';
+            $fields['password'] = 'sometimes|required|min:8|regex:/[0-9]/|regex:/[a-z]/|regex:/[A-Z]/';
 
             if (array_key_exists('pseudonymize_at', $request) && $isAdminRequest === true) {
                 $fields = $this->validatePseudonymizeData($fields, $request, $id);
@@ -390,6 +390,12 @@ class UserService
         return $fields;
     }
 
+    /**
+     * Unset the pseudonymized fields of the user
+     *
+     * @param array $data
+     * @return array
+     */
     public function unsetPseudonymizedFields($data)
     {
         $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();

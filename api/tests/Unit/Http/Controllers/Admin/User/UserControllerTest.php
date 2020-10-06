@@ -192,7 +192,8 @@ class UserControllerTest extends TestCase
         $data = [
             'email' => 'testuser@gmail.com',
             'password' => 'Qwerty1234',
-            'language_id' => 1
+            'language_id' => 1,
+            'status' => 1
         ];
 
         $request = $this->mock(Request::class);
@@ -416,7 +417,8 @@ class UserControllerTest extends TestCase
             'password' => 'Qwerty1234',
             'language_id' => 1,
             'timezone_id' => 1,
-            'expiry' => null
+            'expiry' => null,
+            'status' => 1
         ];
 
         $request = $this->mock(Request::class);
@@ -497,7 +499,8 @@ class UserControllerTest extends TestCase
             'language_id' => 1,
             'avatar' => null,
             'expiry' => null,
-            'skills' => [['skill_id' => 1]]
+            'skills' => [['skill_id' => 1]],
+            'status' => 1
         ];
 
         $request = $this->mock(Request::class);
@@ -604,14 +607,16 @@ class UserControllerTest extends TestCase
             'expiry' => null,
             'skills' => [['skill_id' => 1]],
             'department' => 'The Department',
-            'employee_id' => 123
+            'employee_id' => 123,
+            'status' => 1
         ];
         $notPseudonymizeFields = [
             'password' => 'Qwerty1234',
             'language_id' => 1,
             'avatar' => null,
             'expiry' => null,
-            'skills' => [['skill_id' => 1]]
+            'skills' => [['skill_id' => 1]],
+            'status' => 1
         ];
 
         $request = $this->mock(Request::class);
@@ -725,7 +730,8 @@ class UserControllerTest extends TestCase
             'skills' => [['skill_id' => 1]],
             'department' => 'The Department',
             'employee_id' => 123,
-            'pseudonymize_at' => '0000-00-00 00:00:00'
+            'pseudonymize_at' => '0000-00-00 00:00:00',
+            'status' => 1
         ];
 
         $request = $this->mock(Request::class);
@@ -968,7 +974,8 @@ class UserControllerTest extends TestCase
             'language_id' => 1,
             'avatar' => null,
             'expiry' => null,
-            'skills' => [['skill_id' => 1]]
+            'skills' => [['skill_id' => 1]],
+            'status' => 1
         ];
 
         $request = $this->mock(Request::class);

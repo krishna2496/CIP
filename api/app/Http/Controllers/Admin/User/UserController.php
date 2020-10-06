@@ -271,7 +271,10 @@ class UserController extends Controller
 
         $request->merge([
             'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null,
-            'pseudonymize_at' => null
+            'pseudonymize_at' => null,
+            'status' => (isset($request->status) && $request->status == config('constants.user_statuses.ACTIVE'))
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE')
         ]);
         try {
             $user = $this->userService->store($request->all());
@@ -354,7 +357,10 @@ class UserController extends Controller
 
         $request->merge([
             'avatar' => (isset($request->avatar) && !empty($request->avatar)) ? $request->avatar : null,
-            'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null
+            'expiry' => (isset($request->expiry) && $request->expiry) ? $request->expiry : null,
+            'status' => (isset($request->status) && $request->status == config('constants.user_statuses.ACTIVE'))
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE')
         ]);
 
         try {
