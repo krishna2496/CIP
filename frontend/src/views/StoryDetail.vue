@@ -101,9 +101,7 @@
                     </b-row>
                 </div>
                 <div class="story-content-wrap">
-                    <div class="story-content cms-content" v-html="getStoryCleanDescription(storyDetailList.description)">
-
-                    </div>
+                  <div class="story-content cms-content" v-html="storyDetailList.description"></div>
                     <div class="btn-wrap group-btns">
                         <b-button class="btn-borderprimary icon-btn" @click="searchUsers">
                             <i>
@@ -180,6 +178,8 @@
   import Slick from "vue-slick";
   import store from '../store';
   import constants from '../constant';
+  import sanitizeHtml from 'sanitize-html'
+
   import {
     storyDetail,
     searchUser,
@@ -333,6 +333,7 @@
           if (response.error == false) {
             let mediaType = []
             this.storyDetailList = response.data
+            this.storyDetailList.description = sanitizeHtml(this.storyDetailList.description)
             let newMediaType = response.data.storyMedia
             if (newMediaType) {
               newMediaType.filter((data, index) => {
@@ -365,10 +366,6 @@
             this.$router.push('/404');
           }
         })
-      },
-
-      getStoryCleanDescription(str) {
-        return  str.replace(/<script>|<\/script>/i, '').replaceAll("javascript", "");
       },
 
       searchUsers() {
