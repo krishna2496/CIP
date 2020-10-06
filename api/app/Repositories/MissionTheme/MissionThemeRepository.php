@@ -14,7 +14,7 @@ class MissionThemeRepository implements MissionThemeInterface
      * @var App\Models\MissionTheme
      */
     public $missionTheme;
- 
+
     /**
      * Create a new MissionTheme repository instance.
      *
@@ -25,7 +25,7 @@ class MissionThemeRepository implements MissionThemeInterface
     {
         $this->missionTheme = $missionTheme;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -89,7 +89,7 @@ class MissionThemeRepository implements MissionThemeInterface
         $missionTheme->update($request);
         return $missionTheme;
     }
-    
+
     /**
      * Find specified resource in storage.
      *
@@ -100,7 +100,7 @@ class MissionThemeRepository implements MissionThemeInterface
     {
         return $this->missionTheme->findMissionTheme($id);
     }
-    
+
     /**
      * Remove specified resource in storage.
      *
@@ -133,7 +133,7 @@ class MissionThemeRepository implements MissionThemeInterface
         if (!empty($year)) {
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
-        
+
         $statusArray = [
             config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
             config('constants.timesheet_status.APPROVED')
@@ -145,10 +145,10 @@ class MissionThemeRepository implements MissionThemeInterface
         ->whereNotNull('timesheet.timesheet_id')
         ->whereNull('timesheet.deleted_at')
         ->groupBy('mission_theme.mission_theme_id');
-        
-        
+
+
         $hoursPerThemes = $queryBuilder->get();
-        
+
         $languageCode = config('app.locale');
         foreach ($hoursPerThemes as $theme) {
             $arrayKey = array_search($languageCode, array_column(

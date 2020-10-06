@@ -14,7 +14,7 @@ return [
     */
 
     'failed' => "De gegevens komen niet overeen met onze administratie.",
-    'throttle' => "Teveel inlogpogingen. Probeer het over :seconds seconden nogmaals.",
+    'throttle' => "Te veel pogingen. Probeer het over :seconds seconden nogmaals.",
 
 ];
 ?>
