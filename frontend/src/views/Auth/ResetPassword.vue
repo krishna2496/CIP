@@ -124,7 +124,7 @@
         password: {
           required,
           minLength: minLength(constants.PASSWORD_MIN_LENGTH),
-          /*containsUpperCase: function(value) {
+          containsUpperCase: function(value) {
             return /(?=.*[A-Z])/.test(value);
           },
           containsLowerCase: function(value) {
@@ -132,7 +132,7 @@
           },
           containsNumber: function(value) {
             return /(?=.*[0-9])/.test(value);
-          }*/
+          }
         },
         confirmPassword: {
           required,
