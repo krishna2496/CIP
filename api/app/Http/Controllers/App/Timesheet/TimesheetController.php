@@ -122,7 +122,7 @@ class TimesheetController extends Controller
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
                 '',
-                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
         }
 
