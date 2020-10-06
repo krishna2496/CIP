@@ -634,9 +634,17 @@ class UserController extends Controller
     public function createPassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->toArray(), [
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
+                'email' => 'required|email',
+                'password' => [
+                    'required',
+                    'min:8',
+                    'regex:/[0-9]/',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/'
+                ]
+            ],
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
