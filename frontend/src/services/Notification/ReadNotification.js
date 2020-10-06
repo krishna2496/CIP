@@ -13,7 +13,6 @@ export default async(notificationId) => {
         method: 'POST',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then(() => {
