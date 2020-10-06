@@ -145,6 +145,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon uploaded successfully',
 
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
@@ -394,8 +395,6 @@ return [
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
         'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.',
 
-        'ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION' => 'You cannot add more than 370 character for custom login text',
-        'ERROR_INVAID_TENANT_OPTION_VALUE' => 'You cannot add an iframe or JavaScript',
         //For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
         'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.'

@@ -189,6 +189,8 @@ return [
         'settings.*.tenant_setting_id' => 'tenant setting id',
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
+        'option_value.translations.*.message' => 'option value',
+        'option_value.position' => 'custom login text position',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
 		'mission_detail.*.short_description' => 'short description',
         'news_content.translations' => 'translations',

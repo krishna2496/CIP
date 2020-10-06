@@ -170,7 +170,6 @@ export default {
 
         setCustomText() {
             const customTextArray = JSON.parse(store.state.customLoginText)
-
             if (customTextArray.position !== '' && customTextArray.position != null) {
                 this.customTextPosition = customTextArray.position;
             }
@@ -182,7 +181,6 @@ export default {
             const translatedCustomText = translations.find((item) => {
                 return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
             });
-
             if (translatedCustomText && translatedCustomText.message) {
                 this.customText = translatedCustomText.message;
             } else {
@@ -194,11 +192,9 @@ export default {
                     this.customText = customTextInDefaultLang.message;
                 }
             }
-
-            this.customText  = this.$sanitize(
-                this.customText
-            );
-
+            this.customText = sanitizeHtml(this.customText, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img'])
+            });
         },
 
         handleSubmit() {

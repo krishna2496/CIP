@@ -6,6 +6,7 @@ return [
      * constants to use any where in system
      */
     'TENANT_OPTION_SLIDER' => 'slider',
+    'TENANT_OPTION_CUSTOM_LOGIN_TEXT' => 'custom_login_text',
     'FORGOT_PASSWORD_EXPIRY_TIME' => '4',
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
@@ -35,6 +36,7 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_custom-variables.scss',
+    'AWS_S3_CUSTOM_FAVICON_NAME' => 'favicon.ico',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
@@ -49,8 +51,6 @@ return [
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
     'PER_PAGE_ALL' => '100000',
     'SUPPORT_EMAIL' => 'support@optimy.com',
-    'TENANT_OPTION_NAME_MAX_LENGTH' => 370,
-    'TENANT_OPTION_NAME' => 'custom_login_text',
 
     /*
      * User custom field types
@@ -146,6 +146,15 @@ return [
         'image/jpeg',
         'image/jpg',
         'image/svg+xml'
+    ],
+
+    /*
+     * Custom login text positions
+     */
+    'custom_login_text_positions' => [
+        'after_login_form',
+        'before_logo',
+        'after_logo'
     ],
 
     /*
@@ -335,7 +344,9 @@ return [
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
         'STATE_ENABLED' => 'state_selection',
-        'MISSION_IMPACT' => 'mission_impact'
+        'MISSION_IMPACT' => 'mission_impact',
+        'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
+        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -525,9 +536,7 @@ return [
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
         'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
-        'ERROR_TENANT_OPTION_MAX_FIELDS_VALIDATION' => '900103',
-        'ERROR_INVAID_TENANT_OPTION_VALUE' => '900104',
-        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900105'
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103'
     ],
 
     /**
