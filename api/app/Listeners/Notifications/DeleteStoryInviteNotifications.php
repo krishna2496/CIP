@@ -6,6 +6,7 @@ use App\Events\Story\StoryDeletedEvent;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\StoryInvite;
+use Illuminate\Support\Facades\Log;
 
 class DeleteStoryInviteNotifications
 {

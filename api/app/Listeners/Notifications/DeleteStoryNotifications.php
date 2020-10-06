@@ -14,21 +14,21 @@ class DeleteStoryNotifications
      */
     public function handle(StoryDeletedEvent $event)
     {
-        $storyIds = Story::withTrashed()
-            ->where('story_id', '=', $event->storyId)
+        $storyId = Story::withTrashed()
+            ->where('story_id', $event->storyId)
             ->get('story_id')
-            ->map(function (Story $story) {
-                return $story->story_id;
-            })
-            ->toArray();
+            ->first()
+            ->story_id;
 
-        $notificationTypeId = NotificationType::where(['notification_type' => config("constants.notification_type_keys")["MY_STORIES"]])
+        $notificationTypeId = NotificationType::where([
+                'notification_type' => config("constants.notification_type_keys")["MY_STORIES"]
+            ])
             ->get('notification_type_id')
             ->first()
             ->notification_type_id;
 
-        Notification::where(['notification_type_id' => $notificationTypeId])
-            ->whereIn('entity_id', $storyIds)
+        return Notification::where(['notification_type_id' => $notificationTypeId])
+            ->where('entity_id', $storyId)
             ->delete();
     }
 }
