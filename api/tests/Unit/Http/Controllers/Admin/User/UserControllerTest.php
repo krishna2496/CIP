@@ -22,6 +22,8 @@ use App\Models\Timezone;
 use App\Events\User\UserActivityLogEvent;
 use App\Exceptions\MaximumUsersReachedException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Validator;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class UserControllerTest extends TestCase
 {
@@ -446,13 +448,11 @@ class UserControllerTest extends TestCase
             ->once()
             ->with($request->all())
             ->andThrow(new MaximumUsersReachedException);
-
         $languageHelper
             ->shouldReceive('validateLanguageId')
             ->once()
             ->with($request)
             ->andReturn(true);
-
         $responseHelper
             ->shouldReceive('error')
             ->once()
@@ -700,7 +700,8 @@ class UserControllerTest extends TestCase
             null,
             $request,
             null,
-            $timezoneRepository
+            null,
+            $userService
         );
         $response = $controller->update($request, 1);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -782,7 +783,6 @@ class UserControllerTest extends TestCase
             ->once()
             ->with($request)
             ->andReturn(true);
-
         $userRepository
             ->shouldReceive('checkProfileCompleteStatus')
             ->once()
@@ -927,7 +927,6 @@ class UserControllerTest extends TestCase
             ->once()
             ->with($request)
             ->andReturn(false);
-
         $responseHelper
             ->shouldReceive('error')
             ->once()
@@ -1034,6 +1033,696 @@ class UserControllerTest extends TestCase
             $timezoneRepository
         );
         $response = $controller->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /*
+    * @testdox Test store user with required fields
+    *
+    * @return void
+    */
+    public function testStoreUserWithRequiredFieldsOnlySuccess()
+    {
+        $this->expectsEvents(UserActivityLogEvent::class);
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->shouldReceive('remove')
+            ->andReturn(true);
+        $exceptData = [
+            'language_id' => 1,
+            'avatar' => null,
+            'expiry' => null
+        ];
+
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd'
+            ])
+            ->shouldReceive('toArray')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd'
+            ])
+            ->shouldReceive('merge')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd',
+                'timezone_id' => 1
+            ])
+            ->shouldReceive('except')
+            ->andReturn($exceptData);
+        $request->request = $symfonyRequest;
+        $request->skills = null;
+        $request->language_id = null;
+        $request->expiry = null;
+        $request->timezone_id = null;
+        $request->status = null;
+
+        $timezone = new Timezone();
+        $timezone->setAttribute('timezone_id', 1);
+
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $timezoneRepository
+            ->shouldReceive('getTenantTimezoneByCode')
+            ->once()
+            ->with('Europe/Paris')
+            ->andReturn($timezone);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+
+        $methodResponse = [
+            'user_id' => 1
+        ];
+
+        $userService = $this->mock(UserService::class);
+        $userService
+            ->shouldReceive('store')
+            ->once()
+            ->with($request->toArray())
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all())
+            ->andReturn(true);
+
+        $jsonResponse = new JsonResponse(
+            $methodResponse,
+            Response::HTTP_CREATED
+        );
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_CREATED,
+                trans('messages.success.MESSAGE_USER_CREATED'),
+                $methodResponse
+            )
+            ->andReturn($jsonResponse);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $service = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            $notificationRepository,
+            $timezoneRepository
+        );
+
+        $response = $service->store($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(
+            $methodResponse,
+            json_decode($response->getContent(), true)
+        );
+    }
+
+    /**
+    * @testdox Test store user
+    *
+    * @return void
+    */
+    public function testStoreUserSuccess()
+    {
+        $this->expectsEvents(UserActivityLogEvent::class);
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->shouldReceive('remove')
+            ->andReturn(true);
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd',
+                'first_name' => 'Test',
+                'last_name' => 'Email'
+            ])
+            ->shouldReceive('toArray')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd',
+                'first_name' => 'Test',
+                'last_name' => 'Email'
+            ])
+            ->shouldReceive('merge')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd',
+                'timezone_id' => 1
+            ])
+            ->shouldReceive('except')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com'
+            ]);
+        $request->request = $symfonyRequest;
+        $request->skills = [['skill_id' => 1]];
+        $request->language_id = 1;
+        $request->expiry = null;
+        $request->timezone_id = null;
+        $request->status = null;
+
+        $timezone = new Timezone();
+        $timezone->setAttribute('timezone_id', 1);
+
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $timezoneRepository
+            ->shouldReceive('getTenantTimezoneByCode')
+            ->once()
+            ->with('Europe/Paris')
+            ->andReturn($timezone);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+
+        $methodResponse = [
+            'user_id' => 1
+        ];
+
+        $userService = $this->mock(UserService::class);
+        $userService
+            ->shouldReceive('store')
+            ->once()
+            ->with($request->toArray())
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all())
+            ->andReturn(true);
+
+        $jsonResponse = new JsonResponse(
+            $methodResponse,
+            Response::HTTP_CREATED
+        );
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_CREATED,
+                trans('messages.success.MESSAGE_USER_CREATED'),
+                $methodResponse
+            )
+            ->andReturn($jsonResponse);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(true);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('linkSkill')
+            ->once()
+            ->with([
+                'email' => 'testemail@yahoo.com'
+            ], 1)
+            ->andReturn([true]);
+
+        $service = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            $notificationRepository,
+            $timezoneRepository
+        );
+
+        $response = $service->store($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(
+            $methodResponse,
+            json_decode($response->getContent(), true)
+        );
+    }
+
+    /**
+    * @testdox Test store user invalid password
+    *
+    * @return void
+    */
+    public function testStoreUserPasswordInvalid()
+    {
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->shouldReceive('remove')
+            ->andReturn(true);
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'password',
+                'first_name' => 'Test',
+                'last_name' => 'Email'
+            ])
+            ->shouldReceive('toArray')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'password',
+                'first_name' => 'Test',
+                'last_name' => 'Email'
+            ]);
+        $request->request = $symfonyRequest;
+        $request->skills = [['skill_id' => 1]];
+        $request->language_id = 1;
+        $request->expiry = null;
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $errors = new Collection([
+            trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+        ]);
+        $validator->shouldReceive('fails')
+            ->andReturn(true)
+            ->shouldReceive('errors')
+            ->andReturn($errors);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+
+        $userService = $this->mock(UserService::class);
+        $userService
+            ->shouldReceive('store')
+            ->never()
+            ->with($request->toArray())
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all())
+            ->andReturn(new JsonResponse);
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->never()
+            ->with($request)
+            ->andReturn(true);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->never()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('linkSkill')
+            ->never()
+            ->with($request->toArray(), 1)
+            ->andReturn([true]);
+
+        $service = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            $notificationRepository
+        );
+
+        $response = $service->store($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * @testdox Test store user invalid password
+    *
+    * @return void
+    */
+    public function testStoreUserLanguageIdInvalid()
+    {
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->shouldReceive('remove')
+            ->andReturn(true);
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'password',
+                'first_name' => 'Test',
+                'last_name' => 'Email'
+            ])
+            ->shouldReceive('toArray')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'password',
+                'first_name' => 'Test',
+                'last_name' => 'Email'
+            ]);
+        $request->request = $symfonyRequest;
+        $request->skills = [['skill_id' => 1]];
+        $request->language_id = 1;
+        $request->expiry = null;
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+
+        $methodResponse = [
+            'errors' => [
+                'message' => trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+            ]
+        ];
+
+        $userService = $this->mock(UserService::class);
+        $userService
+            ->shouldReceive('store')
+            ->never()
+            ->with($request->toArray())
+            ->andReturn($user);
+
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all())
+            ->andReturn(true);
+
+        $jsonResponse = new JsonResponse(
+            $methodResponse,
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        );
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+            )
+            ->andReturn($jsonResponse);
+
+        $notificationRepository = $this->mock(NotificationRepository::class);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $languageHelper
+            ->shouldReceive('validateLanguageId')
+            ->once()
+            ->with($request)
+            ->andReturn(false);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->never()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('linkSkill')
+            ->never()
+            ->with($request->toArray(), 1)
+            ->andReturn([true]);
+
+        $service = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            null,
+            $request,
+            $notificationRepository
+        );
+
+        $response = $service->store($request);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(
+            $methodResponse,
+            json_decode($response->getContent(), true)
+        );
+    }
+
+    /**
+    * @testdox Test update user
+    *
+    * @return void
+    */
+    public function testUpdateUserSuccess()
+    {
+        $this->expectsEvents(UserActivityLogEvent::class);
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->shouldReceive('remove')
+            ->andReturn(true);
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn([
+                'password' => 'Passw0rd'
+            ])
+            ->shouldReceive('toArray')
+            ->andReturn([
+                'password' => 'Passw0rd'
+            ])
+            ->shouldReceive('merge')
+            ->andReturn([
+                'password' => 'Passw0rd'
+            ])
+            ->shouldReceive('except')
+            ->andReturn([
+                'password' => 'Passw0rd'
+            ]);
+        $request->request = $symfonyRequest;
+        $request->skills = null;
+        $request->language_id = null;
+        $request->expiry = null;
+        $request->status = null;
+        $request->avatar = null;
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('pseudonymize_at', null);
+
+        $methodResponse = [
+            'user_id' => 1
+        ];
+
+        $userService = $this->mock(UserService::class);
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(true);
+
+        $userService
+            ->shouldReceive('findById')
+            ->once()
+            ->with(1)
+            ->andReturn($user);
+
+        $jsonResponse = new JsonResponse(
+            $methodResponse,
+            Response::HTTP_OK
+        );
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_UPDATED'),
+                $methodResponse
+            )
+            ->andReturn($jsonResponse);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userRepository = $this->mock(UserRepository::class);
+
+        $userService
+            ->shouldReceive('update')
+            ->once()
+            ->with(['password' => 'Passw0rd'], 1)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->once()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $service = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            $helpers,
+            $request,
+            $notificationRepository
+        );
+
+        $response = $service->update($request, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(
+            $methodResponse,
+            json_decode($response->getContent(), true)
+        );
+    }
+
+    /**
+    * @testdox Test update user invalid password
+    *
+    * @return void
+    */
+    public function testUpdateUserInvalidPassword()
+    {
+        $symfonyRequest = $this->mock(SymfonyRequest::class);
+        $symfonyRequest->shouldReceive('remove')
+            ->andReturn(true);
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('header')
+            ->shouldReceive('all')
+            ->andReturn([
+                'password' => 'password'
+            ])
+            ->shouldReceive('toArray')
+            ->andReturn([
+                'password' => 'password'
+            ]);
+        $request->request = $symfonyRequest;
+        $request->skills = null;
+        $request->language_id = null;
+        $request->expiry = null;
+        $request->status = null;
+
+        $errors = new Collection([
+            trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+        ]);
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->andReturn(true)
+            ->shouldReceive('errors')
+            ->andReturn($errors);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+        $user->setAttribute('pseudonymize_at', null);
+
+        $methodResponse = [
+            'user_id' => 1
+        ];
+
+        $userService = $this->mock(UserService::class);
+        $userService
+            ->shouldReceive('validateFields')
+            ->once()
+            ->with($request->all(), 1)
+            ->andReturn(new JsonResponse);
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $helpers = $this->mock(Helpers::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('find')
+            ->never()
+            ->with(1)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('update')
+            ->never()
+            ->with(['password' => 'Passw0rd', 'expiry' => null], 1)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('checkProfileCompleteStatus')
+            ->never()
+            ->with(1, $request)
+            ->andReturn($user);
+
+        $service = $this->getController(
+            $userRepository,
+            $responseHelper,
+            $languageHelper,
+            $userService,
+            null,
+            $helpers,
+            $request,
+            $notificationRepository
+        );
+
+        $response = $service->update($request, 1);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 

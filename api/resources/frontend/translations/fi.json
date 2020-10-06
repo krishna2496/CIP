@@ -386,7 +386,10 @@
 		"max_image_upload": "Kuvia voidaan lisätä korkeintaan 20",
 		"max_video_upload": "Videoita voidaan lisätä korkeintaan 20",
 		"duplicate_video_url": "Videon url-osoitteen kaksoiskappale ei ole sallittu",
-		"invalid_saml_setting": "Seuraavat kartoitukset vaaditaan:"
+		"invalid_saml_setting": "Seuraavat kartoitukset vaaditaan:",
+		"password_should_contain_uppercase": "Vähintään 1 iso kirjain",
+		"password_should_contain_lowercase": "Vähintään 1 pieni kirjain",
+		"password_should_contain_numbers": "Vähintään 1 numero"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
