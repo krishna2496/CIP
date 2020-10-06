@@ -266,6 +266,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function searchUser(string $term, int $userId)
     {
         return $this->where('user_id', '<>', $userId)
+            ->where('status', '=', '1')
             ->where(function ($query) {
                 $query->whereNull('expiry')
                     ->orWhere('expiry', '>', (new \DateTimeImmutable())->format(self::DATETIME_FORMAT));
