@@ -14,7 +14,7 @@ return [
     */
 
     'failed' => "Te dane uwierzytelniające nie są zgodne z naszymi danymi.",
-    'throttle' => "Zbyt wiele prób logowania. Proszę spróbować ponownie za :seconds sekund(y).",
+    'throttle' => "Zbyt wiele prób. Proszę spróbować ponownie za :seconds sekund(y).",
 
 ];
 ?>

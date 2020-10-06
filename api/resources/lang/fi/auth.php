@@ -14,7 +14,7 @@ return [
     */
 
     'failed' => "Nämä kirjautumistiedot eivät vastaa tietojamme.",
-    'throttle' => "Liian monta kirjautumisyritystä. Yritä uudelleen :seconds sekunnissa.",
+    'throttle' => "Liian monta yritystä. Yritä uudelleen :seconds sekunnissa.",
 
 ];
 ?>
