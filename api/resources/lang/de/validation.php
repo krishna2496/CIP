@@ -47,6 +47,7 @@ return [
         'array'   => ":attribute darf über nicht mehr als :max Positionen verfügen.",
     ],
     'mimes'                => ":attribute muss eine Datei vom Typ :values sein.",
+    'mimetypes'            => ":attribute muss eine Datei vom Typ :values sein.",
     'min'                  => [
         'numeric' => ":attribute muss mindestens :min sein.",
         'file'    => ":attribute muss mindestens :min Kilobyte groß sein.",

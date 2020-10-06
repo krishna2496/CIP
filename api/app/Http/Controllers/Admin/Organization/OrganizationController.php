@@ -66,7 +66,13 @@ class OrganizationController extends Controller
             $apiMessage = ($organizations->isEmpty()) ? trans('messages.custom_error_message.ERROR_ORGANIZATION_NOT_FOUND')
             : trans('messages.success.MESSAGE_ORGANIZATION_LISTING');
 
-            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $organizations);
+            return $this->responseHelper->successWithPagination(
+                $apiStatus,
+                $apiMessage,
+                $organizations,
+                [],
+                false
+            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -91,7 +97,12 @@ class OrganizationController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ORGANIZATION_FOUND');
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $organization->toArray());
+            return $this->responseHelper->success(
+                $apiStatus,
+                $apiMessage,
+                $organization->toArray(),
+                false
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_ORGANIZATION_NOT_FOUND'),
