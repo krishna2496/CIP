@@ -168,6 +168,7 @@ class MissionApplicationController extends Controller
         LanguageHelper $languageHelper
     ) {
         $filters = $request->get('filters', []);
+        $andSearch = $request->get('andSearch', false);
         $search = $request->get('search');
         $order = $request->get('order', []);
         $limit = $request->get('limit', []);
@@ -175,6 +176,7 @@ class MissionApplicationController extends Controller
 
         $applicationList = $missionApplicationQuery->run([
             'filters' => $filters,
+            'andSearch' => $andSearch,
             'search' => $search,
             'order' => $order,
             'limit' => $limit,

@@ -66,7 +66,6 @@ export default async(data) => {
         method: 'get',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token
         },
 
     })

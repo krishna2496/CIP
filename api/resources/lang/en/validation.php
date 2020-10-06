@@ -47,6 +47,7 @@ return [
         'array'   => 'The :attribute may not have more than :max items.',
     ],
     'mimes'                => 'The :attribute must be a file of type: :values.',
+    'mimetypes'            => 'The :attribute must be a file of type: :values.',
     'min'                  => [
         'numeric' => 'The :attribute must be at least :min.',
         'file'    => 'The :attribute must be at least :min kilobytes.',
@@ -137,6 +138,9 @@ return [
         'story_images' => [
             'max' => 'Maximum '.config('constants.STORY_MAX_IMAGE_LIMIT').' images can be added',
         ],
+        'impact.*.icon_path' => [
+            'valid_icon_path' => 'Please enter a valid icon image.',
+        ]
     ],
 
     /*
@@ -221,6 +225,12 @@ return [
         'states.*.translations' => 'translations',
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
+        'impact.*.icon_path' => 'icon path',
+        'impact.*.sort_key' => 'impact sort key',
+        'impact.*.translations' => 'translations',
+        'impact.*.translations.*.language_code' => 'language code',
+        'impact.*.translations.*.content' => 'content',
+        'impact.*.mission_impact_id' => 'mission impact id',
         'un_sdg.*' => 'UN SDG number',
         'organization.name' => 'organization name',
         'organization.organization_id' => 'organization id',
@@ -236,7 +246,7 @@ return [
         'volunteering_attribute.is_virtual' => 'is virtual',
         'volunteering_attribute.total_seats' => 'total seats',
         'mission_tabs.*.translations' => 'mission tab translation',
-        'mission_tabs.*.sort_key' => 'sort key',
+        'mission_tabs.*.sort_key' => 'mission_tabs sort key',
         'mission_tabs.*.languages.*.language_id' => 'language id',
         'mission_tabs.*.languages.*.name' => 'name',
         'mission_tabs.*.translations.*.lang' => 'language code',

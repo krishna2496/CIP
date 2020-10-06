@@ -15,7 +15,6 @@ export default async(data, storyId) => {
         data,
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
             'Content-Type': 'multipart/form-data'
         }
     })

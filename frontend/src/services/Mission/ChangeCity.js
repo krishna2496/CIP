@@ -15,7 +15,6 @@ export default async(countryId) => {
         method: 'GET',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     }).then((response) => {
         responseData.error = false;
