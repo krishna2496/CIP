@@ -14,7 +14,6 @@ export default async(newsId) => {
         method: 'GET',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then((response) => {

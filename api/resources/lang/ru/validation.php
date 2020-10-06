@@ -47,6 +47,7 @@ return [
         'array'   => ":attribute не может быть больше :max пунктов.",
     ],
     'mimes'                => ":attribute должен быть файлом типа: :values.",
+    'mimetypes'            => ":attribute должен быть файлом типа: :values.",
     'min'                  => [
         'numeric' => ":attribute должен быть не меньше :min.",
         'file'    => ":attribute должен быть не меньше :min килобайт.",

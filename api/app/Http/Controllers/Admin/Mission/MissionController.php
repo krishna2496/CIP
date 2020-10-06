@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin\Mission;
 
+use App\Events\Mission\MissionDeletedEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -209,7 +210,7 @@ class MissionController extends Controller
                 "impact_donation.*.translations.*.content" => 
                 'required_with:impact_donation.*.translations|max:160',
                 "impact" => "sometimes|required|array",
-                "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
+                "impact.*.icon_path" => 'valid_icon_path',
                 "impact.*.sort_key" => 'required|integer|min:0|distinct',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
@@ -242,6 +243,16 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 $validator->errors()->first()
+            );
+        }
+
+        // Check if required tenant setting based on mission type is enabled
+        if (!$this->isRequiredSettingForMissionTypeEnabled($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
         }
 
@@ -329,6 +340,11 @@ class MissionController extends Controller
                 $includeMissionImpact
             );
 
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
             return $this->responseHelper->success(
@@ -355,7 +371,12 @@ class MissionController extends Controller
     public function update(Request $request, int $missionId): JsonResponse
     {
         try {
-            $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find($missionId);
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -412,7 +433,7 @@ class MissionController extends Controller
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",
-                "impact.*.icon_path" => "sometimes|required|valid_icon_path",
+                "impact.*.icon_path" => "valid_icon_path",
                 "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
                 "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
                 "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
@@ -455,6 +476,18 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
+            );
+        }
+
+        // Check if required tenant setting based on mission type is enabled
+        if ($request->get('mission_type') &&
+            !$this->isRequiredSettingForMissionTypeEnabled($request)) {
+
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
         }
 
@@ -715,11 +748,8 @@ class MissionController extends Controller
     public function destroy(int $missionId): JsonResponse
     {
         try {
-            $mission = $this->missionRepository->delete($missionId);
-            // delete notification related to mission
-            $this->notificationRepository->deleteMissionNotifications($missionId);
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
+            $this->missionRepository->delete($missionId);
+
 
             // Make activity log
             event(new UserActivityLogEvent(
@@ -733,7 +763,7 @@ class MissionController extends Controller
                 $missionId
             ));
 
-            return $this->responseHelper->success($apiStatus, $apiMessage);
+            return $this->responseHelper->success(Response::HTTP_NO_CONTENT, trans('messages.success.MESSAGE_MISSION_DELETED'));
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -876,5 +906,34 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType if not provided, mission type from the request will be used
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType = null
+    ) : bool {
+
+        $tenantSetting = null;
+        $missionType = $missionType ?? $request->get('mission_type');
+        switch ($missionType) {
+            case config('constants.mission_type.GOAL'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case config('constants.mission_type.TIME'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }

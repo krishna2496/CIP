@@ -35,6 +35,7 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_custom-variables.scss',
+    'AWS_S3_CUSTOM_FAVICON_NAME' => 'favicon.ico',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
@@ -333,7 +334,9 @@ return [
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
         'STATE_ENABLED' => 'state_selection',
-        'MISSION_IMPACT' => 'mission_impact'
+        'MISSION_IMPACT' => 'mission_impact',
+        'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
+        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission'
     ],
 
     'TOP_THEME' => "top_themes",

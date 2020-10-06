@@ -324,6 +324,7 @@
             exploreMission,
             policy,
             loadLocaleMessages,
+            logout,
             notificationSettingListing,
             updateNotificationSetting,
             clearNotification,
@@ -433,7 +434,7 @@
                 },
                 logout() {
                         document.querySelector('body').classList.remove('small-header');
-                        this.$store.commit('logoutUser');
+                        logout();
                 },
                 menuBarclickHandler() {
 

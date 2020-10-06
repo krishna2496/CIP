@@ -16,7 +16,6 @@ export default async(data) => {
     method: 'post',
     headers: {
       'X-localization': defaultLanguage,
-      'token': store.state.token,
     }
   }).then((response) => {
     responseData.error = false;
