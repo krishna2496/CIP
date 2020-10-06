@@ -20,7 +20,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-    $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
+    $router->post('/app/login', ['as' => 'login', 'middleware' => 'throttle:5,1|tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
     $router->post('/app/transmute', ['as' => 'transmute', 'middleware' => 'tenant.connection',
@@ -31,7 +31,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Auth\AuthController@logout']);
 
     /* Forgot password routing */
-    $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+    $router->post('/app/request-password-reset', ['middleware' => 'throttle:2,1|tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
     /* Password reset routing */
