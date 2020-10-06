@@ -2,19 +2,19 @@
 
 namespace Tests\Unit\Http\Controllers\Timesheet;
 
+use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\App\Timesheet\TimesheetController;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Repositories\Timesheet\TimesheetRepository;
+use Bschmitt\Amqp\Amqp;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Controllers\App\Timesheet\TimesheetController;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Repositories\Mission\MissionRepository;
-use App\Repositories\Timesheet\TimesheetRepository;
-use App\Repositories\TenantOption\TenantOptionRepository;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use Bschmitt\Amqp\Amqp;
-use App\Helpers\Helpers;
 use Mockery;
 use TestCase;
 use Validator;
@@ -26,7 +26,8 @@ class TimesheetControllerTest extends TestCase
      *
      * @return void
      */
-    public function testIndexValidationFailure(){
+    public function testIndexValidationFailure()
+    {
         $request = new Request();
         $timesheetRepository = $this->mock(TimesheetRepository::class);
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -35,7 +36,7 @@ class TimesheetControllerTest extends TestCase
         $helpers = $this->mock(Helpers::class);
         $amqp = $this->mock(Amqp::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        
+
         $errors = new Collection([
             'The type field is required.'
         ]);
@@ -75,7 +76,8 @@ class TimesheetControllerTest extends TestCase
      *
      * @return void
      */
-    public function testIndexSettingDisabled(){
+    public function testIndexSettingDisabled()
+    {
         $data = [
             'type' => 'goal'
         ];
@@ -87,7 +89,7 @@ class TimesheetControllerTest extends TestCase
         $helpers = $this->mock(Helpers::class);
         $amqp = $this->mock(Amqp::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        
+
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
             ->andReturn(false);
@@ -99,14 +101,14 @@ class TimesheetControllerTest extends TestCase
             ->once()
             ->with(config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'), $request)
             ->andReturn(false);
-        
+
         $responseHelper->shouldReceive('error')
             ->once()
             ->with(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                '',
-                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
 
         $controllerInstance = $this->getController(
@@ -127,7 +129,8 @@ class TimesheetControllerTest extends TestCase
      *
      * @return void
      */
-    public function testIndexSuccess(){
+    public function testIndexSuccess()
+    {
         $data = [
             'type' => 'goal'
         ];
@@ -139,7 +142,7 @@ class TimesheetControllerTest extends TestCase
         $helpers = $this->mock(Helpers::class);
         $amqp = $this->mock(Amqp::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        
+
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
             ->andReturn(false);
@@ -161,8 +164,8 @@ class TimesheetControllerTest extends TestCase
         $timesheetRepository->shouldReceive('getAllTimesheetEntries')
             ->once()
             ->with($request, 'goal')
-            ->andReturn($paginator);    
-        
+            ->andReturn($paginator);
+
         $responseHelper->shouldReceive('successWithPagination')
             ->once()
             ->with(
@@ -170,7 +173,7 @@ class TimesheetControllerTest extends TestCase
                 trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND'),
                 $paginator,
             )
-            ->andReturn(New JsonResponse);   
+            ->andReturn(New JsonResponse);
 
         $controllerInstance = $this->getController(
             $timesheetRepository,
@@ -243,5 +246,4 @@ class TimesheetControllerTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

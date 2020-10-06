@@ -712,7 +712,7 @@ class MissionController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    '',
+                    config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
                     trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
                 );
             }
