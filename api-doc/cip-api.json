@@ -9529,37 +9529,6 @@
             }
           }
         },
-        "impact_donation": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "impact_donation_id": {
-                "type": "string",
-                "description": "Its “Required“ if you are updating existing impact donation mission"
-              },
-              "amount": {
-                "type": "integer",
-                "description": "amount for impact donation mission. It must be numeric value. Example: 10, 15, 30…"
-              },
-              "translations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "language_code": {
-                      "type": "string",
-                      "description": "Language code. Example: en, fr, es etc."
-                    },
-                    "content": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
         "start_date": {
           "type": "string",
           "format": "date-time",
