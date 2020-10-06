@@ -64,9 +64,16 @@
                                      alt="Down Arrow" />
                             </i>
                         </template>
-                        <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
-                                  :relatedMission=relatedMission
-                                  v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
+                        <GridView
+                          id="gridView"
+                          :items="missionList"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          :relatedMission=relatedMission
+                          v-if="isShownComponent"
+                          @getMissions="getMissions"
+                          small
+                        />
                     </b-tab>
                     <!-- list view -->
                     <b-tab class="list-tab-content" @click="changeCurrentView(1)">
@@ -79,8 +86,15 @@
                                      alt="Down Arrow" />
                             </i>
                         </template>
-                        <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage"
-                                  v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
+                        <ListView
+                          id="listView"
+                          :items="missionList"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          v-if="isShownComponent"
+                          @getMissions="getMissions"
+                          small
+                        />
                     </b-tab>
 
                 </b-tabs>
@@ -121,7 +135,6 @@
   import {
     missionListing,
     missionFilterListing,
-    searchUser
   } from '../services/service';
   import constants from '../constant';
   import { setTimeout } from 'timers';
@@ -179,7 +192,6 @@
             tabNumber : 0,
             tags: "",
             sortByFilterSet: true,
-            userList: [],
             languageData: [],
             isTotalMissionDisplay: true,
             isQuickAccessDisplay: true,
@@ -401,9 +413,6 @@
       this.isStateSelectionSet =this.settingEnabled(constants.STATE_ENABLED);
       this.defaultCountry = store.state.defaultCountryId
       this.activeView = 'listView'
-      searchUser().then(response => {
-        this.userList = response;
-      });
 
       setTimeout(() => {
         this.sortByDefault = this.languageData.label.sort_by;

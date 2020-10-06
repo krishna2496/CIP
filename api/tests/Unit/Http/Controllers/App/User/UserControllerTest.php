@@ -17,6 +17,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Mockery;
 use TestCase;
 
@@ -152,6 +153,150 @@ class UserControllerTest extends TestCase
         $response = $userController->createPassword($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testIndexGetAllUsers()
+    {
+        $userRepository = $this->createMock(UserRepository::class);
+        $userCustomFieldRepository = $this->createMock(UserCustomFieldRepository::class);
+        $responseHelper = $this->createMock(ResponseHelper::class);
+        $languageHelper = $this->createMock(LanguageHelper::class);
+        $helpers = $this->createMock(Helpers::class);
+        $s3helper = $this->createMock(S3Helper::class);
+        $userFilterRepository = $this->createMock(UserFilterRepository::class);
+        $tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
+        $cityRepository = $this->createMock(CityRepository::class);
+
+        $controller = new UserController(
+            $userRepository,
+            $userCustomFieldRepository,
+            $cityRepository,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            $s3helper,
+            $tenantOptionRepository
+        );
+
+        $request = new Request();
+        $request->auth = new \stdClass();
+        $request->auth->user_id = 1;
+
+        $user1 = new User(['first_name' => 'Jeannot', 'last_name' => 'Lapin', 'avatar' => 'default.png']);
+        $user1->user_id = 1;
+        $user2 = new User(['first_name' => 'Daisy', 'last_name' => 'Duck', 'avatar' => 'default.png']);
+        $user2->user_id = 2;
+        $user3 = new User(['first_name' => 'Mickey', 'last_name' => 'Mouse', 'avatar' => 'default.png']);
+        $user3->user_id = 3;
+
+        $userCollection = new Collection([
+            $user1,
+            $user2,
+            $user3
+        ]);
+
+        $userRepository
+            ->expects($this->once())
+            ->method('listUsers')
+            ->willReturn($userCollection);
+
+        $userRepository
+            ->expects($this->never())
+            ->method('searchUsers');
+
+        $helpers
+            ->expects($this->once())
+            ->method('getSubDomainFromRequest')
+            ->with($request)
+            ->willReturn('ci-api');
+
+        $responseHelper
+            ->expects($this->once())
+            ->method('success')
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_LISTING'),
+                [
+                    $user1,
+                    $user2,
+                    $user3
+                ]
+            )
+            ->willReturn(new JsonResponse());
+
+        $result = $controller->index($request);
+
+        // testing the mock to avoid warning in phpunit
+        $this->assertInstanceOf(JsonResponse::class, $result);
+    }
+
+    public function testIndexSearchUsers()
+    {
+        $userRepository = $this->createMock(UserRepository::class);
+        $userCustomFieldRepository = $this->createMock(UserCustomFieldRepository::class);
+        $responseHelper = $this->createMock(ResponseHelper::class);
+        $languageHelper = $this->createMock(LanguageHelper::class);
+        $helpers = $this->createMock(Helpers::class);
+        $s3helper = $this->createMock(S3Helper::class);
+        $userFilterRepository = $this->createMock(UserFilterRepository::class);
+        $tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
+        $cityRepository = $this->createMock(CityRepository::class);
+
+        $controller = new UserController(
+            $userRepository,
+            $userCustomFieldRepository,
+            $cityRepository,
+            $userFilterRepository,
+            $responseHelper,
+            $languageHelper,
+            $helpers,
+            $s3helper,
+            $tenantOptionRepository
+        );
+
+        $request = new Request(['search' => 'jeannot']);
+        $request->auth = new \stdClass();
+        $request->auth->user_id = 1;
+
+        $user1 = new User(['first_name' => 'Jeannot', 'last_name' => 'Lapin', 'avatar' => 'default.png']);
+        $user1->user_id = 1;
+
+        $userCollection = new Collection([
+            $user1
+        ]);
+
+        $userRepository
+            ->expects($this->never())
+            ->method('listUsers');
+
+        $userRepository
+            ->expects($this->once())
+            ->method('searchUsers')
+            ->willReturn($userCollection);
+
+        $helpers
+            ->expects($this->once())
+            ->method('getSubDomainFromRequest')
+            ->with($request)
+            ->willReturn('ci-api');
+
+        $responseHelper
+            ->expects($this->once())
+            ->method('success')
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_LISTING'),
+                [
+                    $user1
+                ]
+            )
+            ->willReturn(new JsonResponse());
+
+        $result = $controller->index($request);
+
+        // testing the mock to avoid warning in phpunit
+        $this->assertInstanceOf(JsonResponse::class, $result);
     }
 
     /**

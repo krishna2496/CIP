@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\App\User;
 
-use InvalidArgumentException;
 use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
@@ -21,81 +20,76 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\User;
 use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
-use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 use App\Transformations\CityTransformable;
 use App\Models\TenantOption;
 use App\Notifications\InviteUser;
 use Carbon\Carbon;
 
-//!  User controller
-/*!
-This controller is responsible for handling user listing, show, save cookie agreement and
-upload profile image operations.
- */
+
 class UserController extends Controller
 {
     use RestExceptionHandlerTrait, UserTransformable, CityTransformable;
+
     /**
-     * @var App\Repositories\User\UserRepository
+     * @var UserRepository
      */
     private $userRepository;
 
     /**
-     * @var App\Repositories\UserCustomField\UserCustomFieldRepository
+     * @var UserCustomFieldRepository
      */
     private $userCustomFieldRepository;
 
     /**
-     * @var App\Repositories\City\CityRepository
+     * @var CityRepository
      */
     private $cityRepository;
 
     /**
-     * @var App\Helpers\ResponseHelper
+     * @var ResponseHelper
      */
     private $responseHelper;
 
     /**
-     * @var App\Helpers\LanguageHelper
+     * @var LanguageHelper
      */
     private $languageHelper;
 
     /**
-     * @var App\Helpers\Helpers
+     * @var Helpers
      */
     private $helpers;
 
     /**
-     * @var App\Helpers\S3Helper
+     * @var S3Helper
      */
     private $s3helper;
 
     /**
-     * @var App\Repositories\UserFilter\UserFilterRepository
+     * @var UserFilterRepository
      */
     private $userFilterRepository;
 
     /**
      * The response instance.
      *
-     * @var App\Repositories\TenantOption\TenantOptionRepository
+     * @var TenantOptionRepository
      */
     private $tenantOptionRepository;
 
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\User\UserRepository $userRepository
-     * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
-     * @param App\Repositories\City\CityRepository $cityRepository
-     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\Helpers $helpers
-     * @param App\Helpers\S3Helper $s3helper
-     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
-     * @return void
+     * @param UserRepository $userRepository
+     * @param UserCustomFieldRepository $userCustomFieldRepository
+     * @param CityRepository $cityRepository
+     * @param UserFilterRepository $userFilterRepository
+     * @param ResponseHelper $responseHelper
+     * @param LanguageHelper $languageHelper
+     * @param Helpers $helpers
+     * @param S3Helper $s3helper
+     * @param TenantOptionRepository $tenantOptionRepository
      */
     public function __construct(
         UserRepository $userRepository,
@@ -122,33 +116,33 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        $userList = $this->userRepository->listUsers($request->auth->user_id);
-        if ($request->has('search')) {
-            $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
-        }
+        $userList = $request->has('search')
+            ? $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id)
+            : $this->userRepository->listUsers($request->auth->user_id);
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $users = $userList->map(function (User $user) use ($request, $tenantName) {
             $user = $this->transformUser($user, $tenantName);
             return $user;
         })->all();
 
-        // Set response data
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = (empty($users)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+        $apiMessage = (empty($users))
+            ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
             : trans('messages.success.MESSAGE_USER_LISTING');
+
         return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users);
     }
 
     /**
      * Get default language of user
      *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function getUserDefaultLanguage(Request $request): JsonResponse
     {
@@ -158,7 +152,6 @@ class UserController extends Controller
 
             $userLanguage['default_language_id'] = $user->language_id;
 
-            $apiStatus = Response::HTTP_OK;
             return $this->responseHelper->success(Response::HTTP_OK, '', $userLanguage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
