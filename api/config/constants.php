@@ -35,6 +35,7 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_custom-variables.scss',
+    'AWS_S3_CUSTOM_FAVICON_NAME' => 'favicon.ico',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
@@ -402,6 +403,7 @@ return [
         'ERROR_USER_INVITE_INVALID_DATA' => '210017',
         'ERROR_ACCOUNT_EXPIRED' => '210018',
         'ERROR_MAXIMUM_USERS_REACHED' =>  '210019',
+        'ERROR_MAX_ATTEMPTS_REACHED' =>  '210019',
 
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',

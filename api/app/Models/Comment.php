@@ -39,7 +39,7 @@ class Comment extends Model
      */
     protected $visible = ['comment_id', 'comment', 'created_at', 'user', 'approval_status',
     'published', 'declined', 'pending' , 'missionLanguage', 'mission_id', 'title', 'mission'];
-    
+
     /**
      * Get the user that has comment.
      *
