@@ -88,10 +88,14 @@ class Story extends Model
      */
     public function deleteStory(int $storyId, int $userId): bool
     {
-        return static::where(['story_id' => $storyId,
-        'user_id' => $userId])->firstOrFail()->delete();
+        return static::where([
+                'story_id' => $storyId,
+                'user_id' => $userId
+            ])
+            ->firstOrFail()
+            ->delete();
     }
-    
+
     /**
      * Remove the script tag from description attribute
      *

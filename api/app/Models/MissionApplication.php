@@ -152,12 +152,26 @@ class MissionApplication extends Model
      * @param int $userId
      * @param $year
      * @param $month
+     * @param array|null $missionTypes
      * @return int
      */
-    public function missionApplicationCount(int $userId, $year, $month): int
-    {
-        $countQuery = $this->whereHas('mission')->where(['user_id' => $userId])
-        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'));
+    public function missionApplicationCount(
+        int $userId,
+        $year,
+        $month,
+        array $missionTypes = null
+    ): int {
+        $countQuery = $this->whereHas(
+                'mission',
+                function($query) use ($missionTypes) {
+                    if ($missionTypes !== null) {
+                        $query->whereIn('mission_type', $missionTypes);
+                    }
+                }
+            )
+            ->where(['user_id' => $userId])
+            ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'));
+
         if (isset($year) && $year != '') {
             $countQuery->whereYear('applied_at', $year);
             if (isset($month) && $month != '') {
@@ -173,12 +187,25 @@ class MissionApplication extends Model
      * @param int $userId
      * @param $year
      * @param $month
+     * @param array|null $missionTypes
      * @return int
      */
-    public function pendingApplicationCount(int $userId, $year, $month): int
-    {
-        $countQuery = $this->whereHas('mission')->where(['user_id' => $userId])
-        ->where('approval_status', config('constants.application_status.PENDING'));
+    public function pendingApplicationCount(
+        int $userId,
+        $year,
+        $month,
+        array $missionTypes = null
+    ): int {
+        $countQuery = $this->whereHas(
+                'mission',
+                function($query) use ($missionTypes) {
+                    if ($missionTypes !== null) {
+                        $query->whereIn('mission_type', $missionTypes);
+                    }
+                }
+            )
+            ->where(['user_id' => $userId])
+            ->where('approval_status', config('constants.application_status.PENDING'));
 
         if (isset($year) && $year != '') {
             $countQuery->whereYear('applied_at', $year);

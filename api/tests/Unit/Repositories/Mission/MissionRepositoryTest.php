@@ -11,6 +11,7 @@ use App\Models\FavouriteMission;
 use App\Models\Mission;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
+use App\Models\MissionImpact;
 use App\Models\MissionLanguage;
 use App\Models\MissionRating;
 use App\Models\MissionSkill;
@@ -20,22 +21,19 @@ use App\Models\Organization;
 use App\Models\TimeMission;
 use App\Repositories\Country\CountryRepository;
 use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Services\Mission\ModelsService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Mockery;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
-use TestCase;
-use App\Models\MissionImpactDonation;
-use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
-use App\Repositories\MissionImpact\MissionImpactRepository;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Models\MissionImpact;
 use Ramsey\Uuid\Uuid;
+use TestCase;
 
 class MissionRepositoryTest extends TestCase
 {
@@ -214,7 +212,7 @@ class MissionRepositoryTest extends TestCase
         $hasOne->shouldReceive('create')
             ->once()
             ->andReturn(true);
-
+        $modelService = $this->mock(ModelsService::class);
         $mission = $this->mock(Mission::class);
         $mission->shouldReceive('create')
             ->once()
@@ -272,7 +270,6 @@ class MissionRepositoryTest extends TestCase
         $missionTab = $this->mock(MissionTab::class);
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
-        $modelService = $this->mock(ModelsService::class);
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionTabRepository = $this->mock(MissionTabRepository::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);

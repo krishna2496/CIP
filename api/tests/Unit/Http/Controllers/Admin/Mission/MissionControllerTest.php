@@ -34,10 +34,22 @@ use App\Models\MissionApplication;
 use App\Models\City;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
-use App\Repositories\Organization\OrganizationRepository;
-use Validator;
 use App\Models\Organization;
+use App\Repositories\MissionMedia\MissionMediaRepository;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\Organization\OrganizationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Mission\ModelsService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Mockery;
+use Ramsey\Uuid\Uuid;
+use TestCase;
+use Validator;
 
 class MissionControllerTest extends TestCase
 {
@@ -176,7 +188,7 @@ class MissionControllerTest extends TestCase
             'message'=> trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
         ];
 
-        $JsonResponse = new JsonResponse(
+        $jsonResponse = new JsonResponse(
             $methodResponse
         );
 
@@ -202,7 +214,7 @@ class MissionControllerTest extends TestCase
                 Response::HTTP_NO_CONTENT,
                 trans('messages.success.MESSAGE_MISSION_TAB_DELETED')
             )
-           ->andReturn($JsonResponse);
+           ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -241,7 +253,7 @@ class MissionControllerTest extends TestCase
             ]
         ];
 
-        $JsonResponse = new JsonResponse(
+        $jsonResponse = new JsonResponse(
             $methodResponse
         );
 
@@ -269,7 +281,7 @@ class MissionControllerTest extends TestCase
                 config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
                 trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
             )
-           ->andReturn($JsonResponse);
+           ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -357,18 +369,19 @@ class MissionControllerTest extends TestCase
             ->with($missionId, $requestData->impact)
             ->andReturn(true);
 
+        $missionModel = new Mission();
+        $missionModel->publication_status = 'DRAFT';
+        $missionModel->mission_type = config('constants.mission_type.GOAL');
         $missionRepository->shouldReceive('find')
             ->once()
             ->with($missionId)
-            ->andReturn();
+            ->andReturn($missionModel);
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
             ->once()
             ->with($requestData)
             ->andReturn($defaultLanguage);
 
-        $missionModel = new Mission();
-        $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
             ->once()
             ->with($missionId, $defaultLanguage->language_id)
@@ -382,6 +395,14 @@ class MissionControllerTest extends TestCase
         $missionRepository->shouldReceive('update')
             ->once()
             ->andReturn();
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
@@ -474,18 +495,19 @@ class MissionControllerTest extends TestCase
             ->with($missionId, $requestData->impact)
             ->andReturn(true);
 
+        $missionModel = new Mission();
+        $missionModel->publication_status = 'DRAFT';
+        $missionModel->mission_type = config('constants.mission_type.TIME');
         $missionRepository->shouldReceive('find')
             ->once()
             ->with($missionId)
-            ->andReturn();
+            ->andReturn($missionModel);
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
             ->once()
             ->with($requestData)
             ->andReturn($defaultLanguage);
 
-        $missionModel = new Mission();
-        $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
             ->once()
             ->with($missionId, $defaultLanguage->language_id)
@@ -495,6 +517,14 @@ class MissionControllerTest extends TestCase
             ->once()
             ->with($missionId, $data['impact'][0]['mission_impact_id'])
             ->andThrow($modelNotFoundException);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $methodResponse = [
             'errors'=> [
@@ -550,7 +580,7 @@ class MissionControllerTest extends TestCase
             'message'=> trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED')
         ];
 
-        $JsonResponse = new JsonResponse(
+        $jsonResponse = new JsonResponse(
             $methodResponse
         );
 
@@ -576,7 +606,7 @@ class MissionControllerTest extends TestCase
                 Response::HTTP_NO_CONTENT,
                 trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED')
             )
-           ->andReturn($JsonResponse);
+           ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -615,7 +645,7 @@ class MissionControllerTest extends TestCase
             ]
         ];
 
-        $JsonResponse = new JsonResponse(
+        $jsonResponse = new JsonResponse(
             $methodResponse
         );
 
@@ -643,7 +673,7 @@ class MissionControllerTest extends TestCase
                 config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
             )
-           ->andReturn($JsonResponse);
+           ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -676,7 +706,7 @@ class MissionControllerTest extends TestCase
         $organizationRepository = $this->mock(OrganizationRepository::class);
         $requestData = new Request();
 
-        $JsonResponse = new JsonResponse();
+        $jsonResponse = new JsonResponse();
 
         $responseHelper->shouldReceive('error')
             ->once()
@@ -686,7 +716,7 @@ class MissionControllerTest extends TestCase
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 'The mission type field is required.'
             )
-           ->andReturn($JsonResponse);
+           ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -705,112 +735,97 @@ class MissionControllerTest extends TestCase
 
     public function testMissionStoreOrganizationNameRequired(){
         $input = [
-            "organization" => [
-            "organization_id" => rand(),
-            "legal_number" =>1,
-            "phone_number" =>123,
-            "address_line_1" =>"test",
-            "address_line_2" =>"2323",
-            "city_id" =>'',
-            "country_id" =>'',
-            "postal_code" =>1
+            'organization' => [
+                'organization_id' => rand(),
+                'legal_number' => 1,
+                'phone_number' => 123,
+                'address_line_1' => 'test',
+                'address_line_2' => '2323',
+                'city_id' => '',
+                'country_id' => '',
+                'postal_code' => 1
             ],
-            "organisation_detail" => [
-            [
-            "lang" => "en",
-            "detail" => "test oraganization detail3333333333"
-            ]
-            ],
-            "location" => [
-            "city_id" => "1",
-            "country_code" => "US"
-            ],
-            "mission_detail" => [
-            [
-            "lang" => "en",
-            "title" => "testing api mission details",
-            "short_description" => "this is testing api with all mission details",
-            "objective" => "To test and check",
-            "label_goal_achieved" => "test percentage",
-            "label_goal_objective" => "check test percentage",
-            "section" => [
+            'organisation_detail' => [
                 [
-                "title" => "string",
-                "description" => "string"
+                    'lang' => 'en',
+                    'detail' => 'test oraganization detail3333333333'
                 ]
-                ],
-                "custom_information" => [
-                [
-                "title" => "string",
-                "description" => "string"
-                ]
-            ]
-            ]
             ],
-            "impact" => [
-                    [
-                    "icon_path" => "filepath available",
-                    "sort_key" => 1525,
-                    "translations" => [
-                    [
-                    "language_code" => "tr",
-                    "content" => "mission impact content other lang."
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details',
+                    'objective' => 'To test and check',
+                    'label_goal_achieved' => 'test percentage',
+                    'label_goal_objective' => 'check test percentage',
+                    'section' => [
+                        [
+                            'title' => 'string',
+                            'description' => 'string'
+                        ]
                     ],
-                    [
-                    "language_code" => "es",
-                    "content" => "mission impact content es lang."
-                    ]
-                ]
-            ],
-                [
-                "sort_key" => 2,
-                "translations" => [
-                [
-                "language_code" => "fr",
-                "content" => "mission impact content fr lang."
-                ]
-            ]
-            ]
-            ],
-            "impact_donation" => [
-                [
-                    "amount" => 5,
-                    "translations" => [
+                    'custom_information' => [
                         [
-                        "language_code" => "en",
-                        "content" => "this is test impact donation mission in english language."
-                        ],
-                        [
-                        "language_code" => "fr",
-                        "content" => "this is test impact donation mission in french language."
+                            'title' => 'string',
+                            'description' => 'string'
                         ]
                     ]
                 ]
             ],
-            "skills" => [
+            'impact' => [
                 [
-                    "skill_id" => 2
+                    'icon_path' => 'filepath available',
+                    'sort_key' => 1525,
+                    'translations' => [
+                        [
+                            'language_code' => 'tr',
+                            'content' => 'mission impact content other lang.'
+                        ],
+                        [
+                            'language_code' => 'es',
+                            'content' => 'mission impact content es lang.'
+                        ]
+                    ]
+                ],
+                [
+                    'sort_key' => 2,
+                    'translations' => [
+                        [
+                            'language_code' => 'fr',
+                            'content' => 'mission impact content fr lang.'
+                        ]
+                    ]
                 ]
             ],
-            "volunteering_attribute" =>
-            [
-                "availability_id" => 1,
-                "total_seats" => 25,
-                "is_virtual" => 1
+            'skills' => [
+                [
+                    'skill_id' => 2
+                ]
             ],
-            "start_date" => "2020-05-13T06 =>07 =>47.115Z",
-            "end_date" => "2020-05-21T06 =>07 =>47.115Z",
-            "mission_type" => "GOAL",
-            "goal_objective" => "535",
-            "application_deadline" => "2020-05-16T06 =>07 =>47.115Z",
-            "application_start_date" => "2020-05-18T06 =>07 =>47.115Z",
-            "application_start_time" => "2020-05-18T06 =>07 =>47.115Z",
-            "application_end_date" => "2020-05-20T06 =>07 =>47.115Z",
-            "application_end_time" => "2020-05-20T06 =>07 =>47.115Z",
-            "publication_status" => "APPROVED",
-            "availability_id" => 1,
-            "is_virtual" => "0",
-            "un_sdg" =>[1,2,3]
+            'volunteering_attribute' =>
+            [
+                'availability_id' => 1,
+                'total_seats' => 25,
+                'is_virtual' => 1
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.GOAL'),
+            'goal_objective' => '535',
+            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
+            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
+            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
+            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
+            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
+            'publication_status' => 'APPROVED',
+            'availability_id' => 1,
+            'is_virtual' => '0',
+            'un_sdg' => [1, 2, 3]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -832,21 +847,29 @@ class MissionControllerTest extends TestCase
         $organizationRepository = $this->mock(OrganizationRepository::class);
         $requestData = new Request($input);
 
-        $JsonResponse = new JsonResponse();
+        $jsonResponse = new JsonResponse();
 
         $organizationRepository->shouldReceive('find')
-        ->once()
-        ->andReturn(false);
+            ->once()
+            ->andReturn(false);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-            trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
-        )
-       ->andReturn($JsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
+            )
+           ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -980,115 +1003,100 @@ class MissionControllerTest extends TestCase
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
     
-    public function testMissionStoreSuccess(){
+    public function testMissionStoreSuccess()
+    {
         $input = [
-            "organization" => [
-            "organization_id" => rand(),
-            "name" => 'test name',
-            "legal_number" =>1,
-            "phone_number" =>123,
-            "address_line_1" =>"test",
-            "address_line_2" =>"2323",
-            "city_id" =>'',
-            "country_id" =>'',
-            "postal_code" =>1
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1
             ],
-            "organisation_detail" => [
-            [
-            "lang" => "en",
-            "detail" => "test oraganization detail3333333333"
-            ]
-            ],
-            "location" => [
-            "city_id" => "1",
-            "country_code" => "US"
-            ],
-            "mission_detail" => [
-            [
-            "lang" => "en",
-            "title" => "testing api mission details",
-            "short_description" => "this is testing api with all mission details",
-            "objective" => "To test and check",
-            "label_goal_achieved" => "test percentage",
-            "label_goal_objective" => "check test percentage",
-            "section" => [
+            'organisation_detail' => [
                 [
-                "title" => "string",
-                "description" => "string"
+                'lang' => 'en',
+                'detail' => 'test oraganization detail3333333333'
                 ]
-                ],
-                "custom_information" => [
-                [
-                "title" => "string",
-                "description" => "string"
-                ]
-            ]
-            ]
             ],
-            "impact" => [
-                    [
-                    "icon_path" => "filepath available",
-                    "sort_key" => 1525,
-                    "translations" => [
-                    [
-                    "language_code" => "tr",
-                    "content" => "mission impact content other lang."
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details',
+                    'objective' => 'To test and check',
+                    'label_goal_achieved' => 'test percentage',
+                    'label_goal_objective' => 'check test percentage',
+                    'section' => [
+                        [
+                            'title' => 'string',
+                            'description' => 'string'
+                        ]
                     ],
-                    [
-                    "language_code" => "es",
-                    "content" => "mission impact content es lang."
-                    ]
-                ]
-            ],
-                [
-                "sort_key" => 2,
-                "translations" => [
-                [
-                "language_code" => "fr",
-                "content" => "mission impact content fr lang."
-                ]
-            ]
-            ]
-            ],
-            "impact_donation" => [
-                [
-                    "amount" => 5,
-                    "translations" => [
+                    'custom_information' => [
                         [
-                        "language_code" => "en",
-                        "content" => "this is test impact donation mission in english language."
-                        ],
-                        [
-                        "language_code" => "fr",
-                        "content" => "this is test impact donation mission in french language."
+                            'title' => 'string',
+                            'description' => 'string'
                         ]
                     ]
                 ]
             ],
-            "skills" => [
+            'impact' => [
                 [
-                    "skill_id" => 2
+                    'icon_path' => 'filepath available',
+                    'sort_key' => 1525,
+                    'translations' => [
+                        [
+                            'language_code' => 'tr',
+                            'content' => 'mission impact content other lang.'
+                        ],
+                        [
+                            'language_code' => 'es',
+                            'content' => 'mission impact content es lang.'
+                        ]
+                    ]
+                ],
+                [
+                    'sort_key' => 2,
+                    'translations' => [
+                        [
+                            'language_code' => 'fr',
+                            'content' => 'mission impact content fr lang.'
+                        ]
+                    ]
                 ]
             ],
-            "volunteering_attribute" =>
-            [
-                "availability_id" => 1,
-                "total_seats" => 25,
-                "is_virtual" => 1
+            'skills' => [
+                [
+                    'skill_id' => 2
+                ]
             ],
-            "start_date" => "2020-05-13T06 =>07 =>47.115Z",
-            "end_date" => "2020-05-21T06 =>07 =>47.115Z",
-            "mission_type" => "GOAL",
-            "goal_objective" => "535",
-            "application_deadline" => "2020-05-16T06 =>07 =>47.115Z",
-            "application_start_date" => "2020-05-18T06 =>07 =>47.115Z",
-            "application_start_time" => "2020-05-18T06 =>07 =>47.115Z",
-            "application_end_date" => "2020-05-20T06 =>07 =>47.115Z",
-            "application_end_time" => "2020-05-20T06 =>07 =>47.115Z",
-            "publication_status" => "APPROVED",
-            "availability_id" => 1,
-            "is_virtual" => "0",
-            "un_sdg" =>[1,2,3]
+            'volunteering_attribute' => [
+                'availability_id' => 1,
+                'total_seats' => 25,
+                'is_virtual' => 1
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.GOAL'),
+            'goal_objective' => '535',
+            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
+            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
+            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
+            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
+            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
+            'publication_status' => 'APPROVED',
+            'availability_id' => 1,
+            'is_virtual' => false,
+            'un_sdg' => [1,2,3]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1113,15 +1121,23 @@ class MissionControllerTest extends TestCase
         $missionModel = new Mission();
         $missionModel->mission_id = rand();
 
-        $JsonResponse = new JsonResponse();
+        $jsonResponse = new JsonResponse();
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $organizationRepository->shouldReceive('find')
-        ->once()
-        ->andReturn($organizationModel);
+            ->once()
+            ->andReturn($organizationModel);
 
         $missionRepository->shouldReceive('store')
-        ->once()
-        ->andReturn($missionModel);
+            ->once()
+            ->andReturn($missionModel);
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
@@ -1129,13 +1145,11 @@ class MissionControllerTest extends TestCase
         $apiData = ['mission_id' => $missionModel->mission_id];
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with($apiStatus, $apiMessage, $apiData)
-       ->andReturn($JsonResponse);
-
+            ->once()
+            ->with($apiStatus, $apiMessage, $apiData)
+            ->andReturn($jsonResponse);
 
         $this->expectsEvents(UserActivityLogEvent::class);
-
 
         $callController = $this->getController(
             $missionRepository,
@@ -1292,10 +1306,12 @@ class MissionControllerTest extends TestCase
             ->with('php-auth-user')
             ->andReturn($key);
 
+        $missionModel = new Mission();
+        $missionModel->mission_type = config('constants.mission_type.GOAL');
         $missionRepository->shouldReceive('find')
             ->once()
             ->with($missionId)
-            ->andReturn();
+            ->andReturn($missionModel);
 
         Validator::shouldReceive('make')
             ->once()
@@ -1305,6 +1321,14 @@ class MissionControllerTest extends TestCase
             ->once()
             ->with($missionId, $requestData->mission_tabs)
             ->andReturn(false);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $methodResponse = [
             'errors'=> [
@@ -1391,10 +1415,12 @@ class MissionControllerTest extends TestCase
             ->with('php-auth-user')
             ->andReturn($key);
 
+        $missionModel = new Mission();
+        $missionModel->mission_type = config('constants.mission_type.GOAL');
         $missionRepository->shouldReceive('find')
             ->once()
             ->with($missionId)
-            ->andReturn();
+            ->andReturn($missionModel);
 
         Validator::shouldReceive('make')
             ->once()
@@ -1404,6 +1430,14 @@ class MissionControllerTest extends TestCase
             ->once()
             ->with($missionId, $requestData->impact)
             ->andReturn(false);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $methodResponse = [
             'errors'=> [

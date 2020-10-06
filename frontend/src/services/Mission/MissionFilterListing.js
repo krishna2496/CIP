@@ -11,7 +11,6 @@ export default async() => {
             url: process.env.VUE_APP_API_ENDPOINT + "app/user-filter",
             method: 'get',
             headers: {
-                'token': store.state.token,
                 'X-localization': defaultLanguage,
             }
         })

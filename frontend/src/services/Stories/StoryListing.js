@@ -14,7 +14,6 @@ export default async(currentPage) => {
         method: 'GET',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then((response) => {
