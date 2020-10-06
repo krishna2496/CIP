@@ -20,6 +20,7 @@ use Mockery;
 use TestCase;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
+use App\Models\Timezone;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class UserControllerTest extends TestCase
@@ -197,11 +198,28 @@ class UserControllerTest extends TestCase
             ->andReturn([
                 'email' => 'testemail@yahoo.com',
                 'password' => 'Passw0rd'
+            ])
+            ->shouldReceive('merge')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd',
+                'timezone_id' => 1
             ]);
         $request->request = $symfonyRequest;
         $request->skills = null;
         $request->language_id = null;
         $request->expiry = null;
+        $request->timezone_id = null;
+
+        $timezone = new Timezone();
+        $timezone->setAttribute('timezone_id', 1);
+
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $timezoneRepository
+            ->shouldReceive('getTenantTimezoneByCode')
+            ->once()
+            ->with('Europe/Paris')
+            ->andReturn($timezone);
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
@@ -257,7 +275,8 @@ class UserControllerTest extends TestCase
             null,
             null,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
 
         $response = $service->store($request);
@@ -294,11 +313,28 @@ class UserControllerTest extends TestCase
                 'password' => 'Passw0rd',
                 'first_name' => 'Test',
                 'last_name' => 'Email'
+            ])
+            ->shouldReceive('merge')
+            ->andReturn([
+                'email' => 'testemail@yahoo.com',
+                'password' => 'Passw0rd',
+                'timezone_id' => 1
             ]);
         $request->request = $symfonyRequest;
         $request->skills = [['skill_id' => 1]];
         $request->language_id = 1;
         $request->expiry = null;
+        $request->timezone_id = null;
+
+        $timezone = new Timezone();
+        $timezone->setAttribute('timezone_id', 1);
+
+        $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $timezoneRepository
+            ->shouldReceive('getTenantTimezoneByCode')
+            ->once()
+            ->with('Europe/Paris')
+            ->andReturn($timezone);
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
@@ -366,7 +402,8 @@ class UserControllerTest extends TestCase
             null,
             null,
             $request,
-            $notificationRepository
+            $notificationRepository,
+            $timezoneRepository
         );
 
         $response = $service->store($request);
@@ -846,7 +883,8 @@ class UserControllerTest extends TestCase
         TimesheetService $timesheetService = null,
         Helpers $helpers = null,
         Request $request,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        TimezoneRepository $timezoneRepository = null
     ) {
         $userRepository = $userRepository ?? $this->mock(UserRepository::class);
         $responseHelper = $responseHelper ?? $this->mock(ResponseHelper::class);
@@ -855,7 +893,7 @@ class UserControllerTest extends TestCase
         $timesheetService = $timesheetService ?? $this->mock(TimesheetService::class);
         $helpers = $helpers ?? $this->mock(Helpers::class);
         $notificationRepository = $notificationRepository ?? $this->mock(NotificationRepository::class);
-         $timezoneRepository = $this->mock(TimezoneRepository::class);
+        $timezoneRepository = $timezoneRepository ?? $this->mock(TimezoneRepository::class);
 
         return new UserController(
             $userRepository,

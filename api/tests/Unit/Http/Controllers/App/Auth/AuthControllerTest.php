@@ -87,10 +87,10 @@ class AuthControllerTest extends TestCase
 			->with(
 				Response::HTTP_OK,
 				trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS'),
-				['token' => 'tenant-token']
+				[]
 			)
 			->andReturn(new JsonResponse(
-				['token' => 'tenant-token'],
+				[],
 				Response::HTTP_OK
 			));
 
@@ -126,7 +126,7 @@ class AuthControllerTest extends TestCase
 		$response = $controller->changePassword($request);
 		$this->assertInstanceOf(JsonResponse::class, $response);
 		$this->assertEquals(
-			['token' => 'tenant-token'],
+			[],
 			json_decode($response->getContent(), true)
 		);
 	}
