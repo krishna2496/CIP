@@ -33,9 +33,10 @@ foreach ($tenants as $tenant) {
         $skillTranslations = json_decode($skill['translations'], true);
 
         $trans = [];
-        foreach ($skillTranslations as $translation) {
-            if (!array_key_exists('lang', $translation) || !array_key_exists('title', $translation)) {
+        foreach ($skillTranslations as $key => $translation) {
+            if (!is_array($translation) || !array_key_exists('lang', $translation) || !array_key_exists('title', $translation)) {
                 dump('Need manual verification: tenant id: ' . $tenantId . ' and skill id: '. $skill['skill_id']);
+                $trans[$key] = $translation;
                 continue;
             }
 

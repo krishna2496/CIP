@@ -37,6 +37,7 @@ foreach ($tenants as $tenant) {
             foreach ($skillTranslations as $key => $translation) {
                  if (is_int($key)) {
                      dump('Need manual verification: tenant id: ' . $tenantId . ' and skill id: '. $skill['skill_id']);
+                     $trans[$key] = $translation;
                      continue;
                  }
 
