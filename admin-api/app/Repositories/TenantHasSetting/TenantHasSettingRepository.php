@@ -106,15 +106,14 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
                         return trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE');
                     }
                 }
-
             }
         }
         // Check if volunteering setting is disable the to now allow to update time and goal
-        if(!$volunteeringSetting){
-            foreach ($data['settings'] as $value) { 
+        if (!$volunteeringSetting) {
+            foreach ($data['settings'] as $value) {
                 $tenantSetting = $this->tenantSetting->where('tenant_setting_id', $value['tenant_setting_id'])->first();
-                if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') || 
-                    $tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')){
+                if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') ||
+                    $tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')) {
                     return trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED');
                 }
             }
