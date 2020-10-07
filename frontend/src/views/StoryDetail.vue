@@ -258,7 +258,10 @@
           if (response.error == false) {
             let mediaType = []
             this.storyDetailList = response.data
-            this.storyDetailList.description = sanitizeHtml(this.storyDetailList.description)
+            this.storyDetailList.description = sanitizeHtml(this.storyDetailList.description, {
+              allowedTags: false,
+              allowedAttributes: false
+            });
             let newMediaType = response.data.storyMedia
             if (newMediaType) {
               newMediaType.filter((data, index) => {
