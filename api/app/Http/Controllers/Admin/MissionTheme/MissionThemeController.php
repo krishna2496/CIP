@@ -25,7 +25,7 @@ class MissionThemeController extends Controller
      * @var App\Repositories\MissionTheme\MissionThemeRepository
      */
     private $missionThemeRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -35,7 +35,7 @@ class MissionThemeController extends Controller
      * @var string
      */
     private $userApiKey;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -53,7 +53,7 @@ class MissionThemeController extends Controller
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -65,11 +65,13 @@ class MissionThemeController extends Controller
         try {
             $missionThemes = $this->missionThemeRepository->missionThemeDetails($request);
 
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($missionThemes->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-             : trans('messages.success.MESSAGE_THEME_LISTING');
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $missionThemes);
+            $apiMessage = ($missionThemes->isEmpty())
+                ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+                : trans('messages.success.MESSAGE_THEME_LISTING');
+
+            return $this->responseHelper
+                ->successWithPagination(Response::HTTP_OK, $apiMessage, $missionThemes);
+
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -149,7 +151,7 @@ class MissionThemeController extends Controller
                 "translations.*.lang" => "required_with:translations|max:2"
                 ]
             );
-            
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -159,7 +161,7 @@ class MissionThemeController extends Controller
                     $validator->errors()->first()
                 );
             }
-         
+
             // Update mission theme
             $missionTheme = $this->missionThemeRepository->update($request->toArray(), $id);
 
@@ -167,7 +169,7 @@ class MissionThemeController extends Controller
             $apiData = ['mission_theme_id' => $missionTheme->mission_theme_id];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_THEME_UPDATED');
-            
+
             // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.MISSION_THEME'),
@@ -199,11 +201,11 @@ class MissionThemeController extends Controller
     {
         try {
             $missionThemeDetail = $this->missionThemeRepository->find($id);
-                
+
             $apiData = $missionThemeDetail->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_THEME_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -231,7 +233,7 @@ class MissionThemeController extends Controller
         }
         try {
             $missionTheme = $this->missionThemeRepository->delete($id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_THEME_DELETED');
@@ -247,7 +249,7 @@ class MissionThemeController extends Controller
                 null,
                 $id
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

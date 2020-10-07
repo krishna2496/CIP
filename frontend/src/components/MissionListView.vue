@@ -226,40 +226,7 @@
             </div>
 
         </div>
-        <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
-            <template slot="modal-header" slot-scope="{ close }">
-                <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                <h5 class="modal-title">{{languageData.label.search_user}}</h5>
-            </template>
-            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
-            <div class="autocomplete-control">
-                <div class="autosuggest-container">
-                    <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                                    @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
-                                    :input-props="{
-                        id:'autosuggest__input',
-                        placeholder:autoSuggestPlaceholder,
-                        ref:'inputAutoSuggest'
-                        }">
-                        <div slot-scope="{suggestion}">
-                            <img :src="suggestion.item.avatar" />
-                            <div>
-                                {{suggestion.item.first_name}} {{suggestion.item.last_name}}
-                            </div>
-                        </div>
-                    </VueAutosuggest>
-                </div>
-            </div>
-            <b-form>
-                <div class="btn-wrap">
-                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                        {{ languageData.label.close }}</b-button>
-                    <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
-                              v-bind:disabled="submitDisable">
-                        {{ languageData.label.submit }}</b-button>
-                </div>
-            </b-form>
-        </b-modal>
+      <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
     </div>
     <div class="no-data-found" v-else>
         <h2 class="text-center">{{noRecordFound()}}</h2>
@@ -285,72 +252,43 @@
 <script>
   import store from '../store';
   import constants from '../constant';
+  import InviteCoWorker from "@/components/InviteCoWorker";
   import StarRating from 'vue-star-rating';
   import moment from 'moment';
-  import {
-    favoriteMission,
-    inviteColleague,
-    applyMission
-  } from "../services/service";
-  import {
-    VueAutosuggest
-  } from 'vue-autosuggest';
+  import { favoriteMission, applyMission } from "../services/service";
 
   export default {
     name: "MissionListView",
     props: {
-      items: Array,
-      userList: Array
+      items: Array
     },
     components: {
-      StarRating,
-      VueAutosuggest
+      InviteCoWorker,
+      StarRating
     },
     data() {
       return {
-        query: "",
-        selected: "",
-        myclass: ["userdetail-modal"],
         currentMissionId: 0,
-        invitedUserId: 0,
-        showErrorDiv: false,
-        message: null,
-        classVariant: "success",
-        autoSuggestPlaceholder: '',
-        submitDisable: true,
-        languageData: [],
         isInviteCollegueDisplay: true,
-        isStarRatingDisplay: true,
         isQuickAccessSet: true,
-        isSubmitNewMissionSet: true,
         isThemeSet: true,
+        isStarRatingDisplay: true,
+        isSubmitNewMissionSet: true,
+        languageData: [],
+        message: null,
         submitNewMissionUrl: '',
         isSkillDisplay: true
       };
     },
     computed: {
       filteredOptions() {
-        if (this.userList) {
-          return [{
-            data: this.userList.filter(option => {
-              let firstName = option.first_name.toLowerCase();
-              let lastName = option.last_name.toLowerCase();
-              let email = option.email.toLowerCase();
-              let searchString = firstName + '' + lastName + '' + email;
-              return searchString.indexOf(this.query.toLowerCase()) > -1;
-            })
-          }];
-        }
+        return [{
+          data: this.users
+        }];
       }
     },
     methods: {
-      hideModal() {
-        this.autoSuggestPlaceholder = ""
-        this.submitDisable = true
-        this.invitedUserId = ""
-        this.query = ""
-        this.selected = ""
-      },
+
       noRecordFound() {
         let defaultLang = (store.state.defaultLanguage).toLowerCase();
         if (JSON.parse(store.state.missionNotFoundText) != "") {
@@ -434,67 +372,15 @@
         });
 
       },
-      onInputChange() {
-        this.submitDisable = true;
-      },
-      // For selected user id.
-      onSelected(item) {
-        if (item) {
-          this.selected = item.item;
-          this.submitDisable = false;
-          this.invitedUserId = item.item.user_id;
-        }
-      },
-      //This is what the <input/> value is set to when you are selecting a suggestion.
-      getSuggestionValue(suggestion) {
-        let firstName = suggestion.item.first_name;
-        let lastName = suggestion.item.last_name;
-        return firstName + ' ' + lastName;
-      },
-      // Open auto suggest modal
+
+      /*
+			 * Opens Recommend to a co-worker modal
+			 */
       handleModal(missionId) {
-        this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
-        this.showErrorDiv = false;
-        this.message = null;
+        this.currentMissionId = missionId;
         this.$refs.userDetailModal.show();
-        this.currentMission = missionId;
-        setTimeout(() => {
-          this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-          var input = document.getElementById("autosuggest__input");
-          input.addEventListener("keyup", (event) => {
-            if (event.keyCode === 13 && !this.submitDisable) {
-              event.preventDefault();
-              this.inviteColleagues()
-            }
-          });
-        }, 100);
       },
-      // invite collegues api call
-      inviteColleagues() {
-        let inviteData = {};
-        inviteData.mission_id = this.currentMission;
-        inviteData.to_user_id = this.invitedUserId;
-        inviteColleague(inviteData).then(response => {
-          this.submitDisable = true;
-          if (response.error == true) {
-            this.classVariant = "danger";
-            this.message = response.message;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = '';
-            this.showErrorDiv = true;
-          } else {
-            this.query = "";
-            this.selected = "";
-            this.currentMissionId = 0;
-            this.invitedUserId = 0;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = '';
-            this.classVariant = "success";
-            this.message = response.message;
-            this.showErrorDiv = true;
-          }
-        })
-      },
+
       // Apply for mission
       applyForMission(missionDetail) {
         let missionData = {};

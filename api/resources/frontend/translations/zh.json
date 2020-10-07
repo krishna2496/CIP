@@ -386,7 +386,10 @@
 		"max_image_upload": "最多可添加 20 张图像",
 		"max_video_upload": "最多可添加 20 个视频",
 		"duplicate_video_url": "视频 URL 不允许重复存在",
-		"invalid_saml_setting": "需要以下映射："
+		"invalid_saml_setting": "需要以下映射：",
+		"password_should_contain_uppercase": "至少 1 个大写字母",
+		"password_should_contain_lowercase": "至少 1 个小写字母",
+		"password_should_contain_numbers": "至少 1 个数字"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
