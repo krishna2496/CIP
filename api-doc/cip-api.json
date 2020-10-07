@@ -7482,7 +7482,7 @@
     },
     "/app/country": {
       "get": {
-        "operationId": "GET_team4-cip-api-get-country",
+        "operationId": "GET_cip-api-get-country",
         "summary": "App - Get country list",
         "tags": [
           "Country"
