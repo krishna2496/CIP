@@ -23,7 +23,7 @@ class TenantHasSettingControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreCheckVolunteeringTimeGoalCondition()
+    public function testStoreCheckVolunteeringTimeAndGoalSetting()
     {
         $tenantHasSettingRepository = $this->mock(TenantHasSettingRepository::class);
         $tenantRepository = $this->mock(TenantRepository::class);
@@ -47,7 +47,7 @@ class TenantHasSettingControllerTest extends TestCase
 
         $tenantHasSettingRepository->shouldReceive('checkVolunteeringTimeAndGoalSetting')
             ->once()
-            ->andReturn(trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE'));
+            ->andReturn(false);
         
         $responseHelper->shouldReceive('error')
             ->once()
@@ -55,7 +55,63 @@ class TenantHasSettingControllerTest extends TestCase
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE'),
-                trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE')
+            )
+            ->andReturn(new JsonResponse());
+
+        $controller = $this->getController(
+            $tenantHasSettingRepository,
+            $tenantRepository,
+            $responseHelper,
+            $databaseHelper
+        );
+
+        $response = $controller->store($request, $tenantId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+     * @testdox Test store check volunteer setting disabled or not
+     *
+     * @return void
+     */
+    public function testStoreCheckVolunteeringSettingDisabled()
+    {
+        $tenantHasSettingRepository = $this->mock(TenantHasSettingRepository::class);
+        $tenantRepository = $this->mock(TenantRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $databaseHelper = $this->mock(DatabaseHelper::class);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $tenantId = rand();
+        $requestData = [];
+        $request = new Request();
+
+        $tenantRepository->shouldReceive('find')
+            ->once()
+            ->andReturn(new Tenant());
+
+        $tenantHasSettingRepository->shouldReceive('checkVolunteeringTimeAndGoalSetting')
+            ->once()
+            ->andReturn(true);
+
+        $tenantHasSettingRepository->shouldReceive('checkVolunteeringSettingDisabled')
+            ->once()
+            ->andReturn(false);
+        
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED')
             )
             ->andReturn(new JsonResponse());
 
