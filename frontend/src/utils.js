@@ -1,4 +1,5 @@
 import store from './store';
+import sanitizeHtml from 'sanitize-html';
 
 export function setSiteTitle() {
   if (!store.state.defaultLanguage) {
@@ -19,4 +20,23 @@ export function setSiteTitle() {
     }
   }
   document.title = siteTitle;
+};
+
+export function cleanHtml(html) {
+  return sanitizeHtml(html, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+    allowedAttributes: {
+      '*': [
+        'style',
+        'border',
+        'cellpadding',
+        'cellspacing',
+        'title',
+        'href',
+        'src',
+        'name',
+        'alt'
+      ]
+    }
+  });
 }

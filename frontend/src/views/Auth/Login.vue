@@ -84,9 +84,9 @@ import {
     policy
 } from '../../services/service';
 import {
-    setSiteTitle
+    setSiteTitle,
+    cleanHtml
 } from '../../utils';
-import sanitizeHtml from 'sanitize-html';
 
 export default {
     components: {
@@ -182,20 +182,17 @@ export default {
                 return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
             });
             if (translatedCustomText && translatedCustomText.message) {
-                this.customText = translatedCustomText.message;
-            } else {
-                // get custom text for default language if no translation is found
-                const customTextInDefaultLang = translations.find((item) => {
-                    return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
-                });
-                if (customTextInDefaultLang && customTextInDefaultLang.message) {
-                    this.customText = customTextInDefaultLang.message;
-                }
+                this.customText = cleanHtml(translatedCustomText.message);
+                return;
             }
-            this.customText = sanitizeHtml(this.customText, {
-                allowedTags: false,
-                allowedAttributes: false
+
+            // get custom text for default language if no translation is found
+            const customTextInDefaultLang = translations.find((item) => {
+                return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
             });
+            if (customTextInDefaultLang && customTextInDefaultLang.message) {
+                this.customText = cleanHtml(customTextInDefaultLang.message);
+            }
         },
 
         handleSubmit() {
