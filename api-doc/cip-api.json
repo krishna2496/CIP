@@ -4398,6 +4398,39 @@
         }
       }
     },
+    "/tenant-currencies": {
+      "get": {
+        "operationId": "GET-cip-api-get-activated-currencies",
+        "summary": "Admin - Get tenant activated currencies",
+        "description": "List of all the tenant activated currencies",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tenant activated currencies listed successfully | Tenant has no activated currencies"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
     "/language/{isoCode}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",

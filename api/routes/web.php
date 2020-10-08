@@ -633,6 +633,11 @@ $router->group(
         }
     );
 
+    $router->get('/tenant-currencies', [
+        'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'Admin\Tenant\TenantActivatedCurrenciesController@index'
+    ]);
+
     /* Set mission theme data for tenant specific */
     $router->group(
         ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],

@@ -211,7 +211,9 @@ return [
         'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
         'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
         'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully',
-        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully'
+        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
     ],
 
 
@@ -323,6 +325,7 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID' => 'Invalid tenant language code or file name.',
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Incomplete language file.',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Invalid tenant language code.',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => 'An error was encountered while retrieving tenant activated currencies',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
