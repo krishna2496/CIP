@@ -392,7 +392,10 @@
 		"max_image_upload": "Er kunnen maximaal 20 afbeeldingen worden toegevoegd",
 		"max_video_upload": "Er kunnen maximaal 20 video's worden toegevoegd",
 		"duplicate_video_url": "Dubbele video-URL is niet toegestaan",
-		"invalid_saml_setting": "De volgende toewijzing(en) zijn vereist:"
+		"invalid_saml_setting": "De volgende toewijzing(en) zijn vereist:",
+		"password_should_contain_uppercase": "Minstens 1 hoofdletter",
+		"password_should_contain_lowercase": "Minstens 1 kleine letter",
+		"password_should_contain_numbers": "Minstens 1 cijfer"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

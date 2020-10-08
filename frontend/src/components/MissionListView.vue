@@ -9,9 +9,7 @@
                             {{languageData.label.applied}}</b-alert>
                         <b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
                             {{languageData.label.closed}}</b-alert>
-                        <div v-if="checkDefaultMediaFormat(mission.default_media_type)"
-                            v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}"
-                            class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+                        <div v-if="checkDefaultMediaFormat(mission.default_media_type)" v-bind:class="{'d-none' : (checkDefaultMediaFormat(mission.default_media_type) && getMediaPath(mission.default_media_path) == '')}" class="group-img" :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                             <img :src="getMediaPath(mission.default_media_path)" alt="">
                         </div>
                         <div v-else class="group-img" :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
@@ -75,7 +73,7 @@
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
-                                    <div class="text-wrap"  v-if="mission.end_date !== null">
+                                    <div class="text-wrap" v-if="mission.end_date !== null">
                                         <template v-if="!compareDate(mission.end_date,mission.start_date)">
                                             <span class="title-text"><em>{{ languageData.label.from }}</em>
                                                 {{mission.start_date | formatDate }}</span>
@@ -91,7 +89,7 @@
                                         <span class="title-text">{{ languageData.label.ongoing}}</span>
                                     </div>
                                 </div>
-                                 <template v-if="mission.application_deadline != null ||
+                                <template v-if="mission.application_deadline != null ||
                                             checkMissionTypeTime(mission.mission_type)
                                             ">
                                     <div class="detail-column info-block" v-if="mission.application_deadline != null">
@@ -129,7 +127,7 @@
                                                 <span> {{ languageData.label.and }} </span>
                                                 <u>
                                                     <b-button :id="`skillPopover_${mission.mission_id}`" class="more-btn">
-                                                    <span> {{ mission.skill.length - 1 }} </span>{{ languageData.label.more }}
+                                                        <span> {{ mission.skill.length - 1 }} </span>{{ languageData.label.more }}
                                                     </b-button>
                                                 </u>
                                                 <b-popover :target="`skillPopover_${mission.mission_id}`" triggers="hover focus" placement="top" custom-class="skill-popover" :container="`skillWrap_${mission.mission_id}`">
@@ -188,136 +186,69 @@
             </b-card>
 
         </div>
-
+        <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
     </div>
-    <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
-        <template slot="modal-header" slot-scope="{ close }">
-            <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-            <h5 class="modal-title">{{languageData.label.search_user}}</h5>
-        </template>
-        <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
-        <div class="autocomplete-control">
-            <div class="autosuggest-container">
-                <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions" @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue" :input-props="{
-                        id:'autosuggest__input',
-                        placeholder:autoSuggestPlaceholder,
-                        ref:'inputAutoSuggest'
-                        }">
-                    <div slot-scope="{suggestion}">
-                        <img :src="suggestion.item.avatar" />
-                        <div>
-                            {{suggestion.item.first_name}} {{suggestion.item.last_name}}
-                        </div>
-                    </div>
-                </VueAutosuggest>
-            </div>
-        </div>
-        <b-form>
-            <div class="btn-wrap">
-                <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                    {{ languageData.label.close }}</b-button>
-                <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
-                    {{ languageData.label.submit }}</b-button>
-            </div>
-        </b-form>
-    </b-modal>
-</div>
-<div class="no-data-found" v-else>
-    <h2 class="text-center">{{noRecordFound()}}</h2>
-    <div class="btn-wrap" v-if="isSubmitNewMissionSet">
-        <b-button class="btn-bordersecondary icon-btn" @click="submitNewMission">
-            <span>{{ languageData.label.submit_new_mission }}</span>
-            <i>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                    <g id="Main Content">
-                        <g id="1">
-                            <g id="Button">
-                                <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+    <div class="no-data-found" v-else>
+        <h2 class="text-center">{{noRecordFound()}}</h2>
+        <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+            <b-button class="btn-bordersecondary icon-btn">
+                <span>{{ languageData.label.submit_new_mission }}</span>
+                <i>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                        <g id="Main Content">
+                            <g id="1">
+                                <g id="Button">
+                                    <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                </g>
                             </g>
                         </g>
-                    </g>
-                </svg>
-            </i>
-        </b-button>
+                        </g>
+                    </svg>
+                </i>
+            </b-button>
+        </div>
     </div>
-</div>
 </template>
 
 <script>
-import store from "../store";
-import constants from "../constant";
-import StarRating from "vue-star-rating";
-import moment from "moment";
+import store from '../store';
+import constants from '../constant';
+import InviteCoWorker from "@/components/InviteCoWorker";
+import StarRating from 'vue-star-rating';
+import moment from 'moment';
 import {
     favoriteMission,
-    inviteColleague,
     applyMission
 } from "../services/service";
-import {
-    VueAutosuggest
-} from "vue-autosuggest";
 
 export default {
     name: "MissionListView",
     props: {
-        items: Array,
-        userList: Array
+        items: Array
     },
     components: {
-        StarRating,
-        VueAutosuggest
+        StarRating
     },
     data() {
         return {
-            query: "",
-            selected: "",
-            myclass: ["userdetail-modal"],
             currentMissionId: 0,
-            invitedUserId: 0,
-            showErrorDiv: false,
-            message: null,
-            classVariant: "success",
-            autoSuggestPlaceholder: "",
-            submitDisable: true,
-            languageData: [],
             isInviteCollegueDisplay: true,
-            isStarRatingDisplay: true,
             isQuickAccessSet: true,
-            isSubmitNewMissionSet: true,
             isThemeSet: true,
-            submitNewMissionUrl: "",
-            isSkillDisplay: true,
+            isStarRatingDisplay: true,
+            isSubmitNewMissionSet: true,
+            languageData: [],
+            message: null,
+            submitNewMissionUrl: '',
+            isSkillDisplay: true
         };
-    },
-    computed: {
-        filteredOptions() {
-            if (this.userList) {
-                return [{
-                    data: this.userList.filter(option => {
-                        let firstName = option.first_name.toLowerCase();
-                        let lastName = option.last_name.toLowerCase();
-                        let email = option.email.toLowerCase();
-                        let searchString = firstName + "" + lastName + "" + email;
-                        return searchString.indexOf(this.query.toLowerCase()) > -1;
-                    })
-                }];
-            }
-        }
     },
     methods: {
         onOver() {
             this.$refs.skillDropdown.visible = true;
         },
         onLeave() {
-
             this.$refs.skillDropdown.visible = false;
-        },
-        hideModal() {
-            this.autoSuggestPlaceholder = "";
-            this.submitDisable = true;
-            this.invitedUserId = "";
-            this.query = "";
-            this.selected = "";
         },
         noRecordFound() {
             let defaultLang = store.state.defaultLanguage.toLowerCase();
@@ -402,41 +333,6 @@ export default {
                     this.makeToast("success", response.message);
                 }
             });
-        },
-        onInputChange() {
-            this.submitDisable = true;
-        },
-        // For selected user id.
-        onSelected(item) {
-            if (item) {
-                this.selected = item.item;
-                this.submitDisable = false;
-                this.invitedUserId = item.item.user_id;
-            }
-        },
-        //This is what the <input/> value is set to when you are selecting a suggestion.
-        getSuggestionValue(suggestion) {
-            let firstName = suggestion.item.first_name;
-            let lastName = suggestion.item.last_name;
-            return firstName + " " + lastName;
-        },
-        // Open auto suggest modal
-        handleModal(missionId) {
-            this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
-            this.showErrorDiv = false;
-            this.message = null;
-            this.$refs.userDetailModal.show();
-            this.currentMission = missionId;
-            setTimeout(() => {
-                this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-                var input = document.getElementById("autosuggest__input");
-                input.addEventListener("keyup", event => {
-                    if (event.keyCode === 13 && !this.submitDisable) {
-                        event.preventDefault();
-                        this.inviteColleagues();
-                    }
-                });
-            }, 100);
         },
         // invite collegues api call
         inviteColleagues() {

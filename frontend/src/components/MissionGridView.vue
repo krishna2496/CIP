@@ -78,9 +78,9 @@
                                     </div>
 
                                     <div class="group-ratings" v-if="
-                        checkMissionTypeTime(mission.mission_type) ||
-                        checkMissionTypeGoal(mission.mission_type)
-                      ">
+                                            checkMissionTypeTime(mission.mission_type) ||
+                                            checkMissionTypeGoal(mission.mission_type)
+                                        ">
                                         <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18" :rating="mission.mission_rating_count" :read-only="true">
                                         </star-rating>
                                     </div>
@@ -290,38 +290,7 @@
             </b-col>
         </b-row>
     </div>
-    <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
-        <template slot="modal-header" slot-scope="{ close }">
-            <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-            <h5 class="modal-title">{{ languageData.label.search_user }}</h5>
-        </template>
-        <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
-        <div class="autocomplete-control">
-            <div class="autosuggest-container">
-                <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions" @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue" :input-props="{
-              id: 'autosuggest__input',
-              placeholder: autoSuggestPlaceholder,
-
-              ref: 'inputAutoSuggest',
-            }">
-                    <div slot-scope="{ suggestion }">
-                        <img :src="suggestion.item.avatar" />
-                        <div>
-                            {{ suggestion.item.first_name }} {{ suggestion.item.last_name }}
-                        </div>
-                    </div>
-                </VueAutosuggest>
-            </div>
-        </div>
-        <b-form>
-            <div class="btn-wrap">
-                <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                    {{ languageData.label.close }}</b-button>
-                <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
-                    {{ languageData.label.submit }}</b-button>
-            </div>
-        </b-form>
-    </b-modal>
+    <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
 </div>
 <div class="no-data-found" v-else>
     <h2 class="text-center">{{ noRecordFound() }}</h2>
@@ -353,81 +322,33 @@ import {
     inviteColleague,
     applyMission,
 } from "../services/service";
-import {
-    VueAutosuggest
-} from "vue-autosuggest";
 import moment from "moment";
+import InviteCoWorker from "@/components/InviteCoWorker";
 
 export default {
     name: "MissionGridView",
     components: {
         StarRating,
-        VueAutosuggest,
+        InviteCoWorker,
     },
     props: {
         items: Array,
-        userList: Array,
         relatedMission: Boolean,
     },
     data() {
         return {
-            query: "",
-            selected: "",
-            myclass: ["userdetail-modal"],
             currentMissionId: 0,
-            invitedUserId: 0,
-            showErrorDiv: false,
-            message: null,
-            classVariant: "success",
-            autoSuggestPlaceholder: "",
-            submitDisable: true,
-            languageData: [],
             isInviteCollegueDisplay: true,
             isStarRatingDisplay: true,
             isSubmitNewMissionSet: true,
             isThemeSet: true,
+            languageData: [],
+            message: null,
             submitNewMissionUrl: "",
             cardHeightAdjIntervalId: null,
         };
     },
-    computed: {
-        filteredOptions() {
-            if (this.userList) {
-                return [{
-                    data: this.userList.filter((option) => {
-                        const firstName = option.first_name.toLowerCase();
-                        const lastName = option.last_name.toLowerCase();
-                        const email = option.email.toLowerCase();
-                        const searchString = `${firstName}${lastName}${email}`;
-                        return searchString.indexOf(this.query.toLowerCase()) > -1;
-                    }),
-                }, ];
-            }
-        },
-    },
     methods: {
-        hideModal() {
-            this.autoSuggestPlaceholder = "";
-            this.submitDisable = true;
-            this.invitedUserId = "";
-            this.query = "";
-            this.selected = "";
-            const cardHeader = document.querySelectorAll(
-                ".card-grid .card .card-header"
-            );
-            const cardBody = document.querySelectorAll(".card-grid .card .card-body");
-            cardBody.forEach(function (cardBodyElem) {
-                cardBodyElem.style.transform = "translateY(0)";
-            });
-            cardHeader.forEach(function (cardHeaderElem) {
-                cardHeaderElem.style.transform = "translateY(0)";
-            });
-
-            const cardInner = document.querySelectorAll(".card-grid .card-inner");
-            cardInner.forEach(function (cardInnerElem) {
-                cardInnerElem.classList.remove("active");
-            });
-        },
         getAppliedStatus(missionDetail) {
             const currentDate = moment().format("YYYY-MM-DD");
             const missionEndDate = moment(missionDetail.end_date).format(
@@ -549,73 +470,12 @@ export default {
                 }
             });
         },
-        onInputChange() {
-            this.submitDisable = true;
-        },
-        // For selected user id.
-        onSelected(item) {
-            if (item) {
-                this.selected = item.item;
-                this.submitDisable = false;
-                this.invitedUserId = item.item.user_id;
-            }
-        },
-        // This is what the <input/> value is set to when you are selecting a suggestion.
-        getSuggestionValue(suggestion) {
-            const firstName = suggestion.item.first_name;
-            const lastName = suggestion.item.last_name;
-            return `${firstName} ${lastName}`;
-        },
         getMediaPath(mediaPath) {
             if (mediaPath != "") {
                 return mediaPath;
             } else {
                 return "";
             }
-        },
-        // Open auto suggest modal
-        handleModal(missionId) {
-            this.autoSuggestPlaceholder = this.languageData.placeholder.search_user;
-            this.showErrorDiv = false;
-            this.message = null;
-            this.$refs.userDetailModal.show();
-            this.currentMission = missionId;
-            setTimeout(() => {
-                this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-                const input = document.getElementById("autosuggest__input");
-                input.addEventListener("keyup", (event) => {
-                    if (event.keyCode === 13 && !this.submitDisable) {
-                        event.preventDefault();
-                        this.inviteColleagues();
-                    }
-                });
-            }, 100);
-        },
-        // invite collegues api call
-        inviteColleagues() {
-            const inviteData = {};
-            inviteData.mission_id = this.currentMission;
-            inviteData.to_user_id = this.invitedUserId;
-            inviteColleague(inviteData).then((response) => {
-                this.submitDisable = true;
-                if (response.error == true) {
-                    this.classVariant = "danger";
-                    this.message = response.message;
-                    this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = "";
-                    this.showErrorDiv = true;
-                } else {
-                    this.query = "";
-                    this.selected = "";
-                    this.currentMissionId = 0;
-                    this.invitedUserId = 0;
-                    this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = "";
-                    this.classVariant = "success";
-                    this.message = response.message;
-                    this.showErrorDiv = true;
-                }
-            });
         },
         // Apply for mission
         applyForMission(mission) {

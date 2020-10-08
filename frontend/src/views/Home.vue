@@ -48,26 +48,49 @@
 
             <b-tabs class="view-tab" v-model="tabNumber">
 
-                <!-- grid view -->
-                <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
-                    <template slot="title">
-                        <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom :title="languageData.label.grid_view" v-if="missionList.length > 0">
-                            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'" alt="Down Arrow" />
-                            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'" alt="Down Arrow" />
-                        </i>
-                    </template>
-                    <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage" ref="gridView" :relatedMission=relatedMission v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                </b-tab>
-                <!-- list view -->
-                <b-tab class="list-tab-content" @click="changeCurrentView(1)">
-                    <template slot="title">
-                        <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom :title="languageData.label.list_view" v-if="missionList.length > 0">
-                            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'" alt="Down Arrow" />
-                            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'" alt="Down Arrow" />
-                        </i>
-                    </template>
-                    <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage" v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                </b-tab>
+                    <!-- grid view -->
+                    <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
+                        <template slot="title">
+                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
+                               :title="languageData.label.grid_view" v-if="missionList.length > 0">
+                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
+                                     alt="Down Arrow" />
+                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
+                                     alt="Down Arrow" />
+                            </i>
+                        </template>
+                        <GridView
+                          id="gridView"
+                          :items="missionList"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          :relatedMission=relatedMission
+                          v-if="isShownComponent"
+                          @getMissions="getMissions"
+                          small
+                        />
+                    </b-tab>
+                    <!-- list view -->
+                    <b-tab class="list-tab-content" @click="changeCurrentView(1)">
+                        <template slot="title">
+                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
+                               :title="languageData.label.list_view" v-if="missionList.length > 0">
+                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
+                                     alt="Down Arrow" />
+                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
+                                     alt="Down Arrow" />
+                            </i>
+                        </template>
+                        <ListView
+                          id="listView"
+                          :items="missionList"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          v-if="isShownComponent"
+                          @getMissions="getMissions"
+                          small
+                        />
+                    </b-tab>
 
             </b-tabs>
 
@@ -104,12 +127,9 @@ import store from '../store';
 import {
     missionListing,
     missionFilterListing,
-    searchUser
-} from '../services/service';
-import constants from '../constant';
-import {
-    setTimeout
-} from 'timers';
+  } from '../services/service';
+  import constants from '../constant';
+  import { setTimeout } from 'timers';
 
 export default {
     components: {
@@ -164,7 +184,6 @@ export default {
             tabNumber: 0,
             tags: "",
             sortByFilterSet: true,
-            userList: [],
             languageData: [],
             isTotalMissionDisplay: true,
             isQuickAccessDisplay: true,
@@ -395,17 +414,14 @@ export default {
             this.missionFilter();
         }
 
-        this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
-        this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
-        this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
-        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-        this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-        this.isStateSelectionSet = this.settingEnabled(constants.STATE_ENABLED);
-        this.defaultCountry = store.state.defaultCountryId
-        this.activeView = 'listView'
-        searchUser().then(response => {
-            this.userList = response;
-        });
+      this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
+      this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+      this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+      this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+      this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
+      this.isStateSelectionSet =this.settingEnabled(constants.STATE_ENABLED);
+      this.defaultCountry = store.state.defaultCountryId
+      this.activeView = 'listView'
 
         setTimeout(() => {
             this.sortByDefault = this.languageData.label.sort_by;

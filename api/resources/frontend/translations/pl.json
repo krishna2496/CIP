@@ -392,7 +392,10 @@
 		"max_image_upload": "Można dodać maksymalnie 20 obrazów",
 		"max_video_upload": "Można dodać maksymalnie 20 filmików wideo",
 		"duplicate_video_url": "Duplikaty adresów wideo url nie są dozwolone",
-		"invalid_saml_setting": "Wymagane są następujące mapowania:"
+		"invalid_saml_setting": "Wymagane są następujące mapowania:",
+		"password_should_contain_uppercase": "Przynajmniej 1 wielka litera",
+		"password_should_contain_lowercase": "Przynajmniej 1 mała litera",
+		"password_should_contain_numbers": "Przynajmniej 1 cyfra"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
