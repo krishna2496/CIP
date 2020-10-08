@@ -193,7 +193,8 @@ export default {
                 }
             }
             this.customText = sanitizeHtml(this.customText, {
-                allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img'])
+                allowedTags: false,
+                allowedAttributes: false
             });
         },
 
