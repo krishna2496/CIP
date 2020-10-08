@@ -165,7 +165,7 @@
                             </b-link>
                         </div>
                         <div class="social-btn">
-                            <b-button class="icon-btn" v-if="isInviteCollegueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
+                            <b-button class="icon-btn" v-if="isInviteColleagueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
                                 <img :src="$store.state.imagePath+'/assets/images/multi-user-icon.svg'" alt="multi user icon">
                             </b-button>
 
@@ -184,9 +184,9 @@
                     </div>
                 </b-card-body>
             </b-card>
-
         </div>
-        <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
+    </div>
+    <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
     </div>
 </div>
 <div class="no-data-found" v-else>
@@ -214,26 +214,24 @@
 <script>
 import store from '../store';
 import constants from '../constant';
-import InviteCoWorker from "@/components/InviteCoWorker";
+import InviteCoWorker from '@/components/InviteCoWorker';
 import StarRating from 'vue-star-rating';
 import moment from 'moment';
-import {
-    favoriteMission,
-    applyMission
-} from "../services/service";
+import { favoriteMission } from '../services/service';
 
 export default {
-    name: "MissionListView",
+    name: 'MissionListView',
     props: {
         items: Array
     },
     components: {
+        InviteCoWorker,
         StarRating
     },
     data() {
         return {
             currentMissionId: 0,
-            isInviteCollegueDisplay: true,
+            isInviteColleagueDisplay: true,
             isQuickAccessSet: true,
             isThemeSet: true,
             isStarRatingDisplay: true,
@@ -335,45 +333,12 @@ export default {
                 }
             });
         },
-        // invite collegues api call
-        inviteColleagues() {
-            let inviteData = {};
-            inviteData.mission_id = this.currentMission;
-            inviteData.to_user_id = this.invitedUserId;
-            inviteColleague(inviteData).then(response => {
-                this.submitDisable = true;
-                if (response.error == true) {
-                    this.classVariant = "danger";
-                    this.message = response.message;
-                    this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = "";
-                    this.showErrorDiv = true;
-                } else {
-                    this.query = "";
-                    this.selected = "";
-                    this.currentMissionId = 0;
-                    this.invitedUserId = 0;
-                    this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = "";
-                    this.classVariant = "success";
-                    this.message = response.message;
-                    this.showErrorDiv = true;
-                }
-            });
-        },
-        // Apply for mission
-        applyForMission(missionId) {
-            let missionData = {};
-            missionData.mission_id = missionId;
-            missionData.availability_id = 1;
-            applyMission(missionData).then(response => {
-                if (response.error == true) {
-                    this.makeToast("danger", response.message);
-                } else {
-                    this.makeToast("success", response.message);
-                    this.$emit("getMissions");
-                }
-            });
+        /*
+         * Opens Recommend to a co-worker modal
+         */
+        handleModal(missionId) {
+            this.currentMissionId = missionId;
+            this.$refs.userDetailModal.show();
         },
         makeToast(variant = null, message) {
             this.$bvToast.toast(message, {
@@ -434,7 +399,7 @@ export default {
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
-        this.isInviteCollegueDisplay = this.settingEnabled(
+        this.isInviteColleagueDisplay = this.settingEnabled(
             constants.INVITE_COLLEAGUE
         );
         this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);

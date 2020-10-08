@@ -277,10 +277,10 @@ export default {
                 }
                 setTimeout(() => {
                     const bodyTag = document.querySelector("body");
-                    if (this.tabNumber == 0 && !bodyTag.classList.contains("has-favourite")) {
+                    if (this.tabNumber == 0 && !bodyTag.classList.contains('has-favourite')) {
                         this.$refs.gridView.cardHeightAdj();
                     } else {
-                        bodyTag.classList.remove("has-favourite");
+                        bodyTag.classList.remove('has-favourite');
                     }
                 }, 200);
                 if (!this.isExploreMission) {
