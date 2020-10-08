@@ -104,12 +104,12 @@ export default {
         this.items[1].name = this.languageData.label.volunteering_history
         this.items[2].name = this.languageData.label.volunteering_timesheet
 
-        if (!this.isCommentDisplay) {
-            this.items.splice(4, 1)
-        }
-
         if (!this.isStoryDisplay) {
             this.items.splice(5, 1)
+        }
+
+        if (!this.isCommentDisplay) {
+            this.items.splice(4, 1)
         }
 
         if (!this.isMessageDisplay) {
