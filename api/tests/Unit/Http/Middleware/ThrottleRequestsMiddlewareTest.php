@@ -25,7 +25,6 @@ class ThrottleRequestsMiddlewareTest extends \TestCase
      */
     private $middleware;
 
-
     protected function setUp(): void
     {
         parent::setUp();
