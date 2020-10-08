@@ -61,6 +61,7 @@
                         </template>
                         <GridView
                           id="gridView"
+                          ref="gridView"
                           :items="missionList"
                           :per-page="perPage"
                           :current-page="currentPage"
@@ -83,6 +84,7 @@
                         </template>
                         <ListView
                           id="listView"
+                          ref="listView"
                           :items="missionList"
                           :per-page="perPage"
                           :current-page="currentPage"
