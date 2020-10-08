@@ -7513,6 +7513,42 @@
         }
       }
     },
+    "/app/country": {
+      "get": {
+        "operationId": "GET_cip-api-get-country",
+        "summary": "App - Get country list",
+        "tags": [
+          "Country"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "detailed",
+            "in": "path",
+            "description": "If true, return the country list with more information",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    },
     "/entities/countries": {
       "post": {
         "operationId": "POST_team4-cip-api-admin-add-country",
