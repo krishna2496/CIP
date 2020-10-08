@@ -545,7 +545,8 @@ return [
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
         'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
         'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103',
-        'ERROR_INVALID_CURRENCY' => '900104'
+        'ERROR_INVALID_CURRENCY' => '900104',
+        'ERROR_IP_ADDRESS_NOT_ALLOWED' => '900104',
     ],
 
     /**
@@ -700,7 +701,7 @@ return [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
     ],
-    
+
     /*
      * Icon image types
      */
