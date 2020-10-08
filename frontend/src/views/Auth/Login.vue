@@ -6,19 +6,18 @@
             <AppCustomDropdown :optionList="langList" :defaultText="defautLang" translationEnable="false" @updateCall="setLanguage" v-if="isShowComponent" />
         </div>
         <div class="signin-form-block">
-            <!-- custom text block -->
-            <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'before_logo'">
-                <p v-html="customText">
-                </p>
+            <div v-if="customText != '' && customTextPosition == 'before_logo'"
+                class="custom-text-block">
+                <p v-html="customText"></p>
             </div>
 
             <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
                 <img :src="this.$store.state.logo">
             </router-link>
 
-            <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_logo'">
-                <p v-html="customText">
-                </p>
+            <div v-if="customText != '' && customTextPosition == 'after_logo'"
+                class="custom-text-block">
+                <p v-html="customText"></p>
             </div>
 
             <b-alert v-if="this.$store.state.samlSettings && this.$store.state.samlSettings.saml_access_only" />
@@ -49,17 +48,16 @@
                 <div class="form-link">
                     <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
-
-                <div class="custom-text-block" v-if="customText != '' && customTextPosition == 'after_login_form'">
-                    <p v-html="customText">
-                    </p>
-                </div>
-
             </div>
 
             <b-button type="button" v-if="hasSSO" @click="handleSSO" class=" btn-borderprimary mt-3">
                 {{ languageData.label.login_with_sso || 'Login with SSO' }}
             </b-button>
+
+            <div v-if="customText != '' && customTextPosition == 'after_login_form'"
+                class="custom-text-block">
+                <p v-html="customText"></p>
+            </div>
 
         </div>
         <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent" :key="componentKey" />
