@@ -32,6 +32,7 @@ module.exports = {
         host: host,
         port: port,
         https: false,
+        disableHostCheck: true,
     },
 
     pluginOptions: {
