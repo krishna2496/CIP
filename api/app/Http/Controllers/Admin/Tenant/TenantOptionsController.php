@@ -297,7 +297,7 @@ class TenantOptionsController extends Controller
         if ($data['option_name'] === config('constants.TENANT_OPTION_CUSTOM_LOGIN_TEXT')) {
             $rules['option_value'] = 'required|array';
             $rules['option_value.translations'] = 'required|array';
-            $rules['option_value.translations.*.message'] = 'required|max:370';
+            $rules['option_value.translations.*.message'] = 'required|max_html_stripped:370';
             $rules['option_value.position'] = [
                 'required',
                 Rule::in(config('constants.custom_login_text_positions'))
@@ -360,7 +360,7 @@ class TenantOptionsController extends Controller
         if ($request->option_name === config('constants.TENANT_OPTION_CUSTOM_LOGIN_TEXT')) {
             $rules['option_value'] = 'required|array';
             $rules['option_value.translations'] = 'required|array';
-            $rules['option_value.translations.*.message'] = 'required|max:370';
+            $rules['option_value.translations.*.message'] = 'required|max_html_stripped:370';
             $rules['option_value.position'] = [
                 'required',
                 Rule::in(config('constants.custom_login_text_positions'))
