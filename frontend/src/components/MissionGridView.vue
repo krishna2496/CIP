@@ -494,7 +494,11 @@ export default {
             }
         },
         cardHeightAdj() {
-            const cardBodyList = document.querySelectorAll(".card-grid .card-body");
+            if (!document.getElementById('gridView')) {
+              return;
+            }
+
+            const cardBodyList = document.querySelectorAll('.card-grid .card-body');
             // check if card content is already visible in the DOM
             if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
@@ -593,11 +597,11 @@ export default {
         );
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-        var _this = this;
-        window.addEventListener("resize", this.cardHeightAdj);
-        var pageItem = document.querySelectorAll(".pagination-block .page-item");
+        const _this = this;
+        window.addEventListener('resize', this.cardHeightAdj);
+        const pageItem = document.querySelectorAll('.pagination-block .page-item');
         pageItem.forEach(function (itemEvent) {
-            itemEvent.addEventListener("click", function () {
+            itemEvent.addEventListener('click', function () {
                 setTimeout(function () {
                     _this.cardHeightAdj();
                 }, 2000);
